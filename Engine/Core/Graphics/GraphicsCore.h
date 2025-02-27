@@ -18,6 +18,7 @@
 #include <Engine/Core/Graphics/Managers/RTVManager.h>
 #include <Engine/Core/Graphics/Managers/DSVManager.h>
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Managers/ImGuiManager.h>
 // c++
 #include <memory>
 // front
@@ -42,6 +43,8 @@ public:
 	void Finalize(HWND hwnd);
 
 	//--------- rendering ----------------------------------------------------
+
+	void BeginRenderFrame();
 
 	void Render();
 
@@ -87,13 +90,13 @@ private:
 	std::unique_ptr<DSVManager> dsvManager_;
 	std::unique_ptr<SRVManager> srvManager_;
 
+	std::unique_ptr<ImGuiManager> imguiManager_;
+
 	std::unique_ptr<PipelineState> offscreenPipeline_;
 
 	//--------- functions ----------------------------------------------------
 
 	void InitDXDevice();
-
-	void BeginRenderFrame();
 
 	// shadowMapへの描画処理
 	void RenderZPass();

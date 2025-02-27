@@ -43,6 +43,14 @@ void SRVManager::CreateUAV(uint32_t& uavIndex, ID3D12Resource* resource,
 	device_->CreateUnorderedAccessView(resource, nullptr, &desc, GetCPUHandle(uavIndex));
 }
 
+void SRVManager::IncrementIndex() {
+
+	if (!DxUtils::CanAllocateIndex(useIndex_, kMaxSRVCount_)) {
+		ASSERT(FALSE, "Cannot allocate more SRVs, maximum count reached");
+	}
+	useIndex_++;
+}
+
 uint32_t SRVManager::Allocate() {
 
 	if (!DxUtils::CanAllocateIndex(useIndex_, kMaxSRVCount_)) {

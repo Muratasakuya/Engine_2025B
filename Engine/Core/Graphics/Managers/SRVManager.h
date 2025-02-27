@@ -30,6 +30,8 @@ public:
 	void CreateUAV(uint32_t& uavIndex, ID3D12Resource* resource,
 		const D3D12_UNORDERED_ACCESS_VIEW_DESC& desc);
 
+	void IncrementIndex();
+
 	//--------- accessor -----------------------------------------------------
 
 	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index);

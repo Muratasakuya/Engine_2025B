@@ -65,6 +65,8 @@ void Framework::Update() {
 	//	update
 	//========================================================================
 
+	// 描画前処理
+	graphicsCore_->BeginRenderFrame();
 	// scene更新
 	UpdateScene();
 	// entityBuffer更新

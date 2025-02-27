@@ -145,6 +145,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Graphics\DxSwapChain.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GraphicsCore.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Managers\DSVManager.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\Managers\ImGuiManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Managers\RTVManager.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Managers\SRVManager.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxBlendState.cpp" />
@@ -201,6 +205,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
     <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
     <ClInclude Include="Engine\Core\Graphics\Managers\DSVManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\Managers\ImGuiManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Managers\RTVManager.h" />
     <ClInclude Include="Engine\Core\Graphics\Managers\SRVManager.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxBlendState.h" />
