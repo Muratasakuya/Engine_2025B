@@ -37,6 +37,8 @@ public:
 
 	ID3D12Resource* GetCurrentResource() const;
 
+	const DXGI_SWAP_CHAIN_DESC1& GetDesc() const { return desc_; }
+
 	const RenderTarget& GetRenderTarget();
 private:
 	//========================================================================

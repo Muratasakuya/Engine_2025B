@@ -6,6 +6,9 @@
 #include <Engine/Asset/Asset.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
 //	DebugScene classMethods
 //============================================================================
@@ -42,4 +45,18 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	//========================================================================
 
 	gameCamera_->Update();
+
+#ifdef _DEBUG
+	ImGui::Begin("Test");
+
+	ImGui::Text("aaa");
+
+	ImGui::End();
+
+	ImGui::Begin("Test2");
+
+	ImGui::Text("bbb");
+
+	ImGui::End();
+#endif // _DEBUG
 }

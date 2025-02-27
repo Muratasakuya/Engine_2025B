@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Window/WinApp.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -102,6 +103,12 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	srvManager_ = std::make_unique<SRVManager>();
 	srvManager_->Init(dxDevice_->Get());
 
+#ifdef _DEBUG
+	imguiManager_ = std::make_unique<ImGuiManager>();
+	imguiManager_->Init(winApp->GetHwnd(),
+		dxSwapChain_->GetDesc().BufferCount, device, srvManager_.get());
+#endif // _DEBUG
+
 	// renderTexture作成
 	renderTexture_ = std::make_unique<RenderTexture>();
 	renderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
@@ -125,6 +132,11 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 
 void GraphicsCore::Finalize(HWND hwnd) {
 
+#ifdef _DEBUG
+	imguiManager_->Finalize();
+	imguiManager_.reset();
+#endif
+
 	dxCommand_->Finalize(hwnd);
 
 	dxDevice_.reset();
@@ -145,9 +157,6 @@ void GraphicsCore::Finalize(HWND hwnd) {
 
 void GraphicsCore::Render() {
 
-	// 描画前処理
-	BeginRenderFrame();
-
 	// zPass
 	RenderZPass();
 	// offscreenTexture
@@ -164,6 +173,10 @@ void GraphicsCore::Render() {
 //============================================================================
 
 void GraphicsCore::BeginRenderFrame() {
+
+#ifdef _DEBUG
+	imguiManager_->Begin();
+#endif
 
 	// srvDescriptorHeap設定
 	dxCommand_->SetDescriptorHeaps({ srvManager_->GetDescriptorHeap() });
@@ -231,6 +244,13 @@ void GraphicsCore::EndRenderFrame() {
 
 	// ComputeCommand実行
 	dxCommand_->ExecuteComputeCommands();
+
+#ifdef _DEBUG
+	// imgui描画
+	imguiManager_->End();
+	imguiManager_->Draw(dxCommand_->GetCommandList(CommandListType::Graphics));
+#endif // _DEBUG
+
 	// PixelShader -> Write
 	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE);
