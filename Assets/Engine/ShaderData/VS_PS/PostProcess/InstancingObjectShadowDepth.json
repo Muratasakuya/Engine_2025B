@@ -1,0 +1,6 @@
+{
+    "RootParameter": [
+        { "RootIndex": 0, "Type": "CBV", "Visibility": "VERTEX", "ShaderRegister": 0 },
+        { "RootIndex": 1, "Type": "TABLE", "Visibility": "VERTEX", "DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 0 } }
+    ]
+}

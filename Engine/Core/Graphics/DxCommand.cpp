@@ -1,0 +1,245 @@
+#include "DxCommand.h"
+
+//============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Debug/Assert.h>
+
+//============================================================================
+//	DxCommand classMethods
+//============================================================================
+
+constexpr std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> DxCommand::CreateCommandTypes() {
+	std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> types = {};
+	for (uint32_t i = 0; i < static_cast<uint32_t>(CommandListType::Count); ++i) {
+		types[i] = static_cast<CommandListType>(i);
+	}
+	return types;
+}
+
+void DxCommand::UpdateFixFPS() {
+
+	// フレームレートピッタリの時間
+	constexpr std::chrono::microseconds kMinTime(static_cast<uint64_t>(1000000.0f / 60.0f));
+
+	// 1/60秒よりわずかに短い時間
+	constexpr std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 64.0f));
+
+	// 現在時間を取得する
+	auto now = std::chrono::steady_clock::now();
+	// 前回記録からの経過時間を取得する
+	auto elapsed = std::chrono::duration_cast<std::chrono::microseconds>(now - reference_);
+
+	// 1/60秒 (よりわずかに短い時間) 経っていない場合
+	if (elapsed < kMinCheckTime) {
+		// 1/60秒経過するまで微小なスリープを繰り返す
+		auto wait_until = reference_ + kMinTime;
+		while (std::chrono::steady_clock::now() < wait_until) {
+			std::this_thread::yield();
+		}
+	}
+
+	// 現在の時間を記録する
+	reference_ = std::chrono::steady_clock::now();
+}
+
+void DxCommand::Create(ID3D12Device* device) {
+
+	fence_ = nullptr;
+	fenceValue_ = 0;
+	HRESULT hr = device->CreateFence(fenceValue_, D3D12_FENCE_FLAG_NONE, IID_PPV_ARGS(&fence_));
+	assert(SUCCEEDED(hr));
+
+	// FenceのSignalを待つためのイベントの作成する
+	fenceEvent_ = CreateEvent(NULL, FALSE, FALSE, NULL);
+	assert(fenceEvent_ != nullptr);
+
+	commandListTypes_ = CreateCommandTypes();
+
+	reference_ = std::chrono::steady_clock::now();
+
+	commandQueue_ = nullptr;
+	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
+	hr = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
+	assert(SUCCEEDED(hr));
+
+	commandLists_.reserve(commandListTypes_.size());
+	commandAllocators_.reserve(commandListTypes_.size());
+	for (const auto& type : commandListTypes_) {
+
+		commandAllocators_[type] = nullptr;
+		hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocators_[type]));
+		assert(SUCCEEDED(hr));
+
+		commandLists_[type] = nullptr;
+		hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators_[type].Get(), nullptr, IID_PPV_ARGS(&commandLists_[type]));
+		assert(SUCCEEDED(hr));
+	}
+}
+
+void DxCommand::ExecuteComputeCommands() {
+
+	HRESULT hr = S_OK;
+	// ComputeCommand
+	hr = commandLists_[CommandListType::Compute]->Close();
+	assert(SUCCEEDED(hr));
+
+	ID3D12CommandList* commandLists[] = { commandLists_[CommandListType::Compute].Get() };
+	commandQueue_->ExecuteCommandLists(1, commandLists);
+
+	// Fenceの値を更新: GraphicsCommandの方で完了を待ちを行う
+	fenceValue_++;
+	commandQueue_->Signal(fence_.Get(), fenceValue_);
+}
+
+void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
+
+	// Computeの完了を待つ
+	if (fence_->GetCompletedValue() < fenceValue_) {
+
+		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+		// イベントを待つ
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
+
+	HRESULT hr = S_OK;
+	// GraphicsCommand
+	hr = commandLists_[CommandListType::Graphics]->Close();
+	assert(SUCCEEDED(hr));
+
+	ID3D12CommandList* commandLists[] = { commandLists_[CommandListType::Graphics].Get() };
+	commandQueue_->ExecuteCommandLists(1, commandLists);
+
+	// GPUとOSに画面の交換を行うように通知する
+	swapChain->Present(1, 0);
+
+	// Fenceの値を更新
+	fenceValue_++;
+	commandQueue_->Signal(fence_.Get(), fenceValue_);
+
+	// Fenceの値が指定したSignal値にたどり着いているか確認する
+	if (fence_->GetCompletedValue() < fenceValue_) {
+
+		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+		// イベントを待つ
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
+
+	// FPS固定
+	UpdateFixFPS();
+
+	for (const auto& type : commandListTypes_) {
+
+		hr = commandAllocators_[type]->Reset();
+		assert(SUCCEEDED(hr));
+		hr = commandLists_[type]->Reset(commandAllocators_[type].Get(), nullptr);
+		assert(SUCCEEDED(hr));
+	}
+}
+
+void DxCommand::WaitForGPU() {
+
+	// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseする
+	HRESULT hr = commandLists_[CommandListType::Graphics]->Close();
+	assert(SUCCEEDED(hr));
+
+	// GPUにコマンドリストの実行を行わせる
+	ID3D12CommandList* commandLists[] = { commandLists_[CommandListType::Graphics].Get() };
+	commandQueue_->ExecuteCommandLists(1, commandLists);
+
+	// Feneceの値を更新
+	fenceValue_++;
+	commandQueue_->Signal(fence_.Get(), fenceValue_);
+
+	// Fenceの値が指定したSignal値にたどり着いているか確認する
+	if (fence_->GetCompletedValue() < fenceValue_) {
+
+		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
+		// イベントを待つ
+		WaitForSingleObject(fenceEvent_, INFINITE);
+	}
+
+	hr = commandAllocators_[CommandListType::Graphics]->Reset();
+	assert(SUCCEEDED(hr));
+	hr = commandLists_[CommandListType::Graphics]->Reset(commandAllocators_[CommandListType::Graphics].Get(), nullptr);
+	assert(SUCCEEDED(hr));
+}
+
+void DxCommand::Finalize(HWND hwnd) {
+	CloseHandle(fenceEvent_);
+	CloseWindow(hwnd);
+}
+
+ID3D12GraphicsCommandList* DxCommand::GetCommandList(CommandListType type) const {
+	return commandLists_.at(type).Get();
+}
+
+//============================================================================
+//	GraphicsCommand
+//============================================================================
+
+void DxCommand::SetDescriptorHeaps(const std::vector<ID3D12DescriptorHeap*>& descriptorHeaps) {
+
+	commandLists_[CommandListType::Graphics]->SetDescriptorHeaps(
+		static_cast<UINT>(descriptorHeaps.size()), descriptorHeaps.data());
+}
+
+void DxCommand::SetRenderTargets(const std::optional<RenderTarget>& renderTarget,
+	const std::optional<D3D12_CPU_DESCRIPTOR_HANDLE>& dsvHandle) {
+
+	// renderTargetが設定されているとき
+	if (renderTarget.has_value()) {
+
+		commandLists_[CommandListType::Graphics]->OMSetRenderTargets(1,
+			&renderTarget.value().rtvHandle, FALSE, dsvHandle.has_value() ? &dsvHandle.value() : nullptr);
+		float clearColor[] =
+		{ renderTarget.value().clearColor.r, renderTarget.value().clearColor.g,
+			renderTarget.value().clearColor.b, renderTarget.value().clearColor.a };
+		commandLists_[CommandListType::Graphics]->ClearRenderTargetView(renderTarget.value().rtvHandle, clearColor, 0, nullptr);
+	} else {
+		if (dsvHandle.has_value()) {
+
+			commandLists_[CommandListType::Graphics]->OMSetRenderTargets(0,
+				nullptr, FALSE, &dsvHandle.value());
+		} else {
+
+			ASSERT(FALSE, "unSetting ShadowMap");
+		}
+	}
+}
+
+void DxCommand::ClearDepthStencilView(const D3D12_CPU_DESCRIPTOR_HANDLE& dsvHandle) {
+
+	commandLists_[CommandListType::Graphics]->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+}
+
+void DxCommand::SetViewportAndScissor(uint32_t width, uint32_t height) {
+
+	D3D12_VIEWPORT viewport{};
+	D3D12_RECT scissorRect{};
+
+	viewport =
+		D3D12_VIEWPORT(0.0f, 0.0f, FLOAT(width), FLOAT(height), 0.0f, 1.0f);
+	commandLists_[CommandListType::Graphics]->RSSetViewports(1, &viewport);
+
+	scissorRect = D3D12_RECT(0, 0, width, height);
+	commandLists_[CommandListType::Graphics]->RSSetScissorRects(1, &scissorRect);
+}
+
+void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
+	D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter) {
+
+	for (const auto& resource : resources) {
+		D3D12_RESOURCE_BARRIER barrier{};
+
+		barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+		barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+		// バリアを貼る対象のリソース。引数で渡されたリソースに対して行う
+		barrier.Transition.pResource = resource;
+		// 遷移前(現在)のResourceState
+		barrier.Transition.StateBefore = stateBefore;
+		// 遷移後のResourceState
+		barrier.Transition.StateAfter = stateAfter;
+		commandLists_[CommandListType::Graphics]->ResourceBarrier(1, &barrier);
+	}
+}
