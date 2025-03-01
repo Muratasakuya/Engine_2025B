@@ -178,6 +178,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Renderer\MeshRenderer.cpp" />
     <ClCompile Include="Game\Base\BaseGameObject.cpp" />
     <ClCompile Include="Game\Camera\Base\BaseCamera.cpp" />
+    <ClCompile Include="Game\Camera\DebugCamera.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Camera\LightViewCamera.cpp" />
     <ClCompile Include="Game\Camera\Manager\CameraManager.cpp" />
@@ -248,6 +252,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Renderer\MeshRenderer.h" />
     <ClInclude Include="Game\Base\BaseGameObject.h" />
     <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
+    <ClInclude Include="Game\Camera\DebugCamera.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Camera\GameCamera.h" />
     <ClInclude Include="Game\Camera\LightViewCamera.h" />
     <ClInclude Include="Game\Camera\Manager\CameraManager.h" />

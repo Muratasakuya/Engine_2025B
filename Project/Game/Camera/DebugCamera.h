@@ -4,38 +4,23 @@
 //	include
 //============================================================================
 #include <Game/Camera/Base/BaseCamera.h>
-#include <Game/Camera/DebugCamera.h>
-#include <Game/Camera/LightViewCamera.h>
-
-// c++
-#include <memory>
-#include <optional>
 
 //============================================================================
-//	CameraManager class
+//	DebugCamera class
 //============================================================================
-class CameraManager {
+class DebugCamera :
+	public BaseCamera {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	CameraManager() = default;
-	~CameraManager() = default;
+	DebugCamera() = default;
+	~DebugCamera() = default;
 
-	void Init();
+	void Init() override;
 
-	void Update();
-
-	//--------- accessor -----------------------------------------------------
-
-	void SetCamera(BaseCamera* gameCamera);
-
-	BaseCamera* GetCamera() const;
-
-	DebugCamera* GetDebugCamera() const { return debugCamera_.get(); }
-
-	LightViewCamera* GetLightViewCamera() const { return lightViewCamera_.get(); }
+	void Update() override;
 private:
 	//========================================================================
 	//	private Methods
@@ -43,9 +28,14 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::optional<BaseCamera*> gameCamera_;
+	Matrix4x4 rotateMatrix_;
 
-	std::unique_ptr<DebugCamera> debugCamera_;
+	// マウスホイール移動感度
+	float zoomRate_;
 
-	std::unique_ptr<LightViewCamera> lightViewCamera_;
+	//--------- functions ----------------------------------------------------
+
+	// 移動
+	void Move();
+
 };

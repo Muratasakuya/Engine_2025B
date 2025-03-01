@@ -39,7 +39,7 @@ public:
 	void Update();
 
 	void RenderZPass();
-	void Render();
+	void Render(bool debugEnable);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -63,6 +63,9 @@ private:
 	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;
 	DxConstBuffer<Matrix4x4> lightViewProjectionBuffer_;
 	DxConstBuffer<Vector3> cameraPosBuffer_;
+
+	DxConstBuffer<Matrix4x4> debugSceneViewProjectionBuffer_;
+	DxConstBuffer<Vector3> debugSceneCameraPosBuffer_;
 
 	PunctualLight light_;
 	DxConstBuffer<PunctualLight> lightBuffer_;
