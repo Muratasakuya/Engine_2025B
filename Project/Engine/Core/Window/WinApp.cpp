@@ -33,7 +33,7 @@ void WinApp::Create(uint32_t width, uint32_t height, const wchar_t* title) {
 	wrc.right = width;
 	wrc.bottom = height;
 
-	windowStyle_ = WS_OVERLAPPEDWINDOW;
+	windowStyle_ = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 
 	AdjustWindowRect(&wrc, windowStyle_, false);
 

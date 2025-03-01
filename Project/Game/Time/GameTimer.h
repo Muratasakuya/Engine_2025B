@@ -22,6 +22,8 @@ public:
 
 	static void Update();
 
+	static void ImGui();
+
 	//--------- accessor -----------------------------------------------------
 
 	static float GetDeltaTime() { return deltaTime_; }

@@ -21,7 +21,8 @@ public:
 	ImGuiEditor() = default;
 	~ImGuiEditor() = default;
 
-	void Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle);
+	void Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle,
+		const D3D12_GPU_DESCRIPTOR_HANDLE& shadowMapGPUHandle);
 
 	void Display();
 
@@ -33,6 +34,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	D3D12_GPU_DESCRIPTOR_HANDLE renderTextureGPUHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE shadowMapGPUHandle_;
 
 	ImGuiWindowFlags windowFlag_;
 
@@ -40,6 +42,9 @@ private:
 
 	// renderTextureの描画
 	void MainWindow();
+
+	// engine
+	void Engine();
 
 	// hierarchy
 	void Hierarchy();

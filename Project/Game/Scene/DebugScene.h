@@ -9,6 +9,7 @@
 
 // c++
 #include <memory>
+#include <vector>
 
 //============================================================================
 //	DebugScene class
@@ -35,7 +36,7 @@ private:
 
 	std::unique_ptr<GameCamera> gameCamera_;
 
-	std::unique_ptr<BaseGameObject> object_;
+	std::vector<std::unique_ptr<BaseGameObject>> objects_;
 
 	//--------- functions ----------------------------------------------------
 

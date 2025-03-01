@@ -14,13 +14,6 @@
 //	Asset class
 //============================================================================
 class Asset {
-private:
-	//========================================================================
-	//	friend class
-	//========================================================================
-
-	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVManager* srvManager);
-	friend class Framework;
 public:
 	//========================================================================
 	//	public Methods
@@ -28,6 +21,8 @@ public:
 
 	Asset() = default;
 	~Asset() = default;
+
+	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVManager* srvManager);
 
 	void LoadTexture(const std::string& textureName);
 	void LoadModel(const std::string& modelName);

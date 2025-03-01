@@ -19,7 +19,7 @@ void Framework::Run() {
 		Update();
 		Draw();
 
-		if (winApp_->ProcessMessage()||
+		if (winApp_->ProcessMessage() ||
 			Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 			break;
 		}
@@ -59,7 +59,8 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 		graphicsCore_->GetSRVManager());
 
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
-	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle());
+	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
+		graphicsCore_->GetShadowMapGPUHandle());
 
 	EntityComponent::GetInstance()->Init(graphicsCore_->GetDevice(),
 		asset_.get(), graphicsCore_->GetSRVManager());
@@ -78,12 +79,12 @@ void Framework::Update() {
 
 	// 描画前処理
 	graphicsCore_->BeginRenderFrame();
+	// imgui表示更新
+	imguiEditor_->Display();
 	// scene更新
 	UpdateScene();
 	// entityBuffer更新
 	EntityComponent::GetInstance()->Update();
-	// imgui表示更新
-	imguiEditor_->Display();
 }
 void Framework::UpdateScene() {
 
