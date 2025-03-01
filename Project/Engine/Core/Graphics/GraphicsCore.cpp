@@ -114,6 +114,13 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	renderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
 		device, rtvManager_.get(), srvManager_.get());
 
+	// debugSceneRenderTexture作成
+#ifdef _DEBUG
+	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
+	debugSceneRenderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
+		device, rtvManager_.get(), srvManager_.get());
+#endif // _DEBUG
+
 	// shadowMap作成
 	shadowMap_ = std::make_unique<ShadowMap>();
 	shadowMap_->Create(shadowMapWidth_, shadowMapHeight_,
@@ -147,6 +154,9 @@ void GraphicsCore::Finalize(HWND hwnd) {
 	srvManager_.reset();
 	dxShaderComplier_.reset();
 	renderTexture_.reset();
+#ifdef _DEBUG
+	debugSceneRenderTexture_.reset();
+#endif // _DEBUG
 	shadowMap_.reset();
 	meshRenderer_.reset();
 }
@@ -161,6 +171,11 @@ void GraphicsCore::Render() {
 	RenderZPass();
 	// offscreenTexture
 	RenderOffscreenTexture();
+#ifdef _DEBUG
+	// debugSceneRenderTexture
+	RenderDebugSceneRenderTexture();
+#endif // _DEBUG
+
 	// frameBuffer
 	RenderFrameBuffer();
 
@@ -210,10 +225,25 @@ void GraphicsCore::RenderOffscreenTexture() {
 	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
 
 	// 通常描画処理
-	meshRenderer_->Render();
+	meshRenderer_->Render(false);
 
 	// RenderTarget -> PixelShader
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+}
+
+void GraphicsCore::RenderDebugSceneRenderTexture() {
+
+	dxCommand_->SetRenderTargets(debugSceneRenderTexture_->GetRenderTarget(),
+		dsvManager_->GetFrameCPUHandle());
+	dxCommand_->ClearDepthStencilView(dsvManager_->GetFrameCPUHandle());
+	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
+
+	// 通常描画処理
+	meshRenderer_->Render(true);
+
+	// RenderTarget -> PixelShader
+	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
@@ -257,6 +287,11 @@ void GraphicsCore::EndRenderFrame() {
 	// PixelShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+#ifdef _DEBUG
+	// PixelShader -> RenderTarget
+	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+#endif // _DEBUG
 	// Present -> RenderTarget
 	dxCommand_->TransitionBarriers({ dxSwapChain_->GetCurrentResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);

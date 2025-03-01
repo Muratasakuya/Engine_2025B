@@ -39,6 +39,11 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
 	cameraPosBuffer_.CreateConstBuffer(device);
 	light_.Init();
 	lightBuffer_.CreateConstBuffer(device);
+
+#ifdef _DEBUG
+	debugSceneViewProjectionBuffer_.CreateConstBuffer(device);
+	debugSceneCameraPosBuffer_.CreateConstBuffer(device);
+#endif // _DEBUG
 }
 
 void MeshRenderer::Update() {
@@ -47,6 +52,11 @@ void MeshRenderer::Update() {
 	lightViewProjectionBuffer_.TransferData(cameraManager_->GetLightViewCamera()->GetViewProjectionMatrix());
 	cameraPosBuffer_.TransferData(cameraManager_->GetCamera()->GetTransform().translation);
 	lightBuffer_.TransferData(light_);
+
+#ifdef _DEBUG
+	debugSceneViewProjectionBuffer_.TransferData(cameraManager_->GetDebugCamera()->GetViewProjectionMatrix());
+	debugSceneCameraPosBuffer_.TransferData(cameraManager_->GetDebugCamera()->GetTransform().translation);
+#endif // _DEBUG
 }
 
 void MeshRenderer::RenderZPass() {
@@ -100,7 +110,7 @@ void MeshRenderer::RenderZPass() {
 	}
 }
 
-void MeshRenderer::Render() {
+void MeshRenderer::Render(bool debugEnable) {
 
 	const auto& sortedEntities = entityComponent_->GetBuffers();
 	if (sortedEntities.empty()) {
@@ -113,14 +123,23 @@ void MeshRenderer::Render() {
 
 		// shadowMap: root1
 		commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
-		// viewProjection:      root3
-		commandList_->SetGraphicsRootConstantBufferView(3, viewProjectionBuffer_.GetResourceAdress());
+		if (!debugEnable) {
+
+			// viewProjection: root3
+			commandList_->SetGraphicsRootConstantBufferView(3, viewProjectionBuffer_.GetResourceAdress());
+			// camera:         root7
+			commandList_->SetGraphicsRootConstantBufferView(7, cameraPosBuffer_.GetResourceAdress());
+		} else {
+
+			// viewProjection: root3
+			commandList_->SetGraphicsRootConstantBufferView(3, debugSceneViewProjectionBuffer_.GetResourceAdress());
+			// camera:         root7
+			commandList_->SetGraphicsRootConstantBufferView(7, debugSceneCameraPosBuffer_.GetResourceAdress());
+		}
 		// lightViewProjection: root4
 		commandList_->SetGraphicsRootConstantBufferView(4, lightViewProjectionBuffer_.GetResourceAdress());
 		// light:  root6
 		commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResourceAdress());
-		// camera: root7
-		commandList_->SetGraphicsRootConstantBufferView(7, cameraPosBuffer_.GetResourceAdress());
 
 		for (auto& entity : entityList) {
 			std::visit([&](auto& buffer) {

@@ -60,6 +60,7 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
 	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
+		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
 		graphicsCore_->GetShadowMapGPUHandle());
 
 	EntityComponent::GetInstance()->Init(graphicsCore_->GetDevice(),
