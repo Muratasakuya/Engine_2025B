@@ -5,6 +5,9 @@
 //============================================================================
 #include <Lib/Adapter/Easing.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
 //	GameTimer classMethods
 //============================================================================
@@ -45,4 +48,18 @@ void GameTimer::Update() {
 			}
 		}
 	}
+}
+void GameTimer::ImGui() {
+
+	ImGui::SeparatorText("Performance");
+	ImGui::Text("frameRate:       %.1f fps", ImGui::GetIO().Framerate); //* フレームレート情報
+	ImGui::Text("deltaTime:       %.3f s", deltaTime_);                 //* ΔTime
+	ImGui::Text("scaledDeltaTime: %.3f s", GetScaledDeltaTime());       //* ScaledΔTime
+	ImGui::SeparatorText("TimeScale");
+
+	ImGui::PushItemWidth(168.0f);
+	ImGui::DragFloat("timeScale", &timeScale_, 0.01f);
+	ImGui::DragFloat("lerpSpeed", &lerpSpeed_, 0.01f);
+	ImGui::DragFloat("waitTime", &waitTime_, 0.01f);
+	ImGui::PopItemWidth();
 }

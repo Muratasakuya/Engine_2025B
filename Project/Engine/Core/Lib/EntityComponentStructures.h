@@ -25,6 +25,7 @@ struct EntityData {
 	uint32_t id;
 	Transform3D transform;
 	std::vector<Material> materials;
+	std::vector<UVTransform> uvTransforms;
 	RenderingData renderingData;
 };
 

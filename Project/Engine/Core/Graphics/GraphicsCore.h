@@ -57,6 +57,7 @@ public:
 	SRVManager* GetSRVManager() const { return srvManager_.get(); }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return renderTexture_->GetGPUHandle(); }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods

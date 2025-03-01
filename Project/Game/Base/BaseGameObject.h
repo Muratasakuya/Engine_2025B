@@ -8,6 +8,7 @@
 // c++
 #include <string>
 #include <optional>
+#include <typeinfo>
 
 //============================================================================
 //	BaseGameObject class
@@ -34,4 +35,8 @@ protected:
 	//--------- variables ----------------------------------------------------
 
 	EntityData* object_;
+
+	//--------- functions ----------------------------------------------------
+
+	std::string GetObjectName() const;
 };

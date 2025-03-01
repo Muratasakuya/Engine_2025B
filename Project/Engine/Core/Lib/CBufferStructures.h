@@ -43,4 +43,6 @@ struct Material {
 	Matrix4x4 uvTransform;
 
 	void Init();
+
+	void ImGui();
 };

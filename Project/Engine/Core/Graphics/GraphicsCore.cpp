@@ -67,7 +67,7 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	shadowMapWidth_ = 2048;
 	shadowMapHeight_ = 2048;
 
-	windowClearColor_ = Color(0.04f, 0.04f, 1.0f, 1.0f);
+	windowClearColor_ = Color(0.02f, 0.04f, 0.398f, 1.0f);
 
 	//============================================================================
 	//	init: directX
