@@ -117,6 +117,7 @@ void EntityComponent::Update() {
 		auto it = buffers_.find(entityID);
 		if (auto* model = std::get_if<EntityBufferData>(&it->second)) {
 
+			entities_[entityID].transform.UpdateMatrix();
 			model->transform.TransferData(entities_[entityID].transform.matrix);
 			for (uint32_t meshIndex = 0; meshIndex < model->materials.size(); ++meshIndex) {
 
@@ -131,6 +132,7 @@ void EntityComponent::Update() {
 			model->renderingData.blendMode = entities_[entityID].renderingData.blendMode;
 		} else if (auto* animationModel = std::get_if<EntityAnimationBufferData>(&it->second)) {
 
+			entities_[entityID].transform.UpdateMatrix();
 			animationModel->transform.Update(entities_[entityID].transform.matrix);
 			for (uint32_t meshIndex = 0; meshIndex < animationModel->materials.size(); ++meshIndex) {
 
@@ -357,14 +359,8 @@ void EntityComponent::ImGuiEntityTransform() {
 	ImGui::Begin("Transform");
 
 	ImGui::PushItemWidth(168.0f);
-	if (ImGui::DragFloat3("scale", &entities_[*selectedEntityId_].transform.scale.x, 0.01f)) {
-
-		entities_[*selectedEntityId_].transform.UpdateMatrix();
-	}
-	if (ImGui::DragFloat3("translate", &entities_[*selectedEntityId_].transform.translation.x, 0.01f)) {
-
-		entities_[*selectedEntityId_].transform.UpdateMatrix();
-	}
+	ImGui::DragFloat3("scale", &entities_[*selectedEntityId_].transform.scale.x, 0.01f);
+	ImGui::DragFloat3("translate", &entities_[*selectedEntityId_].transform.translation.x, 0.01f);
 	ImGui::PopItemWidth();
 
 	ImGui::End();

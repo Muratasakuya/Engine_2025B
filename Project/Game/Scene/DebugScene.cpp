@@ -24,8 +24,6 @@ void DebugScene::Init(
 	//========================================================================
 
 	asset->LoadModel("teapot");
-	asset->LoadModel("suzanne");
-	asset->LoadModel("multiMaterial");
 
 	//========================================================================
 	//	init
@@ -37,15 +35,11 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	objects_.resize(3);
+	objects_.resize(1);
 	objects_[0] = std::make_unique<BaseGameObject>();
 	objects_[0]->CreateModel("teapot");
 
-	objects_[1] = std::make_unique<BaseGameObject>();
-	objects_[1]->CreateModel("multiMaterial");
-
-	objects_[2] = std::make_unique<BaseGameObject>();
-	objects_[2]->CreateModel("suzanne");
+	objects_[0]->SetTranslate(Vector3(0.0f, 2.0f, 0.0f));
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
