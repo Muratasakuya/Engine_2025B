@@ -48,4 +48,8 @@ private:
 	std::unique_ptr<DebugCamera> debugCamera_;
 
 	std::unique_ptr<LightViewCamera> lightViewCamera_;
+
+	//--------- functions ----------------------------------------------------
+
+	void RenderCameraFrame();
 };

@@ -25,6 +25,10 @@ public:
 
 	void SetParent(const Transform3D* parent) { transform_.parent = parent; };
 
+	float GetFovY() const { return fovY_; }
+	float GetNearClip() const { return nearClip_; }
+	float GetFarClip() const { return farClip_; }
+
 	const Transform3D& GetTransform() const { return transform_; }
 
 	const Matrix4x4& GetViewMatrix() const { return viewMatrix_; }

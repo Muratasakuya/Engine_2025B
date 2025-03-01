@@ -56,6 +56,8 @@ public:
 
 	SRVManager* GetSRVManager() const { return srvManager_.get(); }
 
+	DxShaderCompiler* GetDxShaderCompiler() const { return dxShaderComplier_.get(); }
+
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return renderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return debugSceneRenderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }

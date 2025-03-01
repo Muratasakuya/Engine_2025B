@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
+#include <Engine/Renderer/LineRenderer.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 // imgui
@@ -54,4 +55,6 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	//========================================================================
 
 	gameCamera_->Update();
+
+	LineRenderer::GetInstance()->DrawGrid(32, 16.0f, Color::White());
 }

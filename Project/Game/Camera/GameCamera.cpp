@@ -14,7 +14,7 @@ void GameCamera::Init() {
 	// 初期値設定
 	fovY_ = 0.45f;
 	nearClip_ = 0.1f;
-	farClip_ = 1024.0f;
+	farClip_ = 512.0f;
 
 	eulerRotation_ = Vector3(0.26f, 0.0f, 0.0f);
 	transform_.scale = Vector3::AnyInit(1.0f);

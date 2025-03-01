@@ -6,6 +6,7 @@
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Component/EntityComponent.h>
 #include <Engine/Input/Input.h>
+#include <Engine/Renderer/LineRenderer.h>
 #include <Game/Time/GameTimer.h>
 
 //============================================================================
@@ -70,6 +71,10 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 		Scene::Debug, asset_.get(), cameraManager_.get());
 
 	Input::GetInstance()->Init(winApp_.get());
+
+	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
+		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
+		graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
 }
 
 void Framework::Update() {
@@ -110,6 +115,8 @@ void Framework::Draw() {
 	graphicsCore_->Render();
 	// scene遷移依頼
 	sceneManager_->SwitchScene();
+	// lineReset
+	LineRenderer::GetInstance()->ResetLine();
 }
 
 void Framework::Finalize() {
@@ -117,6 +124,7 @@ void Framework::Finalize() {
 	graphicsCore_->Finalize(winApp_->GetHwnd());
 	EntityComponent::GetInstance()->Finalize();
 	Input::GetInstance()->Finalize();
+	LineRenderer::GetInstance()->Finalize();
 
 	graphicsCore_.reset();
 	winApp_.reset();

@@ -179,6 +179,9 @@
     <ClCompile Include="Game\Camera\DebugCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -243,5 +246,7 @@
     <ClInclude Include="Engine\Editor\ImGuiEditor.h" />
     <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Game\Camera\DebugCamera.h" />
+    <ClInclude Include="Engine\Renderer\LineRenderer.h" />
+    <ClInclude Include="Lib\MathUtils\MathUtils.h" />
   </ItemGroup>
 </Project>
