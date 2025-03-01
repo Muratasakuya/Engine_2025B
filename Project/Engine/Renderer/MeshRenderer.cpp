@@ -6,6 +6,7 @@
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/ShadowMap.h>
 #include <Engine/Component/EntityComponent.h>
+#include <Engine/Renderer/LineRenderer.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 //============================================================================
@@ -111,6 +112,9 @@ void MeshRenderer::RenderZPass() {
 }
 
 void MeshRenderer::Render(bool debugEnable) {
+
+	// line描画実行
+	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	const auto& sortedEntities = entityComponent_->GetBuffers();
 	if (sortedEntities.empty()) {

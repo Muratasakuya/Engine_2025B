@@ -19,10 +19,10 @@ void DebugCamera::Init() {
 	nearClip_ = 0.1f;
 	farClip_ = 1024.0f;
 
-	eulerRotation_ = Vector3(0.26f, 0.0f, 0.0f);
+	eulerRotation_ = Vector3(0.2f, 0.0f, 0.0f);
 	transform_.scale = Vector3::AnyInit(1.0f);
 	transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
-	transform_.translation = Vector3(0.0f, 7.5f, -24.0f);
+	transform_.translation = Vector3(0.0f, 6.0f, -36.0f);
 
 	// 行列更新
 	transform_.UpdateMatrix();
@@ -45,7 +45,7 @@ void DebugCamera::Update() {
 	// 行列更新
 	rotateMatrix_ = Matrix4x4::MakeRotateMatrix(eulerRotation_);
 	transform_.matrix.world = Matrix4x4::MakeIdentity4x4();
-	Vector3 offset = { 0.0f, 2.0f, -24.0f };
+	Vector3 offset = { 0.0f, 2.0f, -12.0f };
 	offset = Vector3::TransferNormal(offset, rotateMatrix_);
 
 	Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(transform_.translation);

@@ -176,6 +176,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\main.cpp" />
     <ClCompile Include="Engine\Renderer\Managers\ObjectPipelineManager.cpp" />
     <ClCompile Include="Engine\Renderer\MeshRenderer.cpp" />
+    <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Base\BaseGameObject.cpp" />
     <ClCompile Include="Game\Camera\Base\BaseCamera.cpp" />
     <ClCompile Include="Game\Camera\DebugCamera.cpp">
@@ -250,6 +254,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Engine\Renderer\Managers\ObjectPipelineManager.h" />
     <ClInclude Include="Engine\Renderer\MeshRenderer.h" />
+    <ClInclude Include="Engine\Renderer\LineRenderer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Base\BaseGameObject.h" />
     <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
     <ClInclude Include="Game\Camera\DebugCamera.h">
@@ -268,6 +276,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
     <ClInclude Include="Lib\Adapter\Random.h" />
+    <ClInclude Include="Lib\MathUtils\MathUtils.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Lib\MathUtils\Matrix4x4.h" />
     <ClInclude Include="Lib\MathUtils\Quaternion.h" />
     <ClInclude Include="Lib\MathUtils\Vector2.h" />

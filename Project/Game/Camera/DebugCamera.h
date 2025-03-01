@@ -37,5 +37,4 @@ private:
 
 	// 移動
 	void Move();
-
 };
