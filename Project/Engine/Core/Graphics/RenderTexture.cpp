@@ -1,0 +1,82 @@
+#include "RenderTexture.h"
+
+//============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Graphics/Managers/RTVManager.h>
+#include <Engine/Core/Graphics/Managers/SRVManager.h>
+
+//============================================================================
+//	RenderTexture classMethods
+//============================================================================
+
+int RenderTexture::textureCount_ = 0;
+
+void RenderTexture::CreateTextureResource(ComPtr<ID3D12Resource>& resource,
+	uint32_t width, uint32_t height,
+	const Color& color, DXGI_FORMAT format, ID3D12Device* device) {
+
+	// RenderTargetで設定
+	D3D12_RESOURCE_DESC resourceDesc{};
+	resourceDesc.Width = width;                                   // 横幅
+	resourceDesc.Height = height;                                 // 縦幅
+	resourceDesc.Format = format;                                 // フォーマット設定
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET; // RenderTargetとして利用
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;  // 2Dテクスチャで設定
+	resourceDesc.SampleDesc.Count = 1;                            // サンプリングカウント。1固定
+	resourceDesc.DepthOrArraySize = 1;                            // 配列サイズまたは深度を1に設定
+	resourceDesc.MipLevels = 1;                                   // 1で設定、しなくてもdefaultで1になるらしい
+
+	// 利用するHeapの設定
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	// 色
+	D3D12_CLEAR_VALUE clearValue{};
+	clearValue.Format = format;
+	clearValue.Color[0] = color.r;
+	clearValue.Color[1] = color.g;
+	clearValue.Color[2] = color.b;
+	clearValue.Color[3] = color.a;
+
+	HRESULT hr = device->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_RENDER_TARGET,
+		&clearValue,
+		IID_PPV_ARGS(&resource));
+	assert(SUCCEEDED(hr));
+}
+
+void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
+	DXGI_FORMAT format, ID3D12Device* device, RTVManager* rtvManager, SRVManager* srvManager) {
+
+	// renderTargetの設定
+	renderTarget_.width = width;
+	renderTarget_.height = height;
+	renderTarget_.clearColor = color;
+
+	// RTV作成
+	CreateTextureResource(resource_,
+		width, height, color, format, device);
+	resource_->SetName((L"renderTexture" + std::to_wstring(textureCount_)).c_str());
+	// Descの設定
+	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+	rtvDesc.Format = format;
+	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+	rtvManager->Create(renderTarget_.rtvHandle, resource_.Get(), rtvDesc);
+
+	// SRV作成
+	uint32_t srvIndex = 0;
+	// Descの設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	srvManager->CreateSRV(srvIndex, resource_.Get(), srvDesc);
+	gpuHandle_ = srvManager->GetGPUHandle(srvIndex);
+
+	++textureCount_;
+}

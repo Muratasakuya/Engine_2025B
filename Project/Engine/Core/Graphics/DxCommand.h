@@ -1,0 +1,97 @@
+#pragma once
+
+//============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Lib/DxStructures.h>
+#include <Engine/Core/Lib/ComPtr.h>
+
+// directX
+#include <d3d12.h>
+#include <dxgi1_6.h>
+// c++
+#include <cstdint>
+#include <vector>
+#include <array>
+#include <optional>
+#include <unordered_map>
+#include <chrono>
+#include <thread>
+
+//============================================================================
+//	enum class
+//============================================================================
+
+// commandListの種類
+enum class CommandListType {
+
+	Compute,
+	Graphics,
+
+	Count
+};
+
+//============================================================================
+//	DxCommand class
+//============================================================================
+class DxCommand {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	DxCommand() = default;
+	~DxCommand() = default;
+
+	void Create(ID3D12Device* device);
+
+	void ExecuteComputeCommands();
+	void ExecuteGraphicsCommands(IDXGISwapChain4* swapChain);
+
+	void WaitForGPU();
+
+	void Finalize(HWND hwnd);
+
+	void SetDescriptorHeaps(const std::vector<ID3D12DescriptorHeap*>& descriptorHeaps);
+
+	void SetRenderTargets(const std::optional<RenderTarget>& renderTarget,
+		const std::optional<D3D12_CPU_DESCRIPTOR_HANDLE>& dsvHandle = std::nullopt);
+
+	void ClearDepthStencilView(const D3D12_CPU_DESCRIPTOR_HANDLE& dsvHandle);
+
+	void SetViewportAndScissor(uint32_t width, uint32_t height);
+
+	void TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
+		D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter);
+
+	//--------- accessor -----------------------------------------------------
+
+	ID3D12CommandQueue* GetQueue() const { return commandQueue_.Get(); }
+
+	ID3D12GraphicsCommandList* GetCommandList(CommandListType type) const;
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> commandListTypes_;
+
+	std::unordered_map<CommandListType, ComPtr<ID3D12GraphicsCommandList>> commandLists_;
+	std::unordered_map<CommandListType, ComPtr<ID3D12CommandAllocator>> commandAllocators_;
+
+	ComPtr<ID3D12CommandQueue> commandQueue_;
+
+	ComPtr<ID3D12Fence> fence_;
+	uint64_t fenceValue_;
+	HANDLE fenceEvent_;
+
+	std::chrono::steady_clock::time_point reference_;
+
+	//--------- functions ----------------------------------------------------
+
+	constexpr std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> CreateCommandTypes();
+
+	void UpdateFixFPS();
+};

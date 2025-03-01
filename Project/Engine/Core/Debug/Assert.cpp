@@ -1,0 +1,64 @@
+#include "Assert.h"
+
+//============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Debug/Logger.h>
+
+//============================================================================
+//	Assert classMethods
+//============================================================================
+
+void Assert::DebugAssert(
+	[[maybe_unused]] bool condition,
+	[[maybe_unused]] const std::string& message,
+	[[maybe_unused]] const char* function) {
+#ifdef _DEBUG
+	if (!condition) {
+
+		std::ostringstream oss;
+		oss << message << "\n"
+			<< "Function: " << function << "\n";
+
+		std::string msg = oss.str();
+
+		// コンソール出力
+		Logger::Log(msg, Logger::LogLevel::ASSERT_ERROR);
+
+		// wstringに変換
+		std::wstring wmsg(msg.begin(), msg.end());
+
+		// Assert
+		_ASSERT_EXPR(condition, wmsg.c_str());
+	}
+#endif
+}
+
+void Assert::ReleaseAssert(
+	[[maybe_unused]] bool condition,
+	[[maybe_unused]] const std::string& message,
+	[[maybe_unused]] const char* function) {
+#ifndef _DEBUG
+	if (!condition) {
+
+		std::ostringstream oss;
+		oss << "Fatal Error!\n"
+			<< message << "\n"
+			<< "Function: " << function << "\n";
+
+		// エラーログ出力
+		Logger::Log(message, Logger::LogLevel::ASSERT_ERROR);
+
+		// プログラム強制終了
+		exit(EXIT_FAILURE);
+	}
+#endif
+}
+
+void Assert::AssertHandler(bool condition, const std::string& message, const char* function) {
+#ifdef _DEBUG
+	DebugAssert(condition, message, function);
+#else
+	ReleaseAssert(condition, message, function);
+#endif
+}

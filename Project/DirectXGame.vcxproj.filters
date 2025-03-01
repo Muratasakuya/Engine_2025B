@@ -1,0 +1,243 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="ソース ファイル">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="リソース ファイル">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Engine\Asset\AnimationManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Asset\Asset.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Asset\ModelManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Asset\TextureManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\EntityComponent.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\ModelComponent.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\TransformComponent.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\CBuffer\InputAssembler.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\CBuffer\IOVertexBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\CBuffer\Transform.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Debug\Assert.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Debug\Logger.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Managers\DSVManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Managers\RTVManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Managers\SRVManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Pipeline\DxBlendState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Pipeline\DxDepthRaster.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Pipeline\DxInputLayout.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Pipeline\DxRootSignature.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Pipeline\DxShaderCompiler.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Pipeline\PipelineState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\DxCommand.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\DxDevice.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\DxSwapChain.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\GraphicsCore.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\RenderTexture.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\ShadowMap.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Lib\CBufferStructures.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Lib\DxUtils.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Lib\Filesystem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Window\WinApp.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Framework.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer\Managers\ObjectPipelineManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer\MeshRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\main.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\Adapter\Easing.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\Adapter\JsonAdapter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\MathUtils\Matrix4x4.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\MathUtils\Quaternion.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\MathUtils\Vector2.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\MathUtils\Vector3.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lib\MathUtils\Vector4.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Base\BaseGameObject.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Base\BaseCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Manager\CameraManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\GameCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\LightViewCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Manager\SceneManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Methods\IScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Methods\SceneFactory.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\DebugScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Time\GameTimer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Managers\ImGuiManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\ImGuiEditor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Input\Input.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Engine\Asset\AnimationManager.h" />
+    <ClInclude Include="Engine\Asset\Asset.h" />
+    <ClInclude Include="Engine\Asset\AssetStructure.h" />
+    <ClInclude Include="Engine\Asset\ModelManager.h" />
+    <ClInclude Include="Engine\Asset\TextureManager.h" />
+    <ClInclude Include="Engine\Component\EntityComponent.h" />
+    <ClInclude Include="Engine\Component\ModelComponent.h" />
+    <ClInclude Include="Engine\Component\TransformComponent.h" />
+    <ClInclude Include="Engine\Core\CBuffer\DxConstBuffer.h" />
+    <ClInclude Include="Engine\Core\CBuffer\InputAssembler.h" />
+    <ClInclude Include="Engine\Core\CBuffer\IOVertexBuffer.h" />
+    <ClInclude Include="Engine\Core\CBuffer\Transform.h" />
+    <ClInclude Include="Engine\Core\Debug\Assert.h" />
+    <ClInclude Include="Engine\Core\Debug\Logger.h" />
+    <ClInclude Include="Engine\Core\Graphics\Managers\DSVManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\Managers\RTVManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\Managers\SRVManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\Pipeline\DxBlendState.h" />
+    <ClInclude Include="Engine\Core\Graphics\Pipeline\DxDepthRaster.h" />
+    <ClInclude Include="Engine\Core\Graphics\Pipeline\DxInputLayout.h" />
+    <ClInclude Include="Engine\Core\Graphics\Pipeline\DxRootSignature.h" />
+    <ClInclude Include="Engine\Core\Graphics\Pipeline\DxShaderCompiler.h" />
+    <ClInclude Include="Engine\Core\Graphics\Pipeline\PipelineState.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxCommand.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxDevice.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
+    <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
+    <ClInclude Include="Engine\Core\Graphics\RenderTexture.h" />
+    <ClInclude Include="Engine\Core\Graphics\ShadowMap.h" />
+    <ClInclude Include="Engine\Core\Lib\CBufferStructures.h" />
+    <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
+    <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
+    <ClInclude Include="Engine\Core\Lib\DxUtils.h" />
+    <ClInclude Include="Engine\Core\Lib\EntityComponentStructures.h" />
+    <ClInclude Include="Engine\Core\Lib\Filesystem.h" />
+    <ClInclude Include="Engine\Core\Window\WinApp.h" />
+    <ClInclude Include="Engine\Core\Framework.h" />
+    <ClInclude Include="Engine\Renderer\Managers\ObjectPipelineManager.h" />
+    <ClInclude Include="Engine\Renderer\MeshRenderer.h" />
+    <ClInclude Include="Lib\Adapter\Easing.h" />
+    <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
+    <ClInclude Include="Lib\Adapter\Random.h" />
+    <ClInclude Include="Lib\MathUtils\Matrix4x4.h" />
+    <ClInclude Include="Lib\MathUtils\Quaternion.h" />
+    <ClInclude Include="Lib\MathUtils\Vector2.h" />
+    <ClInclude Include="Lib\MathUtils\Vector3.h" />
+    <ClInclude Include="Lib\MathUtils\Vector4.h" />
+    <ClInclude Include="Game\Base\BaseGameObject.h" />
+    <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
+    <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Game\Camera\GameCamera.h" />
+    <ClInclude Include="Game\Camera\LightViewCamera.h" />
+    <ClInclude Include="Game\Light\PunctualLight.h" />
+    <ClInclude Include="Game\Scene\Manager\SceneManager.h" />
+    <ClInclude Include="Game\Scene\Methods\IScene.h" />
+    <ClInclude Include="Game\Scene\Methods\SceneFactory.h" />
+    <ClInclude Include="Game\Scene\DebugScene.h" />
+    <ClInclude Include="Game\Time\GameTimer.h" />
+    <ClInclude Include="Engine\Core\Graphics\Managers\ImGuiManager.h" />
+    <ClInclude Include="Engine\Editor\ImGuiEditor.h" />
+    <ClInclude Include="Engine\Input\Input.h" />
+  </ItemGroup>
+</Project>
