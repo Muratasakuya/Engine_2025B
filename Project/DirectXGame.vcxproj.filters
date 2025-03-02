@@ -249,4 +249,7 @@
     <ClInclude Include="Engine\Renderer\LineRenderer.h" />
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
   </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Assets\Engine\Shaders\MS\MeshShader.hlsl" />
+  </ItemGroup>
 </Project>

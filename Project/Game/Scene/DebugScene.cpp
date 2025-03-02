@@ -35,11 +35,15 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	objects_.resize(1);
-	objects_[0] = std::make_unique<BaseGameObject>();
-	objects_[0]->CreateModel("teapot");
+	objects_.resize(8);
 
-	objects_[0]->SetTranslate(Vector3(0.0f, 2.0f, 0.0f));
+	for (uint32_t index = 0; index < objects_.size(); ++index) {
+
+		objects_[index] = std::make_unique<BaseGameObject>();
+		objects_[index]->CreateModel("teapot");
+
+		objects_[index]->SetTranslate(Vector3(0.0f, 0.0f, index * 0.6f));
+	}
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -50,5 +54,5 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	gameCamera_->Update();
 
-	LineRenderer::GetInstance()->DrawGrid(32, 16.0f, Color::White());
+	LineRenderer::GetInstance()->DrawGrid(16, 16.0f, Color::White());
 }
