@@ -23,9 +23,6 @@
     <ClCompile Include="Engine\Asset\TextureManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\EntityComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Component\ModelComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -182,6 +179,24 @@
     <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Component\Manager\ComponentManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\Manager\EntityManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\Manager\Transform3DManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\Manager\ModelComponentManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\Manager\MaterialManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\ComponentImGui.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -189,7 +204,6 @@
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelManager.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
-    <ClInclude Include="Engine\Component\EntityComponent.h" />
     <ClInclude Include="Engine\Component\ModelComponent.h" />
     <ClInclude Include="Engine\Component\TransformComponent.h" />
     <ClInclude Include="Engine\Core\CBuffer\DxConstBuffer.h" />
@@ -217,7 +231,7 @@
     <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
     <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
     <ClInclude Include="Engine\Core\Lib\DxUtils.h" />
-    <ClInclude Include="Engine\Core\Lib\EntityComponentStructures.h" />
+    <ClInclude Include="Engine\Core\Lib\ComponentStructures.h" />
     <ClInclude Include="Engine\Core\Lib\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
     <ClInclude Include="Engine\Core\Framework.h" />
@@ -248,6 +262,12 @@
     <ClInclude Include="Game\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Renderer\LineRenderer.h" />
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
+    <ClInclude Include="Engine\Component\Manager\ComponentManager.h" />
+    <ClInclude Include="Engine\Component\Manager\EntityManager.h" />
+    <ClInclude Include="Engine\Component\Manager\Transform3DManager.h" />
+    <ClInclude Include="Engine\Component\Manager\ModelComponentManager.h" />
+    <ClInclude Include="Engine\Component\Manager\MaterialManager.h" />
+    <ClInclude Include="Engine\Editor\ComponentImGui.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\MeshShader.hlsl" />

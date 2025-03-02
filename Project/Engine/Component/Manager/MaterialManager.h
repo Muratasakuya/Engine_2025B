@@ -4,44 +4,40 @@
 //	include
 //============================================================================
 #include <Engine/Core/Lib/ComponentStructures.h>
+#include <Engine/Core/CBuffer/DxConstBuffer.h>
 
-// c++
-#include <string>
-#include <optional>
-#include <typeinfo>
+// entityID
+using EntityID = uint32_t;
 
 //============================================================================
-//	BaseGameObject class
+//	MaterialManager class
 //============================================================================
-class BaseGameObject {
+class MaterialManager {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BaseGameObject() = default;
-	~BaseGameObject() = default;
+	MaterialManager() = default;
+	~MaterialManager() = default;
 
-	void CreateModel(const std::string& modelName,
-		const std::optional<std::string>& animationName = std::nullopt);
+	std::vector<Material*> AddComponent(EntityID entity, size_t meshNum, ID3D12Device* device);
+
+	void RemoveComponent(EntityID entity);
+
+	void Update();
 
 	//--------- accessor -----------------------------------------------------
 
-	// Transform
-	void SetScale(const Vector3& scale) { object_.transform->scale = scale; }
-	void SetRotate(const Quaternion& rotate) { object_.transform->rotation = rotate; }
-	void SetTranslate(const Vector3& translate) { object_.transform->translation = translate; }
-protected:
+	std::vector<Material*> GetComponent(EntityID entity);
+	const std::vector<DxConstBuffer<Material>>& GetBuffer(EntityID entity) const;
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	Object3D object_;
-	std::vector<UVTransform> uvTransforms_;
-
-	//--------- functions ----------------------------------------------------
-
-	std::string GetObjectName() const;
+	std::unordered_map<EntityID, std::vector<Material>> components_;
+	std::unordered_map<EntityID, std::vector<DxConstBuffer<Material>>> buffers_;
 };

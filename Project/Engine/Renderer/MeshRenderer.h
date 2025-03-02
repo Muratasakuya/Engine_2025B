@@ -17,7 +17,7 @@
 class DxCommand;
 class DxShaderCompiler;
 class ShadowMap;
-class EntityComponent;
+class ComponentManager;
 class CameraManager;
 
 //============================================================================
@@ -53,7 +53,7 @@ private:
 	DxCommand* dxCommand_;
 	ID3D12GraphicsCommandList* commandList_;
 	ShadowMap* shadowMap_;
-	EntityComponent* entityComponent_;
+	ComponentManager* componentManager_;
 	CameraManager* cameraManager_;
 
 	std::unique_ptr<ObjectPipelineManager> pipeline_;

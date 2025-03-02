@@ -3,45 +3,41 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComponentStructures.h>
+#include <Engine/Component/TransformComponent.h>
+#include <Engine/Core/CBuffer/DxConstBuffer.h>
 
-// c++
-#include <string>
-#include <optional>
-#include <typeinfo>
+// entityID
+using EntityID = uint32_t;
 
 //============================================================================
-//	BaseGameObject class
+//	Transform3DManager class
 //============================================================================
-class BaseGameObject {
+class Transform3DManager {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BaseGameObject() = default;
-	~BaseGameObject() = default;
+	Transform3DManager() = default;
+	~Transform3DManager() = default;
 
-	void CreateModel(const std::string& modelName,
-		const std::optional<std::string>& animationName = std::nullopt);
+	Transform3DComponent* AddComponent(EntityID entity, ID3D12Device* device);
+
+	void RemoveComponent(EntityID entity);
+
+	void Update();
 
 	//--------- accessor -----------------------------------------------------
 
-	// Transform
-	void SetScale(const Vector3& scale) { object_.transform->scale = scale; }
-	void SetRotate(const Quaternion& rotate) { object_.transform->rotation = rotate; }
-	void SetTranslate(const Vector3& translate) { object_.transform->translation = translate; }
-protected:
+	Transform3DComponent* GetComponent(EntityID entity);
+	const DxConstBuffer<TransformationMatrix>& GetBuffer(EntityID entity) const;
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	Object3D object_;
-	std::vector<UVTransform> uvTransforms_;
-
-	//--------- functions ----------------------------------------------------
-
-	std::string GetObjectName() const;
+	std::unordered_map<EntityID, Transform3DComponent> components_;
+	std::unordered_map<EntityID, DxConstBuffer<TransformationMatrix>> buffers_;
 };

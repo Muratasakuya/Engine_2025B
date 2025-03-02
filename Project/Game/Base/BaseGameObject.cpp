@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Component/EntityComponent.h>
+#include <Engine/Component/Manager/ComponentManager.h>
 
 //============================================================================
 //	BaseGameObject classMethods
@@ -12,20 +12,16 @@
 void BaseGameObject::CreateModel(const std::string& modelName,
 	const std::optional<std::string>& animationName) {
 
-	object_ = nullptr;
-	object_ = EntityComponent::GetInstance()->AddComponent(
-		modelName, animationName, GetObjectName());
+	object_ = ComponentManager::GetInstance()->CreateObject3D(
+		modelName,animationName, GetObjectName());
 
-	// 初期化
-	object_->transform.Init();
-	object_->transform.UpdateMatrix();
-	for (uint32_t index = 0; index < object_->materials.size(); ++index) {
+	uvTransforms_.resize(object_.materials.size());
+	for (uint32_t index = 0; index < uvTransforms_.size(); ++index) {
 
-		object_->uvTransforms[index].scale = Vector3::AnyInit(1.0f);
-		object_->materials[index].Init();
+		uvTransforms_[index].scale = Vector3::AnyInit(1.0f);
+		object_.materials[index]->uvTransform = Matrix4x4::MakeAffineMatrix(
+			uvTransforms_[index].scale, uvTransforms_[index].rotate, uvTransforms_[index].translate);
 	}
-	object_->renderingData.blendMode = kBlendModeNormal;
-	object_->renderingData.drawEnable = true;
 }
 
 std::string BaseGameObject::GetObjectName() const {

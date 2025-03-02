@@ -3,45 +3,48 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComponentStructures.h>
 
 // c++
+#include <cstdint>
 #include <string>
-#include <optional>
-#include <typeinfo>
+#include <unordered_map>
+
+// entityID
+using EntityID = uint32_t;
 
 //============================================================================
-//	BaseGameObject class
+//	EntityManager class
 //============================================================================
-class BaseGameObject {
+class EntityManager {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BaseGameObject() = default;
-	~BaseGameObject() = default;
+	EntityManager() = default;
+	~EntityManager() = default;
 
-	void CreateModel(const std::string& modelName,
-		const std::optional<std::string>& animationName = std::nullopt);
+	EntityID CreateEntity(const std::string& name);
+
+	void DestroyEntity(EntityID id);
 
 	//--------- accessor -----------------------------------------------------
 
-	// Transform
-	void SetScale(const Vector3& scale) { object_.transform->scale = scale; }
-	void SetRotate(const Quaternion& rotate) { object_.transform->rotation = rotate; }
-	void SetTranslate(const Vector3& translate) { object_.transform->translation = translate; }
-protected:
+	const std::unordered_map<EntityID, std::string>& GetNames() const { return entityNames_; }
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	Object3D object_;
-	std::vector<UVTransform> uvTransforms_;
+	EntityID nextID_ = 0;
+	std::unordered_map<EntityID, std::string> entityNames_;
+
+	std::unordered_map<std::string, int> nameCounts_;
 
 	//--------- functions ----------------------------------------------------
 
-	std::string GetObjectName() const;
+	std::string CheckName(const std::string& name);
+	std::string SplitBaseNameAndNumber(const std::string& name, int& number);
 };

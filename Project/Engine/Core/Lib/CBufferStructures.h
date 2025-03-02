@@ -11,7 +11,7 @@
 // c++
 #include <cstdint>
 // front
-class Transform3D;
+class Transform3DComponent;
 
 //============================================================================
 //	CBufferStructures
@@ -22,7 +22,7 @@ struct TransformationMatrix {
 	Matrix4x4 world;
 	Matrix4x4 worldInverseTranspose;
 
-	void Update(const Transform3D* parent, const Vector3& scale,
+	void Update(const Transform3DComponent* parent, const Vector3& scale,
 		const Quaternion& rotation, const Vector3& translation);
 };
 
@@ -43,6 +43,4 @@ struct Material {
 	Matrix4x4 uvTransform;
 
 	void Init();
-
-	void ImGui();
 };

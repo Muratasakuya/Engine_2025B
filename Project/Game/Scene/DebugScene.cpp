@@ -35,14 +35,13 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	objects_.resize(8);
-
+	objects_.resize(32);
 	for (uint32_t index = 0; index < objects_.size(); ++index) {
 
 		objects_[index] = std::make_unique<BaseGameObject>();
 		objects_[index]->CreateModel("teapot");
 
-		objects_[index]->SetTranslate(Vector3(0.0f, 0.0f, index * 0.6f));
+		objects_[index]->SetTranslate(Vector3(0.0f, 0.0f, index * 0.8f));
 	}
 }
 

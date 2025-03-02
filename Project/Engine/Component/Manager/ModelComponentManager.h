@@ -3,45 +3,38 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComponentStructures.h>
+#include <Engine/Component/ModelComponent.h>
 
-// c++
-#include <string>
-#include <optional>
-#include <typeinfo>
+// entityID
+using EntityID = uint32_t;
 
 //============================================================================
-//	BaseGameObject class
+//	ModelComponentManager class
 //============================================================================
-class BaseGameObject {
+class ModelComponentManager {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BaseGameObject() = default;
-	~BaseGameObject() = default;
+	ModelComponentManager() = default;
+	~ModelComponentManager() = default;
 
-	void CreateModel(const std::string& modelName,
-		const std::optional<std::string>& animationName = std::nullopt);
+	ModelComponent* AddComponent(EntityID entity, const std::string& modelName,
+		const std::optional<std::string>& animationName, ID3D12Device* device,
+		class Asset* asset, class SRVManager* srvManager);
+
+	void RemoveComponent(EntityID entity);
 
 	//--------- accessor -----------------------------------------------------
 
-	// Transform
-	void SetScale(const Vector3& scale) { object_.transform->scale = scale; }
-	void SetRotate(const Quaternion& rotate) { object_.transform->rotation = rotate; }
-	void SetTranslate(const Vector3& translate) { object_.transform->translation = translate; }
-protected:
+	ModelComponent* GetComponent(EntityID entity);
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	Object3D object_;
-	std::vector<UVTransform> uvTransforms_;
-
-	//--------- functions ----------------------------------------------------
-
-	std::string GetObjectName() const;
+	std::unordered_map<EntityID, ModelComponent> components_;
 };

@@ -4,8 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Logger.h>
-#include <Engine/Component/EntityComponent.h>
 #include <Engine/Input/Input.h>
+#include <Engine/Component/Manager/ComponentManager.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Game/Time/GameTimer.h>
 
@@ -64,7 +64,7 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
 		graphicsCore_->GetShadowMapGPUHandle());
 
-	EntityComponent::GetInstance()->Init(graphicsCore_->GetDevice(),
+	ComponentManager::GetInstance()->Init(graphicsCore_->GetDevice(),
 		asset_.get(), graphicsCore_->GetSRVManager());
 
 	sceneManager_ = std::make_unique<SceneManager>(
@@ -90,7 +90,7 @@ void Framework::Update() {
 	// scene更新
 	UpdateScene();
 	// entityBuffer更新
-	EntityComponent::GetInstance()->Update();
+	ComponentManager::GetInstance()->Update();
 }
 void Framework::UpdateScene() {
 
@@ -122,7 +122,7 @@ void Framework::Draw() {
 void Framework::Finalize() {
 
 	graphicsCore_->Finalize(winApp_->GetHwnd());
-	EntityComponent::GetInstance()->Finalize();
+	ComponentManager::GetInstance()->Finalize();
 	Input::GetInstance()->Finalize();
 	LineRenderer::GetInstance()->Finalize();
 

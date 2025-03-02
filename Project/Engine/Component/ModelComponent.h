@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/CBuffer/InputAssembler.h>
 #include <Engine/Core/CBuffer/IOVertexBuffer.h>
+#include <Engine/Core/Lib/DxStructures.h>
 
 // c++
 #include <optional>
@@ -58,7 +59,6 @@ protected:
 class AnimationModel :
 	public BaseModel {
 public:
-public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
@@ -84,4 +84,24 @@ private:
 	DxConstBuffer<uint32_t> skinningInfoDates_;
 
 	std::string animationName_;
+};
+
+//============================================================================
+//	ModelComponent structure
+//============================================================================
+// 描画情報
+struct RenderingData {
+
+	bool drawEnable;
+	BlendMode blendMode;
+};
+
+struct ModelComponent {
+
+	std::unique_ptr<BaseModel> model;
+	std::unique_ptr<AnimationModel> animationModel;
+
+	bool isAnimation;
+
+	RenderingData renderingData;
 };
