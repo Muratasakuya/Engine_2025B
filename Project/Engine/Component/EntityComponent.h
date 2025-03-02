@@ -5,6 +5,8 @@
 //============================================================================
 #include <Engine/Core/Lib/EntityComponentStructures.h>
 
+#include <Externals/DirectXMesh/DirectXMesh.h>
+
 // c++
 #include <cstdint>
 #include <variant>
