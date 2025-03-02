@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Component/EntityComponent.h>
+#include <Engine/Component/Manager/ComponentManager.h>
 #include <Game/Time/GameTimer.h>
 
 //============================================================================
@@ -72,7 +72,7 @@ void ImGuiEditor::Hierarchy() {
 
 	ImGui::Begin("Hierarchy");
 
-	EntityComponent::GetInstance()->ImGuiSelectObject();
+	ComponentManager::GetInstance()->SelectObject();
 
 	ImGui::End();
 }
@@ -81,7 +81,7 @@ void ImGuiEditor::Inspector() {
 
 	ImGui::Begin("Inspector");
 
-	EntityComponent::GetInstance()->ImGuiEdit();
+	ComponentManager::GetInstance()->EditObject();
 
 	ImGui::End();
 }

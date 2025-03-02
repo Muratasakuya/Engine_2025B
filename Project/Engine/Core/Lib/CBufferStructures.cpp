@@ -12,7 +12,7 @@
 //	CBufferStructures
 //============================================================================
 
-void TransformationMatrix::Update(const Transform3D* parent, const Vector3& scale,
+void TransformationMatrix::Update(const Transform3DComponent* parent, const Vector3& scale,
 	const Quaternion& rotation, const Vector3& translation) {
 
 	world = Matrix4x4::MakeAxisAffineMatrix(

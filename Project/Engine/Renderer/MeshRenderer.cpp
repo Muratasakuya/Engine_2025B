@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/ShadowMap.h>
-#include <Engine/Component/EntityComponent.h>
+#include <Engine/Component/Manager/ComponentManager.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
@@ -29,8 +29,8 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
 	cameraManager_ = nullptr;
 	cameraManager_ = cameraManager;
 
-	entityComponent_ = nullptr;
-	entityComponent_ = EntityComponent::GetInstance();
+	componentManager_ = nullptr;
+	componentManager_ = ComponentManager::GetInstance();
 
 	pipeline_ = std::make_unique<ObjectPipelineManager>();
 	pipeline_->Create(commandList_, device, shaderCompiler);
@@ -62,51 +62,53 @@ void MeshRenderer::Update() {
 
 void MeshRenderer::RenderZPass() {
 
-	const auto& sortedEntities = entityComponent_->GetBuffers();
-	if (sortedEntities.empty()) {
+	// 描画情報取得
+	const auto& object3Ds = componentManager_->GetSortedObject3Ds();
+
+	if (object3Ds.empty()) {
 		return;
 	}
-	for (auto& [blendMode, entityList] : sortedEntities) {
+	for (auto& [blendMode, objects] : object3Ds) {
+		for (uint32_t index = 0; index < objects.size(); ++index) {
 
-		// shadowMapへの描画処理
-		pipeline_->SetZPassPipeline();
+			const auto& object = objects[index];
 
-		// lightViewProjection: root1
-		commandList_->SetGraphicsRootConstantBufferView(1, lightViewProjectionBuffer_.GetResourceAdress());
+			// shadowMapへの描画処理
+			pipeline_->SetZPassPipeline();
 
-		for (auto& entity : entityList) {
-			std::visit([&](auto& buffer) {
-				for (uint32_t meshIndex = 0; meshIndex < buffer->model->GetMeshNum(); ++meshIndex) {
+			// lightViewProjection: root1
+			commandList_->SetGraphicsRootConstantBufferView(1, lightViewProjectionBuffer_.GetResourceAdress());
+			for (uint32_t meshIndex = 0; meshIndex < object->model->model->GetMeshNum(); ++meshIndex) {
 
-					// IA
-					if constexpr (std::is_same_v<std::decay_t<decltype(buffer)>, EntityAnimationBufferData*>) {
+				// IA
+				if (object->model->isAnimation) {
 
-						dxCommand_->TransitionBarriers({ buffer->model->GetIOVertex().GetResource() },
-							D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-							D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
-						commandList_->IASetVertexBuffers(0, 1,
-							&buffer->model->GetIOVertex().GetVertexBuffer());
-					} else {
-						commandList_->IASetVertexBuffers(0, 1,
-							&buffer->model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
-					}
-					commandList_->IASetIndexBuffer(
-						&buffer->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+					commandList_->IASetVertexBuffers(0, 1,
+						&object->model->animationModel->GetIOVertex().GetVertexBuffer());
+				} else {
 
-					// transform: root0
-					commandList_->SetGraphicsRootConstantBufferView(0, buffer->transform.GetResourceAdress());
-					// draw
-					commandList_->DrawIndexedInstanced(buffer->model->GetIA().GetIndexCount(meshIndex), 1, 0, 0, 0);
-
-					if constexpr (std::is_same_v<std::decay_t<decltype(buffer)>, EntityAnimationBufferData*>) {
-
-						dxCommand_->TransitionBarriers({ buffer->model->GetIOVertex().GetResource() },
-							D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-							D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-					}
+					commandList_->IASetVertexBuffers(0, 1,
+						&object->model->model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
 				}
-				}, entity);
+				commandList_->IASetIndexBuffer(
+					&object->model->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+
+				// transform: root0
+				commandList_->SetGraphicsRootConstantBufferView(0, object->matrix.GetResourceAdress());
+				// draw
+				commandList_->DrawIndexedInstanced(object->model->model->GetIA().GetIndexCount(meshIndex), 1, 0, 0, 0);
+
+				if (object->model->isAnimation) {
+
+					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+				}
+			}
 		}
 	}
 }
@@ -116,72 +118,75 @@ void MeshRenderer::Render(bool debugEnable) {
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
-	const auto& sortedEntities = entityComponent_->GetBuffers();
-	if (sortedEntities.empty()) {
+	// 描画情報取得
+	const auto& object3Ds = componentManager_->GetSortedObject3Ds();
+
+	if (object3Ds.empty()) {
 		return;
 	}
-	for (auto& [blendMode, entityList] : sortedEntities) {
+	for (auto& [blendMode, objects] : object3Ds) {
+		for (uint32_t index = 0; index < objects.size(); ++index) {
 
-		// renderTextureへの描画処理
-		pipeline_->SetObjectPipeline(blendMode);
+			const auto& object = objects[index];
 
-		// shadowMap: root1
-		commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
-		if (!debugEnable) {
+			// renderTextureへの描画処理
+			pipeline_->SetObjectPipeline(blendMode);
 
-			// viewProjection: root3
-			commandList_->SetGraphicsRootConstantBufferView(3, viewProjectionBuffer_.GetResourceAdress());
-			// camera:         root7
-			commandList_->SetGraphicsRootConstantBufferView(7, cameraPosBuffer_.GetResourceAdress());
-		} else {
+			// shadowMap: root1
+			commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
+			if (!debugEnable) {
 
-			// viewProjection: root3
-			commandList_->SetGraphicsRootConstantBufferView(3, debugSceneViewProjectionBuffer_.GetResourceAdress());
-			// camera:         root7
-			commandList_->SetGraphicsRootConstantBufferView(7, debugSceneCameraPosBuffer_.GetResourceAdress());
-		}
-		// lightViewProjection: root4
-		commandList_->SetGraphicsRootConstantBufferView(4, lightViewProjectionBuffer_.GetResourceAdress());
-		// light:  root6
-		commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResourceAdress());
+				// viewProjection: root3
+				commandList_->SetGraphicsRootConstantBufferView(3, viewProjectionBuffer_.GetResourceAdress());
+				// camera:         root7
+				commandList_->SetGraphicsRootConstantBufferView(7, cameraPosBuffer_.GetResourceAdress());
+			} else {
 
-		for (auto& entity : entityList) {
-			std::visit([&](auto& buffer) {
-				for (uint32_t meshIndex = 0; meshIndex < buffer->model->GetMeshNum(); ++meshIndex) {
+				// viewProjection: root3
+				commandList_->SetGraphicsRootConstantBufferView(3, debugSceneViewProjectionBuffer_.GetResourceAdress());
+				// camera:         root7
+				commandList_->SetGraphicsRootConstantBufferView(7, debugSceneCameraPosBuffer_.GetResourceAdress());
+			}
+			// lightViewProjection: root4
+			commandList_->SetGraphicsRootConstantBufferView(4, lightViewProjectionBuffer_.GetResourceAdress());
+			// light:  root6
+			commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResourceAdress());
 
-					// IA
-					if constexpr (std::is_same_v<std::decay_t<decltype(buffer)>, EntityAnimationBufferData*>) {
+			for (uint32_t meshIndex = 0; meshIndex < object->model->model->GetMeshNum(); ++meshIndex) {
 
-						dxCommand_->TransitionBarriers({ buffer->model->GetIOVertex().GetResource() },
-							D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-							D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+				// IA
+				if (object->model->isAnimation) {
 
-						commandList_->IASetVertexBuffers(0, 1,
-							&buffer->model->GetIOVertex().GetVertexBuffer());
-					} else {
-						commandList_->IASetVertexBuffers(0, 1,
-							&buffer->model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
-					}
-					commandList_->IASetIndexBuffer(
-						&buffer->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
 
-					// texture:   root0
-					commandList_->SetGraphicsRootDescriptorTable(0, buffer->model->GetTextureGPUHandle(meshIndex));
-					// transform: root2
-					commandList_->SetGraphicsRootConstantBufferView(2, buffer->transform.GetResourceAdress());
-					// material:  root3
-					commandList_->SetGraphicsRootConstantBufferView(5, buffer->materials[meshIndex].GetResourceAdress());
-					// draw
-					commandList_->DrawIndexedInstanced(buffer->model->GetIA().GetIndexCount(meshIndex), 1, 0, 0, 0);
+					commandList_->IASetVertexBuffers(0, 1,
+						&object->model->animationModel->GetIOVertex().GetVertexBuffer());
+				} else {
 
-					if constexpr (std::is_same_v<std::decay_t<decltype(buffer)>, EntityAnimationBufferData*>) {
-
-						dxCommand_->TransitionBarriers({ buffer->model->GetIOVertex().GetResource() },
-							D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-							D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-					}
+					commandList_->IASetVertexBuffers(0, 1,
+						&object->model->model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
 				}
-				}, entity);
+				commandList_->IASetIndexBuffer(
+					&object->model->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+
+				// texture:   root0
+				commandList_->SetGraphicsRootDescriptorTable(0, object->model->model->GetTextureGPUHandle(meshIndex));
+				// transform: root2
+				commandList_->SetGraphicsRootConstantBufferView(2, object->matrix.GetResourceAdress());
+				// material:  root3
+				commandList_->SetGraphicsRootConstantBufferView(5, object->materials[meshIndex].GetResourceAdress());
+				// draw
+				commandList_->DrawIndexedInstanced(object->model->model->GetIA().GetIndexCount(meshIndex), 1, 0, 0, 0);
+
+				if (object->model->isAnimation) {
+
+					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+				}
+			}
 		}
 	}
 }

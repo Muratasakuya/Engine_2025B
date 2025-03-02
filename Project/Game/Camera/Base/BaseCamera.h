@@ -23,13 +23,13 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetParent(const Transform3D* parent) { transform_.parent = parent; };
+	void SetParent(const Transform3DComponent* parent) { transform_.parent = parent; };
 
 	float GetFovY() const { return fovY_; }
 	float GetNearClip() const { return nearClip_; }
 	float GetFarClip() const { return farClip_; }
 
-	const Transform3D& GetTransform() const { return transform_; }
+	const Transform3DComponent& GetTransform() const { return transform_; }
 
 	const Matrix4x4& GetViewMatrix() const { return viewMatrix_; }
 	const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix_; }
@@ -45,7 +45,7 @@ protected:
 	float nearClip_;
 	float farClip_;
 
-	Transform3D transform_;
+	Transform3DComponent transform_;
 	Vector3 eulerRotation_;
 
 	Matrix4x4 viewMatrix_;

@@ -19,16 +19,16 @@ struct UVTransform {
 };
 
 //============================================================================
-//	Transform3D class
+//	Transform3DComponent class
 //============================================================================
-class Transform3D {
+class Transform3DComponent {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	Transform3D() = default;
-	~Transform3D() = default;
+	Transform3DComponent() = default;
+	~Transform3DComponent() = default;
 
 	void Init();
 
@@ -58,5 +58,5 @@ public:
 
 	TransformationMatrix matrix;
 
-	const Transform3D* parent = nullptr;
+	const Transform3DComponent* parent = nullptr;
 };
