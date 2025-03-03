@@ -76,7 +76,7 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	// device初期化
 	dxDevice_ = std::make_unique<DxDevice>();
 	InitDXDevice();
-	ID3D12Device* device = dxDevice_->Get();
+	ID3D12Device8* device = dxDevice_->Get();
 
 	// command初期化
 	dxCommand_ = std::make_unique<DxCommand>();

@@ -28,7 +28,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	ID3D12Device* Get() const { return device_.Get(); };
+	ID3D12Device8* Get() const { return device_.Get(); };
 
 	IDXGIFactory7* GetDxgiFactory() const { return dxgiFactory_.Get(); };
 private:
@@ -38,7 +38,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	ComPtr<ID3D12Device> device_;
+	ComPtr<ID3D12Device8> device_;
 
 	ComPtr<IDXGIFactory7> dxgiFactory_;
 

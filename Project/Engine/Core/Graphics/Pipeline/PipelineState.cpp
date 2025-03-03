@@ -151,8 +151,6 @@ void PipelineState::Create(const std::string& fileName, ID3D12Device* device,
 			IID_PPV_ARGS(&computePipelineState_));
 		assert(SUCCEEDED(hr));
 	}
-
-
 }
 
 ID3D12PipelineState* PipelineState::GetGraphicsPipeline(BlendMode blendMode) const {
