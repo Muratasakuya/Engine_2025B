@@ -31,6 +31,11 @@ public:
 	void Init();
 
 	void Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
+
+	void CompileShader(
+		const std::wstring& filePath,
+		const wchar_t* profile,
+		ComPtr<IDxcBlob>& shaderBlob);
 private:
 	//========================================================================
 	//	private Methods
@@ -41,11 +46,4 @@ private:
 	ComPtr<IDxcUtils> dxcUtils_;
 	ComPtr<IDxcCompiler3> dxcCompiler_;
 	ComPtr<IDxcIncludeHandler> includeHandler_;
-
-	//--------- functions ----------------------------------------------------
-
-	void CompileShader(
-		const std::wstring& filePath,
-		const wchar_t* profile,
-		ComPtr<IDxcBlob>& shaderBlob);
 };
