@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Lib/ComponentStructures.h>
+#include <Engine/Component/ColliderComponent.h>
 
 // c++
 #include <string>
@@ -24,6 +25,10 @@ public:
 
 	void CreateModel(const std::string& modelName,
 		const std::optional<std::string>& animationName = std::nullopt);
+
+	// collision
+	ColliderComponent* AddCollider(const CollisionShape::Shapes& shape);
+	void RemoveCollider(ColliderComponent* collider);
 
 	//--------- accessor -----------------------------------------------------
 

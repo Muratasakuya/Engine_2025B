@@ -3,30 +3,21 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/Methods/IScene.h>
-#include <Game/Camera/GameCamera.h>
-#include <Game/Object3D/TemplateObject3D.h>
-
-// c++
-#include <memory>
-#include <vector>
+#include <Game/Base/BaseGameObject.h>
 
 //============================================================================
-//	DebugScene class
+//	TemplateObject3D class
 //============================================================================
-class DebugScene :
-	public IScene {
+class TemplateObject3D :
+	public BaseGameObject {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	DebugScene() = default;
-	~DebugScene() = default;
+	TemplateObject3D();
+	~TemplateObject3D() = default;
 
-	void Init(Asset* asset,CameraManager* cameraManager) override;
-
-	void Update(SceneManager* sceneManager) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -34,10 +25,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unique_ptr<GameCamera> gameCamera_;
-
-	std::unique_ptr<TemplateObject3D> object_;
-
-	//--------- functions ----------------------------------------------------
-
+	ColliderComponent* collider_;
 };

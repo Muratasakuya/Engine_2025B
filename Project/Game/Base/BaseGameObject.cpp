@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Component/Manager/ComponentManager.h>
+#include <Engine/Component/Manager/CollisionManager.h>
 
 //============================================================================
 //	BaseGameObject classMethods
@@ -13,7 +14,7 @@ void BaseGameObject::CreateModel(const std::string& modelName,
 	const std::optional<std::string>& animationName) {
 
 	object_ = ComponentManager::GetInstance()->CreateObject3D(
-		modelName,animationName, GetObjectName());
+		modelName, animationName, GetObjectName());
 
 	uvTransforms_.resize(object_.materials.size());
 	for (uint32_t index = 0; index < uvTransforms_.size(); ++index) {
@@ -22,6 +23,16 @@ void BaseGameObject::CreateModel(const std::string& modelName,
 		object_.materials[index]->uvTransform = Matrix4x4::MakeAffineMatrix(
 			uvTransforms_[index].scale, uvTransforms_[index].rotate, uvTransforms_[index].translate);
 	}
+}
+
+ColliderComponent* BaseGameObject::AddCollider(const CollisionShape::Shapes& shape) {
+
+	return CollisionManager::GetInstance()->AddComponent(shape);
+}
+
+void BaseGameObject::RemoveCollider(ColliderComponent* collider) {
+
+	CollisionManager::GetInstance()->RemoveComponent(collider);
 }
 
 std::string BaseGameObject::GetObjectName() const {

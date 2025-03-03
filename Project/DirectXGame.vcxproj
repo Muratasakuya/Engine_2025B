@@ -228,6 +228,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Camera\LightViewCamera.cpp" />
     <ClCompile Include="Game\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Game\Object3D\TemplateObject3D.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Scene\DebugScene.cpp" />
     <ClCompile Include="Game\Scene\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\Methods\IScene.cpp" />
@@ -346,6 +350,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Camera\LightViewCamera.h" />
     <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Light\PunctualLight.h" />
+    <ClInclude Include="Game\Object3D\TemplateObject3D.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Scene\DebugScene.h" />
     <ClInclude Include="Game\Scene\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scene\Methods\IScene.h" />
