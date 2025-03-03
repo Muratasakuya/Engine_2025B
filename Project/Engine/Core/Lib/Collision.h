@@ -42,7 +42,6 @@ namespace CollisionShape {
 	};
 
 	using Shapes = std::variant<Sphere, OBB>;
-
 };
 
 enum class ShapeType {

@@ -209,6 +209,9 @@
     <ClCompile Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Object3D\TemplateObject3D.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -284,6 +287,7 @@
     <ClInclude Include="Engine\Component\Manager\CollisionManager.h" />
     <ClInclude Include="Engine\Core\Lib\Collision.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.h" />
+    <ClInclude Include="Game\Object3D\TemplateObject3D.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

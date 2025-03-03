@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Component/Manager/ComponentManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 // imgui
@@ -35,14 +36,7 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	objects_.resize(32);
-	for (uint32_t index = 0; index < objects_.size(); ++index) {
-
-		objects_[index] = std::make_unique<BaseGameObject>();
-		objects_[index]->CreateModel("teapot");
-
-		objects_[index]->SetTranslate(Vector3(0.0f, 0.0f, index * 0.8f));
-	}
+	object_ = std::make_unique<TemplateObject3D>();
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {

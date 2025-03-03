@@ -6,6 +6,7 @@
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Input/Input.h>
 #include <Engine/Component/Manager/ComponentManager.h>
+#include <Engine/Component/Manager/CollisionManager.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Game/Time/GameTimer.h>
 
@@ -103,6 +104,8 @@ void Framework::UpdateScene() {
 
 	sceneManager_->Update();
 	cameraManager_->Update();
+
+	CollisionManager::GetInstance()->Update();
 }
 
 void Framework::Draw() {
