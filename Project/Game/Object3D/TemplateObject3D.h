@@ -20,6 +20,10 @@ public:
 
 	void Update();
 
+	//* collision *//
+
+	void OnCollisionEnter(const ColliderComponent* collider, const ColliderID colliderId) override;
+
 private:
 	//========================================================================
 	//	private Methods
@@ -31,6 +35,8 @@ private:
 	ColliderComponent* colliderB_;
 
 	//--------- functions ----------------------------------------------------
+
+	void UpdateImGui();
 
 	void UpdateCollision();
 };

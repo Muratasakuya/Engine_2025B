@@ -67,7 +67,6 @@ Object3D ComponentManager::CreateObject3D(const std::string& modelName,
 	std::vector<Material*> material = materialManager_->AddComponent(id, asset_->GetModelData(modelName).meshes.size(), device_);
 	ModelComponent* model = modelComponentManager_->AddComponent(id,
 		modelName, animationName, device_, asset_, srvManager_);
-	std::function<void()> imguiFunc = componentImGui_->AddComponent(id);
 
 	object3Ds_[id] = {
 		transform3DManager_->GetBuffer(id),
@@ -77,7 +76,12 @@ Object3D ComponentManager::CreateObject3D(const std::string& modelName,
 
 	needsSorting_ = true;
 
-	return { id,transform ,material,model,imguiFunc };
+	return { id,transform ,material,model };
+}
+
+void ComponentManager::SetImGuiFunction(EntityID id, const std::function<void()>& func) {
+
+	componentImGui_->AddComponent(id, func);
 }
 
 void ComponentManager::RemoveObject3D(EntityID id) {

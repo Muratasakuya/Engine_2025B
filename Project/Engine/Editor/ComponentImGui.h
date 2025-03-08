@@ -37,7 +37,7 @@ public:
 	void Init(EntityManager* entityManager, Transform3DManager* transform3DManager,
 		MaterialManager* materialManager, ModelComponentManager* modelComponentManager);
 
-	std::function<void()> AddComponent(EntityID id);
+	void AddComponent(EntityID id, const std::function<void()>& func);
 	void RemoveComponent(EntityID id);
 
 	// Object3Dの選択
