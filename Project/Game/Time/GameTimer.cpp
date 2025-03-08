@@ -13,6 +13,12 @@
 //============================================================================
 
 std::chrono::steady_clock::time_point GameTimer::lastFrameTime_ = std::chrono::steady_clock::now();
+GameTimer::Measurement GameTimer::updateMeasure_ = {};
+GameTimer::Measurement GameTimer::drawMeasure_ = {};
+
+std::vector<float> GameTimer::updateTimes_ = {};
+std::vector<float> GameTimer::drawTimes_ = {};
+
 float GameTimer::deltaTime_ = 0.0f;
 float GameTimer::timeScale_ = 1.0f;
 float GameTimer::lerpSpeed_ = 1.8f;
@@ -52,14 +58,63 @@ void GameTimer::Update() {
 void GameTimer::ImGui() {
 
 	ImGui::SeparatorText("Performance");
-	ImGui::Text("frameRate:       %.1f fps", ImGui::GetIO().Framerate); //* フレームレート情報
-	ImGui::Text("deltaTime:       %.3f s", deltaTime_);                 //* ΔTime
-	ImGui::Text("scaledDeltaTime: %.3f s", GetScaledDeltaTime());       //* ScaledΔTime
-	ImGui::SeparatorText("TimeScale");
+	ImGui::Text("frameRate:       %.1f  fps", ImGui::GetIO().Framerate); //* フレームレート情報
+	ImGui::Text("deltaTime:       %.3f s", deltaTime_);                  //* ΔTime
+	ImGui::Text("scaledDeltaTime: %.3f s", GetScaledDeltaTime());        //* ScaledΔTime
 
-	ImGui::PushItemWidth(168.0f);
-	ImGui::DragFloat("timeScale", &timeScale_, 0.01f);
-	ImGui::DragFloat("lerpSpeed", &lerpSpeed_, 0.01f);
-	ImGui::DragFloat("waitTime", &waitTime_, 0.01f);
-	ImGui::PopItemWidth();
+	ImGui::Text("updateTime:      %.2f  ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間
+	ImGui::Text("drawTime:        %.2f ms", GetSmoothedDrawTime());    // 描画処理にかかった時間
+}
+
+void GameTimer::BeginUpdateCount() {
+
+	updateMeasure_.start = std::chrono::high_resolution_clock::now();
+}
+
+void GameTimer::EndUpdateCount() {
+
+	updateMeasure_.end = std::chrono::high_resolution_clock::now();
+	updateMeasure_.resultSeconds = updateMeasure_.end - updateMeasure_.start;
+
+	AddMeasurement(updateTimes_, updateMeasure_.resultSeconds.count());
+}
+
+void GameTimer::BeginDrawCount() {
+
+	drawMeasure_.start = std::chrono::high_resolution_clock::now();
+}
+
+void GameTimer::EndDrawCount() {
+
+	drawMeasure_.end = std::chrono::high_resolution_clock::now();
+	drawMeasure_.resultSeconds = drawMeasure_.end - drawMeasure_.start;
+
+	AddMeasurement(drawTimes_, drawMeasure_.resultSeconds.count());
+}
+
+void GameTimer::AddMeasurement(std::vector<float>& buffer, float value) {
+
+	buffer.push_back(value);
+	if (buffer.size() > kSmoothingSample_) {
+
+		// 古いデータを削除
+		buffer.erase(buffer.begin());
+	}
+}
+
+float GameTimer::GetSmoothedTime(const std::vector<float>& buffer) {
+
+	if (buffer.empty()) return 0.0f;
+	float sum = std::accumulate(buffer.begin(), buffer.end(), 0.0f);
+	return sum / buffer.size();
+}
+
+float GameTimer::GetSmoothedUpdateTime() {
+
+	return GetSmoothedTime(updateTimes_);
+}
+
+float GameTimer::GetSmoothedDrawTime() {
+
+	return GetSmoothedTime(drawTimes_);
 }

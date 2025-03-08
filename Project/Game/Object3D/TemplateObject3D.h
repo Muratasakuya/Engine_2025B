@@ -36,7 +36,5 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
-	void UpdateImGui();
-
 	void UpdateCollision();
 };

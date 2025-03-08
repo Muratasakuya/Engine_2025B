@@ -126,11 +126,14 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	shadowMap_->Create(shadowMapWidth_, shadowMapHeight_,
 		dsvManager_.get(), srvManager_.get());
 
+	// rendererManager
+	renderObjectManager_ = std::make_unique<RenderObjectManager>();
+
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();
 	meshRenderer_->Init(dxCommand_.get(), device,
 		shadowMap_.get(), dxShaderComplier_.get(),
-		cameraManager);
+		renderObjectManager_.get(), cameraManager);
 
 	// offscreen初期化
 	offscreenPipeline_ = std::make_unique<PipelineState>();
@@ -197,6 +200,7 @@ void GraphicsCore::BeginRenderFrame() {
 	dxCommand_->SetDescriptorHeaps({ srvManager_->GetDescriptorHeap() });
 	// bufferの更新
 	meshRenderer_->Update();
+	renderObjectManager_->Update();
 }
 
 //============================================================================

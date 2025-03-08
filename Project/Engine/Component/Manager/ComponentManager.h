@@ -9,16 +9,19 @@
 #include <Engine/Component/Manager/MaterialManager.h>
 #include <Engine/Component/Manager/ModelComponentManager.h>
 #include <Engine/Editor/ComponentImGui.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 // directX
 #include <d3d12.h>
 // c++
 #include <cstdint>
 #include <variant>
+#include <typeindex>
 #include <unordered_map>
 // front
 class Asset;
 class SRVManager;
+class RenderObjectManager;
 
 // 今現段階で必要と思った種類
 // 3DObjectを扱いたいとき
@@ -29,6 +32,10 @@ class SRVManager;
 // Transform2D、Color、Rendering情報(BlendModeなど)、Collision
 // これらはすべて同じIDで作成したい
 // AddComponnentしたら引き数でTextureName、ObjectNameを受け取り作成し、ユーザーに操作できるデータをポインタで渡す
+
+// 03/08
+// 削除したObjectにアクセスしてしまう可能性大
+// ユーザーにはIDのみ渡して毎回Get()してObjectを使用する方面に移行
 
 //============================================================================
 //	ComponentManager class
@@ -55,30 +62,33 @@ public:
 	ComponentManager() = default;
 	~ComponentManager() = default;
 
-	void Init(ID3D12Device* device, Asset* asset, SRVManager* srvManager);
+	void Init(ID3D12Device* device, Asset* asset, SRVManager* srvManager,
+		RenderObjectManager* renderObjectManager);
 	void Update();
 
-	Object3D CreateObject3D(const std::string& modelName,
-		const std::optional<std::string>& animationName, const std::string& objectName);
-	void SetImGuiFunction(EntityID id, const std::function<void()>& func);
+	// componentManagerの追加
+	template <typename T>
+	void RegisterComponentManager(IComponent<T>* manager);
 
+	// object3Dの追加、削除
+	EntityID CreateObject3D(const std::string& modelName,
+		const std::optional<std::string>& animationName, const std::string& objectName);
 	void RemoveObject3D(EntityID id);
 
-	void InvalidateBlendModeCache();
-
-	// Object選択
-	void SelectObject();
-	// 選択したObject操作
-	void EditObject();
-
 	//--------- accessor -----------------------------------------------------
-
-	const std::unordered_map<BlendMode, std::vector<const Object3DForGPU*>>&
-		GetSortedObject3Ds() const;
 
 	// singleton
 	static ComponentManager* GetInstance();
 	static void Finalize();
+
+	// componentの取得、基本的にinitで取得する
+	template <typename T>
+	T* GetComponent(EntityID id);
+	template <typename T>
+	std::vector<T*> GetComponentList(EntityID entity);
+
+	// 全てのentityのIDを取得
+	const std::vector<EntityID>& GetEntityIDs() const { return entityManager_->GetIDs(); };
 private:
 	//========================================================================
 	//	private Methods
@@ -91,26 +101,67 @@ private:
 	ID3D12Device* device_;
 	Asset* asset_;
 	SRVManager* srvManager_;
+	RenderObjectManager* renderObjectManager_;
 
-	std::unordered_map<EntityID, Object3DForGPU> object3Ds_;
-
-	// blendModeごとのObject
-	mutable bool needsSorting_ = true;
-	mutable std::unordered_map<BlendMode, std::vector<const Object3DForGPU*>> sortedObject3Ds_;
-
-	// components
+	// entity番号の管理
 	std::unique_ptr<EntityManager> entityManager_;
-
-	std::unique_ptr<Transform3DManager> transform3DManager_;
-
-	std::unique_ptr<MaterialManager> materialManager_;
-
-	std::unique_ptr<ModelComponentManager> modelComponentManager_;
-
-	// imgui
-	std::unique_ptr<ComponentImGui> componentImGui_;
+	// 登録済みのcomponentManager
+	std::unordered_map<std::type_index, void*> componentManagers_;
 
 	//--------- functions ----------------------------------------------------
 
-	void RebuildBlendModeCache() const;
+	template <typename T, typename... Args>
+	void AddComponent(EntityID entity, Args&&... args);
+	template <typename T>
+	void RemoveComponent(EntityID entity);
 };
+
+//============================================================================
+//	ComponentManager templateMethods
+//============================================================================
+
+template<typename T>
+inline void ComponentManager::RegisterComponentManager(IComponent<T>* manager) {
+
+	ASSERT(manager, "not create this ComponentClass");
+
+	componentManagers_[std::type_index(typeid(T))] = manager;
+}
+
+template<typename T, typename ...Args>
+inline void ComponentManager::AddComponent(EntityID entity, Args && ...args) {
+
+	if ((Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true))) {
+
+		static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->AddComponent(entity, std::make_tuple(std::forward<Args>(args)...));
+	}
+}
+
+template<typename T>
+inline void ComponentManager::RemoveComponent(EntityID entity) {
+
+	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
+
+		static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->RemoveComponent(entity);
+	}
+}
+
+template<typename T>
+inline T* ComponentManager::GetComponent(EntityID id) {
+
+	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
+
+		return static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponent(id);
+	}
+	return nullptr;
+}
+
+template<typename T>
+inline std::vector<T*> ComponentManager::GetComponentList(EntityID entity) {
+
+	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
+
+		return dynamic_cast<IComponent<std::vector<T>>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponentList(entity);
+	}
+	return {};
+}

@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Component/Manager/ComponentManager.h>
 
 // imgui
 #include <imgui.h>
@@ -13,7 +14,7 @@
 
 TemplateObject3D::TemplateObject3D() {
 
-	BaseGameObject::CreateModel("teapot");
+	ComponentManager::GetInstance()->CreateObject3D("teapot", std::nullopt, "teapot");
 
 	// colliderA
 	colliderA_ = BaseGameObject::AddCollider(CollisionShape::Sphere());
@@ -30,8 +31,6 @@ TemplateObject3D::TemplateObject3D() {
 
 void TemplateObject3D::Update() {
 
-	// imgui更新
-	UpdateImGui();
 	// 衝突更新
 	UpdateCollision();
 }
@@ -60,15 +59,4 @@ void TemplateObject3D::UpdateCollision() {
 
 	colliderA_->Update();
 	colliderB_->Update();
-}
-
-void TemplateObject3D::UpdateImGui() {
-
-	// imguiの更新
-	object_.imguiFunc = [&]() {
-
-		ImGui::DragFloat3("colliderAPos", &colliderA_->centerPos_.x, 0.01f);
-		ImGui::DragFloat3("colliderBPos", &colliderB_->centerPos_.x, 0.01f);
-		};
-	BaseGameObject::SetImGui();
 }

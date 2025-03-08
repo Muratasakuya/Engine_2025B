@@ -17,7 +17,7 @@
 class DxCommand;
 class DxShaderCompiler;
 class ShadowMap;
-class ComponentManager;
+class RenderObjectManager;
 class CameraManager;
 
 //============================================================================
@@ -34,7 +34,7 @@ public:
 
 	void Init(DxCommand* dxCommand, ID3D12Device* device,
 		ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler,
-		CameraManager* cameraManager);
+		RenderObjectManager* renderObjectManager, CameraManager* cameraManager);
 
 	void Update();
 
@@ -53,7 +53,7 @@ private:
 	DxCommand* dxCommand_;
 	ID3D12GraphicsCommandList* commandList_;
 	ShadowMap* shadowMap_;
-	ComponentManager* componentManager_;
+	RenderObjectManager* renderObjectManager_;
 	CameraManager* cameraManager_;
 
 	std::unique_ptr<ObjectPipelineManager> pipeline_;

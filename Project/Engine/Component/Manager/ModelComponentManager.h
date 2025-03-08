@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Component/ModelComponent.h>
+#include <Engine/Component/Base/IComponent.h>
 
 // entityID
 using EntityID = uint32_t;
@@ -11,7 +12,8 @@ using EntityID = uint32_t;
 //============================================================================
 //	ModelComponentManager class
 //============================================================================
-class ModelComponentManager {
+class ModelComponentManager :
+	public IComponent<ModelComponent> {
 public:
 	//========================================================================
 	//	public Methods
@@ -20,15 +22,14 @@ public:
 	ModelComponentManager() = default;
 	~ModelComponentManager() = default;
 
-	ModelComponent* AddComponent(EntityID entity, const std::string& modelName,
-		const std::optional<std::string>& animationName, ID3D12Device* device,
-		class Asset* asset, class SRVManager* srvManager);
+	void AddComponent(EntityID entity, std::any args) override;
+	void RemoveComponent(EntityID entity) override;
 
-	void RemoveComponent(EntityID entity);
+	void Update() override {};
 
 	//--------- accessor -----------------------------------------------------
 
-	ModelComponent* GetComponent(EntityID entity);
+	ModelComponent* GetComponent(EntityID entity) override;
 private:
 	//========================================================================
 	//	private Methods

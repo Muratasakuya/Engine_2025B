@@ -97,7 +97,7 @@ void ComponentImGui::EditObject3D() {
 	}
 
 	ASSERT(transform3DManager_->GetComponent(*object3D_.selectedId_), "does not exist object3D:transform");
-	ASSERT(!materialManager_->GetComponent(*object3D_.selectedId_).empty(), "does not exist object3D:material");
+	ASSERT(!materialManager_->GetComponentList(*object3D_.selectedId_).empty(), "does not exist object3D:material");
 
 	ImGui::SeparatorText("SelectedObject");
 
@@ -149,7 +149,6 @@ void ComponentImGui::Object3DRenderingData() {
 	ModelComponent* model = modelComponentManager_->GetComponent(*object3D_.selectedId_);
 
 	if (ImGui::Checkbox("drawEnable", &model->renderingData.drawEnable)) {
-		ComponentManager::GetInstance()->InvalidateBlendModeCache();
 	}
 
 	const char* blendModeItems[] = {
@@ -165,7 +164,6 @@ void ComponentImGui::Object3DRenderingData() {
 	if (ImGui::Combo("blendMode", &blendIndex, blendModeItems, IM_ARRAYSIZE(blendModeItems))) {
 
 		model->renderingData.blendMode = static_cast<BlendMode>(blendIndex);
-		ComponentManager::GetInstance()->InvalidateBlendModeCache();
 	}
 	ImGui::PopItemWidth();
 
@@ -198,7 +196,7 @@ void ComponentImGui::Object3DMaterial() {
 
 	ImGui::Begin("Material");
 
-	std::vector<Material*> materials = materialManager_->GetComponent(*object3D_.selectedId_);
+	std::vector<Material*> materials = materialManager_->GetComponentList(*object3D_.selectedId_);
 
 	ImGui::PushItemWidth(168.0f);
 	if (ImGui::BeginCombo("SelectMaterial", ("Material " + std::to_string(selectedMaterialIndex_)).c_str())) {

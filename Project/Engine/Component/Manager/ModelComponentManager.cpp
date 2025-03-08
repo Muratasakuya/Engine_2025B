@@ -1,13 +1,20 @@
 #include "ModelComponentManager.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Lib/MathUtils/Algorithm.h>
+
+//============================================================================
 //	ModelComponentManager classMethods
 //============================================================================
 
-ModelComponent* ModelComponentManager::AddComponent(
-	EntityID entity, const std::string& modelName,
-	const std::optional<std::string>& animationName, ID3D12Device* device,
-	Asset* asset, SRVManager* srvManager) {
+void ModelComponentManager::AddComponent(EntityID entity, std::any args) {
+
+	auto [modelName, animationName, device, asset, srvManager] =
+		std::any_cast<std::tuple<
+		std::string, std::optional<std::string>, ID3D12Device*, Asset*, SRVManager*>>(args);
 
 	// Animation有無
 	components_[entity].isAnimation = animationName.has_value();
@@ -25,7 +32,6 @@ ModelComponent* ModelComponentManager::AddComponent(
 		components_[entity].model = std::make_unique<BaseModel>();
 		components_[entity].model->Init(modelName, device, asset);
 	}
-	return &components_[entity];
 }
 
 void ModelComponentManager::RemoveComponent(EntityID entity) {
@@ -35,6 +41,9 @@ void ModelComponentManager::RemoveComponent(EntityID entity) {
 
 ModelComponent* ModelComponentManager::GetComponent(EntityID entity) {
 
-	auto it = components_.find(entity);
-	return (it != components_.end()) ? &it->second : nullptr;
+	if (Algorithm::Find(components_, entity, true)) {
+
+		return &components_[entity];
+	}
+	return nullptr;
 }

@@ -10,21 +10,6 @@
 //	BaseGameObject classMethods
 //============================================================================
 
-void BaseGameObject::CreateModel(const std::string& modelName,
-	const std::optional<std::string>& animationName) {
-
-	object_ = ComponentManager::GetInstance()->CreateObject3D(
-		modelName, animationName, GetObjectName());
-
-	uvTransforms_.resize(object_.materials.size());
-	for (uint32_t index = 0; index < uvTransforms_.size(); ++index) {
-
-		uvTransforms_[index].scale = Vector3::AnyInit(1.0f);
-		object_.materials[index]->uvTransform = Matrix4x4::MakeAffineMatrix(
-			uvTransforms_[index].scale, uvTransforms_[index].rotate, uvTransforms_[index].translate);
-	}
-}
-
 ColliderComponent* BaseGameObject::AddCollider(const CollisionShape::Shapes& shape) {
 
 	ColliderComponent* collider = nullptr;
@@ -52,11 +37,6 @@ ColliderComponent* BaseGameObject::AddCollider(const CollisionShape::Shapes& sha
 void BaseGameObject::RemoveCollider(ColliderComponent* collider) {
 
 	CollisionManager::GetInstance()->RemoveComponent(collider);
-}
-
-void BaseGameObject::SetImGui() {
-
-	ComponentManager::GetInstance()->SetImGuiFunction(object_.id, object_.imguiFunc);
 }
 
 std::string BaseGameObject::GetObjectName() const {

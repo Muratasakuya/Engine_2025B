@@ -45,37 +45,57 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	//	init
 	//========================================================================
 
+	// window作成
 	winApp_ = std::make_unique<WinApp>();
 	winApp_->Create(width, height, title);
 
-	// setRenderer
 	cameraManager_ = std::make_unique<CameraManager>();
 	cameraManager_->Init();
 
+	// directX初期化
 	graphicsCore_ = std::make_unique<GraphicsCore>();
 	graphicsCore_->Init(width, height, winApp_.get(),
 		cameraManager_.get());
 
+	// asset機能初期化
 	asset_ = std::make_unique<Asset>();
 	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
 		graphicsCore_->GetSRVManager());
 
+	// component機能初期化
+	InitComponent();
+
+	// imgui機能初期化
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
 	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
 		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
 		graphicsCore_->GetShadowMapGPUHandle());
 
-	ComponentManager::GetInstance()->Init(graphicsCore_->GetDevice(),
-		asset_.get(), graphicsCore_->GetSRVManager());
-
+	// scene管理クラス初期化
 	sceneManager_ = std::make_unique<SceneManager>(
 		Scene::Debug, asset_.get(), cameraManager_.get());
 
 	Input::GetInstance()->Init(winApp_.get());
-
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
 		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
 		graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
+}
+
+void Framework::InitComponent() {
+
+	// component初期化
+	ComponentManager::GetInstance()->Init(graphicsCore_->GetDevice(),
+		asset_.get(), graphicsCore_->GetSRVManager(), graphicsCore_->GetRenderObjectManager());
+
+	// transform
+	transform3DComponentManager_ = std::make_unique<Transform3DManager>();
+	ComponentManager::GetInstance()->RegisterComponentManager(transform3DComponentManager_.get());
+	// material
+	materialManager_ = std::make_unique<MaterialManager>();
+	ComponentManager::GetInstance()->RegisterComponentManager(materialManager_.get());
+	// model
+	modelComponentManager_ = std::make_unique<ModelComponentManager>();
+	ComponentManager::GetInstance()->RegisterComponentManager(modelComponentManager_.get());
 }
 
 void Framework::Update() {
@@ -83,6 +103,8 @@ void Framework::Update() {
 	//========================================================================
 	//	update
 	//========================================================================
+
+	GameTimer::BeginUpdateCount();
 
 	// 描画前処理
 	graphicsCore_->BeginRenderFrame();
@@ -92,6 +114,8 @@ void Framework::Update() {
 	UpdateScene();
 	// entityBuffer更新
 	ComponentManager::GetInstance()->Update();
+
+	GameTimer::EndUpdateCount();
 }
 void Framework::UpdateScene() {
 
@@ -114,12 +138,16 @@ void Framework::Draw() {
 	//	draw: endFrame
 	//========================================================================
 
+	GameTimer::BeginDrawCount();
+
 	// 描画処理
 	graphicsCore_->Render();
 	// scene遷移依頼
 	sceneManager_->SwitchScene();
 	// lineReset
 	LineRenderer::GetInstance()->ResetLine();
+
+	GameTimer::EndDrawCount();
 }
 
 void Framework::Finalize() {
@@ -132,6 +160,9 @@ void Framework::Finalize() {
 	graphicsCore_.reset();
 	winApp_.reset();
 	asset_.reset();
+	transform3DComponentManager_.reset();
+	materialManager_.reset();
+	modelComponentManager_.reset();
 
 	// ComFinalize
 	CoUninitialize();
