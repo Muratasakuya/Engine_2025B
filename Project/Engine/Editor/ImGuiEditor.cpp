@@ -16,6 +16,8 @@ void ImGuiEditor::Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle
 
 	renderTextureGPUHandle_ = renderTextureGPUHandle;
 	debugSceneRenderTextureGPUHandle_ = debugSceneRenderTextureGPUHandle;
+
+	// debug表示用、必要な時以外表示しない
 	shadowMapGPUHandle_ = shadowMapGPUHandle;
 
 	// サイズの変更、移動不可
@@ -43,19 +45,14 @@ void ImGuiEditor::MainWindow() {
 	// 表示する画像サイズ
 	const ImVec2 imageSize(864.0f, 486.0f);
 
-	ImGui::Begin("Game", nullptr, windowFlag_);
+	ImGui::Begin("Game");
 
 	ImGui::Image(ImTextureID(renderTextureGPUHandle_.ptr), imageSize);
 	ImGui::End();
 
-	ImGui::Begin("Debug", nullptr, windowFlag_);
+	ImGui::Begin("Debug");
 
 	ImGui::Image(ImTextureID(debugSceneRenderTextureGPUHandle_.ptr), imageSize);
-	ImGui::End();
-
-	ImGui::Begin("ShadowMap");
-
-	ImGui::Image(ImTextureID(shadowMapGPUHandle_.ptr), ImVec2(486.0f, 486.0f));
 	ImGui::End();
 }
 

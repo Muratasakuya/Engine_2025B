@@ -58,4 +58,6 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	bool IsColliding(ColliderComponent* colliderA, ColliderComponent* colliderB);
+
+	void DrawCollider();
 };

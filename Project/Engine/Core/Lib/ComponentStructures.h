@@ -25,5 +25,5 @@ struct Object3D {
 	std::vector<Material*> materials;
 	ModelComponent* model;
 
-	std::function<void()>* imguiFunc;
+	std::function<void()> imguiFunc;
 };

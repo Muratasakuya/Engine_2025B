@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
+#include <Engine/Renderer/LineRenderer.h>
 
 //============================================================================
 //	CollisionManager classMethods
@@ -108,11 +109,13 @@ void CollisionManager::Update() {
 	}
 
 	preCollisions_ = currentCollisions;
+
+	DrawCollider();
 }
 
 bool CollisionManager::IsColliding(ColliderComponent* colliderA, ColliderComponent* colliderB) {
 
-	if (colliderA->shape_.has_value() || colliderB->shape_.has_value()) {
+	if (!colliderA->shape_.has_value() || !colliderB->shape_.has_value()) {
 		ASSERT(FALSE, "collider not setting");
 	}
 
@@ -145,4 +148,41 @@ bool CollisionManager::IsColliding(ColliderComponent* colliderA, ColliderCompone
 			return false;
 		}
 		}, shapeA, shapeB);
+}
+
+void CollisionManager::DrawCollider() {
+
+	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+	if (!lineRenderer) return;
+
+	for (auto& collider : colliders_) {
+		if (!collider->shape_.has_value()) continue;
+
+		const auto& shape = *collider->shape_;
+		Vector3 center = collider->centerPos_;
+
+		// コライダーが衝突しているかどうかを判定
+		bool isColliding = false;
+		for (const auto& collisionPair : preCollisions_) {
+			if (collisionPair.first == collider || collisionPair.second == collider) {
+				isColliding = true;
+				break;
+			}
+		}
+
+		// 衝突状態に応じた色を設定
+		Color color = isColliding ? Color::Red() : Color::Green();
+
+		std::visit([&](const auto& shapeData) {
+			using ShapeType = std::decay_t<decltype(shapeData)>;
+
+			if constexpr (std::is_same_v<ShapeType, CollisionShape::Sphere>) {
+
+				lineRenderer->DrawSphere(4, shapeData.radius, center, color);
+			} else if constexpr (std::is_same_v<ShapeType, CollisionShape::OBB>) {
+
+				lineRenderer->DrawOBB(shapeData, color);
+			}
+			}, shape);
+	}
 }

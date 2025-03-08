@@ -9,8 +9,8 @@
 //============================================================================
 
 // windowSize
-const constexpr uint32_t kWindowWidth = 1920;
-const constexpr uint32_t kWindowHeight = 1080;
+const constexpr uint32_t kWindowWidth = 1440;
+const constexpr uint32_t kWindowHeight = 810;
 
 // windowTitle
 const constexpr wchar_t* kWindowTitle = L"Engine";

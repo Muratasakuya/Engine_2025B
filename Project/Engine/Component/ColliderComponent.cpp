@@ -3,6 +3,11 @@
 //============================================================================
 //	ColliderComponent classMethods
 //============================================================================
+#include <Engine/Core/Debug/Assert.h>
+
+//============================================================================
+//	ColliderComponent classMethods
+//============================================================================
 
 void ColliderComponent::TriggerOnCollisionEnter(ColliderComponent* collider) {
 
@@ -28,5 +33,24 @@ void ColliderComponent::TriggerOnCollisionExit(ColliderComponent* collider) {
 
 		// 離れた瞬間
 		onExit_(collider);
+	}
+}
+
+void ColliderComponent::Update() {
+	if (!shape_.has_value()) {
+		ASSERT(FALSE, "collider not setting");
+	}
+
+	if (shape_ && std::holds_alternative <CollisionShape::Sphere>(*shape_)) {
+		CollisionShape::Sphere& sphere = std::get<CollisionShape::Sphere>(*shape_);
+
+		sphere.radius = radius_;
+
+	} else if (shape_ && std::holds_alternative <CollisionShape::OBB>(*shape_)) {
+		CollisionShape::OBB& obb = std::get<CollisionShape::OBB>(*shape_);
+
+		obb.center = centerPos_;
+		obb.rotate = rotate_;
+		obb.size = size_;
 	}
 }

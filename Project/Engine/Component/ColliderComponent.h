@@ -58,6 +58,8 @@ public:
 
 	void TriggerOnCollisionExit(ColliderComponent* collider);
 
+	void Update();
+
 	//--------- variables ----------------------------------------------------
 
 	using CollisionCallback = std::function<void(ColliderComponent*)>;
