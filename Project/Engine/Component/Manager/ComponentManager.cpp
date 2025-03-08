@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Debug/Assert.h>
+#include <Engine/Renderer/Managers/RenderObjectManager.h>
 
 //============================================================================
 //	ComponentManager classMethods
@@ -29,7 +30,8 @@ void ComponentManager::Finalize() {
 	}
 }
 
-void ComponentManager::Init(ID3D12Device* device, Asset* asset, SRVManager* srvManager) {
+void ComponentManager::Init(ID3D12Device* device, Asset* asset, SRVManager* srvManager,
+	RenderObjectManager* renderObjectManager) {
 
 	device_ = nullptr;
 	device_ = device;
@@ -40,98 +42,50 @@ void ComponentManager::Init(ID3D12Device* device, Asset* asset, SRVManager* srvM
 	srvManager_ = nullptr;
 	srvManager_ = srvManager;
 
-	entityManager_ = std::make_unique<EntityManager>();
-	transform3DManager_ = std::make_unique<Transform3DManager>();
-	materialManager_ = std::make_unique<MaterialManager>();
-	modelComponentManager_ = std::make_unique<ModelComponentManager>();
+	renderObjectManager_ = nullptr;
+	renderObjectManager_ = renderObjectManager;
 
-	componentImGui_ = std::make_unique<ComponentImGui>();
-	componentImGui_->Init(entityManager_.get(), transform3DManager_.get(),
-		materialManager_.get(), modelComponentManager_.get());
+	entityManager_ = std::make_unique<EntityManager>();
 }
 
 void ComponentManager::Update() {
 
-	// 各Componentの更新処理
-	transform3DManager_->Update();
-	materialManager_->Update();
+	if (componentManagers_.empty()) {
+		ASSERT(FALSE, "unInitialized componentManagers");
+	}
+
+	// 全Componentの更新処理
+	for (const auto& [type, manager] : componentManagers_) {
+
+		static_cast<IComponentManager*>(manager)->Update();
+	}
 }
 
-Object3D ComponentManager::CreateObject3D(const std::string& modelName,
+EntityID ComponentManager::CreateObject3D(const std::string& modelName,
 	const std::optional<std::string>& animationName, const std::string& objectName) {
 
 	// EntityID発行
 	EntityID id = entityManager_->CreateEntity(objectName);
 
-	Transform3DComponent* transform = transform3DManager_->AddComponent(id, device_);
-	std::vector<Material*> material = materialManager_->AddComponent(id, asset_->GetModelData(modelName).meshes.size(), device_);
-	ModelComponent* model = modelComponentManager_->AddComponent(id,
-		modelName, animationName, device_, asset_, srvManager_);
+	// object3Dに必要なcomponentを追加
+	AddComponent<Transform3DComponent>(id);
+	AddComponent<Material>(id, asset_->GetModelData(modelName).meshes.size());
+	AddComponent<ModelComponent>(id, modelName, animationName, device_, asset_, srvManager_);
+	// buffer作成
+	renderObjectManager_->CreateObject3D(id, GetComponent<ModelComponent>(id), device_);
 
-	object3Ds_[id] = {
-		transform3DManager_->GetBuffer(id),
-		materialManager_->GetBuffer(id),
-		modelComponentManager_->GetComponent(id),
-	};
-
-	needsSorting_ = true;
-
-	return { id,transform ,material,model };
-}
-
-void ComponentManager::SetImGuiFunction(EntityID id, const std::function<void()>& func) {
-
-	componentImGui_->AddComponent(id, func);
+	return id;
 }
 
 void ComponentManager::RemoveObject3D(EntityID id) {
 
-	object3Ds_.erase(id);
+	// idの削除
 	entityManager_->DestroyEntity(id);
-	transform3DManager_->RemoveComponent(id);
-	materialManager_->RemoveComponent(id);
-	modelComponentManager_->RemoveComponent(id);
-	componentImGui_->RemoveComponent(id);
-
-	needsSorting_ = true;
-}
-
-void ComponentManager::InvalidateBlendModeCache() {
-
-	needsSorting_ = true;
-}
-
-void ComponentManager::RebuildBlendModeCache() const {
-
-	sortedObject3Ds_.clear();
-
-	for (auto& [id, obj] : object3Ds_) {
-
-		const auto& renderingData = obj.model->renderingData;
-		// 描画無効
-		if (!renderingData.drawEnable) {
-			continue;
-		}
-		sortedObject3Ds_[renderingData.blendMode].emplace_back(&obj);
-	}
-	needsSorting_ = false;
-}
-
-const std::unordered_map<BlendMode, std::vector<const ComponentManager::Object3DForGPU*>>&
-ComponentManager::GetSortedObject3Ds() const {
-
-	if (needsSorting_) {
-		RebuildBlendModeCache();
-	}
-	return sortedObject3Ds_;
-}
-
-void ComponentManager::SelectObject() {
-
-	componentImGui_->SelectObject3D();
-}
-
-void ComponentManager::EditObject() {
-
-	componentImGui_->EditObject3D();
+	
+	// object3Dで使用していたcomponentの削除
+	RemoveComponent<Transform3DComponent>(id);
+	RemoveComponent<Material>(id);
+	RemoveComponent<ModelComponent>(id);
+	// buffer削除
+	renderObjectManager_->RemoveObject3D(id);
 }

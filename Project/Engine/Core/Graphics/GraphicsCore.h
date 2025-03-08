@@ -15,6 +15,7 @@
 #include <Engine/Renderer/MeshRenderer.h>
 
 // managers
+#include <Engine/Renderer/Managers/RenderObjectManager.h>
 #include <Engine/Core/Graphics/Managers/RTVManager.h>
 #include <Engine/Core/Graphics/Managers/DSVManager.h>
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
@@ -57,6 +58,8 @@ public:
 	SRVManager* GetSRVManager() const { return srvManager_.get(); }
 
 	DxShaderCompiler* GetDxShaderCompiler() const { return dxShaderComplier_.get(); }
+
+	RenderObjectManager* GetRenderObjectManager() const { return renderObjectManager_.get(); }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return renderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return debugSceneRenderTexture_->GetGPUHandle(); }
@@ -101,6 +104,8 @@ private:
 	std::unique_ptr<ImGuiManager> imguiManager_;
 
 	std::unique_ptr<PipelineState> offscreenPipeline_;
+
+	std::unique_ptr<RenderObjectManager> renderObjectManager_;
 
 	//--------- functions ----------------------------------------------------
 

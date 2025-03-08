@@ -69,7 +69,6 @@ void ImGuiEditor::Hierarchy() {
 
 	ImGui::Begin("Hierarchy");
 
-	ComponentManager::GetInstance()->SelectObject();
 
 	ImGui::End();
 }
@@ -78,7 +77,6 @@ void ImGuiEditor::Inspector() {
 
 	ImGui::Begin("Inspector");
 
-	ComponentManager::GetInstance()->EditObject();
 
 	ImGui::End();
 }

@@ -4,15 +4,14 @@
 //	include
 //============================================================================
 #include <Engine/Core/Lib/ComponentStructures.h>
+#include <Engine/Component/Base/IComponent.h>
 #include <Engine/Core/CBuffer/DxConstBuffer.h>
-
-// entityID
-using EntityID = uint32_t;
 
 //============================================================================
 //	MaterialManager class
 //============================================================================
-class MaterialManager {
+class MaterialManager :
+	public IComponent<Material> {
 public:
 	//========================================================================
 	//	public Methods
@@ -21,16 +20,16 @@ public:
 	MaterialManager() = default;
 	~MaterialManager() = default;
 
-	std::vector<Material*> AddComponent(EntityID entity, size_t meshNum, ID3D12Device* device);
+	void AddComponent(EntityID entity, std::any args) override;
 
-	void RemoveComponent(EntityID entity);
+	void RemoveComponent(EntityID entity) override;
 
-	void Update();
+	void Update() override {};
 
 	//--------- accessor -----------------------------------------------------
 
-	std::vector<Material*> GetComponent(EntityID entity);
-	const std::vector<DxConstBuffer<Material>>& GetBuffer(EntityID entity) const;
+	Material* GetComponent(EntityID entity) override;
+	std::vector<Material*> GetComponentList(EntityID entity);
 private:
 	//========================================================================
 	//	private Methods
@@ -39,5 +38,4 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::unordered_map<EntityID, std::vector<Material>> components_;
-	std::unordered_map<EntityID, std::vector<DxConstBuffer<Material>>> buffers_;
 };

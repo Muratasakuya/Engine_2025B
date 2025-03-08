@@ -3,74 +3,51 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Debug/Assert.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	MaterialManager classMethods
 //============================================================================
 
-std::vector<Material*> MaterialManager::AddComponent(
-	EntityID entity, size_t meshNum, ID3D12Device* device) {
+void MaterialManager::AddComponent(EntityID entity, std::any args) {
+
+	auto [meshNum] = std::any_cast<std::tuple<size_t>>(args);
 
 	// 追加、ModelのMeshの数に合わせる
 	components_[entity].resize(meshNum);
-	buffers_[entity].resize(meshNum);
 	for (uint32_t index = 0; index < meshNum; ++index) {
 
 		components_[entity][index].Init();
-		buffers_[entity][index].CreateConstBuffer(device);
 	}
-
-	std::vector<Material*> result;
-	for (Material& mat : components_[entity]) {
-
-		result.emplace_back(&mat);
-	}
-	return result;
 }
 
 void MaterialManager::RemoveComponent(EntityID entity) {
 
 	components_.erase(entity);
-	buffers_.erase(entity);
 }
 
-void MaterialManager::Update() {
+Material* MaterialManager::GetComponent(EntityID entity) {
 
-	if (buffers_.empty()) {
-		return;
+	// 単一のmaterialのみ返す
+	// multiMaterialの時はGetComponentList()から取得する
+	if (Algorithm::Find(components_, entity, true)) {
+
+		return &components_[entity].front();
 	}
+	return nullptr;
+}
 
-	for (auto& [entityID, buffer] : buffers_) {
-		for (uint32_t index = 0; index < buffer.size(); ++index) {
+std::vector<Material*> MaterialManager::GetComponentList(EntityID entity) {
 
-			buffer[index].TransferData(components_[entityID][index]);
+	// 配列のmaterialを返す
+	if (Algorithm::Find(components_, entity, true)) {
+
+		std::vector<Material*> materials;
+		for (Material& mat : components_.at(entity)) {
+
+			materials.emplace_back(&mat);
 		}
+		return materials;
 	}
-}
-
-std::vector<Material*> MaterialManager::GetComponent(EntityID entity) {
-
-	auto it = components_.find(entity);
-	if (it == components_.end()) {
-		return {};
-	}
-
-	std::vector<Material*> result;
-	for (Material& mat : it->second) {
-
-		result.emplace_back(&mat);
-	}
-	return result;
-}
-
-const std::vector<DxConstBuffer<Material>>& MaterialManager::GetBuffer(EntityID entity) const {
-
-	auto it = buffers_.find(entity);
-	if (it != buffers_.end()) {
-
-		return it->second;
-	}
-	ASSERT(FALSE, "not found materialData");
-	return it->second;
+	return {};
 }

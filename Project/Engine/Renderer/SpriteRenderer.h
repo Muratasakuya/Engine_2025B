@@ -4,35 +4,20 @@
 //	include
 //============================================================================
 
-// c++
-#include <cstdint>
-#include <string>
-#include <unordered_map>
-
-// entityID
-using EntityID = uint32_t;
-
 //============================================================================
-//	EntityManager class
+//	SpriteRenderer class
 //============================================================================
-class EntityManager {
+class SpriteRenderer {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	EntityManager() = default;
-	~EntityManager() = default;
-
-	EntityID CreateEntity(const std::string& name);
-
-	void DestroyEntity(EntityID id);
+	SpriteRenderer() = default;
+	~SpriteRenderer() = default;
 
 	//--------- accessor -----------------------------------------------------
 
-	const std::unordered_map<EntityID, std::string>& GetNames() const { return entityNames_; }
-
-	const std::vector<EntityID>& GetIDs() const { return entityIDs_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -40,14 +25,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	EntityID nextID_ = 0;
-	std::unordered_map<EntityID, std::string> entityNames_;
-	std::vector<EntityID> entityIDs_;
 
-	std::unordered_map<std::string, int> nameCounts_;
 
 	//--------- functions ----------------------------------------------------
 
-	std::string CheckName(const std::string& name);
-	std::string SplitBaseNameAndNumber(const std::string& name, int& number);
 };

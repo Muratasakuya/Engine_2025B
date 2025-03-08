@@ -3,58 +3,39 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Debug/Assert.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	Transform3DManager classMethods
 //============================================================================
 
-Transform3DComponent* Transform3DManager::AddComponent(EntityID entity, ID3D12Device* device) {
+void Transform3DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any args) {
 
 	// 追加
 	components_[entity] = Transform3DComponent();
 	components_[entity].Init();
 	components_[entity].UpdateMatrix();
-
-	buffers_[entity].CreateConstBuffer(device);
-
-	return &components_[entity];
 }
 
 void Transform3DManager::RemoveComponent(EntityID entity) {
 
 	components_.erase(entity);
-	buffers_.erase(entity);
 }
 
 void Transform3DManager::Update() {
 
-	if (buffers_.empty()) {
-		return;
-	}
-
-	for (auto& [entityID, buffer] : buffers_) {
+	for (auto& [entityID, component] : components_) {
 
 		// 行列更新
-		components_[entityID].UpdateMatrix();
-		// GPU転送
-		buffer.TransferData(components_[entityID].matrix);
+		component.UpdateMatrix();
 	}
 }
 
 Transform3DComponent* Transform3DManager::GetComponent(EntityID entity) {
 
-	auto it = components_.find(entity);
-	return (it != components_.end()) ? &it->second : nullptr;
-}
+	if (Algorithm::Find(components_, entity, true)) {
 
-const DxConstBuffer<TransformationMatrix>& Transform3DManager::GetBuffer(EntityID entity) const {
-
-	auto it = buffers_.find(entity);
-	if (it != buffers_.end()) {
-
-		return it->second;
+		return &components_[entity];
 	}
-	ASSERT(FALSE, "not found transformData");
-	return it->second;
+	return nullptr;
 }

@@ -4,15 +4,14 @@
 //	include
 //============================================================================
 #include <Engine/Component/TransformComponent.h>
+#include <Engine/Component/Base/IComponent.h>
 #include <Engine/Core/CBuffer/DxConstBuffer.h>
-
-// entityID
-using EntityID = uint32_t;
 
 //============================================================================
 //	Transform3DManager class
 //============================================================================
-class Transform3DManager {
+class Transform3DManager :
+	public IComponent<Transform3DComponent> {
 public:
 	//========================================================================
 	//	public Methods
@@ -21,16 +20,14 @@ public:
 	Transform3DManager() = default;
 	~Transform3DManager() = default;
 
-	Transform3DComponent* AddComponent(EntityID entity, ID3D12Device* device);
+	void AddComponent(EntityID entity, std::any args) override;
+	void RemoveComponent(EntityID entity) override;
 
-	void RemoveComponent(EntityID entity);
-
-	void Update();
+	void Update() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	Transform3DComponent* GetComponent(EntityID entity);
-	const DxConstBuffer<TransformationMatrix>& GetBuffer(EntityID entity) const;
+	Transform3DComponent* GetComponent(EntityID entity) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -39,5 +36,4 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::unordered_map<EntityID, Transform3DComponent> components_;
-	std::unordered_map<EntityID, DxConstBuffer<TransformationMatrix>> buffers_;
 };

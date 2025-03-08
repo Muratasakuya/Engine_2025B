@@ -5,8 +5,8 @@
 //============================================================================
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/ShadowMap.h>
-#include <Engine/Component/Manager/ComponentManager.h>
 #include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Renderer/Managers/RenderObjectManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 //============================================================================
@@ -15,7 +15,7 @@
 
 void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
 	ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler,
-	CameraManager* cameraManager) {
+	RenderObjectManager* renderObjectManager, CameraManager* cameraManager) {
 
 	commandList_ = nullptr;
 	commandList_ = dxCommand->GetCommandList(CommandListType::Graphics);
@@ -29,8 +29,8 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
 	cameraManager_ = nullptr;
 	cameraManager_ = cameraManager;
 
-	componentManager_ = nullptr;
-	componentManager_ = ComponentManager::GetInstance();
+	renderObjectManager_ = nullptr;
+	renderObjectManager_ = renderObjectManager;
 
 	pipeline_ = std::make_unique<ObjectPipelineManager>();
 	pipeline_->Create(commandList_, device, shaderCompiler);
@@ -63,7 +63,7 @@ void MeshRenderer::Update() {
 void MeshRenderer::RenderZPass() {
 
 	// 描画情報取得
-	const auto& object3Ds = componentManager_->GetSortedObject3Ds();
+	const auto& object3Ds = renderObjectManager_->GetSortedObject3Ds();
 
 	if (object3Ds.empty()) {
 		return;
@@ -119,7 +119,7 @@ void MeshRenderer::Render(bool debugEnable) {
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	// 描画情報取得
-	const auto& object3Ds = componentManager_->GetSortedObject3Ds();
+	const auto& object3Ds = renderObjectManager_->GetSortedObject3Ds();
 
 	if (object3Ds.empty()) {
 		return;

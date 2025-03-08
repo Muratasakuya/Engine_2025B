@@ -10,6 +10,11 @@
 #include <Game/Scene/Manager/SceneManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
+// component
+#include <Engine/Component/Manager/Transform3DManager.h>
+#include <Engine/Component/Manager/MaterialManager.h>
+#include <Engine/Component/Manager/ModelComponentManager.h>
+
 // directX
 #include <dxgidebug.h>
 #include <dxgi1_6.h>
@@ -48,7 +53,13 @@ private:
 
 	std::unique_ptr<CameraManager> cameraManager_;
 
+	std::unique_ptr<Transform3DManager> transform3DComponentManager_;
+	std::unique_ptr<MaterialManager> materialManager_;
+	std::unique_ptr<ModelComponentManager> modelComponentManager_;
+
 	//--------- functions ----------------------------------------------------
+
+	void InitComponent();
 
 	void Update();
 	void UpdateScene();

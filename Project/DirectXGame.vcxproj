@@ -133,6 +133,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Asset\Asset.cpp" />
     <ClCompile Include="Engine\Asset\ModelManager.cpp" />
     <ClCompile Include="Engine\Asset\TextureManager.cpp" />
+    <ClCompile Include="Engine\Component\Base\IComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Component\ColliderComponent.cpp">
       <SubType>
       </SubType>
@@ -150,6 +154,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Component\Manager\ModelComponentManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer\Managers\RenderObjectManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -219,6 +227,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Renderer\SpriteRenderer.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Base\BaseGameObject.cpp" />
     <ClCompile Include="Game\Camera\Base\BaseCamera.cpp" />
     <ClCompile Include="Game\Camera\DebugCamera.cpp">
@@ -255,6 +267,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelManager.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
+    <ClInclude Include="Engine\Component\Base\IComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Component\ColliderComponent.h">
       <SubType>
       </SubType>
@@ -272,6 +288,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Component\Manager\ModelComponentManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Renderer\Managers\RenderObjectManager.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -341,6 +361,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Renderer\Managers\ObjectPipelineManager.h" />
     <ClInclude Include="Engine\Renderer\MeshRenderer.h" />
     <ClInclude Include="Engine\Renderer\LineRenderer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Renderer\SpriteRenderer.h">
       <SubType>
       </SubType>
     </ClInclude>
