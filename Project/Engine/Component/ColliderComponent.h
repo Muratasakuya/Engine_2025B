@@ -9,6 +9,8 @@
 #include <cstdint>
 #include <optional>
 #include <functional>
+// front
+class BaseGameObject;
 // colliderID
 using ColliderID = uint32_t;
 
@@ -49,6 +51,12 @@ public:
 	//	public Methods
 	//========================================================================
 
+	//--------- using --------------------------------------------------------
+
+	using CollisionCallback = std::function<void(ColliderComponent*)>;
+
+	//--------- functions ----------------------------------------------------
+
 	ColliderComponent() = default;
 	~ColliderComponent() = default;
 
@@ -60,14 +68,18 @@ public:
 
 	void Update();
 
-	//--------- variables ----------------------------------------------------
+	void SetOnCollisionEnter(std::function<void(ColliderComponent*)> onCollisionEnter) { onEnter_ = onCollisionEnter; }
+	void SetOnCollisionStay(std::function<void(ColliderComponent*)> onCollisionEnter) { onStay_ = onCollisionEnter; }
+	void SetOnCollisionExit(std::function<void(ColliderComponent*)> onCollisionEnter) { onExit_ = onCollisionEnter; }
 
-	using CollisionCallback = std::function<void(ColliderComponent*)>;
+	//--------- variables ----------------------------------------------------
 
 	// コールバック関数
 	CollisionCallback onEnter_ = nullptr;
 	CollisionCallback onStay_ = nullptr;
 	CollisionCallback onExit_ = nullptr;
+
+	ColliderID id_; //* 自身のid
 
 	Vector3 centerPos_; //* 衝突判定用中心座標
 

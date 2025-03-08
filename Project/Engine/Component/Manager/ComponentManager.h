@@ -60,6 +60,7 @@ public:
 
 	Object3D CreateObject3D(const std::string& modelName,
 		const std::optional<std::string>& animationName, const std::string& objectName);
+	void SetImGuiFunction(EntityID id, const std::function<void()>& func);
 
 	void RemoveObject3D(EntityID id);
 

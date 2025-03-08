@@ -29,10 +29,9 @@ void ComponentImGui::Init(EntityManager* entityManager, Transform3DManager* tran
 	modelComponentManager_ = modelComponentManager;
 }
 
-std::function<void()> ComponentImGui::AddComponent(EntityID id) {
+void ComponentImGui::AddComponent(EntityID id, const std::function<void()>& func) {
 
-	object3DImGui_[id] = {};
-	return object3DImGui_[id];
+	object3DImGui_[id] = func;
 }
 
 void ComponentImGui::RemoveComponent(EntityID id) {
@@ -114,7 +113,11 @@ void ComponentImGui::EditObject3D() {
 
 	if (object3DImGui_[*object3D_.selectedId_]) {
 
+		ImGui::Begin("Individual");
+
 		object3DImGui_[*object3D_.selectedId_]();
+
+		ImGui::End();
 	}
 }
 

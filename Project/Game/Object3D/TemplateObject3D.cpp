@@ -15,12 +15,13 @@ TemplateObject3D::TemplateObject3D() {
 
 	BaseGameObject::CreateModel("teapot");
 
-	// collision
+	// colliderA
 	colliderA_ = BaseGameObject::AddCollider(CollisionShape::Sphere());
 	colliderA_->type_ = ColliderType::Type_None;
 	colliderA_->targetType_ = ColliderType::Type_Test;
 	colliderA_->radius_ = 4.0f;
 
+	// colliderB
 	colliderB_ = BaseGameObject::AddCollider(CollisionShape::Sphere());
 	colliderB_->type_ = ColliderType::Type_Test;
 	colliderB_->targetType_ = ColliderType::Type_None;
@@ -29,24 +30,45 @@ TemplateObject3D::TemplateObject3D() {
 
 void TemplateObject3D::Update() {
 
-	object_.imguiFunc = [&]() {
-
-		ImGui::DragFloat3("colliderAPos", &colliderA_->centerPos_.x, 0.01f);
-		ImGui::DragFloat3("colliderBPos", &colliderA_->centerPos_.x, 0.01f);
-		};
-
+	// imgui更新
+	UpdateImGui();
 	// 衝突更新
 	UpdateCollision();
+}
+
+void TemplateObject3D::OnCollisionEnter(const ColliderComponent* collider, const ColliderID colliderId) {
+
+	// colliderIdが"0"のOnCollisionEnter
+	if (colliderId == 0) {
+		if (collider->type_ == ColliderType::Type_Test) {
+
+			int a = 10;
+			a = colliderId;
+		}
+	}
+	// colliderIdが"1"のOnCollisionEnter
+	else if (colliderId == 1) {
+		if (collider->type_ == ColliderType::Type_Test) {
+
+			int a = 10;
+			a = colliderId;
+		}
+	}
 }
 
 void TemplateObject3D::UpdateCollision() {
 
 	colliderA_->Update();
 	colliderB_->Update();
+}
 
-	colliderA_->onEnter_ = []([[maybe_unused]] ColliderComponent* collider) {
+void TemplateObject3D::UpdateImGui() {
 
-		int a = 10;
-		a = 0;
+	// imguiの更新
+	object_.imguiFunc = [&]() {
+
+		ImGui::DragFloat3("colliderAPos", &colliderA_->centerPos_.x, 0.01f);
+		ImGui::DragFloat3("colliderBPos", &colliderB_->centerPos_.x, 0.01f);
 		};
+	BaseGameObject::SetImGui();
 }

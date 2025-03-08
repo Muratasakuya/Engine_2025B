@@ -23,6 +23,7 @@ public:
 	BaseGameObject() = default;
 	~BaseGameObject() = default;
 
+	// init
 	void CreateModel(const std::string& modelName,
 		const std::optional<std::string>& animationName = std::nullopt);
 
@@ -30,7 +31,22 @@ public:
 	ColliderComponent* AddCollider(const CollisionShape::Shapes& shape);
 	void RemoveCollider(ColliderComponent* collider);
 
+	virtual void OnCollisionEnter(
+		[[maybe_unused]] const ColliderComponent* collider,
+		[[maybe_unused]] const ColliderID colliderId) {};
+
+	virtual void OnCollisionStay(
+		[[maybe_unused]] const ColliderComponent* collider,
+		[[maybe_unused]] const ColliderID colliderId) {};
+
+	virtual void OnCollisionExit(
+		[[maybe_unused]] const ColliderComponent* collider,
+		[[maybe_unused]] const ColliderID colliderId) {};
+
 	//--------- accessor -----------------------------------------------------
+
+	// imgui
+	void SetImGui();
 
 	// Transform
 	void SetScale(const Vector3& scale) { object_.transform->scale = scale; }
@@ -45,6 +61,15 @@ protected:
 
 	Object3D object_;
 	std::vector<UVTransform> uvTransforms_;
+
+private:
+	//========================================================================
+	//	protected Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	ColliderID colliderId_ = 0;
 
 	//--------- functions ----------------------------------------------------
 

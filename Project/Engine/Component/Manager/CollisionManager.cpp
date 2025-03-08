@@ -31,10 +31,10 @@ void CollisionManager::Finalize() {
 
 ColliderComponent* CollisionManager::AddComponent(const CollisionShape::Shapes& shape) {
 
-	// collider追加
 	ColliderComponent* collider = new ColliderComponent();
 	collider->shape_ = shape;
 	colliders_.emplace_back(collider);
+
 	return collider;
 }
 
@@ -178,7 +178,7 @@ void CollisionManager::DrawCollider() {
 
 			if constexpr (std::is_same_v<ShapeType, CollisionShape::Sphere>) {
 
-				lineRenderer->DrawSphere(4, shapeData.radius, center, color);
+				lineRenderer->DrawSphere(8, shapeData.radius, center, color);
 			} else if constexpr (std::is_same_v<ShapeType, CollisionShape::OBB>) {
 
 				lineRenderer->DrawOBB(shapeData, color);

@@ -4,6 +4,7 @@
 //	ColliderComponent classMethods
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
+#include <Game/Base/BaseGameObject.h>
 
 //============================================================================
 //	ColliderComponent classMethods

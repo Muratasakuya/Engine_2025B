@@ -27,12 +27,36 @@ void BaseGameObject::CreateModel(const std::string& modelName,
 
 ColliderComponent* BaseGameObject::AddCollider(const CollisionShape::Shapes& shape) {
 
-	return CollisionManager::GetInstance()->AddComponent(shape);
+	ColliderComponent* collider = nullptr;
+	collider = CollisionManager::GetInstance()->AddComponent(shape);
+
+	// colliderId付与
+	collider->id_ = colliderId_;
+	// idを進める
+	++colliderId_;
+
+	// 関数結び付け
+	collider->SetOnCollisionEnter([this, collider](ColliderComponent* otherCollider) {
+		OnCollisionEnter(otherCollider, collider->id_);
+		});
+	collider->SetOnCollisionStay([this, collider](ColliderComponent* otherCollider) {
+		OnCollisionStay(otherCollider, collider->id_);
+		});
+	collider->SetOnCollisionExit([this, collider](ColliderComponent* otherCollider) {
+		OnCollisionExit(otherCollider, collider->id_);
+		});
+
+	return collider;
 }
 
 void BaseGameObject::RemoveCollider(ColliderComponent* collider) {
 
 	CollisionManager::GetInstance()->RemoveComponent(collider);
+}
+
+void BaseGameObject::SetImGui() {
+
+	ComponentManager::GetInstance()->SetImGuiFunction(object_.id, object_.imguiFunc);
 }
 
 std::string BaseGameObject::GetObjectName() const {
