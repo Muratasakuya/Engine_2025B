@@ -239,6 +239,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Time\GameTimer.cpp" />
     <ClCompile Include="Lib\Adapter\Easing.cpp" />
     <ClCompile Include="Lib\Adapter\JsonAdapter.cpp" />
+    <ClCompile Include="Lib\MathUtils\Algorithm.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Lib\MathUtils\Matrix4x4.cpp" />
     <ClCompile Include="Lib\MathUtils\Quaternion.cpp" />
     <ClCompile Include="Lib\MathUtils\Vector2.cpp" />
@@ -362,6 +366,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
     <ClInclude Include="Lib\Adapter\Random.h" />
+    <ClInclude Include="Lib\MathUtils\Algorithm.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Lib\MathUtils\MathUtils.h">
       <SubType>
       </SubType>

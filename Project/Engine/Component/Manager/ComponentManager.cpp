@@ -67,7 +67,7 @@ Object3D ComponentManager::CreateObject3D(const std::string& modelName,
 	std::vector<Material*> material = materialManager_->AddComponent(id, asset_->GetModelData(modelName).meshes.size(), device_);
 	ModelComponent* model = modelComponentManager_->AddComponent(id,
 		modelName, animationName, device_, asset_, srvManager_);
-	std::function<void()>* imguiFunc = componentImGui_->AddComponent(id);
+	std::function<void()> imguiFunc = componentImGui_->AddComponent(id);
 
 	object3Ds_[id] = {
 		transform3DManager_->GetBuffer(id),

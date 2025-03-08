@@ -47,5 +47,7 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	gameCamera_->Update();
 
+	object_->Update();
+
 	LineRenderer::GetInstance()->DrawGrid(16, 16.0f, Color::White());
 }

@@ -138,3 +138,42 @@ void LineRenderer::DrawSphere(int division, float radius, const Vector3& centerP
 		}
 	}
 }
+
+void LineRenderer::DrawOBB(const CollisionShape::OBB& obb, const Color& color) {
+
+	const uint32_t vertexNum = 8;
+
+	Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(obb.rotate);
+
+	Vector3 vertices[vertexNum];
+	Vector3 halfSizeX = Vector3::Transform(Vector3(1.0f, 0.0f, 0.0f), rotateMatrix) * obb.size.x;
+	Vector3 halfSizeY = Vector3::Transform(Vector3(0.0f, 1.0f, 0.0f), rotateMatrix) * obb.size.y;
+	Vector3 halfSizeZ = Vector3::Transform(Vector3(0.0f, 0.0f, 1.0f), rotateMatrix) * obb.size.z;
+
+	Vector3 offsets[vertexNum] = {
+		{-1, -1, -1}, {-1,  1, -1}, {1, -1, -1}, {1,  1, -1},
+		{-1, -1,  1}, {-1,  1,  1}, {1, -1,  1}, {1,  1,  1}
+	};
+
+	for (int i = 0; i < vertexNum; ++i) {
+
+		Vector3 localVertex = offsets[i].x * halfSizeX +
+			offsets[i].y * halfSizeY +
+			offsets[i].z * halfSizeZ;
+		vertices[i] = obb.center + localVertex;
+	}
+
+	int edges[12][2] = {
+		{0, 1}, {1, 3}, {3, 2}, {2, 0},
+		{4, 5}, {5, 7}, {7, 6}, {6, 4},
+		{0, 4}, {1, 5}, {2, 6}, {3, 7}
+	};
+
+	for (int i = 0; i < 12; ++i) {
+
+		int start = edges[i][0];
+		int end = edges[i][1];
+
+		DrawLine3D(vertices[start], vertices[end], color);
+	}
+}

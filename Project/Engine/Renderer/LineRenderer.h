@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Lib/Collision.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 // c++
@@ -33,6 +34,8 @@ public:
 	void DrawGrid(int division, float gridSize, const Color& color);
 
 	void DrawSphere(int division, float radius, const Vector3& centerPos, const Color& color);
+
+	void DrawOBB(const CollisionShape::OBB& obb, const Color& color);
 
 	//--------- accessor -----------------------------------------------------
 
