@@ -12,15 +12,22 @@
 void AnimationComponentManager::AddComponent(EntityID entity, std::any args) {
 
 	auto [animationName, asset] =
-		std::any_cast<std::tuple<std::string, Asset*>>(args);
+		std::any_cast<std::tuple<std::optional<std::string>, Asset*>>(args);
 
-	components_[entity].Init(animationName, asset);
-	components_[entity].SetPlayAnimation(animationName, true);
+	if (!animationName.has_value()) {
+		return;
+	}
+
+	components_[entity].Init(*animationName, asset);
+	components_[entity].SetPlayAnimation(*animationName, true);
 }
 
 void AnimationComponentManager::RemoveComponent(EntityID entity) {
 
-	components_.erase(entity);
+	if (Algorithm::Find(components_, entity)) {
+
+		components_.erase(entity);
+	}
 }
 
 void AnimationComponentManager::Update() {

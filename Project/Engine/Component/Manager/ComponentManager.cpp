@@ -84,7 +84,7 @@ EntityID ComponentManager::CreateObject3D(const std::string& modelName,
 	// object3Dに必要なcomponentを追加
 	AddComponent<Transform3DComponent>(id);
 	AddComponent<Material>(id, asset_->GetModelData(modelName).meshes.size());
-	AddComponent<AnimationComponent>(id, *animationName, asset_);
+	AddComponent<AnimationComponent>(id, animationName, asset_);
 	AddComponent<ModelComponent>(id, modelName, animationName, device_, commandList_, asset_, srvManager_);
 	// buffer作成
 	renderObjectManager_->CreateObject3D(id, GetComponent<ModelComponent>(id), device_);

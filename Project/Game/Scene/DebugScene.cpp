@@ -39,13 +39,13 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	ComponentManager::GetInstance()->CreateObject3D("walk", "walk", "walk");
-	ComponentManager::GetInstance()->CreateObject3D("walk", "walk", "walk");
-	ComponentManager::GetInstance()->CreateObject3D("walk", "walk", "walk");
-	ComponentManager::GetInstance()->CreateObject3D("walk", "walk", "walk");
-	ComponentManager::GetInstance()->CreateObject3D("walk", "walk", "walk");
-	ComponentManager::GetInstance()->CreateObject3D("walk", "walk", "walk");
-	ComponentManager::GetInstance()->CreateObject3D("walk", "walk", "walk");
+	// iの数だけ生成する
+	// 128 ...25fpsくらい
+	// debugCameraと合わせて計 *2回描画
+	for (uint32_t i = 0; i < 128; ++i) {
+
+		ComponentManager::GetInstance()->CreateObject3D("walk", std::nullopt, "walk");
+	}
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
