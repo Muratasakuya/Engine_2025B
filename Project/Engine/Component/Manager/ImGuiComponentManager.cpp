@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Component/Manager/ComponentManager.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 // imgui
 #include <imgui.h>
@@ -117,8 +118,23 @@ void ImGuiComponentManager::EditObject3D() {
 			ImGui::EndTabItem();
 		}
 
+		if (ImGui::BeginTabItem("Individual")) {
+
+			if (Algorithm::Find(object3D_.imguiFunc_, *object3D_.selectedId_)) {
+
+				EntityID id = *object3D_.selectedId_;
+				object3D_.imguiFunc_.at(id)();
+			}
+			ImGui::EndTabItem();
+		}
+
 		ImGui::EndTabBar();
 	}
+}
+
+void ImGuiComponentManager::SetImGuiFunc(EntityID entityId, std::function<void()> func) {
+
+	object3D_.imguiFunc_[entityId] = func;
 }
 
 void ImGuiComponentManager::Object3DInformation() {

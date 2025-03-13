@@ -43,6 +43,10 @@ public:
 	void SelectObject3D();
 	// 選択したObject3Dの操作
 	void EditObject3D();
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetImGuiFunc(EntityID entityId, std::function<void()> func);
 private:
 	//========================================================================
 	//	private Methods
@@ -54,6 +58,7 @@ private:
 
 		// imguiで選択されたidの保持
 		std::optional<uint32_t> selectedId_ = std::nullopt;
+		std::unordered_map<EntityID, std::function<void()>> imguiFunc_;
 		mutable std::unordered_map<std::string, std::vector<std::pair<int, uint32_t>>> grouped_;
 		mutable size_t lastCount_ = 0;
 	};
