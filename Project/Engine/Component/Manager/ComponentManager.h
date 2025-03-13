@@ -23,37 +23,17 @@ class Asset;
 class SRVManager;
 class RenderObjectManager;
 
-// 今現段階で必要と思った種類
-// 3DObjectを扱いたいとき
-// Transform3D、Materials、Model(Animationするかで分岐)、Rendering情報(BlendModeなど)、Collisionは複数設定したい、Physics
-// これらはすべて同じIDで作成したい
-// AddComponnentしたら引き数でModelName、Animationするかしないか、ObjectNameを受け取り作成し、ユーザーに操作できるデータをポインタで渡す
-// Spriteを扱いたいとき
-// Transform2D、Color、Rendering情報(BlendModeなど)、Collision
-// これらはすべて同じIDで作成したい
-// AddComponnentしたら引き数でTextureName、ObjectNameを受け取り作成し、ユーザーに操作できるデータをポインタで渡す
-
 // 03/08
 // 削除したObjectにアクセスしてしまう可能性大
-// ユーザーにはIDのみ渡して毎回Get()してObjectを使用する方面に移行
+// ユーザーにはIDのみ渡して毎回Get()してObjectを使用する方面に移行 ✓
+// imguiの操作について
+// camera、lightはsceneで追加されたやつを操作できるようにする
+// id:nameをhierarchyで表示し、inspectorで操作できるようにする
 
 //============================================================================
 //	ComponentManager class
 //============================================================================
 class ComponentManager {
-private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
-
-	//--------- structures ---------------------------------------------------
-
-	struct Object3DForGPU {
-
-		DxConstBuffer<TransformationMatrix> matrix;
-		std::vector<DxConstBuffer<Material>> materials;
-		ModelComponent* model;
-	};
 public:
 	//========================================================================
 	//	public Methods

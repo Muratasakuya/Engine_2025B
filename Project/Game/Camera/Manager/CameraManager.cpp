@@ -32,7 +32,8 @@ void CameraManager::Update() {
 	lightViewCamera_->Update();
 
 	// gameCameraの視錐台描画
-	RenderCameraFrame();
+	// カリング処理やるまで封印
+	//RenderCameraFrame();
 }
 
 void CameraManager::SetCamera(BaseCamera* gameCamera) {

@@ -41,6 +41,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	std::string GetObjectName() const;
 protected:
 	//========================================================================
 	//	protected Methods
@@ -59,5 +60,4 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
-	std::string GetObjectName() const;
 };

@@ -14,7 +14,7 @@
 
 TemplateObject3D::TemplateObject3D() {
 
-	ComponentManager::GetInstance()->CreateObject3D("teapot", std::nullopt, "teapot");
+	teapotId_ = ComponentManager::GetInstance()->CreateObject3D("teapot", std::nullopt, "teapot");
 
 	// colliderA
 	colliderA_ = BaseGameObject::AddCollider(CollisionShape::Sphere());
@@ -23,16 +23,23 @@ TemplateObject3D::TemplateObject3D() {
 	colliderA_->radius_ = 4.0f;
 
 	// colliderB
-	colliderB_ = BaseGameObject::AddCollider(CollisionShape::Sphere());
+	colliderB_ = BaseGameObject::AddCollider(CollisionShape::OBB());
 	colliderB_->type_ = ColliderType::Type_Test;
 	colliderB_->targetType_ = ColliderType::Type_None;
-	colliderB_->radius_ = 4.0f;
+	colliderB_->size_ = Vector3::AnyInit(4.0f);
+	colliderB_->rotate_.Init();
 }
 
 void TemplateObject3D::Update() {
 
 	// 衝突更新
 	UpdateCollision();
+}
+
+void TemplateObject3D::UpdateCollision() {
+
+	colliderA_->Update();
+	colliderB_->Update();
 }
 
 void TemplateObject3D::OnCollisionEnter(const ColliderComponent* collider, const ColliderID colliderId) {
@@ -53,10 +60,4 @@ void TemplateObject3D::OnCollisionEnter(const ColliderComponent* collider, const
 			a = colliderId;
 		}
 	}
-}
-
-void TemplateObject3D::UpdateCollision() {
-
-	colliderA_->Update();
-	colliderB_->Update();
 }

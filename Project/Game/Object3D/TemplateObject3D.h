@@ -34,6 +34,8 @@ private:
 	ColliderComponent* colliderA_;
 	ColliderComponent* colliderB_;
 
+	EntityID teapotId_;
+
 	//--------- functions ----------------------------------------------------
 
 	void UpdateCollision();
