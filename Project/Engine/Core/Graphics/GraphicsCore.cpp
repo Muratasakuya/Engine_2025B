@@ -170,6 +170,9 @@ void GraphicsCore::Finalize(HWND hwnd) {
 
 void GraphicsCore::Render() {
 
+	// ComputeCommandを非同期で実行
+	dxCommand_->StartComputeCommands();
+
 	// zPass
 	RenderZPass();
 	// offscreenTexture
@@ -276,9 +279,6 @@ void GraphicsCore::RenderFrameBuffer() {
 
 void GraphicsCore::EndRenderFrame() {
 
-	// ComputeCommand実行
-	dxCommand_->ExecuteComputeCommands();
-
 #ifdef _DEBUG
 	// imgui描画
 	imguiManager_->End();
@@ -299,6 +299,7 @@ void GraphicsCore::EndRenderFrame() {
 	// Present -> RenderTarget
 	dxCommand_->TransitionBarriers({ dxSwapChain_->GetCurrentResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-	// GraphicsCommand実行
-	dxCommand_->ExecuteGraphicsCommands(dxSwapChain_->Get());
+
+	// Command実行
+	dxCommand_->ExecuteCommands(dxSwapChain_->Get());
 }

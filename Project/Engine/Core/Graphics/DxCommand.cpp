@@ -86,21 +86,9 @@ void DxCommand::ExecuteComputeCommands() {
 
 	ID3D12CommandList* commandLists[] = { commandLists_[CommandListType::Compute].Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
-
-	// Fenceの値を更新: GraphicsCommandの方で完了を待ちを行う
-	fenceValue_++;
-	commandQueue_->Signal(fence_.Get(), fenceValue_);
 }
 
 void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
-
-	// Computeの完了を待つ
-	if (fence_->GetCompletedValue() < fenceValue_) {
-
-		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
-		// イベントを待つ
-		WaitForSingleObject(fenceEvent_, INFINITE);
-	}
 
 	HRESULT hr = S_OK;
 	// GraphicsCommand
@@ -112,25 +100,59 @@ void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
 
 	// GPUとOSに画面の交換を行うように通知する
 	swapChain->Present(1, 0);
+}
+
+void DxCommand::FenceEvent() {
 
 	// Fenceの値を更新
 	fenceValue_++;
 	commandQueue_->Signal(fence_.Get(), fenceValue_);
 
-	// Fenceの値が指定したSignal値にたどり着いているか確認する
+	// 実行完了を待つ
 	if (fence_->GetCompletedValue() < fenceValue_) {
 
 		fence_->SetEventOnCompletion(fenceValue_, fenceEvent_);
 		// イベントを待つ
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
+}
 
-	// FPS固定
+void DxCommand::StartComputeCommands() {
+
+	std::promise<void> computeDonePromise;
+	computeDoneFuture_ = computeDonePromise.get_future();
+
+	std::thread computeThread([this, promise = std::move(computeDonePromise)]() mutable {
+
+		this->ExecuteComputeCommands();
+		// Compute の完了を通知
+		promise.set_value();
+		});
+
+	// 非同期で実行
+	computeThread.detach();
+}
+
+void DxCommand::ExecuteCommands(IDXGISwapChain4* swapChain) {
+
+	// ComputeCommandの完了を待つ
+	computeDoneFuture_.wait();
+
+	// Computeの完了を待つ
+	FenceEvent();
+
+	// GraphicsCommand を実行
+	ExecuteGraphicsCommands(swapChain);
+	// Graphicsの完了を待つ
+	FenceEvent();
+
+	// FPS 固定
 	UpdateFixFPS();
 
+	// コマンドリストのリセット
 	for (const auto& type : commandListTypes_) {
 
-		hr = commandAllocators_[type]->Reset();
+		HRESULT hr = commandAllocators_[type]->Reset();
 		assert(SUCCEEDED(hr));
 		hr = commandLists_[type]->Reset(commandAllocators_[type].Get(), nullptr);
 		assert(SUCCEEDED(hr));
@@ -179,6 +201,9 @@ ID3D12GraphicsCommandList* DxCommand::GetCommandList(CommandListType type) const
 //============================================================================
 
 void DxCommand::SetDescriptorHeaps(const std::vector<ID3D12DescriptorHeap*>& descriptorHeaps) {
+
+	commandLists_[CommandListType::Compute]->SetDescriptorHeaps(
+		static_cast<UINT>(descriptorHeaps.size()), descriptorHeaps.data());
 
 	commandLists_[CommandListType::Graphics]->SetDescriptorHeaps(
 		static_cast<UINT>(descriptorHeaps.size()), descriptorHeaps.data());

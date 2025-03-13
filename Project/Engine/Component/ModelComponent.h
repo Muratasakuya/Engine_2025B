@@ -67,9 +67,14 @@ public:
 	~AnimationModel() = default;
 
 	void Init(const std::string& modelName, const std::string& animationName,
-		ID3D12Device* device, class Asset* asset, class SRVManager* srvManager);
+		ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
+		Asset* asset, class SRVManager* srvManager);
+
+	void Skinning();
 
 	//--------- accessor -----------------------------------------------------
+
+	void SetAnimationName(const std::string& animationName) { animationName_ = animationName; }
 
 	const IOVertexBuffer& GetIOVertex() { return ioVertexBuffer_; }
 private:
@@ -78,6 +83,9 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	Asset* asset_;
+	ID3D12GraphicsCommandList* commandList_;
 
 	IOVertexBuffer ioVertexBuffer_;
 	// SkinningInfo

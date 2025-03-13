@@ -3,29 +3,32 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/Methods/IScene.h>
-#include <Game/Camera/GameCamera.h>
-
-// c++
-#include <memory>
-#include <vector>
+#include <Engine/Component/AnimationComponent.h>
+#include <Engine/Component/Base/IComponent.h>
 
 //============================================================================
-//	DebugScene class
+//	AnimationComponentManager class
 //============================================================================
-class DebugScene :
-	public IScene {
+class AnimationComponentManager :
+	public IComponent<AnimationComponent> {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	DebugScene() = default;
-	~DebugScene() = default;
+	AnimationComponentManager() = default;
+	~AnimationComponentManager() = default;
 
-	void Init(Asset* asset,CameraManager* cameraManager) override;
+	void AddComponent(EntityID entity, std::any args) override;
+	void RemoveComponent(EntityID entity) override;
 
-	void Update(SceneManager* sceneManager) override;
+	void Update() override;
+
+	//--------- accessor -----------------------------------------------------
+
+		//--------- accessor -----------------------------------------------------
+
+	AnimationComponent* GetComponent(EntityID entity) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -33,8 +36,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unique_ptr<GameCamera> gameCamera_;
-
-	//--------- functions ----------------------------------------------------
-
+	std::unordered_map<EntityID, AnimationComponent> components_;
 };

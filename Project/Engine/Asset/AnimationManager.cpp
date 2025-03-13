@@ -58,8 +58,17 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 		aiAnimation* animationAssimp = scene->mAnimations[animationIndex];
 		AnimationData animation;
 
-		// アニメーション名を設定
-		std::string newAnimationName = modelName + "_" + animationAssimp->mName.C_Str();
+		std::string newAnimationName{};
+		// アニメーションの数が1個ならmodelの名前をそのまま使う
+		if (scene->mNumAnimations == 1) {
+
+			// アニメーション名を設定
+			newAnimationName = modelName;
+		} else {
+
+			// アニメーション名を設定
+			newAnimationName = modelName + "_" + animationAssimp->mName.C_Str();
+		}
 
 		// 時間の単位を秒に変換
 		animation.duration = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);

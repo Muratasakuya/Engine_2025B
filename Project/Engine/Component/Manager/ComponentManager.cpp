@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Debug/Assert.h>
+
 #include <Engine/Renderer/Managers/RenderObjectManager.h>
 
 //============================================================================
@@ -30,11 +31,14 @@ void ComponentManager::Finalize() {
 	}
 }
 
-void ComponentManager::Init(ID3D12Device* device, Asset* asset, SRVManager* srvManager,
-	RenderObjectManager* renderObjectManager) {
+void ComponentManager::Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
+	Asset* asset, SRVManager* srvManager, RenderObjectManager* renderObjectManager) {
 
 	device_ = nullptr;
 	device_ = device;
+
+	commandList_ = nullptr;
+	commandList_ = commandList;
 
 	asset_ = nullptr;
 	asset_ = asset;
@@ -80,7 +84,8 @@ EntityID ComponentManager::CreateObject3D(const std::string& modelName,
 	// object3Dに必要なcomponentを追加
 	AddComponent<Transform3DComponent>(id);
 	AddComponent<Material>(id, asset_->GetModelData(modelName).meshes.size());
-	AddComponent<ModelComponent>(id, modelName, animationName, device_, asset_, srvManager_);
+	AddComponent<AnimationComponent>(id, *animationName, asset_);
+	AddComponent<ModelComponent>(id, modelName, animationName, device_, commandList_, asset_, srvManager_);
 	// buffer作成
 	renderObjectManager_->CreateObject3D(id, GetComponent<ModelComponent>(id), device_);
 
@@ -95,6 +100,7 @@ void ComponentManager::RemoveObject3D(EntityID id) {
 	// object3Dで使用していたcomponentの削除
 	RemoveComponent<Transform3DComponent>(id);
 	RemoveComponent<Material>(id);
+	RemoveComponent<AnimationComponent>(id);
 	RemoveComponent<ModelComponent>(id);
 	// buffer削除
 	renderObjectManager_->RemoveObject3D(id);

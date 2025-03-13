@@ -83,8 +83,9 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 
 void Framework::InitComponent() {
 
-	// component初期化
-	ComponentManager::GetInstance()->Init(graphicsCore_->GetDevice(),
+	// component初期化、CS用のCommandList
+	ComponentManager::GetInstance()->Init(
+		graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Compute),
 		asset_.get(), graphicsCore_->GetSRVManager(), graphicsCore_->GetRenderObjectManager());
 
 	// transform
@@ -93,8 +94,12 @@ void Framework::InitComponent() {
 	// material
 	materialManager_ = std::make_unique<MaterialManager>();
 	ComponentManager::GetInstance()->RegisterComponentManager(materialManager_.get());
+	// animation
+	animationComponentManager_ = std::make_unique<AnimationComponentManager>();
+	ComponentManager::GetInstance()->RegisterComponentManager(animationComponentManager_.get());
 	// model
 	modelComponentManager_ = std::make_unique<ModelComponentManager>();
+	modelComponentManager_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxShaderCompiler());
 	ComponentManager::GetInstance()->RegisterComponentManager(modelComponentManager_.get());
 
 	// imgui
@@ -166,6 +171,7 @@ void Framework::Finalize() {
 	asset_.reset();
 	transform3DComponentManager_.reset();
 	materialManager_.reset();
+	animationComponentManager_.reset();
 	modelComponentManager_.reset();
 
 	// ComFinalize

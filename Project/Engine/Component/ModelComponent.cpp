@@ -53,7 +53,13 @@ const D3D12_GPU_DESCRIPTOR_HANDLE& BaseModel::GetTextureGPUHandle(uint32_t meshI
 //============================================================================
 
 void AnimationModel::Init(const std::string& modelName, const std::string& animationName,
-	ID3D12Device* device, Asset* asset, class SRVManager* srvManager) {
+	ID3D12Device* device, ID3D12GraphicsCommandList* commandList, Asset* asset, class SRVManager* srvManager) {
+
+	asset_ = nullptr;
+	asset_ = asset;
+
+	commandList_ = nullptr;
+	commandList_ = commandList;
 
 	animationName_ = animationName;
 
@@ -64,6 +70,18 @@ void AnimationModel::Init(const std::string& modelName, const std::string& anima
 		device, srvManager);
 	skinningInfoDates_.CreateConstBuffer(device);
 	skinningInfoDates_.TransferData(static_cast<uint32_t>(BaseModel::GetModelData().meshes.front().vertices.size()));
+}
+
+void AnimationModel::Skinning() {
+
+	commandList_->SetComputeRootDescriptorTable(0,
+		asset_->GetSkinClusterData(animationName_).paletteSrvHandle.second);
+	commandList_->SetComputeRootDescriptorTable(1, ioVertexBuffer_.GetInputGPUHandle());
+	commandList_->SetComputeRootDescriptorTable(2,
+		asset_->GetSkinClusterData(animationName_).influenceSrvHandle.second);
+	commandList_->SetComputeRootDescriptorTable(3, ioVertexBuffer_.GetOutputGPUHandle());
+	commandList_->SetComputeRootConstantBufferView(4, skinningInfoDates_.GetResourceAdress());
+	commandList_->Dispatch(static_cast<UINT>(modelData_.meshes.front().vertices.size() + 1023) / 1024, 1, 1);
 }
 
 //============================================================================
