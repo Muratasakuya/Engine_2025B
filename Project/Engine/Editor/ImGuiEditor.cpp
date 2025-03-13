@@ -33,7 +33,7 @@ void ImGuiEditor::Display() {
 	// imguiの表示
 	MainWindow();
 
-	Engine();
+	Console();
 
 	Project();
 
@@ -58,9 +58,9 @@ void ImGuiEditor::MainWindow() {
 	ImGui::End();
 }
 
-void ImGuiEditor::Engine() {
+void ImGuiEditor::Console() {
 
-	ImGui::Begin("Engine");
+	ImGui::Begin("Console");
 
 	GameTimer::ImGui();
 
@@ -78,6 +78,8 @@ void ImGuiEditor::Hierarchy() {
 
 	ImGui::Begin("Hierarchy");
 
+	ComponentManager::GetInstance()->GetImGuiComponentManager()->SelectObject3D();
+
 	ImGui::End();
 }
 
@@ -85,6 +87,7 @@ void ImGuiEditor::Inspector() {
 
 	ImGui::Begin("Inspector");
 
+	ComponentManager::GetInstance()->GetImGuiComponentManager()->EditObject3D();
 
 	ImGui::End();
 }

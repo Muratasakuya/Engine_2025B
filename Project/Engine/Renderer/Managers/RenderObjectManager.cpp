@@ -16,8 +16,6 @@ void RenderObjectManager::CreateObject3D(EntityID id, ModelComponent* model, ID3
 		return;
 	}
 
-	needsSorting_ = true;
-
 	object3DBuffers_[id].matrix.CreateConstBuffer(device);
 
 	if (model->isAnimation) {
@@ -32,11 +30,14 @@ void RenderObjectManager::CreateObject3D(EntityID id, ModelComponent* model, ID3
 		material.CreateConstBuffer(device);
 	}
 	object3DBuffers_[id].model = model;
+
+	needsSorting_ = true;
 }
 
 void RenderObjectManager::RemoveObject3D(EntityID id) {
 
 	object3DBuffers_.erase(id);
+	needsSorting_ = true;
 }
 
 void RenderObjectManager::Update() {

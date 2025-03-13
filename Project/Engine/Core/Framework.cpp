@@ -96,6 +96,10 @@ void Framework::InitComponent() {
 	// model
 	modelComponentManager_ = std::make_unique<ModelComponentManager>();
 	ComponentManager::GetInstance()->RegisterComponentManager(modelComponentManager_.get());
+
+	// imgui
+	ComponentManager::GetInstance()->InitImGui(transform3DComponentManager_.get(),
+		materialManager_.get(), modelComponentManager_.get());
 }
 
 void Framework::Update() {

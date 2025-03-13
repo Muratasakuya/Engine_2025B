@@ -1,4 +1,4 @@
-#include "ComponentImGui.h"
+#include "ImGuiComponentManager.h"
 
 //============================================================================
 //	imgui
@@ -10,11 +10,12 @@
 #include <imgui.h>
 
 //============================================================================
-//	ComponentImGui classMethods
+//	ImGuiComponentManager classMethods
 //============================================================================
 
-void ComponentImGui::Init(EntityManager* entityManager, Transform3DManager* transform3DManager,
-	MaterialManager* materialManager, ModelComponentManager* modelComponentManager) {
+void ImGuiComponentManager::Init(EntityManager* entityManager, Transform3DManager* transform3DManager,
+	MaterialManager* materialManager, ModelComponentManager* modelComponentManager,
+	RenderObjectManager* renderObjectManager) {
 
 	entityManager_ = nullptr;
 	entityManager_ = entityManager;
@@ -27,19 +28,12 @@ void ComponentImGui::Init(EntityManager* entityManager, Transform3DManager* tran
 
 	modelComponentManager_ = nullptr;
 	modelComponentManager_ = modelComponentManager;
+
+	renderObjectManager_ = nullptr;
+	renderObjectManager_ = renderObjectManager;
 }
 
-void ComponentImGui::AddComponent(EntityID id, const std::function<void()>& func) {
-
-	object3DImGui_[id] = func;
-}
-
-void ComponentImGui::RemoveComponent(EntityID id) {
-
-	object3DImGui_.erase(id);
-}
-
-void ComponentImGui::SelectObject3D() {
+void ImGuiComponentManager::SelectObject3D() {
 
 	ImGui::SeparatorText("Object3D");
 
@@ -90,7 +84,7 @@ void ComponentImGui::SelectObject3D() {
 	}
 }
 
-void ComponentImGui::EditObject3D() {
+void ImGuiComponentManager::EditObject3D() {
 
 	if (!object3D_.selectedId_.has_value()) {
 		return;
@@ -99,31 +93,35 @@ void ComponentImGui::EditObject3D() {
 	ASSERT(transform3DManager_->GetComponent(*object3D_.selectedId_), "does not exist object3D:transform");
 	ASSERT(!materialManager_->GetComponentList(*object3D_.selectedId_).empty(), "does not exist object3D:material");
 
-	ImGui::SeparatorText("SelectedObject");
-
-	// Object詳細、操作
 	Object3DInformation();
-	Object3DRenderingData();
-	Object3DTransform();
-	Object3DMaterial();
 
-	if (!object3D_.selectedId_.has_value()) {
-		return;
-	}
+	ImGui::Separator();
 
-	if (object3DImGui_[*object3D_.selectedId_]) {
+	if (ImGui::BeginTabBar("Object3DTabs")) {
 
-		ImGui::Begin("Individual");
+		if (ImGui::BeginTabItem("Rendering")) {
 
-		object3DImGui_[*object3D_.selectedId_]();
+			Object3DRenderingData();
+			ImGui::EndTabItem();
+		}
 
-		ImGui::End();
+		if (ImGui::BeginTabItem("Transform")) {
+
+			Object3DTransform();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Material")) {
+
+			Object3DMaterial();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
 	}
 }
 
-void ComponentImGui::Object3DInformation() {
-
-	ImGui::Begin("Information");
+void ImGuiComponentManager::Object3DInformation() {
 
 	ImGui::Text("name: %s", entityManager_->GetNames().at(*object3D_.selectedId_).c_str());
 	ImGui::Text("entityId: %d", *object3D_.selectedId_);
@@ -134,71 +132,40 @@ void ComponentImGui::Object3DInformation() {
 		ComponentManager::GetInstance()->RemoveObject3D(*object3D_.selectedId_);
 		object3D_.selectedId_ = std::nullopt;
 	}
-
-	ImGui::End();
 }
 
-void ComponentImGui::Object3DRenderingData() {
+void ImGuiComponentManager::Object3DRenderingData() {
 
 	if (!object3D_.selectedId_.has_value()) {
 		return;
 	}
-
-	ImGui::Begin("Draw");
 
 	ModelComponent* model = modelComponentManager_->GetComponent(*object3D_.selectedId_);
 
-	if (ImGui::Checkbox("drawEnable", &model->renderingData.drawEnable)) {
-	}
-
-	const char* blendModeItems[] = {
-				"Normal",     // kBlendModeNormal
-				"Add",        // kBlendModeAdd
-				"Subtract",   // kBlendModeSubtract
-				"Multiply",   // kBlendModeMultiply
-				"Screen"      // kBlendModeScreen
-	};
-	int blendIndex = static_cast<int>(model->renderingData.blendMode);
-
-	ImGui::PushItemWidth(168.0f);
-	if (ImGui::Combo("blendMode", &blendIndex, blendModeItems, IM_ARRAYSIZE(blendModeItems))) {
-
-		model->renderingData.blendMode = static_cast<BlendMode>(blendIndex);
-	}
-	ImGui::PopItemWidth();
-
-	ImGui::End();
+	model->ImGui(itemWidth_, renderObjectManager_);
 }
 
-void ComponentImGui::Object3DTransform() {
+void ImGuiComponentManager::Object3DTransform() {
 
 	if (!object3D_.selectedId_.has_value()) {
 		return;
 	}
-
-	ImGui::Begin("Transform");
 
 	Transform3DComponent* transform = transform3DManager_->GetComponent(*object3D_.selectedId_);
 
-	ImGui::PushItemWidth(168.0f);
-	ImGui::DragFloat3("scale", &transform->scale.x, 0.01f);
-	ImGui::DragFloat3("translate", &transform->translation.x, 0.01f);
-	ImGui::PopItemWidth();
-
-	ImGui::End();
+	transform->ImGui(itemWidth_);
 }
 
-void ComponentImGui::Object3DMaterial() {
+void ImGuiComponentManager::Object3DMaterial() {
 
 	if (!object3D_.selectedId_.has_value()) {
 		return;
 	}
 
-	ImGui::Begin("Material");
-
 	std::vector<Material*> materials = materialManager_->GetComponentList(*object3D_.selectedId_);
 
-	ImGui::PushItemWidth(168.0f);
+	ImGui::PushItemWidth(itemWidth_);
+	// Materialの選択
 	if (ImGui::BeginCombo("SelectMaterial", ("Material " + std::to_string(selectedMaterialIndex_)).c_str())) {
 		for (size_t i = 0; i < materials.size(); ++i) {
 
@@ -220,62 +187,6 @@ void ComponentImGui::Object3DMaterial() {
 	if (!materials.empty()) {
 
 		selectedMaterialIndex_ = std::clamp(selectedMaterialIndex_, 0, static_cast<int>(materials.size() - 1));
-		auto& mat = materials[selectedMaterialIndex_];
-
-		/*============================================================================================================*/
-
-		ImGui::Text("Editing Material %d", selectedMaterialIndex_);
-
-		ImGui::SeparatorText("Color");
-
-		ImGui::ColorEdit4("color", &mat->color.r);
-		ImGui::Text("R:%4.3f G:%4.3f B:%4.3f A:%4.3f",
-			mat->color.r, mat->color.g,
-			mat->color.b, mat->color.a);
-
-		ImGui::SeparatorText("Emission");
-
-		ImGui::ColorEdit3("emissionColor", &mat->emissionColor.x);
-		ImGui::Text("R:%4.3f G:%4.3f B:%4.3f",
-			mat->emissionColor.x, mat->emissionColor.y,
-			mat->emissionColor.z);
-		ImGui::PushItemWidth(168.0f);
-		ImGui::DragFloat("emissiveIntensity", &mat->emissiveIntensity, 0.01f);
-		ImGui::PopItemWidth();
-
-		/*============================================================================================================*/
-
-		ImGui::SeparatorText("Lighting");
-
-		ImGui::SliderInt("enableLighting", &mat->enableLighting, 0, 1);
-		if (ImGui::SliderInt("phongReflection", &mat->enablePhongReflection, 0, 1)) {
-			if (mat->enablePhongReflection) {
-
-				mat->enableBlinnPhongReflection = 0;
-			}
-		}
-		if (ImGui::SliderInt("blinnPhongReflection", &mat->enableBlinnPhongReflection, 0, 1)) {
-			if (mat->enableBlinnPhongReflection) {
-
-				mat->enablePhongReflection = 0;
-			}
-		}
-
-		if (mat->enablePhongReflection ||
-			mat->enableBlinnPhongReflection) {
-
-			ImGui::ColorEdit3("specularColor", &mat->specularColor.x);
-			ImGui::DragFloat("phongRefShininess", &mat->phongRefShininess, 0.01f);
-		}
-
-		/*============================================================================================================*/
-
-		ImGui::SeparatorText("Shadow");
-
-		ImGui::PushItemWidth(168.0f);
-		ImGui::DragFloat("shadowRate", &mat->shadowRate, 0.01f, 0.0f, 8.0f);
-		ImGui::PopItemWidth();
+		materials[selectedMaterialIndex_]->ImGui(itemWidth_);
 	}
-
-	ImGui::End();
 }

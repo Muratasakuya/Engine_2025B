@@ -45,8 +45,8 @@ private:
 	// renderTextureの描画
 	void MainWindow();
 
-	// engine
-	void Engine();
+	// console
+	void Console();
 
 	// project
 	void Project();
@@ -56,5 +56,4 @@ private:
 
 	// inspector
 	void Inspector();
-
 };

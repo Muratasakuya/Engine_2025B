@@ -48,6 +48,16 @@ void ComponentManager::Init(ID3D12Device* device, Asset* asset, SRVManager* srvM
 	entityManager_ = std::make_unique<EntityManager>();
 }
 
+void ComponentManager::InitImGui(Transform3DManager* transform3DManager,
+	MaterialManager* materialManager, ModelComponentManager* modelComponentManager) {
+
+#ifdef _DEBUG
+	imguiComponentManager_ = std::make_unique<ImGuiComponentManager>();
+	imguiComponentManager_->Init(entityManager_.get(), transform3DManager,
+		materialManager, modelComponentManager, renderObjectManager_);
+#endif // _DEBUG
+}
+
 void ComponentManager::Update() {
 
 	if (componentManagers_.empty()) {
@@ -81,7 +91,7 @@ void ComponentManager::RemoveObject3D(EntityID id) {
 
 	// idの削除
 	entityManager_->DestroyEntity(id);
-	
+
 	// object3Dで使用していたcomponentの削除
 	RemoveComponent<Transform3DComponent>(id);
 	RemoveComponent<Material>(id);

@@ -1,6 +1,13 @@
 #include "TransformComponent.h"
 
 //============================================================================
+//	include
+//============================================================================
+
+// imgui
+#include <imgui.h>
+
+//============================================================================
 //	TransformComponent classMethods
 //============================================================================
 
@@ -14,6 +21,14 @@ void Transform3DComponent::Init() {
 void Transform3DComponent::UpdateMatrix() {
 
 	matrix.Update(parent, scale, rotation, translation);
+}
+
+void Transform3DComponent::ImGui(float itemSize) {
+
+	ImGui::PushItemWidth(itemSize);
+	ImGui::DragFloat3("scale", &scale.x, 0.01f);
+	ImGui::DragFloat3("translate", &translation.x, 0.01f);
+	ImGui::PopItemWidth();
 }
 
 Vector3 Transform3DComponent::GetWorldPos() const {
