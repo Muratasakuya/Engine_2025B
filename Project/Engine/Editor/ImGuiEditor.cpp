@@ -35,6 +35,8 @@ void ImGuiEditor::Display() {
 
 	Engine();
 
+	Project();
+
 	Hierarchy();
 
 	Inspector();
@@ -65,10 +67,16 @@ void ImGuiEditor::Engine() {
 	ImGui::End();
 }
 
+void ImGuiEditor::Project() {
+
+	ImGui::Begin("Project");
+
+	ImGui::End();
+}
+
 void ImGuiEditor::Hierarchy() {
 
 	ImGui::Begin("Hierarchy");
-
 
 	ImGui::End();
 }

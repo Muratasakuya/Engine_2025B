@@ -11,6 +11,13 @@
 
 void RenderObjectManager::CreateObject3D(EntityID id, ModelComponent* model, ID3D12Device* device) {
 
+	// すでにある場合は作成しない
+	if (Algorithm::Find(object3DBuffers_, id, false)) {
+		return;
+	}
+
+	needsSorting_ = true;
+
 	object3DBuffers_[id].matrix.CreateConstBuffer(device);
 
 	if (model->isAnimation) {
