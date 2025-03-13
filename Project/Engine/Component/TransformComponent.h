@@ -34,6 +34,8 @@ public:
 
 	void UpdateMatrix();
 
+	void ImGui(float itemSize);
+
 	//--------- accessor -----------------------------------------------------
 
 	Vector3 GetWorldPos() const;

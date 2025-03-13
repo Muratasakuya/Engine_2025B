@@ -104,4 +104,6 @@ struct ModelComponent {
 	bool isAnimation;
 
 	RenderingData renderingData;
+
+	void ImGui(float itemSize, class RenderObjectManager* renderObjectManager);
 };

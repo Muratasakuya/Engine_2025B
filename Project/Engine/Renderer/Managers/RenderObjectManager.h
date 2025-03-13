@@ -43,9 +43,10 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetNeedSorting(){ needsSorting_ = true; }
+
 	const std::unordered_map<BlendMode, std::vector<const Object3DForGPU*>>&
 		GetSortedObject3Ds() const;
-
 private:
 	//========================================================================
 	//	private Methods

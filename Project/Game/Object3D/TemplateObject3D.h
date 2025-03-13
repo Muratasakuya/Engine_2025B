@@ -20,10 +20,6 @@ public:
 
 	void Update();
 
-	//* collision *//
-
-	void OnCollisionEnter(const ColliderComponent* collider, const ColliderID colliderId) override;
-
 private:
 	//========================================================================
 	//	private Methods
@@ -31,12 +27,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	ColliderComponent* colliderA_;
-	ColliderComponent* colliderB_;
-
 	EntityID teapotId_;
 
 	//--------- functions ----------------------------------------------------
 
-	void UpdateCollision();
 };

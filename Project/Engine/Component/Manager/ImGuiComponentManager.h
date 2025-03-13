@@ -18,27 +18,26 @@ class EntityManager;
 class Transform3DManager;
 class MaterialManager;
 class ModelComponentManager;
+class RenderObjectManager;
 
 // entityID
 using EntityID = uint32_t;
 
 //============================================================================
-//	ComponentImGui class
+//	ImGuiComponentManager class
 //============================================================================
-class ComponentImGui {
+class ImGuiComponentManager {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ComponentImGui() = default;
-	~ComponentImGui() = default;
+	ImGuiComponentManager() = default;
+	~ImGuiComponentManager() = default;
 
 	void Init(EntityManager* entityManager, Transform3DManager* transform3DManager,
-		MaterialManager* materialManager, ModelComponentManager* modelComponentManager);
-
-	void AddComponent(EntityID id, const std::function<void()>& func);
-	void RemoveComponent(EntityID id);
+		MaterialManager* materialManager, ModelComponentManager* modelComponentManager,
+		RenderObjectManager* renderObjectManager);
 
 	// Object3Dの選択
 	void SelectObject3D();
@@ -65,8 +64,9 @@ private:
 	Transform3DManager* transform3DManager_;
 	MaterialManager* materialManager_;
 	ModelComponentManager* modelComponentManager_;
+	RenderObjectManager* renderObjectManager_;
 
-	std::unordered_map<EntityID, std::function<void()>> object3DImGui_;
+	const float itemWidth_ = 168.0f;
 
 	EditImGui object3D_;
 	int selectedMaterialIndex_ = 0;

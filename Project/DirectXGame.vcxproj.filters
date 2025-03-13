@@ -194,7 +194,7 @@
     <ClCompile Include="Engine\Component\Manager\MaterialManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Editor\ComponentImGui.cpp">
+    <ClCompile Include="Engine\Component\Manager\ImGuiComponentManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Component\ColliderComponent.cpp">
@@ -294,7 +294,7 @@
     <ClInclude Include="Engine\Component\Manager\Transform3DManager.h" />
     <ClInclude Include="Engine\Component\Manager\ModelComponentManager.h" />
     <ClInclude Include="Engine\Component\Manager\MaterialManager.h" />
-    <ClInclude Include="Engine\Editor\ComponentImGui.h" />
+    <ClInclude Include="Engine\Component\Manager\ImGuiComponentManager.h" />
     <ClInclude Include="Engine\Component\ColliderComponent.h" />
     <ClInclude Include="Engine\Component\Manager\CollisionManager.h" />
     <ClInclude Include="Engine\Core\Lib\Collision.h" />

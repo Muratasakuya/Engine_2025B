@@ -8,7 +8,7 @@
 #include <Engine/Component/Manager/Transform3DManager.h>
 #include <Engine/Component/Manager/MaterialManager.h>
 #include <Engine/Component/Manager/ModelComponentManager.h>
-#include <Engine/Editor/ComponentImGui.h>
+#include <Engine/Component/Manager/ImGuiComponentManager.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // directX
@@ -44,6 +44,10 @@ public:
 
 	void Init(ID3D12Device* device, Asset* asset, SRVManager* srvManager,
 		RenderObjectManager* renderObjectManager);
+
+	void InitImGui(Transform3DManager* transform3DManager,
+		MaterialManager* materialManager, ModelComponentManager* modelComponentManager);
+
 	void Update();
 
 	// componentManagerの追加
@@ -61,7 +65,7 @@ public:
 	static ComponentManager* GetInstance();
 	static void Finalize();
 
-	// componentの取得、基本的にinitで取得する
+	// componentの取得
 	template <typename T>
 	T* GetComponent(EntityID id);
 	template <typename T>
@@ -69,6 +73,9 @@ public:
 
 	// 全てのentityのIDを取得
 	const std::vector<EntityID>& GetEntityIDs() const { return entityManager_->GetIDs(); };
+
+	// imguiManagerの取得
+	ImGuiComponentManager* GetImGuiComponentManager() const { return imguiComponentManager_.get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -87,6 +94,9 @@ private:
 	std::unique_ptr<EntityManager> entityManager_;
 	// 登録済みのcomponentManager
 	std::unordered_map<std::type_index, void*> componentManagers_;
+
+	// imgui
+	std::unique_ptr<ImGuiComponentManager> imguiComponentManager_;
 
 	//--------- functions ----------------------------------------------------
 

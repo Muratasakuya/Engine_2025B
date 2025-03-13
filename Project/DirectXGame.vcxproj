@@ -208,7 +208,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Lib\DxUtils.cpp" />
     <ClCompile Include="Engine\Core\Lib\Filesystem.cpp" />
     <ClCompile Include="Engine\Core\Window\WinApp.cpp" />
-    <ClCompile Include="Engine\Editor\ComponentImGui.cpp">
+    <ClCompile Include="Engine\Component\Manager\ImGuiComponentManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -346,7 +346,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Lib\ComponentStructures.h" />
     <ClInclude Include="Engine\Core\Lib\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
-    <ClInclude Include="Engine\Editor\ComponentImGui.h">
+    <ClInclude Include="Engine\Component\Manager\ImGuiComponentManager.h">
       <SubType>
       </SubType>
     </ClInclude>

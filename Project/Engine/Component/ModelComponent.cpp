@@ -4,6 +4,10 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
+#include <Engine/Renderer/Managers/RenderObjectManager.h>
+
+// imgui
+#include <imgui.h>
 
 //============================================================================
 //	Model classMethods
@@ -60,4 +64,42 @@ void AnimationModel::Init(const std::string& modelName, const std::string& anima
 		device, srvManager);
 	skinningInfoDates_.CreateConstBuffer(device);
 	skinningInfoDates_.TransferData(static_cast<uint32_t>(BaseModel::GetModelData().meshes.front().vertices.size()));
+}
+
+//============================================================================
+//	ModelComponent ImGui
+//============================================================================
+
+void ModelComponent::ImGui(float itemSize, RenderObjectManager* renderObjectManager) {
+
+	if (isAnimation) {
+
+		ImGui::Text("meshCount: %d", animationModel->GetMeshNum());
+	} else {
+
+		ImGui::Text("meshCount: %d", model->GetMeshNum());
+	}
+
+	// 描画しないかするかの有無
+	if (ImGui::Checkbox("drawEnable", &renderingData.drawEnable)) {
+
+		renderObjectManager->SetNeedSorting();
+	}
+
+	const char* blendModeItems[] = {
+			"Normal",     // kBlendModeNormal
+			"Add",        // kBlendModeAdd
+			"Subtract",   // kBlendModeSubtract
+			"Multiply",   // kBlendModeMultiply
+			"Screen"      // kBlendModeScreen
+	};
+	int blendIndex = static_cast<int>(renderingData.blendMode);
+
+	ImGui::PushItemWidth(itemSize);
+	if (ImGui::Combo("blendMode", &blendIndex, blendModeItems, IM_ARRAYSIZE(blendModeItems))) {
+
+		renderingData.blendMode = static_cast<BlendMode>(blendIndex);
+		renderObjectManager->SetNeedSorting();
+	}
+	ImGui::PopItemWidth();
 }
