@@ -5,7 +5,6 @@
 //============================================================================
 #include <Engine/Component/TransformComponent.h>
 #include <Engine/Component/Base/IComponent.h>
-#include <Engine/Core/CBuffer/DxConstBuffer.h>
 
 //============================================================================
 //	Transform3DManager class

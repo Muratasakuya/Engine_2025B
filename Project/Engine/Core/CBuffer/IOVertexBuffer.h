@@ -24,8 +24,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const InputModelVertex& GetInputData() const { return inputVertex_; }
-	const OutputModelVertex& GetOutputData() const { return outputVertex_; }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetInputGPUHandle() const { return inputVertex_.srvHandle.second; }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetOutputGPUHandle() const { return outputVertex_.uavHandle.second;}
 private:
 	//========================================================================
 	//	private Methods

@@ -39,4 +39,5 @@ void IOVertexBuffer::Init(UINT vertexNum, ID3D12Resource* vertexResource,
 	uavDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(ModelVertexData));
 	// UAV作成
 	srvManager->CreateUAV(outputVertex_.uavIndex, this->GetResource(), uavDesc);
+	outputVertex_.uavHandle.second = srvManager->GetGPUHandle(outputVertex_.uavIndex);
 }

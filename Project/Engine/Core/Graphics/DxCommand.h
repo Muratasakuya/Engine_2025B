@@ -17,6 +17,7 @@
 #include <unordered_map>
 #include <chrono>
 #include <thread>
+#include <future>
 
 //============================================================================
 //	enum class
@@ -45,8 +46,8 @@ public:
 
 	void Create(ID3D12Device* device);
 
-	void ExecuteComputeCommands();
-	void ExecuteGraphicsCommands(IDXGISwapChain4* swapChain);
+	void StartComputeCommands();
+	void ExecuteCommands(IDXGISwapChain4* swapChain);
 
 	void WaitForGPU();
 
@@ -87,11 +88,18 @@ private:
 	uint64_t fenceValue_;
 	HANDLE fenceEvent_;
 
+	std::future<void> computeDoneFuture_;
+
 	std::chrono::steady_clock::time_point reference_;
 
 	//--------- functions ----------------------------------------------------
 
 	constexpr std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> CreateCommandTypes();
+
+	void ExecuteComputeCommands();
+	void ExecuteGraphicsCommands(IDXGISwapChain4* swapChain);
+
+	void FenceEvent();
 
 	void UpdateFixFPS();
 };

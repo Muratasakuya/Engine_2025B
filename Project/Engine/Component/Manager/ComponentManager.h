@@ -7,6 +7,7 @@
 #include <Engine/Component/Manager/EntityManager.h>
 #include <Engine/Component/Manager/Transform3DManager.h>
 #include <Engine/Component/Manager/MaterialManager.h>
+#include <Engine/Component/Manager/AnimationComponentManager.h>
 #include <Engine/Component/Manager/ModelComponentManager.h>
 #include <Engine/Component/Manager/ImGuiComponentManager.h>
 #include <Lib/MathUtils/Algorithm.h>
@@ -42,8 +43,8 @@ public:
 	ComponentManager() = default;
 	~ComponentManager() = default;
 
-	void Init(ID3D12Device* device, Asset* asset, SRVManager* srvManager,
-		RenderObjectManager* renderObjectManager);
+	void Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
+		Asset* asset, SRVManager* srvManager, RenderObjectManager* renderObjectManager);
 
 	void InitImGui(Transform3DManager* transform3DManager,
 		MaterialManager* materialManager, ModelComponentManager* modelComponentManager);
@@ -86,6 +87,7 @@ private:
 	static ComponentManager* instance_;
 
 	ID3D12Device* device_;
+	ID3D12GraphicsCommandList* commandList_;
 	Asset* asset_;
 	SRVManager* srvManager_;
 	RenderObjectManager* renderObjectManager_;

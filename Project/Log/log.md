@@ -5,4 +5,5 @@ INFO: 12.2
 INFO: load texture: checkerBoard
 INFO: load model: teapot
 INFO: load texture: white
-INFO: load model: suzanne
+INFO: load model: walk
+INFO: load animation: walk

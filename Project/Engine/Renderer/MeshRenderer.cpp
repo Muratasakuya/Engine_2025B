@@ -78,9 +78,17 @@ void MeshRenderer::RenderZPass() {
 
 			// lightViewProjection: root1
 			commandList_->SetGraphicsRootConstantBufferView(1, lightViewProjectionBuffer_.GetResourceAdress());
-			for (uint32_t meshIndex = 0; meshIndex < object->model->model->GetMeshNum(); ++meshIndex) {
+			uint32_t meshNum = 0;
+			if (object->model->isAnimation) {
 
-				// IA
+				meshNum = 1;
+			} else {
+
+				meshNum = static_cast<uint32_t>(object->model->model->GetMeshNum());
+			}
+			for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
+
+				UINT indexCount = 0;
 				if (object->model->isAnimation) {
 
 					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
@@ -89,18 +97,22 @@ void MeshRenderer::RenderZPass() {
 
 					commandList_->IASetVertexBuffers(0, 1,
 						&object->model->animationModel->GetIOVertex().GetVertexBuffer());
+					commandList_->IASetIndexBuffer(
+						&object->model->animationModel->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+					indexCount = object->model->animationModel->GetIA().GetIndexCount(meshIndex);
 				} else {
 
 					commandList_->IASetVertexBuffers(0, 1,
 						&object->model->model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
+					commandList_->IASetIndexBuffer(
+						&object->model->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+					indexCount = object->model->model->GetIA().GetIndexCount(meshIndex);
 				}
-				commandList_->IASetIndexBuffer(
-					&object->model->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
 
 				// transform: root0
 				commandList_->SetGraphicsRootConstantBufferView(0, object->matrix.GetResourceAdress());
 				// draw
-				commandList_->DrawIndexedInstanced(object->model->model->GetIA().GetIndexCount(meshIndex), 1, 0, 0, 0);
+				commandList_->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
 
 				if (object->model->isAnimation) {
 
@@ -152,9 +164,17 @@ void MeshRenderer::Render(bool debugEnable) {
 			// light:  root6
 			commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResourceAdress());
 
-			for (uint32_t meshIndex = 0; meshIndex < object->model->model->GetMeshNum(); ++meshIndex) {
+			uint32_t meshNum = 0;
+			if (object->model->isAnimation) {
 
-				// IA
+				meshNum = 1;
+			} else {
+
+				meshNum = static_cast<uint32_t>(object->model->model->GetMeshNum());
+			}
+			for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
+
+				UINT indexCount = 0;
 				if (object->model->isAnimation) {
 
 					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
@@ -163,22 +183,30 @@ void MeshRenderer::Render(bool debugEnable) {
 
 					commandList_->IASetVertexBuffers(0, 1,
 						&object->model->animationModel->GetIOVertex().GetVertexBuffer());
+					commandList_->IASetIndexBuffer(
+						&object->model->animationModel->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+					indexCount = object->model->animationModel->GetIA().GetIndexCount(meshIndex);
+
+					// texture: root0
+					commandList_->SetGraphicsRootDescriptorTable(0, object->model->animationModel->GetTextureGPUHandle(meshIndex));
 				} else {
 
 					commandList_->IASetVertexBuffers(0, 1,
 						&object->model->model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
-				}
-				commandList_->IASetIndexBuffer(
-					&object->model->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+					commandList_->IASetIndexBuffer(
+						&object->model->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+					indexCount = object->model->model->GetIA().GetIndexCount(meshIndex);
 
-				// texture:   root0
-				commandList_->SetGraphicsRootDescriptorTable(0, object->model->model->GetTextureGPUHandle(meshIndex));
+					// texture: root0
+					commandList_->SetGraphicsRootDescriptorTable(0, object->model->model->GetTextureGPUHandle(meshIndex));
+				}
+
 				// transform: root2
 				commandList_->SetGraphicsRootConstantBufferView(2, object->matrix.GetResourceAdress());
 				// material:  root3
 				commandList_->SetGraphicsRootConstantBufferView(5, object->materials[meshIndex].GetResourceAdress());
 				// draw
-				commandList_->DrawIndexedInstanced(object->model->model->GetIA().GetIndexCount(meshIndex), 1, 0, 0, 0);
+				commandList_->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
 
 				if (object->model->isAnimation) {
 

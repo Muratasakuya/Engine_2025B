@@ -133,11 +133,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Asset\Asset.cpp" />
     <ClCompile Include="Engine\Asset\ModelManager.cpp" />
     <ClCompile Include="Engine\Asset\TextureManager.cpp" />
+    <ClCompile Include="Engine\Component\AnimationComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Component\Base\IComponent.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Component\ColliderComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\Manager\AnimationComponentManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -267,11 +275,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelManager.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
+    <ClInclude Include="Engine\Component\AnimationComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Component\Base\IComponent.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Component\ColliderComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Component\Manager\AnimationComponentManager.h">
       <SubType>
       </SubType>
     </ClInclude>
