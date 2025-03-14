@@ -86,7 +86,7 @@ void ComponentManager::CreateInstancing(const std::string& modelName,
 EntityID ComponentManager::CreateObject3D(const std::string& modelName,
 	const std::optional<std::string>& animationName, const std::string& objectName) {
 
-	// EntityID発行
+	// entityID発行
 	EntityID id = entityManager_->CreateEntity(objectName);
 
 	// object3Dに必要なcomponentを追加
