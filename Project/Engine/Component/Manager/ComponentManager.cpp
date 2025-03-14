@@ -58,7 +58,7 @@ void ComponentManager::InitImGui(Transform3DManager* transform3DManager,
 #ifdef _DEBUG
 	imguiComponentManager_ = std::make_unique<ImGuiComponentManager>();
 	imguiComponentManager_->Init(entityManager_.get(), transform3DManager,
-		materialManager, modelComponentManager, renderObjectManager_);
+		materialManager, modelComponentManager);
 #endif // _DEBUG
 }
 
@@ -73,6 +73,14 @@ void ComponentManager::Update() {
 
 		static_cast<IComponentManager*>(manager)->Update();
 	}
+}
+
+void ComponentManager::CreateInstancing(const std::string& modelName,
+	const std::string& name, uint32_t instanceCount) {
+
+	modelName;
+	name;
+	instanceCount;
 }
 
 EntityID ComponentManager::CreateObject3D(const std::string& modelName,

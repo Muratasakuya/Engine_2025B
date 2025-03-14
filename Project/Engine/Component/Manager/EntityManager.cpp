@@ -6,19 +6,20 @@
 
 EntityID EntityManager::CreateEntity(const std::string& name) {
 
-	EntityID newId = ++nextID_;
-	entityIDs_.emplace_back(newId);
+	EntityID  id = nextId_;
+	++nextId_;
+
 	// 重複しないよう名前を生成
 	std::string uniqueName = CheckName(name);
-	entityNames_[newId] = uniqueName;
-	return newId;
+	entityNames_[id] = uniqueName;
+
+	return id;
 }
 
 void EntityManager::DestroyEntity(EntityID id) {
 
 	// entity削除
 	entityNames_.erase(id);
-	entityIDs_.erase(std::remove(entityIDs_.begin(), entityIDs_.end(), id));
 }
 
 std::string EntityManager::CheckName(const std::string& name) {

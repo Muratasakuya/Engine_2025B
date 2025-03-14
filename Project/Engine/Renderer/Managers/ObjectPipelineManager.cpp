@@ -17,10 +17,10 @@ void ObjectPipelineManager::Create(ID3D12GraphicsCommandList* commandList,
 	zPassPipeline_->Create("ZPass.json", device, shaderCompiler);
 }
 
-void ObjectPipelineManager::SetObjectPipeline(BlendMode blendMode) {
+void ObjectPipelineManager::SetObjectPipeline() {
 
 	commandList_->SetGraphicsRootSignature(object3DPipeline_->GetRootSignature());
-	commandList_->SetPipelineState(object3DPipeline_->GetGraphicsPipeline(blendMode));
+	commandList_->SetPipelineState(object3DPipeline_->GetGraphicsPipeline());
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }
 

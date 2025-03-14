@@ -15,8 +15,7 @@
 //============================================================================
 
 void ImGuiComponentManager::Init(EntityManager* entityManager, Transform3DManager* transform3DManager,
-	MaterialManager* materialManager, ModelComponentManager* modelComponentManager,
-	RenderObjectManager* renderObjectManager) {
+	MaterialManager* materialManager, ModelComponentManager* modelComponentManager) {
 
 	entityManager_ = nullptr;
 	entityManager_ = entityManager;
@@ -29,9 +28,6 @@ void ImGuiComponentManager::Init(EntityManager* entityManager, Transform3DManage
 
 	modelComponentManager_ = nullptr;
 	modelComponentManager_ = modelComponentManager;
-
-	renderObjectManager_ = nullptr;
-	renderObjectManager_ = renderObjectManager;
 }
 
 void ImGuiComponentManager::SelectObject3D() {
@@ -50,7 +46,7 @@ void ImGuiComponentManager::SelectObject3D() {
 		return { name, 0 };
 		};
 
-	if (entityManager_->GetNames().size() != object3D_.lastCount_) {
+	if (entityManager_->GetEntityCount() != object3D_.lastCount_) {
 
 		object3D_.grouped_.clear();
 		for (const auto& [id, name] : entityManager_->GetNames()) {
@@ -58,7 +54,7 @@ void ImGuiComponentManager::SelectObject3D() {
 			object3D_.grouped_[baseName].emplace_back(number, id);
 		}
 
-		object3D_.lastCount_ = entityManager_->GetNames().size();
+		object3D_.lastCount_ = entityManager_->GetEntityCount();
 	}
 
 	// objectNameの表示
@@ -77,6 +73,12 @@ void ImGuiComponentManager::SelectObject3D() {
 						// idの更新処理
 						object3D_.selectedId_ = id;
 						selectedMaterialIndex_ = 0;
+
+						// 選択したときに最後の要素なら数字を強制的に変える
+						if (*object3D_.selectedId_ == entityManager_->GetEntityCount()) {
+
+							--object3D_.selectedId_.value();
+						}
 					}
 				}
 				ImGui::TreePop();
@@ -158,7 +160,7 @@ void ImGuiComponentManager::Object3DRenderingData() {
 
 	ModelComponent* model = modelComponentManager_->GetComponent(*object3D_.selectedId_);
 
-	model->ImGui(itemWidth_, renderObjectManager_);
+	model->ImGui();
 }
 
 void ImGuiComponentManager::Object3DTransform() {

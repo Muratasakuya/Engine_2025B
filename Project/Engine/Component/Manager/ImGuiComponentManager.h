@@ -18,7 +18,6 @@ class EntityManager;
 class Transform3DManager;
 class MaterialManager;
 class ModelComponentManager;
-class RenderObjectManager;
 
 // entityID
 using EntityID = uint32_t;
@@ -36,8 +35,7 @@ public:
 	~ImGuiComponentManager() = default;
 
 	void Init(EntityManager* entityManager, Transform3DManager* transform3DManager,
-		MaterialManager* materialManager, ModelComponentManager* modelComponentManager,
-		RenderObjectManager* renderObjectManager);
+		MaterialManager* materialManager, ModelComponentManager* modelComponentManager);
 
 	// Object3Dの選択
 	void SelectObject3D();
@@ -69,7 +67,6 @@ private:
 	Transform3DManager* transform3DManager_;
 	MaterialManager* materialManager_;
 	ModelComponentManager* modelComponentManager_;
-	RenderObjectManager* renderObjectManager_;
 
 	const float itemWidth_ = 168.0f;
 

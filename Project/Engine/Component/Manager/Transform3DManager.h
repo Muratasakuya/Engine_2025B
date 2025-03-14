@@ -34,5 +34,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unordered_map<EntityID, Transform3DComponent> components_;
+	std::vector<Transform3DComponent> components_;
 };

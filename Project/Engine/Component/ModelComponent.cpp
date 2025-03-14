@@ -88,7 +88,7 @@ void AnimationModel::Skinning() {
 //	ModelComponent ImGui
 //============================================================================
 
-void ModelComponent::ImGui(float itemSize, RenderObjectManager* renderObjectManager) {
+void ModelComponent::ImGui() {
 
 	if (isAnimation) {
 
@@ -99,25 +99,5 @@ void ModelComponent::ImGui(float itemSize, RenderObjectManager* renderObjectMana
 	}
 
 	// 描画しないかするかの有無
-	if (ImGui::Checkbox("drawEnable", &renderingData.drawEnable)) {
-
-		renderObjectManager->SetNeedSorting();
-	}
-
-	const char* blendModeItems[] = {
-			"Normal",     // kBlendModeNormal
-			"Add",        // kBlendModeAdd
-			"Subtract",   // kBlendModeSubtract
-			"Multiply",   // kBlendModeMultiply
-			"Screen"      // kBlendModeScreen
-	};
-	int blendIndex = static_cast<int>(renderingData.blendMode);
-
-	ImGui::PushItemWidth(itemSize);
-	if (ImGui::Combo("blendMode", &blendIndex, blendModeItems, IM_ARRAYSIZE(blendModeItems))) {
-
-		renderingData.blendMode = static_cast<BlendMode>(blendIndex);
-		renderObjectManager->SetNeedSorting();
-	}
-	ImGui::PopItemWidth();
+	ImGui::Checkbox("drawEnable", &renderingData.drawEnable);
 }

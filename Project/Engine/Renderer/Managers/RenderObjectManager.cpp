@@ -11,10 +11,8 @@
 
 void RenderObjectManager::CreateObject3D(EntityID id, ModelComponent* model, ID3D12Device* device) {
 
-	// すでにある場合は作成しない
-	if (Algorithm::Find(object3DBuffers_, id, false)) {
-		return;
-	}
+	// buffer作成
+	object3DBuffers_.emplace_back();
 
 	object3DBuffers_[id].matrix.CreateConstBuffer(device);
 
@@ -29,59 +27,32 @@ void RenderObjectManager::CreateObject3D(EntityID id, ModelComponent* model, ID3
 
 		material.CreateConstBuffer(device);
 	}
-	object3DBuffers_[id].model = model;
 
-	needsSorting_ = true;
+	// model情報の取得
+	object3DBuffers_[id].model.model = model->model.get();
+	object3DBuffers_[id].model.animationModel = model->animationModel.get();
+	object3DBuffers_[id].model.isAnimation = model->isAnimation;
+	object3DBuffers_[id].model.renderingData = model->renderingData;
 }
 
 void RenderObjectManager::RemoveObject3D(EntityID id) {
 
-	object3DBuffers_.erase(id);
-	needsSorting_ = true;
+	// buffer削除
+	object3DBuffers_.erase(object3DBuffers_.begin() + id);
 }
 
 void RenderObjectManager::Update() {
 
 	auto componentManager = ComponentManager::GetInstance();
 
-	const std::vector<EntityID> id = componentManager->GetEntityIDs();
-	if (id.empty()) {
-		return;
-	}
-
 	// entityごとのGPUデータ転送
-	for (auto it = id.begin(); it < id.end(); ++it) {
+	for (uint32_t index = 0; index < componentManager->GetEntityCount(); ++index) {
 
-		object3DBuffers_[*it].matrix.TransferData(componentManager->GetComponent<Transform3DComponent>(*it)->matrix);
+		object3DBuffers_[index].matrix.TransferData(componentManager->GetComponent<Transform3DComponent>(index)->matrix);
 
-		for (uint32_t index = 0; index < object3DBuffers_[*it].materials.size(); ++index) {
+		for (uint32_t mIndex = 0; mIndex < object3DBuffers_[index].materials.size(); ++mIndex) {
 
-			object3DBuffers_[*it].materials[index].TransferData(*componentManager->GetComponent<Material>(*it));
+			object3DBuffers_[index].materials[mIndex].TransferData(*componentManager->GetComponent<Material>(index));
 		}
 	}
-}
-
-const std::unordered_map<BlendMode, std::vector<const RenderObjectManager::Object3DForGPU*>>&
-RenderObjectManager::GetSortedObject3Ds() const {
-
-	if (needsSorting_) {
-		RebuildBlendModeCache();
-	}
-	return sortedObject3Ds_;
-}
-
-void RenderObjectManager::RebuildBlendModeCache() const {
-
-	sortedObject3Ds_.clear();
-
-	for (auto& [id, obj] : object3DBuffers_) {
-
-		const auto& renderingData = obj.model->renderingData;
-		// 描画無効
-		if (!renderingData.drawEnable) {
-			continue;
-		}
-		sortedObject3Ds_[renderingData.blendMode].emplace_back(&obj);
-	}
-	needsSorting_ = false;
 }

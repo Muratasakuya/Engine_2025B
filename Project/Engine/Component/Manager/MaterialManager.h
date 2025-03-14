@@ -37,5 +37,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unordered_map<EntityID, std::vector<Material>> components_;
+	std::vector<std::vector<Material>> components_;
 };

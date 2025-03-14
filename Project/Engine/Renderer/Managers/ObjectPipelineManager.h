@@ -27,7 +27,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetObjectPipeline(BlendMode blendMode = BlendMode::kBlendModeNormal);
+	void SetObjectPipeline();
 
 	void SetZPassPipeline();
 private:

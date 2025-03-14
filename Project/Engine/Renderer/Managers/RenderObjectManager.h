@@ -21,12 +21,23 @@ private:
 
 	//--------- structure ----------------------------------------------------
 
+	// 受け取るmodel情報
+	struct ModelReference {
+
+		BaseModel* model;
+		AnimationModel* animationModel;
+
+		bool isAnimation;
+
+		RenderingData renderingData;
+	};
+
 	// GPUに送るデータ
 	struct Object3DForGPU {
 
 		DxConstBuffer<TransformationMatrix> matrix;
 		std::vector<DxConstBuffer<Material>> materials;
-		ModelComponent* model;
+		ModelReference model;
 	};
 public:
 	//========================================================================
@@ -43,10 +54,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetNeedSorting(){ needsSorting_ = true; }
-
-	const std::unordered_map<BlendMode, std::vector<const Object3DForGPU*>>&
-		GetSortedObject3Ds() const;
+	const std::vector<Object3DForGPU>& GetObject3DBuffers() const { return object3DBuffers_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -54,13 +62,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unordered_map<EntityID, Object3DForGPU> object3DBuffers_;
-
-	// blendModeごとのObject
-	mutable bool needsSorting_ = true;
-	mutable std::unordered_map<BlendMode, std::vector<const Object3DForGPU*>> sortedObject3Ds_;
-
-	//--------- functions ----------------------------------------------------
-
-	void RebuildBlendModeCache() const;
+	std::vector<Object3DForGPU> object3DBuffers_;
 };
