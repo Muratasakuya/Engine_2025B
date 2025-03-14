@@ -42,7 +42,7 @@
     ],
     "PipelineState":[
         {
-            "BlendMode": "ALL",
+            "BlendMode": "NONE",
             "TopologyType": "TRIANGLE",
             "DSVFormat": "D24_UNORM_S8_UINT",
             "RTVFormats": "R32G32B32A32_FLOAT"

@@ -7,9 +7,6 @@
 #include <Engine/Component/Base/IComponent.h>
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 
-// entityID
-using EntityID = uint32_t;
-
 //============================================================================
 //	ModelComponentManager class
 //============================================================================
@@ -45,5 +42,5 @@ private:
 
 	std::unique_ptr<PipelineState> skinningPipeline_;
 
-	std::unordered_map<EntityID, ModelComponent> components_;
+	std::vector<ModelComponent> components_;
 };

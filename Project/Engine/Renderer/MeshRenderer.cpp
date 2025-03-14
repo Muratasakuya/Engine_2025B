@@ -63,63 +63,59 @@ void MeshRenderer::Update() {
 void MeshRenderer::RenderZPass() {
 
 	// 描画情報取得
-	const auto& object3Ds = renderObjectManager_->GetSortedObject3Ds();
+	const auto& object3DBuffers = renderObjectManager_->GetObject3DBuffers();
 
-	if (object3Ds.empty()) {
+	if (object3DBuffers.empty()) {
 		return;
 	}
-	for (auto& [blendMode, objects] : object3Ds) {
-		for (uint32_t index = 0; index < objects.size(); ++index) {
+	for (const auto& object : object3DBuffers) {
 
-			const auto& object = objects[index];
+		// shadowMapへの描画処理
+		pipeline_->SetZPassPipeline();
 
-			// shadowMapへの描画処理
-			pipeline_->SetZPassPipeline();
+		// lightViewProjection: root1
+		commandList_->SetGraphicsRootConstantBufferView(1, lightViewProjectionBuffer_.GetResourceAdress());
+		uint32_t meshNum = 0;
+		if (object.model.isAnimation) {
 
-			// lightViewProjection: root1
-			commandList_->SetGraphicsRootConstantBufferView(1, lightViewProjectionBuffer_.GetResourceAdress());
-			uint32_t meshNum = 0;
-			if (object->model->isAnimation) {
+			meshNum = 1;
+		} else {
 
-				meshNum = 1;
+			meshNum = static_cast<uint32_t>(object.model.model->GetMeshNum());
+		}
+		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
+
+			UINT indexCount = 0;
+			if (object.model.isAnimation) {
+
+				dxCommand_->TransitionBarriers({ object.model.animationModel->GetIOVertex().GetResource() },
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+
+				commandList_->IASetVertexBuffers(0, 1,
+					&object.model.animationModel->GetIOVertex().GetVertexBuffer());
+				commandList_->IASetIndexBuffer(
+					&object.model.animationModel->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+				indexCount = object.model.animationModel->GetIA().GetIndexCount(meshIndex);
 			} else {
 
-				meshNum = static_cast<uint32_t>(object->model->model->GetMeshNum());
+				commandList_->IASetVertexBuffers(0, 1,
+					&object.model.model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
+				commandList_->IASetIndexBuffer(
+					&object.model.model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+				indexCount = object.model.model->GetIA().GetIndexCount(meshIndex);
 			}
-			for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
-				UINT indexCount = 0;
-				if (object->model->isAnimation) {
+			// transform: root0
+			commandList_->SetGraphicsRootConstantBufferView(0, object.matrix.GetResourceAdress());
+			// draw
+			commandList_->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
 
-					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
-						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+			if (object.model.isAnimation) {
 
-					commandList_->IASetVertexBuffers(0, 1,
-						&object->model->animationModel->GetIOVertex().GetVertexBuffer());
-					commandList_->IASetIndexBuffer(
-						&object->model->animationModel->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
-					indexCount = object->model->animationModel->GetIA().GetIndexCount(meshIndex);
-				} else {
-
-					commandList_->IASetVertexBuffers(0, 1,
-						&object->model->model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
-					commandList_->IASetIndexBuffer(
-						&object->model->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
-					indexCount = object->model->model->GetIA().GetIndexCount(meshIndex);
-				}
-
-				// transform: root0
-				commandList_->SetGraphicsRootConstantBufferView(0, object->matrix.GetResourceAdress());
-				// draw
-				commandList_->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
-
-				if (object->model->isAnimation) {
-
-					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
-						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-						D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-				}
+				dxCommand_->TransitionBarriers({ object.model.animationModel->GetIOVertex().GetResource() },
+					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 			}
 		}
 	}
@@ -131,89 +127,85 @@ void MeshRenderer::Render(bool debugEnable) {
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	// 描画情報取得
-	const auto& object3Ds = renderObjectManager_->GetSortedObject3Ds();
+	const auto& object3DBuffers = renderObjectManager_->GetObject3DBuffers();
 
-	if (object3Ds.empty()) {
+	if (object3DBuffers.empty()) {
 		return;
 	}
-	for (auto& [blendMode, objects] : object3Ds) {
-		for (uint32_t index = 0; index < objects.size(); ++index) {
+	for (const auto& object : object3DBuffers) {
 
-			const auto& object = objects[index];
+		// renderTextureへの描画処理
+		pipeline_->SetObjectPipeline();
 
-			// renderTextureへの描画処理
-			pipeline_->SetObjectPipeline(blendMode);
+		// shadowMap: root1
+		commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
+		if (!debugEnable) {
 
-			// shadowMap: root1
-			commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
-			if (!debugEnable) {
+			// viewProjection: root3
+			commandList_->SetGraphicsRootConstantBufferView(3, viewProjectionBuffer_.GetResourceAdress());
+			// camera:         root7
+			commandList_->SetGraphicsRootConstantBufferView(7, cameraPosBuffer_.GetResourceAdress());
+		} else {
 
-				// viewProjection: root3
-				commandList_->SetGraphicsRootConstantBufferView(3, viewProjectionBuffer_.GetResourceAdress());
-				// camera:         root7
-				commandList_->SetGraphicsRootConstantBufferView(7, cameraPosBuffer_.GetResourceAdress());
+			// viewProjection: root3
+			commandList_->SetGraphicsRootConstantBufferView(3, debugSceneViewProjectionBuffer_.GetResourceAdress());
+			// camera:         root7
+			commandList_->SetGraphicsRootConstantBufferView(7, debugSceneCameraPosBuffer_.GetResourceAdress());
+		}
+		// lightViewProjection: root4
+		commandList_->SetGraphicsRootConstantBufferView(4, lightViewProjectionBuffer_.GetResourceAdress());
+		// light:  root6
+		commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResourceAdress());
+
+		uint32_t meshNum = 0;
+		if (object.model.isAnimation) {
+
+			meshNum = 1;
+		} else {
+
+			meshNum = static_cast<uint32_t>(object.model.model->GetMeshNum());
+		}
+		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
+
+			UINT indexCount = 0;
+			if (object.model.isAnimation) {
+
+				dxCommand_->TransitionBarriers({ object.model.animationModel->GetIOVertex().GetResource() },
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+
+				commandList_->IASetVertexBuffers(0, 1,
+					&object.model.animationModel->GetIOVertex().GetVertexBuffer());
+				commandList_->IASetIndexBuffer(
+					&object.model.animationModel->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+				indexCount = object.model.animationModel->GetIA().GetIndexCount(meshIndex);
+
+				// texture: root0
+				commandList_->SetGraphicsRootDescriptorTable(0, object.model.animationModel->GetTextureGPUHandle(meshIndex));
 			} else {
 
-				// viewProjection: root3
-				commandList_->SetGraphicsRootConstantBufferView(3, debugSceneViewProjectionBuffer_.GetResourceAdress());
-				// camera:         root7
-				commandList_->SetGraphicsRootConstantBufferView(7, debugSceneCameraPosBuffer_.GetResourceAdress());
+				commandList_->IASetVertexBuffers(0, 1,
+					&object.model.model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
+				commandList_->IASetIndexBuffer(
+					&object.model.model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
+				indexCount = object.model.model->GetIA().GetIndexCount(meshIndex);
+
+				// texture: root0
+				commandList_->SetGraphicsRootDescriptorTable(0, object.model.model->GetTextureGPUHandle(meshIndex));
 			}
-			// lightViewProjection: root4
-			commandList_->SetGraphicsRootConstantBufferView(4, lightViewProjectionBuffer_.GetResourceAdress());
-			// light:  root6
-			commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResourceAdress());
 
-			uint32_t meshNum = 0;
-			if (object->model->isAnimation) {
+			// transform: root2
+			commandList_->SetGraphicsRootConstantBufferView(2, object.matrix.GetResourceAdress());
+			// material:  root3
+			commandList_->SetGraphicsRootConstantBufferView(5, object.materials[meshIndex].GetResourceAdress());
+			// draw
+			commandList_->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
 
-				meshNum = 1;
-			} else {
+			if (object.model.isAnimation) {
 
-				meshNum = static_cast<uint32_t>(object->model->model->GetMeshNum());
-			}
-			for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
-
-				UINT indexCount = 0;
-				if (object->model->isAnimation) {
-
-					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
-						D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-
-					commandList_->IASetVertexBuffers(0, 1,
-						&object->model->animationModel->GetIOVertex().GetVertexBuffer());
-					commandList_->IASetIndexBuffer(
-						&object->model->animationModel->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
-					indexCount = object->model->animationModel->GetIA().GetIndexCount(meshIndex);
-
-					// texture: root0
-					commandList_->SetGraphicsRootDescriptorTable(0, object->model->animationModel->GetTextureGPUHandle(meshIndex));
-				} else {
-
-					commandList_->IASetVertexBuffers(0, 1,
-						&object->model->model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
-					commandList_->IASetIndexBuffer(
-						&object->model->model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
-					indexCount = object->model->model->GetIA().GetIndexCount(meshIndex);
-
-					// texture: root0
-					commandList_->SetGraphicsRootDescriptorTable(0, object->model->model->GetTextureGPUHandle(meshIndex));
-				}
-
-				// transform: root2
-				commandList_->SetGraphicsRootConstantBufferView(2, object->matrix.GetResourceAdress());
-				// material:  root3
-				commandList_->SetGraphicsRootConstantBufferView(5, object->materials[meshIndex].GetResourceAdress());
-				// draw
-				commandList_->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
-
-				if (object->model->isAnimation) {
-
-					dxCommand_->TransitionBarriers({ object->model->animationModel->GetIOVertex().GetResource() },
-						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-						D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-				}
+				dxCommand_->TransitionBarriers({ object.model.animationModel->GetIOVertex().GetResource() },
+					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 			}
 		}
 	}

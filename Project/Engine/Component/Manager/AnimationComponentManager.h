@@ -36,5 +36,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unordered_map<EntityID, AnimationComponent> components_;
+	std::vector<AnimationComponent> components_;
 };

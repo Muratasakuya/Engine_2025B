@@ -11,6 +11,9 @@
 
 void Transform3DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any args) {
 
+	// component追加
+	components_.emplace_back();
+
 	// 追加
 	components_[entity] = Transform3DComponent();
 	components_[entity].Init();
@@ -19,12 +22,13 @@ void Transform3DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any
 
 void Transform3DManager::RemoveComponent(EntityID entity) {
 
-	components_.erase(entity);
+	// component削除
+	components_.erase(components_.begin() + entity);
 }
 
 void Transform3DManager::Update() {
 
-	for (auto& [entityID, component] : components_) {
+	for (auto& component : components_) {
 
 		// 行列更新
 		component.UpdateMatrix();
@@ -33,9 +37,5 @@ void Transform3DManager::Update() {
 
 Transform3DComponent* Transform3DManager::GetComponent(EntityID entity) {
 
-	if (Algorithm::Find(components_, entity, true)) {
-
-		return &components_[entity];
-	}
-	return nullptr;
+	return &components_[entity];
 }

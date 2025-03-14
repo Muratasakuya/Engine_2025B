@@ -32,7 +32,7 @@ public:
 
 	const std::unordered_map<EntityID, std::string>& GetNames() const { return entityNames_; }
 
-	const std::vector<EntityID>& GetIDs() const { return entityIDs_; }
+	EntityID GetEntityCount() const { return static_cast<EntityID>(entityNames_.size()); }
 private:
 	//========================================================================
 	//	private Methods
@@ -40,9 +40,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	EntityID nextID_ = 0;
+	EntityID nextId_;
 	std::unordered_map<EntityID, std::string> entityNames_;
-	std::vector<EntityID> entityIDs_;
 
 	std::unordered_map<std::string, int> nameCounts_;
 

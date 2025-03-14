@@ -13,6 +13,7 @@
 #include <d3d12.h>
 // c++
 #include <memory>
+#include <ranges>
 // front
 class DxCommand;
 class DxShaderCompiler;

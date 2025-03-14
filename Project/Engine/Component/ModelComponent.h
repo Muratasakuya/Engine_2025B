@@ -113,5 +113,5 @@ struct ModelComponent {
 
 	RenderingData renderingData;
 
-	void ImGui(float itemSize, class RenderObjectManager* renderObjectManager);
+	void ImGui();
 };

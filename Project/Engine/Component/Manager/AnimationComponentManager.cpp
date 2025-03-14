@@ -14,6 +14,8 @@ void AnimationComponentManager::AddComponent(EntityID entity, std::any args) {
 	auto [animationName, asset] =
 		std::any_cast<std::tuple<std::optional<std::string>, Asset*>>(args);
 
+	// animationをしない場合でも要素は追加しておく
+	components_.emplace_back();
 	if (!animationName.has_value()) {
 		return;
 	}
@@ -24,15 +26,14 @@ void AnimationComponentManager::AddComponent(EntityID entity, std::any args) {
 
 void AnimationComponentManager::RemoveComponent(EntityID entity) {
 
-	if (Algorithm::Find(components_, entity)) {
-
-		components_.erase(entity);
-	}
+	// entity削除
+	std::swap(components_[entity], components_.back());
+	components_.pop_back();
 }
 
 void AnimationComponentManager::Update() {
 
-	for (auto& [entityID, component] : components_) {
+	for (auto& component : components_) {
 
 		// animation更新処理
 		component.Update();
@@ -41,9 +42,5 @@ void AnimationComponentManager::Update() {
 
 AnimationComponent* AnimationComponentManager::GetComponent(EntityID entity) {
 
-	if (Algorithm::Find(components_, entity, true)) {
-
-		return &components_[entity];
-	}
-	return nullptr;
+	return &components_[entity];
 }

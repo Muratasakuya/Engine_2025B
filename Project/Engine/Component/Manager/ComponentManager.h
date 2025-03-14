@@ -28,8 +28,11 @@ class RenderObjectManager;
 // 削除したObjectにアクセスしてしまう可能性大
 // ユーザーにはIDのみ渡して毎回Get()してObjectを使用する方面に移行 ✓
 // imguiの操作について
-// camera、lightはsceneで追加されたやつを操作できるようにする
-// id:nameをhierarchyで表示し、inspectorで操作できるようにする
+// camera、lightはsceneで追加されたやつを操作できるようにする 後回し
+// id:nameをhierarchyで表示し、inspectorで操作できるようにする ✓
+// objectのinstancing描画、CreateInstancing("instancingする用の名前",instancingCount);
+// CreateObject3D()にinstancingで描画するかstd::optional<std::string>で、"instancingする用の名前"を
+// 受け取って、has_value()ならbufferは作成せず、instancingBufferに渡すだけにする
 
 //============================================================================
 //	ComponentManager class
@@ -55,6 +58,9 @@ public:
 	template <typename T>
 	void RegisterComponentManager(IComponent<T>* manager);
 
+	// instancingの作成
+	void CreateInstancing(const std::string& modelName, const std::string& name, uint32_t instanceCount);
+
 	// object3Dの追加、削除
 	EntityID CreateObject3D(const std::string& modelName,
 		const std::optional<std::string>& animationName, const std::string& objectName);
@@ -72,8 +78,8 @@ public:
 	template <typename T>
 	std::vector<T*> GetComponentList(EntityID entity);
 
-	// 全てのentityのIDを取得
-	const std::vector<EntityID>& GetEntityIDs() const { return entityManager_->GetIDs(); };
+	// entityの数取得
+	EntityID GetEntityCount() const { return entityManager_->GetEntityCount(); }
 
 	// imguiManagerの取得
 	ImGuiComponentManager* GetImGuiComponentManager() const { return imguiComponentManager_.get(); }

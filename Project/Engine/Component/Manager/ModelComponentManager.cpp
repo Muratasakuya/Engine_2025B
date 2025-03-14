@@ -26,6 +26,11 @@ void ModelComponentManager::AddComponent(EntityID entity, std::any args) {
 		commandList_ = commandList;
 	}
 
+	// component追加
+	components_.emplace_back();
+
+	components_[entity] = ModelComponent();
+
 	// Animation有無
 	components_[entity].isAnimation = animationName.has_value();
 
@@ -46,12 +51,13 @@ void ModelComponentManager::AddComponent(EntityID entity, std::any args) {
 
 void ModelComponentManager::RemoveComponent(EntityID entity) {
 
-	components_.erase(entity);
+	// component削除
+	components_.erase(components_.begin() + entity);
 }
 
 void ModelComponentManager::Update() {
 
-	for (auto& [entityID, component] : components_) {
+	for (const auto& component : components_) {
 		
 		// skinningAnimation処理
 		if (component.isAnimation) {
@@ -71,9 +77,5 @@ void ModelComponentManager::Update() {
 
 ModelComponent* ModelComponentManager::GetComponent(EntityID entity) {
 
-	if (Algorithm::Find(components_, entity, true)) {
-
-		return &components_[entity];
-	}
-	return nullptr;
+	return &components_[entity];
 }
