@@ -115,3 +115,14 @@ struct ModelComponent {
 
 	void ImGui();
 };
+
+// 受け取るmodel情報
+struct ModelReference {
+
+	BaseModel* model;
+	AnimationModel* animationModel;
+
+	bool isAnimation;
+
+	RenderingData renderingData;
+};

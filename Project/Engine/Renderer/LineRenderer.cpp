@@ -43,9 +43,9 @@ void LineRenderer::Init(ID3D12Device* device, ID3D12GraphicsCommandList* command
 
 	vertexBuffer_.CreateVertexBuffer(device, kMaxLineCount_ * kVertexCountLine_);
 
-	viewProjectionBuffer_.CreateConstBuffer(device);
+	viewProjectionBuffer_.CreateConstBuffer(device, 0);
 #ifdef _DEBUG
-	debugSceneViewProjectionBuffer_.CreateConstBuffer(device);
+	debugSceneViewProjectionBuffer_.CreateConstBuffer(device, 0);
 #endif // _DEBUG
 }
 
@@ -74,11 +74,11 @@ void LineRenderer::ExecuteLine(bool debugEnable) {
 	if (!debugEnable) {
 
 		viewProjectionBuffer_.TransferData(cameraManager_->GetCamera()->GetViewProjectionMatrix());
-		commandList_->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_.GetResourceAdress());
+		viewProjectionBuffer_.SetCommand(commandList_);
 	} else {
 
 		debugSceneViewProjectionBuffer_.TransferData(cameraManager_->GetDebugCamera()->GetViewProjectionMatrix());
-		commandList_->SetGraphicsRootConstantBufferView(0, debugSceneViewProjectionBuffer_.GetResourceAdress());
+		debugSceneViewProjectionBuffer_.SetCommand(commandList_);
 	}
 
 	commandList_->DrawInstanced(static_cast<UINT>(lineVertices_.size()), 1, 0, 0);

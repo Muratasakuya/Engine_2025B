@@ -10,6 +10,7 @@
 // c++
 #include <vector>
 #include <cstdint>
+#include <optional>
 #include <cassert>
 
 //============================================================================
@@ -26,8 +27,8 @@ public:
 	virtual ~DxConstBuffer() = default;
 
 	// 初期化
-	void CreateConstBuffer(ID3D12Device* device);
-	void CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount);
+	void CreateConstBuffer(ID3D12Device* device, UINT rootIndex);
+	void CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount, UINT rootIndex);
 
 	void CreateVertexBuffer(ID3D12Device* device, UINT vertexCount);
 	void CreateUavVertexBuffer(ID3D12Device* device, UINT vertexCount);
@@ -39,8 +40,9 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetCommand(ID3D12GraphicsCommandList* commandList, const  std::optional<UINT>& rootIndex = std::nullopt);
+
 	ID3D12Resource* GetResource() const;
-	D3D12_GPU_VIRTUAL_ADDRESS GetResourceAdress() const;
 
 	const D3D12_VERTEX_BUFFER_VIEW& GetVertexBuffer() const;
 	const D3D12_INDEX_BUFFER_VIEW& GetIndexBuffer() const;
@@ -53,6 +55,8 @@ private:
 
 	ComPtr<ID3D12Resource> resource_;
 	T* mappedData_ = nullptr;
+
+	UINT rootIndex_;
 
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
@@ -67,7 +71,9 @@ private:
 //============================================================================
 
 template<typename T>
-inline void DxConstBuffer<T>::CreateConstBuffer(ID3D12Device* device) {
+inline void DxConstBuffer<T>::CreateConstBuffer(ID3D12Device* device, UINT rootIndex) {
+
+	rootIndex_ = rootIndex;
 
 	DxUtils::CreateBufferResource(device, resource_, sizeof(T));
 
@@ -77,7 +83,9 @@ inline void DxConstBuffer<T>::CreateConstBuffer(ID3D12Device* device) {
 }
 
 template<typename T>
-inline void DxConstBuffer<T>::CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount) {
+inline void DxConstBuffer<T>::CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount, UINT rootIndex) {
+
+	rootIndex_ = rootIndex;
 
 	DxUtils::CreateBufferResource(device, resource_, sizeof(T) * instanceCount);
 
@@ -170,13 +178,14 @@ inline void DxConstBuffer<T>::TransferVectorData(const std::vector<T>& data) {
 }
 
 template<typename T>
-inline ID3D12Resource* DxConstBuffer<T>::GetResource() const {
-	return resource_.Get();
+inline void DxConstBuffer<T>::SetCommand(ID3D12GraphicsCommandList* commandList, const  std::optional<UINT>& rootIndex) {
+
+	commandList->SetGraphicsRootConstantBufferView(rootIndex.value_or(rootIndex_), resource_->GetGPUVirtualAddress());
 }
 
 template<typename T>
-inline D3D12_GPU_VIRTUAL_ADDRESS DxConstBuffer<T>::GetResourceAdress() const {
-	return resource_.Get()->GetGPUVirtualAddress();
+inline ID3D12Resource* DxConstBuffer<T>::GetResource() const {
+	return resource_.Get();
 }
 
 template<typename T>

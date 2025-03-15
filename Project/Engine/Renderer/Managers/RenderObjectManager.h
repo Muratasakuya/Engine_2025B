@@ -21,17 +21,6 @@ private:
 
 	//--------- structure ----------------------------------------------------
 
-	// 受け取るmodel情報
-	struct ModelReference {
-
-		BaseModel* model;
-		AnimationModel* animationModel;
-
-		bool isAnimation;
-
-		RenderingData renderingData;
-	};
-
 	// GPUに送るデータ
 	struct Object3DForGPU {
 
@@ -54,7 +43,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const std::vector<Object3DForGPU>& GetObject3DBuffers() const { return object3DBuffers_; }
+	std::vector<Object3DForGPU> GetObject3DBuffers() { return object3DBuffers_; }
 private:
 	//========================================================================
 	//	private Methods

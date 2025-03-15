@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Renderer/Managers/ObjectPipelineManager.h>
+#include <Engine/Component/ModelComponent.h>
 #include <Engine/Core/CBuffer/DxConstBuffer.h>
 #include <Game/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
@@ -71,3 +72,15 @@ private:
 	PunctualLight light_;
 	DxConstBuffer<PunctualLight> lightBuffer_;
 };
+
+//============================================================================
+//	MeshCommand namespace
+//============================================================================
+
+namespace MeshCommand {
+
+	inline void IA(UINT& indexCount, uint32_t meshIndex,
+		const ModelReference& model, DxCommand* dxCommand);
+
+	inline void Draw(UINT indexCount, const ModelReference& model, DxCommand* dxCommand);
+}
