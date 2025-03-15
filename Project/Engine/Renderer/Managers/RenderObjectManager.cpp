@@ -14,7 +14,7 @@ void RenderObjectManager::CreateObject3D(EntityID id, ModelComponent* model, ID3
 	// buffer作成
 	object3DBuffers_.emplace_back();
 
-	object3DBuffers_[id].matrix.CreateConstBuffer(device);
+	object3DBuffers_[id].matrix.CreateConstBuffer(device, 0);
 
 	if (model->isAnimation) {
 
@@ -25,7 +25,7 @@ void RenderObjectManager::CreateObject3D(EntityID id, ModelComponent* model, ID3
 	}
 	for (auto& material : object3DBuffers_[id].materials) {
 
-		material.CreateConstBuffer(device);
+		material.CreateConstBuffer(device, 5);
 	}
 
 	// model情報の取得

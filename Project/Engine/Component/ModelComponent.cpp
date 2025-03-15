@@ -68,7 +68,7 @@ void AnimationModel::Init(const std::string& modelName, const std::string& anima
 
 	ioVertexBuffer_.Init(vertexNum, inputAssembler_.GetVertexBuffer(0).GetResource(),
 		device, srvManager);
-	skinningInfoDates_.CreateConstBuffer(device);
+	skinningInfoDates_.CreateConstBuffer(device, 4);
 	skinningInfoDates_.TransferData(static_cast<uint32_t>(BaseModel::GetModelData().meshes.front().vertices.size()));
 }
 
@@ -80,7 +80,7 @@ void AnimationModel::Skinning() {
 	commandList_->SetComputeRootDescriptorTable(2,
 		asset_->GetSkinClusterData(animationName_).influenceSrvHandle.second);
 	commandList_->SetComputeRootDescriptorTable(3, ioVertexBuffer_.GetOutputGPUHandle());
-	commandList_->SetComputeRootConstantBufferView(4, skinningInfoDates_.GetResourceAdress());
+	commandList_->SetComputeRootConstantBufferView(4, skinningInfoDates_.GetResource()->GetGPUVirtualAddress());
 	commandList_->Dispatch(static_cast<UINT>(modelData_.meshes.front().vertices.size() + 1023) / 1024, 1, 1);
 }
 
