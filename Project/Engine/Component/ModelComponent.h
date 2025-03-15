@@ -32,8 +32,9 @@ public:
 
 	const InputAssembler& GetIA() const { return inputAssembler_; }
 
-	const std::string& GetTexture(uint32_t meshIndex) { return *modelData_.meshes[meshIndex].textureName; }
+	const std::string& GetTexture(uint32_t meshIndex) const { return *modelData_.meshes[meshIndex].textureName; }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetTextureGPUHandle(uint32_t meshIndex);
+	uint32_t GetTextureGPUIndex(uint32_t meshIndex) const;
 
 	const ModelData& GetModelData() const { return modelData_; }
 

@@ -4,7 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/DxCommand.h>
-#include <Engine/Core/Graphics/ShadowMap.h>
+#include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
+#include <Engine/Core/Graphics/Mesh/MeshCommandContext.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Renderer/Managers/RenderObjectManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
@@ -64,6 +65,7 @@ void MeshRenderer::RenderZPass() {
 
 	// 描画情報取得
 	auto object3DBuffers = renderObjectManager_->GetObject3DBuffers();
+	MeshCommandContext commandContext{};
 
 	if (object3DBuffers.empty()) {
 		return;
@@ -87,11 +89,11 @@ void MeshRenderer::RenderZPass() {
 		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
 			UINT indexCount = 0;
-			MeshCommand::IA(indexCount, meshIndex, object.model, dxCommand_);
+			commandContext.IA(indexCount, meshIndex, object.model, dxCommand_);
 
 			object.matrix.SetCommand(commandList_, 0);
 
-			MeshCommand::Draw(indexCount, object.model, dxCommand_);
+			commandContext.Draw(indexCount, object.model, dxCommand_);
 		}
 	}
 }
@@ -101,8 +103,15 @@ void MeshRenderer::Render(bool debugEnable) {
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
+	// 通常の描画処理
+	NormalRendering(debugEnable);
+}
+
+void MeshRenderer::NormalRendering(bool debugEnable) {
+
 	// 描画情報取得
 	auto object3DBuffers = renderObjectManager_->GetObject3DBuffers();
+	MeshCommandContext commandContext{};
 
 	if (object3DBuffers.empty()) {
 		return;
@@ -111,6 +120,7 @@ void MeshRenderer::Render(bool debugEnable) {
 	// renderTextureへの描画処理
 	pipeline_->SetObjectPipeline();
 
+	// 全object共通のbuffer設定
 	commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
 	if (!debugEnable) {
 
@@ -137,7 +147,7 @@ void MeshRenderer::Render(bool debugEnable) {
 		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
 			UINT indexCount = 0;
-			MeshCommand::IA(indexCount, meshIndex, object.model, dxCommand_);
+			commandContext.IA(indexCount, meshIndex, object.model, dxCommand_);
 
 			if (object.model.isAnimation) {
 				commandList_->SetGraphicsRootDescriptorTable(0, object.model.animationModel->GetTextureGPUHandle(meshIndex));
@@ -147,51 +157,73 @@ void MeshRenderer::Render(bool debugEnable) {
 			object.matrix.SetCommand(commandList_, 2);
 			object.materials[meshIndex].SetCommand(commandList_);
 
-			MeshCommand::Draw(indexCount, object.model, dxCommand_);
+			commandContext.Draw(indexCount, object.model, dxCommand_);
 		}
 	}
 }
 
-//============================================================================
-//	MeshCommand namespaceMethods
-//============================================================================
+void MeshRenderer::IndirectRendering(bool debugEnable) {
 
-void MeshCommand::IA(UINT& indexCount, uint32_t meshIndex, const ModelReference& model, DxCommand* dxCommand) {
+	debugEnable;
 
-	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+	//// 描画情報取得
+	//auto object3DBuffers = renderObjectManager_->GetObject3DBuffers();
 
-	if (model.isAnimation) {
+	//if (object3DBuffers.empty()) {
+	//	return;
+	//}
 
-		dxCommand->TransitionBarriers({ model.animationModel->GetIOVertex().GetResource() },
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+	//// renderTextureへの描画処理
+	//pipeline_->SetObjectPipeline();
 
-		commandList->IASetVertexBuffers(0, 1,
-			&model.animationModel->GetIOVertex().GetVertexBuffer());
-		commandList->IASetIndexBuffer(
-			&model.animationModel->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
-		indexCount = model.animationModel->GetIA().GetIndexCount(meshIndex);
-	} else {
+	//// 全object共通のbuffer設定
+	//commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
+	//if (!debugEnable) {
 
-		commandList->IASetVertexBuffers(0, 1,
-			&model.model->GetIA().GetVertexBuffer(meshIndex).GetVertexBuffer());
-		commandList->IASetIndexBuffer(
-			&model.model->GetIA().GetIndexBuffer(meshIndex).GetIndexBuffer());
-		indexCount = model.model->GetIA().GetIndexCount(meshIndex);
-	}
-}
+	//	viewProjectionBuffer_.SetCommand(commandList_);
+	//	cameraPosBuffer_.SetCommand(commandList_);
+	//} else {
 
-void MeshCommand::Draw(UINT indexCount, const ModelReference& model, DxCommand* dxCommand) {
+	//	debugSceneViewProjectionBuffer_.SetCommand(commandList_);
+	//	debugSceneCameraPosBuffer_.SetCommand(commandList_);
+	//}
+	//lightViewProjectionBuffer_.SetCommand(commandList_, 4);
+	//lightBuffer_.SetCommand(commandList_);
 
-	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+	//std::vector<IndirectCommand> commands;
+	//UINT accumulatedIndexCount = 0;
+	//UINT accumulatedVertexCount = 0;
 
-	// draw
-	commandList->DrawIndexedInstanced(indexCount, 1, 0, 0, 0);
+	//for (auto& object : object3DBuffers) {
 
-	if (model.isAnimation) {
+	//	IndirectCommand command = {};
 
-		dxCommand->TransitionBarriers({ model.animationModel->GetIOVertex().GetResource() },
-			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-			D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-	}
+	//	// 描画時のindex数
+	//	command.drawArguments.IndexCountPerInstance = object.model.model->GetIA().GetIndexCount(0);
+	//	command.drawArguments.StartIndexLocation = accumulatedIndexCount;
+	//	command.drawArguments.BaseVertexLocation = accumulatedVertexCount;
+	//	command.drawArguments.InstanceCount = 1;
+	//	command.drawArguments.StartInstanceLocation = 0;
+
+	//	// matrixの設定
+	//	command.matrixBufferAddress = object.matrix.GetResource()->GetGPUVirtualAddress();
+	//	// materialの設定
+	//	command.materialBufferAddress = object.materials[0].GetResource()->GetGPUVirtualAddress();
+	//	// textureの設定
+	//	if (object.model.isAnimation) {
+	//		command.textureDescriptorIndex = object.model.animationModel->GetTextureGPUIndex(0);
+	//	} else {
+	//		command.textureDescriptorIndex = object.model.model->GetTextureGPUIndex(0);
+	//	}
+
+	//	commands.emplace_back(command);
+
+	//	accumulatedIndexCount += command.drawArguments.IndexCountPerInstance;
+	//	accumulatedVertexCount += object.model.model->GetIA().GetVertexCount(0);
+	//}
+
+	//indirectCommand_->Update(commands);
+
+	//// 描画処理実行
+	//indirectCommand_->Execute(dxCommand_, static_cast<UINT>(commands.size()));
 }

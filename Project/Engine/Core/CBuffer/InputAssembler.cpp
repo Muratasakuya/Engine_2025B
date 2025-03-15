@@ -13,8 +13,10 @@ void InputAssembler::Init(const MeshModelData& meshData, ID3D12Device* device) {
 
 	// vertex
 	vertices_.emplace_back();
+	vertexCounts_.emplace_back();
 	vertices_.back().CreateVertexBuffer(device, static_cast<UINT>(meshData.vertices.size()));
 	vertices_.back().TransferVectorData(meshData.vertices);
+	vertexCounts_.back() = static_cast<UINT>(meshData.vertices.size());
 
 	// index
 	indices_.emplace_back();

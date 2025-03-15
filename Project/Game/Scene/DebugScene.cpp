@@ -42,7 +42,7 @@ void DebugScene::Init(
 	// iの数だけ生成する
 	// 128 ...25fpsくらい
 	// debugCameraと合わせて計 *2回描画
-	for (uint32_t i = 0; i < 128; ++i) {
+	for (uint32_t i = 0; i < 1; ++i) {
 
 		ComponentManager::GetInstance()->CreateObject3D("walk", std::nullopt, "walk");
 	}

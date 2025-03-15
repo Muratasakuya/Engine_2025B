@@ -30,6 +30,8 @@ public:
 	void SetObjectPipeline();
 
 	void SetZPassPipeline();
+
+	ID3D12RootSignature* GetObject3DRootSignature() const { return object3DPipeline_->GetRootSignature(); }
 private:
 	//========================================================================
 	//	private Methods

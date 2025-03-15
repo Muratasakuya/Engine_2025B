@@ -11,23 +11,21 @@
 using EntityID = uint32_t;
 
 //============================================================================
+//	structure
+//============================================================================
+
+// GPUに送るデータ
+struct Object3DForGPU {
+
+	DxConstBuffer<TransformationMatrix> matrix;
+	std::vector<DxConstBuffer<Material>> materials;
+	ModelReference model;
+};
+
+//============================================================================
 //	RenderObjectManager class
 //============================================================================
 class RenderObjectManager {
-private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
-
-	//--------- structure ----------------------------------------------------
-
-	// GPUに送るデータ
-	struct Object3DForGPU {
-
-		DxConstBuffer<TransformationMatrix> matrix;
-		std::vector<DxConstBuffer<Material>> materials;
-		ModelReference model;
-	};
 public:
 	//========================================================================
 	//	public Methods

@@ -25,6 +25,7 @@ public:
 	const DxConstBuffer<ModelVertexData>& GetVertexBuffer(uint32_t meshIndex) const { return vertices_[meshIndex]; }
 	const DxConstBuffer<uint32_t>& GetIndexBuffer(uint32_t meshIndex) const { return indices_[meshIndex]; }
 
+	UINT GetVertexCount(uint32_t meshIndex) const { return vertexCounts_[meshIndex]; }
 	UINT GetIndexCount(uint32_t meshIndex) const { return indexCounts_[meshIndex]; }
 private:
 	//========================================================================
@@ -37,5 +38,6 @@ private:
 
 	std::vector<DxConstBuffer<uint32_t>> indices_;
 
+	std::vector<UINT> vertexCounts_;
 	std::vector<UINT> indexCounts_;
 };
