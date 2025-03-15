@@ -208,6 +208,15 @@ const D3D12_GPU_DESCRIPTOR_HANDLE& TextureManager::GetGPUHandle(const std::strin
 	return it->second.gpuHandle;
 }
 
+uint32_t TextureManager::GetTextureGPUIndex(const std::string& textureName) const {
+
+	auto it = textures_.find(textureName);
+	if (it == textures_.end()) {
+		ASSERT(FALSE, "not found texture" + textureName);
+	}
+	return it->second.srvIndex;
+}
+
 const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string textureName) const {
 
 	auto it = textures_.find(textureName);

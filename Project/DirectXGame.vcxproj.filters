@@ -83,10 +83,10 @@
     <ClCompile Include="Engine\Core\Graphics\GraphicsCore.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\RenderTexture.cpp">
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\RenderTexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\ShadowMap.cpp">
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\ShadowMap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Lib\CBufferStructures.cpp">
@@ -230,6 +230,12 @@
     <ClCompile Include="Engine\Component\Manager\AnimationComponentManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshCommandContext.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -258,8 +264,8 @@
     <ClInclude Include="Engine\Core\Graphics\DxDevice.h" />
     <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
     <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
-    <ClInclude Include="Engine\Core\Graphics\RenderTexture.h" />
-    <ClInclude Include="Engine\Core\Graphics\ShadowMap.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
     <ClInclude Include="Engine\Core\Lib\CBufferStructures.h" />
     <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
     <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
@@ -312,6 +318,8 @@
     <ClInclude Include="Engine\Renderer\Managers\RenderObjectManager.h" />
     <ClInclude Include="Engine\Component\AnimationComponent.h" />
     <ClInclude Include="Engine\Component\Manager\AnimationComponentManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshCommandContext.h" />
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

@@ -8,8 +8,8 @@
 #include <Engine/Core/Graphics/DxSwapChain.h>
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Core/Graphics/RenderTexture.h>
-#include <Engine/Core/Graphics/ShadowMap.h>
+#include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
+#include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>

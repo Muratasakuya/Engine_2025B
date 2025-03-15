@@ -30,6 +30,7 @@ public:
 
 	// texture
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;
+	uint32_t GetTextureGPUIndex(const std::string& textureName) const;
 
 	const DirectX::TexMetadata& GetMetaData(const std::string textureName) const;
 

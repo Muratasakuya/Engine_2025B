@@ -165,6 +165,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshCommandContext.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.cpp" />
     <ClCompile Include="Engine\Renderer\Managers\RenderObjectManager.cpp">
       <SubType>
       </SubType>
@@ -206,8 +211,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Pipeline\PipelineState.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\RenderTexture.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\ShadowMap.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\RenderTexture.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\ShadowMap.cpp" />
     <ClCompile Include="Engine\Core\Lib\CBufferStructures.cpp" />
     <ClCompile Include="Engine\Core\Lib\Collision.cpp">
       <SubType>
@@ -307,6 +312,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshCommandContext.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Renderer\Managers\RenderObjectManager.h">
       <SubType>
       </SubType>
@@ -349,8 +362,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Pipeline\PipelineState.h" />
-    <ClInclude Include="Engine\Core\Graphics\RenderTexture.h" />
-    <ClInclude Include="Engine\Core\Graphics\ShadowMap.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
     <ClInclude Include="Engine\Core\Lib\CBufferStructures.h" />
     <ClInclude Include="Engine\Core\Lib\Collision.h">
       <SubType>

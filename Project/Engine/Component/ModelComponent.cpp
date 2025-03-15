@@ -48,6 +48,10 @@ const D3D12_GPU_DESCRIPTOR_HANDLE& BaseModel::GetTextureGPUHandle(uint32_t meshI
 	return asset_->GetGPUHandle(*modelData_.meshes[meshIndex].textureName);
 }
 
+uint32_t BaseModel::GetTextureGPUIndex(uint32_t meshIndex) const {
+	return asset_->GetTextureGPUIndex(*modelData_.meshes[meshIndex].textureName);
+}
+
 //============================================================================
 //	AnimationModel classMethods
 //============================================================================
