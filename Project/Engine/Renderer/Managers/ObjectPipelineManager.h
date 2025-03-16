@@ -28,10 +28,10 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetObjectPipeline();
-
 	void SetInstancingObjectPipeline();
 
 	void SetZPassPipeline();
+	void SetInstancingZPassPipeline();
 
 	ID3D12RootSignature* GetObject3DRootSignature() const { return object3DPipeline_->GetRootSignature(); }
 private:
@@ -48,4 +48,6 @@ private:
 	std::unique_ptr<PipelineState> instancingObject3DPipeline_;
 
 	std::unique_ptr<PipelineState> zPassPipeline_;
+
+	std::unique_ptr<PipelineState> instancingZPassPipeline_;
 };

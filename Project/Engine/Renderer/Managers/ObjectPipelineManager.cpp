@@ -18,6 +18,9 @@ void ObjectPipelineManager::Create(ID3D12GraphicsCommandList* commandList,
 
 	zPassPipeline_ = std::make_unique<PipelineState>();
 	zPassPipeline_->Create("ZPass.json", device, shaderCompiler);
+
+	instancingZPassPipeline_ = std::make_unique<PipelineState>();
+	instancingZPassPipeline_->Create("InstancingObjectShadowDepth.json", device, shaderCompiler);
 }
 
 void ObjectPipelineManager::SetObjectPipeline() {
@@ -38,5 +41,12 @@ void ObjectPipelineManager::SetZPassPipeline() {
 
 	commandList_->SetGraphicsRootSignature(zPassPipeline_->GetRootSignature());
 	commandList_->SetPipelineState(zPassPipeline_->GetGraphicsPipeline());
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+}
+
+void ObjectPipelineManager::SetInstancingZPassPipeline() {
+
+	commandList_->SetGraphicsRootSignature(instancingZPassPipeline_->GetRootSignature());
+	commandList_->SetPipelineState(instancingZPassPipeline_->GetGraphicsPipeline());
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 }

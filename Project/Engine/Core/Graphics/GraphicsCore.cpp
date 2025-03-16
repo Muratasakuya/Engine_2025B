@@ -171,6 +171,10 @@ void GraphicsCore::Finalize(HWND hwnd) {
 
 void GraphicsCore::Render() {
 
+	// bufferの更新
+	meshRenderer_->Update();
+	renderObjectManager_->Update();
+
 	// ComputeCommandを非同期で実行
 	dxCommand_->StartComputeCommands();
 
@@ -202,9 +206,6 @@ void GraphicsCore::BeginRenderFrame() {
 
 	// srvDescriptorHeap設定
 	dxCommand_->SetDescriptorHeaps({ srvManager_->GetDescriptorHeap() });
-	// bufferの更新
-	meshRenderer_->Update();
-	renderObjectManager_->Update();
 }
 
 //============================================================================

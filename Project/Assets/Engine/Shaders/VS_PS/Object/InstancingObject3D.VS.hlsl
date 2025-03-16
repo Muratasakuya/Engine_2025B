@@ -57,7 +57,7 @@ VSOutput main(VSInput input, uint32_t instanceId : SV_InstanceID) {
 	output.worldPosition = mul(input.position, gMatrices[instanceId].world).xyz;
 	
 	float4 worldPos = float4(output.worldPosition, 1.0f);
-	output.positionInLVP = mul(worldPos, viewProjection);
+	output.positionInLVP = mul(worldPos, lightViewProjection);
 	
 	// instanceIdÅAPixelÇ≤Ç∆ÇÃèàóù
 	output.instanceID = instanceId;

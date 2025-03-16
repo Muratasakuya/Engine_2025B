@@ -24,7 +24,7 @@ void RenderObjectManager::CreateObject3D(EntityID id, const std::optional<std::s
 	if (instancingName.has_value()) {
 
 		// 最大instance数
-		const uint32_t kMaxInstanceNum = 512;
+		const uint32_t kMaxInstanceNum = 4096;
 
 		// instancingデータ作成
 		instancedMesh_->Create(*model, *instancingName, kMaxInstanceNum);

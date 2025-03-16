@@ -1,32 +1,49 @@
-#include "ShadowDepth.hlsli"
+//============================================================================
+//	include
+//============================================================================
 
-struct LightMatrix {
-	
-	float4x4 lightViewProjection;
-};
+#include "InstancingObjectShadowDepth.hlsli"
 
-struct TransformationMatrix {
+//============================================================================
+//	Input
+//============================================================================
 
-	float4x4 World;
-	float4x4 WVP;
-	float4x4 WorldInverseTranspose;
-};
+struct VSInput {
 
-struct VertexShaderInput {
-	
 	float3 position : POSITION;
 	float2 texcoord : TEXCOORD;
 	float3 normal : NORMAL;
 };
 
-ConstantBuffer<LightMatrix> gLightMatrix : register(b0);
+//============================================================================
+//	CBuffer
+//============================================================================
+
+cbuffer ShadowLight : register(b0) {
+	
+	float4x4 lightViewProjection;
+};
+
+//============================================================================
+//	StructuredBuffer
+//============================================================================
+
+struct TransformationMatrix {
+
+	float4x4 world;
+	float4x4 worldInverseTranspose;
+};
+
 StructuredBuffer<TransformationMatrix> gMatrices : register(t0);
 
-VertexShaderOutput main(VertexShaderInput input, uint32_t instanceId : SV_InstanceID) {
+//============================================================================
+//	Main
+//============================================================================
+VSOutput main(VSInput input, uint32_t instanceId : SV_InstanceID) {
 	
-	VertexShaderOutput output;
+	VSOutput output;
 	float4 worldPos = float4(input.position, 1.0f);
-	output.position = mul(mul(worldPos, gMatrices[instanceId].World), gLightMatrix.lightViewProjection);
+	output.position = mul(mul(worldPos, gMatrices[instanceId].world), lightViewProjection);
 	
 	return output;
 }

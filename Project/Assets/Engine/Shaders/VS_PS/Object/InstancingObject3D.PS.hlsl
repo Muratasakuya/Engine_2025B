@@ -238,11 +238,23 @@ PSOutput main(VSOutput input) {
 	
 	if (shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f &&
 		shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f) {
+		
+		// 法線と光の方向の内積を計算
+		float NdotL = max(0.0f, dot(input.normal, directionalLight.direction));
+
+		float slopeScale = 1.0f;
+		float constantBias = 0.001f;
+		float bias = NdotL + constantBias;
+		
+		// 法線が横向きなら影を無効化
+		if (abs(input.normal.y) < 0.1f) {
+			bias = 1.0f;
+		}
 
 		// シャドウマップの深度値を取得
 		float zInShadowMap = gShadowTexture.Sample(gSampler, shadowMapUV).r;
 
-		if (zInLVp > zInShadowMap) {
+		if (zInLVp - bias > zInShadowMap) {
 			
 			// 遮蔽率の取得
 			float shadow = gShadowTexture.SampleCmpLevelZero(
