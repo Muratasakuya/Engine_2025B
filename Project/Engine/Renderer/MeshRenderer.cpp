@@ -67,6 +67,25 @@ void MeshRenderer::Update() {
 
 void MeshRenderer::RenderZPass() {
 
+	// 通常の描画処理
+	NormalZPassRendering();
+	// instancing描画処理
+	InstancingZPassRendering();
+}
+
+void MeshRenderer::Render(bool debugEnable) {
+
+	// line描画実行
+	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
+
+	// 通常の描画処理
+	NormalRendering(debugEnable);
+	// instancing描画処理
+	InstancingRendering(debugEnable);
+}
+
+void MeshRenderer::NormalZPassRendering() {
+
 	// 描画情報取得
 	auto object3DBuffers = renderObjectManager_->GetObject3DBuffers();
 	MeshCommandContext commandContext{};
@@ -106,15 +125,34 @@ void MeshRenderer::RenderZPass() {
 	}
 }
 
-void MeshRenderer::Render(bool debugEnable) {
+void MeshRenderer::InstancingZPassRendering() {
 
-	// line描画実行
-	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
+	// 描画情報取得
+	auto instancingBuffers = renderObjectManager_->GetInstancingData();
+	MeshCommandContext commandContext{};
 
-	// 通常の描画処理
-	NormalRendering(debugEnable);
-	// instancing描画処理
-	InstancingRendering(debugEnable);
+	if (instancingBuffers.empty()) {
+		return;
+	}
+
+	// shadowMapへの描画処理
+	pipeline_->SetInstancingZPassPipeline();
+
+	commandList_->SetGraphicsRootConstantBufferView(1, lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+
+	for (const auto& buffer : std::views::values(instancingBuffers)) {
+
+		uint32_t meshNum = static_cast<uint32_t>(buffer.model.model->GetMeshNum());
+		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
+
+			UINT indexCount = 0;
+			commandContext.IA(indexCount, meshIndex, buffer.model, dxCommand_);
+
+			commandList_->SetGraphicsRootDescriptorTable(0, srvManager_->GetGPUHandle(buffer.transformSrvIndex));
+
+			commandContext.InstancingDraw(indexCount, buffer.numInstance, commandList_);
+		}
+	}
 }
 
 void MeshRenderer::NormalRendering(bool debugEnable) {

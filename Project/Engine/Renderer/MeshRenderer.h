@@ -75,6 +75,9 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	void NormalZPassRendering();
+	void InstancingZPassRendering();
+
 	void NormalRendering(bool debugEnable);
 	void InstancingRendering(bool debugEnable);
 };

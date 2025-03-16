@@ -1,6 +1,13 @@
-#include "ShadowDepth.hlsli"
+//============================================================================
+//	include
+//============================================================================
 
-float4 main(VertexShaderOutput input) : SV_TARGET0 {
+#include "InstancingObjectShadowDepth.hlsli"
+
+//============================================================================
+//	Main
+//============================================================================
+float4 main(VSOutput input) : SV_TARGET0 {
 	
 	// Z’l‚Ì‘‚«‚İ
 	return float4(input.position.z, input.position.z, input.position.z, 1.0f);

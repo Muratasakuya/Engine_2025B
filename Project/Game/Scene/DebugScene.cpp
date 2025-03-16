@@ -26,9 +26,6 @@ void DebugScene::Init(
 
 	asset->LoadModel("teapot");
 
-	asset->LoadModel("walk");
-	asset->LoadAnimation("walk", "walk");
-
 	//========================================================================
 	//	init
 	//========================================================================
@@ -39,12 +36,13 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	float kMaxCount = 4;
-	float spancing = 1.5f;
+	float kMaxCount = 24;
+	float spancing = 4.0f;
+
 	for (uint32_t i = 0; i < kMaxCount; ++i) {
 		for (uint32_t j = 0; j < kMaxCount; ++j) {
 
-			EntityID id = ComponentManager::GetInstance()->CreateObject3D("walk", std::nullopt, "walk", "walkInstancing");
+			EntityID id = ComponentManager::GetInstance()->CreateObject3D("teapot", std::nullopt, "teapot", "teapotInstancing");
 			auto transform = ComponentManager::GetInstance()->GetComponent<Transform3DComponent>(id);
 
 			transform->translation = Vector3(i * spancing, 0.0f, j * spancing);
@@ -59,6 +57,4 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	//========================================================================
 
 	gameCamera_->Update();
-
-	LineRenderer::GetInstance()->DrawGrid(16, 16.0f, Color::White());
 }

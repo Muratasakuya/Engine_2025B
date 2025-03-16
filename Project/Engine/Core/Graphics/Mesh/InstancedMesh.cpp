@@ -105,6 +105,12 @@ void InstancedMesh::SetComponent(const std::string& name,
 
 	// instance数インクリメント
 	++meshGroups_[name].numInstance;
+
+	// 最大instance数を超えたらエラー
+	if (meshGroups_[name].numInstance > meshGroups_[name].maxInstance) {
+
+		ASSERT(FALSE, "numInstance > maxInstance");
+	}
 }
 
 void InstancedMesh::Update() {
