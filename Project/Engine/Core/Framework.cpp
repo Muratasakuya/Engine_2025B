@@ -66,10 +66,12 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	InitComponent();
 
 	// imgui機能初期化
+#ifdef _DEBUG
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
 	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
 		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
 		graphicsCore_->GetShadowMapGPUHandle());
+#endif // _DEBUG
 
 	// scene管理クラス初期化
 	sceneManager_ = std::make_unique<SceneManager>(
@@ -118,7 +120,9 @@ void Framework::Update() {
 	// 描画前処理
 	graphicsCore_->BeginRenderFrame();
 	// imgui表示更新
+#ifdef _DEBUG
 	imguiEditor_->Display();
+#endif // _DEBUG
 	// scene更新
 	UpdateScene();
 	// entityBuffer更新
