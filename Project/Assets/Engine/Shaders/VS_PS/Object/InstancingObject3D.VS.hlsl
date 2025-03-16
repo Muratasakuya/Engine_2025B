@@ -1,12 +1,38 @@
-//============================================================================*/
+//============================================================================
 //	include
-//============================================================================*/
+//============================================================================
 
 #include "InstancingObject3D.hlsli"
 
-//============================================================================*/
-//	InstancingObject3D VS
-//============================================================================*/
+//============================================================================
+//	Input
+//============================================================================
+
+struct VSInput {
+
+	float4 position : POSITION0;
+	float2 texcoord : TEXCOORD0;
+	float3 normal : NORMAL0;
+};
+
+//============================================================================
+//	CBuffer
+//============================================================================
+
+cbuffer CameraData : register(b0) {
+	
+	float4x4 viewProjection;
+};
+
+
+cbuffer ShadowLight : register(b1) {
+	
+	float4x4 lightViewProjection;
+};
+
+//============================================================================
+//	StructuredBuffer
+//============================================================================
 
 struct TransformationMatrix {
 
@@ -14,32 +40,16 @@ struct TransformationMatrix {
 	float4x4 worldInverseTranspose;
 };
 
-struct CameraData {
-	
-	float4x4 viewProjection;
-};
-
-struct ShadowLight {
-	
-	float4x4 viewProjection;
-};
-
-struct VertexShaderInput {
-
-	float4 position : POSITION0;
-	float2 texcoord : TEXCOORD0;
-	float3 normal : NORMAL0;
-};
-
 StructuredBuffer<TransformationMatrix> gMatrices : register(t0);
-ConstantBuffer<CameraData> gCameraData : register(b0);
-ConstantBuffer<ShadowLight> gShadowLight : register(b1);
 
-VertexShaderOutput main(VertexShaderInput input, uint32_t instanceId : SV_InstanceID) {
+//============================================================================
+//	Main
+//============================================================================
+VSOutput main(VSInput input, uint32_t instanceId : SV_InstanceID) {
 
-	VertexShaderOutput output;
+	VSOutput output;
 
-	float4x4 wvp = mul(gMatrices[instanceId].world, gCameraData.viewProjection);
+	float4x4 wvp = mul(gMatrices[instanceId].world, viewProjection);
 	output.position = mul(input.position, wvp);
 	output.texcoord = input.texcoord;
 	output.normal = normalize(mul(input.normal, (float3x3) gMatrices[instanceId].worldInverseTranspose));
@@ -47,7 +57,7 @@ VertexShaderOutput main(VertexShaderInput input, uint32_t instanceId : SV_Instan
 	output.worldPosition = mul(input.position, gMatrices[instanceId].world).xyz;
 	
 	float4 worldPos = float4(output.worldPosition, 1.0f);
-	output.positionInLVP = mul(worldPos, gShadowLight.viewProjection);
+	output.positionInLVP = mul(worldPos, viewProjection);
 	
 	// instanceIdÅAPixelÇ≤Ç∆ÇÃèàóù
 	output.instanceID = instanceId;
