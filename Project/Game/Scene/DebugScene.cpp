@@ -39,12 +39,16 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	// iの数だけ生成する
-	// 128 ...25fpsくらい
-	// debugCameraと合わせて計 *2回描画
-	for (uint32_t i = 0; i < 1; ++i) {
+	float kMaxCount = 16;
+	float spancing = 1.5f;
+	for (uint32_t i = 0; i < kMaxCount; ++i) {
+		for (uint32_t j = 0; j < kMaxCount; ++j) {
 
-		ComponentManager::GetInstance()->CreateObject3D("walk", std::nullopt, "walk");
+			EntityID id = ComponentManager::GetInstance()->CreateObject3D("walk", std::nullopt, "walk", "walkInstancing");
+			auto transform = ComponentManager::GetInstance()->GetComponent<Transform3DComponent>(id);
+
+			transform->translation = Vector3(i * spancing, 0.0f, j * spancing);
+		}
 	}
 }
 

@@ -6,6 +6,7 @@
 
 // c++
 #include <cstdint>
+#include <vector>
 #include <any>
 // using
 using EntityID = uint32_t;
@@ -42,4 +43,5 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	virtual T* GetComponent(EntityID entity) = 0;
+	virtual std::vector<T*> GetComponentList(EntityID entity) = 0;
 };

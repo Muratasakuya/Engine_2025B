@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/DxCommand.h>
+#include <Engine/Core/Graphics/Managers/SRVManager.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 #include <Engine/Core/Graphics/Mesh/MeshCommandContext.h>
 #include <Engine/Renderer/LineRenderer.h>
@@ -15,7 +16,7 @@
 //============================================================================
 
 void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
-	ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler,
+	ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler, SRVManager* srvManager,
 	RenderObjectManager* renderObjectManager, CameraManager* cameraManager) {
 
 	commandList_ = nullptr;
@@ -23,6 +24,9 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
 
 	dxCommand_ = nullptr;
 	dxCommand_ = dxCommand;
+
+	srvManager_ = nullptr;
+	srvManager_ = srvManager;
 
 	shadowMap_ = nullptr;
 	shadowMap_ = shadowMap;
@@ -36,15 +40,15 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
 	pipeline_ = std::make_unique<ObjectPipelineManager>();
 	pipeline_->Create(commandList_, device, shaderCompiler);
 
-	viewProjectionBuffer_.CreateConstBuffer(device, 3);
-	lightViewProjectionBuffer_.CreateConstBuffer(device, 1);
-	cameraPosBuffer_.CreateConstBuffer(device, 7);
+	viewProjectionBuffer_.CreateConstBuffer(device);
+	lightViewProjectionBuffer_.CreateConstBuffer(device);
+	cameraPosBuffer_.CreateConstBuffer(device);
 	light_.Init();
-	lightBuffer_.CreateConstBuffer(device, 6);
+	lightBuffer_.CreateConstBuffer(device);
 
 #ifdef _DEBUG
-	debugSceneViewProjectionBuffer_.CreateConstBuffer(device, 3);
-	debugSceneCameraPosBuffer_.CreateConstBuffer(device, 7);
+	debugSceneViewProjectionBuffer_.CreateConstBuffer(device);
+	debugSceneCameraPosBuffer_.CreateConstBuffer(device);
 #endif // _DEBUG
 }
 
@@ -74,9 +78,13 @@ void MeshRenderer::RenderZPass() {
 	// shadowMapへの描画処理
 	pipeline_->SetZPassPipeline();
 
-	lightViewProjectionBuffer_.SetCommand(commandList_, 1);
+	commandList_->SetGraphicsRootConstantBufferView(1, lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 
 	for (auto& object : object3DBuffers) {
+
+		if (object.model.renderingData.instancingEnable) {
+			continue;
+		}
 
 		uint32_t meshNum = 0;
 		if (object.model.isAnimation) {
@@ -91,7 +99,7 @@ void MeshRenderer::RenderZPass() {
 			UINT indexCount = 0;
 			commandContext.IA(indexCount, meshIndex, object.model, dxCommand_);
 
-			object.matrix.SetCommand(commandList_, 0);
+			commandList_->SetGraphicsRootConstantBufferView(0, object.matrix.GetResource()->GetGPUVirtualAddress());
 
 			commandContext.Draw(indexCount, object.model, dxCommand_);
 		}
@@ -105,6 +113,8 @@ void MeshRenderer::Render(bool debugEnable) {
 
 	// 通常の描画処理
 	NormalRendering(debugEnable);
+	// instancing描画処理
+	InstancingRendering(debugEnable);
 }
 
 void MeshRenderer::NormalRendering(bool debugEnable) {
@@ -124,17 +134,21 @@ void MeshRenderer::NormalRendering(bool debugEnable) {
 	commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
 	if (!debugEnable) {
 
-		viewProjectionBuffer_.SetCommand(commandList_);
-		cameraPosBuffer_.SetCommand(commandList_);
+		commandList_->SetGraphicsRootConstantBufferView(3, viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(7, cameraPosBuffer_.GetResource()->GetGPUVirtualAddress());
 	} else {
 
-		debugSceneViewProjectionBuffer_.SetCommand(commandList_);
-		debugSceneCameraPosBuffer_.SetCommand(commandList_);
+		commandList_->SetGraphicsRootConstantBufferView(3, debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(7, debugSceneCameraPosBuffer_.GetResource()->GetGPUVirtualAddress());
 	}
-	lightViewProjectionBuffer_.SetCommand(commandList_, 4);
-	lightBuffer_.SetCommand(commandList_);
+	commandList_->SetGraphicsRootConstantBufferView(4, lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResource()->GetGPUVirtualAddress());
 
 	for (auto& object : object3DBuffers) {
+
+		if (object.model.renderingData.instancingEnable) {
+			continue;
+		}
 
 		uint32_t meshNum = 0;
 		if (object.model.isAnimation) {
@@ -154,76 +168,54 @@ void MeshRenderer::NormalRendering(bool debugEnable) {
 			} else {
 				commandList_->SetGraphicsRootDescriptorTable(0, object.model.model->GetTextureGPUHandle(meshIndex));
 			}
-			object.matrix.SetCommand(commandList_, 2);
-			object.materials[meshIndex].SetCommand(commandList_);
+			commandList_->SetGraphicsRootConstantBufferView(2, object.matrix.GetResource()->GetGPUVirtualAddress());
+			commandList_->SetGraphicsRootConstantBufferView(5, object.materials[meshIndex].GetResource()->GetGPUVirtualAddress());
 
 			commandContext.Draw(indexCount, object.model, dxCommand_);
 		}
 	}
 }
 
-void MeshRenderer::IndirectRendering(bool debugEnable) {
+void MeshRenderer::InstancingRendering(bool debugEnable) {
 
-	debugEnable;
+	// 描画情報取得
+	auto instancingBuffers = renderObjectManager_->GetInstancingData();
+	MeshCommandContext commandContext{};
 
-	//// 描画情報取得
-	//auto object3DBuffers = renderObjectManager_->GetObject3DBuffers();
+	if (instancingBuffers.empty()) {
+		return;
+	}
 
-	//if (object3DBuffers.empty()) {
-	//	return;
-	//}
+	// renderTextureへの描画処理
+	pipeline_->SetInstancingObjectPipeline();
 
-	//// renderTextureへの描画処理
-	//pipeline_->SetObjectPipeline();
+	// 全object共通のbuffer設定
+	commandList_->SetGraphicsRootDescriptorTable(3, shadowMap_->GetGPUHandle());
+	if (!debugEnable) {
 
-	//// 全object共通のbuffer設定
-	//commandList_->SetGraphicsRootDescriptorTable(1, shadowMap_->GetGPUHandle());
-	//if (!debugEnable) {
+		commandList_->SetGraphicsRootConstantBufferView(4, viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(7, cameraPosBuffer_.GetResource()->GetGPUVirtualAddress());
+	} else {
 
-	//	viewProjectionBuffer_.SetCommand(commandList_);
-	//	cameraPosBuffer_.SetCommand(commandList_);
-	//} else {
+		commandList_->SetGraphicsRootConstantBufferView(4, debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+		commandList_->SetGraphicsRootConstantBufferView(7, debugSceneCameraPosBuffer_.GetResource()->GetGPUVirtualAddress());
+	}
+	commandList_->SetGraphicsRootConstantBufferView(5, lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+	commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResource()->GetGPUVirtualAddress());
 
-	//	debugSceneViewProjectionBuffer_.SetCommand(commandList_);
-	//	debugSceneCameraPosBuffer_.SetCommand(commandList_);
-	//}
-	//lightViewProjectionBuffer_.SetCommand(commandList_, 4);
-	//lightBuffer_.SetCommand(commandList_);
+	for (const auto& buffer : std::views::values(instancingBuffers)) {
 
-	//std::vector<IndirectCommand> commands;
-	//UINT accumulatedIndexCount = 0;
-	//UINT accumulatedVertexCount = 0;
+		uint32_t meshNum = static_cast<uint32_t>(buffer.model.model->GetMeshNum());
+		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
-	//for (auto& object : object3DBuffers) {
+			UINT indexCount = 0;
+			commandContext.IA(indexCount, meshIndex, buffer.model, dxCommand_);
 
-	//	IndirectCommand command = {};
+			commandList_->SetGraphicsRootDescriptorTable(0, srvManager_->GetGPUHandle(buffer.transformSrvIndex));
+			commandList_->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUHandle(buffer.materialSrvIndices[meshIndex]));
+			commandList_->SetGraphicsRootDescriptorTable(2, buffer.model.model->GetTextureGPUHandle(meshIndex));
 
-	//	// 描画時のindex数
-	//	command.drawArguments.IndexCountPerInstance = object.model.model->GetIA().GetIndexCount(0);
-	//	command.drawArguments.StartIndexLocation = accumulatedIndexCount;
-	//	command.drawArguments.BaseVertexLocation = accumulatedVertexCount;
-	//	command.drawArguments.InstanceCount = 1;
-	//	command.drawArguments.StartInstanceLocation = 0;
-
-	//	// matrixの設定
-	//	command.matrixBufferAddress = object.matrix.GetResource()->GetGPUVirtualAddress();
-	//	// materialの設定
-	//	command.materialBufferAddress = object.materials[0].GetResource()->GetGPUVirtualAddress();
-	//	// textureの設定
-	//	if (object.model.isAnimation) {
-	//		command.textureDescriptorIndex = object.model.animationModel->GetTextureGPUIndex(0);
-	//	} else {
-	//		command.textureDescriptorIndex = object.model.model->GetTextureGPUIndex(0);
-	//	}
-
-	//	commands.emplace_back(command);
-
-	//	accumulatedIndexCount += command.drawArguments.IndexCountPerInstance;
-	//	accumulatedVertexCount += object.model.model->GetIA().GetVertexCount(0);
-	//}
-
-	//indirectCommand_->Update(commands);
-
-	//// 描画処理実行
-	//indirectCommand_->Execute(dxCommand_, static_cast<UINT>(commands.size()));
+			commandContext.InstancingDraw(indexCount, buffer.numInstance, commandList_);
+		}
+	}
 }

@@ -11,8 +11,12 @@
 struct TransformationMatrix {
 
 	float4x4 world;
-	float4x4 wvp;
 	float4x4 worldInverseTranspose;
+};
+
+struct CameraData {
+	
+	float4x4 viewProjection;
 };
 
 struct ShadowLight {
@@ -28,13 +32,15 @@ struct VertexShaderInput {
 };
 
 StructuredBuffer<TransformationMatrix> gMatrices : register(t0);
-ConstantBuffer<ShadowLight> gShadowLight : register(b0);
+ConstantBuffer<CameraData> gCameraData : register(b0);
+ConstantBuffer<ShadowLight> gShadowLight : register(b1);
 
 VertexShaderOutput main(VertexShaderInput input, uint32_t instanceId : SV_InstanceID) {
 
 	VertexShaderOutput output;
 
-	output.position = mul(input.position, gMatrices[instanceId].wvp);
+	float4x4 wvp = mul(gMatrices[instanceId].world, gCameraData.viewProjection);
+	output.position = mul(input.position, wvp);
 	output.texcoord = input.texcoord;
 	output.normal = normalize(mul(input.normal, (float3x3) gMatrices[instanceId].worldInverseTranspose));
 	

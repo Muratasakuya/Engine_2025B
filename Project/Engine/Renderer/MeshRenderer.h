@@ -17,6 +17,7 @@
 // front
 class DxCommand;
 class DxShaderCompiler;
+class SRVManager;
 class ShadowMap;
 class RenderObjectManager;
 class CameraManager;
@@ -34,7 +35,7 @@ public:
 	~MeshRenderer() = default;
 
 	void Init(DxCommand* dxCommand, ID3D12Device* device,
-		ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler,
+		ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler, SRVManager* srvManager,
 		RenderObjectManager* renderObjectManager, CameraManager* cameraManager);
 
 	void Update();
@@ -53,6 +54,7 @@ private:
 
 	DxCommand* dxCommand_;
 	ID3D12GraphicsCommandList* commandList_;
+	SRVManager* srvManager_;
 	ShadowMap* shadowMap_;
 	RenderObjectManager* renderObjectManager_;
 	CameraManager* cameraManager_;
@@ -74,5 +76,5 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	void NormalRendering(bool debugEnable);
-	void IndirectRendering(bool debugEnable);
+	void InstancingRendering(bool debugEnable);
 };

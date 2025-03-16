@@ -72,7 +72,7 @@ void AnimationModel::Init(const std::string& modelName, const std::string& anima
 
 	ioVertexBuffer_.Init(vertexNum, inputAssembler_.GetVertexBuffer(0).GetResource(),
 		device, srvManager);
-	skinningInfoDates_.CreateConstBuffer(device, 4);
+	skinningInfoDates_.CreateConstBuffer(device);
 	skinningInfoDates_.TransferData(static_cast<uint32_t>(BaseModel::GetModelData().meshes.front().vertices.size()));
 }
 

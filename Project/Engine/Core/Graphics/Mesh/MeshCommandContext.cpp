@@ -48,3 +48,10 @@ void MeshCommandContext::Draw(UINT indexCount, const ModelReference& model, DxCo
 			D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 	}
 }
+
+void MeshCommandContext::InstancingDraw(UINT indexCount, uint32_t numInstance,
+	ID3D12GraphicsCommandList* commandList) {
+
+	// draw
+	commandList->DrawIndexedInstanced(indexCount, numInstance, 0, 0, 0);
+}

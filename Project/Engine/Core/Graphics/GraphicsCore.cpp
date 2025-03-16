@@ -128,11 +128,12 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 
 	// rendererManager
 	renderObjectManager_ = std::make_unique<RenderObjectManager>();
+	renderObjectManager_->Init(device, srvManager_.get());
 
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();
 	meshRenderer_->Init(dxCommand_.get(), device,
-		shadowMap_.get(), dxShaderComplier_.get(),
+		shadowMap_.get(), dxShaderComplier_.get(), srvManager_.get(),
 		renderObjectManager_.get(), cameraManager);
 
 	// offscreen初期化

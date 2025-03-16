@@ -103,6 +103,9 @@ struct RenderingData {
 
 	bool drawEnable;
 	BlendMode blendMode;
+
+	bool instancingEnable;
+	std::string instancingName;
 };
 
 struct ModelComponent {
