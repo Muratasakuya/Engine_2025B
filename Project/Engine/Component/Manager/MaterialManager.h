@@ -29,7 +29,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	Material* GetComponent(EntityID entity) override;
-	std::vector<Material*> GetComponentList(EntityID entity);
+	std::vector<Material*> GetComponentList(EntityID entity) override;
 private:
 	//========================================================================
 	//	private Methods

@@ -75,16 +75,9 @@ void ComponentManager::Update() {
 	}
 }
 
-void ComponentManager::CreateInstancing(const std::string& modelName,
-	const std::string& name, uint32_t instanceCount) {
-
-	modelName;
-	name;
-	instanceCount;
-}
-
 EntityID ComponentManager::CreateObject3D(const std::string& modelName,
-	const std::optional<std::string>& animationName, const std::string& objectName) {
+	const std::optional<std::string>& animationName, const std::string& objectName,
+	const std::optional<std::string>& instancingName) {
 
 	// entityID発行
 	EntityID id = entityManager_->CreateEntity(objectName);
@@ -95,7 +88,7 @@ EntityID ComponentManager::CreateObject3D(const std::string& modelName,
 	AddComponent<AnimationComponent>(id, animationName, asset_);
 	AddComponent<ModelComponent>(id, modelName, animationName, device_, commandList_, asset_, srvManager_);
 	// buffer作成
-	renderObjectManager_->CreateObject3D(id, GetComponent<ModelComponent>(id), device_);
+	renderObjectManager_->CreateObject3D(id, instancingName, GetComponent<ModelComponent>(id), device_);
 
 	return id;
 }

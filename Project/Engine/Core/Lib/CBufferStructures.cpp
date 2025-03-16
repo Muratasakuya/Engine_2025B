@@ -90,3 +90,18 @@ void Material::ImGui(float itemSize) {
 	ImGui::DragFloat("shadowRate", &shadowRate, 0.01f, 0.0f, 8.0f);
 	ImGui::PopItemWidth();
 }
+
+void InstancingMaterial::SetMaterial(const Material& material) {
+
+	color = material.color;
+	enableLighting = material.enableLighting;
+	enableHalfLambert = material.enableHalfLambert;
+	enablePhongReflection = material.enablePhongReflection;
+	enableBlinnPhongReflection = material.enableBlinnPhongReflection;
+	shadowRate = material.shadowRate;
+	phongRefShininess = material.phongRefShininess;
+	specularColor = material.specularColor;
+	emissiveIntensity = material.emissiveIntensity;
+	emissionColor = material.emissionColor;
+	uvTransform = material.uvTransform;
+}

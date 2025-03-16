@@ -27,8 +27,8 @@ public:
 	virtual ~DxConstBuffer() = default;
 
 	// 初期化
-	void CreateConstBuffer(ID3D12Device* device, UINT rootIndex);
-	void CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount, UINT rootIndex);
+	void CreateConstBuffer(ID3D12Device* device);
+	void CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount);
 
 	void CreateVertexBuffer(ID3D12Device* device, UINT vertexCount);
 	void CreateUavVertexBuffer(ID3D12Device* device, UINT vertexCount);
@@ -39,8 +39,6 @@ public:
 	void TransferVectorData(const std::vector<T>& data);
 
 	//--------- accessor -----------------------------------------------------
-
-	void SetCommand(ID3D12GraphicsCommandList* commandList, const  std::optional<UINT>& rootIndex = std::nullopt);
 
 	ID3D12Resource* GetResource() const;
 
@@ -56,8 +54,6 @@ private:
 	ComPtr<ID3D12Resource> resource_;
 	T* mappedData_ = nullptr;
 
-	UINT rootIndex_;
-
 	D3D12_VERTEX_BUFFER_VIEW vertexBufferView_;
 	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 
@@ -71,9 +67,7 @@ private:
 //============================================================================
 
 template<typename T>
-inline void DxConstBuffer<T>::CreateConstBuffer(ID3D12Device* device, UINT rootIndex) {
-
-	rootIndex_ = rootIndex;
+inline void DxConstBuffer<T>::CreateConstBuffer(ID3D12Device* device) {
 
 	DxUtils::CreateBufferResource(device, resource_, sizeof(T));
 
@@ -83,9 +77,7 @@ inline void DxConstBuffer<T>::CreateConstBuffer(ID3D12Device* device, UINT rootI
 }
 
 template<typename T>
-inline void DxConstBuffer<T>::CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount, UINT rootIndex) {
-
-	rootIndex_ = rootIndex;
+inline void DxConstBuffer<T>::CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount) {
 
 	DxUtils::CreateBufferResource(device, resource_, sizeof(T) * instanceCount);
 
@@ -175,12 +167,6 @@ inline void DxConstBuffer<T>::TransferVectorData(const std::vector<T>& data) {
 
 		std::memcpy(mappedData_, data.data(), sizeof(T) * data.size());
 	}
-}
-
-template<typename T>
-inline void DxConstBuffer<T>::SetCommand(ID3D12GraphicsCommandList* commandList, const  std::optional<UINT>& rootIndex) {
-
-	commandList->SetGraphicsRootConstantBufferView(rootIndex.value_or(rootIndex_), resource_->GetGPUVirtualAddress());
 }
 
 template<typename T>

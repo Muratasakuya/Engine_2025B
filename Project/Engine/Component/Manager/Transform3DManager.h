@@ -27,6 +27,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	Transform3DComponent* GetComponent(EntityID entity) override;
+	std::vector<Transform3DComponent*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods

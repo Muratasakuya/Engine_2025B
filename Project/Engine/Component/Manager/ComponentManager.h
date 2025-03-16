@@ -58,12 +58,10 @@ public:
 	template <typename T>
 	void RegisterComponentManager(IComponent<T>* manager);
 
-	// instancingの作成
-	void CreateInstancing(const std::string& modelName, const std::string& name, uint32_t instanceCount);
-
 	// object3Dの追加、削除
 	EntityID CreateObject3D(const std::string& modelName,
-		const std::optional<std::string>& animationName, const std::string& objectName);
+		const std::optional<std::string>& animationName, const std::string& objectName,
+		const std::optional<std::string>& instancingName = std::nullopt);
 	void RemoveObject3D(EntityID id);
 
 	//--------- accessor -----------------------------------------------------
@@ -155,11 +153,11 @@ inline T* ComponentManager::GetComponent(EntityID id) {
 }
 
 template<typename T>
-inline std::vector<T*> ComponentManager::GetComponentList(EntityID entity) {
+inline std::vector<T*> ComponentManager::GetComponentList(EntityID id) {
 
 	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
 
-		return dynamic_cast<IComponent<std::vector<T>>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponentList(entity);
+		return static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponentList(id);
 	}
-	return {};
+	return { nullptr };
 }

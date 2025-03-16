@@ -29,6 +29,7 @@ public:
 		//--------- accessor -----------------------------------------------------
 
 	AnimationComponent* GetComponent(EntityID entity) override;
+	std::vector<AnimationComponent*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods

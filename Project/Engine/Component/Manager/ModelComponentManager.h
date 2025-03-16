@@ -30,6 +30,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	ModelComponent* GetComponent(EntityID entity) override;
+	std::vector<ModelComponent*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods

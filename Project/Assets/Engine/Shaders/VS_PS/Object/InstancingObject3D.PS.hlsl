@@ -78,9 +78,9 @@ ConstantBuffer<PunctualLight> gPunctual : register(b0);
 ConstantBuffer<Camera> gCamera : register(b1);
 
 // table
-Texture2D<float4> gTexture : register(t0);
-Texture2D<float3> gShadowTexture : register(t1);
-StructuredBuffer<Material> gMaterials : register(t2);
+StructuredBuffer<Material> gMaterials : register(t0);
+Texture2D<float4> gTexture : register(t1);
+Texture2D<float3> gShadowTexture : register(t2);
 
 // sampler
 SamplerState gSampler : register(s0);

@@ -3,9 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/CBuffer/DxConstBuffer.h>
-#include <Engine/Core/Lib/CBufferStructures.h>
-#include <Engine/Component/ModelComponent.h>
+#include <Engine/Core/Graphics/Mesh/InstancedMesh.h>
 
 // entityID
 using EntityID = uint32_t;
@@ -34,7 +32,11 @@ public:
 	RenderObjectManager() = default;
 	~RenderObjectManager() = default;
 
-	void CreateObject3D(EntityID id, ModelComponent* model, ID3D12Device* device);
+	void Init(ID3D12Device* device, SRVManager* srvManager);
+
+	void CreateObject3D(EntityID id, const std::optional<std::string>& instancingName,
+		ModelComponent* model, ID3D12Device* device);
+
 	void RemoveObject3D(EntityID id);
 
 	void Update();
@@ -42,6 +44,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	std::vector<Object3DForGPU> GetObject3DBuffers() { return object3DBuffers_; }
+
+	const std::unordered_map<std::string, InstancingData>& GetInstancingData() const { return instancedMesh_->GetData(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -49,5 +53,9 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// 通常描画処理用
 	std::vector<Object3DForGPU> object3DBuffers_;
+
+	// instancing描画用
+	std::unique_ptr<InstancedMesh> instancedMesh_;
 };

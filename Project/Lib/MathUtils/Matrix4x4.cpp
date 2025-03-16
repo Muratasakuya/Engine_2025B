@@ -92,11 +92,11 @@ Matrix4x4& Matrix4x4::operator=(const Matrix4x4& other) {
 	return *this;
 }
 
-Matrix4x4 Matrix4x4::Init() {
-	return Matrix4x4{ 1.0f, 0.0f, 0.0f, 0.0f,
-						0.0f, 1.0f, 0.0f, 0.0f,
-						0.0f, 0.0f,1.0f, 0.0f,
-						0.0f, 0.0f, 0.0f, 1.0f };
+Matrix4x4 Matrix4x4::Zero() {
+	return Matrix4x4{ 0.0f, 0.0f, 0.0f, 0.0f,
+						0.0f, 0.0f, 0.0f, 0.0f,
+						0.0f, 0.0f,0.0f, 0.0f,
+						0.0f, 0.0f, 0.0f, 0.0f };
 }
 
 Matrix4x4 Matrix4x4::Multiply(const Matrix4x4& m1, const Matrix4x4& m2) {
