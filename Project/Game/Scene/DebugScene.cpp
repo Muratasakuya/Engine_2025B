@@ -39,7 +39,7 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	float kMaxCount = 16;
+	float kMaxCount = 4;
 	float spancing = 1.5f;
 	for (uint32_t i = 0; i < kMaxCount; ++i) {
 		for (uint32_t j = 0; j < kMaxCount; ++j) {
