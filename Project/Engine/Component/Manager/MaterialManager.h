@@ -3,9 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComponentStructures.h>
 #include <Engine/Component/Base/IComponent.h>
 #include <Engine/Core/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Lib/CBufferStructures.h>
 
 //============================================================================
 //	MaterialManager class

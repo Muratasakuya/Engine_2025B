@@ -71,7 +71,7 @@ void RenderObjectManager::Update() {
 	instancedMesh_->Reset();
 
 	// entityごとのGPUデータ転送
-	for (uint32_t index = 0; index < componentManager->GetEntityCount(); ++index) {
+	for (uint32_t index = 0; index < componentManager->GetEntityCount(ComponentType::Object3D); ++index) {
 
 		if (!object3DBuffers_[index].model.renderingData.instancingEnable) {
 

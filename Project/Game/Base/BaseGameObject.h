@@ -3,7 +3,6 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComponentStructures.h>
 #include <Engine/Component/ColliderComponent.h>
 
 // c++

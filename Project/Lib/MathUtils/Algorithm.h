@@ -5,10 +5,35 @@
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
 
+// c++
+#include <cstdint>
+#include <vector>
+
 //============================================================================
 //	Algorithm namespace
 //============================================================================
 namespace Algorithm {
+
+	//========================================================================
+	//	Enum
+	//========================================================================
+
+	template <typename Enum, typename = std::enable_if_t<std::is_enum_v<Enum>>>
+	std::vector<uint32_t> GetEnumArray(Enum enumValue) {
+
+		std::vector<uint32_t> intValues;
+		for (uint32_t i = 0; i < static_cast<std::underlying_type_t<Enum>>(enumValue); ++i) {
+
+			intValues.push_back(i);
+		}
+		return intValues;
+	}
+
+	//========================================================================
+	//	String
+	//========================================================================
+
+	std::string RemoveSubstring(const std::string& input, const std::string& toRemove);
 
 	//========================================================================
 	//	Find
@@ -49,10 +74,5 @@ namespace Algorithm {
 
 		return found;
 	}
-
-	//========================================================================
-	//	Find
-	//========================================================================
-
 
 }
