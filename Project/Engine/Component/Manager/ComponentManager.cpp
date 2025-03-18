@@ -5,8 +5,8 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Debug/Assert.h>
-
 #include <Engine/Renderer/Managers/RenderObjectManager.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	ComponentManager classMethods
@@ -49,7 +49,10 @@ void ComponentManager::Init(ID3D12Device* device, ID3D12GraphicsCommandList* com
 	renderObjectManager_ = nullptr;
 	renderObjectManager_ = renderObjectManager;
 
-	entityManager_ = std::make_unique<EntityManager>();
+	for (uint32_t type : Algorithm::GetEnumArray(ComponentType::Count)) {
+
+		entityManagers_[type] = std::make_unique<EntityManager>();
+	}
 }
 
 void ComponentManager::InitImGui(Transform3DManager* transform3DManager,
@@ -57,16 +60,12 @@ void ComponentManager::InitImGui(Transform3DManager* transform3DManager,
 
 #ifdef _DEBUG
 	imguiComponentManager_ = std::make_unique<ImGuiComponentManager>();
-	imguiComponentManager_->Init(entityManager_.get(), transform3DManager,
+	imguiComponentManager_->Init(entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)].get(), transform3DManager,
 		materialManager, modelComponentManager);
 #endif // _DEBUG
 }
 
 void ComponentManager::Update() {
-
-	if (componentManagers_.empty()) {
-		ASSERT(FALSE, "unInitialized componentManagers");
-	}
 
 	// 全Componentの更新処理
 	for (const auto& [type, manager] : componentManagers_) {
@@ -80,7 +79,7 @@ EntityID ComponentManager::CreateObject3D(const std::string& modelName,
 	const std::optional<std::string>& instancingName) {
 
 	// entityID発行
-	EntityID id = entityManager_->CreateEntity(objectName);
+	EntityID id = entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName);
 
 	// object3Dに必要なcomponentを追加
 	AddComponent<Transform3DComponent>(id);
@@ -96,7 +95,7 @@ EntityID ComponentManager::CreateObject3D(const std::string& modelName,
 void ComponentManager::RemoveObject3D(EntityID id) {
 
 	// idの削除
-	entityManager_->DestroyEntity(id);
+	entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->DestroyEntity(id);
 
 	// object3Dで使用していたcomponentの削除
 	RemoveComponent<Transform3DComponent>(id);

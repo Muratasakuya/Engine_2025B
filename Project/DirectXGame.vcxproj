@@ -381,7 +381,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
     <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
     <ClInclude Include="Engine\Core\Lib\DxUtils.h" />
-    <ClInclude Include="Engine\Core\Lib\ComponentStructures.h" />
     <ClInclude Include="Engine\Core\Lib\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
     <ClInclude Include="Engine\Component\Manager\ImGuiComponentManager.h">

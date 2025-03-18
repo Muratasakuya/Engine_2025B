@@ -3,19 +3,18 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComponentStructures.h>
 #include <Engine/Component/Manager/EntityManager.h>
 #include <Engine/Component/Manager/Transform3DManager.h>
 #include <Engine/Component/Manager/MaterialManager.h>
 #include <Engine/Component/Manager/AnimationComponentManager.h>
 #include <Engine/Component/Manager/ModelComponentManager.h>
 #include <Engine/Component/Manager/ImGuiComponentManager.h>
-#include <Lib/MathUtils/Algorithm.h>
 
 // directX
 #include <d3d12.h>
 // c++
 #include <cstdint>
+#include <array>
 #include <variant>
 #include <typeindex>
 #include <unordered_map>
@@ -24,15 +23,19 @@ class Asset;
 class SRVManager;
 class RenderObjectManager;
 
-// 03/08
-// 削除したObjectにアクセスしてしまう可能性大
-// ユーザーにはIDのみ渡して毎回Get()してObjectを使用する方面に移行 ✓
-// imguiの操作について
-// camera、lightはsceneで追加されたやつを操作できるようにする 後回し
-// id:nameをhierarchyで表示し、inspectorで操作できるようにする ✓
-// objectのinstancing描画、CreateInstancing("instancingする用の名前",instancingCount);
-// CreateObject3D()にinstancingで描画するかstd::optional<std::string>で、"instancingする用の名前"を
-// 受け取って、has_value()ならbufferは作成せず、instancingBufferに渡すだけにする
+//============================================================================
+//	enum class
+//============================================================================
+
+// componentの種類
+enum class ComponentType : uint32_t {
+	Object3D,
+	Object2D,
+	Trail,
+
+	Count
+};
+static constexpr uint32_t kComponentCount = static_cast<uint32_t>(ComponentType::Count);
 
 //============================================================================
 //	ComponentManager class
@@ -58,10 +61,13 @@ public:
 	template <typename T>
 	void RegisterComponentManager(IComponent<T>* manager);
 
-	// object3Dの追加、削除
+	//--------- object3D -----------------------------------------------------
+
+	// 追加、作成処理
 	EntityID CreateObject3D(const std::string& modelName,
 		const std::optional<std::string>& animationName, const std::string& objectName,
 		const std::optional<std::string>& instancingName = std::nullopt);
+	// 指定されたidのentity削除
 	void RemoveObject3D(EntityID id);
 
 	//--------- accessor -----------------------------------------------------
@@ -77,7 +83,7 @@ public:
 	std::vector<T*> GetComponentList(EntityID entity);
 
 	// entityの数取得
-	EntityID GetEntityCount() const { return entityManager_->GetEntityCount(); }
+	EntityID GetEntityCount(ComponentType type) const { return entityManagers_[static_cast<uint32_t>(type)]->GetEntityCount(); }
 
 	// imguiManagerの取得
 	ImGuiComponentManager* GetImGuiComponentManager() const { return imguiComponentManager_.get(); }
@@ -86,9 +92,7 @@ private:
 	//	private Methods
 	//========================================================================
 
-	//--------- variables ----------------------------------------------------
-
-	static ComponentManager* instance_;
+	//- dependencies variables -----------------------------------------------
 
 	ID3D12Device* device_;
 	ID3D12GraphicsCommandList* commandList_;
@@ -96,8 +100,12 @@ private:
 	SRVManager* srvManager_;
 	RenderObjectManager* renderObjectManager_;
 
+	//--------- variables ----------------------------------------------------
+
+	static ComponentManager* instance_;
+
 	// entity番号の管理
-	std::unique_ptr<EntityManager> entityManager_;
+	std::array<std::unique_ptr<EntityManager>, kComponentCount> entityManagers_;
 	// 登録済みのcomponentManager
 	std::unordered_map<std::type_index, void*> componentManagers_;
 

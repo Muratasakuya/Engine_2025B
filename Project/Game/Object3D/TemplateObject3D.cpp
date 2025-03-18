@@ -14,10 +14,8 @@
 
 TemplateObject3D::TemplateObject3D() {
 
-	teapotId_ = ComponentManager::GetInstance()->CreateObject3D("teapot", std::nullopt, "teapot");
 }
 
 void TemplateObject3D::Update() {
-
 
 }
