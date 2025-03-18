@@ -30,10 +30,6 @@ void CameraManager::Update() {
 #endif // _DEBUG
 
 	lightViewCamera_->Update();
-
-	// gameCameraの視錐台描画
-	// カリング処理やるまで封印
-	//RenderCameraFrame();
 }
 
 void CameraManager::SetCamera(BaseCamera* gameCamera) {

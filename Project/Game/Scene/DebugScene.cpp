@@ -35,6 +35,8 @@ void DebugScene::Init(
 
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
+
+	ComponentManager::GetInstance()->CreateObject3D("teapot", std::nullopt, "teapot", "teapotInstancing");
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {

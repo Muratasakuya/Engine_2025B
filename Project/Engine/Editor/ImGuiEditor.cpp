@@ -30,6 +30,8 @@ void ImGuiEditor::Display() {
 	ImGui::DockSpaceOverViewport
 	(ImGui::GetMainViewport()->ID, ImGui::GetMainViewport(), ImGuiDockNodeFlags_None);
 
+	ImGui::ShowDemoWindow();
+
 	// imguiの表示
 	MainWindow();
 
