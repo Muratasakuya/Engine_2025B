@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
+#include <Engine/Renderer/LineRenderer.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -233,8 +234,8 @@ void GraphicsCore::RenderOffscreenTexture() {
 	dxCommand_->ClearDepthStencilView(dsvManager_->GetFrameCPUHandle());
 	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
 
-	// 通常描画処理
-	meshRenderer_->Render(false);
+	// 描画処理
+	Renderers(false);
 
 	// RenderTarget -> PixelShader
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },
@@ -248,8 +249,8 @@ void GraphicsCore::RenderDebugSceneRenderTexture() {
 	dxCommand_->ClearDepthStencilView(dsvManager_->GetFrameCPUHandle());
 	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
 
-	// 通常描画処理
-	meshRenderer_->Render(true);
+	// 描画処理
+	Renderers(true);
 
 	// RenderTarget -> PixelShader
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
@@ -273,6 +274,15 @@ void GraphicsCore::RenderFrameBuffer() {
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootDescriptorTable(0, renderTexture_->GetGPUHandle());
 	commandList->DrawInstanced(vertexCount, 1, 0, 0);
+}
+
+void GraphicsCore::Renderers(bool debugEnable) {
+
+	// line描画実行
+	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
+
+	// 通常描画処理
+	meshRenderer_->Render(debugEnable);
 }
 
 //============================================================================

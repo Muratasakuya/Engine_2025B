@@ -123,5 +123,7 @@ private:
 	// frameBufferへの描画処理
 	void RenderFrameBuffer();
 
+	void Renderers(bool debugEnable);
+
 	void EndRenderFrame();
 };

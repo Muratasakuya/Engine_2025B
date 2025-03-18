@@ -7,7 +7,6 @@
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 #include <Engine/Core/Graphics/Mesh/MeshCommandContext.h>
-#include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Renderer/Managers/RenderObjectManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
@@ -74,9 +73,6 @@ void MeshRenderer::RenderZPass() {
 }
 
 void MeshRenderer::Render(bool debugEnable) {
-
-	// line描画実行
-	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	// 通常の描画処理
 	NormalRendering(debugEnable);
