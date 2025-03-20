@@ -34,55 +34,11 @@ void ImGuiComponentManager::SelectObject3D() {
 
 	ImGui::SeparatorText("Object3D");
 
-	// 名前の基本部分と数値部分を取得する関数
-	auto GetBaseNameAndNumber = [](const std::string& name) -> std::pair<std::string, int> {
-		size_t index = name.find_last_not_of("0123456789");
-		if (index != std::string::npos && index + 1 < name.size()) {
-
-			std::string baseName = name.substr(0, index + 1);
-			int number = std::stoi(name.substr(index + 1));
-			return { baseName, number };
-		}
-		return { name, 0 };
-		};
-
-	if (entityManager_->GetEntityCount() != object3D_.lastCount_) {
-
-		object3D_.grouped_.clear();
-		for (const auto& [id, name] : entityManager_->GetNames()) {
-			auto [baseName, number] = GetBaseNameAndNumber(name);
-			object3D_.grouped_[baseName].emplace_back(number, id);
-		}
-
-		object3D_.lastCount_ = entityManager_->GetEntityCount();
-	}
-
 	// objectNameの表示
-	for (auto& [baseName, objects] : object3D_.grouped_) {
-		if (objects.size() == 1) {
-			if (ImGui::Selectable(baseName.c_str(), object3D_.selectedId_ == objects[0].second)) {
-				object3D_.selectedId_ = objects[0].second;
-			}
-		} else {
-			if (ImGui::TreeNode(baseName.c_str())) {
-				for (const auto& [number, id] : objects) {
+	for (EntityID id = 0; id < entityManager_->GetNames().size(); ++id) {
+		if (ImGui::Selectable(entityManager_->GetNames()[id].c_str(), object3D_.selectedId_ == id)) {
 
-					std::string label = baseName + std::to_string(number);
-					if (ImGui::Selectable(label.c_str(), object3D_.selectedId_ == id)) {
-
-						// idの更新処理
-						object3D_.selectedId_ = id;
-						selectedMaterialIndex_ = 0;
-
-						// 選択したときに最後の要素なら数字を強制的に変える
-						if (*object3D_.selectedId_ == entityManager_->GetEntityCount()) {
-
-							--object3D_.selectedId_.value();
-						}
-					}
-				}
-				ImGui::TreePop();
-			}
+			object3D_.selectedId_ = id;
 		}
 	}
 }
@@ -93,8 +49,8 @@ void ImGuiComponentManager::EditObject3D() {
 		return;
 	}
 
-	ASSERT(transform3DManager_->GetComponent(*object3D_.selectedId_), "does not exist object3D:transform");
-	ASSERT(!materialManager_->GetComponentList(*object3D_.selectedId_).empty(), "does not exist object3D:material");
+	ASSERT(transform3DManager_->GetComponent(object3D_.selectedId_.value()), "does not exist object3D:transform");
+	ASSERT(!materialManager_->GetComponentList(object3D_.selectedId_.value()).empty(), "does not exist object3D:material");
 
 	Object3DInformation();
 

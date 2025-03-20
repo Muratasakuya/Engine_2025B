@@ -13,6 +13,7 @@
 
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>
+#include <Engine/Renderer/SpriteRenderer.h>
 
 // managers
 #include <Engine/Renderer/Managers/RenderObjectManager.h>
@@ -96,6 +97,7 @@ private:
 	std::unique_ptr<ShadowMap> shadowMap_;
 
 	std::unique_ptr<MeshRenderer> meshRenderer_;
+	std::unique_ptr<SpriteRenderer> spriteRenderer_;
 
 	std::unique_ptr<RTVManager> rtvManager_;
 	std::unique_ptr<DSVManager> dsvManager_;

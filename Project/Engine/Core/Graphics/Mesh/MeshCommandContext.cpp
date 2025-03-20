@@ -34,6 +34,17 @@ void MeshCommandContext::IA(UINT& indexCount, uint32_t meshIndex, const ModelRef
 	}
 }
 
+void MeshCommandContext::IA(UINT& indexCount, uint32_t meshIndex, const InstancingModelReference& model, DxCommand* dxCommand) {
+
+	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+
+	commandList->IASetVertexBuffers(0, 1,
+		&model.InputAssembler.GetVertexBuffer(meshIndex).GetVertexBuffer());
+	commandList->IASetIndexBuffer(
+		&model.InputAssembler.GetIndexBuffer(meshIndex).GetIndexBuffer());
+	indexCount = model.InputAssembler.GetIndexCount(meshIndex);
+}
+
 void MeshCommandContext::Draw(UINT indexCount, const ModelReference& model, DxCommand* dxCommand) {
 
 	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);

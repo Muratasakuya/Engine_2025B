@@ -36,9 +36,11 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
 	renderObjectManager_ = nullptr;
 	renderObjectManager_ = renderObjectManager;
 
+	// pipeline作成
 	pipeline_ = std::make_unique<ObjectPipelineManager>();
 	pipeline_->Create(commandList_, device, shaderCompiler);
 
+	// buffer作成
 	viewProjectionBuffer_.CreateConstBuffer(device);
 	lightViewProjectionBuffer_.CreateConstBuffer(device);
 	cameraPosBuffer_.CreateConstBuffer(device);
@@ -53,6 +55,7 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device* device,
 
 void MeshRenderer::Update() {
 
+	// buffer更新
 	viewProjectionBuffer_.TransferData(cameraManager_->GetCamera()->GetViewProjectionMatrix());
 	lightViewProjectionBuffer_.TransferData(cameraManager_->GetLightViewCamera()->GetViewProjectionMatrix());
 	cameraPosBuffer_.TransferData(cameraManager_->GetCamera()->GetTransform().translation);
@@ -138,7 +141,7 @@ void MeshRenderer::InstancingZPassRendering() {
 
 	for (const auto& buffer : std::views::values(instancingBuffers)) {
 
-		uint32_t meshNum = static_cast<uint32_t>(buffer.model.model->GetMeshNum());
+		uint32_t meshNum = static_cast<uint32_t>(buffer.model.meshNum);
 		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
 			UINT indexCount = 0;
@@ -178,7 +181,7 @@ void MeshRenderer::NormalRendering(bool debugEnable) {
 	commandList_->SetGraphicsRootConstantBufferView(4, lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	commandList_->SetGraphicsRootConstantBufferView(6, lightBuffer_.GetResource()->GetGPUVirtualAddress());
 
-	for (auto& object : object3DBuffers) {
+	for (const auto& object : object3DBuffers) {
 
 		if (object.model.renderingData.instancingEnable) {
 			continue;
@@ -239,7 +242,7 @@ void MeshRenderer::InstancingRendering(bool debugEnable) {
 
 	for (const auto& buffer : std::views::values(instancingBuffers)) {
 
-		uint32_t meshNum = static_cast<uint32_t>(buffer.model.model->GetMeshNum());
+		uint32_t meshNum = static_cast<uint32_t>(buffer.model.meshNum);
 		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
 			UINT indexCount = 0;
@@ -247,7 +250,7 @@ void MeshRenderer::InstancingRendering(bool debugEnable) {
 
 			commandList_->SetGraphicsRootDescriptorTable(0, srvManager_->GetGPUHandle(buffer.transformSrvIndex));
 			commandList_->SetGraphicsRootDescriptorTable(1, srvManager_->GetGPUHandle(buffer.materialSrvIndices[meshIndex]));
-			commandList_->SetGraphicsRootDescriptorTable(2, buffer.model.model->GetTextureGPUHandle(meshIndex));
+			commandList_->SetGraphicsRootDescriptorTable(2, buffer.model.textureGPUHandles[meshIndex]);
 
 			commandContext.InstancingDraw(indexCount, buffer.numInstance, commandList_);
 		}

@@ -3,21 +3,22 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Component/SpriteComponent.h>
 #include <Engine/Component/TransformComponent.h>
 #include <Engine/Component/Base/IComponent.h>
 
 //============================================================================
-//	Transform3DManager class
+//	SpriteComponentManager class
 //============================================================================
-class Transform3DManager :
-	public IComponent<Transform3DComponent> {
+class SpriteComponentManager :
+	public IComponent<SpriteComponent> {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	Transform3DManager() = default;
-	~Transform3DManager() = default;
+	SpriteComponentManager() = default;
+	~SpriteComponentManager() = default;
 
 	void AddComponent(EntityID entity, std::any args) override;
 	void RemoveComponent(EntityID entity) override;
@@ -26,8 +27,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	Transform3DComponent* GetComponent(EntityID entity) override;
-	std::vector<Transform3DComponent*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
+	SpriteComponent* GetComponent(EntityID entity) override;
+	std::vector<SpriteComponent*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -35,5 +36,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<Transform3DComponent> components_;
+	std::vector<SpriteComponent> components_;
+	// spriteのvertex更新用
+	std::vector<Transform2DComponent> transforms_;
 };

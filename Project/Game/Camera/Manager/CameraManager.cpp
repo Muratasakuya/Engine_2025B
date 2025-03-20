@@ -21,6 +21,10 @@ void CameraManager::Init() {
 	// 影生成用
 	lightViewCamera_ = std::make_unique<LightViewCamera>();
 	lightViewCamera_->Init();
+
+	// 2Dカメラ
+	camera2D_ = std::make_unique<Camera2D>();
+	camera2D_->Init();
 }
 
 void CameraManager::Update() {

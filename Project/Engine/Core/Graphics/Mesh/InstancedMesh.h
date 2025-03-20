@@ -7,6 +7,7 @@
 #include <Engine/Core/Lib/CBufferStructures.h>
 #include <Engine/Component/ModelComponent.h>
 #include <Engine/Component/TransformComponent.h>
+#include <Engine/Component/Base/IComponent.h>
 
 // front
 class SRVManager;
@@ -30,7 +31,7 @@ struct InstancingData {
 	// buffer
 	DxConstBuffer<TransformationMatrix> matrix;
 	std::vector<DxConstBuffer<InstancingMaterial>> materials;
-	ModelReference model;
+	InstancingModelReference model;
 };
 
 //============================================================================

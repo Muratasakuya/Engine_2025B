@@ -57,8 +57,6 @@ private:
 		// imguiで選択されたidの保持
 		std::optional<uint32_t> selectedId_ = std::nullopt;
 		std::unordered_map<EntityID, std::function<void()>> imguiFunc_;
-		mutable std::unordered_map<std::string, std::vector<std::pair<int, uint32_t>>> grouped_;
-		mutable size_t lastCount_ = 0;
 	};
 
 	//--------- variables ----------------------------------------------------

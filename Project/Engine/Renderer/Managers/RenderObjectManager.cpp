@@ -65,9 +65,37 @@ void RenderObjectManager::RemoveObject3D(EntityID id) {
 	object3DBuffers_.erase(object3DBuffers_.begin() + id);
 }
 
+void RenderObjectManager::CreateObject2D(EntityID id, SpriteComponent* sprite, ID3D12Device* device) {
+
+	object2DBuffers_.emplace_back();
+
+	// buffer作成
+	object2DBuffers_[id].matrix.CreateConstBuffer(device);
+	object2DBuffers_[id].material.CreateConstBuffer(device);
+
+	// spriteの情報を取得
+	object2DBuffers_[id].sprite.sprite = sprite;
+}
+
+void RenderObjectManager::RemoveObject2D(EntityID id) {
+
+	// buffer削除
+	object2DBuffers_.erase(object2DBuffers_.begin() + id);
+}
+
 void RenderObjectManager::Update() {
 
+	// buffer更新
+	// 3D
+	UpdateObject3D();
+	// 2D
+	UpdateObject2D();
+}
+
+void RenderObjectManager::UpdateObject3D() {
+
 	auto componentManager = ComponentManager::GetInstance();
+
 	instancedMesh_->Reset();
 
 	// entityごとのGPUデータ転送
@@ -98,6 +126,7 @@ void RenderObjectManager::Update() {
 
 			matrix = transform->matrix;
 			// 描画しないのであればmatrixを0.0fにする
+			// modelを1個ごとに操作できないため
 			if (!model->renderingData.drawEnable) {
 
 				matrix.world = Matrix4x4::Zero();
@@ -111,4 +140,16 @@ void RenderObjectManager::Update() {
 	}
 
 	instancedMesh_->Update();
+}
+
+void RenderObjectManager::UpdateObject2D() {
+
+	auto componentManager = ComponentManager::GetInstance();
+
+	// entityごとのGPUデータ転送
+	for (uint32_t index = 0; index < componentManager->GetEntityCount(ComponentType::Object2D); ++index) {
+
+		object2DBuffers_[index].matrix.TransferData(componentManager->GetComponent<Transform2DComponent>(index)->matrix);
+		object2DBuffers_[index].material.TransferData(*componentManager->GetComponent<SpriteMaterial>(index));
+	}
 }
