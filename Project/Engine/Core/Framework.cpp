@@ -90,6 +90,7 @@ void Framework::InitComponent() {
 		graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Compute),
 		asset_.get(), graphicsCore_->GetSRVManager(), graphicsCore_->GetRenderObjectManager());
 
+	// 3D
 	// transform
 	transform3DComponentManager_ = std::make_unique<Transform3DManager>();
 	ComponentManager::GetInstance()->RegisterComponentManager(transform3DComponentManager_.get());
@@ -104,9 +105,25 @@ void Framework::InitComponent() {
 	modelComponentManager_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxShaderCompiler());
 	ComponentManager::GetInstance()->RegisterComponentManager(modelComponentManager_.get());
 
+	// 2D
+	// transform
+	transform2DComponentManager_ = std::make_unique<Transform2DManager>();
+	ComponentManager::GetInstance()->RegisterComponentManager(transform2DComponentManager_.get());
+	// material
+	spriteMaterialManager_ = std::make_unique<SpriteMaterialManager>();
+	ComponentManager::GetInstance()->RegisterComponentManager(spriteMaterialManager_.get());
+	// sprite
+	spriteComponentManager_ = std::make_unique<SpriteComponentManager>();
+	ComponentManager::GetInstance()->RegisterComponentManager(spriteComponentManager_.get());
+
 	// imgui
-	ComponentManager::GetInstance()->InitImGui(transform3DComponentManager_.get(),
-		materialManager_.get(), modelComponentManager_.get());
+	ComponentManager::GetInstance()->InitImGui(
+		// 3D
+		transform3DComponentManager_.get(), materialManager_.get(),
+		modelComponentManager_.get(),
+		// 2D
+		transform2DComponentManager_.get(), spriteMaterialManager_.get(),
+		spriteComponentManager_.get());
 }
 
 void Framework::Update() {
@@ -174,9 +191,11 @@ void Framework::Finalize() {
 	winApp_.reset();
 	asset_.reset();
 	transform3DComponentManager_.reset();
+	transform2DComponentManager_.reset();
 	materialManager_.reset();
 	animationComponentManager_.reset();
 	modelComponentManager_.reset();
+	spriteComponentManager_.reset();
 
 	// ComFinalize
 	CoUninitialize();

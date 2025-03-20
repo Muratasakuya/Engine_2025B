@@ -11,10 +11,11 @@
 #include <Game/Camera/Manager/CameraManager.h>
 
 // component
-#include <Engine/Component/Manager/Transform3DManager.h>
+#include <Engine/Component/Manager/TransformManager.h>
 #include <Engine/Component/Manager/MaterialManager.h>
 #include <Engine/Component/Manager/AnimationComponentManager.h>
 #include <Engine/Component/Manager/ModelComponentManager.h>
+#include <Engine/Component/Manager/SpriteComponentManager.h>
 
 // directX
 #include <dxgidebug.h>
@@ -54,10 +55,18 @@ private:
 
 	std::unique_ptr<CameraManager> cameraManager_;
 
+	// componentManagers
+
+	// 3D
 	std::unique_ptr<Transform3DManager> transform3DComponentManager_;
 	std::unique_ptr<MaterialManager> materialManager_;
 	std::unique_ptr<AnimationComponentManager> animationComponentManager_;
 	std::unique_ptr<ModelComponentManager> modelComponentManager_;
+
+	// 2D
+	std::unique_ptr<Transform2DManager> transform2DComponentManager_;
+	std::unique_ptr<SpriteMaterialManager> spriteMaterialManager_;
+	std::unique_ptr<SpriteComponentManager> spriteComponentManager_;
 
 	//--------- functions ----------------------------------------------------
 

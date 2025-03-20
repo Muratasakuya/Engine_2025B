@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "EntityManager.h"
 
 //============================================================================
@@ -11,15 +13,16 @@ EntityID EntityManager::CreateEntity(const std::string& name) {
 
 	// 重複しないよう名前を生成
 	std::string uniqueName = CheckName(name);
+	entityNames_.resize(std::max(static_cast<EntityID>(entityNames_.size()), id + 1));
 	entityNames_[id] = uniqueName;
 
 	return id;
 }
 
-void EntityManager::DestroyEntity(EntityID id) {
+void EntityManager::RemoveEntity(EntityID id) {
 
 	// entity削除
-	entityNames_.erase(id);
+	entityNames_.erase(entityNames_.begin() + id);
 }
 
 std::string EntityManager::CheckName(const std::string& name) {

@@ -26,6 +26,8 @@ public:
 
 	void IA(UINT& indexCount, uint32_t meshIndex,
 		const ModelReference& model, DxCommand* dxCommand);
+	void IA(UINT& indexCount, uint32_t meshIndex,
+		const InstancingModelReference& model, DxCommand* dxCommand);
 
 	void Draw(UINT indexCount, const ModelReference& model, DxCommand* dxCommand);
 	void InstancingDraw(UINT indexCount, uint32_t numInstance, ID3D12GraphicsCommandList* commandList);

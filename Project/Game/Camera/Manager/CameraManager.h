@@ -6,6 +6,7 @@
 #include <Game/Camera/Base/BaseCamera.h>
 #include <Game/Camera/DebugCamera.h>
 #include <Game/Camera/LightViewCamera.h>
+#include <Game/Camera/Camera2D.h>
 
 // c++
 #include <memory>
@@ -36,6 +37,8 @@ public:
 	DebugCamera* GetDebugCamera() const { return debugCamera_.get(); }
 
 	LightViewCamera* GetLightViewCamera() const { return lightViewCamera_.get(); }
+
+	Camera2D* GetCamera2D() const { return camera2D_.get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -48,6 +51,8 @@ private:
 	std::unique_ptr<DebugCamera> debugCamera_;
 
 	std::unique_ptr<LightViewCamera> lightViewCamera_;
+
+	std::unique_ptr<Camera2D> camera2D_;
 
 	//--------- functions ----------------------------------------------------
 

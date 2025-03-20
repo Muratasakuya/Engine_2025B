@@ -55,12 +55,19 @@ void ComponentManager::Init(ID3D12Device* device, ID3D12GraphicsCommandList* com
 	}
 }
 
-void ComponentManager::InitImGui(Transform3DManager* transform3DManager,
-	MaterialManager* materialManager, ModelComponentManager* modelComponentManager) {
+void ComponentManager::InitImGui(
+	// 3D
+	Transform3DManager* transform3DManager, MaterialManager* materialManager,
+	ModelComponentManager* modelComponentManager,
+	// 2D
+	[[maybe_unused]] Transform2DManager* transform2DManager, [[maybe_unused]] SpriteMaterialManager* spriteMaterialManager,
+	[[maybe_unused]] SpriteComponentManager* spriteComponentManager) {
 
 #ifdef _DEBUG
 	imguiComponentManager_ = std::make_unique<ImGuiComponentManager>();
-	imguiComponentManager_->Init(entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)].get(), transform3DManager,
+	imguiComponentManager_->Init(
+		// 3D
+		entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)].get(), transform3DManager,
 		materialManager, modelComponentManager);
 #endif // _DEBUG
 }
@@ -95,13 +102,41 @@ EntityID ComponentManager::CreateObject3D(const std::string& modelName,
 void ComponentManager::RemoveObject3D(EntityID id) {
 
 	// idの削除
-	entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->DestroyEntity(id);
+	entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->RemoveEntity(id);
 
+	// buffer削除
+	renderObjectManager_->RemoveObject3D(id);
 	// object3Dで使用していたcomponentの削除
 	RemoveComponent<Transform3DComponent>(id);
 	RemoveComponent<Material>(id);
 	RemoveComponent<AnimationComponent>(id);
 	RemoveComponent<ModelComponent>(id);
+}
+
+EntityID ComponentManager::CreateObject2D(const std::string& textureName) {
+
+	// entityID発行
+	EntityID id = entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->CreateEntity(textureName);
+
+	// object2Dに必要なcomponentを追加
+	AddComponent<Transform2DComponent>(id);
+	AddComponent<SpriteMaterial>(id);
+	AddComponent<SpriteComponent>(id, textureName, GetComponent<Transform2DComponent>(id), device_, asset_);
+	// buffer作成
+	renderObjectManager_->CreateObject2D(id, GetComponent<SpriteComponent>(id), device_);
+
+	return id;
+}
+
+void ComponentManager::RemoveObject2D(EntityID id) {
+
+	// idの削除
+	entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->RemoveEntity(id);
+
+	// object2Dで使用していたcomponentの削除
+	RemoveComponent<Transform2DComponent>(id);
+	RemoveComponent<SpriteMaterial>(id);
+	RemoveComponent<SpriteComponent>(id);
 	// buffer削除
-	renderObjectManager_->RemoveObject3D(id);
+	renderObjectManager_->RemoveObject2D(id);
 }

@@ -4,11 +4,13 @@
 //	include
 //============================================================================
 #include <Engine/Component/Manager/EntityManager.h>
-#include <Engine/Component/Manager/Transform3DManager.h>
+#include <Engine/Component/Manager/TransformManager.h>
 #include <Engine/Component/Manager/MaterialManager.h>
 #include <Engine/Component/Manager/AnimationComponentManager.h>
 #include <Engine/Component/Manager/ModelComponentManager.h>
+#include <Engine/Component/Manager/SpriteComponentManager.h>
 #include <Engine/Component/Manager/ImGuiComponentManager.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 // directX
 #include <d3d12.h>
@@ -52,8 +54,13 @@ public:
 	void Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
 		Asset* asset, SRVManager* srvManager, RenderObjectManager* renderObjectManager);
 
-	void InitImGui(Transform3DManager* transform3DManager,
-		MaterialManager* materialManager, ModelComponentManager* modelComponentManager);
+	void InitImGui(
+		// 3D
+		Transform3DManager* transform3DManager, MaterialManager* materialManager,
+		ModelComponentManager* modelComponentManager,
+		// 2D
+		Transform2DManager* transform2DManager, SpriteMaterialManager* SpriteMaterialManager,
+		SpriteComponentManager* spriteComponentManager);
 
 	void Update();
 
@@ -69,6 +76,13 @@ public:
 		const std::optional<std::string>& instancingName = std::nullopt);
 	// 指定されたidのentity削除
 	void RemoveObject3D(EntityID id);
+
+	//--------- object2D -----------------------------------------------------
+
+	// 追加、作成処理
+	EntityID CreateObject2D(const std::string& textureName);
+	// 指定されたidのentity削除
+	void RemoveObject2D(EntityID id);
 
 	//--------- accessor -----------------------------------------------------
 

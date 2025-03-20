@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
+#include <algorithm>
 
 // entityID
 using EntityID = uint32_t;
@@ -26,11 +27,11 @@ public:
 
 	EntityID CreateEntity(const std::string& name);
 
-	void DestroyEntity(EntityID id);
+	void RemoveEntity(EntityID id);
 
 	//--------- accessor -----------------------------------------------------
 
-	const std::unordered_map<EntityID, std::string>& GetNames() const { return entityNames_; }
+	const std::vector<std::string>& GetNames() const { return entityNames_; }
 
 	EntityID GetEntityCount() const { return static_cast<EntityID>(entityNames_.size()); }
 private:
@@ -41,7 +42,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	EntityID nextId_;
-	std::unordered_map<EntityID, std::string> entityNames_;
+	std::vector<std::string> entityNames_;
 
 	std::unordered_map<std::string, int> nameCounts_;
 

@@ -9,6 +9,10 @@
 //	MaterialManager classMethods
 //============================================================================
 
+//============================================================================
+// 3D
+//============================================================================
+
 void MaterialManager::AddComponent(EntityID entity, std::any args) {
 
 	auto [meshNum] = std::any_cast<std::tuple<size_t>>(args);
@@ -46,4 +50,28 @@ std::vector<Material*> MaterialManager::GetComponentList(EntityID entity) {
 		materials.emplace_back(&mat);
 	}
 	return materials;
+}
+
+//============================================================================
+// 2D
+//============================================================================
+
+void SpriteMaterialManager::AddComponent(EntityID entity, [[maybe_unused]] std::any args) {
+
+	// component追加
+	components_.emplace_back();
+
+	// 追加
+	components_[entity] = SpriteMaterial();
+	components_[entity].Init();
+}
+
+void SpriteMaterialManager::RemoveComponent(EntityID entity) {
+
+	components_.erase(components_.begin() + entity);
+}
+
+SpriteMaterial* SpriteMaterialManager::GetComponent(EntityID entity) {
+
+	return &components_[entity];
 }

@@ -50,4 +50,11 @@ public:
 
 	//--------- functions ----------------------------------------------------
 
+	void Init();
+
+	float Length() const;
+
+	Vector2 Normalize() const;
+
+	static Vector2 AnyInit(float value);
 };
