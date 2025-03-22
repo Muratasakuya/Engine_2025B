@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "RenderObjectManager.h"
 
 //============================================================================
@@ -18,7 +20,7 @@ void RenderObjectManager::Init(ID3D12Device* device, SRVManager* srvManager) {
 void RenderObjectManager::CreateObject3D(EntityID id, const std::optional<std::string>& instancingName,
 	ModelComponent* model, ID3D12Device* device) {
 
-	object3DBuffers_.emplace_back();
+	object3DBuffers_.resize(std::max(static_cast<EntityID>(object3DBuffers_.size()), id + 1));
 
 	// instancing処理
 	if (instancingName.has_value()) {
@@ -67,7 +69,7 @@ void RenderObjectManager::RemoveObject3D(EntityID id) {
 
 void RenderObjectManager::CreateObject2D(EntityID id, SpriteComponent* sprite, ID3D12Device* device) {
 
-	object2DBuffers_.emplace_back();
+	object2DBuffers_.resize(std::max(static_cast<EntityID>(object2DBuffers_.size()), id + 1));
 
 	// buffer作成
 	object2DBuffers_[id].matrix.CreateConstBuffer(device);

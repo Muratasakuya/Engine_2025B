@@ -93,9 +93,6 @@ public:
 	Vector2 textureLeftTop; // テクスチャ左上座標
 	Vector2 textureSize;    // テクスチャ切り出しサイズ
 
-	bool isFlipX;           // 左右反転
-	bool isFlipY;           // 上下反転
-
 	Matrix4x4 matrix;
 
 	const Transform2DComponent* parent = nullptr;

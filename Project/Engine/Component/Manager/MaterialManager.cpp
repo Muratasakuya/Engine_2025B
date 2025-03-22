@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "MaterialManager.h"
 
 //============================================================================
@@ -18,7 +20,7 @@ void MaterialManager::AddComponent(EntityID entity, std::any args) {
 	auto [meshNum] = std::any_cast<std::tuple<size_t>>(args);
 
 	// component追加
-	components_.emplace_back();
+	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
 
 	// 追加、ModelのMeshの数に合わせる
 	components_[entity].resize(meshNum);
@@ -59,7 +61,7 @@ std::vector<Material*> MaterialManager::GetComponentList(EntityID entity) {
 void SpriteMaterialManager::AddComponent(EntityID entity, [[maybe_unused]] std::any args) {
 
 	// component追加
-	components_.emplace_back();
+	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
 
 	// 追加
 	components_[entity] = SpriteMaterial();

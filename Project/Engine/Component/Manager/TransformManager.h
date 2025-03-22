@@ -67,5 +67,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<Transform2DComponent> components_;
+	std::vector<std::unique_ptr<Transform2DComponent>> components_;
 };

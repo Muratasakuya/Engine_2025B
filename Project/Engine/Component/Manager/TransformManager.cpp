@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "TransformManager.h"
 
 //============================================================================
@@ -16,7 +18,7 @@
 void Transform3DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any args) {
 
 	// component追加
-	components_.emplace_back();
+	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
 
 	// 追加
 	components_[entity] = Transform3DComponent();
@@ -51,12 +53,12 @@ Transform3DComponent* Transform3DManager::GetComponent(EntityID entity) {
 void Transform2DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any args) {
 
 	// component追加
-	components_.emplace_back();
+	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
 
 	// 追加
-	components_[entity] = Transform2DComponent();
-	components_[entity].Init();
-	components_[entity].UpdateMatrix();
+	components_[entity] = std::make_unique<Transform2DComponent>();
+	components_[entity]->Init();
+	components_[entity]->UpdateMatrix();
 }
 
 void Transform2DManager::RemoveComponent(EntityID entity) {
@@ -70,11 +72,11 @@ void Transform2DManager::Update() {
 	for (auto& component : components_) {
 
 		// 行列更新
-		component.UpdateMatrix();
+		component->UpdateMatrix();
 	}
 }
 
 Transform2DComponent* Transform2DManager::GetComponent(EntityID entity) {
 
-	return &components_[entity];
+	return components_[entity].get();
 }

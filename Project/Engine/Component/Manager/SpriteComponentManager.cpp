@@ -15,9 +15,9 @@ void SpriteComponentManager::AddComponent([[maybe_unused]] EntityID entity, std:
 		std::any_cast<std::tuple<std::string, Transform2DComponent*, ID3D12Device*, Asset*>>(args);
 
 	// component追加
-	components_.emplace_back(SpriteComponent(device, asset, textureName, *transform));
+	components_.push_back(std::make_unique<SpriteComponent>(device, asset, textureName, *transform));
 	// transform追加
-	transforms_.push_back(*transform);
+	transforms_.push_back(transform);
 }
 
 void SpriteComponentManager::RemoveComponent(EntityID entity) {
@@ -30,11 +30,11 @@ void SpriteComponentManager::Update() {
 
 	for (uint32_t index = 0; index < components_.size(); ++index) {
 
-		components_[index].UpdateVertex(transforms_[index]);
+		components_[index]->UpdateVertex(*transforms_[index]);
 	}
 }
 
 SpriteComponent* SpriteComponentManager::GetComponent(EntityID entity) {
 
-	return &components_[entity];
+	return components_[entity].get();
 }
