@@ -44,7 +44,7 @@ void SpriteRenderer::Update() {
 	viewProjectionBuffer_.TransferData(cameraManager_->GetCamera2D()->GetViewProjectionMatrix());
 }
 
-void SpriteRenderer::Render(RenderMode renderMode) {
+void SpriteRenderer::RenderIrrelevant() {
 
 	// 描画情報取得
 	auto object2DBuffers = renderObjectManager_->GetObject2DBuffers();
@@ -54,8 +54,8 @@ void SpriteRenderer::Render(RenderMode renderMode) {
 	}
 
 	// renderModeに応じたpipeline設定
-	commandList_->SetGraphicsRootSignature(pipelines_[static_cast<uint32_t>(renderMode)]->GetRootSignature());
-	commandList_->SetPipelineState(pipelines_[static_cast<uint32_t>(renderMode)]->GetGraphicsPipeline());
+	commandList_->SetGraphicsRootSignature(pipelines_[static_cast<uint32_t>(RenderMode::IrrelevantPostProcess)]->GetRootSignature());
+	commandList_->SetPipelineState(pipelines_[static_cast<uint32_t>(RenderMode::IrrelevantPostProcess)]->GetGraphicsPipeline());
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// 全object共通のbuffer設定
@@ -66,6 +66,9 @@ void SpriteRenderer::Render(RenderMode renderMode) {
 		sprite.sprite->GetIndexBuffer().GetIndexBuffer());
 
 	for (const auto& buffer : object2DBuffers) {
+		if (buffer.sprite.sprite->GetPostProcessEnable()) {
+			continue;
+		}
 
 		commandList_->IASetVertexBuffers(0, 1, &buffer.sprite.sprite->GetVertexBuffer().GetVertexBuffer());
 
@@ -74,5 +77,43 @@ void SpriteRenderer::Render(RenderMode renderMode) {
 		commandList_->SetGraphicsRootConstantBufferView(3, buffer.material.GetResource()->GetGPUVirtualAddress());
 
 		commandList_->DrawIndexedInstanced(SpriteComponent::GetIndexNum(), 1, 0, 0, 0);
+	}
+}
+
+void SpriteRenderer::RenderApply(SpriteLayer layer) {
+
+	// 描画情報取得
+	auto object2DBuffers = renderObjectManager_->GetObject2DBuffers();
+
+	if (object2DBuffers.empty()) {
+		return;
+	}
+
+	// renderModeに応じたpipeline設定
+	commandList_->SetGraphicsRootSignature(pipelines_[static_cast<uint32_t>(RenderMode::ApplyPostProcess)]->GetRootSignature());
+	commandList_->SetPipelineState(pipelines_[static_cast<uint32_t>(RenderMode::ApplyPostProcess)]->GetGraphicsPipeline());
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// 全object共通のbuffer設定
+	commandList_->SetGraphicsRootConstantBufferView(2,
+		viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+	// indexBuffer設定
+	commandList_->IASetIndexBuffer(&object2DBuffers.front().
+		sprite.sprite->GetIndexBuffer().GetIndexBuffer());
+
+	for (const auto& buffer : object2DBuffers) {
+		if (buffer.sprite.sprite->GetLayer() == layer) {
+			if (!buffer.sprite.sprite->GetPostProcessEnable()) {
+				continue;
+			}
+
+			commandList_->IASetVertexBuffers(0, 1, &buffer.sprite.sprite->GetVertexBuffer().GetVertexBuffer());
+
+			commandList_->SetGraphicsRootDescriptorTable(0, buffer.sprite.sprite->GetTextureGPUHandle());
+			commandList_->SetGraphicsRootConstantBufferView(1, buffer.matrix.GetResource()->GetGPUVirtualAddress());
+			commandList_->SetGraphicsRootConstantBufferView(3, buffer.material.GetResource()->GetGPUVirtualAddress());
+
+			commandList_->DrawIndexedInstanced(SpriteComponent::GetIndexNum(), 1, 0, 0, 0);
+		}
 	}
 }

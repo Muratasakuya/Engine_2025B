@@ -115,6 +115,13 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	renderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
 		device, rtvManager_.get(), srvManager_.get());
 
+	// gui用texture作成
+#ifdef _DEBUG
+	guiRenderTexture_ = std::make_unique<GuiRenderTexture>();
+	guiRenderTexture_->Create(width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+		device, srvManager_.get());
+#endif // _DEBUG
+
 	// debugSceneRenderTexture作成
 #ifdef _DEBUG
 	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
@@ -283,19 +290,24 @@ void GraphicsCore::RenderFrameBuffer() {
 	commandList->DrawInstanced(vertexCount, 1, 0, 0);
 
 	// sprite描画、postPrecessを適用しない
-	spriteRenderer_->Render(RenderMode::IrrelevantPostProcess);
+	spriteRenderer_->RenderIrrelevant();
 }
 
 void GraphicsCore::Renderers(bool debugEnable) {
 
 	// sprite描画、postPrecess適用
-	spriteRenderer_->Render(RenderMode::ApplyPostProcess);
+	// model描画前
+	spriteRenderer_->RenderApply(SpriteLayer::PreModel);
 
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	// 通常描画処理
 	meshRenderer_->Render(debugEnable);
+
+	// sprite描画、postPrecess適用
+	// model描画後
+	spriteRenderer_->RenderApply(SpriteLayer::PostModel);
 }
 
 //============================================================================
@@ -305,6 +317,12 @@ void GraphicsCore::Renderers(bool debugEnable) {
 void GraphicsCore::EndRenderFrame() {
 
 #ifdef _DEBUG
+
+	// gui描画用のtextureをframeBufferからコピー
+	dxCommand_->CopyTexture(
+		guiRenderTexture_->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		dxSwapChain_->GetCurrentResource(), D3D12_RESOURCE_STATE_RENDER_TARGET);
+
 	// imgui描画
 	imguiManager_->End();
 	imguiManager_->Draw(dxCommand_->GetCommandList(CommandListType::Graphics));

@@ -65,6 +65,9 @@ public:
 	void TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
 		D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter);
 
+	void CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,
+		ID3D12Resource* srcResource, D3D12_RESOURCE_STATES srcState);
+
 	//--------- accessor -----------------------------------------------------
 
 	ID3D12CommandQueue* GetQueue() const { return commandQueue_.Get(); }

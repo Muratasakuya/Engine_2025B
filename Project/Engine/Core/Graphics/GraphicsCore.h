@@ -62,7 +62,7 @@ public:
 
 	RenderObjectManager* GetRenderObjectManager() const { return renderObjectManager_.get(); }
 
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return renderTexture_->GetGPUHandle(); }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return debugSceneRenderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }
 private:
@@ -91,6 +91,7 @@ private:
 	std::unique_ptr<DxShaderCompiler> dxShaderComplier_;
 
 	std::unique_ptr<RenderTexture> renderTexture_;
+	std::unique_ptr<GuiRenderTexture> guiRenderTexture_;
 
 	std::unique_ptr<RenderTexture> debugSceneRenderTexture_;
 

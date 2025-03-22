@@ -268,3 +268,17 @@ void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources
 		commandLists_[CommandListType::Graphics]->ResourceBarrier(1, &barrier);
 	}
 }
+
+void DxCommand::CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,
+	ID3D12Resource* srcResource, D3D12_RESOURCE_STATES srcState) {
+
+	// 状態遷移
+	TransitionBarriers({ srcResource }, srcState, D3D12_RESOURCE_STATE_COPY_SOURCE);
+	TransitionBarriers({ dstResource }, dstState, D3D12_RESOURCE_STATE_COPY_DEST);
+
+	commandLists_[CommandListType::Graphics]->CopyResource(dstResource, srcResource);
+
+	// 元の状態に戻す
+	TransitionBarriers({ srcResource }, D3D12_RESOURCE_STATE_COPY_SOURCE, srcState);
+	TransitionBarriers({ dstResource }, D3D12_RESOURCE_STATE_COPY_DEST, dstState);
+}

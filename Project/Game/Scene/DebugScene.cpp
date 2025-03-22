@@ -56,7 +56,7 @@ void DebugScene::Init(
 
 	// 2D
 	ComponentManager::GetInstance()->CreateObject2D(
-		"white", "background");
+		"uvChecker", "background");
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {

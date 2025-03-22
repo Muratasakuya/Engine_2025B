@@ -13,6 +13,17 @@
 class Asset;
 
 //============================================================================
+//	enum class
+//============================================================================
+
+// 描画を行う場所
+enum class SpriteLayer {
+
+	PreModel, // modelの前に描画する
+	PostModel // modelの後に描画する
+};
+
+//============================================================================
 //	SpriteComponent class
 //============================================================================
 class SpriteComponent {
@@ -29,7 +40,13 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetLayer(SpriteLayer layer) { layer_ = layer; }
+	void SetPostProcessEnable(bool enable) { postProcessEnable_ = enable; }
+
 	static uint32_t GetIndexNum() { return kIndexNum_; }
+
+	SpriteLayer GetLayer() const { return layer_; }
+	bool GetPostProcessEnable() const { return postProcessEnable_; }
 
 	const DxConstBuffer<SpriteVertexData>& GetVertexBuffer() const { return vertexBuffer_; }
 	const DxConstBuffer<uint32_t>& GetIndexBuffer() const { return indexBuffer_; }
@@ -49,6 +66,9 @@ private:
 
 	std::string textureName_;
 
+	SpriteLayer layer_;
+	bool postProcessEnable_;
+
 	// 頂点情報
 	std::vector<SpriteVertexData> vertexData_;
 
@@ -64,7 +84,7 @@ private:
 };
 
 //============================================================================
-//	SpriteComponent structures
+//	SpriteComponent structure
 //============================================================================
 
 // 受け取るsprite情報
