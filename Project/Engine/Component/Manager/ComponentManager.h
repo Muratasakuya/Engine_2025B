@@ -71,16 +71,18 @@ public:
 	//--------- object3D -----------------------------------------------------
 
 	// 追加、作成処理
-	EntityID CreateObject3D(const std::string& modelName,
-		const std::optional<std::string>& animationName, const std::string& objectName,
-		const std::optional<std::string>& instancingName = std::nullopt);
+	EntityID CreateObject3D(const std::string& modelName, const std::string& objectName,
+		const std::optional<std::string>& groupName = std::nullopt,
+		const std::optional<std::string>& instancingName = std::nullopt,
+		const std::optional<std::string>& animationName = std::nullopt);
 	// 指定されたidのentity削除
 	void RemoveObject3D(EntityID id);
 
 	//--------- object2D -----------------------------------------------------
 
 	// 追加、作成処理
-	EntityID CreateObject2D(const std::string& textureName);
+	EntityID CreateObject2D(const std::string& textureName, const std::string& objectName,
+		const std::optional<std::string>& groupName = std::nullopt);
 	// 指定されたidのentity削除
 	void RemoveObject2D(EntityID id);
 

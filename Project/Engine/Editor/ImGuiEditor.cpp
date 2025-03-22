@@ -80,7 +80,7 @@ void ImGuiEditor::Hierarchy() {
 
 	ImGui::Begin("Hierarchy");
 
-	ComponentManager::GetInstance()->GetImGuiComponentManager()->SelectObject3D();
+	ComponentManager::GetInstance()->GetImGuiComponentManager()->SelectObject();
 
 	ImGui::End();
 }
@@ -89,7 +89,7 @@ void ImGuiEditor::Inspector() {
 
 	ImGui::Begin("Inspector");
 
-	ComponentManager::GetInstance()->GetImGuiComponentManager()->EditObject3D();
+	ComponentManager::GetInstance()->GetImGuiComponentManager()->EditObject();
 
 	ImGui::End();
 }

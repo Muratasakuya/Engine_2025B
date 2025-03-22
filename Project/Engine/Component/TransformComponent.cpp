@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Window/WinApp.h>
 
 // imgui
 #include <imgui.h>
@@ -92,10 +93,6 @@ void Transform2DComponent::Init() {
 	// 左上設定
 	textureLeftTop = Vector2::AnyInit(0.0f);
 	textureSize = Vector2::AnyInit(0.0f);
-
-	// フリップ無し
-	isFlipX = false;
-	isFlipY = false;
 }
 
 void Transform2DComponent::UpdateMatrix() {
@@ -113,17 +110,39 @@ void Transform2DComponent::UpdateMatrix() {
 
 void Transform2DComponent::ImGui(float itemSize) {
 
+	ImGui::SeparatorText("Config");
+
+	if (ImGui::Button("Set CenterPos", ImVec2(itemSize, 22.0f))) {
+
+		translation.x = static_cast<float>(WinApp::GetWindowWidth()) / 2.0f;
+		translation.y = static_cast<float>(WinApp::GetWindowHeight()) / 2.0f;
+	}
+
+	if (ImGui::Button("Set CenterAnchor", ImVec2(itemSize, 22.0f))) {
+
+		anchorPoint = Vector2::AnyInit(0.5f);
+	}
+
+	if (ImGui::Button("Set LeftAnchor", ImVec2(itemSize, 22.0f))) {
+
+		anchorPoint = Vector2::AnyInit(0.0f);
+	}
+
+	if (ImGui::Button("Set RightAnchor", ImVec2(itemSize, 22.0f))) {
+
+		anchorPoint = Vector2::AnyInit(1.0f);
+	}
+
+	ImGui::SeparatorText("Parameter");
+
 	ImGui::PushItemWidth(itemSize);
-	ImGui::DragFloat3("translate", &translation.x, 0.01f);
+	ImGui::DragFloat2("translate", &translation.x, 1.0f);
 	ImGui::SliderAngle("rotation", &rotation);
 
 	ImGui::DragFloat2("size", &size.x, 1.0f);
-	ImGui::DragFloat2("anchorPoint", &anchorPoint.x, 0.01f);
+	ImGui::DragFloat2("anchorPoint", &anchorPoint.x, 0.01f, 0.0f, 1.0f);
 
-	ImGui::DragFloat2("textureLeftTop", &textureLeftTop.x, 0.01f);
-	ImGui::DragFloat2("textureSize", &textureSize.x, 0.01f);
-
-	ImGui::Checkbox("isFlipX", &isFlipX);
-	ImGui::Checkbox("isFlipY", &isFlipY);
+	ImGui::DragFloat2("textureLeftTop", &textureLeftTop.x, 1.0f);
+	ImGui::DragFloat2("textureSize", &textureSize.x, 1.0f, 0.0f, 1.0f);
 	ImGui::PopItemWidth();
 }

@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "AnimationComponentManager.h"
 
 //============================================================================
@@ -15,7 +17,7 @@ void AnimationComponentManager::AddComponent(EntityID entity, std::any args) {
 		std::any_cast<std::tuple<std::optional<std::string>, Asset*>>(args);
 
 	// animationをしない場合でも要素は追加しておく
-	components_.emplace_back();
+	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
 	if (!animationName.has_value()) {
 		return;
 	}

@@ -36,7 +36,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<SpriteComponent> components_;
+	std::vector<std::unique_ptr<SpriteComponent>> components_;
 	// spriteのvertex更新用
-	std::vector<Transform2DComponent> transforms_;
+	std::vector<Transform2DComponent*> transforms_;
 };
