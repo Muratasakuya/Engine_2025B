@@ -40,20 +40,6 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	// 3D
-	ComponentManager::GetInstance()->CreateObject3D(
-		"teapot", "playerHead", "Player", "teapotInstancing");
-	ComponentManager::GetInstance()->CreateObject3D(
-		"teapot", "playerBody", "Player", "teapotInstancing");
-
-	ComponentManager::GetInstance()->CreateObject3D(
-		"teapot", "enemyHead", "Enemy", "teapotInstancing");
-	ComponentManager::GetInstance()->CreateObject3D(
-		"teapot", "enemyBody", "Enemy", "teapotInstancing");
-
-	ComponentManager::GetInstance()->CreateObject3D(
-		"plane", "field");
-
 	// 2D
 	ComponentManager::GetInstance()->CreateObject2D(
 		"uvChecker", "background");
