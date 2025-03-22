@@ -62,8 +62,8 @@ void GameTimer::ImGui() {
 	ImGui::Text("deltaTime:       %.3f s", deltaTime_);                  //* ΔTime
 	ImGui::Text("scaledDeltaTime: %.3f s", GetScaledDeltaTime());        //* ScaledΔTime
 
-	ImGui::Text("updateTime:      %.2f  ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間
-	ImGui::Text("drawTime:        %.2f ms", GetSmoothedDrawTime());    // 描画処理にかかった時間
+	//ImGui::Text("updateTime:      %.2f  ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間
+	//ImGui::Text("drawTime:        %.2f ms", GetSmoothedDrawTime());    // 描画処理にかかった時間
 
 	float frameTime = ImGui::GetIO().Framerate;
 	if (frameTime < 55.0f) {

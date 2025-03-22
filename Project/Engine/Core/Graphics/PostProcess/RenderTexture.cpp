@@ -80,3 +80,57 @@ void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
 
 	++textureCount_;
 }
+
+//============================================================================
+//	GuiRenderTexture classMethods
+//============================================================================
+
+int GuiRenderTexture::textureCount_ = 0;
+
+void GuiRenderTexture::CreateTextureResource(ComPtr<ID3D12Resource>& resource,
+	uint32_t width, uint32_t height, DXGI_FORMAT format, ID3D12Device* device) {
+
+	// RenderTargetで設定
+	D3D12_RESOURCE_DESC resourceDesc{};
+	resourceDesc.Width = width;                                   // 横幅
+	resourceDesc.Height = height;                                 // 縦幅
+	resourceDesc.Format = format;                                 // フォーマット設定
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;                // SRVとして利用
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;  // 2Dテクスチャで設定
+	resourceDesc.SampleDesc.Count = 1;                            // サンプリングカウント。1固定
+	resourceDesc.DepthOrArraySize = 1;                            // 配列サイズまたは深度を1に設定
+	resourceDesc.MipLevels = 1;                                   // 1で設定、しなくてもdefaultで1になるらしい
+
+	// 利用するHeapの設定
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	HRESULT hr = device->CreateCommittedResource(
+		&heapProperties,
+		D3D12_HEAP_FLAG_NONE,
+		&resourceDesc,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		nullptr,
+		IID_PPV_ARGS(&resource));
+	assert(SUCCEEDED(hr));
+}
+
+void GuiRenderTexture::Create(uint32_t width, uint32_t height,
+	DXGI_FORMAT format, ID3D12Device* device, SRVManager* srvManager) {
+
+	// texture作成
+	CreateTextureResource(resource_, width, height, format, device);
+
+	// SRV作成
+	uint32_t srvIndex = 0;
+	// Descの設定
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = format;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	srvManager->CreateSRV(srvIndex, resource_.Get(), srvDesc);
+	gpuHandle_ = srvManager->GetGPUHandle(srvIndex);
+
+	++textureCount_;
+}

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
+#include <Engine/Component/SpriteComponent.h>
 #include <Engine/Core/CBuffer/DxConstBuffer.h>
 #include <Lib/MathUtils/Matrix4x4.h>
 
@@ -14,19 +15,6 @@
 class DxShaderCompiler;
 class RenderObjectManager;
 class CameraManager;
-
-//============================================================================
-//	SpriteRenderer enum class
-//============================================================================
-
-// 描画モード
-enum class RenderMode {
-
-	IrrelevantPostProcess,
-	ApplyPostProcess,
-
-	Count
-};
 
 //============================================================================
 //	SpriteRenderer class
@@ -46,11 +34,23 @@ public:
 
 	void Update();
 
-	void Render(RenderMode renderMode);
+	void RenderIrrelevant();
+	void RenderApply(SpriteLayer layer);
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
+
+	//--------- enum class ---------------------------------------------------
+
+	// 描画モード
+	enum class RenderMode {
+
+		IrrelevantPostProcess,
+		ApplyPostProcess,
+
+		Count
+	};
 
 	//--------- variables ----------------------------------------------------
 

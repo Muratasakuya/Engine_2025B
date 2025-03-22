@@ -40,12 +40,16 @@ PSOutput main(VSOutput input) {
 	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), uvTransform);
 	float4 textureColor = gTexture.Sample(gSampler, transformUV.xy);
 	
-	if (textureColor.a <= 0.5f) {
+	if (textureColor.a <= 0.4f) {
 		discard;
 	}
 
 	output.color.rgb = color.rgb * textureColor.rgb;
 	output.color.a = color.a * textureColor.a;
+	
+	if (output.color.a == 0.0f) {
+		discard;
+	}
 	
 	return output;
 }
