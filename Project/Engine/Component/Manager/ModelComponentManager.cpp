@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "ModelComponentManager.h"
 
 //============================================================================
@@ -27,7 +29,7 @@ void ModelComponentManager::AddComponent(EntityID entity, std::any args) {
 	}
 
 	// component追加
-	components_.emplace_back();
+	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
 
 	components_[entity] = ModelComponent();
 

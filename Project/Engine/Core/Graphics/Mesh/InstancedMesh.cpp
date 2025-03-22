@@ -47,11 +47,11 @@ void InstancedMesh::CreateBuffers(const std::string& name) {
 	// material
 	{
 		// meshの数だけ作成する
-		const size_t meshNum = meshGroup.model.model->GetMeshNum();
-		meshGroup.materialSrvIndices.resize(meshGroup.model.model->GetMeshNum());
-		meshGroup.materials.resize(meshGroup.model.model->GetMeshNum());
+		const size_t meshNum = meshGroup.model.meshNum;
+		meshGroup.materialSrvIndices.resize(meshNum);
+		meshGroup.materials.resize(meshNum);
 		// componentの数もここで決める
-		meshGroup.materialComponents.resize(meshGroup.model.model->GetMeshNum());
+		meshGroup.materialComponents.resize(meshNum);
 
 		// desc設定
 		srvBufferDesc_.Buffer.NumElements = meshGroup.maxInstance;
@@ -80,7 +80,13 @@ void InstancedMesh::Create(const ModelComponent& modelComponent,
 	// 最大のinstance数設定
 	meshGroups_[name].maxInstance = numInstance;
 	// 描画を行うmodelの設定
-	meshGroups_[name].model.model = modelComponent.model.get();
+	meshGroups_[name].model.InputAssembler = modelComponent.model->GetIA();
+	meshGroups_[name].model.meshNum = modelComponent.model->GetMeshNum();
+	meshGroups_[name].model.textureGPUHandles.resize(meshGroups_[name].model.meshNum);
+	for (uint32_t meshIndex = 0; meshIndex < meshGroups_[name].model.meshNum; ++meshIndex) {
+
+		meshGroups_[name].model.textureGPUHandles[meshIndex] = modelComponent.model->GetTextureGPUHandle(meshIndex);
+	}
 	if (modelComponent.isAnimation) {
 		// animationは対応無し
 		ASSERT(FALSE, "unsupported skinnedAnimationMesh");
@@ -89,7 +95,6 @@ void InstancedMesh::Create(const ModelComponent& modelComponent,
 	// bufferの作成
 	CreateBuffers(name);
 }
-
 
 void InstancedMesh::SetComponent(const std::string& name,
 	const TransformationMatrix& matrix, const std::vector<Material>& materials) {
@@ -128,7 +133,7 @@ void InstancedMesh::Update() {
 
 		// buffer転送
 		meshGroup.matrix.TransferVectorData(meshGroup.matrixComponents);
-		for (uint32_t meshIndex = 0; meshIndex < meshGroup.model.model->GetMeshNum(); ++meshIndex) {
+		for (uint32_t meshIndex = 0; meshIndex < meshGroup.model.meshNum; ++meshIndex) {
 
 			meshGroup.materials[meshIndex].TransferVectorData(meshGroup.materialComponents[meshIndex]);
 		}
@@ -147,9 +152,11 @@ void InstancedMesh::Reset() {
 		// componentクリア
 		meshGroup.matrixComponents.clear();
 
-		for (uint32_t meshIndex = 0; meshIndex < meshGroup.model.model->GetMeshNum(); ++meshIndex) {
+		for (uint32_t meshIndex = 0; meshIndex < meshGroup.model.meshNum; ++meshIndex) {
+			if (meshGroup.materialComponents[meshIndex].size() != 0) {
 
-			meshGroup.materialComponents[meshIndex].clear();
+				meshGroup.materialComponents[meshIndex].clear();
+			}
 		}
 		meshGroup.numInstance = 0;
 	}

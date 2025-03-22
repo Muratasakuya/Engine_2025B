@@ -185,7 +185,7 @@
     <ClCompile Include="Engine\Component\Manager\EntityManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\Transform3DManager.cpp">
+    <ClCompile Include="Engine\Component\Manager\TransformManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Component\Manager\ModelComponentManager.cpp">
@@ -237,6 +237,15 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\InstancedMesh.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\SpriteComponent.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\Manager\SpriteComponentManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Camera2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -305,7 +314,7 @@
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
     <ClInclude Include="Engine\Component\Manager\ComponentManager.h" />
     <ClInclude Include="Engine\Component\Manager\EntityManager.h" />
-    <ClInclude Include="Engine\Component\Manager\Transform3DManager.h" />
+    <ClInclude Include="Engine\Component\Manager\TransformManager.h" />
     <ClInclude Include="Engine\Component\Manager\ModelComponentManager.h" />
     <ClInclude Include="Engine\Component\Manager\MaterialManager.h" />
     <ClInclude Include="Engine\Component\Manager\ImGuiComponentManager.h" />
@@ -323,6 +332,9 @@
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\InstancedMesh.h" />
+    <ClInclude Include="Engine\Component\SpriteComponent.h" />
+    <ClInclude Include="Engine\Component\Manager\SpriteComponentManager.h" />
+    <ClInclude Include="Game\Camera\Camera2D.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

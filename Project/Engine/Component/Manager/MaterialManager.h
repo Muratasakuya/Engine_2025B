@@ -39,3 +39,36 @@ private:
 
 	std::vector<std::vector<Material>> components_;
 };
+
+//============================================================================
+//	SpriteMaterialManager class
+//============================================================================
+class SpriteMaterialManager :
+	public IComponent<SpriteMaterial> {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	SpriteMaterialManager() = default;
+	~SpriteMaterialManager() = default;
+
+	void AddComponent(EntityID entity, std::any args) override;
+
+	void RemoveComponent(EntityID entity) override;
+
+	void Update() override {};
+
+	//--------- accessor -----------------------------------------------------
+
+	SpriteMaterial* GetComponent(EntityID entity) override;
+	std::vector<SpriteMaterial*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	std::vector<SpriteMaterial> components_;
+};

@@ -130,3 +130,12 @@ struct ModelReference {
 
 	RenderingData renderingData;
 };
+
+struct InstancingModelReference {
+
+	InputAssembler InputAssembler;
+	size_t meshNum;
+	std::vector<D3D12_GPU_DESCRIPTOR_HANDLE> textureGPUHandles;
+
+	RenderingData renderingData;
+};

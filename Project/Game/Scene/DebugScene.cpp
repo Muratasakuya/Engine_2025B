@@ -24,7 +24,11 @@ void DebugScene::Init(
 	//	load
 	//========================================================================
 
+	asset->LoadTexture("uvChecker");
+	asset->LoadTexture("white");
+
 	asset->LoadModel("teapot");
+	asset->LoadModel("plane");
 
 	//========================================================================
 	//	init
@@ -36,7 +40,23 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	ComponentManager::GetInstance()->CreateObject3D("teapot", std::nullopt, "teapot", "teapotInstancing");
+	// 3D
+	ComponentManager::GetInstance()->CreateObject3D(
+		"teapot", "playerHead", "Player", "teapotInstancing");
+	ComponentManager::GetInstance()->CreateObject3D(
+		"teapot", "playerBody", "Player", "teapotInstancing");
+
+	ComponentManager::GetInstance()->CreateObject3D(
+		"teapot", "enemyHead", "Enemy", "teapotInstancing");
+	ComponentManager::GetInstance()->CreateObject3D(
+		"teapot", "enemyBody", "Enemy", "teapotInstancing");
+
+	ComponentManager::GetInstance()->CreateObject3D(
+		"plane", "field");
+
+	// 2D
+	ComponentManager::GetInstance()->CreateObject2D(
+		"white", "background");
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {

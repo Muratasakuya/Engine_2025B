@@ -32,6 +32,12 @@ struct ModelVertexData {
 	Vector3 normal;
 };
 
+struct SpriteVertexData {
+
+	Vector2 pos;
+	Vector2 texcoord;
+};
+
 struct InputModelVertex {
 
 	std::vector<ModelVertexData> data;
