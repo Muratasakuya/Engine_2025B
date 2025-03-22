@@ -1,32 +1,51 @@
-#include "Object2d.hlsli"
+//============================================================================
+//	include
+//============================================================================
 
-struct Obj2DMaterial {
+#include "Object2D.hlsli"
+
+//============================================================================
+//	Output
+//============================================================================
+
+struct PSOutput {
+
+	float4 color : SV_TARGET0;
+};
+
+//============================================================================
+//	CBuffer
+//============================================================================
+
+cbuffer Material : register(b0) {
 	
 	float4 color;
 	float4x4 uvTransform;
 };
 
-ConstantBuffer<Obj2DMaterial> gMaterial : register(b0);
+//============================================================================
+//	Texture Sampler
+//============================================================================
+
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
 
-struct PixelShaderOutput {
+//============================================================================
+//	Main
+//============================================================================
+PSOutput main(VSOutput input) {
 	
-	float4 color : SV_TARGET0;
-};
-
-PixelShaderOutput main(VertexShaderOutput input) {
+	PSOutput output;
 	
-	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterial.uvTransform);
+	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), uvTransform);
 	float4 textureColor = gTexture.Sample(gSampler, transformUV.xy);
-    
-	PixelShaderOutput output;
-	output.color.rgb = gMaterial.color.rgb * textureColor.rgb;
-	output.color.a = gMaterial.color.a;
 	
-	if (output.color.a == 0.0f) {
+	if (textureColor.a <= 0.5f) {
 		discard;
 	}
+
+	output.color.rgb = color.rgb * textureColor.rgb;
+	output.color.a = color.a * textureColor.a;
 	
 	return output;
 }

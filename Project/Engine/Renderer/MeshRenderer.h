@@ -42,9 +42,6 @@ public:
 
 	void RenderZPass();
 	void Render(bool debugEnable);
-
-	//--------- accessor -----------------------------------------------------
-
 private:
 	//========================================================================
 	//	private Methods
@@ -61,8 +58,7 @@ private:
 
 	std::unique_ptr<ObjectPipelineManager> pipeline_;
 
-	//* buffers *//
-
+	// buffer
 	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;
 	DxConstBuffer<Matrix4x4> lightViewProjectionBuffer_;
 	DxConstBuffer<Vector3> cameraPosBuffer_;

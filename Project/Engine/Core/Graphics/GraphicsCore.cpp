@@ -137,6 +137,11 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 		shadowMap_.get(), dxShaderComplier_.get(), srvManager_.get(),
 		renderObjectManager_.get(), cameraManager);
 
+	// sprite描画初期化
+	spriteRenderer_ = std::make_unique<SpriteRenderer>();
+	spriteRenderer_->Init(device, dxCommand_->GetCommandList(CommandListType::Graphics),
+		dxShaderComplier_.get(), renderObjectManager_.get(), cameraManager);
+
 	// offscreen初期化
 	offscreenPipeline_ = std::make_unique<PipelineState>();
 	offscreenPipeline_->Create("CopyTexture.json", device, dxShaderComplier_.get());
@@ -164,6 +169,7 @@ void GraphicsCore::Finalize(HWND hwnd) {
 #endif // _DEBUG
 	shadowMap_.reset();
 	meshRenderer_.reset();
+	spriteRenderer_.reset();
 }
 
 //============================================================================
@@ -174,6 +180,7 @@ void GraphicsCore::Render() {
 
 	// bufferの更新
 	meshRenderer_->Update();
+	spriteRenderer_->Update();
 	renderObjectManager_->Update();
 
 	// ComputeCommandを非同期で実行
@@ -274,9 +281,15 @@ void GraphicsCore::RenderFrameBuffer() {
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootDescriptorTable(0, renderTexture_->GetGPUHandle());
 	commandList->DrawInstanced(vertexCount, 1, 0, 0);
+
+	// sprite描画、postPrecessを適用しない
+	spriteRenderer_->Render(RenderMode::IrrelevantPostProcess);
 }
 
 void GraphicsCore::Renderers(bool debugEnable) {
+
+	// sprite描画、postPrecess適用
+	spriteRenderer_->Render(RenderMode::ApplyPostProcess);
 
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);

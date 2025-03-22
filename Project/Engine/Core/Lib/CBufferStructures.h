@@ -62,3 +62,12 @@ struct InstancingMaterial {
 
 	void SetMaterial(const Material& material);
 };
+
+struct SpriteMaterial {
+
+	Color color;
+	Matrix4x4 uvTransform;
+
+	void Init();
+	void ImGui();
+};

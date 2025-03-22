@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Lib/CBufferStructures.h>
+#include <Lib/MathUtils/Vector2.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Quaternion.h>
 
@@ -61,4 +62,38 @@ public:
 	TransformationMatrix matrix;
 
 	const Transform3DComponent* parent = nullptr;
+};
+
+//============================================================================
+//	Transform3DComponent class
+//============================================================================
+class Transform2DComponent {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	Transform2DComponent() = default;
+	~Transform2DComponent() = default;
+
+	void Init();
+
+	void UpdateMatrix();
+
+	void ImGui(float itemSize);
+
+	//--------- variables ----------------------------------------------------
+
+	Vector2 translation;
+	float rotation;
+
+	Vector2 size;           // 表示サイズ
+	Vector2 anchorPoint;    // アンカーポイント
+
+	Vector2 textureLeftTop; // テクスチャ左上座標
+	Vector2 textureSize;    // テクスチャ切り出しサイズ
+
+	Matrix4x4 matrix;
+
+	const Transform2DComponent* parent = nullptr;
 };

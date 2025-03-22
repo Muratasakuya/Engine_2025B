@@ -105,3 +105,17 @@ void InstancingMaterial::SetMaterial(const Material& material) {
 	emissionColor = material.emissionColor;
 	uvTransform = material.uvTransform;
 }
+
+void SpriteMaterial::Init() {
+
+	color = Color::White();
+	uvTransform = Matrix4x4::MakeIdentity4x4();
+}
+
+void SpriteMaterial::ImGui() {
+
+	ImGui::ColorEdit4("color", &color.r);
+	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f A:%4.3f",
+		color.r, color.g,
+		color.b, color.a);
+}

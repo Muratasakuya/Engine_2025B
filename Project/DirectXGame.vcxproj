@@ -166,6 +166,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Component\Manager\SpriteComponentManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Component\SpriteComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\InstancedMesh.cpp">
       <SubType>
       </SubType>
@@ -179,7 +187,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\Transform3DManager.cpp">
+    <ClCompile Include="Engine\Component\Manager\TransformManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -251,6 +259,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Game\Base\BaseGameObject.cpp" />
     <ClCompile Include="Game\Camera\Base\BaseCamera.cpp" />
+    <ClCompile Include="Game\Camera\Camera2D.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Camera\DebugCamera.cpp">
       <SubType>
       </SubType>
@@ -317,6 +329,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Component\Manager\SpriteComponentManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Component\SpriteComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Mesh\InstancedMesh.h">
       <SubType>
       </SubType>
@@ -333,7 +353,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Component\Manager\Transform3DManager.h">
+    <ClInclude Include="Engine\Component\Manager\TransformManager.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -407,6 +427,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Game\Base\BaseGameObject.h" />
     <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
+    <ClInclude Include="Game\Camera\Camera2D.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Camera\DebugCamera.h">
       <SubType>
       </SubType>

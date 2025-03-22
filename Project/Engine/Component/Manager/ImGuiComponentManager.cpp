@@ -14,11 +14,16 @@
 //	ImGuiComponentManager classMethods
 //============================================================================
 
-void ImGuiComponentManager::Init(EntityManager* entityManager, Transform3DManager* transform3DManager,
-	MaterialManager* materialManager, ModelComponentManager* modelComponentManager) {
+void ImGuiComponentManager::Init(
+	// 3D
+	EntityManager* entity3DManager, Transform3DManager* transform3DManager,
+	MaterialManager* materialManager, ModelComponentManager* modelComponentManager,
+	// 2D
+	EntityManager* entity2DManager, Transform2DManager* transform2DManager,
+	SpriteMaterialManager* spriteMaterialManager, SpriteComponentManager* spriteComponentManager) {
 
-	entityManager_ = nullptr;
-	entityManager_ = entityManager;
+	entity3DManager_ = nullptr;
+	entity3DManager_ = entity3DManager;
 
 	transform3DManager_ = nullptr;
 	transform3DManager_ = transform3DManager;
@@ -28,63 +33,160 @@ void ImGuiComponentManager::Init(EntityManager* entityManager, Transform3DManage
 
 	modelComponentManager_ = nullptr;
 	modelComponentManager_ = modelComponentManager;
+
+	entity2DManager_ = nullptr;
+	entity2DManager_ = entity2DManager;
+
+	transform2DManager_ = nullptr;
+	transform2DManager_ = transform2DManager;
+
+	spriteMaterialManager_ = nullptr;
+	spriteMaterialManager_ = spriteMaterialManager;
+
+	spriteComponentManager_ = nullptr;
+	spriteComponentManager_ = spriteComponentManager;
 }
 
-void ImGuiComponentManager::SelectObject3D() {
+void ImGuiComponentManager::SelectObject() {
 
-	ImGui::SeparatorText("Object3D");
+	// groupの作成
+	CreateGroup();
+	// objectの選択
+	SelectGroupedObject();
+	SelectUnGroupedObject();
+}
 
-	// 名前の基本部分と数値部分を取得する関数
-	auto GetBaseNameAndNumber = [](const std::string& name) -> std::pair<std::string, int> {
-		size_t index = name.find_last_not_of("0123456789");
-		if (index != std::string::npos && index + 1 < name.size()) {
+void ImGuiComponentManager::CreateGroup() {
 
-			std::string baseName = name.substr(0, index + 1);
-			int number = std::stoi(name.substr(index + 1));
-			return { baseName, number };
-		}
-		return { name, 0 };
-		};
+	// グループをクリア
+	groupedEntities_.clear();
 
-	if (entityManager_->GetEntityCount() != object3D_.lastCount_) {
+	// entityGroupの作成
+	// 3D
+	for (EntityID id = 0; id < entity3DManager_->GetNames().size(); ++id) {
 
-		object3D_.grouped_.clear();
-		for (const auto& [id, name] : entityManager_->GetNames()) {
-			auto [baseName, number] = GetBaseNameAndNumber(name);
-			object3D_.grouped_[baseName].emplace_back(number, id);
-		}
-
-		object3D_.lastCount_ = entityManager_->GetEntityCount();
+		const auto& entity = entity3DManager_->GetNames()[id];
+		std::string group = entity.groupName.value_or("");
+		groupedEntities_[group].push_back(EntityReference(EntityType::Object3D, id));
 	}
 
-	// objectNameの表示
-	for (auto& [baseName, objects] : object3D_.grouped_) {
-		if (objects.size() == 1) {
-			if (ImGui::Selectable(baseName.c_str(), object3D_.selectedId_ == objects[0].second)) {
-				object3D_.selectedId_ = objects[0].second;
-			}
-		} else {
-			if (ImGui::TreeNode(baseName.c_str())) {
-				for (const auto& [number, id] : objects) {
+	// 2D
+	for (EntityID id = 0; id < entity2DManager_->GetNames().size(); ++id) {
 
-					std::string label = baseName + std::to_string(number);
-					if (ImGui::Selectable(label.c_str(), object3D_.selectedId_ == id)) {
+		const auto& entity = entity2DManager_->GetNames()[id];
+		std::string group = entity.groupName.value_or("");
+		groupedEntities_[group].push_back(EntityReference(EntityType::Object2D, id));
+	}
+}
 
-						// idの更新処理
-						object3D_.selectedId_ = id;
-						selectedMaterialIndex_ = 0;
+void ImGuiComponentManager::SelectGroupedObject() {
 
-						// 選択したときに最後の要素なら数字を強制的に変える
-						if (*object3D_.selectedId_ == entityManager_->GetEntityCount()) {
+	// group:TreeNode:Selectable
+	for (const auto& [groupName, entities] : groupedEntities_) {
+		if (!groupName.empty()) {
+			if (ImGui::TreeNode(groupName.c_str())) {
 
-							--object3D_.selectedId_.value();
+				// Object3D表示
+				bool has3D = std::any_of(entities.begin(), entities.end(), [](const auto& ref) {
+					return ref.type == EntityType::Object3D;
+					});
+				if (has3D) {
+					for (const auto& ref : entities) {
+						if (ref.type != EntityType::Object3D) continue;
+
+						const auto& name = entity3DManager_->GetNames()[ref.id].name;
+						bool selected = (object3D_.selectedId_ == ref.id);
+
+						if (ImGui::Selectable(name.c_str(), selected)) {
+
+							object3D_.selectedId_ = ref.id;
+							object2D_.selectedId_ = std::nullopt;
 						}
 					}
 				}
+
+				// Object2D表示
+				bool has2D = std::any_of(entities.begin(), entities.end(), [](const auto& ref) {
+					return ref.type == EntityType::Object2D;
+					});
+				if (has2D) {
+					for (const auto& ref : entities) {
+						if (ref.type != EntityType::Object2D) continue;
+
+						const auto& name = entity2DManager_->GetNames()[ref.id].name;
+						bool selected = (object2D_.selectedId_ == ref.id);
+
+						if (ImGui::Selectable(name.c_str(), selected)) {
+
+							object2D_.selectedId_ = ref.id;
+							object3D_.selectedId_ = std::nullopt;
+						}
+					}
+				}
+
 				ImGui::TreePop();
 			}
 		}
 	}
+}
+
+void ImGuiComponentManager::SelectUnGroupedObject() {
+
+	// Selectable
+	if (groupedEntities_.count("") > 0) {
+
+		const auto& ungroupedEntities = groupedEntities_[""];
+
+		// Object3D表示
+		bool has3D = std::any_of(ungroupedEntities.begin(), ungroupedEntities.end(), [](const auto& ref) {
+			return ref.type == EntityType::Object3D;
+			});
+		if (has3D) {
+			for (const auto& ref : ungroupedEntities) {
+				if (ref.type != EntityType::Object3D) continue;
+
+				const auto& name = entity3DManager_->GetNames()[ref.id].name;
+				bool selected = (object3D_.selectedId_ == ref.id);
+
+				if (ImGui::Selectable(name.c_str(), selected)) {
+
+					object3D_.selectedId_ = ref.id;
+					object2D_.selectedId_ = std::nullopt;
+				}
+			}
+		}
+
+		// Object2D表示
+		bool has2D = std::any_of(ungroupedEntities.begin(), ungroupedEntities.end(), [](const auto& ref) {
+			return ref.type == EntityType::Object2D;
+			});
+		if (has2D) {
+			for (const auto& ref : ungroupedEntities) {
+				if (ref.type != EntityType::Object2D) continue;
+
+				const auto& name = entity2DManager_->GetNames()[ref.id].name;
+				bool selected = (object2D_.selectedId_ == ref.id);
+
+				if (ImGui::Selectable(name.c_str(), selected)) {
+
+					object2D_.selectedId_ = ref.id;
+					object3D_.selectedId_ = std::nullopt;
+				}
+			}
+		}
+	}
+}
+
+void ImGuiComponentManager::EditObject() {
+
+	// 各objectの操作
+	EditObject3D();
+	EditObject2D();
+}
+
+void ImGuiComponentManager::SetImGuiFunc(EntityID entityId, std::function<void()> func) {
+
+	object3D_.imguiFunc_[entityId] = func;
 }
 
 void ImGuiComponentManager::EditObject3D() {
@@ -93,8 +195,8 @@ void ImGuiComponentManager::EditObject3D() {
 		return;
 	}
 
-	ASSERT(transform3DManager_->GetComponent(*object3D_.selectedId_), "does not exist object3D:transform");
-	ASSERT(!materialManager_->GetComponentList(*object3D_.selectedId_).empty(), "does not exist object3D:material");
+	ASSERT(transform3DManager_->GetComponent(object3D_.selectedId_.value()), "does not exist object3D:transform");
+	ASSERT(!materialManager_->GetComponentList(object3D_.selectedId_.value()).empty(), "does not exist object3D:material");
 
 	Object3DInformation();
 
@@ -134,14 +236,9 @@ void ImGuiComponentManager::EditObject3D() {
 	}
 }
 
-void ImGuiComponentManager::SetImGuiFunc(EntityID entityId, std::function<void()> func) {
-
-	object3D_.imguiFunc_[entityId] = func;
-}
-
 void ImGuiComponentManager::Object3DInformation() {
 
-	ImGui::Text("name: %s", entityManager_->GetNames().at(*object3D_.selectedId_).c_str());
+	ImGui::Text("name: %s", entity3DManager_->GetNames().at(*object3D_.selectedId_).name.c_str());
 	ImGui::Text("entityId: %d", *object3D_.selectedId_);
 
 	// 選択中のObjectの削除
@@ -207,4 +304,95 @@ void ImGuiComponentManager::Object3DMaterial() {
 		selectedMaterialIndex_ = std::clamp(selectedMaterialIndex_, 0, static_cast<int>(materials.size() - 1));
 		materials[selectedMaterialIndex_]->ImGui(itemWidth_);
 	}
+}
+
+void ImGuiComponentManager::EditObject2D() {
+
+	if (!object2D_.selectedId_.has_value()) {
+		return;
+	}
+
+	ASSERT(transform2DManager_->GetComponent(object2D_.selectedId_.value()), "does not exist object2D:transform");
+	ASSERT(spriteMaterialManager_->GetComponent(object2D_.selectedId_.value()), "does not exist object2D:material");
+
+	Object2DInformation();
+
+	ImGui::Separator();
+
+	if (ImGui::BeginTabBar("Object2DTabs")) {
+
+		if (ImGui::BeginTabItem("Rendering")) {
+
+			Object2DRenderingData();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Transform")) {
+
+			Object2DTransform();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Material")) {
+
+			Object2DMaterial();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Individual")) {
+
+			if (Algorithm::Find(object2D_.imguiFunc_, *object2D_.selectedId_)) {
+
+				EntityID id = *object2D_.selectedId_;
+				object2D_.imguiFunc_.at(id)();
+			}
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
+}
+
+void ImGuiComponentManager::Object2DInformation() {
+
+	ImGui::Text("name: %s", entity2DManager_->GetNames().at(*object2D_.selectedId_).name.c_str());
+	ImGui::Text("entityId: %d", *object2D_.selectedId_);
+
+	// 選択中のObjectの削除
+	if (ImGui::Button("remove")) {
+
+		ComponentManager::GetInstance()->RemoveObject2D(*object2D_.selectedId_);
+		object2D_.selectedId_ = std::nullopt;
+	}
+}
+
+void ImGuiComponentManager::Object2DRenderingData() {
+
+	if (!object2D_.selectedId_.has_value()) {
+		return;
+	}
+
+	//SpriteComponent* sprite = spriteComponentManager_->GetComponent(*object2D_.selectedId_);
+}
+
+void ImGuiComponentManager::Object2DTransform() {
+
+	if (!object2D_.selectedId_.has_value()) {
+		return;
+	}
+
+	Transform2DComponent* transform = transform2DManager_->GetComponent(*object2D_.selectedId_);
+
+	transform->ImGui(itemWidth_);
+}
+
+void ImGuiComponentManager::Object2DMaterial() {
+
+	if (!object2D_.selectedId_.has_value()) {
+		return;
+	}
+
+	SpriteMaterial* material = spriteMaterialManager_->GetComponent(*object2D_.selectedId_);
+
+	material->ImGui();
 }
