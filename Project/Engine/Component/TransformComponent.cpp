@@ -143,6 +143,6 @@ void Transform2DComponent::ImGui(float itemSize) {
 	ImGui::DragFloat2("anchorPoint", &anchorPoint.x, 0.01f, 0.0f, 1.0f);
 
 	ImGui::DragFloat2("textureLeftTop", &textureLeftTop.x, 1.0f);
-	ImGui::DragFloat2("textureSize", &textureSize.x, 1.0f, 0.0f, 1.0f);
+	ImGui::DragFloat2("textureSize", &textureSize.x, 1.0f);
 	ImGui::PopItemWidth();
 }
