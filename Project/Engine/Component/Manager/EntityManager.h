@@ -47,6 +47,10 @@ public:
 
 	const std::vector<EntityInformation>& GetNames() const { return entityInformations_; }
 
+	const std::vector<EntityID>& GetIndexToEntity() const { return indexToEntity_; }
+
+	size_t GetIndex(EntityID id) const;
+
 	EntityID GetEntityCount() const { return static_cast<EntityID>(entityInformations_.size()); }
 private:
 	//========================================================================
@@ -57,6 +61,9 @@ private:
 
 	EntityID nextId_;
 	std::vector<EntityInformation> entityInformations_;
+
+	std::unordered_map<EntityID, size_t> entityToIndex_;
+	std::vector<EntityID> indexToEntity_;
 
 	std::unordered_map<std::string, int> nameCounts_;
 

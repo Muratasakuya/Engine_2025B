@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Component/Manager/ComponentManager.h>
+#include <Engine/Component/User/ComponentHelper.h>
 
 // imgui
 #include <imgui.h>
@@ -13,6 +13,9 @@
 //============================================================================
 
 TemplateObject3D::TemplateObject3D() {
+
+	modelId_ = GameObjectHelper::CreateObject3D("teapot", "teapot");
+	GameObjectHelper::CreateObject3D("teapot", "teapot");
 
 	colliderA_ = Collider::AddCollider(CollisionShape::Sphere());
 	colliderA_->SetType(ColliderType::Type_None, ColliderType::Type_Test);
@@ -29,12 +32,17 @@ void TemplateObject3D::Update() {
 
 void TemplateObject3D::UpdateCollision() {
 
+	auto transform = ComponentHelper::GetComponent<Transform3DComponent>(modelId_);
 	colliderA_->UpdateSphere({ .center = Vector3::AnyInit(0.0f),.radius = 1.0f });
 
+	if (!transform) {
+		return;
+	}
+
 	colliderB_->UpdateOBB({
-		.center = Vector3::AnyInit(0.0f),
-		.size = Vector3::AnyInit(1.0f),
-		.rotate = Quaternion::IdentityQuaternion() });
+		.center = transform->translation,
+		.size = transform->scale,
+		.rotate = transform->rotation });
 }
 
 void TemplateObject3D::OnCollisionEnter(const ColliderComponent* collider) {

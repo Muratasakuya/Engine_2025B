@@ -63,17 +63,17 @@ void ImGuiComponentManager::CreateGroup() {
 
 	// entityGroupの作成
 	// 3D
-	for (EntityID id = 0; id < entity3DManager_->GetNames().size(); ++id) {
+	for (const EntityID id : entity3DManager_->GetIndexToEntity()) {
 
-		const auto& entity = entity3DManager_->GetNames()[id];
+		const auto& entity = entity3DManager_->GetNames()[entity3DManager_->GetIndex(id)];
 		std::string group = entity.groupName.value_or("");
 		groupedEntities_[group].push_back(EntityReference(EntityType::Object3D, id));
 	}
 
 	// 2D
-	for (EntityID id = 0; id < entity2DManager_->GetNames().size(); ++id) {
+	for (const EntityID id : entity2DManager_->GetIndexToEntity()) {
 
-		const auto& entity = entity2DManager_->GetNames()[id];
+		const auto& entity = entity2DManager_->GetNames()[entity2DManager_->GetIndex(id)];
 		std::string group = entity.groupName.value_or("");
 		groupedEntities_[group].push_back(EntityReference(EntityType::Object2D, id));
 	}
@@ -94,7 +94,7 @@ void ImGuiComponentManager::SelectGroupedObject() {
 					for (const auto& ref : entities) {
 						if (ref.type != EntityType::Object3D) continue;
 
-						const auto& name = entity3DManager_->GetNames()[ref.id].name;
+						const auto& name = entity3DManager_->GetNames().at(entity3DManager_->GetIndex(ref.id)).name;
 						bool selected = (object3D_.selectedId_ == ref.id);
 
 						if (ImGui::Selectable(name.c_str(), selected)) {
@@ -113,7 +113,7 @@ void ImGuiComponentManager::SelectGroupedObject() {
 					for (const auto& ref : entities) {
 						if (ref.type != EntityType::Object2D) continue;
 
-						const auto& name = entity2DManager_->GetNames()[ref.id].name;
+						const auto& name = entity2DManager_->GetNames().at(entity2DManager_->GetIndex(ref.id)).name;
 						bool selected = (object2D_.selectedId_ == ref.id);
 
 						if (ImGui::Selectable(name.c_str(), selected)) {
@@ -145,7 +145,7 @@ void ImGuiComponentManager::SelectUnGroupedObject() {
 			for (const auto& ref : ungroupedEntities) {
 				if (ref.type != EntityType::Object3D) continue;
 
-				const auto& name = entity3DManager_->GetNames()[ref.id].name;
+				const auto& name = entity3DManager_->GetNames().at(entity3DManager_->GetIndex(ref.id)).name;
 				bool selected = (object3D_.selectedId_ == ref.id);
 
 				if (ImGui::Selectable(name.c_str(), selected)) {
@@ -164,7 +164,7 @@ void ImGuiComponentManager::SelectUnGroupedObject() {
 			for (const auto& ref : ungroupedEntities) {
 				if (ref.type != EntityType::Object2D) continue;
 
-				const auto& name = entity2DManager_->GetNames()[ref.id].name;
+				const auto& name = entity2DManager_->GetNames().at(entity2DManager_->GetIndex(ref.id)).name;
 				bool selected = (object2D_.selectedId_ == ref.id);
 
 				if (ImGui::Selectable(name.c_str(), selected)) {
@@ -196,7 +196,7 @@ void ImGuiComponentManager::EditObject3D() {
 	}
 
 	ASSERT(transform3DManager_->GetComponent(object3D_.selectedId_.value()), "does not exist object3D:transform");
-	ASSERT(!materialManager_->GetComponentList(object3D_.selectedId_.value()).empty(), "does not exist object3D:material");
+	ASSERT(materialManager_->GetComponent(object3D_.selectedId_.value()), "does not exist object3D:material");
 
 	Object3DInformation();
 
@@ -238,7 +238,7 @@ void ImGuiComponentManager::EditObject3D() {
 
 void ImGuiComponentManager::Object3DInformation() {
 
-	ImGui::Text("name: %s", entity3DManager_->GetNames().at(*object3D_.selectedId_).name.c_str());
+	ImGui::Text("name: %s", entity3DManager_->GetNames().at(entity3DManager_->GetIndex(*object3D_.selectedId_)).name.c_str());
 	ImGui::Text("entityId: %d", *object3D_.selectedId_);
 
 	// 選択中のObjectの削除
@@ -355,7 +355,7 @@ void ImGuiComponentManager::EditObject2D() {
 
 void ImGuiComponentManager::Object2DInformation() {
 
-	ImGui::Text("name: %s", entity2DManager_->GetNames().at(*object2D_.selectedId_).name.c_str());
+	ImGui::Text("name: %s", entity2DManager_->GetNames().at(entity2DManager_->GetIndex(*object2D_.selectedId_)).name.c_str());
 	ImGui::Text("entityId: %d", *object2D_.selectedId_);
 
 	// 選択中のObjectの削除

@@ -72,9 +72,9 @@ public:
 
 	// 追加、作成処理
 	EntityID CreateObject3D(const std::string& modelName, const std::string& objectName,
-		const std::optional<std::string>& groupName = std::nullopt,
-		const std::optional<std::string>& instancingName = std::nullopt,
-		const std::optional<std::string>& animationName = std::nullopt);
+		const std::optional<std::string>& groupName,
+		const std::optional<std::string>& instancingName,
+		const std::optional<std::string>& animationName);
 	// 指定されたidのentity削除
 	void RemoveObject3D(EntityID id);
 
