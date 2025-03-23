@@ -47,9 +47,9 @@ void Logger::DisableFileLogging() {
 std::string Logger::GetLogLevelPrefix(LogLevel level) {
 
 	switch (level) {
-	case LogLevel::INFO:         return "INFO: ";
-	case LogLevel::ASSERT_ERROR: return "[ERROR] ";
-	default:                     return "[UNKNOWN] ";
+	case LogLevel::INFO:         return "EngineInformation:     ";
+	case LogLevel::ASSERT_ERROR: return "EngineAssertError:     ";
+	default:                     return "EngineInformation:     ";
 	}
 }
 

@@ -3,11 +3,13 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Component/User/Collider.h>
 
 //============================================================================
 //	TemplateObject3D class
 //============================================================================
-class TemplateObject3D {
+class TemplateObject3D :
+	public Collider {
 public:
 	//========================================================================
 	//	public Methods
@@ -18,6 +20,12 @@ public:
 
 	void Update();
 
+	// collision
+	void OnCollisionEnter(const ColliderComponent* collider) override;
+
+	void OnCollisionStay(const ColliderComponent* collider) override;
+
+	void OnCollisionExit(const ColliderComponent* collider) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -25,6 +33,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// collision
+	ColliderComponent* colliderA_;
+	ColliderComponent* colliderB_;
+
 	//--------- functions ----------------------------------------------------
 
+	void UpdateCollision();
 };
