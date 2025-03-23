@@ -20,6 +20,11 @@ void ModelComponentManager::Init(ID3D12Device* device, DxShaderCompiler* shaderC
 
 void ModelComponentManager::AddComponent(EntityID entity, std::any args) {
 
+	size_t index = components_.size();
+
+	entityToIndex_[entity] = index;
+	indexToEntity_.emplace_back(entity);
+
 	auto [modelName, animationName, device, commandList, asset, srvManager] =
 		std::any_cast<std::tuple<
 		std::string, std::optional<std::string>, ID3D12Device*, ID3D12GraphicsCommandList*, Asset*, SRVManager*>>(args);
@@ -53,8 +58,24 @@ void ModelComponentManager::AddComponent(EntityID entity, std::any args) {
 
 void ModelComponentManager::RemoveComponent(EntityID entity) {
 
-	// component削除
-	components_.erase(components_.begin() + entity);
+	size_t index = entityToIndex_.at(entity);
+	size_t lastIndex = components_.size() - 1;
+
+	if (index != lastIndex) {
+
+		// 末尾と交換
+		std::swap(components_[index], components_[lastIndex]);
+
+		// 交換されたentityIdを更新
+		EntityID movedEntityId = indexToEntity_[lastIndex];
+		entityToIndex_[movedEntityId] = index;
+		indexToEntity_[index] = movedEntityId;
+	}
+
+	// 末尾を削除
+	components_.pop_back();
+	indexToEntity_.pop_back();
+	entityToIndex_.erase(entity);
 }
 
 void ModelComponentManager::Update() {
@@ -79,5 +100,11 @@ void ModelComponentManager::Update() {
 
 ModelComponent* ModelComponentManager::GetComponent(EntityID entity) {
 
-	return &components_[entity];
+	if (Algorithm::Find(entityToIndex_, entity)) {
+
+		size_t index = entityToIndex_.at(entity);
+		return &components_.at(index);
+
+	}
+	return nullptr;
 }

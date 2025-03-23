@@ -39,4 +39,7 @@ private:
 	std::vector<std::unique_ptr<SpriteComponent>> components_;
 	// spriteのvertex更新用
 	std::vector<Transform2DComponent*> transforms_;
+
+	std::unordered_map<EntityID, size_t> entityToIndex_;
+	std::vector<EntityID> indexToEntity_;
 };

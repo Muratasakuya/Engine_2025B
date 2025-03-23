@@ -5,7 +5,6 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Renderer/LineRenderer.h>
-#include <Engine/Component/Manager/ComponentManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 // imgui
@@ -40,9 +39,7 @@ void DebugScene::Init(
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
-	// 2D
-	ComponentManager::GetInstance()->CreateObject2D(
-		"uvChecker", "background");
+	object_ = std::make_unique<TemplateObject3D>();
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -52,4 +49,6 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	//========================================================================
 
 	gameCamera_->Update();
+
+	object_->Update();
 }

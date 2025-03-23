@@ -44,4 +44,7 @@ private:
 	std::unique_ptr<PipelineState> skinningPipeline_;
 
 	std::vector<ModelComponent> components_;
+
+	std::unordered_map<EntityID, size_t> entityToIndex_;
+	std::vector<EntityID> indexToEntity_;
 };

@@ -6,6 +6,8 @@
 #include <Engine/Core/Graphics/Mesh/InstancedMesh.h>
 #include <Engine/Component/SpriteComponent.h>
 
+// c++
+#include <unordered_map>
 // entityID
 using EntityID = uint32_t;
 
@@ -82,6 +84,14 @@ private:
 
 	// 2D
 	std::vector<Object2DForGPU> object2DBuffers_;
+
+	// buffer管理
+	// 3D
+	std::unordered_map<EntityID, size_t> object3DBufferToIndex_;
+	std::vector<EntityID> indexToObject3DBuffer_;
+	// 2D
+	std::unordered_map<EntityID, size_t> object2DBufferToIndex_;
+	std::vector<EntityID> indexToObject2DBuffer_;
 
 	//--------- functions ----------------------------------------------------
 

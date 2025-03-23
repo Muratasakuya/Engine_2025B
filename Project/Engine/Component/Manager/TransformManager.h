@@ -36,6 +36,9 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::vector<Transform3DComponent> components_;
+
+	std::unordered_map<EntityID, size_t> entityToIndex_;
+	std::vector<EntityID> indexToEntity_;
 };
 
 //============================================================================
@@ -68,4 +71,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::vector<std::unique_ptr<Transform2DComponent>> components_;
+
+	std::unordered_map<EntityID, size_t> entityToIndex_;
+	std::vector<EntityID> indexToEntity_;
 };

@@ -1,9 +1,9 @@
-INFO: [StartLogginig]
-INFO: Use Adapter:NVIDIA GeForce RTX 3060 Laptop GPU
+EngineInformation:     [StartLogginig]
+EngineInformation:     Use Adapter:NVIDIA GeForce RTX 3060 Laptop GPU
 
-INFO: 12.2
-INFO: load texture: uvChecker
-INFO: load texture: white
-INFO: load texture: checkerBoard
-INFO: load model: teapot
-INFO: load model: plane
+EngineInformation:     12.2
+EngineInformation:     load texture: uvChecker
+EngineInformation:     load texture: white
+EngineInformation:     load texture: checkerBoard
+EngineInformation:     load model: teapot
+EngineInformation:     load model: plane

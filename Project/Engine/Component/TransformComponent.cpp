@@ -21,6 +21,8 @@ void Transform3DComponent::Init() {
 	scale = Vector3::AnyInit(1.0f);
 	rotation.Init();
 	translation.Init();
+
+	eulerRotate_.Init();
 }
 
 void Transform3DComponent::UpdateMatrix() {
@@ -37,8 +39,16 @@ void Transform3DComponent::ImGui(float itemSize) {
 		scale = Vector3::AnyInit(1.0f);
 		rotation.Init();
 		translation.Init();
+
+		eulerRotate_.Init();
 	}
-	ImGui::DragFloat3("translate", &translation.x, 0.01f);
+	ImGui::DragFloat3("translation", &translation.x, 0.01f);
+	if (ImGui::DragFloat3("rotation", &eulerRotate_.x, 0.01f)) {
+
+		rotation = Quaternion::EulerToQuaternion(eulerRotate_);
+	}
+	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
+		rotation.x, rotation.y, rotation.z, rotation.w);
 	ImGui::DragFloat3("scale", &scale.x, 0.01f);
 	ImGui::PopItemWidth();
 }
@@ -136,7 +146,7 @@ void Transform2DComponent::ImGui(float itemSize) {
 	ImGui::SeparatorText("Parameter");
 
 	ImGui::PushItemWidth(itemSize);
-	ImGui::DragFloat2("translate", &translation.x, 1.0f);
+	ImGui::DragFloat2("translation", &translation.x, 1.0f);
 	ImGui::SliderAngle("rotation", &rotation);
 
 	ImGui::DragFloat2("size", &size.x, 1.0f);

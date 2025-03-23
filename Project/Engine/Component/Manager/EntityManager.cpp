@@ -3,27 +3,63 @@
 #include "EntityManager.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Lib/MathUtils/Algorithm.h>
+
+//============================================================================
 //	EntityManager classMethods
 //============================================================================
 
 EntityID EntityManager::CreateEntity(const std::string& name,
 	const std::optional<std::string>& groupName) {
 
-	EntityID  id = nextId_;
+	EntityID id = nextId_;
 	++nextId_;
-
-	// 重複しないよう名前を生成
 	std::string uniqueName = CheckName(name);
-	entityInformations_.resize(std::max(static_cast<EntityID>(entityInformations_.size()), id + 1));
-	entityInformations_[id] = EntityInformation(uniqueName, groupName);
+
+	size_t index = entityInformations_.size();
+	entityInformations_.emplace_back(EntityInformation{ uniqueName, groupName });
+	entityToIndex_[id] = index;
+	indexToEntity_.push_back(id);
 
 	return id;
 }
 
 void EntityManager::RemoveEntity(EntityID id) {
 
-	// entity削除
-	entityInformations_.erase(entityInformations_.begin() + id);
+	if (!Algorithm::Find(entityToIndex_, id)) {
+		return;
+	}
+
+	auto it = entityToIndex_.find(id);
+	size_t index = it->second;
+	size_t lastIndex = entityInformations_.size() - 1;
+
+	if (index != lastIndex) {
+
+		// 末尾と交換
+		std::swap(entityInformations_[index], entityInformations_[lastIndex]);
+
+		// 交換されたentityIdを更新
+		EntityID movedId = indexToEntity_[lastIndex];
+		indexToEntity_[index] = movedId;
+		entityToIndex_[movedId] = index;
+	}
+
+	// 削除
+	entityInformations_.pop_back();
+	indexToEntity_.pop_back();
+	entityToIndex_.erase(id);
+}
+
+size_t EntityManager::GetIndex(EntityID id) const {
+
+	if (Algorithm::Find(entityToIndex_, id, true)) {
+
+		return entityToIndex_.at(id);
+	}
+	return UINT();
 }
 
 std::string EntityManager::CheckName(const std::string& name) {

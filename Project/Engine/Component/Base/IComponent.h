@@ -7,6 +7,7 @@
 // c++
 #include <cstdint>
 #include <vector>
+#include <unordered_map>
 #include <any>
 // using
 using EntityID = uint32_t;
