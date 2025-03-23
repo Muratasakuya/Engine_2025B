@@ -73,16 +73,17 @@ Material* MaterialManager::GetComponent(EntityID entity) {
 std::vector<Material*> MaterialManager::GetComponentList(EntityID entity) {
 
 	// 配列のmaterialを返す
+	std::vector<Material*> materials;
+
 	if (Algorithm::Find(entityToIndex_, entity)) {
 
-		std::vector<Material*> materials;
-		for (Material& mat : components_.at(entity)) {
+		size_t index = entityToIndex_.at(entity);
+		for (Material& mat : components_.at(index)) {
 
 			materials.emplace_back(&mat);
 		}
-		return materials;
 	}
-	return { nullptr };
+	return materials;
 }
 
 //============================================================================
