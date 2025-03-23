@@ -8,6 +8,7 @@
 #include <Engine/Core/Graphics/DxSwapChain.h>
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
+#include <Engine/Core/Graphics/Pipeline/MeshShaderPipelineState.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 
@@ -107,6 +108,8 @@ private:
 	std::unique_ptr<ImGuiManager> imguiManager_;
 
 	std::unique_ptr<PipelineState> offscreenPipeline_;
+
+	std::unique_ptr<MeshShaderPipelineState> meshShaderPipeline_;
 
 	std::unique_ptr<RenderObjectManager> renderObjectManager_;
 
