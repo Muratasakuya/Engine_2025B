@@ -248,6 +248,9 @@
     <ClCompile Include="Game\Camera\Camera2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Component\User\ComponentHelper.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -335,6 +338,7 @@
     <ClInclude Include="Engine\Component\SpriteComponent.h" />
     <ClInclude Include="Engine\Component\Manager\SpriteComponentManager.h" />
     <ClInclude Include="Game\Camera\Camera2D.h" />
+    <ClInclude Include="Engine\Component\User\ComponentHelper.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

@@ -20,6 +20,11 @@ void RenderObjectManager::Init(ID3D12Device* device, SRVManager* srvManager) {
 void RenderObjectManager::CreateObject3D(EntityID id, const std::optional<std::string>& instancingName,
 	ModelComponent* model, ID3D12Device* device) {
 
+	size_t index = object3DBuffers_.size();
+
+	object3DBufferToIndex_[id] = index;
+	indexToObject3DBuffer_.emplace_back(id);
+
 	object3DBuffers_.resize(std::max(static_cast<EntityID>(object3DBuffers_.size()), id + 1));
 
 	// instancing処理
@@ -63,11 +68,32 @@ void RenderObjectManager::CreateObject3D(EntityID id, const std::optional<std::s
 
 void RenderObjectManager::RemoveObject3D(EntityID id) {
 
-	// buffer削除
-	object3DBuffers_.erase(object3DBuffers_.begin() + id);
+	size_t index = object3DBufferToIndex_.at(id);
+	size_t lastIndex = object3DBuffers_.size() - 1;
+
+	if (index != lastIndex) {
+
+		// 末尾と交換
+		std::swap(object3DBuffers_[index], object3DBuffers_[lastIndex]);
+
+		// 交換されたentityIdを更新
+		EntityID movedEntityId = indexToObject3DBuffer_[lastIndex];
+		object3DBufferToIndex_[movedEntityId] = index;
+		indexToObject3DBuffer_[index] = movedEntityId;
+	}
+
+	// 末尾を削除
+	object3DBuffers_.pop_back();
+	indexToObject3DBuffer_.pop_back();
+	object3DBufferToIndex_.erase(id);
 }
 
 void RenderObjectManager::CreateObject2D(EntityID id, SpriteComponent* sprite, ID3D12Device* device) {
+
+	size_t index = object2DBuffers_.size();
+
+	object2DBufferToIndex_[id] = index;
+	indexToObject2DBuffer_.emplace_back(id);
 
 	object2DBuffers_.resize(std::max(static_cast<EntityID>(object2DBuffers_.size()), id + 1));
 
@@ -81,8 +107,24 @@ void RenderObjectManager::CreateObject2D(EntityID id, SpriteComponent* sprite, I
 
 void RenderObjectManager::RemoveObject2D(EntityID id) {
 
-	// buffer削除
-	object2DBuffers_.erase(object2DBuffers_.begin() + id);
+	size_t index = object2DBufferToIndex_.at(id);
+	size_t lastIndex = object2DBuffers_.size() - 1;
+
+	if (index != lastIndex) {
+
+		// 末尾と交換
+		std::swap(object2DBuffers_[index], object2DBuffers_[lastIndex]);
+
+		// 交換されたentityIdを更新
+		EntityID movedEntityId = indexToObject2DBuffer_[lastIndex];
+		object2DBufferToIndex_[movedEntityId] = index;
+		indexToObject2DBuffer_[index] = movedEntityId;
+	}
+
+	// 末尾を削除
+	object2DBuffers_.pop_back();
+	indexToObject2DBuffer_.pop_back();
+	object2DBufferToIndex_.erase(id);
 }
 
 void RenderObjectManager::Update() {
@@ -101,19 +143,20 @@ void RenderObjectManager::UpdateObject3D() {
 	instancedMesh_->Reset();
 
 	// entityごとのGPUデータ転送
-	for (uint32_t index = 0; index < componentManager->GetEntityCount(ComponentType::Object3D); ++index) {
+	for (size_t index = 0; index < indexToObject3DBuffer_.size(); ++index) {
+		EntityID id = indexToObject3DBuffer_[index];
 
 		if (!object3DBuffers_[index].model.renderingData.instancingEnable) {
 
-			object3DBuffers_[index].matrix.TransferData(componentManager->GetComponent<Transform3DComponent>(index)->matrix);
+			object3DBuffers_[index].matrix.TransferData(componentManager->GetComponent<Transform3DComponent>(id)->matrix);
 
 			for (uint32_t mIndex = 0; mIndex < object3DBuffers_[index].materials.size(); ++mIndex) {
 
-				object3DBuffers_[index].materials[mIndex].TransferData(*componentManager->GetComponent<Material>(index));
+				object3DBuffers_[index].materials[mIndex].TransferData(*componentManager->GetComponent<Material>(id));
 			}
 		} else {
 
-			std::vector<Material*> materialPtrs = componentManager->GetComponentList<Material>(index);
+			std::vector<Material*> materialPtrs = componentManager->GetComponentList<Material>(id);
 			std::vector<Material> materials;
 			materials.reserve(materialPtrs.size());
 
@@ -122,8 +165,8 @@ void RenderObjectManager::UpdateObject3D() {
 				materials.emplace_back(*mat);
 			}
 
-			const ModelComponent* model = componentManager->GetComponent<ModelComponent>(index);
-			const Transform3DComponent* transform = componentManager->GetComponent<Transform3DComponent>(index);
+			const ModelComponent* model = componentManager->GetComponent<ModelComponent>(id);
+			const Transform3DComponent* transform = componentManager->GetComponent<Transform3DComponent>(id);
 			TransformationMatrix matrix{};
 
 			matrix = transform->matrix;
@@ -149,9 +192,10 @@ void RenderObjectManager::UpdateObject2D() {
 	auto componentManager = ComponentManager::GetInstance();
 
 	// entityごとのGPUデータ転送
-	for (uint32_t index = 0; index < componentManager->GetEntityCount(ComponentType::Object2D); ++index) {
+	for (size_t index = 0; index < indexToObject2DBuffer_.size(); ++index) {
+		EntityID id = indexToObject2DBuffer_[index];
 
-		object2DBuffers_[index].matrix.TransferData(componentManager->GetComponent<Transform2DComponent>(index)->matrix);
-		object2DBuffers_[index].material.TransferData(*componentManager->GetComponent<SpriteMaterial>(index));
+		object2DBuffers_[index].matrix.TransferData(componentManager->GetComponent<Transform2DComponent>(id)->matrix);
+		object2DBuffers_[index].material.TransferData(*componentManager->GetComponent<SpriteMaterial>(id));
 	}
 }
