@@ -183,10 +183,10 @@ void Framework::Draw() {
 void Framework::Finalize() {
 
 	graphicsCore_->Finalize(winApp_->GetHwnd());
-	ComponentManager::GetInstance()->Finalize();
 	Input::GetInstance()->Finalize();
 	LineRenderer::GetInstance()->Finalize();
 
+	sceneManager_.reset();
 	graphicsCore_.reset();
 	winApp_.reset();
 	asset_.reset();
@@ -196,6 +196,8 @@ void Framework::Finalize() {
 	animationComponentManager_.reset();
 	modelComponentManager_.reset();
 	spriteComponentManager_.reset();
+
+	ComponentManager::GetInstance()->Finalize();
 
 	// ComFinalize
 	CoUninitialize();

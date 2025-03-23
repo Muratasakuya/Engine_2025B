@@ -68,6 +68,10 @@ void RenderObjectManager::CreateObject3D(EntityID id, const std::optional<std::s
 
 void RenderObjectManager::RemoveObject3D(EntityID id) {
 
+	if (!Algorithm::Find(object3DBufferToIndex_, id)) {
+		return;
+	}
+
 	size_t index = object3DBufferToIndex_.at(id);
 	size_t lastIndex = object3DBuffers_.size() - 1;
 
@@ -106,6 +110,10 @@ void RenderObjectManager::CreateObject2D(EntityID id, SpriteComponent* sprite, I
 }
 
 void RenderObjectManager::RemoveObject2D(EntityID id) {
+
+	if (!Algorithm::Find(object2DBufferToIndex_, id)) {
+		return;
+	}
 
 	size_t index = object2DBufferToIndex_.at(id);
 	size_t lastIndex = object2DBuffers_.size() - 1;
