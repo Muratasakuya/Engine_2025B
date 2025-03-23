@@ -17,7 +17,7 @@ public:
 	//========================================================================
 
 	TemplateObject3D();
-	~TemplateObject3D() = default;
+	~TemplateObject3D();
 
 	void Update();
 
@@ -34,7 +34,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	EntityID modelId_;
+	EntityID modelIdA_;
+	EntityID modelIdB_;
 
 	// collision
 	ColliderComponent* colliderA_;

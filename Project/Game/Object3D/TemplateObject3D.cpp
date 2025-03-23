@@ -14,14 +14,20 @@
 
 TemplateObject3D::TemplateObject3D() {
 
-	modelId_ = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot", "teapot");
-	GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot", "teapot");
+	modelIdA_ = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot", "teapot");
+	modelIdB_ = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot", "teapot");
 
 	colliderA_ = Collider::AddCollider(CollisionShape::Sphere());
 	colliderA_->SetType(ColliderType::Type_None, ColliderType::Type_Test);
 
 	colliderB_ = Collider::AddCollider(CollisionShape::OBB());
 	colliderB_->SetType(ColliderType::Type_Test, ColliderType::Type_None);
+}
+
+TemplateObject3D::~TemplateObject3D() {
+
+	GameObjectHelper::RemoveObject3D(modelIdA_);
+	GameObjectHelper::RemoveObject3D(modelIdB_);
 }
 
 void TemplateObject3D::Update() {
@@ -32,7 +38,7 @@ void TemplateObject3D::Update() {
 
 void TemplateObject3D::UpdateCollision() {
 
-	auto transform = ComponentHelper::GetComponent<Transform3DComponent>(modelId_);
+	auto transform = Component::GetComponent<Transform3DComponent>(modelIdA_);
 	colliderA_->UpdateSphere({ .center = Vector3::AnyInit(0.0f),.radius = 1.0f });
 
 	if (!transform) {

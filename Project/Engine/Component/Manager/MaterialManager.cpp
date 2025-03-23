@@ -37,6 +37,10 @@ void MaterialManager::AddComponent(EntityID entity, std::any args) {
 
 void MaterialManager::RemoveComponent(EntityID entity) {
 
+	if (!Algorithm::Find(entityToIndex_, entity)) {
+		return;
+	}
+
 	size_t index = entityToIndex_.at(entity);
 	size_t lastIndex = components_.size() - 1;
 
@@ -106,6 +110,10 @@ void SpriteMaterialManager::AddComponent(EntityID entity, [[maybe_unused]] std::
 }
 
 void SpriteMaterialManager::RemoveComponent(EntityID entity) {
+
+	if (!Algorithm::Find(entityToIndex_, entity)) {
+		return;
+	}
 
 	size_t index = entityToIndex_.at(entity);
 	size_t lastIndex = components_.size() - 1;

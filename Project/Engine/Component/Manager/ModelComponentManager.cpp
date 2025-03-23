@@ -58,6 +58,10 @@ void ModelComponentManager::AddComponent(EntityID entity, std::any args) {
 
 void ModelComponentManager::RemoveComponent(EntityID entity) {
 
+	if (!Algorithm::Find(entityToIndex_, entity)) {
+		return;
+	}
+
 	size_t index = entityToIndex_.at(entity);
 	size_t lastIndex = components_.size() - 1;
 

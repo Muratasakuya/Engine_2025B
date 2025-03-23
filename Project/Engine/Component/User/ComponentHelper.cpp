@@ -10,10 +10,10 @@
 //============================================================================
 
 #define INSTANTIATE_GET_COMPONENT(TYPE) \
-template TYPE* ComponentHelper::GetComponent<TYPE>(EntityID);
+template TYPE* Component::GetComponent<TYPE>(EntityID);
 
 #define INSTANTIATE_GET_COMPONENTLIST(TYPE) \
-template std::vector<TYPE*> ComponentHelper::GetComponentList<TYPE>(EntityID);
+template std::vector<TYPE*> Component::GetComponentList<TYPE>(EntityID);
 
 // 3D
 INSTANTIATE_GET_COMPONENT(Transform3DComponent)
@@ -28,13 +28,13 @@ INSTANTIATE_GET_COMPONENT(SpriteComponent)
 INSTANTIATE_GET_COMPONENTLIST(Material)
 
 template<typename T>
-T* ComponentHelper::GetComponent(EntityID id) {
+T* Component::GetComponent(EntityID id) {
 
 	return ComponentManager::GetInstance()->GetComponent<T>(id);
 }
 
 template <typename T>
-std::vector<T*> ComponentHelper::GetComponentList(EntityID id) {
+std::vector<T*> Component::GetComponentList(EntityID id) {
 
 	return ComponentManager::GetInstance()->GetComponentList<T>(id);
 }

@@ -33,6 +33,10 @@ void Transform3DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any
 
 void Transform3DManager::RemoveComponent(EntityID entity) {
 
+	if (!Algorithm::Find(entityToIndex_, entity)) {
+		return;
+	}
+
 	size_t index = entityToIndex_.at(entity);
 	size_t lastIndex = components_.size() - 1;
 
@@ -94,6 +98,10 @@ void Transform2DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any
 }
 
 void Transform2DManager::RemoveComponent(EntityID entity) {
+
+	if (!Algorithm::Find(entityToIndex_, entity)) {
+		return;
+	}
 
 	size_t index = entityToIndex_.at(entity);
 	size_t lastIndex = components_.size() - 1;
