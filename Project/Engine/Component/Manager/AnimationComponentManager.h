@@ -38,4 +38,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::vector<AnimationComponent> components_;
+
+	std::unordered_map<EntityID, size_t> entityToIndex_;
+	std::vector<EntityID> indexToEntity_;
 };

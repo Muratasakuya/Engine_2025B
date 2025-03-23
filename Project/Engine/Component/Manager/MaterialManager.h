@@ -38,6 +38,9 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::vector<std::vector<Material>> components_;
+
+	std::unordered_map<EntityID, size_t> entityToIndex_;
+	std::vector<EntityID> indexToEntity_;
 };
 
 //============================================================================
@@ -71,4 +74,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::vector<SpriteMaterial> components_;
+
+	std::unordered_map<EntityID, size_t> entityToIndex_;
+	std::vector<EntityID> indexToEntity_;
 };

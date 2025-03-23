@@ -32,7 +32,7 @@ void CollisionManager::Finalize() {
 ColliderComponent* CollisionManager::AddComponent(const CollisionShape::Shapes& shape) {
 
 	ColliderComponent* collider = new ColliderComponent();
-	collider->shape_ = shape;
+	collider->SetShape(shape);
 	colliders_.emplace_back(collider);
 
 	return collider;
@@ -79,8 +79,8 @@ void CollisionManager::Update() {
 			ColliderComponent* colliderA = *itA;
 			ColliderComponent* colliderB = *itB;
 
-			if (colliderA->targetType_ != colliderB->type_ &&
-				colliderB->targetType_ != colliderA->type_) {
+			if (colliderA->GetTargetType() != colliderB->GetType() &&
+				colliderB->GetTargetType() != colliderA->GetType()) {
 				continue;
 			}
 
@@ -115,16 +115,9 @@ void CollisionManager::Update() {
 
 bool CollisionManager::IsColliding(ColliderComponent* colliderA, ColliderComponent* colliderB) {
 
-	if (!colliderA->shape_.has_value() || !colliderB->shape_.has_value()) {
-		ASSERT(FALSE, "collider not setting");
-	}
-
 	// 形状取得
-	const auto& shapeA = *colliderA->shape_;
-	const auto& shapeB = *colliderB->shape_;
-	// 中心座標
-	const Vector3 centerA = colliderA->centerPos_;
-	const Vector3 centerB = colliderB->centerPos_;
+	const auto& shapeA = colliderA->GetShape();
+	const auto& shapeB = colliderB->GetShape();
 
 	return std::visit([&](const auto& shapeA, const auto& shapeB) {
 
@@ -133,13 +126,13 @@ bool CollisionManager::IsColliding(ColliderComponent* colliderA, ColliderCompone
 
 		if constexpr (std::is_same_v<ShapeTypeA, CollisionShape::Sphere> && std::is_same_v<ShapeTypeB, CollisionShape::Sphere>) {
 
-			return Collision::SphereToSphere(shapeA, shapeB, centerA, centerB);
+			return Collision::SphereToSphere(shapeA, shapeB);
 		} else if constexpr (std::is_same_v<ShapeTypeA, CollisionShape::Sphere> && std::is_same_v<ShapeTypeB, CollisionShape::OBB>) {
 
-			return Collision::SphereToOBB(shapeA, shapeB, centerA);
+			return Collision::SphereToOBB(shapeA, shapeB);
 		} else if constexpr (std::is_same_v<ShapeTypeA, CollisionShape::OBB> && std::is_same_v<ShapeTypeB, CollisionShape::Sphere>) {
 
-			return Collision::SphereToOBB(shapeB, shapeA, centerB);
+			return Collision::SphereToOBB(shapeB, shapeA);
 		} else if constexpr (std::is_same_v<ShapeTypeA, CollisionShape::OBB> && std::is_same_v<ShapeTypeB, CollisionShape::OBB>) {
 
 			return Collision::OBBToOBB(shapeA, shapeB);
@@ -156,10 +149,16 @@ void CollisionManager::DrawCollider() {
 	if (!lineRenderer) return;
 
 	for (auto& collider : colliders_) {
-		if (!collider->shape_.has_value()) continue;
 
-		const auto& shape = *collider->shape_;
-		Vector3 center = collider->centerPos_;
+		const auto& shape = collider->GetShape();
+		Vector3 center = Vector3::AnyInit(0.0f);
+		if (std::holds_alternative<CollisionShape::Sphere>(shape)) {
+
+			center = std::get<CollisionShape::Sphere>(shape).center;
+		}else if(std::holds_alternative<CollisionShape::OBB>(shape)) {
+
+			center = std::get<CollisionShape::OBB>(shape).center;
+		}
 
 		// コライダーが衝突しているかどうかを判定
 		bool isColliding = false;

@@ -6,6 +6,9 @@
 #include <Game/Scene/Methods/IScene.h>
 #include <Game/Camera/GameCamera.h>
 
+// object
+#include <Game/Object3D/TemplateObject3D.h>
+
 // c++
 #include <memory>
 #include <vector>
@@ -34,6 +37,8 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::unique_ptr<GameCamera> gameCamera_;
+
+	std::unique_ptr<TemplateObject3D> object_;
 
 	//--------- functions ----------------------------------------------------
 
