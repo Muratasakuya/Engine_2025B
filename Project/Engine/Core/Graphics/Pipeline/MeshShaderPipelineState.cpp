@@ -6,74 +6,6 @@
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 
-namespace {
-
-	//============================================================================
-	//	MeshShaderStateParam class
-	//============================================================================
-	template <typename ValueType, D3D12_PIPELINE_STATE_SUBOBJECT_TYPE ObjectType>
-	class MeshShaderStateParam {
-	public:
-		//========================================================================
-		//	public Methods
-		//========================================================================
-
-		MeshShaderStateParam() :type_(ObjectType), value_(ValueType()) {}
-		MeshShaderStateParam(const ValueType& value) :type_(ObjectType), value_(value) {}
-
-		~MeshShaderStateParam() = default;
-
-		MeshShaderStateParam& operator=(const ValueType& value) {
-
-			value_ = value;
-			type_ = ObjectType;
-			return *this;
-		}
-
-	private:
-		//========================================================================
-		//	private Methods
-		//========================================================================
-
-		//--------- variables ----------------------------------------------------
-
-		ValueType value_;
-		D3D12_PIPELINE_STATE_SUBOBJECT_TYPE type_;
-	};
-
-	// 省略形
-#define PSST(x) D3D12_PIPELINE_STATE_SUBOBJECT_TYPE_##x
-	using SP_ROOT_SIGNATURE = MeshShaderStateParam<ID3D12RootSignature*, PSST(ROOT_SIGNATURE)>;
-	using SP_AS = MeshShaderStateParam<D3D12_SHADER_BYTECODE, PSST(AS)>;
-	using SP_MS = MeshShaderStateParam<D3D12_SHADER_BYTECODE, PSST(MS)>;
-	using SP_PS = MeshShaderStateParam<D3D12_SHADER_BYTECODE, PSST(PS)>;
-	using SP_BLEND = MeshShaderStateParam<D3D12_BLEND_DESC, PSST(BLEND)>;
-	using SP_RASTERIZER = MeshShaderStateParam<D3D12_RASTERIZER_DESC, PSST(RASTERIZER)>;
-	using SP_DEPTH_STENCIL = MeshShaderStateParam<D3D12_DEPTH_STENCIL_DESC, PSST(DEPTH_STENCIL)>;
-	using SP_SAMPLE_MASK = MeshShaderStateParam<UINT, PSST(SAMPLE_MASK)>;
-	using SP_SAMPLE_DESC = MeshShaderStateParam<DXGI_SAMPLE_DESC, PSST(SAMPLE_DESC)>;
-	using SP_RT_FORMAT = MeshShaderStateParam<D3D12_RT_FORMAT_ARRAY, PSST(RENDER_TARGET_FORMATS)>;
-	using SP_DS_FORMAT = MeshShaderStateParam<DXGI_FORMAT, PSST(DEPTH_STENCIL_FORMAT)>;
-	using SP_FLAGS = MeshShaderStateParam<D3D12_PIPELINE_STATE_FLAGS, PSST(FLAGS)>;
-#undef PSST
-
-	struct MeshShaderPipelineStateDesc {
-
-		SP_ROOT_SIGNATURE  RootSignature;
-		SP_AS              AS; // AmplificationShader
-		SP_MS              MS; // MeshShader
-		SP_PS              PS; // PixelShader
-		SP_BLEND           Blend;        // Blend
-		SP_RASTERIZER      Rasterizer;   // RasterizerState
-		SP_DEPTH_STENCIL   DepthStencil; // DepthStencil
-		SP_SAMPLE_MASK     SampleMask;   // SampleMask
-		SP_SAMPLE_DESC     SampleDesc;   // Sample
-		SP_RT_FORMAT       RTFormats;    // RTV
-		SP_DS_FORMAT       DSFormat;     // DSFormat
-		SP_FLAGS           Flags;        // Flag
-	};
-}
-
 //============================================================================
 //	MeshShaderPipelineState classMethods
 //============================================================================
@@ -106,7 +38,6 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device, DxShaderCompiler* sh
 
 	// rootSignature作成
 	{
-
 		auto flag = D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS;
 		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
 		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
@@ -229,24 +160,29 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device, DxShaderCompiler* sh
 
 	// pipelineState
 	{
-		MeshShaderPipelineStateDesc pipelineState{};
-		pipelineState.RootSignature = rootSignature_.Get();
-		pipelineState.MS = msShaderByteCode_;
-		pipelineState.PS = psShaderByteCode_;
-		pipelineState.Rasterizer = rasterizerDesc_;
-		pipelineState.Blend = blendDesc_;
-		pipelineState.DepthStencil = depthStencilDesc_;
-		pipelineState.SampleMask = UINT_MAX;
-		pipelineState.SampleDesc = sampleDesc_;
-		pipelineState.RTFormats = renderTargetFoamat_;
-		pipelineState.DSFormat = DXGI_FORMAT_UNKNOWN;
-		pipelineState.Flags = D3D12_PIPELINE_STATE_FLAG_NONE;
+		D3DX12_MESH_SHADER_PIPELINE_STATE_DESC pipelineDesc{};
 
-		D3D12_PIPELINE_STATE_STREAM_DESC pipelineStateStream{};
-		pipelineStateStream.SizeInBytes = sizeof(pipelineState);
-		pipelineStateStream.pPipelineStateSubobjectStream = &pipelineState;
+		pipelineDesc.NumRenderTargets = 1;
+		pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R32G32B32A32_FLOAT;
+		pipelineDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		pipelineDesc.SampleMask = UINT_MAX;
 
-		hr = device->CreatePipelineState(&pipelineStateStream,
+		pipelineDesc.pRootSignature = rootSignature_.Get();
+		pipelineDesc.MS = { msShaderBlob_.Get()->GetBufferPointer(), msShaderBlob_.Get()->GetBufferSize() };
+		pipelineDesc.PS = { psShaderBlob_.Get()->GetBufferPointer(), psShaderBlob_.Get()->GetBufferSize() };
+
+		pipelineDesc.RasterizerState = rasterizerDesc_;
+		pipelineDesc.BlendState = blendDesc_;
+		pipelineDesc.DepthStencilState = depthStencilDesc_;
+		pipelineDesc.SampleDesc = sampleDesc_;
+
+		auto pipelineStream = CD3DX12_PIPELINE_MESH_STATE_STREAM(pipelineDesc);
+
+		D3D12_PIPELINE_STATE_STREAM_DESC streamDesc;
+		streamDesc.pPipelineStateSubobjectStream = &pipelineStream;
+		streamDesc.SizeInBytes = sizeof(pipelineStream);
+
+		hr = device->CreatePipelineState(&streamDesc,
 			IID_PPV_ARGS(pipelineState_.GetAddressOf()));
 		if (FAILED(hr)) {
 			ASSERT(FALSE, "assert createPipeline");
