@@ -15,10 +15,12 @@ namespace CollisionShape {
 
 	struct Sphere {
 
+		Vector3 center;
 		float radius;
 
 		static Sphere Default() {
 			Sphere sphere = {
+				.center = Vector3::AnyInit(0.0f),
 				.radius = 1.0f
 			};
 			return sphere;
@@ -27,15 +29,15 @@ namespace CollisionShape {
 
 	struct OBB {
 
-		Vector3 size;
 		Vector3 center;
+		Vector3 size;
 		Quaternion rotate;
 
 		static OBB Default() {
 			OBB obb = {
-				.size = {1.0f,1.0f,1.0f},
-				.center = {0.0f,0.0f,0.0f},
-				.rotate = {0.0f,0.0f,0.0f}
+				.center = Vector3::AnyInit(0.0f),
+				.size = Vector3::AnyInit(1.0f),
+				.rotate = Quaternion::IdentityQuaternion()
 			};
 			return obb;
 		};
@@ -55,11 +57,9 @@ enum class ShapeType {
 //============================================================================
 namespace Collision {
 
-	bool SphereToSphere(const CollisionShape::Sphere& sphereA, const CollisionShape::Sphere& sphereB,
-		const Vector3& centerA, const Vector3& centerB);
+	bool SphereToSphere(const CollisionShape::Sphere& sphereA, const CollisionShape::Sphere& sphereB);
 
-	bool SphereToOBB(const CollisionShape::Sphere& sphere, const CollisionShape::OBB& obb,
-		const Vector3& sphereCenter);
+	bool SphereToOBB(const CollisionShape::Sphere& sphere, const CollisionShape::OBB& obb);
 
 	bool OBBToOBB(const CollisionShape::OBB& obbA, const CollisionShape::OBB& obbB);
 }

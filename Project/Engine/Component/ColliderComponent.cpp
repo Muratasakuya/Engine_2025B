@@ -3,8 +3,8 @@
 //============================================================================
 //	ColliderComponent classMethods
 //============================================================================
+#include <Engine/Component/User/Collider.h>
 #include <Engine/Core/Debug/Assert.h>
-#include <Game/Base/BaseGameObject.h>
 
 //============================================================================
 //	ColliderComponent classMethods
@@ -37,21 +37,30 @@ void ColliderComponent::TriggerOnCollisionExit(ColliderComponent* collider) {
 	}
 }
 
-void ColliderComponent::Update() {
-	if (!shape_.has_value()) {
-		ASSERT(FALSE, "collider not setting");
+void ColliderComponent::UpdateSphere(const CollisionShape::Sphere& sphere) {
+
+	if (std::holds_alternative<CollisionShape::Sphere>(shape_)) {
+
+		std::get<CollisionShape::Sphere>(shape_) = sphere;
+	} else {
+
+		ASSERT(FALSE, "collision shape is not 'sphere'");
 	}
+}
 
-	if (shape_ && std::holds_alternative <CollisionShape::Sphere>(*shape_)) {
-		CollisionShape::Sphere& sphere = std::get<CollisionShape::Sphere>(*shape_);
+void ColliderComponent::UpdateOBB(const CollisionShape::OBB& obb) {
 
-		sphere.radius = radius_;
+	if (std::holds_alternative<CollisionShape::OBB>(shape_)) {
 
-	} else if (shape_ && std::holds_alternative <CollisionShape::OBB>(*shape_)) {
-		CollisionShape::OBB& obb = std::get<CollisionShape::OBB>(*shape_);
+		std::get<CollisionShape::OBB>(shape_) = obb;
+	} else {
 
-		obb.center = centerPos_;
-		obb.rotate = rotate_;
-		obb.size = size_;
+		ASSERT(FALSE, "collision shape is not 'obb'");
 	}
+}
+
+void ColliderComponent::SetType(ColliderType type, ColliderType target) {
+
+	type_ = type;
+	targetType_ = target;
 }

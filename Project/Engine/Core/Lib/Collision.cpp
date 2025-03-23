@@ -5,9 +5,9 @@
 //============================================================================
 
 bool Collision::SphereToSphere(const CollisionShape::Sphere& sphereA,
-	const CollisionShape::Sphere& sphereB, const Vector3& centerA, const Vector3& centerB) {
+	const CollisionShape::Sphere& sphereB) {
 
-	float distance = Vector3(centerA - centerB).Length();
+	float distance = Vector3(sphereA.center - sphereB.center).Length();
 	if (distance <= sphereA.radius + sphereB.radius) {
 		return true;
 	}
@@ -16,7 +16,7 @@ bool Collision::SphereToSphere(const CollisionShape::Sphere& sphereA,
 }
 
 bool Collision::SphereToOBB(const CollisionShape::Sphere& sphere,
-	const CollisionShape::OBB& obb, const Vector3& sphereCenter) {
+	const CollisionShape::OBB& obb) {
 
 	Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(obb.rotate);
 
@@ -25,7 +25,7 @@ bool Collision::SphereToOBB(const CollisionShape::Sphere& sphere,
 	orientations[1] = Vector3::Transform(Vector3(0.0f, 1.0f, 0.0f), rotateMatrix);
 	orientations[2] = Vector3::Transform(Vector3(0.0f, 0.0f, 1.0f), rotateMatrix);
 
-	Vector3 localSphereCenter = sphereCenter - obb.center;
+	Vector3 localSphereCenter = sphere.center - obb.center;
 	Vector3 closestPoint = obb.center;
 
 	for (int i = 0; i < 3; ++i) {
@@ -42,7 +42,7 @@ bool Collision::SphereToOBB(const CollisionShape::Sphere& sphere,
 		closestPoint += distance * orientations[i];
 	}
 
-	Vector3 diff = closestPoint - sphereCenter;
+	Vector3 diff = closestPoint - sphere.center;
 	float distanceSquared = Vector3::Dot(diff, diff);
 
 	return distanceSquared <= (sphere.radius * sphere.radius);

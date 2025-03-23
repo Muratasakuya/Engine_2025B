@@ -257,7 +257,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Base\BaseGameObject.cpp" />
+    <ClCompile Include="Engine\Component\User\Collider.cpp" />
     <ClCompile Include="Game\Camera\Base\BaseCamera.cpp" />
     <ClCompile Include="Game\Camera\Camera2D.cpp">
       <SubType>
@@ -425,7 +425,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Base\BaseGameObject.h" />
+    <ClInclude Include="Engine\Component\User\Collider.h" />
     <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
     <ClInclude Include="Game\Camera\Camera2D.h">
       <SubType>
