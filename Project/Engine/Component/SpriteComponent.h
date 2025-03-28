@@ -38,6 +38,8 @@ public:
 
 	void UpdateVertex(const Transform2DComponent& transform);
 
+	void ImGui(float itemSize);
+
 	//--------- accessor -----------------------------------------------------
 
 	void SetLayer(SpriteLayer layer) { layer_ = layer; }

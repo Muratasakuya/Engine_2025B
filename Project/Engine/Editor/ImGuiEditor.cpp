@@ -3,7 +3,10 @@
 //============================================================================
 //	include
 //============================================================================
+
+// imgui表示
 #include <Engine/Component/Manager/ComponentManager.h>
+#include <Engine/Editor/Manager/GameEditorManager.h>
 #include <Game/Time/GameTimer.h>
 
 //============================================================================
@@ -37,8 +40,6 @@ void ImGuiEditor::Display() {
 
 	Console();
 
-	Project();
-
 	Hierarchy();
 
 	Inspector();
@@ -69,18 +70,28 @@ void ImGuiEditor::Console() {
 	ImGui::End();
 }
 
-void ImGuiEditor::Project() {
-
-	ImGui::Begin("Project");
-
-	ImGui::End();
-}
-
 void ImGuiEditor::Hierarchy() {
 
 	ImGui::Begin("Hierarchy");
 
-	ComponentManager::GetInstance()->GetImGuiComponentManager()->SelectObject();
+	if (ImGui::BeginTabBar("Hierarchy")) {
+
+		if (ImGui::BeginTabItem("GameObject")) {
+
+			// scene内のobject選択
+			ComponentManager::GetInstance()->SelectObject();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Editor")) {
+
+			// editorの選択
+			GameEditorManager::GetInstance()->SelectEditor();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
 
 	ImGui::End();
 }
@@ -89,7 +100,25 @@ void ImGuiEditor::Inspector() {
 
 	ImGui::Begin("Inspector");
 
-	ComponentManager::GetInstance()->GetImGuiComponentManager()->EditObject();
+	// 選択されたものの操作
+	if (ImGui::BeginTabBar("Inspector")) {
+
+		if (ImGui::BeginTabItem("GameObject")) {
+
+			// scene内のobject選択
+			ComponentManager::GetInstance()->EditObject();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Editor")) {
+
+			// editorの選択
+			GameEditorManager::GetInstance()->EditEditor();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
 
 	ImGui::End();
 }

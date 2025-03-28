@@ -372,7 +372,9 @@ void ImGuiComponentManager::Object2DRenderingData() {
 		return;
 	}
 
-	//SpriteComponent* sprite = spriteComponentManager_->GetComponent(*object2D_.selectedId_);
+	SpriteComponent* sprite = spriteComponentManager_->GetComponent(*object2D_.selectedId_);
+
+	sprite->ImGui(itemWidth_);
 }
 
 void ImGuiComponentManager::Object2DTransform() {

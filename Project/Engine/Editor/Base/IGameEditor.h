@@ -4,29 +4,29 @@
 //	include
 //============================================================================
 
-// directX
-#include <d3d12.h>
+// c++
+#include <string>
+#include <optional>
 // imgui
 #include <imgui.h>
 
 //============================================================================
-//	ImGuiEditor class
+//	IGameEditor class
 //============================================================================
-class ImGuiEditor {
+class IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ImGuiEditor() = default;
-	~ImGuiEditor() = default;
+	IGameEditor(const std::string& name);
+	virtual ~IGameEditor();
 
-	void Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle,
-		const D3D12_GPU_DESCRIPTOR_HANDLE& debugSceneRenderTextureGPUHandle,
-		const D3D12_GPU_DESCRIPTOR_HANDLE& shadowMapGPUHandle);
+	virtual void ImGui() = 0;
 
-	void Display();
+	//--------- accessor -----------------------------------------------------
 
+	const std::string& GetName() const { return name_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -34,23 +34,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	D3D12_GPU_DESCRIPTOR_HANDLE renderTextureGPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE debugSceneRenderTextureGPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE shadowMapGPUHandle_;
-
-	ImGuiWindowFlags windowFlag_;
-
-	//--------- functions ----------------------------------------------------
-
-	// renderTextureの描画
-	void MainWindow();
-
-	// console
-	void Console();
-
-	// hierarchy
-	void Hierarchy();
-
-	// inspector
-	void Inspector();
+	std::string name_;
 };
