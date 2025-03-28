@@ -31,6 +31,16 @@ void ComponentManager::Finalize() {
 	}
 }
 
+void ComponentManager::SelectObject() {
+
+	imguiComponentManager_->SelectObject();
+}
+
+void ComponentManager::EditObject() {
+
+	imguiComponentManager_->EditObject();
+}
+
 void ComponentManager::Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
 	Asset* asset, SRVManager* srvManager, RenderObjectManager* renderObjectManager) {
 

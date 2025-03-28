@@ -5,6 +5,9 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
 //	SpriteComponent classMethods
 //============================================================================
@@ -119,6 +122,33 @@ void SpriteComponent::SetMetaDataTextureSize(Transform2DComponent& transform) {
 	// 右上
 	vertexData_[3].pos = { right,top };
 	vertexData_[3].texcoord = { texRight,texTop };
+}
+
+
+void SpriteComponent::ImGui(float itemSize) {
+
+	if (ImGui::Checkbox("postProcessEnable", &postProcessEnable_)) {
+
+		if (!postProcessEnable_) {
+
+			// postProcessをかけないとき、
+			// frameBufferに直接描画するのでmodelの後になる
+			layer_ = SpriteLayer::PostModel;
+		}
+	}
+
+	ImGui::PushItemWidth(itemSize);
+	const char* layerItems[] = {
+		"PreModel",
+		"PostModel",
+	};
+	int layerIndex = static_cast<int>(layer_);
+
+	if (ImGui::Combo("Blend Mode", &layerIndex, layerItems, IM_ARRAYSIZE(layerItems))) {
+
+		layer_ = static_cast<SpriteLayer>(layerIndex);
+	}
+	ImGui::PopItemWidth();
 }
 
 const D3D12_GPU_DESCRIPTOR_HANDLE& SpriteComponent::GetTextureGPUHandle() const {
