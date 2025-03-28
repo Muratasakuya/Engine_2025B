@@ -17,6 +17,8 @@ TemplateObject3D::TemplateObject3D() {
 	modelIdA_ = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot", "teapot");
 	modelIdB_ = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot", "teapot");
 
+	GameObjectHelper::CreateObject2D("uvChecker", "uvChecker");
+
 	colliderA_ = Collider::AddCollider(CollisionShape::Sphere());
 	colliderA_->SetType(ColliderType::Type_None, ColliderType::Type_Test);
 

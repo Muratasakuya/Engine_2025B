@@ -153,9 +153,9 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	offscreenPipeline_ = std::make_unique<PipelineState>();
 	offscreenPipeline_->Create("CopyTexture.json", device, dxShaderComplier_.get());
 
-	// meshShaderPipeline初期化
-	meshShaderPipeline_ = std::make_unique<MeshShaderPipelineState>();
-	meshShaderPipeline_->Create(device, dxShaderComplier_.get());
+	//// meshShaderPipeline初期化
+	//meshShaderPipeline_ = std::make_unique<MeshShaderPipelineState>();
+	//meshShaderPipeline_->Create(device, dxShaderComplier_.get());
 }
 
 void GraphicsCore::Finalize(HWND hwnd) {
