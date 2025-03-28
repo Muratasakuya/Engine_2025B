@@ -40,6 +40,8 @@ void DebugScene::Init(
 	cameraManager->SetCamera(gameCamera_.get());
 
 	object_ = std::make_unique<TemplateObject3D>();
+
+	testEditor_ = std::make_unique<TestEditor>();
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -51,4 +53,6 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	gameCamera_->Update();
 
 	object_->Update();
+
+	LineRenderer::GetInstance()->DrawGrid(16, 16.0f, Color::White());
 }

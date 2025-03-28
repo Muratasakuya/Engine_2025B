@@ -3,30 +3,37 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Editor/Base/IGameEditor.h>
 
-// directX
-#include <d3d12.h>
-// imgui
-#include <imgui.h>
+// c++
+#include <cstdint>
+#include <vector>
 
 //============================================================================
-//	ImGuiEditor class
+//	GameEditorManager class
 //============================================================================
-class ImGuiEditor {
+class GameEditorManager {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ImGuiEditor() = default;
-	~ImGuiEditor() = default;
+	GameEditorManager() = default;
+	~GameEditorManager() = default;
 
-	void Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle,
-		const D3D12_GPU_DESCRIPTOR_HANDLE& debugSceneRenderTextureGPUHandle,
-		const D3D12_GPU_DESCRIPTOR_HANDLE& shadowMapGPUHandle);
+	void AddEditor(IGameEditor* editor);
+	void RemoveEditor(IGameEditor* editor);
 
-	void Display();
+	// editorの選択
+	void SelectEditor();
+	// 選択したeditorの選択
+	void EditEditor();
 
+	//--------- accessor -----------------------------------------------------
+
+	// singleton
+	static GameEditorManager* GetInstance();
+	static void Finalize();
 private:
 	//========================================================================
 	//	private Methods
@@ -34,23 +41,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	D3D12_GPU_DESCRIPTOR_HANDLE renderTextureGPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE debugSceneRenderTextureGPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE shadowMapGPUHandle_;
+	static GameEditorManager* instance_;
 
-	ImGuiWindowFlags windowFlag_;
+	std::vector<IGameEditor*> editors_;
 
-	//--------- functions ----------------------------------------------------
+	IGameEditor* selectedEditor_;
 
-	// renderTextureの描画
-	void MainWindow();
-
-	// console
-	void Console();
-
-	// hierarchy
-	void Hierarchy();
-
-	// inspector
-	void Inspector();
+	std::optional<uint32_t> selectedIndex_ = std::nullopt;
 };
