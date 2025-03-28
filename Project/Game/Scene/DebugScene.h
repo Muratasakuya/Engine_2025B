@@ -9,6 +9,9 @@
 // object
 #include <Game/Object3D/TemplateObject3D.h>
 
+// editor
+#include <Game/Editor/TestEditor.h>
+
 // c++
 #include <memory>
 #include <vector>
@@ -39,6 +42,8 @@ private:
 	std::unique_ptr<GameCamera> gameCamera_;
 
 	std::unique_ptr<TemplateObject3D> object_;
+
+	std::unique_ptr<TestEditor> testEditor_;
 
 	//--------- functions ----------------------------------------------------
 

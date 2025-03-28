@@ -92,6 +92,10 @@ public:
 	static ComponentManager* GetInstance();
 	static void Finalize();
 
+	// imgui
+	void SelectObject();
+	void EditObject();
+
 	// componentの取得
 	template <typename T>
 	T* GetComponent(EntityID id);
@@ -100,9 +104,6 @@ public:
 
 	// entityの数取得
 	EntityID GetEntityCount(ComponentType type) const { return entityManagers_[static_cast<uint32_t>(type)]->GetEntityCount(); }
-
-	// imguiManagerの取得
-	ImGuiComponentManager* GetImGuiComponentManager() const { return imguiComponentManager_.get(); }
 private:
 	//========================================================================
 	//	private Methods
