@@ -35,9 +35,6 @@
     <ClCompile Include="Engine\Core\CBuffer\IOVertexBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\CBuffer\Transform.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Debug\Assert.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -272,7 +269,6 @@
     <ClInclude Include="Engine\Core\CBuffer\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\CBuffer\InputAssembler.h" />
     <ClInclude Include="Engine\Core\CBuffer\IOVertexBuffer.h" />
-    <ClInclude Include="Engine\Core\CBuffer\Transform.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
     <ClInclude Include="Engine\Core\Debug\Logger.h" />
     <ClInclude Include="Engine\Core\Graphics\Managers\DSVManager.h" />
