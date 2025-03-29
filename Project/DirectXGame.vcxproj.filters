@@ -257,6 +257,24 @@
     <ClCompile Include="Game\Editor\TestEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessCommandContext.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\BloomProcessor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -347,6 +365,13 @@
     <ClInclude Include="Engine\Editor\Base\IGameEditor.h" />
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
     <ClInclude Include="Game\Editor\TestEditor.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessCommandContext.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessType.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\BloomProcessor.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
