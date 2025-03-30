@@ -31,6 +31,8 @@ public:
 
 	void SetProcessTexureGPUHandle(const D3D12_GPU_DESCRIPTOR_HANDLE& gpuHandle);
 
+	ID3D12Resource* GetOutputTextureResource() const { return outputTextureResource_.Get(); }
+
 	const Vector2& GetTextureSize() const { return textureSize_; }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetUAVGPUHandle() const { return uavGPUHandle_; }
