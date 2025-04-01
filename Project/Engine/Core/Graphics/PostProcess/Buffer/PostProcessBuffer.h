@@ -6,11 +6,47 @@
 #include <Engine/Core/CBuffer/DxConstBuffer.h>
 
 //============================================================================
+//	IPostProcessBuffer class
+//============================================================================
+class IPostProcessBuffer {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	IPostProcessBuffer() = default;
+	virtual ~IPostProcessBuffer() = default;
+
+	virtual void Init(ID3D12Device* device, UINT rootIndex) = 0;
+
+	virtual void Update() = 0;
+
+	virtual void ImGui() = 0;
+
+	//--------- accessor -----------------------------------------------------
+
+	virtual void SetParameter(void* parameter, size_t size) = 0;
+
+	virtual ID3D12Resource* GetResource() const = 0;
+
+	UINT GetRootIndex() const { return rootIndex_; };
+
+protected:
+	//========================================================================
+	//	protected Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	UINT rootIndex_ = 0;
+};
+
+//============================================================================
 //	PostProcessBuffer class
 //============================================================================
 template <typename T>
 class PostProcessBuffer :
-	public DxConstBuffer<T> {
+	public IPostProcessBuffer, public DxConstBuffer<T> {
 public:
 	//========================================================================
 	//	public Methods
@@ -19,17 +55,17 @@ public:
 	PostProcessBuffer() = default;
 	~PostProcessBuffer() = default;
 
-	void Init(ID3D12Device* device, UINT rootIndex);
+	void Init(ID3D12Device* device, UINT rootIndex) override;
 
-	void Update();
+	void Update() override;
 
-	void ImGui();
+	void ImGui() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetProperties(const T& properties);
+	void SetParameter(void* parameter, size_t size) override;
 
-	UINT GetRootIndex() const { return rootIndex_; };
+	ID3D12Resource* GetResource() const override;
 private:
 	//========================================================================
 	//	private Methods
@@ -37,9 +73,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	T properties_;
-
-	UINT rootIndex_ = 0;
+	T parameter_;
 };
 
 //============================================================================
@@ -57,17 +91,23 @@ inline void PostProcessBuffer<T>::Init(ID3D12Device* device, UINT rootIndex) {
 template<typename T>
 inline void PostProcessBuffer<T>::Update() {
 
-	DxConstBuffer<T>::TransferData(properties_);
+	DxConstBuffer<T>::TransferData(parameter_);
 }
 
 template<typename T>
 inline void PostProcessBuffer<T>::ImGui() {
 
-	properties_.ImGui();
+	parameter_.ImGui();
 }
 
 template<typename T>
-inline void PostProcessBuffer<T>::SetProperties(const T& properties) {
+inline void PostProcessBuffer<T>::SetParameter(void* parameter, size_t size) {
 
-	properties_ = properties;
+	std::memcpy(&parameter_, parameter, size);
+}
+
+template<typename T>
+inline ID3D12Resource* PostProcessBuffer<T>::GetResource() const {
+
+	return DxConstBuffer<T>::GetResource();
 }

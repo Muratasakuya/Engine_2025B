@@ -153,9 +153,14 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	offscreenPipeline_ = std::make_unique<PipelineState>();
 	offscreenPipeline_->Create("CopyTexture.json", device, dxShaderComplier_.get());
 
-	//// meshShaderPipeline初期化
-	//meshShaderPipeline_ = std::make_unique<MeshShaderPipelineState>();
-	//meshShaderPipeline_->Create(device, dxShaderComplier_.get());
+	// meshShaderPipeline初期化
+	meshShaderPipeline_ = std::make_unique<MeshShaderPipelineState>();
+	meshShaderPipeline_->Create(device, dxShaderComplier_.get());
+
+	// postProcessSystem初期化
+	postProcessManager_ = std::make_unique<PostProcessManager>();
+	postProcessManager_->Init(device, dxShaderComplier_.get(),
+		srvManager_.get(), width, height);
 }
 
 void GraphicsCore::Finalize(HWND hwnd) {
@@ -179,6 +184,7 @@ void GraphicsCore::Finalize(HWND hwnd) {
 	debugSceneRenderTexture_.reset();
 #endif // _DEBUG
 	shadowMap_.reset();
+	postProcessManager_.reset();
 	meshRenderer_.reset();
 	spriteRenderer_.reset();
 }
@@ -193,9 +199,6 @@ void GraphicsCore::Render() {
 	meshRenderer_->Update();
 	spriteRenderer_->Update();
 	renderObjectManager_->Update();
-
-	// ComputeCommandを非同期で実行
-	dxCommand_->StartComputeCommands();
 
 	// zPass
 	RenderZPass();
@@ -255,9 +258,12 @@ void GraphicsCore::RenderOffscreenTexture() {
 	// 描画処理
 	Renderers(false);
 
-	// RenderTarget -> PixelShader
+	// RenderTarget -> ComputeShader
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+
+	// postProcess処理実行
+	postProcessManager_->Execute(renderTexture_.get(), dxCommand_.get());
 }
 
 void GraphicsCore::RenderDebugSceneRenderTexture() {
@@ -284,14 +290,8 @@ void GraphicsCore::RenderFrameBuffer() {
 		dsvManager_->GetFrameCPUHandle());
 	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
 
-	const UINT vertexCount = 3;
-
-	auto commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
-	commandList->SetGraphicsRootSignature(offscreenPipeline_->GetRootSignature());
-	commandList->SetPipelineState(offscreenPipeline_->GetGraphicsPipeline());
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	commandList->SetGraphicsRootDescriptorTable(0, renderTexture_->GetGPUHandle());
-	commandList->DrawInstanced(vertexCount, 1, 0, 0);
+	// frameBufferへ結果を描画
+	postProcessManager_->RenderFrameBuffer(offscreenPipeline_.get(), dxCommand_.get());
 
 	// sprite描画、postPrecessを適用しない
 	spriteRenderer_->RenderIrrelevant();
@@ -330,22 +330,27 @@ void GraphicsCore::EndRenderFrame() {
 	// imgui描画
 	imguiManager_->End();
 	imguiManager_->Draw(dxCommand_->GetCommandList(CommandListType::Graphics));
+
+	// PixelShader -> RenderTarget
+	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 #endif // _DEBUG
 
 	// PixelShader -> Write
 	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE);
-	// PixelShader -> RenderTarget
+	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
-#ifdef _DEBUG
-	// PixelShader -> RenderTarget
-	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
-#endif // _DEBUG
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	// Present -> RenderTarget
 	dxCommand_->TransitionBarriers({ dxSwapChain_->GetCurrentResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
+
+	// CSへの書き込み状態へ遷移
+	postProcessManager_->ToWrite(dxCommand_.get());
+
+	// ComputeCommandを非同期で実行
+	dxCommand_->StartComputeCommands();
 
 	// Command実行
 	dxCommand_->ExecuteCommands(dxSwapChain_->Get());

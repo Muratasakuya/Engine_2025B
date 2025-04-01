@@ -11,6 +11,11 @@
 //	PostProcessBufferSize classMethods
 //============================================================================
 
+namespace {
+
+	inline static constexpr const float itemWidth_ = 192.0f;
+}// namespace
+
 void DissolveForGPU::ImGui() {
 
 	ImGui::Text("Dissolve");

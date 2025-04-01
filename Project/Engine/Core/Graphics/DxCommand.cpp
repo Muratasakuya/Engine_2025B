@@ -252,7 +252,8 @@ void DxCommand::SetViewportAndScissor(uint32_t width, uint32_t height) {
 }
 
 void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
-	D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter) {
+	D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter,
+	CommandListType type) {
 
 	std::vector<D3D12_RESOURCE_BARRIER> barriers;
 	// メモリ確保
@@ -273,7 +274,7 @@ void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources
 		barriers.push_back(barrier);
 	}
 
-	commandLists_[CommandListType::Graphics]->ResourceBarrier(
+	commandLists_[type]->ResourceBarrier(
 		static_cast<UINT>(barriers.size()), barriers.data());
 }
 

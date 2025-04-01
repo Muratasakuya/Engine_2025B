@@ -6,35 +6,10 @@
 #include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
-//	IPostProcessBufferSize class
-//============================================================================
-class IPostProcessBufferSize {
-public:
-	//========================================================================
-	//	public Methods
-	//========================================================================
-
-	IPostProcessBufferSize() = default;
-	virtual ~IPostProcessBufferSize() = default;
-
-	virtual void ImGui() = 0;
-
-protected:
-	//========================================================================
-	//	protected Methods
-	//========================================================================
-
-	//--------- variables ----------------------------------------------------
-
-	const float itemWidth_ = 192.0f;
-};
-
-//============================================================================
 //	DerivedBuffer class
 //============================================================================
 
-class DissolveForGPU :
-	public IPostProcessBufferSize {
+class DissolveForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -43,7 +18,7 @@ public:
 	DissolveForGPU() = default;
 	~DissolveForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 
@@ -56,8 +31,7 @@ public:
 	float padding3;
 };
 
-class GaussianFilterForGPU :
-	public IPostProcessBufferSize {
+class GaussianFilterForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -66,15 +40,14 @@ public:
 	GaussianFilterForGPU() = default;
 	~GaussianFilterForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 
 	float sigma;
 };
 
-class LuminanceBasedOutlineForGPU :
-	public IPostProcessBufferSize {
+class LuminanceBasedOutlineForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -83,15 +56,14 @@ public:
 	LuminanceBasedOutlineForGPU() = default;
 	~LuminanceBasedOutlineForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 
 	float strength;
 };
 
-class DepthBasedOutlineForGPU :
-	public IPostProcessBufferSize {
+class DepthBasedOutlineForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -100,15 +72,14 @@ public:
 	DepthBasedOutlineForGPU() = default;
 	~DepthBasedOutlineForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 
 	Matrix4x4 projectionInverse;
 };
 
-class VignetteForGPU :
-	public IPostProcessBufferSize {
+class VignetteForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -117,7 +88,7 @@ public:
 	VignetteForGPU() = default;
 	~VignetteForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 
@@ -125,8 +96,7 @@ public:
 	float power;
 };
 
-class RadialBlurForGPU :
-	public IPostProcessBufferSize {
+class RadialBlurForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -135,7 +105,7 @@ public:
 	RadialBlurForGPU() = default;
 	~RadialBlurForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 
@@ -144,8 +114,7 @@ public:
 	float width;
 };
 
-class HorizonBlurForGPU :
-	public IPostProcessBufferSize {
+class HorizonBlurForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -154,7 +123,7 @@ public:
 	HorizonBlurForGPU() = default;
 	~HorizonBlurForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 
@@ -162,8 +131,7 @@ public:
 	float sigma;
 };
 
-class VerticalBlurForGPU :
-	public IPostProcessBufferSize {
+class VerticalBlurForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -172,7 +140,7 @@ public:
 	VerticalBlurForGPU() = default;
 	~VerticalBlurForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 
@@ -180,8 +148,7 @@ public:
 	float sigma;
 };
 
-class LuminanceExtractForGPU :
-	public IPostProcessBufferSize {
+class LuminanceExtractForGPU {
 public:
 	//========================================================================
 	//	public Methods
@@ -190,7 +157,7 @@ public:
 	LuminanceExtractForGPU() = default;
 	~LuminanceExtractForGPU() = default;
 
-	void ImGui() override;
+	void ImGui();
 
 	//--------- properties ---------------------------------------------------
 

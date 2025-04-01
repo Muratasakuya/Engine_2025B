@@ -70,6 +70,7 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	void InitDirectX(uint32_t width, uint32_t height);
 	void InitComponent();
 
 	void Update();

@@ -25,10 +25,17 @@ public:
 	void Init(ID3D12Device* device, class SRVManager* srvManager,
 		uint32_t width, uint32_t height);
 
-	void Execute(class DxCommand* dxCommand, const D3D12_GPU_DESCRIPTOR_HANDLE& inputGPUHandle);
+	void Execute(class DxCommand* dxCommand,
+		class PostProcessPipelineManager* pipeline,
+		const D3D12_GPU_DESCRIPTOR_HANDLE& inputGPUHandle);
+
+	void ToWrite(class DxCommand* dxCommand);
+
+	void ImGui();
 
 	//--------- accessor -----------------------------------------------------
 
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const { return textureCombine_->GetSRVGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods

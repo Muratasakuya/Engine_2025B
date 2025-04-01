@@ -9,6 +9,7 @@
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/Pipeline/MeshShaderPipelineState.h>
+#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 
@@ -97,6 +98,8 @@ private:
 	std::unique_ptr<RenderTexture> debugSceneRenderTexture_;
 
 	std::unique_ptr<ShadowMap> shadowMap_;
+
+	std::unique_ptr<PostProcessManager> postProcessManager_;
 
 	std::unique_ptr<MeshRenderer> meshRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;

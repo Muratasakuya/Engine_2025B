@@ -63,7 +63,8 @@ public:
 	void SetViewportAndScissor(uint32_t width, uint32_t height);
 
 	void TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
-		D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter);
+		D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter,
+		CommandListType type = CommandListType::Graphics);
 
 	void CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,
 		ID3D12Resource* srcResource, D3D12_RESOURCE_STATES srcState);
