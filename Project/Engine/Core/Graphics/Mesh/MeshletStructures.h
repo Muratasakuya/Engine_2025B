@@ -3,29 +3,21 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Asset/AssetStructure.h>
-#include <Engine/Core/CBuffer/DxConstBuffer.h>
 
 //============================================================================
-//	IOVertexBuffer class
+//	MeshletStructures class
 //============================================================================
-class IOVertexBuffer :
-	public DxConstBuffer<ModelVertexData> {
+class MeshletStructures {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IOVertexBuffer() = default;
-	~IOVertexBuffer() = default;
-
-	void Init(UINT vertexNum, ID3D12Resource* vertexResource,
-		ID3D12Device* device, class SRVManager* SRVManager);
+	MeshletStructures() = default;
+	~MeshletStructures() = default;
 
 	//--------- accessor -----------------------------------------------------
 
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetInputGPUHandle() const { return inputVertex_.srvHandle.second; }
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetOutputGPUHandle() const { return outputVertex_.uavHandle.second;}
 private:
 	//========================================================================
 	//	private Methods
@@ -33,6 +25,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	InputModelVertex inputVertex_;
-	OutputModelVertex outputVertex_;
+
+
+	//--------- functions ----------------------------------------------------
+
 };

@@ -7,7 +7,7 @@
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
-#include <Engine/Core/Lib/Filesystem.h>
+#include <Engine/Asset/Filesystem.h>
 
 //============================================================================
 //	TextureManager classMethods

@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Component/SpriteComponent.h>
-#include <Engine/Core/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
 #include <Lib/MathUtils/Matrix4x4.h>
 
 // c++

@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/CBufferStructures.h>
+#include <Engine/Core/Graphics/CBuffer/CBufferStructures.h>
 #include <Lib/MathUtils/Vector2.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Quaternion.h>
