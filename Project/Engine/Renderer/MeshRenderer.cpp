@@ -6,7 +6,7 @@
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
-#include <Engine/Core/Graphics/Mesh/MeshCommandContext.h>
+#include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Renderer/Managers/RenderObjectManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 

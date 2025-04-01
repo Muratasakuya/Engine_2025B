@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/CBuffer/DxConstBuffer.h>
-#include <Engine/Core/Lib/CBufferStructures.h>
+#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/CBuffer/CBufferStructures.h>
 #include <Engine/Component/ModelComponent.h>
 #include <Engine/Component/TransformComponent.h>
 #include <Engine/Component/Base/IComponent.h>

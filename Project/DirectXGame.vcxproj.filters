@@ -29,10 +29,10 @@
     <ClCompile Include="Engine\Component\TransformComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\CBuffer\InputAssembler.cpp">
+    <ClCompile Include="Engine\Core\Graphics\CBuffer\InputAssembler.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\CBuffer\IOVertexBuffer.cpp">
+    <ClCompile Include="Engine\Core\Graphics\CBuffer\IOVertexBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Debug\Assert.cpp">
@@ -86,13 +86,13 @@
     <ClCompile Include="Engine\Core\Graphics\PostProcess\ShadowMap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Lib\CBufferStructures.cpp">
+    <ClCompile Include="Engine\Core\Graphics\CBuffer\CBufferStructures.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Lib\DxUtils.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Lib\Filesystem.cpp">
+    <ClCompile Include="Engine\Asset\Filesystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Window\WinApp.cpp">
@@ -227,10 +227,10 @@
     <ClCompile Include="Engine\Component\Manager\AnimationComponentManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshCommandContext.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Context\MeshCommandContext.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.cpp">
+    <ClCompile Include="Engine\Test_IndirectCommand\MeshIndirectCommand.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\InstancedMesh.cpp">
@@ -263,7 +263,7 @@
     <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessCommandContext.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Context\PostProcessCommandContext.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\PostProcess\BloomProcessor.cpp">
@@ -290,9 +290,9 @@
     <ClInclude Include="Engine\Asset\TextureManager.h" />
     <ClInclude Include="Engine\Component\ModelComponent.h" />
     <ClInclude Include="Engine\Component\TransformComponent.h" />
-    <ClInclude Include="Engine\Core\CBuffer\DxConstBuffer.h" />
-    <ClInclude Include="Engine\Core\CBuffer\InputAssembler.h" />
-    <ClInclude Include="Engine\Core\CBuffer\IOVertexBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\CBuffer\DxConstBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\CBuffer\InputAssembler.h" />
+    <ClInclude Include="Engine\Core\Graphics\CBuffer\IOVertexBuffer.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
     <ClInclude Include="Engine\Core\Debug\Logger.h" />
     <ClInclude Include="Engine\Core\Graphics\Managers\DSVManager.h" />
@@ -310,11 +310,11 @@
     <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
-    <ClInclude Include="Engine\Core\Lib\CBufferStructures.h" />
+    <ClInclude Include="Engine\Core\Graphics\CBuffer\CBufferStructures.h" />
     <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
     <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
     <ClInclude Include="Engine\Core\Lib\DxUtils.h" />
-    <ClInclude Include="Engine\Core\Lib\Filesystem.h" />
+    <ClInclude Include="Engine\Asset\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
     <ClInclude Include="Engine\Core\Framework.h" />
     <ClInclude Include="Engine\Renderer\Managers\ObjectPipelineManager.h" />
@@ -361,8 +361,8 @@
     <ClInclude Include="Engine\Renderer\Managers\RenderObjectManager.h" />
     <ClInclude Include="Engine\Component\AnimationComponent.h" />
     <ClInclude Include="Engine\Component\Manager\AnimationComponentManager.h" />
-    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshCommandContext.h" />
-    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.h" />
+    <ClInclude Include="Engine\Core\Graphics\Context\MeshCommandContext.h" />
+    <ClInclude Include="Engine\Test_IndirectCommand\MeshIndirectCommand.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\InstancedMesh.h" />
     <ClInclude Include="Engine\Component\SpriteComponent.h" />
     <ClInclude Include="Engine\Component\Manager\SpriteComponentManager.h" />
@@ -372,7 +372,7 @@
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
     <ClInclude Include="Game\Editor\TestEditor.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.h" />
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessCommandContext.h" />
+    <ClInclude Include="Engine\Core\Graphics\Context\PostProcessCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessType.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\BloomProcessor.h" />
@@ -380,6 +380,7 @@
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.h" />
     <ClInclude Include="Engine\Test_MeshShader\MSInputAssembler.h" />
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletStructures.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

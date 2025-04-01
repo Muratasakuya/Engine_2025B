@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
 #include <Engine/Component/TransformComponent.h>
-#include <Engine/Core/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
 
 // c++
 #include <string>
