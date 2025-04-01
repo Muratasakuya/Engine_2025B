@@ -64,6 +64,8 @@ public:
 
 	RenderObjectManager* GetRenderObjectManager() const { return renderObjectManager_.get(); }
 
+	PostProcessManager* GetPostProcessManager() const { return postProcessManager_.get(); }
+
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return debugSceneRenderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }

@@ -68,7 +68,8 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	// scene管理クラス初期化
 	sceneManager_ = std::make_unique<SceneManager>(
-		Scene::Debug, asset_.get(), cameraManager_.get());
+		Scene::Debug, asset_.get(), cameraManager_.get(),
+		graphicsCore_->GetPostProcessManager());
 
 	Input::GetInstance()->Init(winApp_.get());
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),

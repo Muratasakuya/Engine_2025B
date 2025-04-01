@@ -94,6 +94,8 @@ public:
 
 	float scale;
 	float power;
+	float padding[2];
+	Vector3 color;
 };
 
 class RadialBlurForGPU {
@@ -125,6 +127,8 @@ public:
 
 	void ImGui();
 
+	void ImGuiWithBloom();
+
 	//--------- properties ---------------------------------------------------
 
 	int radius;
@@ -142,6 +146,8 @@ public:
 
 	void ImGui();
 
+	void ImGuiWithBloom();
+
 	//--------- properties ---------------------------------------------------
 
 	int radius;
@@ -158,6 +164,8 @@ public:
 	~LuminanceExtractForGPU() = default;
 
 	void ImGui();
+
+	void ImGuiWithBloom();
 
 	//--------- properties ---------------------------------------------------
 

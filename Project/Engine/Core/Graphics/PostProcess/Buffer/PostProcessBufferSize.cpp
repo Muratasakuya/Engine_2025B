@@ -18,7 +18,7 @@ namespace {
 
 void DissolveForGPU::ImGui() {
 
-	ImGui::Text("Dissolve");
+	ImGui::SeparatorText("Dissolve");
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragFloat("threshold##Dissolve", &threshold, 0.01f, 0.0f, 1.0f);
@@ -26,30 +26,24 @@ void DissolveForGPU::ImGui() {
 	ImGui::ColorEdit3("edgeColor##Dissolve", &edgeColor.x);
 	ImGui::ColorEdit3("thresholdColor##Dissolve", &thresholdColor.x);
 	ImGui::PopItemWidth();
-
-	ImGui::Separator();
 }
 
 void GaussianFilterForGPU::ImGui() {
 
-	ImGui::Text("GaussianFilter");
+	ImGui::SeparatorText("GaussianFilter");
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragFloat("sigma##GaussianFilter", &sigma, 0.01f);
 	ImGui::PopItemWidth();
-
-	ImGui::Separator();
 }
 
 void LuminanceBasedOutlineForGPU::ImGui() {
 
-	ImGui::Text("LuminanceBasedOutline");
+	ImGui::SeparatorText("LuminanceBasedOutline");
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragFloat("strength##LuminanceBasedOutline", &strength, 0.01f);
 	ImGui::PopItemWidth();
-
-	ImGui::Separator();
 }
 
 void DepthBasedOutlineForGPU::ImGui() {
@@ -57,42 +51,57 @@ void DepthBasedOutlineForGPU::ImGui() {
 
 void VignetteForGPU::ImGui() {
 
-	ImGui::Text("Vignette");
+	ImGui::SeparatorText("Vignette");
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragFloat("scale##Vignette", &scale, 0.01f);
 	ImGui::DragFloat("power##Vignette", &power, 0.01f);
+	ImGui::ColorEdit3("color##Vignette", &color.x);
 	ImGui::PopItemWidth();
-
-	ImGui::Separator();
 }
 
 void RadialBlurForGPU::ImGui() {
 
-	ImGui::Text("RadialBlur");
+	ImGui::SeparatorText("RadialBlur");
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragFloat2("center##RadialBlur", &center.x, 0.01f);
 	ImGui::DragInt("scale##RadialBlur", &numSamples);
 	ImGui::DragFloat("power##RadialBlur", &width, 0.01f);
 	ImGui::PopItemWidth();
-
-	ImGui::Separator();
 }
 
 void HorizonBlurForGPU::ImGui() {
 
-	ImGui::Text("HorizonBlur");
+	ImGui::SeparatorText("HorizonBlur");
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragInt("radius##HorizonBlur", &radius, 1, 0, 48);
 	ImGui::DragFloat("sigma##HorizonBlur", &sigma, 0.01f);
 	ImGui::PopItemWidth();
+}
 
-	ImGui::Separator();
+void HorizonBlurForGPU::ImGuiWithBloom() {
+
+	ImGui::Text("HorizonBlur");
+
+	ImGui::PushItemWidth(itemWidth_);
+	ImGui::DragInt("radius##VerticalBlur", &radius, 1, 0, 48);
+	ImGui::DragFloat("sigma##VerticalBlur", &sigma, 0.01f);
+	ImGui::PopItemWidth();
 }
 
 void VerticalBlurForGPU::ImGui() {
+
+	ImGui::SeparatorText("VerticalBlur");
+
+	ImGui::PushItemWidth(itemWidth_);
+	ImGui::DragInt("radius##VerticalBlur", &radius, 1, 0, 48);
+	ImGui::DragFloat("sigma##VerticalBlur", &sigma, 0.01f);
+	ImGui::PopItemWidth();
+}
+
+void VerticalBlurForGPU::ImGuiWithBloom() {
 
 	ImGui::Text("VerticalBlur");
 
@@ -100,17 +109,22 @@ void VerticalBlurForGPU::ImGui() {
 	ImGui::DragInt("radius##VerticalBlur", &radius, 1, 0, 48);
 	ImGui::DragFloat("sigma##VerticalBlur", &sigma, 0.01f);
 	ImGui::PopItemWidth();
-
-	ImGui::Separator();
 }
 
 void LuminanceExtractForGPU::ImGui() {
+
+	ImGui::SeparatorText("BloomLuminanceExtract");
+
+	ImGui::PushItemWidth(itemWidth_);
+	ImGui::DragFloat("threshold##BloomLuminanceExtract", &threshold, 0.01f);
+	ImGui::PopItemWidth();
+}
+
+void LuminanceExtractForGPU::ImGuiWithBloom() {
 
 	ImGui::Text("BloomLuminanceExtract");
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragFloat("threshold##BloomLuminanceExtract", &threshold, 0.01f);
 	ImGui::PopItemWidth();
-
-	ImGui::Separator();
 }

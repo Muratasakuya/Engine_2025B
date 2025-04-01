@@ -4,7 +4,8 @@
 //	SceneManager classMethods
 //============================================================================
 
-SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManager) {
+SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManager,
+	PostProcessManager* postProcessManager) {
 
 	asset_ = nullptr;
 	asset_ = asset;
@@ -12,10 +13,13 @@ SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManag
 	cameraManager_ = nullptr;
 	cameraManager_ = cameraManager;
 
+	postProcessManager_ = nullptr;
+	postProcessManager_ = postProcessManager;
+
 	factory_ = std::make_unique<SceneFactory>();
 
 	LoadScene(scene);
-	currentScene_->Init(asset_, cameraManager_);
+	currentScene_->Init(asset_, cameraManager, postProcessManager);
 }
 
 void SceneManager::Update() {
@@ -32,7 +36,7 @@ void SceneManager::SwitchScene() {
 
 void SceneManager::InitNextScene() {
 
-	currentScene_->Init(asset_, cameraManager_);
+	currentScene_->Init(asset_, cameraManager_, postProcessManager_);
 	isSceneSwitching_ = false;
 }
 
