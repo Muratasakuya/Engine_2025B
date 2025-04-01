@@ -26,6 +26,12 @@ struct TransformationMatrix {
 		const Quaternion& rotation, const Vector3& translation);
 };
 
+struct MSTestTransformationMatrix {
+
+	Matrix4x4 world;
+	Matrix4x4 viewProjection;
+};
+
 struct Material {
 
 	Color color;
