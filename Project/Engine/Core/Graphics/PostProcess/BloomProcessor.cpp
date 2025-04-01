@@ -7,6 +7,9 @@
 #include <Engine/Core/Graphics/PostProcess/PostProcessCommandContext.h>
 #include <Engine/Core/Graphics/PostProcess/Manager/PostProcessPipelineManager.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
 //	BloomProcessor classMethods
 //============================================================================
@@ -37,7 +40,7 @@ void BloomProcessor::Init(ID3D12Device* device, SRVManager* srvManager,
 
 	// 初期化値設定
 	LuminanceExtractForGPU luminance{};
-	luminance.threshold = 0.0f; // 輝度抽出閾値
+	luminance.threshold = 1.0f; // 輝度抽出閾値
 	luminanceExtractBuffer_->SetParameter(&luminance, sizeof(LuminanceExtractForGPU));
 
 	HorizonBlurForGPU horizontalBlur{};
@@ -158,7 +161,9 @@ void BloomProcessor::ToWrite(DxCommand* dxCommand) {
 
 void BloomProcessor::ImGui() {
 
-	luminanceExtractBuffer_->ImGui();
-	horizontalBlurBuffer_->ImGui();
-	verticalBlurBuffer_->ImGui();
+	ImGui::SeparatorText("Bloom");
+
+	luminanceExtractBuffer_->ImGuiWithBloom();
+	horizontalBlurBuffer_->ImGuiWithBloom();
+	verticalBlurBuffer_->ImGuiWithBloom();
 }

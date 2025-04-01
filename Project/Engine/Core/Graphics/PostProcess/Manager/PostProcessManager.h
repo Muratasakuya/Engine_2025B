@@ -7,6 +7,7 @@
 #include <Engine/Core/Graphics/PostProcess/BloomProcessor.h>
 #include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBuffer.h>
 #include <Engine/Core/Graphics/PostProcess/Manager/PostProcessPipelineManager.h>
+#include <Engine/Editor/Base/IGameEditor.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // c++
@@ -18,13 +19,14 @@ class SRVManager;
 //============================================================================
 //	PostProcessManager class
 //============================================================================
-class PostProcessManager {
+class PostProcessManager :
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PostProcessManager() = default;
+	PostProcessManager() : IGameEditor("postProcess") {};
 	~PostProcessManager() = default;
 
 	void Init(ID3D12Device* device, class DxShaderCompiler* shaderComplier,
@@ -39,6 +41,9 @@ public:
 	// 最終的なtextureをframeBufferに描画する
 	void RenderFrameBuffer(class PipelineState* pipeline,
 		class DxCommand* dxCommand);
+
+	// imgui
+	void ImGui() override;
 
 	void ToWrite(class DxCommand* dxCommand);
 

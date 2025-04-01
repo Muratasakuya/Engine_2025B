@@ -29,7 +29,8 @@ public:
 	DebugScene() = default;
 	~DebugScene() = default;
 
-	void Init(Asset* asset,CameraManager* cameraManager) override;
+	void Init(Asset* asset,CameraManager* cameraManager,
+		PostProcessManager* postProcessManager) override;
 
 	void Update(SceneManager* sceneManager) override;
 private:

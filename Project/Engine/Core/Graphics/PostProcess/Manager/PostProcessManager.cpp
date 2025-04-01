@@ -185,6 +185,20 @@ void PostProcessManager::RenderFrameBuffer(
 	commandList->DrawInstanced(vertexCount, 1, 0, 0);
 }
 
+void PostProcessManager::ImGui() {
+
+	// 各bufferのimgui表示
+	for (const auto& buffer : std::views::values(buffers_)) {
+
+		buffer->ImGui();
+	}
+
+	if (Algorithm::Find(activeProcesses_, PostProcess::Bloom)) {
+
+		bloom_->ImGui();
+	}
+}
+
 void PostProcessManager::ToWrite(DxCommand* dxCommand) {
 
 	if (activeProcesses_.empty()) {

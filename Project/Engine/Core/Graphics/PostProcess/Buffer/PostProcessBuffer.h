@@ -61,6 +61,8 @@ public:
 
 	void ImGui() override;
 
+	void ImGuiWithBloom();
+
 	//--------- accessor -----------------------------------------------------
 
 	void SetParameter(void* parameter, size_t size) override;
@@ -98,6 +100,12 @@ template<typename T>
 inline void PostProcessBuffer<T>::ImGui() {
 
 	parameter_.ImGui();
+}
+
+template<typename T>
+inline void PostProcessBuffer<T>::ImGuiWithBloom() {
+
+	parameter_.ImGuiWithBloom();
 }
 
 template<typename T>
