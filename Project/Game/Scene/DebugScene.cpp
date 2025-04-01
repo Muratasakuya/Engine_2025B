@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 // imgui
@@ -16,7 +17,8 @@
 
 void DebugScene::Init(
 	[[maybe_unused]] Asset* asset,
-	[[maybe_unused]] CameraManager* cameraManager
+	[[maybe_unused]] CameraManager* cameraManager,
+	[[maybe_unused]] PostProcessManager* postProcessManager
 ) {
 
 	//========================================================================
@@ -30,7 +32,21 @@ void DebugScene::Init(
 	asset->LoadModel("plane");
 
 	//========================================================================
-	//	init
+	//	postProcess
+	//========================================================================
+
+	postProcessManager_ = postProcessManager;
+
+	const std::vector<PostProcess> postProcesses = {
+
+		PostProcess::Bloom,
+	};
+
+	postProcessManager_->Create(postProcesses);
+	postProcessManager_->AddProcess(PostProcess::Bloom);
+
+	//========================================================================
+	//	camera
 	//========================================================================
 
 	gameCamera_ = std::make_unique<GameCamera>();
@@ -38,6 +54,10 @@ void DebugScene::Init(
 
 	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
+
+	//========================================================================
+	//	initObject
+	//========================================================================
 
 	object_ = std::make_unique<TemplateObject3D>();
 

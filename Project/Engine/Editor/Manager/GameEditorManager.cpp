@@ -53,7 +53,8 @@ void GameEditorManager::SelectEditor() {
 	// editorsの要素を表示
 	if (!editors_.empty()) {
 		for (uint32_t index = 0; index < editors_.size(); ++index) {
-			if (ImGui::Selectable(editors_[index]->GetName().c_str(), selectedIndex_.has_value())) {
+			if (ImGui::Selectable(editors_[index]->GetName().c_str(),
+				selectedIndex_.has_value() && selectedIndex_.value() == index)) {
 
 				selectedIndex_ = index;
 				selectedEditor_ = editors_[index];

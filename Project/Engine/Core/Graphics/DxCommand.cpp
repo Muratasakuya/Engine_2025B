@@ -252,7 +252,12 @@ void DxCommand::SetViewportAndScissor(uint32_t width, uint32_t height) {
 }
 
 void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
-	D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter) {
+	D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter,
+	CommandListType type) {
+
+	std::vector<D3D12_RESOURCE_BARRIER> barriers;
+	// メモリ確保
+	barriers.reserve(resources.size());
 
 	for (const auto& resource : resources) {
 		D3D12_RESOURCE_BARRIER barrier{};
@@ -265,8 +270,12 @@ void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources
 		barrier.Transition.StateBefore = stateBefore;
 		// 遷移後のResourceState
 		barrier.Transition.StateAfter = stateAfter;
-		commandLists_[CommandListType::Graphics]->ResourceBarrier(1, &barrier);
+
+		barriers.push_back(barrier);
 	}
+
+	commandLists_[type]->ResourceBarrier(
+		static_cast<UINT>(barriers.size()), barriers.data());
 }
 
 void DxCommand::CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,

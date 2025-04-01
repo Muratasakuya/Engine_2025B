@@ -22,7 +22,7 @@ namespace Algorithm {
 	std::vector<uint32_t> GetEnumArray(Enum enumValue) {
 
 		std::vector<uint32_t> intValues;
-		for (uint32_t i = 0; i < static_cast<std::underlying_type_t<Enum>>(enumValue); ++i) {
+		for (uint32_t i = 0; i < static_cast<uint32_t>(enumValue); ++i) {
 
 			intValues.push_back(i);
 		}

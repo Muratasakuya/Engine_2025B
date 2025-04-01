@@ -5,8 +5,9 @@
 
 struct VignetteParameter {
 	
-	float scale; // スケール調整
-	float power; // 乗算パラメータ
+	float scale;  // スケール調整
+	float power;  // 乗算パラメータ
+	float3 color; // 色
 };
 
 RWTexture2D<float4> gOutputTexture : register(u0);
@@ -38,7 +39,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	// テクスチャのサンプル
 	float4 color = gTexture.Load(int3(pixelPos, 0));
 	// ビネット適用
-	color.rgb *= vignette;
+	color.rgb = lerp(color.rgb, gVignette.color, 1.0f - vignette);
 
 	gOutputTexture[pixelPos] = color;
 }

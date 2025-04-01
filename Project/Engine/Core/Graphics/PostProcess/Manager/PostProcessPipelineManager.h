@@ -3,36 +3,30 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/Methods/IScene.h>
-#include <Game/Camera/GameCamera.h>
-
-// object
-#include <Game/Object3D/TemplateObject3D.h>
-
-// editor
-#include <Game/Editor/TestEditor.h>
+#include <Engine/Core/Graphics/Pipeline/PipelineState.h>
+#include <Engine/Core/Graphics/PostProcess/PostProcessType.h>
 
 // c++
 #include <memory>
-#include <vector>
+#include <array>
 
 //============================================================================
-//	DebugScene class
+//	PostProcessPipelineManager class
 //============================================================================
-class DebugScene :
-	public IScene {
+class PostProcessPipelineManager {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	DebugScene() = default;
-	~DebugScene() = default;
+	PostProcessPipelineManager() = default;
+	~PostProcessPipelineManager() = default;
 
-	void Init(Asset* asset,CameraManager* cameraManager,
-		PostProcessManager* postProcessManager) override;
+	void Init(ID3D12Device* device, class DxShaderCompiler* shaderCompiler);
 
-	void Update(SceneManager* sceneManager) override;
+	//--------- accessor -----------------------------------------------------
+
+	void SetPipeline(ID3D12GraphicsCommandList* commandList, PostProcessType type);
 private:
 	//========================================================================
 	//	private Methods
@@ -40,12 +34,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unique_ptr<GameCamera> gameCamera_;
-
-	std::unique_ptr<TemplateObject3D> object_;
-
-	std::unique_ptr<TestEditor> testEditor_;
-
-	//--------- functions ----------------------------------------------------
-
+	std::array<std::unique_ptr<PipelineState>, kPostProcessCount> pipelines_;
 };

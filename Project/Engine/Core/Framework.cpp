@@ -52,15 +52,8 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	cameraManager_ = std::make_unique<CameraManager>();
 	cameraManager_->Init();
 
-	// directX初期化
-	graphicsCore_ = std::make_unique<GraphicsCore>();
-	graphicsCore_->Init(width, height, winApp_.get(),
-		cameraManager_.get());
-
-	// asset機能初期化
-	asset_ = std::make_unique<Asset>();
-	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
-		graphicsCore_->GetSRVManager());
+	// directXSystem初期化
+	InitDirectX(width, height);
 
 	// component機能初期化
 	InitComponent();
@@ -75,12 +68,26 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	// scene管理クラス初期化
 	sceneManager_ = std::make_unique<SceneManager>(
-		Scene::Debug, asset_.get(), cameraManager_.get());
+		Scene::Debug, asset_.get(), cameraManager_.get(),
+		graphicsCore_->GetPostProcessManager());
 
 	Input::GetInstance()->Init(winApp_.get());
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
 		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
 		graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
+}
+
+void Framework::InitDirectX(uint32_t width, uint32_t height) {
+
+	// directX初期化
+	graphicsCore_ = std::make_unique<GraphicsCore>();
+	graphicsCore_->Init(width, height, winApp_.get(),
+		cameraManager_.get());
+
+	// asset機能初期化
+	asset_ = std::make_unique<Asset>();
+	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
+		graphicsCore_->GetSRVManager());
 }
 
 void Framework::InitComponent() {
