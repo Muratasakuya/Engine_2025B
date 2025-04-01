@@ -18,7 +18,8 @@ public:
 	//	public Methods
 	//========================================================================
 
-	SceneManager(Scene scene, Asset* asset, CameraManager* cameraManager);
+	SceneManager(Scene scene, Asset* asset, CameraManager* cameraManager,
+		PostProcessManager* postProcessManager);
 	~SceneManager() = default;
 
 	void Update();
@@ -41,6 +42,7 @@ private:
 
 	Asset* asset_;
 	CameraManager* cameraManager_;
+	PostProcessManager* postProcessManager_;
 
 	std::unique_ptr<IScene> currentScene_;
 

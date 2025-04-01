@@ -9,6 +9,7 @@
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/Pipeline/MeshShaderPipelineState.h>
+#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 
@@ -63,6 +64,8 @@ public:
 
 	RenderObjectManager* GetRenderObjectManager() const { return renderObjectManager_.get(); }
 
+	PostProcessManager* GetPostProcessManager() const { return postProcessManager_.get(); }
+
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return debugSceneRenderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }
@@ -97,6 +100,8 @@ private:
 	std::unique_ptr<RenderTexture> debugSceneRenderTexture_;
 
 	std::unique_ptr<ShadowMap> shadowMap_;
+
+	std::unique_ptr<PostProcessManager> postProcessManager_;
 
 	std::unique_ptr<MeshRenderer> meshRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;
