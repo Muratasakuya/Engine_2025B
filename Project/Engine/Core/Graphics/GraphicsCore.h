@@ -13,6 +13,9 @@
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 
+// test
+#include <Engine/Test_MeshShader/MSInputAssembler.h>
+
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>
 #include <Engine/Renderer/SpriteRenderer.h>
@@ -84,6 +87,13 @@ private:
 
 	Color windowClearColor_;
 
+	//--------- test -------------//
+
+	CameraManager* cameraManager_;
+
+	std::unique_ptr<MSInputAssembler> msTestInputAssembler_;
+	std::unique_ptr<DxConstBuffer<MSTestTransformationMatrix>> msTestTransform_;
+
 	//--------- directX ----------//
 
 	std::unique_ptr<DxDevice> dxDevice_;
@@ -119,6 +129,9 @@ private:
 	std::unique_ptr<RenderObjectManager> renderObjectManager_;
 
 	//--------- functions ----------------------------------------------------
+
+	// test //
+	void RenderingTest();
 
 	void InitDXDevice();
 

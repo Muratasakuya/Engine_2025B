@@ -192,7 +192,7 @@ void DxCommand::Finalize(HWND hwnd) {
 	CloseWindow(hwnd);
 }
 
-ID3D12GraphicsCommandList* DxCommand::GetCommandList(CommandListType type) const {
+ID3D12GraphicsCommandList6* DxCommand::GetCommandList(CommandListType type) const {
 	return commandLists_.at(type).Get();
 }
 

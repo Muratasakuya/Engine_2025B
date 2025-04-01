@@ -73,7 +73,7 @@ public:
 
 	ID3D12CommandQueue* GetQueue() const { return commandQueue_.Get(); }
 
-	ID3D12GraphicsCommandList* GetCommandList(CommandListType type) const;
+	ID3D12GraphicsCommandList6* GetCommandList(CommandListType type) const;
 private:
 	//========================================================================
 	//	private Methods
@@ -83,7 +83,7 @@ private:
 
 	std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> commandListTypes_;
 
-	std::unordered_map<CommandListType, ComPtr<ID3D12GraphicsCommandList>> commandLists_;
+	std::unordered_map<CommandListType, ComPtr<ID3D12GraphicsCommandList6>> commandLists_;
 	std::unordered_map<CommandListType, ComPtr<ID3D12CommandAllocator>> commandAllocators_;
 
 	ComPtr<ID3D12CommandQueue> commandQueue_;
