@@ -207,6 +207,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessCommandContext.cpp">
       <SubType>
       </SubType>
@@ -409,6 +413,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.h">
       <SubType>
       </SubType>
     </ClInclude>

@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessCommandContext.h>
+#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessPipelineManager.h>
 
 //============================================================================
 //	BloomProcessor classMethods
@@ -36,33 +37,36 @@ void BloomProcessor::Init(ID3D12Device* device, SRVManager* srvManager,
 
 	// 初期化値設定
 	LuminanceExtractForGPU luminance{};
-	luminance.threshold = 1.0f; // 輝度抽出閾値
-	luminanceExtractBuffer_->SetProperties(luminance);
+	luminance.threshold = 0.0f; // 輝度抽出閾値
+	luminanceExtractBuffer_->SetParameter(&luminance, sizeof(LuminanceExtractForGPU));
 
 	HorizonBlurForGPU horizontalBlur{};
 	horizontalBlur.radius = 32;  // 半径
 	horizontalBlur.sigma = 8.0f; // ブラー強度
-	horizontalBlurBuffer_->SetProperties(horizontalBlur);
+	horizontalBlurBuffer_->SetParameter(&horizontalBlur, sizeof(HorizonBlurForGPU));
 
 	VerticalBlurForGPU verticalBlur{};
 	verticalBlur.radius = 32;  // 半径
 	verticalBlur.sigma = 8.0f; // ブラー強度
-	verticalBlurBuffer_->SetProperties(verticalBlur);
+	verticalBlurBuffer_->SetParameter(&verticalBlur, sizeof(VerticalBlurForGPU));
 }
 
-void BloomProcessor::Execute(DxCommand* dxCommand, const D3D12_GPU_DESCRIPTOR_HANDLE& inputGPUHandle) {
+void BloomProcessor::Execute(
+	DxCommand* dxCommand, PostProcessPipelineManager* pipeline,
+	const D3D12_GPU_DESCRIPTOR_HANDLE& inputGPUHandle) {
 
 	// bufferの更新
 	luminanceExtractBuffer_->Update();
 	horizontalBlurBuffer_->Update();
 	verticalBlurBuffer_->Update();
 
-	auto commandList = dxCommand->GetCommandList(CommandListType::Compute);
+	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
 	PostProcessCommandContext commandContext{};
 
 	// 輝度抽出を行う
 	{
 		// pipeline設定
+		pipeline->SetPipeline(commandList, PostProcessType::BloomLuminanceExtract);
 
 		commandList->SetComputeRootConstantBufferView(
 			luminanceExtractBuffer_->GetRootIndex(),
@@ -78,4 +82,83 @@ void BloomProcessor::Execute(DxCommand* dxCommand, const D3D12_GPU_DESCRIPTOR_HA
 			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 	}
+
+	// 輝度抽出を行ったtextureに水平ブラーをかける
+	{
+		// pipeline設定
+		pipeline->SetPipeline(commandList, PostProcessType::HorizontalBlur);
+
+		commandList->SetComputeRootConstantBufferView(
+			horizontalBlurBuffer_->GetRootIndex(),
+			horizontalBlurBuffer_->GetResource()->GetGPUVirtualAddress());
+
+		// 実行
+		commandContext.Execute(
+			PostProcessType::HorizontalBlur, commandList,
+			horizontalBlur_.get(), luminanceProcess_->GetSRVGPUHandle());
+
+		// UnorderedAccess -> ComputeShader
+		dxCommand->TransitionBarriers({ horizontalBlur_->GetOutputTextureResource() },
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+	}
+
+	// 水平ブラーを行ったtextureに垂直ブラーをかける
+	{
+		// pipeline設定
+		pipeline->SetPipeline(commandList, PostProcessType::VerticalBlur);
+
+		commandList->SetComputeRootConstantBufferView(
+			verticalBlurBuffer_->GetRootIndex(),
+			verticalBlurBuffer_->GetResource()->GetGPUVirtualAddress());
+
+		// 実行
+		commandContext.Execute(
+			PostProcessType::VerticalBlur, commandList,
+			verticalBlur_.get(), horizontalBlur_->GetSRVGPUHandle());
+
+		// UnorderedAccess -> ComputeShader
+		dxCommand->TransitionBarriers({ verticalBlur_->GetOutputTextureResource() },
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+	}
+
+	// 水平ブラーを行ったtextureに垂直ブラーをかける
+	{
+		// pipeline設定
+		pipeline->SetPipeline(commandList, PostProcessType::BloomCombine);
+
+		// 実行
+		commandContext.Execute(
+			PostProcessType::BloomCombine, commandList,
+			textureCombine_.get(), inputGPUHandle);
+
+		// UnorderedAccess -> PixelShader
+		dxCommand->TransitionBarriers({ textureCombine_->GetOutputTextureResource() },
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	}
+}
+
+void BloomProcessor::ToWrite(DxCommand* dxCommand) {
+
+	// ComputeShader -> UnorderedAccess
+	dxCommand->TransitionBarriers(
+		{ luminanceProcess_->GetOutputTextureResource(),
+		horizontalBlur_->GetOutputTextureResource(),
+		verticalBlur_->GetOutputTextureResource() },
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
+	// PixelShader -> UnorderedAccess
+	dxCommand->TransitionBarriers({ textureCombine_->GetOutputTextureResource() },
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+}
+
+void BloomProcessor::ImGui() {
+
+	luminanceExtractBuffer_->ImGui();
+	horizontalBlurBuffer_->ImGui();
+	verticalBlurBuffer_->ImGui();
 }
