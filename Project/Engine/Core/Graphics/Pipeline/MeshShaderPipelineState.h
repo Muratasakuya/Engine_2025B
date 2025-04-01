@@ -26,6 +26,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	ID3D12RootSignature* GetRootSignature() const { return rootSignature_.Get(); }
+	ID3D12PipelineState* GetPipelineState() const { return pipelineState_.Get(); }
 private:
 	//========================================================================
 	//	private Methods

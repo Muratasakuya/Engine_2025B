@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Renderer/LineRenderer.h>
+#include <Game/Camera/Manager/CameraManager.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -157,6 +158,15 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	meshShaderPipeline_ = std::make_unique<MeshShaderPipelineState>();
 	meshShaderPipeline_->Create(device, dxShaderComplier_.get());
 
+	// msの頂点を初期化、テストコード
+	msTestInputAssembler_ = std::make_unique<MSInputAssembler>();
+	msTestInputAssembler_->Create(device, srvManager_.get());
+	// ms用のbuffer初期化
+	msTestTransform_ = std::make_unique<DxConstBuffer<MSTestTransformationMatrix>>();
+	msTestTransform_->CreateConstBuffer(device);
+
+	cameraManager_ = cameraManager;
+
 	// postProcessSystem初期化
 	postProcessManager_ = std::make_unique<PostProcessManager>();
 	postProcessManager_->Init(device, dxShaderComplier_.get(),
@@ -258,6 +268,8 @@ void GraphicsCore::RenderOffscreenTexture() {
 	// 描画処理
 	Renderers(false);
 
+	RenderingTest();
+
 	// RenderTarget -> ComputeShader
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
@@ -312,6 +324,32 @@ void GraphicsCore::Renderers(bool debugEnable) {
 	// sprite描画、postPrecess適用
 	// model描画後
 	spriteRenderer_->RenderApply(SpriteLayer::PostModel);
+}
+
+void GraphicsCore::RenderingTest() {
+
+	// buffer転送
+	MSTestTransformationMatrix msTestTransform{};
+	msTestTransform.world = Matrix4x4::MakeIdentity4x4();
+	msTestTransform.viewProjection = cameraManager_->GetCamera()->GetViewProjectionMatrix();
+
+	msTestTransform_->TransferData(msTestTransform);
+
+	auto commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
+
+	commandList->SetGraphicsRootSignature(meshShaderPipeline_->GetRootSignature());
+	commandList->SetPipelineState(meshShaderPipeline_->GetPipelineState());
+
+	// buffers
+	commandList->SetGraphicsRootShaderResourceView(0,
+		msTestInputAssembler_->GetVertexResource()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootShaderResourceView(1,
+		msTestInputAssembler_->GetIndexResource()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(2,
+		msTestTransform_->GetResource()->GetGPUVirtualAddress());
+
+	// 実行
+	commandList->DispatchMesh(1, 1, 1);
 }
 
 //============================================================================

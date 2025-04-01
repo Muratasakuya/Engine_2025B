@@ -278,6 +278,9 @@
     <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Test_MeshShader\MSInputAssembler.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -376,6 +379,7 @@
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.h" />
+    <ClInclude Include="Engine\Test_MeshShader\MSInputAssembler.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
