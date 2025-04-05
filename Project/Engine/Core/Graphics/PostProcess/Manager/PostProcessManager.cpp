@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/PostProcess/PostProcessCommandContext.h>
+#include <Engine/Core/Graphics/Context/PostProcessCommandContext.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Asset/Asset.h>
@@ -179,6 +179,7 @@ void PostProcessManager::RenderFrameBuffer(
 	// frameBufferへの描画
 	commandList->SetGraphicsRootSignature(pipeline->GetRootSignature());
 	commandList->SetPipelineState(pipeline->GetGraphicsPipeline());
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootDescriptorTable(0, frameBufferGPUHandle_);
 
 	const UINT vertexCount = 3;

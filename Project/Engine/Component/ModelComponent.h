@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/CBuffer/InputAssembler.h>
-#include <Engine/Core/CBuffer/IOVertexBuffer.h>
+#include <Engine/Core/Graphics/CBuffer/InputAssembler.h>
+#include <Engine/Core/Graphics/CBuffer/IOVertexBuffer.h>
 #include <Engine/Core/Lib/DxStructures.h>
 
 // c++

@@ -4,8 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Component/Base/IComponent.h>
-#include <Engine/Core/CBuffer/DxConstBuffer.h>
-#include <Engine/Core/Lib/CBufferStructures.h>
+#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/CBuffer/CBufferStructures.h>
 
 //============================================================================
 //	MaterialManager class

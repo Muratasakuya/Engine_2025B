@@ -40,17 +40,23 @@ void TemplateObject3D::Update() {
 
 void TemplateObject3D::UpdateCollision() {
 
-	auto transform = Component::GetComponent<Transform3DComponent>(modelIdA_);
-	colliderA_->UpdateSphere({ .center = Vector3::AnyInit(0.0f),.radius = 1.0f });
+	auto transformA = Component::GetComponent<Transform3DComponent>(modelIdA_);
+	auto transformB = Component::GetComponent<Transform3DComponent>(modelIdB_);
 
-	if (!transform) {
+	if (!transformA) {
+		return;
+	}
+
+	colliderA_->UpdateSphere({ .center = transformA->translation,.radius = 1.0f });
+
+	if (!transformB) {
 		return;
 	}
 
 	colliderB_->UpdateOBB({
-		.center = transform->translation,
-		.size = transform->scale,
-		.rotate = transform->rotation });
+		.center = transformB->translation,
+		.size = transformB->scale,
+		.rotate = transformB->rotation });
 }
 
 void TemplateObject3D::OnCollisionEnter(const ColliderComponent* collider) {

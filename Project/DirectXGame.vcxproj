@@ -66,15 +66,15 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/meshoptimizer/include;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/ignore:4049 %(AdditionalOptions)</AdditionalOptions>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>assimp-vc143-mtd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)/Externals/assimp/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mtd.lib;meshoptimizer.lib;DirectXMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)/Externals/DirectXMesh/lib/Debug;$(ProjectDir)/Externals/meshoptimizer/lib/Debug;$(ProjectDir)/Externals/assimp/lib/Debug;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -99,7 +99,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/meshoptimizer/include;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -108,8 +108,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalOptions>/ignore:4049 %(AdditionalOptions)</AdditionalOptions>
       <TreatLinkerWarningAsErrors>true</TreatLinkerWarningAsErrors>
-      <AdditionalDependencies>assimp-vc143-mt.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)/Externals/assimp/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>assimp-vc143-mt.lib;meshoptimizer.lib;DirectXMesh.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)/Externals/DirectXMesh/lib/Release;$(ProjectDir)/Externals/meshoptimizer/lib/Release;$(ProjectDir)/Externals/assimp/lib/Release;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxcompiler.dll" "$(TargetDir)dxcompiler.dll"
@@ -182,11 +182,23 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshCommandContext.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Context\MeshCommandContext.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\Mesh\Mesh.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshletBuilder.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Test_IndirectCommand\MeshIndirectCommand.cpp" />
     <ClCompile Include="Engine\Core\Graphics\PostProcess\BloomProcessor.cpp">
       <SubType>
       </SubType>
@@ -211,7 +223,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessCommandContext.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Context\PostProcessCommandContext.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -245,8 +257,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Engine\Component\ModelComponent.cpp" />
     <ClCompile Include="Engine\Component\TransformComponent.cpp" />
-    <ClCompile Include="Engine\Core\CBuffer\InputAssembler.cpp" />
-    <ClCompile Include="Engine\Core\CBuffer\IOVertexBuffer.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\CBuffer\InputAssembler.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\CBuffer\IOVertexBuffer.cpp" />
     <ClCompile Include="Engine\Core\Debug\Assert.cpp" />
     <ClCompile Include="Engine\Core\Debug\Logger.cpp" />
     <ClCompile Include="Engine\Core\Framework.cpp" />
@@ -266,20 +278,20 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxInputLayout.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxRootSignature.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxShaderCompiler.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.cpp">
+    <ClCompile Include="Engine\Test_MeshShader\MSTestPipelineState.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Pipeline\PipelineState.cpp" />
     <ClCompile Include="Engine\Core\Graphics\PostProcess\RenderTexture.cpp" />
     <ClCompile Include="Engine\Core\Graphics\PostProcess\ShadowMap.cpp" />
-    <ClCompile Include="Engine\Core\Lib\CBufferStructures.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\CBuffer\CBufferStructures.cpp" />
     <ClCompile Include="Engine\Core\Lib\Collision.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Core\Lib\DxUtils.cpp" />
-    <ClCompile Include="Engine\Core\Lib\Filesystem.cpp" />
+    <ClCompile Include="Engine\Asset\Filesystem.cpp" />
     <ClCompile Include="Engine\Core\Window\WinApp.cpp" />
     <ClCompile Include="Engine\Component\Manager\ImGuiComponentManager.cpp">
       <SubType>
@@ -392,11 +404,27 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshCommandContext.h">
+    <ClInclude Include="Engine\Core\Graphics\Context\MeshCommandContext.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshIndirectCommand.h">
+    <ClInclude Include="Engine\Core\Graphics\Mesh\Mesh.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletBuilder.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletStructures.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Test_IndirectCommand\MeshIndirectCommand.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -424,7 +452,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessCommandContext.h">
+    <ClInclude Include="Engine\Core\Graphics\Context\PostProcessCommandContext.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -462,9 +490,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Engine\Component\ModelComponent.h" />
     <ClInclude Include="Engine\Component\TransformComponent.h" />
-    <ClInclude Include="Engine\Core\CBuffer\DxConstBuffer.h" />
-    <ClInclude Include="Engine\Core\CBuffer\InputAssembler.h" />
-    <ClInclude Include="Engine\Core\CBuffer\IOVertexBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\CBuffer\DxConstBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\CBuffer\InputAssembler.h" />
+    <ClInclude Include="Engine\Core\Graphics\CBuffer\IOVertexBuffer.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
     <ClInclude Include="Engine\Core\Debug\Logger.h" />
     <ClInclude Include="Engine\Core\Framework.h" />
@@ -484,14 +512,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxInputLayout.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxRootSignature.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxShaderCompiler.h" />
-    <ClInclude Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.h">
+    <ClInclude Include="Engine\Test_MeshShader\MSTestPipelineState.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Pipeline\PipelineState.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
-    <ClInclude Include="Engine\Core\Lib\CBufferStructures.h" />
+    <ClInclude Include="Engine\Core\Graphics\CBuffer\CBufferStructures.h" />
     <ClInclude Include="Engine\Core\Lib\Collision.h">
       <SubType>
       </SubType>
@@ -499,7 +527,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
     <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
     <ClInclude Include="Engine\Core\Lib\DxUtils.h" />
-    <ClInclude Include="Engine\Core\Lib\Filesystem.h" />
+    <ClInclude Include="Engine\Asset\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
     <ClInclude Include="Engine\Component\Manager\ImGuiComponentManager.h">
       <SubType>
