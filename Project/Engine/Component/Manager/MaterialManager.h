@@ -7,6 +7,9 @@
 #include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
 #include <Engine/Core/Graphics/CBuffer/CBufferStructures.h>
 
+// front
+class Asset;
+
 //============================================================================
 //	MaterialManager class
 //============================================================================

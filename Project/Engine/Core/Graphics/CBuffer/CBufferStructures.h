@@ -10,6 +10,7 @@
 
 // c++
 #include <cstdint>
+#include <string>
 // front
 class Transform3DComponent;
 
@@ -35,38 +36,20 @@ struct MSTestTransformationMatrix {
 struct Material {
 
 	Color color;
+	uint32_t textureIndex;
 	int32_t enableLighting;
 	int32_t enableHalfLambert;
 	int32_t enablePhongReflection;
 	int32_t enableBlinnPhongReflection;
 	float shadowRate;
 	float phongRefShininess;
-	float padding1[2];
 	Vector3 specularColor;
 	float emissiveIntensity;
 	Vector3 emissionColor;
-	float padding2;
 	Matrix4x4 uvTransform;
 
 	void Init();
 	void ImGui(float itemSize);
-};
-
-struct InstancingMaterial {
-
-	Color color;
-	int32_t enableLighting;
-	int32_t enableHalfLambert;
-	int32_t enablePhongReflection;
-	int32_t enableBlinnPhongReflection;
-	float shadowRate;
-	float phongRefShininess;
-	Vector3 specularColor;
-	float emissiveIntensity;
-	Vector3 emissionColor;
-	Matrix4x4 uvTransform;
-
-	void SetMaterial(const Material& material);
 };
 
 struct SpriteMaterial {

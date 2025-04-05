@@ -5,12 +5,14 @@
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
+#include <Engine/Core/Graphics/Managers/SRVManager.h>
 
 //============================================================================
 //	MeshShaderPipelineState classMethods
 //============================================================================
 
-void MeshShaderPipelineState::Create(ID3D12Device8* device, DxShaderCompiler* shaderCompiler) {
+void MeshShaderPipelineState::Create(ID3D12Device8* device,
+	DxShaderCompiler* shaderCompiler, SRVManager* srvManager) {
 
 	// shaderCompile
 	{
@@ -33,7 +35,7 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device, DxShaderCompiler* sh
 
 		rootSignatureDesc.Flags = flag;
 
-		D3D12_ROOT_PARAMETER rootParameters[12]{};
+		D3D12_ROOT_PARAMETER rootParameters[13]{};
 
 		//------------------------------------------------------------------------
 		// meshShaderRoot
@@ -54,60 +56,62 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device, DxShaderCompiler* sh
 		rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
 		rootParameters[3].Descriptor.ShaderRegister = 3;
 		rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
-		// transform: CBV
-		rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootParameters[4].Descriptor.ShaderRegister = 0;
+		// transform: SRV
+		rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+		rootParameters[4].Descriptor.ShaderRegister = 4;
 		rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
-		// CameraData: CBV
+		// InstanceData: CBV
 		rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootParameters[5].Descriptor.ShaderRegister = 1;
+		rootParameters[5].Descriptor.ShaderRegister = 0;
 		rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
-		// ShadowLight: CBV
+		// CameraData: CBV
 		rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootParameters[6].Descriptor.ShaderRegister = 2;
+		rootParameters[6].Descriptor.ShaderRegister = 1;
 		rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
+		// ShadowLight: CBV
+		rootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParameters[7].Descriptor.ShaderRegister = 2;
+		rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
 
 		//------------------------------------------------------------------------
 		// pixelShaderRoot
 
 		D3D12_DESCRIPTOR_RANGE textureDescriptorRange[1]{};
-		textureDescriptorRange[0].BaseShaderRegister = 0;
-		textureDescriptorRange[0].NumDescriptors = 1;
+		textureDescriptorRange[0].NumDescriptors = srvManager->GetMaxSRVCount();
+		textureDescriptorRange[0].BaseShaderRegister = 1;
+		textureDescriptorRange[0].RegisterSpace = 0;
 		textureDescriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 		textureDescriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 		D3D12_DESCRIPTOR_RANGE shadowMapDescriptorRange[1]{};
-		shadowMapDescriptorRange[0].BaseShaderRegister = 1;
 		shadowMapDescriptorRange[0].NumDescriptors = 1;
+		shadowMapDescriptorRange[0].BaseShaderRegister = 2;
+		shadowMapDescriptorRange[0].RegisterSpace = 1;
 		shadowMapDescriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
 		shadowMapDescriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-		// gTexture: DESCRIPTOR_TABLE
-		rootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-		rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-		rootParameters[7].DescriptorTable.pDescriptorRanges = textureDescriptorRange;
-		rootParameters[7].DescriptorTable.NumDescriptorRanges = _countof(textureDescriptorRange);
-
-		// gShadowTexture: DESCRIPTOR_TABLE
-		rootParameters[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		// gMaterials: SRV
+		rootParameters[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+		rootParameters[8].Descriptor.ShaderRegister = 0;
 		rootParameters[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-		rootParameters[8].DescriptorTable.pDescriptorRanges = shadowMapDescriptorRange;
-		rootParameters[8].DescriptorTable.NumDescriptorRanges = _countof(shadowMapDescriptorRange);
-
-		// Material: CBV
-		rootParameters[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootParameters[9].Descriptor.ShaderRegister = 0;
+		// gTexture: DESCRIPTOR_TABLE
+		rootParameters[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 		rootParameters[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-		// PunctualLight: CBV
-		rootParameters[10].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootParameters[10].Descriptor.ShaderRegister = 1;
+		rootParameters[9].DescriptorTable.pDescriptorRanges = textureDescriptorRange;
+		rootParameters[9].DescriptorTable.NumDescriptorRanges = _countof(textureDescriptorRange);
+		// gShadowTexture: DESCRIPTOR_TABLE
+		rootParameters[10].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
 		rootParameters[10].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-
-		// Camera: CBV
+		rootParameters[10].DescriptorTable.pDescriptorRanges = shadowMapDescriptorRange;
+		rootParameters[10].DescriptorTable.NumDescriptorRanges = _countof(shadowMapDescriptorRange);
+		// PunctualLight: CBV
 		rootParameters[11].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootParameters[11].Descriptor.ShaderRegister = 2;
+		rootParameters[11].Descriptor.ShaderRegister = 1;
 		rootParameters[11].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		// Camera: CBV
+		rootParameters[12].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParameters[12].Descriptor.ShaderRegister = 2;
+		rootParameters[12].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 		// rootParameter設定
 		rootSignatureDesc.NumParameters = _countof(rootParameters);

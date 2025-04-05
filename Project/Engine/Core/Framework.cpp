@@ -75,22 +75,20 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
 		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
 		graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
-
-	// testMeshShader
-	graphicsCore_->CreateMesh(asset_.get());
 }
 
 void Framework::InitDirectX(uint32_t width, uint32_t height) {
 
 	// directX初期化
 	graphicsCore_ = std::make_unique<GraphicsCore>();
-	graphicsCore_->Init(width, height, winApp_.get(),
-		cameraManager_.get());
+	graphicsCore_->Init(width, height, winApp_.get());
 
 	// asset機能初期化
 	asset_ = std::make_unique<Asset>();
 	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
 		graphicsCore_->GetSRVManager());
+
+	graphicsCore_->InitTemporary(asset_.get(), cameraManager_.get());
 }
 
 void Framework::InitComponent() {
@@ -107,13 +105,6 @@ void Framework::InitComponent() {
 	// material
 	materialManager_ = std::make_unique<MaterialManager>();
 	ComponentManager::GetInstance()->RegisterComponentManager(materialManager_.get());
-	// animation
-	animationComponentManager_ = std::make_unique<AnimationComponentManager>();
-	ComponentManager::GetInstance()->RegisterComponentManager(animationComponentManager_.get());
-	// model
-	modelComponentManager_ = std::make_unique<ModelComponentManager>();
-	modelComponentManager_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxShaderCompiler());
-	ComponentManager::GetInstance()->RegisterComponentManager(modelComponentManager_.get());
 
 	// 2D
 	// transform
@@ -130,7 +121,6 @@ void Framework::InitComponent() {
 	ComponentManager::GetInstance()->InitImGui(
 		// 3D
 		transform3DComponentManager_.get(), materialManager_.get(),
-		modelComponentManager_.get(),
 		// 2D
 		transform2DComponentManager_.get(), spriteMaterialManager_.get(),
 		spriteComponentManager_.get());
@@ -203,8 +193,6 @@ void Framework::Finalize() {
 	transform3DComponentManager_.reset();
 	transform2DComponentManager_.reset();
 	materialManager_.reset();
-	animationComponentManager_.reset();
-	modelComponentManager_.reset();
 	spriteComponentManager_.reset();
 
 	ComponentManager::GetInstance()->Finalize();

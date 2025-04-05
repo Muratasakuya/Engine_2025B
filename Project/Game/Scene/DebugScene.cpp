@@ -29,6 +29,7 @@ void DebugScene::Init(
 	asset->LoadTexture("uvChecker");
 
 	asset->LoadModel("teapot");
+	asset->LoadModel("multiMaterial");
 
 	//========================================================================
 	//	postProcess
@@ -58,7 +59,34 @@ void DebugScene::Init(
 	//	initObject
 	//========================================================================
 
-	GameObjectHelper::CreateObject3D("teapot", "teapot");
+	const uint32_t kNumObject = 1024;
+	const float offset = 6.0f;
+	const float offsetY = 4.0f;
+	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
+	for (uint32_t index = 0; index < kNumObject; ++index) {
+
+		EntityID id = GameObjectHelper::CreateObject3D("multiMaterial", "multiMaterial", "MultiMaterial");
+		auto transform = Component::GetComponent<Transform3DComponent>(id);
+
+		uint32_t x = index % gridSize;
+		uint32_t z = index / gridSize;
+
+		transform->translation.x = x * offset;
+		transform->translation.z = z * offset;
+	}
+
+	for (uint32_t index = 0; index < kNumObject; ++index) {
+
+		EntityID id = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot");
+		auto transform = Component::GetComponent<Transform3DComponent>(id);
+
+		uint32_t x = index % gridSize;
+		uint32_t z = index / gridSize;
+
+		transform->translation.x = x * offset;
+		transform->translation.y = offsetY;
+		transform->translation.z = z * offset;
+	}
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {

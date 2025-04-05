@@ -22,7 +22,8 @@ public:
 	MeshShaderPipelineState() = default;
 	~MeshShaderPipelineState() = default;
 
-	void Create(ID3D12Device8* device, class DxShaderCompiler* shaderCompiler);
+	void Create(ID3D12Device8* device, class DxShaderCompiler* shaderCompiler,
+		class SRVManager* srvManager);
 
 	//--------- accessor -----------------------------------------------------
 

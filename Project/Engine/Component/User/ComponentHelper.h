@@ -5,7 +5,6 @@
 //============================================================================
 #include <Engine/Component/Base/IComponent.h>
 #include <Engine/Component/TransformComponent.h>
-#include <Engine/Component/ModelComponent.h>
 #include <Engine/Component/AnimationComponent.h>
 #include <Engine/Component/SpriteComponent.h>
 #include <Engine/Core/Graphics/CBuffer/CBufferStructures.h>

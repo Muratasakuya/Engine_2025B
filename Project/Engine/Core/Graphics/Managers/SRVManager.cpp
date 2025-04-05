@@ -10,8 +10,6 @@
 //	SRVManager classMethods
 //============================================================================
 
-const uint32_t SRVManager::kMaxSRVCount_ = 512;
-
 void SRVManager::Init(ID3D12Device* device) {
 
 	device_ = nullptr;

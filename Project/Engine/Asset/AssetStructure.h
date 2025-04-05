@@ -94,6 +94,8 @@ struct ModelData {
 	std::vector<MeshModelData> meshes;
 	std::map<std::string, JointWeightData> skinClusterData;
 	Node rootNode;
+
+	std::string fullPath;
 };
 
 template <typename tValue>

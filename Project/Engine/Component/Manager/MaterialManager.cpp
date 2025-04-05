@@ -5,6 +5,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
@@ -22,16 +23,19 @@ void MaterialManager::AddComponent(EntityID entity, std::any args) {
 	entityToIndex_[entity] = index;
 	indexToEntity_.emplace_back(entity);
 
-	auto [meshNum] = std::any_cast<std::tuple<size_t>>(args);
+	auto [modelData, asset] =
+		std::any_cast<std::tuple<ModelData, Asset*>>(args);
 
 	// component追加
 	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
 
 	// 追加、ModelのMeshの数に合わせる
-	components_[entity].resize(meshNum);
-	for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
+	components_[entity].resize(modelData.meshes.size());
+	for (uint32_t meshIndex = 0; meshIndex < modelData.meshes.size(); ++meshIndex) {
 
 		components_[entity][meshIndex].Init();
+		components_[entity][meshIndex].textureIndex =
+			asset->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
 	}
 }
 

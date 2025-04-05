@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Mesh/InstancedMesh.h>
+#include <Engine/Core/Graphics/Mesh/MeshRegistry.h>
 #include <Engine/Component/SpriteComponent.h>
 
 // c++
@@ -16,13 +17,6 @@ using EntityID = uint32_t;
 //============================================================================
 
 // GPUに送るデータ
-struct Object3DForGPU {
-
-	DxConstBuffer<TransformationMatrix> matrix;
-	std::vector<DxConstBuffer<Material>> materials;
-	ModelReference model;
-};
-
 struct Object2DForGPU {
 
 	DxConstBuffer<Matrix4x4> matrix;
@@ -42,17 +36,13 @@ public:
 	RenderObjectManager() = default;
 	~RenderObjectManager() = default;
 
-	void Init(ID3D12Device* device, SRVManager* srvManager);
+	void Init(ID3D12Device* device, SRVManager* srvManager, Asset* asset);
 
 	void Update();
 
 	//--------- object3D -----------------------------------------------------
 
-	// 追加、作成処理
-	void CreateObject3D(EntityID id, const std::optional<std::string>& instancingName,
-		ModelComponent* model, ID3D12Device* device);
-	// 指定されたidのbuffer削除
-	void RemoveObject3D(EntityID id);
+	void CreateMesh(const std::string& modelName);
 
 	//--------- object2D -----------------------------------------------------
 
@@ -64,8 +54,11 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	// 3D
-	const std::vector<Object3DForGPU>& GetObject3DBuffers() const { return object3DBuffers_; }
-	const std::unordered_map<std::string, InstancingData>& GetInstancingData() const { return instancedMesh_->GetData(); }
+	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return instancedMesh_->GetInstancingData(); }
+
+	// meshの取得
+	Mesh* GetMesh(const std::string& name) const { return meshRegistry_->GetMesh(name); }
+	const std::unordered_map<std::string, std::unique_ptr<Mesh>>& GetMeshes() const { return meshRegistry_->GetMeshes(); }
 
 	// 2D
 	const std::vector<Object2DForGPU>& GetObject2DBuffers() const { return object2DBuffers_; }
@@ -77,18 +70,13 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// 3D
-	// 通常描画処理用
-	std::vector<Object3DForGPU> object3DBuffers_;
-	// instancing描画用
 	std::unique_ptr<InstancedMesh> instancedMesh_;
+	std::unique_ptr<MeshRegistry> meshRegistry_;
 
 	// 2D
 	std::vector<Object2DForGPU> object2DBuffers_;
 
 	// buffer管理
-	// 3D
-	std::unordered_map<EntityID, size_t> object3DBufferToIndex_;
-	std::vector<EntityID> indexToObject3DBuffer_;
 	// 2D
 	std::unordered_map<EntityID, size_t> object2DBufferToIndex_;
 	std::vector<EntityID> indexToObject2DBuffer_;
