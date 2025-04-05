@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Renderer/Managers/ObjectPipelineManager.h>
-#include <Engine/Core/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
 #include <Game/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Matrix4x4.h>

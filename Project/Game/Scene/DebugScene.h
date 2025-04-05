@@ -15,6 +15,7 @@
 // c++
 #include <memory>
 #include <vector>
+#include <bit>
 
 //============================================================================
 //	DebugScene class

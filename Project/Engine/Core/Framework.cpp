@@ -75,6 +75,9 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
 		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
 		graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
+
+	// testMeshShader
+	graphicsCore_->CreateMesh(asset_.get());
 }
 
 void Framework::InitDirectX(uint32_t width, uint32_t height) {

@@ -15,6 +15,9 @@
 
 // test
 #include <Engine/Test_MeshShader/MSInputAssembler.h>
+#include <Engine/Test_MeshShader/MSTestPipelineState.h>
+#include <Engine/Core/Graphics/Mesh/Mesh.h>
+#include <Engine/Core/Graphics/Mesh/MeshletBuilder.h>
 
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>
@@ -31,6 +34,7 @@
 // front
 class WinApp;
 class CameraManager;
+class Asset;
 
 //============================================================================
 //	GraphicsCore class
@@ -48,6 +52,10 @@ public:
 		WinApp* winApp, CameraManager* cameraManager);
 
 	void Finalize(HWND hwnd);
+
+	//--------- test -------------//
+
+	void CreateMesh(Asset* asset);
 
 	//--------- rendering ----------------------------------------------------
 
@@ -90,9 +98,23 @@ private:
 	//--------- test -------------//
 
 	CameraManager* cameraManager_;
+	Asset* asset_;
 
-	std::unique_ptr<MSInputAssembler> msTestInputAssembler_;
-	std::unique_ptr<DxConstBuffer<MSTestTransformationMatrix>> msTestTransform_;
+	//// MS ////
+	// transform
+	std::unique_ptr<DxConstBuffer<TransformationMatrix>> testTransformationMatrix_;
+	Transform3DComponent testWorldTransform_;
+	// viewProjection
+	std::unique_ptr<DxConstBuffer<Matrix4x4>> testViewProjection_;
+	// lightViewProjection
+	std::unique_ptr<DxConstBuffer<Matrix4x4>> testLightViewProjection_;
+	//// PS ////
+	// material
+	std::unique_ptr<DxConstBuffer<Material>> testMaterial_;
+	std::unique_ptr<DxConstBuffer<PunctualLight>> testLight_;
+	std::unique_ptr<DxConstBuffer<Vector3>> testCameraWorldPos_;
+
+	std::unique_ptr<Mesh> testMesh_;
 
 	//--------- directX ----------//
 

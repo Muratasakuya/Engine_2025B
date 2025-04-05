@@ -6,7 +6,7 @@
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Asset/TextureManager.h>
-#include <Engine/Core/Lib/Filesystem.h>
+#include <Engine/Asset/Filesystem.h>
 
 //============================================================================
 //	ModelManager classMethods

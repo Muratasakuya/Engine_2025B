@@ -10,6 +10,10 @@
 #include <Lib/MathUtils/Quaternion.h>
 #include <Engine/Core/Lib/ComPtr.h>
 
+// assimp
+#include <assimp/scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
 // directX
 #include <d3d12.h>
 // c++

@@ -8,7 +8,7 @@
 #include <Engine/Component/ModelComponent.h>
 #include <Engine/Component/AnimationComponent.h>
 #include <Engine/Component/SpriteComponent.h>
-#include <Engine/Core/Lib/CBufferStructures.h>
+#include <Engine/Core/Graphics/CBuffer/CBufferStructures.h>
 
 // c++
 #include <string>

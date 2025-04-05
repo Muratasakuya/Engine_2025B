@@ -86,8 +86,8 @@ void HorizonBlurForGPU::ImGuiWithBloom() {
 	ImGui::Text("HorizonBlur");
 
 	ImGui::PushItemWidth(itemWidth_);
-	ImGui::DragInt("radius##VerticalBlur", &radius, 1, 0, 48);
-	ImGui::DragFloat("sigma##VerticalBlur", &sigma, 0.01f);
+	ImGui::DragInt("radius##HorizonBlur", &radius, 1, 0, 48);
+	ImGui::DragFloat("sigma##HorizonBlur", &sigma, 0.01f);
 	ImGui::PopItemWidth();
 }
 

@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Core/Lib/Filesystem.h>
+#include <Engine/Asset/Filesystem.h>
 
 //============================================================================
 //	DxShaderCompiler classMethods
