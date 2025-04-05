@@ -8,7 +8,7 @@
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
 #include <Engine/Core/Lib/DxUtils.h>
 #include <Engine/Asset/ModelManager.h>
-#include <Engine/Core/Lib/Filesystem.h>
+#include <Engine/Asset/Filesystem.h>
 
 //============================================================================
 //	AnimationManager classMethods

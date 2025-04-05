@@ -6,6 +6,7 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
+#include <Engine/Component/User/ComponentHelper.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 // imgui
@@ -28,8 +29,8 @@ void DebugScene::Init(
 	asset->LoadTexture("uvChecker");
 	asset->LoadTexture("white");
 
+	//asset->LoadModel("bunny");
 	asset->LoadModel("teapot");
-	asset->LoadModel("plane");
 
 	//========================================================================
 	//	postProcess
@@ -59,9 +60,12 @@ void DebugScene::Init(
 	//	initObject
 	//========================================================================
 
-	object_ = std::make_unique<TemplateObject3D>();
+	//GameObjectHelper::CreateObject3D("bunny", "bunny", "Bunny");
+	GameObjectHelper::CreateObject3D("teapot", "teapot");
 
-	testEditor_ = std::make_unique<TestEditor>();
+	//object_ = std::make_unique<TemplateObject3D>();
+
+	//testEditor_ = std::make_unique<TestEditor>();
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -72,7 +76,5 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	gameCamera_->Update();
 
-	object_->Update();
-
-	LineRenderer::GetInstance()->DrawGrid(16, 16.0f, Color::White());
+	//object_->Update();
 }

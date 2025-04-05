@@ -5,10 +5,6 @@
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
 
-// assimp
-#include <Externals/assimp/include/assimp/Importer.hpp>
-#include <Externals/assimp/include/assimp/scene.h>
-#include <Externals/assimp/include/assimp/postprocess.h>
 // c++
 #include <unordered_map>
 // front
