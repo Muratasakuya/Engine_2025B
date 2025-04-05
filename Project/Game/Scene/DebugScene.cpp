@@ -27,9 +27,7 @@ void DebugScene::Init(
 	//========================================================================
 
 	asset->LoadTexture("uvChecker");
-	asset->LoadTexture("white");
 
-	//asset->LoadModel("bunny");
 	asset->LoadModel("teapot");
 
 	//========================================================================
@@ -60,12 +58,7 @@ void DebugScene::Init(
 	//	initObject
 	//========================================================================
 
-	//GameObjectHelper::CreateObject3D("bunny", "bunny", "Bunny");
 	GameObjectHelper::CreateObject3D("teapot", "teapot");
-
-	//object_ = std::make_unique<TemplateObject3D>();
-
-	//testEditor_ = std::make_unique<TestEditor>();
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -75,6 +68,4 @@ void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	//========================================================================
 
 	gameCamera_->Update();
-
-	//object_->Update();
 }

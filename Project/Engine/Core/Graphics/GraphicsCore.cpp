@@ -429,7 +429,7 @@ void GraphicsCore::RenderingTest() {
 
 	// texture
 	commandList->SetGraphicsRootDescriptorTable(7,
-		asset_->GetGPUHandle("checkerBoard"));
+		asset_->GetGPUHandle("uvChecker"));
 	// shadowMap
 	commandList->SetGraphicsRootDescriptorTable(8,
 		shadowMap_->GetGPUHandle());
