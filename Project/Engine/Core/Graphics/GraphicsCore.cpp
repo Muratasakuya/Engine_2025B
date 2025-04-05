@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Game/Camera/Manager/CameraManager.h>
@@ -56,6 +57,22 @@ void GraphicsCore::InitDXDevice() {
 		filter.DenyList.pSeverityList = severities;
 
 		infoQueue->PushStorageFilter(&filter);
+	}
+
+	// shaderModelのチェック
+	D3D12_FEATURE_DATA_SHADER_MODEL shaderModel = { D3D_SHADER_MODEL_6_5 };
+	auto hr = dxDevice_->Get()->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &shaderModel, sizeof(shaderModel));
+	if (FAILED(hr) || (shaderModel.HighestShaderModel < D3D_SHADER_MODEL_6_5)) {
+
+		ASSERT(FALSE, "shaderModel 6.5 is not supported");
+	}
+
+	// meshShaderに対応しているかチェック
+	D3D12_FEATURE_DATA_D3D12_OPTIONS7 features = {};
+	hr = dxDevice_->Get()->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS7, &features, sizeof(features));
+	if (FAILED(hr) || (features.MeshShaderTier == D3D12_MESH_SHADER_TIER_NOT_SUPPORTED)) {
+
+		ASSERT(FALSE, "meshShaders aren't supported");
 	}
 #endif
 }
@@ -158,13 +175,6 @@ void GraphicsCore::Init(uint32_t width, uint32_t height,
 	meshShaderPipeline_ = std::make_unique<MeshShaderPipelineState>();
 	meshShaderPipeline_->Create(device, dxShaderComplier_.get());
 
-	// msの頂点を初期化、テストコード
-	msTestInputAssembler_ = std::make_unique<MSInputAssembler>();
-	msTestInputAssembler_->Create(device, srvManager_.get());
-	// ms用のbuffer初期化
-	msTestTransform_ = std::make_unique<DxConstBuffer<MSTestTransformationMatrix>>();
-	msTestTransform_->CreateConstBuffer(device);
-
 	cameraManager_ = cameraManager;
 
 	// postProcessSystem初期化
@@ -197,6 +207,67 @@ void GraphicsCore::Finalize(HWND hwnd) {
 	postProcessManager_.reset();
 	meshRenderer_.reset();
 	spriteRenderer_.reset();
+}
+
+void GraphicsCore::CreateMesh(Asset* asset) {
+
+	asset_ = nullptr;
+	asset_ = asset;
+
+	MeshletBuilder meshletBuilder{};
+
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile("./Assets/Models/CG/teapot.obj", aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+
+	aiMesh* mesh = scene->mMeshes[0];
+
+	// 今回は指定して行う
+	ResourceMesh resourceMesh = meshletBuilder.ParseMesh(mesh);
+
+	auto device = dxDevice_->Get();
+
+	// meshBuffer作成
+	testMesh_ = std::make_unique<Mesh>();
+	testMesh_->Init(device, resourceMesh);
+
+	//------------------------------------------------------------------------
+	// buffer初期化
+
+	testTransformationMatrix_ = std::make_unique<DxConstBuffer<TransformationMatrix>>();
+	testTransformationMatrix_->CreateConstBuffer(device);
+
+	testViewProjection_ = std::make_unique<DxConstBuffer<Matrix4x4>>();
+	testViewProjection_->CreateConstBuffer(device);
+
+	testLightViewProjection_ = std::make_unique<DxConstBuffer<Matrix4x4>>();
+	testLightViewProjection_->CreateConstBuffer(device);
+
+	testMaterial_ = std::make_unique<DxConstBuffer<Material>>();
+	testMaterial_->CreateConstBuffer(device);
+
+	testLight_ = std::make_unique<DxConstBuffer<PunctualLight>>();
+	testLight_->CreateConstBuffer(device);
+
+	testCameraWorldPos_ = std::make_unique<DxConstBuffer<Vector3>>();
+	testCameraWorldPos_->CreateConstBuffer(device);
+
+	//------------------------------------------------------------------------
+	// buffer転送
+
+	TransformationMatrix matrix{};
+	testWorldTransform_.Init();
+	matrix.world = Matrix4x4::MakeIdentity4x4();
+	matrix.worldInverseTranspose = Matrix4x4::MakeIdentity4x4();
+	testTransformationMatrix_->TransferData(matrix);
+
+	PunctualLight light{};
+	light.Init();
+	testLight_->TransferData(light);
+
+	Material material{};
+	material.Init();
+	material.shadowRate = 1.0f;
+	testMaterial_->TransferData(material);
 }
 
 //============================================================================
@@ -288,6 +359,8 @@ void GraphicsCore::RenderDebugSceneRenderTexture() {
 	// 描画処理
 	Renderers(true);
 
+	RenderingTest();
+
 	// RenderTarget -> PixelShader
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
@@ -328,28 +401,49 @@ void GraphicsCore::Renderers(bool debugEnable) {
 
 void GraphicsCore::RenderingTest() {
 
-	// buffer転送
-	MSTestTransformationMatrix msTestTransform{};
-	msTestTransform.world = Matrix4x4::MakeIdentity4x4();
-	msTestTransform.viewProjection = cameraManager_->GetCamera()->GetViewProjectionMatrix();
+	// Y軸回転
+	testWorldTransform_.rotation = testWorldTransform_.rotation *
+		Quaternion::MakeRotateAxisAngleQuaternion(Vector3(0.0f, 1.0f, 0.0f), 0.01f);
 
-	msTestTransform_->TransferData(msTestTransform);
+	testWorldTransform_.UpdateMatrix();
+
+	// buffer転送
+	testTransformationMatrix_->TransferData(testWorldTransform_.matrix);
+	testViewProjection_->TransferData(cameraManager_->GetDebugCamera()->GetViewProjectionMatrix());
+	testLightViewProjection_->TransferData(cameraManager_->GetLightViewCamera()->GetViewProjectionMatrix());
+	testCameraWorldPos_->TransferData(cameraManager_->GetDebugCamera()->GetTransform().translation);
 
 	auto commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
 
+	// pipeline設定
 	commandList->SetGraphicsRootSignature(meshShaderPipeline_->GetRootSignature());
 	commandList->SetPipelineState(meshShaderPipeline_->GetPipelineState());
 
-	// buffers
-	commandList->SetGraphicsRootShaderResourceView(0,
-		msTestInputAssembler_->GetVertexResource()->GetGPUVirtualAddress());
-	commandList->SetGraphicsRootShaderResourceView(1,
-		msTestInputAssembler_->GetIndexResource()->GetGPUVirtualAddress());
-	commandList->SetGraphicsRootConstantBufferView(2,
-		msTestTransform_->GetResource()->GetGPUVirtualAddress());
+	// buffers: MS
+	commandList->SetGraphicsRootConstantBufferView(4,
+		testTransformationMatrix_->GetResource()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(5,
+		testViewProjection_->GetResource()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(6,
+		testLightViewProjection_->GetResource()->GetGPUVirtualAddress());
+
+	// texture
+	commandList->SetGraphicsRootDescriptorTable(7,
+		asset_->GetGPUHandle("checkerBoard"));
+	// shadowMap
+	commandList->SetGraphicsRootDescriptorTable(8,
+		shadowMap_->GetGPUHandle());
+
+	// buffers: PS
+	commandList->SetGraphicsRootConstantBufferView(9,
+		testMaterial_->GetResource()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(10,
+		testLight_->GetResource()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(11,
+		testCameraWorldPos_->GetResource()->GetGPUVirtualAddress());
 
 	// 実行
-	commandList->DispatchMesh(1, 1, 1);
+	testMesh_->Dispatch(commandList);
 }
 
 //============================================================================

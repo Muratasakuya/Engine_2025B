@@ -179,6 +179,7 @@ void PostProcessManager::RenderFrameBuffer(
 	// frameBufferへの描画
 	commandList->SetGraphicsRootSignature(pipeline->GetRootSignature());
 	commandList->SetPipelineState(pipeline->GetGraphicsPipeline());
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootDescriptorTable(0, frameBufferGPUHandle_);
 
 	const UINT vertexCount = 3;

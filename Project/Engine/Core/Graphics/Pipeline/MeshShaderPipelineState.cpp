@@ -12,62 +12,138 @@
 
 void MeshShaderPipelineState::Create(ID3D12Device8* device, DxShaderCompiler* shaderCompiler) {
 
-	// shaderModelのチェック
-	D3D12_FEATURE_DATA_SHADER_MODEL shaderModel = { D3D_SHADER_MODEL_6_5 };
-	auto hr = device->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &shaderModel, sizeof(shaderModel));
-	if (FAILED(hr) || (shaderModel.HighestShaderModel < D3D_SHADER_MODEL_6_5)) {
-
-		ASSERT(FALSE, "shaderModel 6.5 is not supported");
-	}
-
-	// meshShaderに対応しているかチェック
-	D3D12_FEATURE_DATA_D3D12_OPTIONS7 features = {};
-	hr = device->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS7, &features, sizeof(features));
-	if (FAILED(hr) || (features.MeshShaderTier == D3D12_MESH_SHADER_TIER_NOT_SUPPORTED)) {
-
-		ASSERT(FALSE, "meshShaders aren't supported");
-	}
-
 	// shaderCompile
 	{
 		shaderCompiler->CompileShader(
-			L"./Assets/Engine/Shaders/MS/Triangle.MS.hlsl", L"ms_6_5", msShaderBlob_);
+			L"./Assets/Engine/Shaders/MS/Basic.MS.hlsl", L"ms_6_5", msShaderBlob_);
 		shaderCompiler->CompileShader(
-			L"./Assets/Engine/Shaders/MS/Triangle.PS.hlsl", L"ps_6_0", psShaderBlob_);
+			L"./Assets/Engine/Shaders/MS/Basic.PS.hlsl", L"ps_6_0", psShaderBlob_);
 	}
+
+	HRESULT hr = S_OK;
 
 	// rootSignature作成
 	{
+		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
+
 		auto flag = D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS;
 		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
 		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
 		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
 
-		D3D12_ROOT_PARAMETER rootParameters[3];
-		rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-		rootParameters[0].Descriptor.ShaderRegister = 0;
-		rootParameters[0].Descriptor.RegisterSpace = 0;
-		rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
-
-		rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-		rootParameters[1].Descriptor.ShaderRegister = 1;
-		rootParameters[1].Descriptor.RegisterSpace = 0;
-		rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
-
-		rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-		rootParameters[2].Descriptor.ShaderRegister = 0;
-		rootParameters[2].Descriptor.RegisterSpace = 0;
-		rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
-
-		D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
-		rootSignatureDesc.NumParameters = _countof(rootParameters);
-		rootSignatureDesc.pParameters = rootParameters;
-		rootSignatureDesc.NumStaticSamplers = 0;
-		rootSignatureDesc.pStaticSamplers = nullptr;
 		rootSignatureDesc.Flags = flag;
 
-		ComPtr<ID3DBlob> signatureBlob;
-		ComPtr<ID3DBlob> errorBlob;
+		D3D12_ROOT_PARAMETER rootParameters[12]{};
+
+		//------------------------------------------------------------------------
+		// meshShaderRoot
+
+		// gVertices: SRV
+		rootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+		rootParameters[0].Descriptor.ShaderRegister = 0;
+		rootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
+		// gIndices: SRV
+		rootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+		rootParameters[1].Descriptor.ShaderRegister = 1;
+		rootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
+		// gMeshlets: SRV
+		rootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+		rootParameters[2].Descriptor.ShaderRegister = 2;
+		rootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
+		// gPrimitives: SRV
+		rootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+		rootParameters[3].Descriptor.ShaderRegister = 3;
+		rootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
+		// transform: CBV
+		rootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParameters[4].Descriptor.ShaderRegister = 0;
+		rootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
+		// CameraData: CBV
+		rootParameters[5].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParameters[5].Descriptor.ShaderRegister = 1;
+		rootParameters[5].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
+		// ShadowLight: CBV
+		rootParameters[6].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParameters[6].Descriptor.ShaderRegister = 2;
+		rootParameters[6].ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
+
+		//------------------------------------------------------------------------
+		// pixelShaderRoot
+
+		D3D12_DESCRIPTOR_RANGE textureDescriptorRange[1]{};
+		textureDescriptorRange[0].BaseShaderRegister = 0;
+		textureDescriptorRange[0].NumDescriptors = 1;
+		textureDescriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+		textureDescriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+		D3D12_DESCRIPTOR_RANGE shadowMapDescriptorRange[1]{};
+		shadowMapDescriptorRange[0].BaseShaderRegister = 1;
+		shadowMapDescriptorRange[0].NumDescriptors = 1;
+		shadowMapDescriptorRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+		shadowMapDescriptorRange[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+		// gTexture: DESCRIPTOR_TABLE
+		rootParameters[7].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		rootParameters[7].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		rootParameters[7].DescriptorTable.pDescriptorRanges = textureDescriptorRange;
+		rootParameters[7].DescriptorTable.NumDescriptorRanges = _countof(textureDescriptorRange);
+
+		// gShadowTexture: DESCRIPTOR_TABLE
+		rootParameters[8].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+		rootParameters[8].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+		rootParameters[8].DescriptorTable.pDescriptorRanges = shadowMapDescriptorRange;
+		rootParameters[8].DescriptorTable.NumDescriptorRanges = _countof(shadowMapDescriptorRange);
+
+		// Material: CBV
+		rootParameters[9].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParameters[9].Descriptor.ShaderRegister = 0;
+		rootParameters[9].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		// PunctualLight: CBV
+		rootParameters[10].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParameters[10].Descriptor.ShaderRegister = 1;
+		rootParameters[10].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		// Camera: CBV
+		rootParameters[11].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+		rootParameters[11].Descriptor.ShaderRegister = 2;
+		rootParameters[11].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		// rootParameter設定
+		rootSignatureDesc.NumParameters = _countof(rootParameters);
+		rootSignatureDesc.pParameters = rootParameters;
+
+		//------------------------------------------------------------------------
+		// staticSampler
+
+		D3D12_STATIC_SAMPLER_DESC staticSamplers[2]{};
+
+		// texture
+		staticSamplers[0].Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
+		staticSamplers[0].AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+		staticSamplers[0].ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
+		staticSamplers[0].MaxLOD = D3D12_FLOAT32_MAX;
+		staticSamplers[0].ShaderRegister = 0;
+		staticSamplers[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		// texture
+		staticSamplers[1].Filter = D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
+		staticSamplers[1].AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		staticSamplers[1].AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		staticSamplers[1].AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+		staticSamplers[1].ComparisonFunc = D3D12_COMPARISON_FUNC_GREATER;
+		staticSamplers[1].MaxLOD = D3D12_FLOAT32_MAX;
+		staticSamplers[1].ShaderRegister = 1;
+		staticSamplers[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
+
+		// Sampler設定
+		rootSignatureDesc.pStaticSamplers = staticSamplers;
+		rootSignatureDesc.NumStaticSamplers = _countof(staticSamplers);
+
+		ComPtr<ID3DBlob> signatureBlob = nullptr;
+		ComPtr<ID3DBlob> errorBlob = nullptr;
 		// バイナリをもとに生成
 		hr = D3D12SerializeRootSignature(&rootSignatureDesc,
 			D3D_ROOT_SIGNATURE_VERSION_1, &signatureBlob, &errorBlob);
@@ -84,20 +160,21 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device, DxShaderCompiler* sh
 	// rasterizer
 	{
 		rasterizerDesc_.FillMode = D3D12_FILL_MODE_SOLID;
-		rasterizerDesc_.CullMode = D3D12_CULL_MODE_NONE;
-		rasterizerDesc_.FrontCounterClockwise = FALSE;
-		rasterizerDesc_.DepthBias = D3D12_DEFAULT_DEPTH_BIAS;
-		rasterizerDesc_.DepthBiasClamp = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
-		rasterizerDesc_.SlopeScaledDepthBias = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+		rasterizerDesc_.CullMode = D3D12_CULL_MODE_BACK;
 		rasterizerDesc_.DepthClipEnable = FALSE;
-		rasterizerDesc_.MultisampleEnable = FALSE;
 		rasterizerDesc_.AntialiasedLineEnable = FALSE;
-		rasterizerDesc_.ForcedSampleCount = 0;
-		rasterizerDesc_.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
 	}
 
 	// RTBlend
 	{
+
+		/*renderTargetBlendStateDesc_.BlendEnable = true;
+		renderTargetBlendStateDesc_.SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		renderTargetBlendStateDesc_.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
+		renderTargetBlendStateDesc_.BlendOp = D3D12_BLEND_OP_ADD;
+		renderTargetBlendStateDesc_.SrcBlendAlpha = D3D12_BLEND_ZERO;
+		renderTargetBlendStateDesc_.DestBlendAlpha = D3D12_BLEND_ONE;
+		renderTargetBlendStateDesc_.BlendOpAlpha = D3D12_BLEND_OP_ADD;*/
 		renderTargetBlendStateDesc_ = {
 			 FALSE, FALSE,
 			D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
@@ -127,7 +204,7 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device, DxShaderCompiler* sh
 
 	// depthStencil
 	{
-		depthStencilDesc_.DepthEnable = FALSE;
+		depthStencilDesc_.DepthEnable = TRUE;
 		depthStencilDesc_.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
 		depthStencilDesc_.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
 		depthStencilDesc_.StencilEnable = FALSE;

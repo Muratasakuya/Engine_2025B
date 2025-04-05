@@ -6,4 +6,3 @@ EngineInformation:     load texture: uvChecker
 EngineInformation:     load texture: white
 EngineInformation:     load texture: checkerBoard
 EngineInformation:     load model: teapot
-EngineInformation:     load model: plane
