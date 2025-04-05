@@ -79,6 +79,8 @@ ModelData ModelManager::LoadModelFile(const std::string& filePath) {
 	std::vector<Vector2> texcoords; // テクスチャ座標
 	std::string line;               // ファイルから読んだ1行を格納するもの
 
+	modelData.fullPath = filePath; // フルパスを格納
+
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
 

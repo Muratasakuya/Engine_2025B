@@ -162,10 +162,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\ModelComponentManager.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Engine\Component\Manager\SpriteComponentManager.cpp">
       <SubType>
       </SubType>
@@ -191,6 +187,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\MeshletBuilder.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshRegistry.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -255,7 +255,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Component\ModelComponent.cpp" />
     <ClCompile Include="Engine\Component\TransformComponent.cpp" />
     <ClCompile Include="Engine\Core\Graphics\CBuffer\InputAssembler.cpp" />
     <ClCompile Include="Engine\Core\Graphics\CBuffer\IOVertexBuffer.cpp" />
@@ -384,10 +383,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Component\Manager\ModelComponentManager.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Engine\Component\Manager\SpriteComponentManager.h">
       <SubType>
       </SubType>
@@ -417,6 +412,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletStructures.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshRegistry.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -488,7 +487,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Component\ModelComponent.h" />
     <ClInclude Include="Engine\Component\TransformComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\CBuffer\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\CBuffer\InputAssembler.h" />

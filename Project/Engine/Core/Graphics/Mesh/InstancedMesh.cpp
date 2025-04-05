@@ -40,14 +40,14 @@ void InstancedMesh::CreateBuffers(const std::string& name) {
 		srvBufferDesc_.Buffer.NumElements = meshGroup.maxInstance;
 		srvBufferDesc_.Buffer.StructureByteStride = sizeof(TransformationMatrix);
 		// srv作成
-		srvManager_->CreateSRV(meshGroup.transformSrvIndex,
+		srvManager_->CreateSRV(meshGroup.matrixSrvIndex,
 			meshGroup.matrix.GetResource(), srvBufferDesc_);
 	}
 
 	// material
 	{
 		// meshの数だけ作成する
-		const size_t meshNum = meshGroup.model.meshNum;
+		const size_t meshNum = meshGroup.meshNum;
 		meshGroup.materialSrvIndices.resize(meshNum);
 		meshGroup.materials.resize(meshNum);
 		// componentの数もここで決める
@@ -55,7 +55,7 @@ void InstancedMesh::CreateBuffers(const std::string& name) {
 
 		// desc設定
 		srvBufferDesc_.Buffer.NumElements = meshGroup.maxInstance;
-		srvBufferDesc_.Buffer.StructureByteStride = sizeof(InstancingMaterial);
+		srvBufferDesc_.Buffer.StructureByteStride = sizeof(Material);
 
 		for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
@@ -69,7 +69,7 @@ void InstancedMesh::CreateBuffers(const std::string& name) {
 	}
 }
 
-void InstancedMesh::Create(const ModelComponent& modelComponent,
+void InstancedMesh::Create(Mesh* mesh,
 	const std::string& name, uint32_t numInstance) {
 
 	// すでにある場合は作成しない
@@ -79,18 +79,8 @@ void InstancedMesh::Create(const ModelComponent& modelComponent,
 
 	// 最大のinstance数設定
 	meshGroups_[name].maxInstance = numInstance;
-	// 描画を行うmodelの設定
-	meshGroups_[name].model.InputAssembler = modelComponent.model->GetIA();
-	meshGroups_[name].model.meshNum = modelComponent.model->GetMeshNum();
-	meshGroups_[name].model.textureGPUHandles.resize(meshGroups_[name].model.meshNum);
-	for (uint32_t meshIndex = 0; meshIndex < meshGroups_[name].model.meshNum; ++meshIndex) {
-
-		meshGroups_[name].model.textureGPUHandles[meshIndex] = modelComponent.model->GetTextureGPUHandle(meshIndex);
-	}
-	if (modelComponent.isAnimation) {
-		// animationは対応無し
-		ASSERT(FALSE, "unsupported skinnedAnimationMesh");
-	}
+	// 描画を行うrenderingDataの設定
+	meshGroups_[name].meshNum = mesh->GetMeshCount();
 
 	// bufferの作成
 	CreateBuffers(name);
@@ -103,9 +93,7 @@ void InstancedMesh::SetComponent(const std::string& name,
 
 	for (uint32_t meshIndex = 0; meshIndex < meshGroups_[name].materialComponents.size(); ++meshIndex) {
 
-		InstancingMaterial material{};
-		material.SetMaterial(materials[meshIndex]);
-		meshGroups_[name].materialComponents[meshIndex].emplace_back(material);
+		meshGroups_[name].materialComponents[meshIndex].emplace_back(materials[meshIndex]);
 	}
 
 	// instance数インクリメント
@@ -133,7 +121,7 @@ void InstancedMesh::Update() {
 
 		// buffer転送
 		meshGroup.matrix.TransferVectorData(meshGroup.matrixComponents);
-		for (uint32_t meshIndex = 0; meshIndex < meshGroup.model.meshNum; ++meshIndex) {
+		for (uint32_t meshIndex = 0; meshIndex < meshGroup.meshNum; ++meshIndex) {
 
 			meshGroup.materials[meshIndex].TransferVectorData(meshGroup.materialComponents[meshIndex]);
 		}
@@ -152,7 +140,7 @@ void InstancedMesh::Reset() {
 		// componentクリア
 		meshGroup.matrixComponents.clear();
 
-		for (uint32_t meshIndex = 0; meshIndex < meshGroup.model.meshNum; ++meshIndex) {
+		for (uint32_t meshIndex = 0; meshIndex < meshGroup.meshNum; ++meshIndex) {
 			if (meshGroup.materialComponents[meshIndex].size() != 0) {
 
 				meshGroup.materialComponents[meshIndex].clear();

@@ -18,7 +18,7 @@ EntityID EntityManager::CreateEntity(const std::string& name,
 	++nextId_;
 	std::string uniqueName = CheckName(name);
 
-	size_t index = entityInformations_.size();
+	EntityID index = static_cast<EntityID>(entityInformations_.size());
 	entityInformations_.emplace_back(EntityInformation{ uniqueName, groupName });
 	entityToIndex_[id] = index;
 	indexToEntity_.push_back(id);
@@ -33,8 +33,8 @@ void EntityManager::RemoveEntity(EntityID id) {
 	}
 
 	auto it = entityToIndex_.find(id);
-	size_t index = it->second;
-	size_t lastIndex = entityInformations_.size() - 1;
+	EntityID index = it->second;
+	EntityID lastIndex = static_cast<EntityID>(entityInformations_.size() - 1);
 
 	if (index != lastIndex) {
 
@@ -53,7 +53,7 @@ void EntityManager::RemoveEntity(EntityID id) {
 	entityToIndex_.erase(id);
 }
 
-size_t EntityManager::GetIndex(EntityID id) const {
+EntityID EntityManager::GetIndex(EntityID id) const {
 
 	if (Algorithm::Find(entityToIndex_, id, true)) {
 

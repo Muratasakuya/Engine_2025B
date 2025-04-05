@@ -11,85 +11,27 @@
 //	RenderObjectManager classMethods
 //============================================================================
 
-void RenderObjectManager::Init(ID3D12Device* device, SRVManager* srvManager) {
+void RenderObjectManager::Init(ID3D12Device* device, SRVManager* srvManager, Asset* asset) {
+
+	meshRegistry_ = std::make_unique<MeshRegistry>();
+	meshRegistry_->Init(device, asset);
 
 	instancedMesh_ = std::make_unique<InstancedMesh>();
 	instancedMesh_->Init(device, srvManager);
+
 }
 
-void RenderObjectManager::CreateObject3D(EntityID id, const std::optional<std::string>& instancingName,
-	ModelComponent* model, ID3D12Device* device) {
+void RenderObjectManager::CreateMesh(const std::string& modelName) {
 
-	size_t index = object3DBuffers_.size();
+	// meshの作成、登録
+	meshRegistry_->RegisterMesh(modelName);
 
-	object3DBufferToIndex_[id] = index;
-	indexToObject3DBuffer_.emplace_back(id);
+	// 最大instance数
+	const uint32_t kMaxInstanceNum = 4096;
 
-	object3DBuffers_.resize(std::max(static_cast<EntityID>(object3DBuffers_.size()), id + 1));
-
-	// instancing処理
-	if (instancingName.has_value()) {
-
-		// 最大instance数
-		const uint32_t kMaxInstanceNum = 4096;
-
-		// instancingデータ作成
-		instancedMesh_->Create(*model, *instancingName, kMaxInstanceNum);
-
-		object3DBuffers_[id].model.renderingData.instancingEnable = true;
-		object3DBuffers_[id].model.renderingData.instancingName = *instancingName;
-	}
-	// 通常描画処理
-	else {
-
-		// buffer作成
-		object3DBuffers_[id].matrix.CreateConstBuffer(device);
-
-		if (model->isAnimation) {
-
-			object3DBuffers_[id].materials.resize(model->animationModel->GetMeshNum());
-		} else {
-
-			object3DBuffers_[id].materials.resize(model->model->GetMeshNum());
-		}
-		for (auto& material : object3DBuffers_[id].materials) {
-
-			material.CreateConstBuffer(device);
-		}
-
-		// model情報の取得
-		object3DBuffers_[id].model.model = model->model.get();
-		object3DBuffers_[id].model.renderingData.instancingEnable = false;
-		object3DBuffers_[id].model.animationModel = model->animationModel.get();
-		object3DBuffers_[id].model.isAnimation = model->isAnimation;
-		object3DBuffers_[id].model.renderingData = model->renderingData;
-	}
-}
-
-void RenderObjectManager::RemoveObject3D(EntityID id) {
-
-	if (!Algorithm::Find(object3DBufferToIndex_, id)) {
-		return;
-	}
-
-	size_t index = object3DBufferToIndex_.at(id);
-	size_t lastIndex = object3DBuffers_.size() - 1;
-
-	if (index != lastIndex) {
-
-		// 末尾と交換
-		std::swap(object3DBuffers_[index], object3DBuffers_[lastIndex]);
-
-		// 交換されたentityIdを更新
-		EntityID movedEntityId = indexToObject3DBuffer_[lastIndex];
-		object3DBufferToIndex_[movedEntityId] = index;
-		indexToObject3DBuffer_[index] = movedEntityId;
-	}
-
-	// 末尾を削除
-	object3DBuffers_.pop_back();
-	indexToObject3DBuffer_.pop_back();
-	object3DBufferToIndex_.erase(id);
+	// instancingデータ作成
+	instancedMesh_->Create(meshRegistry_->GetMeshes().at(modelName).get(),
+		modelName, kMaxInstanceNum);
 }
 
 void RenderObjectManager::CreateObject2D(EntityID id, SpriteComponent* sprite, ID3D12Device* device) {
@@ -151,45 +93,25 @@ void RenderObjectManager::UpdateObject3D() {
 	instancedMesh_->Reset();
 
 	// entityごとのGPUデータ転送
-	for (size_t index = 0; index < indexToObject3DBuffer_.size(); ++index) {
-		EntityID id = indexToObject3DBuffer_[index];
+	for (EntityID index = 0; index < componentManager->GetEntityCount(ComponentType::Object3D); ++index) {
 
-		if (!object3DBuffers_[index].model.renderingData.instancingEnable) {
+		EntityID id = componentManager->GetEntityIndex(ComponentType::Object3D, index);
 
-			object3DBuffers_[index].matrix.TransferData(componentManager->GetComponent<Transform3DComponent>(id)->matrix);
+		std::vector<Material*> materialPtrs = componentManager->GetComponentList<Material>(id);
+		std::vector<Material> materials;
+		materials.reserve(materialPtrs.size());
 
-			for (uint32_t mIndex = 0; mIndex < object3DBuffers_[index].materials.size(); ++mIndex) {
+		for (const auto* mat : materialPtrs) {
 
-				object3DBuffers_[index].materials[mIndex].TransferData(*componentManager->GetComponent<Material>(id));
-			}
-		} else {
-
-			std::vector<Material*> materialPtrs = componentManager->GetComponentList<Material>(id);
-			std::vector<Material> materials;
-			materials.reserve(materialPtrs.size());
-
-			for (const auto* mat : materialPtrs) {
-
-				materials.emplace_back(*mat);
-			}
-
-			const ModelComponent* model = componentManager->GetComponent<ModelComponent>(id);
-			const Transform3DComponent* transform = componentManager->GetComponent<Transform3DComponent>(id);
-			TransformationMatrix matrix{};
-
-			matrix = transform->matrix;
-			// 描画しないのであればmatrixを0.0fにする
-			// modelを1個ごとに操作できないため
-			if (!model->renderingData.drawEnable) {
-
-				matrix.world = Matrix4x4::Zero();
-				matrix.worldInverseTranspose = Matrix4x4::Zero();
-			}
-
-			// bufferに送るデータをセット
-			instancedMesh_->SetComponent(object3DBuffers_[index].model.renderingData.instancingName,
-				matrix, materials);
+			materials.emplace_back(*mat);
 		}
+
+		const Transform3DComponent* transform = componentManager->GetComponent<Transform3DComponent>(id);
+		TransformationMatrix matrix{};
+
+		// bufferに送るデータをセット
+		instancedMesh_->SetComponent(transform->GetInstancingName(),
+			transform->matrix, materials);
 	}
 
 	instancedMesh_->Update();

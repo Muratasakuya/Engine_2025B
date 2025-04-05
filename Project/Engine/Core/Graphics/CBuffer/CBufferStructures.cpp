@@ -91,21 +91,6 @@ void Material::ImGui(float itemSize) {
 	ImGui::PopItemWidth();
 }
 
-void InstancingMaterial::SetMaterial(const Material& material) {
-
-	color = material.color;
-	enableLighting = material.enableLighting;
-	enableHalfLambert = material.enableHalfLambert;
-	enablePhongReflection = material.enablePhongReflection;
-	enableBlinnPhongReflection = material.enableBlinnPhongReflection;
-	shadowRate = material.shadowRate;
-	phongRefShininess = material.phongRefShininess;
-	specularColor = material.specularColor;
-	emissiveIntensity = material.emissiveIntensity;
-	emissionColor = material.emissionColor;
-	uvTransform = material.uvTransform;
-}
-
 void SpriteMaterial::Init() {
 
 	color = Color::White();

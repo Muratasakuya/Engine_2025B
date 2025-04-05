@@ -3,42 +3,36 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComPtr.h>
+#include <Engine/Core/Graphics/Mesh/Mesh.h>
 
-// directX
-#include <d3d12.h>
 // c++
-#include <cstdint>
+#include <string>
+#include <unordered_map>
+// front
+class Asset;
 
 //============================================================================
-//	SRVManager class
+//	MeshRegistry class
 //============================================================================
-class SRVManager {
+class MeshRegistry {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	SRVManager() = default;
-	~SRVManager() = default;
+	MeshRegistry() = default;
+	~MeshRegistry() = default;
 
-	void Init(ID3D12Device* device);
+	void Init(ID3D12Device* device, Asset* asset);
 
-	void CreateSRV(uint32_t& srvIndex, ID3D12Resource* resource,
-		const D3D12_SHADER_RESOURCE_VIEW_DESC& desc);
-
-	void CreateUAV(uint32_t& uavIndex, ID3D12Resource* resource,
-		const D3D12_UNORDERED_ACCESS_VIEW_DESC& desc);
-
-	void IncrementIndex();
+	// meshの登録
+	void RegisterMesh(const std::string& modelName);
 
 	//--------- accessor -----------------------------------------------------
 
-	uint32_t GetMaxSRVCount() const { return kMaxSRVCount_; }
-
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index);
-
-	ID3D12DescriptorHeap* GetDescriptorHeap() const { return descriptorHeap_.Get(); }
+	// meshの取得
+	Mesh* GetMesh(const std::string& name) const { return meshes_.at(name).get(); }
+	const std::unordered_map<std::string, std::unique_ptr<Mesh>>& GetMeshes() const { return meshes_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -47,17 +41,12 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	ID3D12Device* device_;
+	Asset* asset_;
 
-	const uint32_t kMaxSRVCount_ = 512;
-	uint32_t useIndex_;
-
-	ComPtr<ID3D12DescriptorHeap> descriptorHeap_;
-
-	uint32_t descriptorSize_;
+	std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes_;
 
 	//--------- functions ----------------------------------------------------
 
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32_t index);
-
-	uint32_t Allocate();
+	// meshletの作成
+	ResourceMesh CreateMeshlet(const std::string& modelName);
 };
