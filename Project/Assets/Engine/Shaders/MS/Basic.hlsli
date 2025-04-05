@@ -10,6 +10,7 @@ struct MSOutput {
 	float3 worldPosition : POSITION0;
 	float4 positionInLVP : TEXCOORD1;
 	float4 color : COLOR0;
+	uint instanceID : INSTANCEID;
 };
 
 //============================================================================

@@ -66,9 +66,9 @@ void ComponentManager::Init(ID3D12Device* device, ID3D12GraphicsCommandList* com
 }
 
 void ComponentManager::InitImGui(
+
 	// 3D
 	Transform3DManager* transform3DManager, MaterialManager* materialManager,
-	ModelComponentManager* modelComponentManager,
 	// 2D
 	Transform2DManager* transform2DManager, SpriteMaterialManager* spriteMaterialManager,
 	SpriteComponentManager* spriteComponentManager) {
@@ -78,7 +78,7 @@ void ComponentManager::InitImGui(
 	imguiComponentManager_->Init(
 		// 3D
 		entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)].get(), transform3DManager,
-		materialManager, modelComponentManager,
+		materialManager,
 		// 2D
 		entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)].get(), transform2DManager,
 		spriteMaterialManager, spriteComponentManager);
@@ -99,16 +99,20 @@ EntityID ComponentManager::CreateObject3D(
 	const std::optional<std::string>& groupName, const std::optional<std::string>& instancingName,
 	const std::optional<std::string>& animationName) {
 
+	animationName;
+
 	// entityID発行
 	EntityID id = entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName, groupName);
 
 	// object3Dに必要なcomponentを追加
 	AddComponent<Transform3DComponent>(id);
-	AddComponent<Material>(id, asset_->GetModelData(modelName).meshes.size());
-	AddComponent<AnimationComponent>(id, animationName, asset_);
-	AddComponent<ModelComponent>(id, modelName, animationName, device_, commandList_, asset_, srvManager_);
+
+	auto transform = GetComponent<Transform3DComponent>(id);
+	transform->SetInstancingName(instancingName.value_or(modelName));
+	AddComponent<Material>(id, asset_->GetModelData(modelName), asset_);
+
 	// buffer作成
-	renderObjectManager_->CreateObject3D(id, instancingName, GetComponent<ModelComponent>(id), device_);
+	renderObjectManager_->CreateMesh(modelName);
 
 	return id;
 }
@@ -134,13 +138,9 @@ void ComponentManager::RemoveObject3D(EntityID id) {
 	// idの削除
 	entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->RemoveEntity(id);
 
-	// buffer削除
-	renderObjectManager_->RemoveObject3D(id);
 	// object3Dで使用していたcomponentの削除
 	RemoveComponent<Transform3DComponent>(id);
 	RemoveComponent<Material>(id);
-	RemoveComponent<AnimationComponent>(id);
-	RemoveComponent<ModelComponent>(id);
 }
 
 void ComponentManager::RemoveObject2D(EntityID id) {

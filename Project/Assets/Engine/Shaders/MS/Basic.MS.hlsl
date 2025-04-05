@@ -19,10 +19,9 @@ struct MSInput {
 //	CBuffer
 //============================================================================
 
-cbuffer TransformationMatrix : register(b0) {
+cbuffer InstanceData : register(b0) {
 	
-	float4x4 world;
-	float4x4 worldInverseTranspose;
+	uint meshletCount;
 };
 
 cbuffer CameraData : register(b1) {
@@ -39,6 +38,12 @@ cbuffer ShadowLight : register(b2) {
 //	StructuredBuffer
 //============================================================================
 
+struct TransformationMatrix {
+	
+	float4x4 world;
+	float4x4 worldInverseTranspose;
+};
+
 struct Meshlet {
 	
 	uint vertexOffset;
@@ -52,6 +57,7 @@ StructuredBuffer<MSInput> gVertices : register(t0);
 StructuredBuffer<uint> gIndices : register(t1);
 StructuredBuffer<Meshlet> gMeshlets : register(t2);
 StructuredBuffer<uint> gPrimitives : register(t3);
+StructuredBuffer<TransformationMatrix> gTransforms : register(t4);
 
 //============================================================================
 //	Function
@@ -82,8 +88,17 @@ out vertices MSOutput verts[64], // 出力頂点
 out indices uint3 polys[126] // 出力三角形インデックス
 ) {
 	
+	// DispatchMesh での1次元グループID
+	uint groupIdx = groupId.x;
+	uint meshletIndex = groupIdx % meshletCount;
+	uint instanceIndex = groupIdx / meshletCount;
+	
 	// 現在のグループに対応するmeshletを取得
-	Meshlet meshlet = gMeshlets[groupId];
+	Meshlet meshlet = gMeshlets[meshletIndex];
+	
+	// インスタンスのワールド行列と逆転置行列を取得
+	float4x4 world = gTransforms[instanceIndex].world;
+	float3x3 worldInverseTranspose = (float3x3) gTransforms[instanceIndex].worldInverseTranspose;
 	
 	// メッシュシェーダーの出力数、頂点数、プリミティブ数を設定
 	SetMeshOutputCounts(meshlet.vertexCount, meshlet.primitiveCount);
@@ -110,13 +125,13 @@ out indices uint3 polys[126] // 出力三角形インデックス
 		output.texcoord = input.texcoord;
 		
 		// 法線
-		output.normal = normalize(mul(input.normal, (float3x3) worldInverseTranspose));
+		output.normal = mul(input.normal, worldInverseTranspose);
 		
 		// meshletの色
 		output.color = meshlet.color;
 	
-		output.worldPosition = mul(input.position, world).xyz;
-		float4 worldPos = float4(output.worldPosition, 1.0f);
+		float4 worldPos = mul(input.position, world);
+		output.worldPosition = worldPos.xyz;
 		
 		// lightView空間に変換
 		output.positionInLVP = mul(worldPos, lightViewProjection);

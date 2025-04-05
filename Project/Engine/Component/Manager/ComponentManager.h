@@ -7,7 +7,6 @@
 #include <Engine/Component/Manager/TransformManager.h>
 #include <Engine/Component/Manager/MaterialManager.h>
 #include <Engine/Component/Manager/AnimationComponentManager.h>
-#include <Engine/Component/Manager/ModelComponentManager.h>
 #include <Engine/Component/Manager/SpriteComponentManager.h>
 #include <Engine/Component/Manager/ImGuiComponentManager.h>
 #include <Lib/MathUtils/Algorithm.h>
@@ -57,7 +56,6 @@ public:
 	void InitImGui(
 		// 3D
 		Transform3DManager* transform3DManager, MaterialManager* materialManager,
-		ModelComponentManager* modelComponentManager,
 		// 2D
 		Transform2DManager* transform2DManager, SpriteMaterialManager* SpriteMaterialManager,
 		SpriteComponentManager* spriteComponentManager);
@@ -104,6 +102,7 @@ public:
 
 	// entityの数取得
 	EntityID GetEntityCount(ComponentType type) const { return entityManagers_[static_cast<uint32_t>(type)]->GetEntityCount(); }
+	EntityID GetEntityIndex(ComponentType type, EntityID id) const { return entityManagers_[static_cast<uint32_t>(type)]->GetIndex(id); }
 private:
 	//========================================================================
 	//	private Methods

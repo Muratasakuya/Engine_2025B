@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Renderer/Managers/ObjectPipelineManager.h>
+#include <Engine/Core/Graphics/Pipeline/MeshShaderPipelineState.h>
 #include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
 #include <Game/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
@@ -34,14 +35,14 @@ public:
 	MeshRenderer() = default;
 	~MeshRenderer() = default;
 
-	void Init(DxCommand* dxCommand, ID3D12Device* device,
+	void Init(DxCommand* dxCommand, ID3D12Device8* device,
 		ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler, SRVManager* srvManager,
 		RenderObjectManager* renderObjectManager, CameraManager* cameraManager);
 
 	void Update();
 
-	void RenderZPass();
-	void Render(bool debugEnable);
+	void ZPassRendering();
+	void Rendering(bool debugEnable, ID3D12GraphicsCommandList6* commandList);
 private:
 	//========================================================================
 	//	private Methods
@@ -58,6 +59,8 @@ private:
 
 	std::unique_ptr<ObjectPipelineManager> pipeline_;
 
+	std::unique_ptr<MeshShaderPipelineState> meshShaderPipeline_;
+
 	// buffer
 	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;
 	DxConstBuffer<Matrix4x4> lightViewProjectionBuffer_;
@@ -68,12 +71,4 @@ private:
 
 	PunctualLight light_;
 	DxConstBuffer<PunctualLight> lightBuffer_;
-
-	//--------- functions ----------------------------------------------------
-
-	void NormalZPassRendering();
-	void InstancingZPassRendering();
-
-	void NormalRendering(bool debugEnable);
-	void InstancingRendering(bool debugEnable);
 };

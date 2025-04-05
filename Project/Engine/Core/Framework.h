@@ -13,8 +13,6 @@
 // component
 #include <Engine/Component/Manager/TransformManager.h>
 #include <Engine/Component/Manager/MaterialManager.h>
-#include <Engine/Component/Manager/AnimationComponentManager.h>
-#include <Engine/Component/Manager/ModelComponentManager.h>
 #include <Engine/Component/Manager/SpriteComponentManager.h>
 
 // directX
@@ -60,8 +58,6 @@ private:
 	// 3D
 	std::unique_ptr<Transform3DManager> transform3DComponentManager_;
 	std::unique_ptr<MaterialManager> materialManager_;
-	std::unique_ptr<AnimationComponentManager> animationComponentManager_;
-	std::unique_ptr<ModelComponentManager> modelComponentManager_;
 
 	// 2D
 	std::unique_ptr<Transform2DManager> transform2DComponentManager_;

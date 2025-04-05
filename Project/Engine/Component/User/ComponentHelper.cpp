@@ -18,7 +18,6 @@ template std::vector<TYPE*> Component::GetComponentList<TYPE>(EntityID);
 // 3D
 INSTANTIATE_GET_COMPONENT(Transform3DComponent)
 INSTANTIATE_GET_COMPONENT(Material)
-INSTANTIATE_GET_COMPONENT(ModelComponent)
 INSTANTIATE_GET_COMPONENT(AnimationComponent)
 // 2D
 INSTANTIATE_GET_COMPONENT(Transform2DComponent)

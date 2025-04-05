@@ -4,16 +4,13 @@
 //	MeshletBuilder classMethods
 //============================================================================
 
-ResourceMesh MeshletBuilder::ParseMesh(const aiMesh* sourceMesh) {
+ResourceMesh MeshletBuilder::ParseMesh(const aiScene* scene) {
 
 	// 出力
 	ResourceMesh destinationMesh{};
 
-	// マテリアル番号を設定
-	destinationMesh.materialId = sourceMesh->mMaterialIndex;
-
 	// 頂点情報の設定
-	SetVertex(destinationMesh, sourceMesh);
+	SetVertex(destinationMesh, scene);
 
 	// 最適化処理
 	Optimize(destinationMesh);
@@ -24,106 +21,123 @@ ResourceMesh MeshletBuilder::ParseMesh(const aiMesh* sourceMesh) {
 	return destinationMesh;
 }
 
-void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const aiMesh* sourceMesh) {
+void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const aiScene* scene) {
 
-	// 頂点データ分メモリを確保する
-	destinationMesh.vertices.resize(sourceMesh->mNumVertices);
+	// meshの数
+	destinationMesh.meshCount_ = scene->mNumMeshes;
 
-	aiVector3D zeroVector = aiVector3D(0.0f, 0.0f, 0.0f);
-	for (uint32_t i = 0; i < sourceMesh->mNumVertices; ++i) {
+	// メモリをmesh数分確保する
+	destinationMesh.vertices.resize(scene->mNumMeshes);
+	destinationMesh.indices.resize(scene->mNumMeshes);
 
-		aiVector3D* pos = &(sourceMesh->mVertices[i]);
-		aiVector3D* normal = &(sourceMesh->mNormals[i]);
-		aiVector3D* texcoord = &(sourceMesh->mTextureCoords[0][i]);
+	// meshの数分
+	for (uint32_t meshIndex = 0; meshIndex < scene->mNumMeshes; ++meshIndex) {
 
-		// 頂点情報を格納
-		destinationMesh.vertices[i] = MeshVertex(
+		aiMesh* sourceMesh = scene->mMeshes[meshIndex];
 
-			Vector4(-pos->x, pos->y, pos->z, 1.0f),
-			Vector2(texcoord->x, texcoord->y),
-			Vector3(-normal->x, normal->y, normal->z));
-	}
+		// 頂点データ分メモリを確保する
+		destinationMesh.vertices[meshIndex].resize(sourceMesh->mNumVertices);
 
-	// 頂点インデックスのメモリを確保する
-	destinationMesh.indices.resize(sourceMesh->mNumFaces * 3);
+		aiVector3D zeroVector = aiVector3D(0.0f, 0.0f, 0.0f);
+		for (uint32_t i = 0; i < sourceMesh->mNumVertices; ++i) {
 
-	for (auto i = 0u; i < sourceMesh->mNumFaces; ++i) {
+			aiVector3D* pos = &(sourceMesh->mVertices[i]);
+			aiVector3D* normal = &(sourceMesh->mNormals[i]);
+			aiVector3D* texcoord = &(sourceMesh->mTextureCoords[0][i]);
 
-		const auto& face = sourceMesh->mFaces[i];
+			// 頂点情報を格納
+			destinationMesh.vertices[meshIndex][i] = MeshVertex(
 
-		destinationMesh.indices[i * 3 + 0] = face.mIndices[0];
-		destinationMesh.indices[i * 3 + 1] = face.mIndices[1];
-		destinationMesh.indices[i * 3 + 2] = face.mIndices[2];
+				Vector4(-pos->x, pos->y, pos->z, 1.0f),
+				Vector2(texcoord->x, texcoord->y),
+				Vector3(-normal->x, normal->y, normal->z));
+		}
+
+		// 頂点インデックスのメモリを確保する
+		destinationMesh.indices[meshIndex].resize(sourceMesh->mNumFaces * 3);
+
+		for (auto i = 0u; i < sourceMesh->mNumFaces; ++i) {
+
+			const auto& face = sourceMesh->mFaces[i];
+
+			destinationMesh.indices[meshIndex][i * 3 + 0] = face.mIndices[0];
+			destinationMesh.indices[meshIndex][i * 3 + 1] = face.mIndices[1];
+			destinationMesh.indices[meshIndex][i * 3 + 2] = face.mIndices[2];
+		}
 	}
 }
 
 void MeshletBuilder::Optimize(ResourceMesh& destinationMesh) {
 
-	std::vector<uint32_t> remap(destinationMesh.indices.size());
+	// meshの数分
+	for (uint32_t meshIndex = 0; meshIndex < destinationMesh.meshCount_; ++meshIndex) {
 
-	// 重複データを削除するための再マッピング用インデックスを生成
-	auto vertexCount = meshopt_generateVertexRemap(
+		std::vector<uint32_t> remap(destinationMesh.indices[meshIndex].size());
 
-		remap.data(),
-		destinationMesh.indices.data(),
-		destinationMesh.indices.size(),
-		destinationMesh.vertices.data(),
-		destinationMesh.vertices.size(),
-		sizeof(MeshVertex));
+		// 重複データを削除するための再マッピング用インデックスを生成
+		auto vertexCount = meshopt_generateVertexRemap(
 
-	std::vector<MeshVertex> vertices(vertexCount);
-	std::vector<uint32_t> indices(destinationMesh.indices.size());
+			remap.data(),
+			destinationMesh.indices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].size(),
+			destinationMesh.vertices[meshIndex].data(),
+			destinationMesh.vertices[meshIndex].size(),
+			sizeof(MeshVertex));
 
-	// 頂点インデックスを再マッピング
-	meshopt_remapIndexBuffer(
+		std::vector<MeshVertex> vertices(vertexCount);
+		std::vector<uint32_t> indices(destinationMesh.indices[meshIndex].size());
 
-		indices.data(),
-		destinationMesh.indices.data(),
-		destinationMesh.indices.size(),
-		remap.data());
+		// 頂点インデックスを再マッピング
+		meshopt_remapIndexBuffer(
 
-	// 頂点データを再マッピング
-	meshopt_remapVertexBuffer(
+			indices.data(),
+			destinationMesh.indices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].size(),
+			remap.data());
 
-		vertices.data(),
-		destinationMesh.vertices.data(),
-		destinationMesh.vertices.size(),
-		sizeof(MeshVertex),
-		remap.data());
+		// 頂点データを再マッピング
+		meshopt_remapVertexBuffer(
 
-	// 不要になったメモリを解放
-	remap.clear();
-	remap.shrink_to_fit();
+			vertices.data(),
+			destinationMesh.vertices[meshIndex].data(),
+			destinationMesh.vertices[meshIndex].size(),
+			sizeof(MeshVertex),
+			remap.data());
 
-	// 最適化したサイズにメモリ量を減らす
-	destinationMesh.indices.resize(indices.size());
-	destinationMesh.vertices.resize(vertices.size());
+		// 不要になったメモリを解放
+		remap.clear();
+		remap.shrink_to_fit();
 
-	// 頂点キャッシュ最適化
-	meshopt_optimizeVertexCache(
+		// 最適化したサイズにメモリ量を減らす
+		destinationMesh.indices[meshIndex].resize(indices.size());
+		destinationMesh.vertices[meshIndex].resize(vertices.size());
 
-		destinationMesh.indices.data(),
-		indices.data(),
-		indices.size(),
-		vertexCount);
+		// 頂点キャッシュ最適化
+		meshopt_optimizeVertexCache(
 
-	// 不要になったメモリを解放
-	indices.clear();
-	indices.shrink_to_fit();
+			destinationMesh.indices[meshIndex].data(),
+			indices.data(),
+			indices.size(),
+			vertexCount);
 
-	// 頂点フェッチ最適化
-	meshopt_optimizeVertexFetch(
+		// 不要になったメモリを解放
+		indices.clear();
+		indices.shrink_to_fit();
 
-		destinationMesh.vertices.data(),
-		destinationMesh.indices.data(),
-		destinationMesh.indices.size(),
-		vertices.data(),
-		vertices.size(),
-		sizeof(MeshVertex));
+		// 頂点フェッチ最適化
+		meshopt_optimizeVertexFetch(
 
-	// 不要になったメモリを解放
-	vertices.clear();
-	vertices.shrink_to_fit();
+			destinationMesh.vertices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].size(),
+			vertices.data(),
+			vertices.size(),
+			sizeof(MeshVertex));
+
+		// 不要になったメモリを解放
+		vertices.clear();
+		vertices.shrink_to_fit();
+	}
 }
 
 void MeshletBuilder::CreateMeshlet(ResourceMesh& destinationMesh) {
@@ -132,93 +146,103 @@ void MeshletBuilder::CreateMeshlet(ResourceMesh& destinationMesh) {
 	const size_t kMaxVertices = 64;
 	const size_t kMaxPrimitives = 124;
 
-	// メッシュレット最大数の計算
-	size_t maxMeshlets = meshopt_buildMeshletsBound(
-		destinationMesh.indices.size(),
-		kMaxVertices,
-		kMaxPrimitives);
+	// メモリをmesh数分確保する
+	destinationMesh.uniqueVertexIndices.resize(destinationMesh.meshCount_);
+	destinationMesh.primitiveIndices.resize(destinationMesh.meshCount_);
+	destinationMesh.meshlets.resize(destinationMesh.meshCount_);
 
-	// メッシュレットと補助バッファの確保
-	std::vector<meshopt_Meshlet> meshlets(maxMeshlets);
-	std::vector<unsigned int> meshletVertices(maxMeshlets * kMaxVertices);
-	std::vector<unsigned char> meshletTriangles(maxMeshlets * kMaxPrimitives);
+	// meshの数分
+	for (uint32_t meshIndex = 0; meshIndex < destinationMesh.meshCount_; ++meshIndex) {
 
-	// メッシュレット構築
-	size_t meshletCount = meshopt_buildMeshlets(
-		meshlets.data(),
-		meshletVertices.data(),
-		meshletTriangles.data(),
-		destinationMesh.indices.data(),
-		destinationMesh.indices.size(),
-		reinterpret_cast<const float*>(destinationMesh.vertices.data()),
-		destinationMesh.vertices.size(),
-		sizeof(MeshVertex),
-		kMaxVertices,
-		kMaxPrimitives,
-		0.0f);
+		// メッシュレット最大数の計算
+		size_t maxMeshlets = meshopt_buildMeshletsBound(
+			destinationMesh.indices[meshIndex].size(),
+			kMaxVertices,
+			kMaxPrimitives);
 
-	meshlets.resize(meshletCount);
+		// メッシュレットと補助バッファの確保
+		std::vector<meshopt_Meshlet> meshlets(maxMeshlets);
+		std::vector<unsigned int> meshletVertices(maxMeshlets * kMaxVertices);
+		std::vector<unsigned char> meshletTriangles(maxMeshlets * kMaxPrimitives);
 
-	// メモリ予約
-	destinationMesh.uniqueVertexIndices.reserve(meshletCount * kMaxVertices);
-	destinationMesh.primitiveIndices.reserve(meshletCount * kMaxPrimitives);
+		// メッシュレット構築
+		size_t meshletCount = meshopt_buildMeshlets(
+			meshlets.data(),
+			meshletVertices.data(),
+			meshletTriangles.data(),
+			destinationMesh.indices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].size(),
+			reinterpret_cast<const float*>(destinationMesh.vertices[meshIndex].data()),
+			destinationMesh.vertices[meshIndex].size(),
+			sizeof(MeshVertex),
+			kMaxVertices,
+			kMaxPrimitives,
+			0.0f);
 
-	// メッシュレットごとにデータを登録
-	for (size_t i = 0; i < meshletCount; ++i) {
+		meshlets.resize(meshletCount);
 
-		const meshopt_Meshlet& meshlet = meshlets[i];
+		// メモリ予約
+		destinationMesh.uniqueVertexIndices[meshIndex].reserve(meshletCount * kMaxVertices);
+		destinationMesh.primitiveIndices[meshIndex].reserve(meshletCount * kMaxPrimitives);
 
-		uint32_t vertexOffset = static_cast<uint32_t>(destinationMesh.uniqueVertexIndices.size());
-		uint32_t primitiveOffset = static_cast<uint32_t>(destinationMesh.primitiveIndices.size());
+		// メッシュレットごとにデータを登録
+		for (size_t i = 0; i < meshletCount; ++i) {
 
-		// 頂点インデックスの登録
-		for (size_t j = 0; j < meshlet.vertex_count; ++j) {
-			unsigned int index = meshletVertices[meshlet.vertex_offset + j];
-			destinationMesh.uniqueVertexIndices.push_back(index);
+			const meshopt_Meshlet& meshlet = meshlets[i];
+
+			uint32_t vertexOffset = static_cast<uint32_t>(destinationMesh.uniqueVertexIndices[meshIndex].size());
+			uint32_t primitiveOffset = static_cast<uint32_t>(destinationMesh.primitiveIndices[meshIndex].size());
+
+			// 頂点インデックスの登録
+			for (size_t j = 0; j < meshlet.vertex_count; ++j) {
+
+				unsigned int index = meshletVertices[meshlet.vertex_offset + j];
+				destinationMesh.uniqueVertexIndices[meshIndex].push_back(index);
+			}
+
+			// 三角形インデックスの登録、インデックス3つで1三角形
+			for (size_t j = 0; j < meshlet.triangle_count; ++j) {
+
+				size_t triBase = meshlet.triangle_offset + j * 3;
+
+				ResourcePrimitiveIndex tris{};
+				tris.index0 = meshletTriangles[triBase + 0];
+				tris.index1 = meshletTriangles[triBase + 1];
+				tris.index2 = meshletTriangles[triBase + 2];
+
+				destinationMesh.primitiveIndices[meshIndex].push_back(tris);
+			}
+
+			// メッシュレット情報を登録
+			ResourceMeshlet resourceMeshlet = {};
+			resourceMeshlet.vertexCount = meshlet.vertex_count;
+			resourceMeshlet.vertexOffset = vertexOffset;
+			resourceMeshlet.primitiveCount = meshlet.triangle_count;
+			resourceMeshlet.primitiveOffset = primitiveOffset;
+
+			std::vector<Color> colors = {
+
+				{1.0f, 1.0f, 1.0f, 1.0f }, // 白
+				{ 0.5f, 0.5f, 1.0f, 1.0f }, // 水色
+				{ 1.0f, 0.5f, 1.0f, 1.0f }, // ピンク
+				{1.0f, 0.0f, 0.0f, 1.0f}, // 赤
+				{0.0f, 1.0f, 0.0f, 1.0f}, // 緑
+				{0.0f, 0.0f, 1.0f, 1.0f}, // 青
+				{1.0f, 1.0f, 0.0f, 1.0f}, // 黄
+				{0.0f, 1.0f, 1.0f, 1.0f}, // シアン
+				{1.0f, 0.0f, 1.0f, 1.0f}, // マゼンタ
+				{1.0f, 0.5f, 0.0f, 1.0f}, // オレンジ
+			};
+
+			// meshletの色を指定
+			resourceMeshlet.color = colors[i % colors.size()];
+
+			destinationMesh.meshlets[meshIndex].push_back(resourceMeshlet);
 		}
 
-		// 三角形インデックスの登録、インデックス3つで1三角形
-		for (size_t j = 0; j < meshlet.triangle_count; ++j) {
-
-			size_t triBase = meshlet.triangle_offset + j * 3;
-
-			ResourcePrimitiveIndex tris{};
-			tris.index0 = meshletTriangles[triBase + 0];
-			tris.index1 = meshletTriangles[triBase + 1];
-			tris.index2 = meshletTriangles[triBase + 2];
-
-			destinationMesh.primitiveIndices.push_back(tris);
-		}
-
-		// メッシュレット情報を登録
-		ResourceMeshlet resourceMeshlet = {};
-		resourceMeshlet.vertexCount = meshlet.vertex_count;
-		resourceMeshlet.vertexOffset = vertexOffset;
-		resourceMeshlet.primitiveCount = meshlet.triangle_count;
-		resourceMeshlet.primitiveOffset = primitiveOffset;
-
-		std::vector<Color> colors = {
-
-			{1.0f, 1.0f, 1.0f, 1.0f }, // 白
-			{ 0.5f, 0.5f, 1.0f, 1.0f }, // 水色
-			{ 1.0f, 0.5f, 1.0f, 1.0f }, // ピンク
-			{1.0f, 0.0f, 0.0f, 1.0f}, // 赤
-			{0.0f, 1.0f, 0.0f, 1.0f}, // 緑
-			{0.0f, 0.0f, 1.0f, 1.0f}, // 青
-			{1.0f, 1.0f, 0.0f, 1.0f}, // 黄
-			{0.0f, 1.0f, 1.0f, 1.0f}, // シアン
-			{1.0f, 0.0f, 1.0f, 1.0f}, // マゼンタ
-			{1.0f, 0.5f, 0.0f, 1.0f}, // オレンジ
-		};
-
-		// meshletの色を指定
-		resourceMeshlet.color = colors[i % colors.size()];
-
-		destinationMesh.meshlets.push_back(resourceMeshlet);
+		// サイズを実際の使用量に合わせて最適化
+		destinationMesh.uniqueVertexIndices.shrink_to_fit();
+		destinationMesh.primitiveIndices.shrink_to_fit();
+		destinationMesh.meshlets.shrink_to_fit();
 	}
-
-	// サイズを実際の使用量に合わせて最適化
-	destinationMesh.uniqueVertexIndices.shrink_to_fit();
-	destinationMesh.primitiveIndices.shrink_to_fit();
-	destinationMesh.meshlets.shrink_to_fit();
 }

@@ -49,13 +49,11 @@ public:
 	~GraphicsCore() = default;
 
 	void Init(uint32_t width, uint32_t height,
-		WinApp* winApp, CameraManager* cameraManager);
+		WinApp* winApp);
+
+	void InitTemporary(class Asset* asset, CameraManager* cameraManager);
 
 	void Finalize(HWND hwnd);
-
-	//--------- test -------------//
-
-	void CreateMesh(Asset* asset);
 
 	//--------- rendering ----------------------------------------------------
 
@@ -95,27 +93,6 @@ private:
 
 	Color windowClearColor_;
 
-	//--------- test -------------//
-
-	CameraManager* cameraManager_;
-	Asset* asset_;
-
-	//// MS ////
-	// transform
-	std::unique_ptr<DxConstBuffer<TransformationMatrix>> testTransformationMatrix_;
-	Transform3DComponent testWorldTransform_;
-	// viewProjection
-	std::unique_ptr<DxConstBuffer<Matrix4x4>> testViewProjection_;
-	// lightViewProjection
-	std::unique_ptr<DxConstBuffer<Matrix4x4>> testLightViewProjection_;
-	//// PS ////
-	// material
-	std::unique_ptr<DxConstBuffer<Material>> testMaterial_;
-	std::unique_ptr<DxConstBuffer<PunctualLight>> testLight_;
-	std::unique_ptr<DxConstBuffer<Vector3>> testCameraWorldPos_;
-
-	std::unique_ptr<Mesh> testMesh_;
-
 	//--------- directX ----------//
 
 	std::unique_ptr<DxDevice> dxDevice_;
@@ -146,14 +123,9 @@ private:
 
 	std::unique_ptr<PipelineState> offscreenPipeline_;
 
-	std::unique_ptr<MeshShaderPipelineState> meshShaderPipeline_;
-
 	std::unique_ptr<RenderObjectManager> renderObjectManager_;
 
 	//--------- functions ----------------------------------------------------
-
-	// test //
-	void RenderingTest();
 
 	void InitDXDevice();
 

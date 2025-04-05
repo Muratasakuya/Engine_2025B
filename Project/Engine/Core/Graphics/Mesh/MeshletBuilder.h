@@ -26,7 +26,7 @@ public:
 	MeshletBuilder() = default;
 	~MeshletBuilder() = default;
 
-	ResourceMesh ParseMesh(const aiMesh* sourceMesh);
+	ResourceMesh ParseMesh(const aiScene* scene);
 
 private:
 	//========================================================================
@@ -36,7 +36,7 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// 頂点設定
-	void SetVertex(ResourceMesh& destinationMesh, const aiMesh* sourceMesh);
+	void SetVertex(ResourceMesh& destinationMesh, const aiScene* scene);
 
 	// 最適化処理
 	void Optimize(ResourceMesh& destinationMesh);
