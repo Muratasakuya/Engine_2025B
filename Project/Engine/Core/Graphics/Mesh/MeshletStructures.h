@@ -48,12 +48,13 @@ struct ResourcePrimitiveIndex {
 // 上記のデータを格納
 struct ResourceMesh {
 
-	std::vector<MeshVertex> vertices;
-	std::vector<uint32_t> indices;
+	// mesh数
+	size_t meshCount_;
 
-	uint32_t materialId;
+	std::vector<std::vector<MeshVertex>> vertices;
+	std::vector<std::vector<uint32_t>> indices;
 
-	std::vector<ResourceMeshlet> meshlets;
-	std::vector<uint32_t> uniqueVertexIndices;
-	std::vector<ResourcePrimitiveIndex> primitiveIndices;
+	std::vector<std::vector<ResourceMeshlet>> meshlets;
+	std::vector<std::vector<uint32_t>> uniqueVertexIndices;
+	std::vector<std::vector<ResourcePrimitiveIndex>> primitiveIndices;
 };

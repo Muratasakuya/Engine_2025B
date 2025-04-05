@@ -17,21 +17,6 @@ struct PSOutput {
 //	CBuffer
 //============================================================================
 
-cbuffer Material : register(b0) {
-
-	float4 color;
-	int enableLighting;
-	int enableHalfLambert;
-	int enablePhongReflection;
-	int enableBlinnPhongReflection;
-	float shadowRate;
-	float shininess;
-	float3 specularColor;
-	float emissiveIntensity;
-	float3 emissionColor;
-	float4x4 uvTransform;
-};
-
 cbuffer PunctualLight : register(b1) {
 	
 	DirectionalLight directionalLight;
@@ -45,11 +30,33 @@ cbuffer Camera : register(b2) {
 };
 
 //============================================================================
+//	StructuredBuffer
+//============================================================================
+
+struct Material {
+
+	float4 color;
+	uint textureIndex;
+	int enableLighting;
+	int enableHalfLambert;
+	int enablePhongReflection;
+	int enableBlinnPhongReflection;
+	float shadowRate;
+	float shininess;
+	float3 specularColor;
+	float emissiveIntensity;
+	float3 emissionColor;
+	float4x4 uvTransform;
+};
+
+StructuredBuffer<Material> gMaterials : register(t0);
+
+//============================================================================
 //	Texture Sampler
 //============================================================================
 
-Texture2D<float4> gTexture : register(t0);
-Texture2D<float3> gShadowTexture : register(t1);
+Texture2D<float4> gTextures[] : register(t1, space0);
+Texture2D<float3> gShadowTexture : register(t2, space1);
 
 SamplerState gSampler : register(s0);
 SamplerComparisonState gShadowSampler : register(s1);
@@ -61,31 +68,34 @@ PSOutput main(MSOutput input) {
 	
 	PSOutput output;
 	
-	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), uvTransform);
-	float4 textureColor = gTexture.Sample(gSampler, transformUV.xy);
+	// instanceIdÅAPixelÇ≤Ç∆ÇÃèàóù
+	uint id = input.instanceID;
+
+	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterials[id].uvTransform);
+	float4 textureColor = gTextures[gMaterials[id].textureIndex].Sample(gSampler, transformUV.xy);
 	
 	//========================================================================*/
 	//* Lighting *//
 	
-	if (enableLighting == 1) {
+	if (gMaterials[id].enableLighting == 1) {
 		
-		if (enableHalfLambert == 1) {
+		if (gMaterials[id].enableHalfLambert == 1) {
 
 			float NdotL = dot(normalize(input.normal), normalize(-directionalLight.direction));
 			float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
 			
 			// rgb
-			output.color.rgb = color.rgb * textureColor.rgb * directionalLight.color.rgb * cos * directionalLight.intensity;
+			output.color.rgb = gMaterials[id].color.rgb * textureColor.rgb * directionalLight.color.rgb * cos * directionalLight.intensity;
 		} else {
 
 			float cos = saturate(dot(normalize(input.normal), -directionalLight.direction));
 			
 			// rgb
 			output.color.rgb =
-			color.rgb * textureColor.rgb * directionalLight.color.rgb * cos * directionalLight.intensity;
+			gMaterials[id].color.rgb * textureColor.rgb * directionalLight.color.rgb * cos * directionalLight.intensity;
 		}
 		
-		if (enablePhongReflection == 1) {
+		if (gMaterials[id].enablePhongReflection == 1) {
 			
 			// PointLightÇÃì¸éÀåı
 			float3 pointLightDirection = normalize(input.worldPosition - pointLight.pos);
@@ -108,15 +118,15 @@ PSOutput main(MSOutput input) {
 			// ì¸éÀåıÇÃîΩéÀÉxÉNÉgÉãÇÃåvéZ
 			float3 reflectPointLight = reflect(pointLightDirection, normalize(input.normal));
 			float RdotEPointLight = dot(reflectPointLight, toEye);
-			float specularPowPointLight = pow(saturate(RdotEPointLight), shininess);
+			float specularPowPointLight = pow(saturate(RdotEPointLight), gMaterials[id].shininess);
 			float NdotLPointLight = dot(normalize(input.normal), -pointLightDirection);
 			float cosPointLight = pow(NdotLPointLight * 0.5f + 0.5f, 2.0f);
 			// ägéUîΩéÀ
 			float3 diffusePointLight =
-			color.rgb * textureColor.rgb * pointLight.color.rgb * cosPointLight * pointLight.intensity * factorPointLight;
+			gMaterials[id].color.rgb * textureColor.rgb * pointLight.color.rgb * cosPointLight * pointLight.intensity * factorPointLight;
 			// ãæñ îΩéÀ
 			float3 specularPointLight =
-			pointLight.color.rgb * pointLight.intensity * factorPointLight * specularPowPointLight * specularColor;
+			pointLight.color.rgb * pointLight.intensity * factorPointLight * specularPowPointLight * gMaterials[id].specularColor;
 			
 			/*-------------------------------------------------------------------------------------------------*/
 			/// SpotLight
@@ -124,17 +134,17 @@ PSOutput main(MSOutput input) {
 			// ì¸éÀåıÇÃîΩéÀÉxÉNÉgÉãÇÃåvéZ
 			float3 reflectSpotLight = reflect(spotLightDirectionOnSurface, normalize(input.normal));
 			float RdotESpotLight = dot(reflectSpotLight, toEye);
-			float specularPowSpotLight = pow(saturate(RdotESpotLight), shininess);
+			float specularPowSpotLight = pow(saturate(RdotESpotLight), gMaterials[id].shininess);
 			float NdotLSpotLight = dot(normalize(input.normal), -spotLightDirectionOnSurface);
 			float cosSpotLight = pow(NdotLSpotLight * 0.5f + 0.5f, 2.0f);
 			float cosAngle = dot(spotLightDirectionOnSurface, spotLight.direction);
 			float falloffFactor = saturate((cosAngle - spotLight.cosAngle) / (spotLight.cosFalloffStart - spotLight.cosAngle));
 			// ägéUîΩéÀ
 			float3 diffuseSpotLight =
-			color.rgb * textureColor.rgb * spotLight.color.rgb * cosSpotLight * spotLight.intensity * factorSpotLight * falloffFactor;
+			gMaterials[id].color.rgb * textureColor.rgb * spotLight.color.rgb * cosSpotLight * spotLight.intensity * factorSpotLight * falloffFactor;
 			// ãæñ îΩéÀ
 			float3 specularSpotLight =
-			spotLight.color.rgb * spotLight.intensity * factorSpotLight * falloffFactor * specularPowSpotLight * specularColor;
+			spotLight.color.rgb * spotLight.intensity * factorSpotLight * falloffFactor * specularPowSpotLight * gMaterials[id].specularColor;
 
 			/*-------------------------------------------------------------------------------------------------*/
 
@@ -142,7 +152,7 @@ PSOutput main(MSOutput input) {
 			output.color.rgb += diffusePointLight + specularPointLight + diffuseSpotLight + specularSpotLight;
 		}
 		
-		if (enableBlinnPhongReflection == 1) {
+		if (gMaterials[id].enableBlinnPhongReflection == 1) {
 
 			// PointLightÇÃì¸éÀåı
 			float3 pointLightDirection = normalize(input.worldPosition - pointLight.pos);
@@ -164,25 +174,25 @@ PSOutput main(MSOutput input) {
 
 			float3 halfVectorPointLight = normalize(-pointLightDirection + toEye);
 			float NDotHPointLight = dot(normalize(input.normal), halfVectorPointLight);
-			float specularPowPointLight = pow(saturate(NDotHPointLight), shininess);
+			float specularPowPointLight = pow(saturate(NDotHPointLight), gMaterials[id].shininess);
 
 			float NdotLPointLight = dot(normalize(input.normal), -pointLightDirection);
 			float cosPointLight = pow(NdotLPointLight * 0.5f + 0.5f, 2.0f);
 
 			// ägéUîΩéÀ
 			float3 diffusePointLight =
-			color.rgb * textureColor.rgb * pointLight.color.rgb * cosPointLight * pointLight.intensity * factorPointLight;
+			gMaterials[id].color.rgb * textureColor.rgb * pointLight.color.rgb * cosPointLight * pointLight.intensity * factorPointLight;
 
 			// ãæñ îΩéÀ
 			float3 specularPointLight =
-			pointLight.color.rgb * pointLight.intensity * factorPointLight * specularPowPointLight * specularColor;
+			pointLight.color.rgb * pointLight.intensity * factorPointLight * specularPowPointLight * gMaterials[id].specularColor;
 
 			/*-------------------------------------------------------------------------------------------------*/
 			/// SpotLight
 
 			float3 halfVectorSpotLight = normalize(-spotLightDirectionOnSurface + toEye);
 			float NDotHSpotLight = dot(normalize(input.normal), halfVectorSpotLight);
-			float specularPowSpotLight = pow(saturate(NDotHSpotLight), shininess);
+			float specularPowSpotLight = pow(saturate(NDotHSpotLight), gMaterials[id].shininess);
 
 			float NdotLSpotLight = dot(normalize(input.normal), -spotLightDirectionOnSurface);
 			float cosSpotLight = pow(NdotLSpotLight * 0.5f + 0.5f, 2.0f);
@@ -192,11 +202,11 @@ PSOutput main(MSOutput input) {
 
 			// ägéUîΩéÀ
 			float3 diffuseSpotLight =
-			color.rgb * textureColor.rgb * spotLight.color.rgb * cosSpotLight * spotLight.intensity * falloffFactor * factorSpotLight;
+			gMaterials[id].color.rgb * textureColor.rgb * spotLight.color.rgb * cosSpotLight * spotLight.intensity * falloffFactor * factorSpotLight;
 
 			// ãæñ îΩéÀ
 			float3 specularSpotLight =
-			spotLight.color.rgb * spotLight.intensity * falloffFactor * factorSpotLight * specularPowSpotLight * specularColor;
+			spotLight.color.rgb * spotLight.intensity * falloffFactor * factorSpotLight * specularPowSpotLight * gMaterials[id].specularColor;
 
 			/*-------------------------------------------------------------------------------------------------*/
 
@@ -205,14 +215,14 @@ PSOutput main(MSOutput input) {
 		}
 	} else {
 
-		output.color.rgb = color.rgb * textureColor.rgb;
+		output.color.rgb = gMaterials[id].color.rgb * textureColor.rgb;
 	}
 	
 	//========================================================================*/
 	//* emission *//
 	
 	// î≠åıêF
-	float3 emission = emissionColor * emissiveIntensity;
+	float3 emission = gMaterials[id].emissionColor * gMaterials[id].emissiveIntensity;
 	// EmissionÇâ¡éZ
 	output.color.rgb += emission * textureColor.rgb;
 	
@@ -251,13 +261,13 @@ PSOutput main(MSOutput input) {
 			float shadow = gShadowTexture.SampleCmpLevelZero(
 			gShadowSampler, shadowMapUV, zInLVp);
 
-			float3 shadowColor = output.color.rgb * shadowRate;
+			float3 shadowColor = output.color.rgb * gMaterials[id].shadowRate;
 			output.color.rgb = lerp(output.color.rgb, shadowColor, shadow);
 		}
 	}
 
 	// Éøíl
-	output.color.a = color.a * textureColor.a;
+	output.color.a = gMaterials[id].color.a * textureColor.a;
 	
 	return output;
 }

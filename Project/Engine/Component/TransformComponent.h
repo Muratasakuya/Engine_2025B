@@ -53,6 +53,10 @@ public:
 
 	Vector3 GetDown() const;
 
+	// mesh、これはどこか別の場所に移す予定 //
+	void SetInstancingName(const std::string& name) { meshInstancingName_ = name; }
+	const std::string& GetInstancingName() const { return meshInstancingName_; }
+
 	//--------- variables ----------------------------------------------------
 
 	Vector3 scale;
@@ -71,6 +75,9 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	Vector3 eulerRotate_;
+
+	// meshInstancing用の名前
+	std::string meshInstancingName_;
 };
 
 //============================================================================

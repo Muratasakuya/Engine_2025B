@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
 #include <Engine/Core/Graphics/CBuffer/CBufferStructures.h>
-#include <Engine/Component/ModelComponent.h>
+#include <Engine/Core/Graphics/Mesh/Mesh.h>
 #include <Engine/Component/TransformComponent.h>
 #include <Engine/Component/Base/IComponent.h>
 
@@ -16,22 +16,25 @@ class SRVManager;
 //	structure
 //============================================================================
 
-struct InstancingData {
+struct MeshInstancingData {
 
 	// srv処理用
-	uint32_t transformSrvIndex;
+	uint32_t matrixSrvIndex;
 	std::vector<uint32_t> materialSrvIndices;
+
+	// instance数
 	uint32_t maxInstance;
 	uint32_t numInstance;
 
 	// buffer更新用のデータ
 	std::vector<TransformationMatrix> matrixComponents;
-	std::vector<std::vector<InstancingMaterial>> materialComponents;
+	std::vector<std::vector<Material>> materialComponents;
 
 	// buffer
 	DxConstBuffer<TransformationMatrix> matrix;
-	std::vector<DxConstBuffer<InstancingMaterial>> materials;
-	InstancingModelReference model;
+	std::vector<DxConstBuffer<Material>> materials;
+
+	size_t meshNum;
 };
 
 //============================================================================
@@ -48,8 +51,7 @@ public:
 
 	void Init(ID3D12Device* device, SRVManager* srvManager);
 
-	void Create(const ModelComponent& modelComponent,
-		const std::string& name, uint32_t numInstance);
+	void Create(class Mesh* mesh, const std::string& name, uint32_t numInstance);
 
 	void Update();
 
@@ -60,7 +62,7 @@ public:
 	void SetComponent(const std::string& name, const TransformationMatrix& matrix,
 		const std::vector<Material>& materials);
 
-	const std::unordered_map<std::string, InstancingData>& GetData() const { return meshGroups_; }
+	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return meshGroups_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -73,7 +75,7 @@ private:
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvBufferDesc_;
 
-	std::unordered_map<std::string, InstancingData> meshGroups_;
+	std::unordered_map<std::string, MeshInstancingData> meshGroups_;
 
 	//--------- functions ----------------------------------------------------
 

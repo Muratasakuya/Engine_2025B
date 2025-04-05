@@ -42,7 +42,7 @@ public:
 	void Init(
 		// 3D
 		EntityManager* entity3DManager, Transform3DManager* transform3DManager,
-		MaterialManager* materialManager, ModelComponentManager* modelComponentManager,
+		MaterialManager* materialManager,
 		// 2D
 		EntityManager* entity2DManager, Transform2DManager* transform2DManager,
 		SpriteMaterialManager* spriteMaterialManager, SpriteComponentManager* spriteComponentManager);
@@ -90,7 +90,6 @@ private:
 	EntityManager* entity3DManager_;
 	Transform3DManager* transform3DManager_;
 	MaterialManager* materialManager_;
-	ModelComponentManager* modelComponentManager_;
 	// 2D
 	EntityManager* entity2DManager_;
 	Transform2DManager* transform2DManager_;
@@ -122,7 +121,6 @@ private:
 	// Object詳細、操作
 	void EditObject3D();
 	void Object3DInformation();
-	void Object3DRenderingData();
 	void Object3DTransform();
 	void Object3DMaterial();
 

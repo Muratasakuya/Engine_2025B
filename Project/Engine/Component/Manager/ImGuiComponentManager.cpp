@@ -17,7 +17,7 @@
 void ImGuiComponentManager::Init(
 	// 3D
 	EntityManager* entity3DManager, Transform3DManager* transform3DManager,
-	MaterialManager* materialManager, ModelComponentManager* modelComponentManager,
+	MaterialManager* materialManager,
 	// 2D
 	EntityManager* entity2DManager, Transform2DManager* transform2DManager,
 	SpriteMaterialManager* spriteMaterialManager, SpriteComponentManager* spriteComponentManager) {
@@ -30,9 +30,6 @@ void ImGuiComponentManager::Init(
 
 	materialManager_ = nullptr;
 	materialManager_ = materialManager;
-
-	modelComponentManager_ = nullptr;
-	modelComponentManager_ = modelComponentManager;
 
 	entity2DManager_ = nullptr;
 	entity2DManager_ = entity2DManager;
@@ -206,7 +203,6 @@ void ImGuiComponentManager::EditObject3D() {
 
 		if (ImGui::BeginTabItem("Rendering")) {
 
-			Object3DRenderingData();
 			ImGui::EndTabItem();
 		}
 
@@ -247,17 +243,6 @@ void ImGuiComponentManager::Object3DInformation() {
 		ComponentManager::GetInstance()->RemoveObject3D(*object3D_.selectedId_);
 		object3D_.selectedId_ = std::nullopt;
 	}
-}
-
-void ImGuiComponentManager::Object3DRenderingData() {
-
-	if (!object3D_.selectedId_.has_value()) {
-		return;
-	}
-
-	ModelComponent* model = modelComponentManager_->GetComponent(*object3D_.selectedId_);
-
-	model->ImGui();
 }
 
 void ImGuiComponentManager::Object3DTransform() {

@@ -23,9 +23,6 @@
     <ClCompile Include="Engine\Asset\TextureManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\ModelComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Component\TransformComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -185,9 +182,6 @@
     <ClCompile Include="Engine\Component\Manager\TransformManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\ModelComponentManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Component\Manager\MaterialManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -290,6 +284,9 @@
     <ClCompile Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\MeshRegistry.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -297,7 +294,6 @@
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelManager.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
-    <ClInclude Include="Engine\Component\ModelComponent.h" />
     <ClInclude Include="Engine\Component\TransformComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\CBuffer\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\CBuffer\InputAssembler.h" />
@@ -356,7 +352,6 @@
     <ClInclude Include="Engine\Component\Manager\ComponentManager.h" />
     <ClInclude Include="Engine\Component\Manager\EntityManager.h" />
     <ClInclude Include="Engine\Component\Manager\TransformManager.h" />
-    <ClInclude Include="Engine\Component\Manager\ModelComponentManager.h" />
     <ClInclude Include="Engine\Component\Manager\MaterialManager.h" />
     <ClInclude Include="Engine\Component\Manager\ImGuiComponentManager.h" />
     <ClInclude Include="Engine\Component\ColliderComponent.h" />
@@ -393,6 +388,7 @@
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletBuilder.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.h" />
+    <ClInclude Include="Engine\Core\Graphics\Mesh\MeshRegistry.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
