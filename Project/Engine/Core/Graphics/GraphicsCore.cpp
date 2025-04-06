@@ -250,7 +250,8 @@ void GraphicsCore::RenderZPass() {
 	dxCommand_->SetViewportAndScissor(shadowMapWidth_, shadowMapHeight_);
 
 	// Z値描画
-	meshRenderer_->ZPassRendering();
+	meshRenderer_->RenderingZPass(gpuObjectSystem_.get(),
+		dxCommand_->GetCommandList(CommandListType::Graphics));
 
 	// Write -> PixelShader
 	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
