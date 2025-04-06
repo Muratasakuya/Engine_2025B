@@ -18,7 +18,7 @@ void LightViewCamera::Init() {
 	target_ = Vector3(0.0f, 0.0f, 0.0f);
 	upDirection_ = Vector3(0.0f, 0.0f, -1.0f);
 
-	orthoSize_ = 24.0f;
+	orthoSize_ = 128.0f;
 	nearPlane_ = 1.0f;
 	farPlane_ = 640.0f;
 
