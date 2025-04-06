@@ -46,6 +46,7 @@ void DebugScene::Init(
 	//	initObject
 	//========================================================================
 
+
 }
 
 void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {

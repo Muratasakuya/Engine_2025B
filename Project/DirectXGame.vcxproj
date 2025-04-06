@@ -318,7 +318,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Scene\DebugScene.cpp" />
+    <ClCompile Include="Game\Scene\DebugScene\DebugScene.cpp" />
     <ClCompile Include="Game\Scene\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\Methods\IScene.cpp" />
     <ClCompile Include="Game\Scene\Methods\SceneFactory.cpp" />
@@ -536,7 +536,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Scene\DebugScene.h" />
+    <ClInclude Include="Game\Scene\DebugScene\DebugScene.h" />
     <ClInclude Include="Game\Scene\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scene\Methods\IScene.h" />
     <ClInclude Include="Game\Scene\Methods\SceneFactory.h" />
