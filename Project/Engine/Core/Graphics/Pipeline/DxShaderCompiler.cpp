@@ -25,13 +25,17 @@ void DxShaderCompiler::Init() {
 
 void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& shaderBlobs) {
 
+	// baseShaderPath
 	const fs::path basePath = "./Assets/Engine/Shaders/";
 	fs::path fullPath;
 
 	for (const auto& shaderPass : json["ShaderPass"]) {
 		if (shaderPass.contains("Type")) {
+
 			std::string type = shaderPass["Type"];
 			if (type == "Graphics") {
+
+				// vertexShaderのcompile
 				if (shaderPass.contains("VertexShader")) {
 
 					std::string vertexShader = shaderPass["VertexShader"];
@@ -45,6 +49,22 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					}
 				}
 
+				// meshShaderのcompile
+				if (shaderPass.contains("MeshShader")) {
+
+					std::string meshShader = shaderPass["MeshShader"];
+					if (Filesystem::Found(basePath, meshShader, fullPath)) {
+
+						ComPtr<IDxcBlob> meshShaderBlob;
+						CompileShader(fullPath.wstring(), L"ms_6_5", meshShaderBlob);
+						shaderBlobs.emplace_back(meshShaderBlob);
+					} else {
+
+						ASSERT(false, "Failed to find HLSL file: " + meshShader);
+					}
+				}
+
+				// pixelShaderのcompile
 				if (shaderPass.contains("PixelShader")) {
 
 					std::string pixelShader = shaderPass["PixelShader"];
@@ -60,6 +80,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 				}
 			} else if (type == "Compute" && shaderPass.contains("ComputeShader")) {
 
+				// computeShaderのcompile
 				std::string computeShader = shaderPass["ComputeShader"];
 				if (Filesystem::Found(basePath, computeShader, fullPath)) {
 

@@ -11,10 +11,6 @@
 // c++
 #include <array>
 #include <memory>
-// front
-class DxShaderCompiler;
-class GPUObjectSystem;
-class CameraManager;
 
 //============================================================================
 //	SpriteRenderer class
@@ -28,14 +24,15 @@ public:
 	SpriteRenderer() = default;
 	~SpriteRenderer() = default;
 
-	void Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
-		DxShaderCompiler* shaderCompiler, GPUObjectSystem* gpuObjectSystem,
-		CameraManager* cameraManager);
+	void Init(ID3D12Device8* device, class SRVManager* srvManager,
+		class DxShaderCompiler* shaderCompiler);
 
-	void Update();
+	void Update(class CameraManager* cameraManager);
 
-	void RenderIrrelevant();
-	void RenderApply(SpriteLayer layer);
+	void RenderIrrelevant(class GPUObjectSystem* gpuObjectSystem,
+		ID3D12GraphicsCommandList6* commandList);
+	void RenderApply(SpriteLayer layer, class GPUObjectSystem* gpuObjectSystem,
+		ID3D12GraphicsCommandList6* commandList);
 private:
 	//========================================================================
 	//	private Methods
@@ -53,10 +50,6 @@ private:
 	};
 
 	//--------- variables ----------------------------------------------------
-
-	ID3D12GraphicsCommandList* commandList_;
-	GPUObjectSystem* gpuObjectSystem_;
-	CameraManager* cameraManager_;
 
 	static constexpr uint32_t kModeCount = static_cast<uint32_t>(RenderMode::Count);
 

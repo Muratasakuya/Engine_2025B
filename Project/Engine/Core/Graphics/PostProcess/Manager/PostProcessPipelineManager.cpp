@@ -9,7 +9,8 @@
 //	PostProcessPipelineManager classMethods
 //============================================================================
 
-void PostProcessPipelineManager::Init(ID3D12Device* device, DxShaderCompiler* shaderCompiler) {
+void PostProcessPipelineManager::Init(ID3D12Device8* device, SRVManager* srvManager,
+	DxShaderCompiler* shaderCompiler) {
 
 	// shaderDataFileName
 	std::vector<std::string> fileNames = {
@@ -32,7 +33,7 @@ void PostProcessPipelineManager::Init(ID3D12Device* device, DxShaderCompiler* sh
 	for (const uint32_t& type : Algorithm::GetEnumArray(PostProcessType::Count)) {
 
 		pipelines_[type] = std::make_unique<PipelineState>();
-		pipelines_[type]->Create(fileNames[type], device, shaderCompiler);
+		pipelines_[type]->Create(fileNames[type], device, srvManager, shaderCompiler);
 	}
 }
 

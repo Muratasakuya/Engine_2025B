@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Pipeline/MeshShaderPipelineState.h>
+#include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Game/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
@@ -15,12 +15,9 @@
 #include <memory>
 #include <ranges>
 // front
-class DxCommand;
-class DxShaderCompiler;
 class SRVManager;
 class ShadowMap;
 class GPUObjectSystem;
-class CameraManager;
 
 //============================================================================
 //	MeshRenderer class
@@ -34,14 +31,14 @@ public:
 	MeshRenderer() = default;
 	~MeshRenderer() = default;
 
-	void Init(DxCommand* dxCommand, ID3D12Device8* device,
-		ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler, SRVManager* srvManager,
-		GPUObjectSystem* gpuObjectSystem, CameraManager* cameraManager);
+	void Init(ID3D12Device8* device, ShadowMap* shadowMap,
+		DxShaderCompiler* shaderCompiler, SRVManager* srvManager);
 
-	void Update();
+	void Update(class CameraManager* cameraManager);
 
 	void ZPassRendering();
-	void Rendering(bool debugEnable, ID3D12GraphicsCommandList6* commandList);
+	void Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
+		ID3D12GraphicsCommandList6* commandList);
 private:
 	//========================================================================
 	//	private Methods
@@ -49,14 +46,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	DxCommand* dxCommand_;
-	ID3D12GraphicsCommandList* commandList_;
 	SRVManager* srvManager_;
 	ShadowMap* shadowMap_;
-	GPUObjectSystem* gpuObjectSystem_;
-	CameraManager* cameraManager_;
 
-	std::unique_ptr<MeshShaderPipelineState> meshShaderPipeline_;
+	std::unique_ptr<PipelineState> meshShaderPipeline_;
 
 	// buffer
 	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;
@@ -68,4 +61,9 @@ private:
 
 	PunctualLight light_;
 	DxConstBuffer<PunctualLight> lightBuffer_;
+
+	//--------- functions ----------------------------------------------------
+
+	// 共通のbuffer
+	void SetCommonBuffer(bool debugEnable, ID3D12GraphicsCommandList6* commandList);
 };

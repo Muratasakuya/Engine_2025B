@@ -47,7 +47,7 @@ void PostProcessManager::InputProcessTexture(
 	}
 }
 
-void PostProcessManager::Init(ID3D12Device* device, DxShaderCompiler* shaderComplier,
+void PostProcessManager::Init(ID3D12Device8* device, DxShaderCompiler* shaderComplier,
 	SRVManager* srvManager, uint32_t width, uint32_t height) {
 
 	width_ = width;
@@ -63,7 +63,11 @@ void PostProcessManager::Init(ID3D12Device* device, DxShaderCompiler* shaderComp
 
 	// pipeline初期化
 	pipelineManager_ = std::make_unique<PostProcessPipelineManager>();
-	pipelineManager_->Init(device, shaderComplier);
+	pipelineManager_->Init(device, srvManager, shaderComplier);
+
+	// offscreenPipeline初期化
+	offscreenPipeline_ = std::make_unique<PipelineState>();
+	offscreenPipeline_->Create("CopyTexture.json", device, srvManager, shaderComplier);
 }
 
 void PostProcessManager::Create(const std::vector<PostProcess>& processes) {
@@ -171,14 +175,13 @@ void PostProcessManager::Execute(RenderTexture* inputTexture, DxCommand* dxComma
 	}
 }
 
-void PostProcessManager::RenderFrameBuffer(
-	PipelineState* pipeline, DxCommand* dxCommand) {
+void PostProcessManager::RenderFrameBuffer(DxCommand* dxCommand) {
 
 	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
 
 	// frameBufferへの描画
-	commandList->SetGraphicsRootSignature(pipeline->GetRootSignature());
-	commandList->SetPipelineState(pipeline->GetGraphicsPipeline());
+	commandList->SetGraphicsRootSignature(offscreenPipeline_->GetRootSignature());
+	commandList->SetPipelineState(offscreenPipeline_->GetGraphicsPipeline());
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	commandList->SetGraphicsRootDescriptorTable(0, frameBufferGPUHandle_);
 
