@@ -17,9 +17,9 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device,
 	// shaderCompile
 	{
 		shaderCompiler->CompileShader(
-			L"./Assets/Engine/Shaders/MS/Basic.MS.hlsl", L"ms_6_5", msShaderBlob_);
+			L"./Assets/Engine/Shaders/MS/MeshStandard.MS.hlsl", L"ms_6_5", msShaderBlob_);
 		shaderCompiler->CompileShader(
-			L"./Assets/Engine/Shaders/MS/Basic.PS.hlsl", L"ps_6_0", psShaderBlob_);
+			L"./Assets/Engine/Shaders/MS/MeshStandard.PS.hlsl", L"ps_6_0", psShaderBlob_);
 	}
 
 	HRESULT hr = S_OK;
@@ -171,7 +171,6 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device,
 
 	// RTBlend
 	{
-
 		/*renderTargetBlendStateDesc_.BlendEnable = true;
 		renderTargetBlendStateDesc_.SrcBlend = D3D12_BLEND_SRC_ALPHA;
 		renderTargetBlendStateDesc_.DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
@@ -180,7 +179,7 @@ void MeshShaderPipelineState::Create(ID3D12Device8* device,
 		renderTargetBlendStateDesc_.DestBlendAlpha = D3D12_BLEND_ONE;
 		renderTargetBlendStateDesc_.BlendOpAlpha = D3D12_BLEND_OP_ADD;*/
 		renderTargetBlendStateDesc_ = {
-			 FALSE, FALSE,
+			FALSE, FALSE,
 			D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
 			D3D12_BLEND_ONE, D3D12_BLEND_ZERO, D3D12_BLEND_OP_ADD,
 			D3D12_LOGIC_OP_NOOP,
