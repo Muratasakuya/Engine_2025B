@@ -7,7 +7,7 @@
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
-#include <Engine/Renderer/Managers/RenderObjectManager.h>
+#include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 //============================================================================
@@ -16,7 +16,7 @@
 
 void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device8* device,
 	ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler, SRVManager* srvManager,
-	RenderObjectManager* renderObjectManager, CameraManager* cameraManager) {
+	GPUObjectSystem* gpuObjectSystem, CameraManager* cameraManager) {
 
 	commandList_ = nullptr;
 	commandList_ = dxCommand->GetCommandList(CommandListType::Graphics);
@@ -33,12 +33,8 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device8* device,
 	cameraManager_ = nullptr;
 	cameraManager_ = cameraManager;
 
-	renderObjectManager_ = nullptr;
-	renderObjectManager_ = renderObjectManager;
-
-	// pipeline作成
-	pipeline_ = std::make_unique<ObjectPipelineManager>();
-	pipeline_->Create(commandList_, device, shaderCompiler);
+	gpuObjectSystem_ = nullptr;
+	gpuObjectSystem_ = gpuObjectSystem;
 
 	meshShaderPipeline_ = std::make_unique<MeshShaderPipelineState>();
 	meshShaderPipeline_->Create(device, shaderCompiler, srvManager);
@@ -77,8 +73,8 @@ void MeshRenderer::ZPassRendering() {
 void MeshRenderer::Rendering(bool debugEnable, ID3D12GraphicsCommandList6* commandList) {
 
 	// 描画情報取得
-	const auto& meshes = renderObjectManager_->GetMeshes();
-	auto instancingBuffers = renderObjectManager_->GetInstancingData();
+	const auto& meshes = gpuObjectSystem_->GetMeshes();
+	auto instancingBuffers = gpuObjectSystem_->GetInstancingData();
 	MeshCommandContext commandContext{};
 
 	if (meshes.empty()) {

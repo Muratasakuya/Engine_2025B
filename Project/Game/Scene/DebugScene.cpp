@@ -6,7 +6,7 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
-#include <Engine/Component/User/ComponentHelper.h>
+#include <Engine/Core/Component/User/ComponentHelper.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 // imgui

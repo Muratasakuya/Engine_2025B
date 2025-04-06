@@ -3,11 +3,11 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
-#include <Engine/Core/Graphics/CBuffer/CBufferStructures.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
+#include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/Component/Base/IComponent.h>
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
-#include <Engine/Component/TransformComponent.h>
-#include <Engine/Component/Base/IComponent.h>
 
 // front
 class SRVManager;

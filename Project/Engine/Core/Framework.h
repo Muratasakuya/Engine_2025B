@@ -11,9 +11,9 @@
 #include <Game/Camera/Manager/CameraManager.h>
 
 // component
-#include <Engine/Component/Manager/TransformManager.h>
-#include <Engine/Component/Manager/MaterialManager.h>
-#include <Engine/Component/Manager/SpriteComponentManager.h>
+#include <Engine/Core/Component/Manager/TransformManager.h>
+#include <Engine/Core/Component/Manager/MaterialManager.h>
+#include <Engine/Core/Component/Manager/SpriteComponentManager.h>
 
 // directX
 #include <dxgidebug.h>
