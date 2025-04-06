@@ -24,12 +24,7 @@ cbuffer InstanceData : register(b0) {
 	uint meshletCount;
 };
 
-cbuffer CameraData : register(b1) {
-	
-	float4x4 viewProjection;
-};
-
-cbuffer ShadowLight : register(b2) {
+cbuffer ShadowLight : register(b1) {
 	
 	float4x4 lightViewProjection;
 };
@@ -98,7 +93,6 @@ out indices uint3 polys[126] // 出力三角形インデックス
 	
 	// インスタンスのワールド行列と逆転置行列を取得
 	float4x4 world = gTransforms[instanceIndex].world;
-	float3x3 worldInverseTranspose = (float3x3) gTransforms[instanceIndex].worldInverseTranspose;
 	
 	// メッシュシェーダーの出力数、頂点数、プリミティブ数を設定
 	SetMeshOutputCounts(meshlet.vertexCount, meshlet.primitiveCount);
@@ -117,27 +111,8 @@ out indices uint3 polys[126] // 出力三角形インデックス
 		MSInput input = gVertices[index];
 		MSOutput output = (MSOutput) 0;
 		
-		// instanceIdを取得
-		output.instanceID = instanceIndex;
-		
-		// スクリーン座標に変換
-		float4x4 wvp = mul(world, viewProjection);
-		output.position = mul(input.position, wvp);
-		
-		// テクスチャ座標
-		output.texcoord = input.texcoord;
-		
-		// 法線
-		output.normal = mul(input.normal, worldInverseTranspose);
-		
-		// meshletの色
-		output.color = meshlet.color;
-	
-		float4 worldPos = mul(input.position, world);
-		output.worldPosition = worldPos.xyz;
-		
-		// lightView空間に変換
-		output.positionInLVP = mul(worldPos, lightViewProjection);
+		// light空間に座標変換
+		output.position = mul(mul(input.position, world), lightViewProjection);
 
 		verts[groupThreadId] = output;
 	}
