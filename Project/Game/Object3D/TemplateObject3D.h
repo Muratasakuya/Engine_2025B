@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Component/Base/IComponent.h>
-#include <Engine/Component/User/Collider.h>
+#include <Engine/Core/Component/Base/IComponent.h>
+#include <Engine/Core/Component/User/Collider.h>
 
 //============================================================================
 //	TemplateObject3D class

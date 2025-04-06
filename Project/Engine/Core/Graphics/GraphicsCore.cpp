@@ -164,19 +164,19 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 void GraphicsCore::InitTemporary(Asset* asset, CameraManager* cameraManager) {
 
 	// rendererManager
-	renderObjectManager_ = std::make_unique<RenderObjectManager>();
-	renderObjectManager_->Init(dxDevice_->Get(), srvManager_.get(), asset);
+	gpuObjectSystem_ = std::make_unique<GPUObjectSystem>();
+	gpuObjectSystem_->Init(dxDevice_->Get(), srvManager_.get(), asset);
 
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();
 	meshRenderer_->Init(dxCommand_.get(), dxDevice_->Get(),
 		shadowMap_.get(), dxShaderComplier_.get(), srvManager_.get(),
-		renderObjectManager_.get(), cameraManager);
+		gpuObjectSystem_.get(), cameraManager);
 
 	// sprite描画初期化
 	spriteRenderer_ = std::make_unique<SpriteRenderer>();
 	spriteRenderer_->Init(dxDevice_->Get(), dxCommand_->GetCommandList(CommandListType::Graphics),
-		dxShaderComplier_.get(), renderObjectManager_.get(), cameraManager);
+		dxShaderComplier_.get(), gpuObjectSystem_.get(), cameraManager);
 }
 
 void GraphicsCore::Finalize(HWND hwnd) {
@@ -214,7 +214,7 @@ void GraphicsCore::Render() {
 	// bufferの更新
 	meshRenderer_->Update();
 	spriteRenderer_->Update();
-	renderObjectManager_->Update();
+	gpuObjectSystem_->Update();
 
 	// zPass
 	RenderZPass();

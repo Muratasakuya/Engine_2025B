@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Renderer/Managers/RenderObjectManager.h>
+#include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 //============================================================================
@@ -11,14 +11,14 @@
 //============================================================================
 
 void SpriteRenderer::Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
-	DxShaderCompiler* shaderCompiler, RenderObjectManager* renderObjectManager,
+	DxShaderCompiler* shaderCompiler, GPUObjectSystem* gpuObjectSystem,
 	CameraManager* cameraManager) {
 
 	commandList_ = nullptr;
 	commandList_ = commandList;
 
-	renderObjectManager_ = nullptr;
-	renderObjectManager_ = renderObjectManager;
+	gpuObjectSystem_ = nullptr;
+	gpuObjectSystem_ = gpuObjectSystem;
 
 	cameraManager_ = nullptr;
 	cameraManager_ = cameraManager;
@@ -47,7 +47,7 @@ void SpriteRenderer::Update() {
 void SpriteRenderer::RenderIrrelevant() {
 
 	// 描画情報取得
-	auto object2DBuffers = renderObjectManager_->GetObject2DBuffers();
+	auto object2DBuffers = gpuObjectSystem_->GetObject2DBuffers();
 
 	if (object2DBuffers.empty()) {
 		return;
@@ -83,7 +83,7 @@ void SpriteRenderer::RenderIrrelevant() {
 void SpriteRenderer::RenderApply(SpriteLayer layer) {
 
 	// 描画情報取得
-	auto object2DBuffers = renderObjectManager_->GetObject2DBuffers();
+	auto object2DBuffers = gpuObjectSystem_->GetObject2DBuffers();
 
 	if (object2DBuffers.empty()) {
 		return;

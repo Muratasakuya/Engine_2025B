@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 
 //============================================================================
 //	IPostProcessBuffer class

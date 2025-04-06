@@ -5,8 +5,6 @@
 //============================================================================
 #include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
 
-// directX
-#include <Externals/DirectXMesh/include/DirectXMesh.h>
 // assimp
 #include <assimp/scene.h>
 #include <assimp/Importer.hpp>

@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Core/Lib/Collision.h>
 #include <Lib/MathUtils/MathUtils.h>
 
