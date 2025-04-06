@@ -23,13 +23,13 @@
     <ClCompile Include="Engine\Asset\TextureManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\TransformComponent.cpp">
+    <ClCompile Include="Engine\Core\Component\TransformComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\CBuffer\InputAssembler.cpp">
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\InputAssembler.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\CBuffer\IOVertexBuffer.cpp">
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Debug\Assert.cpp">
@@ -83,7 +83,7 @@
     <ClCompile Include="Engine\Core\Graphics\PostProcess\ShadowMap.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\CBuffer\CBufferStructures.cpp">
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\CBufferStructures.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Lib\DxUtils.cpp">
@@ -96,9 +96,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Framework.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Renderer\Managers\ObjectPipelineManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Renderer\MeshRenderer.cpp">
@@ -128,7 +125,7 @@
     <ClCompile Include="Lib\MathUtils\Vector4.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\User\Collider.cpp">
+    <ClCompile Include="Engine\Core\Component\User\Collider.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Camera\Base\BaseCamera.cpp">
@@ -173,31 +170,28 @@
     <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\ComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Manager\ComponentManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\EntityManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Manager\EntityManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\TransformManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Manager\TransformManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\MaterialManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Manager\MaterialManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\ImGuiComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Manager\ImGuiComponentManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\ColliderComponent.cpp">
+    <ClCompile Include="Engine\Core\Component\ColliderComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Lib\Collision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\CollisionManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Test_MeshShader\MSTestPipelineState.cpp">
+    <ClCompile Include="Engine\Core\Component\Manager\CollisionManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object3D\TemplateObject3D.cpp">
@@ -209,37 +203,34 @@
     <ClCompile Include="Engine\Renderer\SpriteRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Base\IComponent.cpp">
+    <ClCompile Include="Engine\Core\Component\Base\IComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Renderer\Managers\RenderObjectManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\GPUObjectSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\AnimationComponent.cpp">
+    <ClCompile Include="Engine\Core\Component\AnimationComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\AnimationComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Manager\AnimationComponentManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Context\MeshCommandContext.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Test_IndirectCommand\MeshIndirectCommand.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\InstancedMesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\SpriteComponent.cpp">
+    <ClCompile Include="Engine\Core\Component\SpriteComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\Manager\SpriteComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Manager\SpriteComponentManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Camera\Camera2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Component\User\ComponentHelper.cpp">
+    <ClCompile Include="Engine\Core\Component\User\ComponentHelper.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\Base\IGameEditor.cpp">
@@ -272,9 +263,6 @@
     <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Test_MeshShader\MSInputAssembler.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\MeshletBuilder.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -294,10 +282,10 @@
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelManager.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
-    <ClInclude Include="Engine\Component\TransformComponent.h" />
-    <ClInclude Include="Engine\Core\Graphics\CBuffer\DxConstBuffer.h" />
-    <ClInclude Include="Engine\Core\Graphics\CBuffer\InputAssembler.h" />
-    <ClInclude Include="Engine\Core\Graphics\CBuffer\IOVertexBuffer.h" />
+    <ClInclude Include="Engine\Core\Component\TransformComponent.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\InputAssembler.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
     <ClInclude Include="Engine\Core\Debug\Logger.h" />
     <ClInclude Include="Engine\Core\Graphics\Managers\DSVManager.h" />
@@ -315,14 +303,13 @@
     <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
-    <ClInclude Include="Engine\Core\Graphics\CBuffer\CBufferStructures.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\CBufferStructures.h" />
     <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
     <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
     <ClInclude Include="Engine\Core\Lib\DxUtils.h" />
     <ClInclude Include="Engine\Asset\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
     <ClInclude Include="Engine\Core\Framework.h" />
-    <ClInclude Include="Engine\Renderer\Managers\ObjectPipelineManager.h" />
     <ClInclude Include="Engine\Renderer\MeshRenderer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
@@ -332,7 +319,7 @@
     <ClInclude Include="Lib\MathUtils\Vector2.h" />
     <ClInclude Include="Lib\MathUtils\Vector3.h" />
     <ClInclude Include="Lib\MathUtils\Vector4.h" />
-    <ClInclude Include="Engine\Component\User\Collider.h" />
+    <ClInclude Include="Engine\Core\Component\User\Collider.h" />
     <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
     <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Camera\GameCamera.h" />
@@ -349,29 +336,27 @@
     <ClInclude Include="Game\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Renderer\LineRenderer.h" />
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
-    <ClInclude Include="Engine\Component\Manager\ComponentManager.h" />
-    <ClInclude Include="Engine\Component\Manager\EntityManager.h" />
-    <ClInclude Include="Engine\Component\Manager\TransformManager.h" />
-    <ClInclude Include="Engine\Component\Manager\MaterialManager.h" />
-    <ClInclude Include="Engine\Component\Manager\ImGuiComponentManager.h" />
-    <ClInclude Include="Engine\Component\ColliderComponent.h" />
-    <ClInclude Include="Engine\Component\Manager\CollisionManager.h" />
+    <ClInclude Include="Engine\Core\Component\Manager\ComponentManager.h" />
+    <ClInclude Include="Engine\Core\Component\Manager\EntityManager.h" />
+    <ClInclude Include="Engine\Core\Component\Manager\TransformManager.h" />
+    <ClInclude Include="Engine\Core\Component\Manager\MaterialManager.h" />
+    <ClInclude Include="Engine\Core\Component\Manager\ImGuiComponentManager.h" />
+    <ClInclude Include="Engine\Core\Component\ColliderComponent.h" />
+    <ClInclude Include="Engine\Core\Component\Manager\CollisionManager.h" />
     <ClInclude Include="Engine\Core\Lib\Collision.h" />
-    <ClInclude Include="Engine\Test_MeshShader\MSTestPipelineState.h" />
     <ClInclude Include="Game\Object3D\TemplateObject3D.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h" />
     <ClInclude Include="Engine\Renderer\SpriteRenderer.h" />
-    <ClInclude Include="Engine\Component\Base\IComponent.h" />
-    <ClInclude Include="Engine\Renderer\Managers\RenderObjectManager.h" />
-    <ClInclude Include="Engine\Component\AnimationComponent.h" />
-    <ClInclude Include="Engine\Component\Manager\AnimationComponentManager.h" />
+    <ClInclude Include="Engine\Core\Component\Base\IComponent.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\GPUObjectSystem.h" />
+    <ClInclude Include="Engine\Core\Component\AnimationComponent.h" />
+    <ClInclude Include="Engine\Core\Component\Manager\AnimationComponentManager.h" />
     <ClInclude Include="Engine\Core\Graphics\Context\MeshCommandContext.h" />
-    <ClInclude Include="Engine\Test_IndirectCommand\MeshIndirectCommand.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\InstancedMesh.h" />
-    <ClInclude Include="Engine\Component\SpriteComponent.h" />
-    <ClInclude Include="Engine\Component\Manager\SpriteComponentManager.h" />
+    <ClInclude Include="Engine\Core\Component\SpriteComponent.h" />
+    <ClInclude Include="Engine\Core\Component\Manager\SpriteComponentManager.h" />
     <ClInclude Include="Game\Camera\Camera2D.h" />
-    <ClInclude Include="Engine\Component\User\ComponentHelper.h" />
+    <ClInclude Include="Engine\Core\Component\User\ComponentHelper.h" />
     <ClInclude Include="Engine\Editor\Base\IGameEditor.h" />
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
     <ClInclude Include="Game\Editor\TestEditor.h" />
@@ -383,7 +368,6 @@
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.h" />
-    <ClInclude Include="Engine\Test_MeshShader\MSInputAssembler.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletStructures.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletBuilder.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\Mesh.h" />

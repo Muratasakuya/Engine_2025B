@@ -13,18 +13,12 @@
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 
-// test
-#include <Engine/Test_MeshShader/MSInputAssembler.h>
-#include <Engine/Test_MeshShader/MSTestPipelineState.h>
-#include <Engine/Core/Graphics/Mesh/Mesh.h>
-#include <Engine/Core/Graphics/Mesh/MeshletBuilder.h>
-
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>
 #include <Engine/Renderer/SpriteRenderer.h>
 
 // managers
-#include <Engine/Renderer/Managers/RenderObjectManager.h>
+#include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
 #include <Engine/Core/Graphics/Managers/RTVManager.h>
 #include <Engine/Core/Graphics/Managers/DSVManager.h>
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
@@ -71,7 +65,7 @@ public:
 
 	DxShaderCompiler* GetDxShaderCompiler() const { return dxShaderComplier_.get(); }
 
-	RenderObjectManager* GetRenderObjectManager() const { return renderObjectManager_.get(); }
+	GPUObjectSystem* GetGPUObjectSystem() const { return gpuObjectSystem_.get(); }
 
 	PostProcessManager* GetPostProcessManager() const { return postProcessManager_.get(); }
 
@@ -123,7 +117,7 @@ private:
 
 	std::unique_ptr<PipelineState> offscreenPipeline_;
 
-	std::unique_ptr<RenderObjectManager> renderObjectManager_;
+	std::unique_ptr<GPUObjectSystem> gpuObjectSystem_;
 
 	//--------- functions ----------------------------------------------------
 

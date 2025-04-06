@@ -5,8 +5,8 @@
 //============================================================================
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Input/Input.h>
-#include <Engine/Component/Manager/ComponentManager.h>
-#include <Engine/Component/Manager/CollisionManager.h>
+#include <Engine/Core/Component/Manager/ComponentManager.h>
+#include <Engine/Core/Component/Manager/CollisionManager.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Game/Time/GameTimer.h>
 
@@ -96,7 +96,7 @@ void Framework::InitComponent() {
 	// component初期化、CS用のCommandList
 	ComponentManager::GetInstance()->Init(
 		graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Compute),
-		asset_.get(), graphicsCore_->GetSRVManager(), graphicsCore_->GetRenderObjectManager());
+		asset_.get(), graphicsCore_->GetSRVManager(), graphicsCore_->GetGPUObjectSystem());
 
 	// 3D
 	// transform

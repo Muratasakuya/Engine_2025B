@@ -4,8 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Component/SpriteComponent.h>
-#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Component/SpriteComponent.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Lib/MathUtils/Matrix4x4.h>
 
 // c++
@@ -13,7 +13,7 @@
 #include <memory>
 // front
 class DxShaderCompiler;
-class RenderObjectManager;
+class GPUObjectSystem;
 class CameraManager;
 
 //============================================================================
@@ -29,7 +29,7 @@ public:
 	~SpriteRenderer() = default;
 
 	void Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
-		DxShaderCompiler* shaderCompiler, RenderObjectManager* renderObjectManager,
+		DxShaderCompiler* shaderCompiler, GPUObjectSystem* gpuObjectSystem,
 		CameraManager* cameraManager);
 
 	void Update();
@@ -55,7 +55,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	ID3D12GraphicsCommandList* commandList_;
-	RenderObjectManager* renderObjectManager_;
+	GPUObjectSystem* gpuObjectSystem_;
 	CameraManager* cameraManager_;
 
 	static constexpr uint32_t kModeCount = static_cast<uint32_t>(RenderMode::Count);
@@ -64,7 +64,4 @@ private:
 
 	// buffer
 	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;
-
-	//--------- functions ----------------------------------------------------
-
 };
