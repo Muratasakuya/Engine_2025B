@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
-#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 
 //============================================================================
 //	IOVertexBuffer class

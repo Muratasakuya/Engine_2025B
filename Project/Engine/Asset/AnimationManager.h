@@ -7,13 +7,13 @@
 
 // assimp
 #include <Externals/assimp/include/assimp/Importer.hpp>
-#include <Externals/assimp/include/assimp/scene.h>
 #include <Externals/assimp/include/assimp/postprocess.h>
+#include <Externals/assimp/include/assimp/scene.h>
 // c++
 #include <unordered_map>
 // front
 class SRVManager;
-class ModelManager;
+class ModelLoader;
 
 //============================================================================
 //	AnimationManager class
@@ -27,7 +27,7 @@ public:
 	AnimationManager() = default;
 	~AnimationManager() = default;
 
-	void Init(ID3D12Device* device, SRVManager* srvManager, ModelManager* modelManager);
+	void Init(ID3D12Device* device, SRVManager* srvManager, ModelLoader* modelLoader);
 
 	void Load(const std::string& animationName, const std::string& modelName);
 
@@ -56,7 +56,7 @@ private:
 
 	ID3D12Device* device_;
 	SRVManager* srvManager_;
-	ModelManager* modelManager_;
+	ModelLoader* modelLoader_;
 
 	std::string baseDirectoryPath_;
 

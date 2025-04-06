@@ -132,7 +132,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
   <ItemGroup>
     <ClCompile Include="Engine\Asset\AnimationManager.cpp" />
     <ClCompile Include="Engine\Asset\Asset.cpp" />
-    <ClCompile Include="Engine\Asset\ModelManager.cpp" />
+    <ClCompile Include="Engine\Asset\ModelLoader.cpp" />
     <ClCompile Include="Engine\Asset\TextureManager.cpp" />
     <ClCompile Include="Engine\Core\Component\AnimationComponent.cpp">
       <SubType>
@@ -343,7 +343,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
     <ClInclude Include="Engine\Asset\Asset.h" />
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
-    <ClInclude Include="Engine\Asset\ModelManager.h" />
+    <ClInclude Include="Engine\Asset\ModelLoader.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
     <ClInclude Include="Engine\Core\Component\AnimationComponent.h">
       <SubType>

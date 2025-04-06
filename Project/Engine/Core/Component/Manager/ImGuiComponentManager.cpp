@@ -4,7 +4,7 @@
 //	imgui
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Component/Manager/ComponentManager.h>
+#include <Engine/Core/Component/Manager/ComponentManager.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // imgui

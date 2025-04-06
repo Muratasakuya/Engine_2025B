@@ -3,7 +3,7 @@
 //============================================================================
 //	ColliderComponent classMethods
 //============================================================================
-#include <Engine/Component/User/Collider.h>
+#include <Engine/Core/Component/User/Collider.h>
 #include <Engine/Core/Debug/Assert.h>
 
 //============================================================================
