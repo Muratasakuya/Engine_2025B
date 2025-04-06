@@ -59,7 +59,7 @@ void DebugScene::Init(
 	//	initObject
 	//========================================================================
 
-	const uint32_t kNumObject = 1024;
+	const uint32_t kNumObject = 512;
 	const float offset = 6.0f;
 	const float offsetY = 4.0f;
 	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
