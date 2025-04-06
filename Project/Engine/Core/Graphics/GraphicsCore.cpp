@@ -151,17 +151,13 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 	shadowMap_->Create(shadowMapWidth_, shadowMapHeight_,
 		dsvManager_.get(), srvManager_.get());
 
-	// offscreenPipeline初期化
-	offscreenPipeline_ = std::make_unique<PipelineState>();
-	offscreenPipeline_->Create("CopyTexture.json", device, dxShaderComplier_.get());
-
 	// postProcessSystem初期化
 	postProcessManager_ = std::make_unique<PostProcessManager>();
 	postProcessManager_->Init(device, dxShaderComplier_.get(),
 		srvManager_.get(), width, height);
 }
 
-void GraphicsCore::InitTemporary(Asset* asset, CameraManager* cameraManager) {
+void GraphicsCore::InitRenderer(Asset* asset) {
 
 	// rendererManager
 	gpuObjectSystem_ = std::make_unique<GPUObjectSystem>();
@@ -169,14 +165,11 @@ void GraphicsCore::InitTemporary(Asset* asset, CameraManager* cameraManager) {
 
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();
-	meshRenderer_->Init(dxCommand_.get(), dxDevice_->Get(),
-		shadowMap_.get(), dxShaderComplier_.get(), srvManager_.get(),
-		gpuObjectSystem_.get(), cameraManager);
+	meshRenderer_->Init(dxDevice_->Get(), shadowMap_.get(), dxShaderComplier_.get(), srvManager_.get());
 
 	// sprite描画初期化
 	spriteRenderer_ = std::make_unique<SpriteRenderer>();
-	spriteRenderer_->Init(dxDevice_->Get(), dxCommand_->GetCommandList(CommandListType::Graphics),
-		dxShaderComplier_.get(), gpuObjectSystem_.get(), cameraManager);
+	spriteRenderer_->Init(dxDevice_->Get(), srvManager_.get(), dxShaderComplier_.get());
 }
 
 void GraphicsCore::Finalize(HWND hwnd) {
@@ -209,11 +202,11 @@ void GraphicsCore::Finalize(HWND hwnd) {
 //	Rendering Pass
 //============================================================================
 
-void GraphicsCore::Render() {
+void GraphicsCore::Render(CameraManager* cameraManager) {
 
 	// bufferの更新
-	meshRenderer_->Update();
-	spriteRenderer_->Update();
+	meshRenderer_->Update(cameraManager);
+	spriteRenderer_->Update(cameraManager);
 	gpuObjectSystem_->Update();
 
 	// zPass
@@ -307,27 +300,31 @@ void GraphicsCore::RenderFrameBuffer() {
 	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
 
 	// frameBufferへ結果を描画
-	postProcessManager_->RenderFrameBuffer(offscreenPipeline_.get(), dxCommand_.get());
+	postProcessManager_->RenderFrameBuffer(dxCommand_.get());
 
 	// sprite描画、postPrecessを適用しない
-	spriteRenderer_->RenderIrrelevant();
+	spriteRenderer_->RenderIrrelevant(gpuObjectSystem_.get(),
+		dxCommand_->GetCommandList(CommandListType::Graphics));
 }
 
 void GraphicsCore::Renderers(bool debugEnable) {
 
 	// sprite描画、postPrecess適用
 	// model描画前
-	spriteRenderer_->RenderApply(SpriteLayer::PreModel);
+	spriteRenderer_->RenderApply(SpriteLayer::PreModel, gpuObjectSystem_.get(),
+		dxCommand_->GetCommandList(CommandListType::Graphics));
 
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	// 通常描画処理
-	meshRenderer_->Rendering(debugEnable, dxCommand_->GetCommandList(CommandListType::Graphics));
+	meshRenderer_->Rendering(debugEnable, gpuObjectSystem_.get(),
+		dxCommand_->GetCommandList(CommandListType::Graphics));
 
 	// sprite描画、postPrecess適用
 	// model描画後
-	spriteRenderer_->RenderApply(SpriteLayer::PostModel);
+	spriteRenderer_->RenderApply(SpriteLayer::PostModel, gpuObjectSystem_.get(),
+		dxCommand_->GetCommandList(CommandListType::Graphics));
 }
 
 //============================================================================

@@ -7,6 +7,9 @@
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Renderer/LineRenderer.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
 //	CameraManager classMethods
 //============================================================================
@@ -34,6 +37,24 @@ void CameraManager::Update() {
 #endif // _DEBUG
 
 	lightViewCamera_->Update();
+}
+
+void CameraManager::ImGui() {
+
+	if (gameCamera_.has_value()) {
+
+		// 現在使われているカメラの表示
+		ImGui::SeparatorText("CurrentCamera");
+		gameCamera_.value()->ImGui();
+	}
+
+	// debug用カメラ
+	ImGui::SeparatorText("DebugCamera");
+	debugCamera_->ImGui();
+
+	// light視点カメラ
+	ImGui::SeparatorText("LightViewCamera");
+	lightViewCamera_->ImGui();
 }
 
 void CameraManager::SetCamera(BaseCamera* gameCamera) {

@@ -8,7 +8,6 @@
 #include <Engine/Core/Graphics/DxSwapChain.h>
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Core/Graphics/Pipeline/MeshShaderPipelineState.h>
 #include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
@@ -25,10 +24,6 @@
 #include <Engine/Core/Graphics/Managers/ImGuiManager.h>
 // c++
 #include <memory>
-// front
-class WinApp;
-class CameraManager;
-class Asset;
 
 //============================================================================
 //	GraphicsCore class
@@ -42,10 +37,9 @@ public:
 	GraphicsCore() = default;
 	~GraphicsCore() = default;
 
-	void Init(uint32_t width, uint32_t height,
-		WinApp* winApp);
+	void Init(uint32_t width, uint32_t height, class WinApp* winApp);
 
-	void InitTemporary(class Asset* asset, CameraManager* cameraManager);
+	void InitRenderer(class Asset* asset);
 
 	void Finalize(HWND hwnd);
 
@@ -53,11 +47,11 @@ public:
 
 	void BeginRenderFrame();
 
-	void Render();
+	void Render(class CameraManager* cameraManager);
 
 	//--------- accessor -----------------------------------------------------
 
-	ID3D12Device* GetDevice() const { return dxDevice_->Get(); }
+	ID3D12Device8* GetDevice() const { return dxDevice_->Get(); }
 
 	DxCommand* GetDxCommand() const { return dxCommand_.get(); }
 
@@ -114,8 +108,6 @@ private:
 	std::unique_ptr<SRVManager> srvManager_;
 
 	std::unique_ptr<ImGuiManager> imguiManager_;
-
-	std::unique_ptr<PipelineState> offscreenPipeline_;
 
 	std::unique_ptr<GPUObjectSystem> gpuObjectSystem_;
 

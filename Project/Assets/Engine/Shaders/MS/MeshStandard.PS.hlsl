@@ -17,14 +17,14 @@ struct PSOutput {
 //	CBuffer
 //============================================================================
 
-cbuffer PunctualLight : register(b1) {
+cbuffer PunctualLight : register(b0) {
 	
 	DirectionalLight directionalLight;
 	PointLight pointLight;
 	SpotLight spotLight;
 };
 
-cbuffer Camera : register(b2) {
+cbuffer Camera : register(b1) {
 
 	float3 worldPosition;
 };
