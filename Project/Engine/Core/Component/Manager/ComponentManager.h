@@ -71,7 +71,6 @@ public:
 	// 追加、作成処理
 	EntityID CreateObject3D(const std::string& modelName, const std::string& objectName,
 		const std::optional<std::string>& groupName,
-		const std::optional<std::string>& instancingName,
 		const std::optional<std::string>& animationName);
 	// 指定されたidのentity削除
 	void RemoveObject3D(EntityID id);
@@ -93,6 +92,7 @@ public:
 	// imgui
 	void SelectObject();
 	void EditObject();
+	void SetImGuiFunc(EntityID entityId, std::function<void()> func);
 
 	// componentの取得
 	template <typename T>

@@ -234,9 +234,6 @@ void GraphicsCore::BeginRenderFrame() {
 #ifdef _DEBUG
 	imguiManager_->Begin();
 #endif
-
-	// srvDescriptorHeap設定
-	dxCommand_->SetDescriptorHeaps({ srvManager_->GetDescriptorHeap() });
 }
 
 //============================================================================
@@ -259,6 +256,9 @@ void GraphicsCore::RenderZPass() {
 }
 
 void GraphicsCore::RenderOffscreenTexture() {
+
+	// srvDescriptorHeap設定
+	dxCommand_->SetDescriptorHeaps({ srvManager_->GetDescriptorHeap() });
 
 	dxCommand_->SetRenderTargets(renderTexture_->GetRenderTarget(),
 		dsvManager_->GetFrameCPUHandle());

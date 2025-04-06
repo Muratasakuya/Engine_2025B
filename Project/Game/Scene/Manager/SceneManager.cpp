@@ -18,6 +18,9 @@ SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManag
 
 	factory_ = std::make_unique<SceneFactory>();
 
+	sceneTransition_ = std::make_unique<SceneTransition>();
+	sceneTransition_->Init();
+
 	LoadScene(scene);
 	currentScene_->Init(asset_, cameraManager, postProcessManager);
 }
@@ -25,11 +28,20 @@ SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManag
 void SceneManager::Update() {
 
 	currentScene_->Update(this);
+
+	sceneTransition_->Update();
 }
 
 void SceneManager::SwitchScene() {
 
+	if (sceneTransition_->IsBeginTransitionFinished()) {
+
+		isSceneSwitching_ = true;
+		sceneTransition_->SetResetBeginTransition();
+	}
+
 	if (isSceneSwitching_) {
+
 		LoadScene(nextScene_);
 	}
 }
@@ -40,9 +52,11 @@ void SceneManager::InitNextScene() {
 	isSceneSwitching_ = false;
 }
 
-void SceneManager::SetNextScene(Scene scene) {
+void SceneManager::SetNextScene(Scene scene, std::unique_ptr<ITransition> transition) {
 
 	nextScene_ = scene;
+
+	sceneTransition_->SetTransition(std::move(transition));
 }
 
 void SceneManager::LoadScene(Scene scene) {

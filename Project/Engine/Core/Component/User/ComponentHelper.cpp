@@ -21,6 +21,7 @@ INSTANTIATE_GET_COMPONENT(Material)
 INSTANTIATE_GET_COMPONENT(AnimationComponent)
 // 2D
 INSTANTIATE_GET_COMPONENT(Transform2DComponent)
+INSTANTIATE_GET_COMPONENT(SpriteMaterial)
 INSTANTIATE_GET_COMPONENT(SpriteComponent)
 
 // 3D
@@ -42,12 +43,17 @@ std::vector<T*> Component::GetComponentList(EntityID id) {
 //	GameObjectHelper classMethods
 //============================================================================
 
+void GameObjectHelper::SetImGuiFunc(EntityID entityId, std::function<void()> func) {
+
+	ComponentManager::GetInstance()->SetImGuiFunc(entityId, func);
+}
+
 EntityID GameObjectHelper::CreateObject3D(const std::string& modelName,
 	const std::string& objectName, const std::optional<std::string>& groupName,
-	const std::optional<std::string>& instancingName, const std::optional<std::string>& animationName) {
+	const std::optional<std::string>& animationName) {
 
 	return ComponentManager::GetInstance()->CreateObject3D(
-		modelName, objectName, groupName, instancingName, animationName);
+		modelName, objectName, groupName, animationName);
 }
 
 void GameObjectHelper::RemoveObject3D(EntityID id) {

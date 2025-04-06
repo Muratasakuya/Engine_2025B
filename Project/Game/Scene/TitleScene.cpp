@@ -1,22 +1,24 @@
-#include "DebugScene.h"
+#include "TitleScene.h"
 
 //============================================================================
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
-#include <Engine/Renderer/LineRenderer.h>
-#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
 #include <Engine/Core/Component/User/ComponentHelper.h>
+#include <Engine/Input/Input.h>
 #include <Game/Camera/Manager/CameraManager.h>
-
-// imgui
-#include <imgui.h>
+#include <Game/Scene/Manager/SceneManager.h>
 
 //============================================================================
-//	DebugScene classMethods
+//	TitleScene classMethods
 //============================================================================
 
-void DebugScene::Init(
+TitleScene::~TitleScene() {
+
+	GameObjectHelper::RemoveObject2D(titleNameId_);
+}
+
+void TitleScene::Init(
 	[[maybe_unused]] Asset* asset,
 	[[maybe_unused]] CameraManager* cameraManager,
 	[[maybe_unused]] PostProcessManager* postProcessManager
@@ -26,11 +28,10 @@ void DebugScene::Init(
 	//	load
 	//========================================================================
 
-	//========================================================================
-	//	postProcess
-	//========================================================================
+	asset->LoadTexture("white");
 
-	postProcessManager_ = postProcessManager;
+	// titleName
+	asset->LoadTexture("titleName");
 
 	//========================================================================
 	//	camera
@@ -39,21 +40,29 @@ void DebugScene::Init(
 	gameCamera_ = std::make_unique<GameCamera>();
 	gameCamera_->Init();
 
-	// sceneCameraにセット
 	cameraManager->SetCamera(gameCamera_.get());
 
 	//========================================================================
 	//	initObject
 	//========================================================================
 
+	// titleの名前を中心に表示
+	titleNameId_ = GameObjectHelper::CreateObject2D("titleName", "titleName");
+	Transform2DComponent* titleNameTransform = Component::GetComponent<Transform2DComponent>(titleNameId_);
+	titleNameTransform->SetCenterPos();
 
+	// scene遷移用
+	fadeTransition_ = std::make_unique<FadeTransition>();
+	fadeTransition_->Init();
 }
 
-void DebugScene::Update([[maybe_unused]] SceneManager* sceneManager) {
+void TitleScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 
-	//========================================================================
-	//	update
-	//========================================================================
+	// スペースキーでGameSceneに遷移する
+	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
+
+		sceneManager->SetNextScene(Scene::Game, std::move(fadeTransition_));
+	}
 
 	gameCamera_->Update();
 }

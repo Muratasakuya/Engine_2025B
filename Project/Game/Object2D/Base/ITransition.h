@@ -5,40 +5,44 @@
 //============================================================================
 #include <Engine/Core/Component/Base/IComponent.h>
 
-// c++
-#include <string>
-// front
-class Asset;
-class CameraManager;
-class SceneManager;
-class PostProcessManager;
+//imgui
+#include <imgui.h>
 
-//============================================================================
-//	Scene
-//============================================================================
+// 遷移状態
+enum class TransitionState {
 
-enum class Scene {
-
-	Title,
-	Game
+	Begin, // 開始
+	Wait,  // 待ち時間
+	End    // 終了
 };
 
 //============================================================================
-//	IScene class
+//	ITransition class
 //============================================================================
-class IScene {
+class ITransition {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IScene() = default;
-	virtual ~IScene() = default;
+	ITransition() = default;
+	virtual ~ITransition() = default;
 
-	virtual void Init(Asset* asset, CameraManager* cameraManager,
-		PostProcessManager* postProcessManager) = 0;
+	virtual void Init() = 0;
 
-	virtual void Update(SceneManager* sceneManager) = 0;
+	virtual void Update() = 0;
+
+	virtual void BeginUpdate() = 0;
+
+	virtual void WaitUpdate() = 0;
+
+	virtual void EndUpdate() = 0;
+
+	virtual void ImGui() = 0;
+
+	//--------- accessor -----------------------------------------------------
+
+	TransitionState GetState() const { return state_; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -46,6 +50,6 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
-	CameraManager* cameraManager_;
-	PostProcessManager* postProcessManager_;
+	// 遷移状態
+	TransitionState state_;
 };

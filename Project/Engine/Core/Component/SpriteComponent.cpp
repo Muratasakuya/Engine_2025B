@@ -21,7 +21,7 @@ SpriteComponent::SpriteComponent(ID3D12Device* device, Asset* asset,
 	textureName_ = textureName;
 
 	layer_ = SpriteLayer::PostModel;
-	postProcessEnable_ = false;
+	postProcessEnable_ = true;
 
 	// buffer作成
 	InitBuffer(device);
