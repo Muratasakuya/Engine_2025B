@@ -9,6 +9,8 @@
 #include <Engine/Core/Component/SpriteComponent.h>
 #include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
 
+// imgui
+#include <imgui.h>
 // c++
 #include <string>
 #include <optional>
@@ -47,11 +49,13 @@ public:
 	//	public Methods
 	//========================================================================
 
+	// imgui
+	static void SetImGuiFunc(EntityID entityId, std::function<void()> func);
+
 	//--------- object3D -----------------------------------------------------
 
 	static EntityID CreateObject3D(const std::string& modelName, const std::string& objectName,
 		const std::optional<std::string>& groupName = std::nullopt,
-		const std::optional<std::string>& instancingName = std::nullopt,
 		const std::optional<std::string>& animationName = std::nullopt);
 
 	static void RemoveObject3D(EntityID id);

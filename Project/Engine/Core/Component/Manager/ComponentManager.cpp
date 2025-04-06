@@ -41,6 +41,11 @@ void ComponentManager::EditObject() {
 	imguiComponentManager_->EditObject();
 }
 
+void ComponentManager::SetImGuiFunc(EntityID entityId, std::function<void()> func) {
+
+	imguiComponentManager_->SetImGuiFunc(entityId, func);
+}
+
 const std::vector<EntityID>& ComponentManager::GetEntityList(ComponentType type) const {
 
 	return entityManagers_[static_cast<uint32_t>(type)]->GetIndexToEntity();
@@ -101,8 +106,7 @@ void ComponentManager::Update() {
 
 EntityID ComponentManager::CreateObject3D(
 	const std::string& modelName, const std::string& objectName,
-	const std::optional<std::string>& groupName, const std::optional<std::string>& instancingName,
-	const std::optional<std::string>& animationName) {
+	const std::optional<std::string>& groupName, const std::optional<std::string>& animationName) {
 
 	animationName;
 
@@ -113,7 +117,7 @@ EntityID ComponentManager::CreateObject3D(
 	AddComponent<Transform3DComponent>(id);
 
 	auto transform = GetComponent<Transform3DComponent>(id);
-	transform->SetInstancingName(instancingName.value_or(modelName));
+	transform->SetInstancingName(modelName);
 	AddComponent<Material>(id, asset_->GetModelData(modelName), asset_);
 
 	// buffer作成

@@ -3,37 +3,23 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/Methods/IScene.h>
-#include <Game/Camera/GameCamera.h>
-
-// object
-#include <Game/Object3D/TemplateObject3D.h>
-
-// editor
-#include <Game/Editor/TestEditor.h>
-
-// c++
-#include <memory>
-#include <vector>
-#include <bit>
+#include <Engine/Core/Component/TransformComponent.h>
 
 //============================================================================
-//	DebugScene class
+//	StageField class
 //============================================================================
-class DebugScene :
-	public IScene {
+class StageField {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	DebugScene() = default;
-	~DebugScene() = default;
+	StageField() = default;
+	~StageField();
 
-	void Init(Asset* asset,CameraManager* cameraManager,
-		PostProcessManager* postProcessManager) override;
+	void Init();
 
-	void Update(SceneManager* sceneManager) override;
+	void Update();
 private:
 	//========================================================================
 	//	private Methods
@@ -41,12 +27,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unique_ptr<GameCamera> gameCamera_;
+	uint32_t objectId_;
 
-	std::unique_ptr<TemplateObject3D> object_;
-
-	std::unique_ptr<TestEditor> testEditor_;
+	UVTransform uvTransform_;
 
 	//--------- functions ----------------------------------------------------
 
+	void ImGui();
 };

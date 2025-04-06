@@ -3,49 +3,37 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Base/IComponent.h>
+#include <Game/Scene/Methods/IScene.h>
+#include <Game/Camera/GameCamera.h>
 
-// c++
-#include <string>
-// front
-class Asset;
-class CameraManager;
-class SceneManager;
-class PostProcessManager;
+// object
+#include <Game/Object3D/Environment/StageField.h>
 
 //============================================================================
-//	Scene
+//	GameScene class
 //============================================================================
-
-enum class Scene {
-
-	Title,
-	Game
-};
-
-//============================================================================
-//	IScene class
-//============================================================================
-class IScene {
+class GameScene :
+	public IScene {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IScene() = default;
-	virtual ~IScene() = default;
+	GameScene() = default;
+	~GameScene() = default;
 
-	virtual void Init(Asset* asset, CameraManager* cameraManager,
-		PostProcessManager* postProcessManager) = 0;
+	void Init(Asset* asset, CameraManager* cameraManager,
+		PostProcessManager* postProcessManager) override;
 
-	virtual void Update(SceneManager* sceneManager) = 0;
-protected:
+	void Update(SceneManager* sceneManager) override;
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	CameraManager* cameraManager_;
-	PostProcessManager* postProcessManager_;
+	std::unique_ptr<GameCamera> gameCamera_;
+
+	std::unique_ptr<StageField> stageField_;
 };

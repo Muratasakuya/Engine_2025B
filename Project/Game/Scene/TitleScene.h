@@ -3,49 +3,39 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Base/IComponent.h>
+#include <Game/Scene/Methods/IScene.h>
+#include <Game/Camera/GameCamera.h>
 
-// c++
-#include <string>
-// front
-class Asset;
-class CameraManager;
-class SceneManager;
-class PostProcessManager;
+// object
+#include <Game/Object2D/SceneTransition/FadeTransition.h>
 
 //============================================================================
-//	Scene
+//	TitleScene class
 //============================================================================
-
-enum class Scene {
-
-	Title,
-	Game
-};
-
-//============================================================================
-//	IScene class
-//============================================================================
-class IScene {
+class TitleScene :
+	public IScene {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IScene() = default;
-	virtual ~IScene() = default;
+	TitleScene() = default;
+	~TitleScene();
 
-	virtual void Init(Asset* asset, CameraManager* cameraManager,
-		PostProcessManager* postProcessManager) = 0;
+	void Init(Asset* asset, CameraManager* cameraManager,
+		PostProcessManager* postProcessManager) override;
 
-	virtual void Update(SceneManager* sceneManager) = 0;
-protected:
+	void Update(SceneManager* sceneManager) override;
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	CameraManager* cameraManager_;
-	PostProcessManager* postProcessManager_;
+	std::unique_ptr<GameCamera> gameCamera_;
+
+	std::unique_ptr<FadeTransition> fadeTransition_;
+
+	EntityID titleNameId_;
 };

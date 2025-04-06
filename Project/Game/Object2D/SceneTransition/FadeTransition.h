@@ -3,49 +3,43 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Base/IComponent.h>
-
-// c++
-#include <string>
-// front
-class Asset;
-class CameraManager;
-class SceneManager;
-class PostProcessManager;
+#include <Game/Object2D/Base/ITransition.h>
+#include <Game/Algorithm/StateTimer.h>
 
 //============================================================================
-//	Scene
+//	FadeTransition class
 //============================================================================
-
-enum class Scene {
-
-	Title,
-	Game
-};
-
-//============================================================================
-//	IScene class
-//============================================================================
-class IScene {
+class FadeTransition :
+	public ITransition {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IScene() = default;
-	virtual ~IScene() = default;
+	FadeTransition() = default;
+	~FadeTransition() = default;
 
-	virtual void Init(Asset* asset, CameraManager* cameraManager,
-		PostProcessManager* postProcessManager) = 0;
+	void Init() override;
 
-	virtual void Update(SceneManager* sceneManager) = 0;
-protected:
+	void Update() override;
+
+	void BeginUpdate() override;
+
+	void WaitUpdate() override;
+
+	void EndUpdate() override;
+
+	void ImGui() override;
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	CameraManager* cameraManager_;
-	PostProcessManager* postProcessManager_;
+	EntityID fadeSpriteId_;
+
+	StateTimer beginTimer_;
+	StateTimer waitTimer_;
+	StateTimer endTimer_;
 };

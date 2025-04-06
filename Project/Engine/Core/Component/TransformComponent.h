@@ -98,6 +98,8 @@ public:
 
 	void ImGui(float itemSize);
 
+	void SetCenterPos();
+
 	//--------- variables ----------------------------------------------------
 
 	Vector2 translation;

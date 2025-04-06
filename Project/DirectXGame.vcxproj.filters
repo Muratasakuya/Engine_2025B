@@ -149,9 +149,6 @@
     <ClCompile Include="Game\Scene\Methods\SceneFactory.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\DebugScene\DebugScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Time\GameTimer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -194,7 +191,7 @@
     <ClCompile Include="Engine\Core\Component\Manager\CollisionManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\TemplateObject3D.cpp">
+    <ClCompile Include="Game\Object3D\Template\TemplateObject3D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Lib\MathUtils\Algorithm.cpp">
@@ -272,6 +269,24 @@
     <ClCompile Include="Engine\Core\Graphics\Mesh\MeshRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\TitleScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\Methods\SceneTransition.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object2D\SceneTransition\FadeTransition.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Algorithm\StateTimer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Environment\StageField.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -325,7 +340,6 @@
     <ClInclude Include="Game\Scene\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scene\Methods\IScene.h" />
     <ClInclude Include="Game\Scene\Methods\SceneFactory.h" />
-    <ClInclude Include="Game\Scene\DebugScene\DebugScene.h" />
     <ClInclude Include="Game\Time\GameTimer.h" />
     <ClInclude Include="Engine\Core\Graphics\Managers\ImGuiManager.h" />
     <ClInclude Include="Engine\Editor\ImGuiEditor.h" />
@@ -341,7 +355,7 @@
     <ClInclude Include="Engine\Core\Component\ColliderComponent.h" />
     <ClInclude Include="Engine\Core\Component\Manager\CollisionManager.h" />
     <ClInclude Include="Engine\Core\Lib\Collision.h" />
-    <ClInclude Include="Game\Object3D\TemplateObject3D.h" />
+    <ClInclude Include="Game\Object3D\Template\TemplateObject3D.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h" />
     <ClInclude Include="Engine\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Engine\Core\Component\Base\IComponent.h" />
@@ -369,6 +383,13 @@
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletBuilder.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\Mesh.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshRegistry.h" />
+    <ClInclude Include="Game\Scene\TitleScene.h" />
+    <ClInclude Include="Game\Scene\GameScene.h" />
+    <ClInclude Include="Game\Object2D\Base\ITransition.h" />
+    <ClInclude Include="Game\Scene\Methods\SceneTransition.h" />
+    <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h" />
+    <ClInclude Include="Game\Algorithm\StateTimer.h" />
+    <ClInclude Include="Game\Object3D\Environment\StageField.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

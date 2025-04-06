@@ -5,6 +5,7 @@
 //============================================================================
 #include <Game/Scene/Methods/IScene.h>
 #include <Game/Scene/Methods/SceneFactory.h>
+#include <Game/Scene/Methods/SceneTransition.h>
 
 // c++
 #include <memory>
@@ -28,7 +29,7 @@ public:
 
 	void InitNextScene();
 
-	void SetNextScene(Scene scene);
+	void SetNextScene(Scene scene, std::unique_ptr<ITransition> transition);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -47,6 +48,8 @@ private:
 	std::unique_ptr<IScene> currentScene_;
 
 	std::unique_ptr<SceneFactory> factory_;
+
+	std::unique_ptr<SceneTransition> sceneTransition_;
 
 	Scene nextScene_;
 	bool isSceneSwitching_;
