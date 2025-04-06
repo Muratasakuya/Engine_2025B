@@ -3,9 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Renderer/Managers/ObjectPipelineManager.h>
 #include <Engine/Core/Graphics/Pipeline/MeshShaderPipelineState.h>
-#include <Engine/Core/Graphics/CBuffer/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Game/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Matrix4x4.h>
@@ -20,7 +19,7 @@ class DxCommand;
 class DxShaderCompiler;
 class SRVManager;
 class ShadowMap;
-class RenderObjectManager;
+class GPUObjectSystem;
 class CameraManager;
 
 //============================================================================
@@ -37,7 +36,7 @@ public:
 
 	void Init(DxCommand* dxCommand, ID3D12Device8* device,
 		ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler, SRVManager* srvManager,
-		RenderObjectManager* renderObjectManager, CameraManager* cameraManager);
+		GPUObjectSystem* gpuObjectSystem, CameraManager* cameraManager);
 
 	void Update();
 
@@ -54,10 +53,8 @@ private:
 	ID3D12GraphicsCommandList* commandList_;
 	SRVManager* srvManager_;
 	ShadowMap* shadowMap_;
-	RenderObjectManager* renderObjectManager_;
+	GPUObjectSystem* gpuObjectSystem_;
 	CameraManager* cameraManager_;
-
-	std::unique_ptr<ObjectPipelineManager> pipeline_;
 
 	std::unique_ptr<MeshShaderPipelineState> meshShaderPipeline_;
 

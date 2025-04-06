@@ -117,6 +117,9 @@ out indices uint3 polys[126] // 出力三角形インデックス
 		MSInput input = gVertices[index];
 		MSOutput output = (MSOutput) 0;
 		
+		// instanceIdを取得
+		output.instanceID = instanceIndex;
+		
 		// スクリーン座標に変換
 		float4x4 wvp = mul(world, viewProjection);
 		output.position = mul(input.position, wvp);
