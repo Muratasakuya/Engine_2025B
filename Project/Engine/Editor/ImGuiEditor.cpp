@@ -5,7 +5,7 @@
 //============================================================================
 
 // imgui表示
-#include <Engine/Component/Manager/ComponentManager.h>
+#include <Engine/Core/Component/Manager/ComponentManager.h>
 #include <Engine/Editor/Manager/GameEditorManager.h>
 #include <Game/Time/GameTimer.h>
 

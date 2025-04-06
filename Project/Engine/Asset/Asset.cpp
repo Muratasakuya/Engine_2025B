@@ -9,11 +9,11 @@ void Asset::Init(ID3D12Device* device, DxCommand* dxCommand, SRVManager* srvMana
 	textureManager_ = std::make_unique<TextureManager>();
 	textureManager_->Init(device, dxCommand, srvManager);
 
-	modelManager_ = std::make_unique<ModelManager>();
-	modelManager_->Init(textureManager_.get());
+	modelLoader_ = std::make_unique<ModelLoader>();
+	modelLoader_->Init(textureManager_.get());
 
 	animationManager_ = std::make_unique<AnimationManager>();
-	animationManager_->Init(device, srvManager, modelManager_.get());
+	animationManager_->Init(device, srvManager, modelLoader_.get());
 }
 
 void Asset::LoadTexture(const std::string& textureName) {
@@ -21,7 +21,7 @@ void Asset::LoadTexture(const std::string& textureName) {
 }
 
 void Asset::LoadModel(const std::string& modelName) {
-	modelManager_->Load(modelName);
+	modelLoader_->Load(modelName);
 }
 
 void Asset::LoadAnimation(const std::string& animationName, const std::string& modelName) {
@@ -45,11 +45,11 @@ const std::vector<std::string>& Asset::GetTextureKeys() const {
 }
 
 const ModelData& Asset::GetModelData(const std::string& modelName) const {
-	return modelManager_->GetModelData(modelName);
+	return modelLoader_->GetModelData(modelName);
 }
 
 const std::vector<std::string>& Asset::GetModelKeys() const {
-	return modelManager_->GetModelKeys();
+	return modelLoader_->GetModelKeys();
 }
 
 const AnimationData& Asset::GetAnimationData(const std::string& animationName) const {

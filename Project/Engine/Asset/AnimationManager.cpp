@@ -7,14 +7,14 @@
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
 #include <Engine/Core/Lib/DxUtils.h>
-#include <Engine/Asset/ModelManager.h>
+#include <Engine/Asset/ModelLoader.h>
 #include <Engine/Asset/Filesystem.h>
 
 //============================================================================
 //	AnimationManager classMethods
 //============================================================================
 
-void AnimationManager::Init(ID3D12Device* device, SRVManager* srvManager, ModelManager* modelManager) {
+void AnimationManager::Init(ID3D12Device* device, SRVManager* srvManager, ModelLoader* modelLoader) {
 
 	device_ = nullptr;
 	device_ = device;
@@ -22,8 +22,8 @@ void AnimationManager::Init(ID3D12Device* device, SRVManager* srvManager, ModelM
 	srvManager_ = nullptr;
 	srvManager_ = srvManager;
 
-	modelManager_ = nullptr;
-	modelManager_ = modelManager;
+	modelLoader_ = nullptr;
+	modelLoader_ = modelLoader;
 
 	baseDirectoryPath_ = "./Assets/Models/";
 }
@@ -108,7 +108,7 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 		}
 
 		animations_[newAnimationName] = animation;
-		skeletons_[newAnimationName] = CreateSkeleton(modelManager_->GetModelData(modelName).rootNode, newAnimationName);
+		skeletons_[newAnimationName] = CreateSkeleton(modelLoader_->GetModelData(modelName).rootNode, newAnimationName);
 		skinClusters_[newAnimationName] = CreateSkinCluster(modelName, newAnimationName);
 
 		Logger::Log("load animation: " + newAnimationName);
@@ -298,16 +298,16 @@ SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, co
 
 	// influence用のResourceを確保、頂点ごとにinfluence情報を追加できるようにする
 	DxUtils::CreateBufferResource(device_, skinCluster.influenceResource,
-		sizeof(VertexInfluence) * modelManager_->GetModelData(modelName).meshes.front().vertices.size());
+		sizeof(VertexInfluence) * modelLoader_->GetModelData(modelName).meshes.front().vertices.size());
 	VertexInfluence* mappedInfluence = nullptr;
 	skinCluster.influenceResource->Map(0, nullptr, reinterpret_cast<void**>(&mappedInfluence));
 	// 0埋め、weightを0にしておく
-	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * modelManager_->GetModelData(modelName).meshes.front().vertices.size());
-	skinCluster.mappedInfluence = { mappedInfluence,modelManager_->GetModelData(modelName).meshes.front().vertices.size() };
+	std::memset(mappedInfluence, 0, sizeof(VertexInfluence) * modelLoader_->GetModelData(modelName).meshes.front().vertices.size());
+	skinCluster.mappedInfluence = { mappedInfluence,modelLoader_->GetModelData(modelName).meshes.front().vertices.size() };
 
 	// Influence用のVBVを作成
 	skinCluster.influenceBufferView.BufferLocation = skinCluster.influenceResource->GetGPUVirtualAddress();
-	skinCluster.influenceBufferView.SizeInBytes = static_cast<UINT>(sizeof(VertexInfluence) * modelManager_->GetModelData(modelName).meshes.front().vertices.size());
+	skinCluster.influenceBufferView.SizeInBytes = static_cast<UINT>(sizeof(VertexInfluence) * modelLoader_->GetModelData(modelName).meshes.front().vertices.size());
 	skinCluster.influenceBufferView.StrideInBytes = sizeof(VertexInfluence);
 
 	// SRVDesc設定
@@ -317,7 +317,7 @@ SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, co
 	influenceResourceSrvDesc.ViewDimension = D3D12_SRV_DIMENSION_BUFFER;
 	influenceResourceSrvDesc.Buffer.FirstElement = 0;
 	influenceResourceSrvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
-	influenceResourceSrvDesc.Buffer.NumElements = static_cast<UINT>(modelManager_->GetModelData(modelName).meshes.front().vertices.size());
+	influenceResourceSrvDesc.Buffer.NumElements = static_cast<UINT>(modelLoader_->GetModelData(modelName).meshes.front().vertices.size());
 	influenceResourceSrvDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(VertexInfluence));
 	// SRV作成
 	srvManager_->CreateSRV(srvIndex_, skinCluster.influenceResource.Get(), influenceResourceSrvDesc);
@@ -329,7 +329,7 @@ SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, co
 		[]() { return Matrix4x4::MakeIdentity4x4(); });
 
 	// ModelDataを解析してInfluenceを埋める
-	for (const auto& jointWeight : modelManager_->GetModelData(modelName).skinClusterData) {
+	for (const auto& jointWeight : modelLoader_->GetModelData(modelName).skinClusterData) {
 
 		// jointWeight.firstはjoint名なので、skeletonに対象となるjointが含まれているか判断
 		auto it = skeletons_[animationName].jointMap.find(jointWeight.first);
@@ -367,7 +367,7 @@ const AnimationData& AnimationManager::GetAnimationData(const std::string& anima
 }
 
 const Skeleton& AnimationManager::GetSkeletonData(const std::string& animationName) const {
-	
+
 	ASSERT(skeletons_.find(animationName) != skeletons_.end(), "not found animation" + animationName);
 	return skeletons_.at(animationName);
 }

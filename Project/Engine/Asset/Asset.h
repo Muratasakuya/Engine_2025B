@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/TextureManager.h>
-#include <Engine/Asset/ModelManager.h>
+#include <Engine/Asset/ModelLoader.h>
 #include <Engine/Asset/AnimationManager.h>
 
 // c++
@@ -64,7 +64,7 @@ private:
 
 	std::unique_ptr<TextureManager> textureManager_;
 
-	std::unique_ptr<ModelManager> modelManager_;
+	std::unique_ptr<ModelLoader> modelLoader_;
 
 	std::unique_ptr<AnimationManager> animationManager_;
 };

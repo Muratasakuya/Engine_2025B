@@ -13,14 +13,14 @@ class TextureManager;
 //============================================================================
 //	ModelManager class
 //============================================================================
-class ModelManager {
+class ModelLoader {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ModelManager() = default;
-	~ModelManager() = default;
+	ModelLoader() = default;
+	~ModelLoader() = default;
 
 	void Init(TextureManager* textureManager);
 

@@ -1,4 +1,4 @@
-#include "ModelManager.h"
+#include "ModelLoader.h"
 
 //============================================================================
 //	include
@@ -9,10 +9,10 @@
 #include <Engine/Asset/Filesystem.h>
 
 //============================================================================
-//	ModelManager classMethods
+//	ModelLoader classMethods
 //============================================================================
 
-void ModelManager::Init(TextureManager* textureManager) {
+void ModelLoader::Init(TextureManager* textureManager) {
 
 	textureManager_ = nullptr;
 	textureManager_ = textureManager;
@@ -21,7 +21,7 @@ void ModelManager::Init(TextureManager* textureManager) {
 	isCacheValid_ = false;
 }
 
-void ModelManager::Load(const std::string& modelName) {
+void ModelLoader::Load(const std::string& modelName) {
 
 	// モデルがすでにあれば読み込みは行わない
 	if (models_.find(modelName) != models_.end()) {
@@ -50,13 +50,13 @@ void ModelManager::Load(const std::string& modelName) {
 	Logger::Log("load model: " + modelName);
 }
 
-const ModelData& ModelManager::GetModelData(const std::string& modelName) const {
+const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
 
 	ASSERT(models_.find(modelName) != models_.end(), "not found model" + modelName);
 	return models_.at(modelName);
 }
 
-const std::vector<std::string>& ModelManager::GetModelKeys() const {
+const std::vector<std::string>& ModelLoader::GetModelKeys() const {
 
 	if (!isCacheValid_) {
 
@@ -71,7 +71,7 @@ const std::vector<std::string>& ModelManager::GetModelKeys() const {
 	return modelKeysCache_;
 }
 
-ModelData ModelManager::LoadModelFile(const std::string& filePath) {
+ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 
 	ModelData modelData;            // 構築するModelData
 	std::vector<Vector4> positions; // 位置
@@ -174,7 +174,7 @@ ModelData ModelManager::LoadModelFile(const std::string& filePath) {
 	return modelData;
 }
 
-Node ModelManager::ReadNode(aiNode* node) {
+Node ModelLoader::ReadNode(aiNode* node) {
 
 	Node result;
 
