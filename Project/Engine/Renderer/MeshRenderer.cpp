@@ -23,8 +23,12 @@ void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
 	shadowMap_ = nullptr;
 	shadowMap_ = shadowMap;
 
+	// pipeline作成
 	meshShaderPipeline_ = std::make_unique<PipelineState>();
 	meshShaderPipeline_->Create("MeshStandard.json", device, srvManager, shaderCompiler);
+
+	meshShaderZPassPipeline_ = std::make_unique<PipelineState>();
+	meshShaderZPassPipeline_->Create("MeshDepth.json", device, srvManager, shaderCompiler);
 
 	// buffer作成
 	viewProjectionBuffer_.CreateConstBuffer(device);
@@ -53,8 +57,39 @@ void MeshRenderer::Update(CameraManager* cameraManager) {
 #endif // _DEBUG
 }
 
-void MeshRenderer::ZPassRendering() {
+void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
+	ID3D12GraphicsCommandList6* commandList) {
 
+	// 描画情報取得
+	const auto& meshes = gpuObjectSystem->GetMeshes();
+	auto instancingBuffers = gpuObjectSystem->GetInstancingData();
+	MeshCommandContext commandContext{};
+
+	if (meshes.empty()) {
+		return;
+	}
+
+	// renderTextureへの描画処理
+	// pipeline設定
+	commandList->SetGraphicsRootSignature(meshShaderZPassPipeline_->GetRootSignature());
+	commandList->SetPipelineState(meshShaderZPassPipeline_->GetGraphicsPipeline());
+
+	// lightViewProjection
+	commandList->SetGraphicsRootConstantBufferView(6,
+		lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+
+	for (const auto& [name, mesh] : meshes) {
+
+		// meshごとのmatrix設定
+		commandList->SetGraphicsRootShaderResourceView(4,
+			instancingBuffers[name].matrix.GetResource()->GetGPUVirtualAddress());
+
+		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
+
+			commandContext.DispatchMesh(commandList,
+				instancingBuffers[name].numInstance, meshIndex, mesh.get());
+		}
+	}
 }
 
 void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,

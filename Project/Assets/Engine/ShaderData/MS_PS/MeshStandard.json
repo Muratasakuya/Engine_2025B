@@ -26,11 +26,6 @@
         { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER", "ShaderRegister": 0 },
         { "SamplerIndex": 1, "Filter": "COMPARISON_LINEAR", "AddressMode": "CLAMP","ComparisonFunc": "GREATER", "ShaderRegister": 1 }
     ],
-    "InputLayout":[
-        {"Desc":0, "SemanticName": "POSITION", "Format": "R32G32B32A32_FLOAT"},
-        {"Desc":1, "SemanticName": "TEXCOORD", "Format": "R32G32_FLOAT"},
-        {"Desc":2, "SemanticName": "NORMAL", "Format": "R32G32B32_FLOAT"}
-    ],
     "Rasterizer":[
         {
             "CullMode": "BACK",

@@ -36,7 +36,9 @@ public:
 
 	void Update(class CameraManager* cameraManager);
 
-	void ZPassRendering();
+	void RenderingZPass(GPUObjectSystem* gpuObjectSystem,
+		ID3D12GraphicsCommandList6* commandList);
+
 	void Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 		ID3D12GraphicsCommandList6* commandList);
 private:
@@ -50,6 +52,7 @@ private:
 	ShadowMap* shadowMap_;
 
 	std::unique_ptr<PipelineState> meshShaderPipeline_;
+	std::unique_ptr<PipelineState> meshShaderZPassPipeline_;
 
 	// buffer
 	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;

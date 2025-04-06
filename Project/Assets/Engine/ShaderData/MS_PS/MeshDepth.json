@@ -1,0 +1,40 @@
+{
+    "Type": "MS",
+    "ShaderPass":[
+        {
+            "Type": "Graphics",
+            "MeshShader": "MeshDepth.MS.hlsl",
+            "PixelShader": "MeshDepth.PS.hlsl"
+        }
+    ],
+    "RootParameter": [
+        { "RootIndex": 0, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 0 },
+        { "RootIndex": 1, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 1 },
+        { "RootIndex": 2, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 2 },
+        { "RootIndex": 3, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 3 },
+        { "RootIndex": 4, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 4 },
+        { "RootIndex": 5, "Type": "CBV", "Visibility": "MESH", "ShaderRegister": 0 },
+        { "RootIndex": 6, "Type": "CBV", "Visibility": "MESH", "ShaderRegister": 1 }
+    ],
+    "Rasterizer":[
+        {
+            "CullMode": "NONE",
+            "FillMode": "SOLID",
+            "DepthClipEnable": "TRUE",
+            "AntialiasedLineEnable": "FALSE"
+        }
+    ],
+    "DepthStencil":[
+        {
+            "DepthEnable": "TRUE",
+            "DepthWriteMask": "ALL",
+            "DepthFunc": "LESS"
+        }
+    ],
+    "PipelineState":[
+        {
+            "DSVFormat": "D32_FLOAT",
+            "RTVFormats": "R32_FLOAT"
+        }
+    ]
+}
