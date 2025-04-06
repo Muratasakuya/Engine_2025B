@@ -14,15 +14,8 @@
 //	MeshRenderer classMethods
 //============================================================================
 
-void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device8* device,
-	ShadowMap* shadowMap, DxShaderCompiler* shaderCompiler, SRVManager* srvManager,
-	GPUObjectSystem* gpuObjectSystem, CameraManager* cameraManager) {
-
-	commandList_ = nullptr;
-	commandList_ = dxCommand->GetCommandList(CommandListType::Graphics);
-
-	dxCommand_ = nullptr;
-	dxCommand_ = dxCommand;
+void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
+	DxShaderCompiler* shaderCompiler, SRVManager* srvManager) {
 
 	srvManager_ = nullptr;
 	srvManager_ = srvManager;
@@ -30,14 +23,8 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device8* device,
 	shadowMap_ = nullptr;
 	shadowMap_ = shadowMap;
 
-	cameraManager_ = nullptr;
-	cameraManager_ = cameraManager;
-
-	gpuObjectSystem_ = nullptr;
-	gpuObjectSystem_ = gpuObjectSystem;
-
-	meshShaderPipeline_ = std::make_unique<MeshShaderPipelineState>();
-	meshShaderPipeline_->Create(device, shaderCompiler, srvManager);
+	meshShaderPipeline_ = std::make_unique<PipelineState>();
+	meshShaderPipeline_->Create("MeshStandard.json", device, srvManager, shaderCompiler);
 
 	// buffer作成
 	viewProjectionBuffer_.CreateConstBuffer(device);
@@ -52,17 +39,17 @@ void MeshRenderer::Init(DxCommand* dxCommand, ID3D12Device8* device,
 #endif // _DEBUG
 }
 
-void MeshRenderer::Update() {
+void MeshRenderer::Update(CameraManager* cameraManager) {
 
 	// buffer更新
-	viewProjectionBuffer_.TransferData(cameraManager_->GetCamera()->GetViewProjectionMatrix());
-	lightViewProjectionBuffer_.TransferData(cameraManager_->GetLightViewCamera()->GetViewProjectionMatrix());
-	cameraPosBuffer_.TransferData(cameraManager_->GetCamera()->GetTransform().translation);
+	viewProjectionBuffer_.TransferData(cameraManager->GetCamera()->GetViewProjectionMatrix());
+	lightViewProjectionBuffer_.TransferData(cameraManager->GetLightViewCamera()->GetViewProjectionMatrix());
+	cameraPosBuffer_.TransferData(cameraManager->GetCamera()->GetTransform().translation);
 	lightBuffer_.TransferData(light_);
 
 #ifdef _DEBUG
-	debugSceneViewProjectionBuffer_.TransferData(cameraManager_->GetDebugCamera()->GetViewProjectionMatrix());
-	debugSceneCameraPosBuffer_.TransferData(cameraManager_->GetDebugCamera()->GetTransform().translation);
+	debugSceneViewProjectionBuffer_.TransferData(cameraManager->GetDebugCamera()->GetViewProjectionMatrix());
+	debugSceneCameraPosBuffer_.TransferData(cameraManager->GetDebugCamera()->GetTransform().translation);
 #endif // _DEBUG
 }
 
@@ -70,11 +57,12 @@ void MeshRenderer::ZPassRendering() {
 
 }
 
-void MeshRenderer::Rendering(bool debugEnable, ID3D12GraphicsCommandList6* commandList) {
+void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
+	ID3D12GraphicsCommandList6* commandList) {
 
 	// 描画情報取得
-	const auto& meshes = gpuObjectSystem_->GetMeshes();
-	auto instancingBuffers = gpuObjectSystem_->GetInstancingData();
+	const auto& meshes = gpuObjectSystem->GetMeshes();
+	auto instancingBuffers = gpuObjectSystem->GetInstancingData();
 	MeshCommandContext commandContext{};
 
 	if (meshes.empty()) {
@@ -84,9 +72,31 @@ void MeshRenderer::Rendering(bool debugEnable, ID3D12GraphicsCommandList6* comma
 	// renderTextureへの描画処理
 	// pipeline設定
 	commandList->SetGraphicsRootSignature(meshShaderPipeline_->GetRootSignature());
-	commandList->SetPipelineState(meshShaderPipeline_->GetPipelineState());
+	commandList->SetPipelineState(meshShaderPipeline_->GetGraphicsPipeline());
 
 	// 共通のbuffer設定
+	SetCommonBuffer(debugEnable, commandList);
+
+	for (const auto& [name, mesh] : meshes) {
+
+		// meshごとのmatrix設定
+		commandList->SetGraphicsRootShaderResourceView(4,
+			instancingBuffers[name].matrix.GetResource()->GetGPUVirtualAddress());
+
+		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
+
+			// meshごとのmaterial設定
+			commandList->SetGraphicsRootShaderResourceView(8,
+				instancingBuffers[name].materials[meshIndex].GetResource()->GetGPUVirtualAddress());
+
+			commandContext.DispatchMesh(commandList,
+				instancingBuffers[name].numInstance, meshIndex, mesh.get());
+		}
+	}
+}
+
+void MeshRenderer::SetCommonBuffer(bool debugEnable, ID3D12GraphicsCommandList6* commandList) {
+
 	if (!debugEnable) {
 
 		// viewProjection
@@ -120,21 +130,4 @@ void MeshRenderer::Rendering(bool debugEnable, ID3D12GraphicsCommandList6* comma
 	// light
 	commandList->SetGraphicsRootConstantBufferView(11,
 		lightBuffer_.GetResource()->GetGPUVirtualAddress());
-
-	for (const auto& [name, mesh] : meshes) {
-
-		// meshごとのmatrix設定
-		commandList->SetGraphicsRootShaderResourceView(4,
-			instancingBuffers[name].matrix.GetResource()->GetGPUVirtualAddress());
-
-		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
-
-			// meshごとのmaterial設定
-			commandList->SetGraphicsRootShaderResourceView(8,
-				instancingBuffers[name].materials[meshIndex].GetResource()->GetGPUVirtualAddress());
-
-			commandContext.DispatchMesh(commandList,
-				instancingBuffers[name].numInstance, meshIndex, mesh.get());
-		}
-	}
 }

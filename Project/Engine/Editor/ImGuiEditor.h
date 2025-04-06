@@ -8,6 +8,8 @@
 #include <d3d12.h>
 // imgui
 #include <imgui.h>
+// front
+class CameraManager;
 
 //============================================================================
 //	ImGuiEditor class
@@ -26,7 +28,6 @@ public:
 		const D3D12_GPU_DESCRIPTOR_HANDLE& shadowMapGPUHandle);
 
 	void Display();
-
 private:
 	//========================================================================
 	//	private Methods

@@ -9,6 +9,7 @@
 
 // directX
 #include <d3d12.h>
+#include <Externals/DirectX12/d3dx12.h>
 // c++
 #include <vector>
 #include <iostream>
@@ -32,12 +33,12 @@ public:
 	PipelineState() = default;
 	virtual ~PipelineState() = default;
 
-	void Create(const std::string& fileName, ID3D12Device* device,
-		DxShaderCompiler* shaderCompiler);
+	void Create(const std::string& fileName, ID3D12Device8* device,
+		class SRVManager* srvManager, DxShaderCompiler* shaderCompiler);
 
 	//--------- accessor -----------------------------------------------------
 
-	ID3D12PipelineState* GetGraphicsPipeline(BlendMode blendMode = BlendMode::kBlendModeNormal) const;
+	ID3D12PipelineState* GetGraphicsPipeline() const { return graphicsPipelinepipelineState_.Get(); };
 	ID3D12PipelineState* GetComputePipeline() const { return computePipelineState_.Get(); };
 
 	ID3D12RootSignature* GetRootSignature() const { return rootSignature_.Get(); }
@@ -46,9 +47,19 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- enum class ---------------------------------------------------
+
+	// pipelineの種類
+	enum class PipelineType {
+
+		VERTEX,
+		MESH,
+		COMPUTE
+	};
+
 	//--------- variables ----------------------------------------------------
 
-	std::vector<ComPtr<ID3D12PipelineState>> graphicsPipelinepipelineStates_;
+	ComPtr<ID3D12PipelineState> graphicsPipelinepipelineState_;
 
 	ComPtr<ID3D12PipelineState> computePipelineState_;
 
@@ -57,4 +68,13 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	Json LoadFile(const std::string& fileName);
+
+	void CreateVertexPipeline(const Json& json, ID3D12Device8* device,
+		const std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
+
+	void CreateMeshPipeline(const Json& json, ID3D12Device8* device,
+		const std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
+
+	void CreateComputePipeline(ID3D12Device8* device,
+		const std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
 };

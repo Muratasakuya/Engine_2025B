@@ -29,7 +29,7 @@ public:
 	PostProcessManager() : IGameEditor("postProcess") {};
 	~PostProcessManager() = default;
 
-	void Init(ID3D12Device* device, class DxShaderCompiler* shaderComplier,
+	void Init(ID3D12Device8* device, class DxShaderCompiler* shaderComplier,
 		SRVManager* srvManager, uint32_t width, uint32_t height);
 
 	// postProcess作成
@@ -39,8 +39,7 @@ public:
 	void Execute(class RenderTexture* inputTexture, class DxCommand* dxCommand);
 
 	// 最終的なtextureをframeBufferに描画する
-	void RenderFrameBuffer(class PipelineState* pipeline,
-		class DxCommand* dxCommand);
+	void RenderFrameBuffer(class DxCommand* dxCommand);
 
 	// imgui
 	void ImGui() override;
@@ -75,6 +74,7 @@ private:
 
 	// pipeline
 	std::unique_ptr<PostProcessPipelineManager> pipelineManager_;
+	std::unique_ptr<PipelineState> offscreenPipeline_;
 
 	std::vector<PostProcess> initProcesses_;   // 初期化済み
 	std::vector<PostProcess> activeProcesses_; // 適用するプロセス

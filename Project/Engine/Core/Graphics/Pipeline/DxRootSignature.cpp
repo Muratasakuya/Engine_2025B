@@ -4,18 +4,38 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
+#include <Engine/Core/Graphics/Managers/SRVManager.h>
 
 //============================================================================
 //	DxRootSignature classMethods
 //============================================================================
 
-void DxRootSignature::Create(const Json& json, ID3D12Device* device,
+void DxRootSignature::Create(const Json& json, ID3D12Device* device, SRVManager* srvManager,
 	ComPtr<ID3D12RootSignature>& rootSignature) {
 
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 
-	rootSignatureDesc.Flags =
-		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+	bool isMeshShader = false;
+
+	// meshShaderを使うかどうか
+	if (json.contains("Type") && json["Type"] == "MS") {
+
+		// typeがMS
+		isMeshShader = true;
+	}
+
+	// フラグ設定
+	if (isMeshShader) {
+
+		auto flag = D3D12_ROOT_SIGNATURE_FLAG_DENY_VERTEX_SHADER_ROOT_ACCESS;
+		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
+		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS;
+		flag |= D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+		rootSignatureDesc.Flags = flag;
+	} else {
+
+		rootSignatureDesc.Flags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+	}
 
 	// Jsonから受け取ったDataで設定
 	{
@@ -38,6 +58,10 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device,
 
 				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParam.Descriptor.ShaderRegister = param["ShaderRegister"];
+			}if (type == "SRV") {
+
+				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+				rootParam.Descriptor.ShaderRegister = param["ShaderRegister"];
 			} else if (type == "TABLE") {
 
 				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
@@ -49,7 +73,22 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device,
 				D3D12_DESCRIPTOR_RANGE& descRange = descriptorRanges.back()[0]; // 参照を取得
 
 				descRange.BaseShaderRegister = param["DescriptorRange"]["BaseShaderRegister"];
-				descRange.NumDescriptors = 1;
+
+				UINT numDescriptors = 1;
+				if (param["DescriptorRange"].contains("NumDescriptors") &&
+					param["DescriptorRange"]["NumDescriptors"] == "srvCount") {
+
+					// srvの数だけ設定する
+					numDescriptors = srvManager->GetMaxSRVCount();
+				}
+
+				if (param["DescriptorRange"].contains("RegisterSpace")) {
+
+					// registerSpaceを設定
+					descRange.RegisterSpace = param["DescriptorRange"]["RegisterSpace"];
+				}
+
+				descRange.NumDescriptors = numDescriptors;
 				descRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
 				std::string descRangeType = param["DescriptorRange"]["Type"];
@@ -67,10 +106,16 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device,
 
 			// Visibility の設定
 			if (visibility == "VERTEX") {
+
 				rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
+			} else if (visibility == "MESH") {
+
+				rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_MESH;
 			} else if (visibility == "PIXEL") {
+
 				rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 			} else if (visibility == "COMPUTE") {
+
 				rootParam.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 			}
 
@@ -85,14 +130,16 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device,
 				std::string filterType = sampler["Filter"];
 				std::string addressMode = sampler["AddressMode"];
 				std::string comparisonFunc = sampler["ComparisonFunc"];
-				std::string visibility = sampler["Visibility"];
 
 				// フィルター設定
 				if (filterType == "LINEAR") {
+
 					staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_LINEAR;
 				} else if (filterType == "COMPARISON_LINEAR") {
+
 					staticSampler.Filter = D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR;
 				} else if (filterType == "POINT") {
+
 					staticSampler.Filter = D3D12_FILTER_MIN_MAG_MIP_POINT;
 				}
 
@@ -110,19 +157,15 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device,
 				}
 
 				if (comparisonFunc == "NEVER") {
+
 					staticSampler.ComparisonFunc = D3D12_COMPARISON_FUNC_NEVER;
 				} else if (comparisonFunc == "GREATER") {
+
 					staticSampler.ComparisonFunc = D3D12_COMPARISON_FUNC_GREATER;
 				}
 
-				// Visibility の設定
-				if (visibility == "VERTEX") {
-					staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_VERTEX;
-				} else if (visibility == "PIXEL") {
-					staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
-				} else if (visibility == "COMPUTE") {
-					staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-				}
+				// Visibilityの設定
+				staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_PIXEL;
 
 				staticSampler.ShaderRegister = sampler["ShaderRegister"];
 				staticSampler.ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;

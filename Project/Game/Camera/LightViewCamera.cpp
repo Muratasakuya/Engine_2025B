@@ -50,3 +50,18 @@ void LightViewCamera::Update() {
 
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 }
+
+void LightViewCamera::ImGui() {
+
+	ImGui::PushItemWidth(itemWidth_);
+
+	ImGui::DragFloat3("translation##LightViewCamera", &transform_.translation.x, 0.01f);
+	ImGui::DragFloat3("target##LightViewCamera", &target_.x, 0.01f);
+	ImGui::DragFloat3("upDirection##LightViewCamera", &upDirection_.x, 0.01f);
+
+	ImGui::DragFloat("orthoSize##LightViewCamera", &orthoSize_, 0.5f);
+	ImGui::DragFloat("nearPlane##LightViewCamera", &nearPlane_, 1.0f);
+	ImGui::DragFloat("farPlane##LightViewCamera", &farPlane_, 1.0f);
+
+	ImGui::PopItemWidth();
+}

@@ -27,6 +27,6 @@ public:
 	DxRootSignature() = default;
 	~DxRootSignature() = default;
 
-	void Create(const Json& json, ID3D12Device* device,
+	void Create(const Json& json, ID3D12Device* device, class SRVManager* srvManager,
 		ComPtr<ID3D12RootSignature>& rootSignature);
 };
