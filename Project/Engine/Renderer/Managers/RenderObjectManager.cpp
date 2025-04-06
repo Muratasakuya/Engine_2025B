@@ -18,7 +18,6 @@ void RenderObjectManager::Init(ID3D12Device* device, SRVManager* srvManager, Ass
 
 	instancedMesh_ = std::make_unique<InstancedMesh>();
 	instancedMesh_->Init(device, srvManager);
-
 }
 
 void RenderObjectManager::CreateMesh(const std::string& modelName) {
