@@ -61,6 +61,25 @@ void DebugCamera::Update() {
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 }
 
+void DebugCamera::ImGui() {
+
+	ImGui::PushItemWidth(itemWidth_);
+
+	ImGui::DragFloat3("translation##DebugCamera", &transform_.translation.x, 0.01f);
+	if (ImGui::DragFloat3("rotation##DebugCamera", &eulerRotation_.x, 0.01f)) {
+
+		transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
+	}
+	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
+		transform_.rotation.x, transform_.rotation.y, transform_.rotation.z, transform_.rotation.w);
+
+	ImGui::DragFloat("zoomRate##DebugCamera", &zoomRate_, 0.01f);
+	ImGui::DragFloat("fovY##DebugCamera", &fovY_, 0.01f);
+	ImGui::DragFloat("farClip##DebugCamera", &fovY_, 1.0f);
+
+	ImGui::PopItemWidth();
+}
+
 void DebugCamera::Move() {
 
 	float deltaX = Input::GetInstance()->GetMouseMoveValue().x;

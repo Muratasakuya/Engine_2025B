@@ -22,7 +22,7 @@ public:
 	PostProcessPipelineManager() = default;
 	~PostProcessPipelineManager() = default;
 
-	void Init(ID3D12Device* device, class DxShaderCompiler* shaderCompiler);
+	void Init(ID3D12Device8* device, class SRVManager* srvManager, class DxShaderCompiler* shaderCompiler);
 
 	//--------- accessor -----------------------------------------------------
 

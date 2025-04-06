@@ -25,3 +25,6 @@ void Camera2D::Init() {
 	// 更新1回でいいので、Update関数は実装しない
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 }
+
+void Camera2D::ImGui() {
+}

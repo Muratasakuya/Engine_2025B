@@ -1,0 +1,55 @@
+{
+    "Type": "MS",
+    "ShaderPass":[
+        {
+            "Type": "Graphics",
+            "MeshShader": "MeshStandard.MS.hlsl",
+            "PixelShader": "MeshStandard.PS.hlsl"
+        }
+    ],
+    "RootParameter": [
+        { "RootIndex": 0, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 0 },
+        { "RootIndex": 1, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 1 },
+        { "RootIndex": 2, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 2 },
+        { "RootIndex": 3, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 3 },
+        { "RootIndex": 4, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 4 },
+        { "RootIndex": 5, "Type": "CBV", "Visibility": "MESH", "ShaderRegister": 0 },
+        { "RootIndex": 6, "Type": "CBV", "Visibility": "MESH", "ShaderRegister": 1 },
+        { "RootIndex": 7, "Type": "CBV", "Visibility": "MESH", "ShaderRegister": 2 },
+        { "RootIndex": 8, "Type": "SRV", "Visibility": "PIXEL", "ShaderRegister": 0 },
+        { "RootIndex": 9, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 1, "NumDescriptors": "srvCount","RegisterSpace": 0 } },
+        { "RootIndex": 10, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 2, "NumDescriptors": "0","RegisterSpace": 1 } },
+        { "RootIndex": 11, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 0 },
+        { "RootIndex": 12, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 1 }
+    ],
+    "StaticSampler": [
+        { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER", "ShaderRegister": 0 },
+        { "SamplerIndex": 1, "Filter": "COMPARISON_LINEAR", "AddressMode": "CLAMP","ComparisonFunc": "GREATER", "ShaderRegister": 1 }
+    ],
+    "InputLayout":[
+        {"Desc":0, "SemanticName": "POSITION", "Format": "R32G32B32A32_FLOAT"},
+        {"Desc":1, "SemanticName": "TEXCOORD", "Format": "R32G32_FLOAT"},
+        {"Desc":2, "SemanticName": "NORMAL", "Format": "R32G32B32_FLOAT"}
+    ],
+    "Rasterizer":[
+        {
+            "CullMode": "BACK",
+            "FillMode": "SOLID",
+            "DepthClipEnable": "FALSE",
+            "AntialiasedLineEnable": "FALSE"
+        }
+    ],
+    "DepthStencil":[
+        {
+            "DepthEnable": "TRUE",
+            "DepthWriteMask": "ALL",
+            "DepthFunc": "LESS_EQUAL"
+        }
+    ],
+    "PipelineState":[
+        {
+            "DSVFormat": "D24_UNORM_S8_UINT",
+            "RTVFormats": "R32G32B32A32_FLOAT"
+        }
+    ]
+}

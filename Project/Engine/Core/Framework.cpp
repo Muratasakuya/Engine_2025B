@@ -74,7 +74,7 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	Input::GetInstance()->Init(winApp_.get());
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
 		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
-		graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
+		graphicsCore_->GetSRVManager(), graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
 }
 
 void Framework::InitDirectX(uint32_t width, uint32_t height) {
@@ -88,7 +88,8 @@ void Framework::InitDirectX(uint32_t width, uint32_t height) {
 	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
 		graphicsCore_->GetSRVManager());
 
-	graphicsCore_->InitTemporary(asset_.get(), cameraManager_.get());
+	// renderer初期化
+	graphicsCore_->InitRenderer(asset_.get());
 }
 
 void Framework::InitComponent() {
@@ -171,7 +172,7 @@ void Framework::Draw() {
 	GameTimer::BeginDrawCount();
 
 	// 描画処理
-	graphicsCore_->Render();
+	graphicsCore_->Render(cameraManager_.get());
 	// scene遷移依頼
 	sceneManager_->SwitchScene();
 	// lineReset

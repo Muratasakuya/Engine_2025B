@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Editor/Base/IGameEditor.h>
 #include <Game/Camera/Base/BaseCamera.h>
 #include <Game/Camera/DebugCamera.h>
 #include <Game/Camera/LightViewCamera.h>
@@ -15,19 +16,21 @@
 //============================================================================
 //	CameraManager class
 //============================================================================
-class CameraManager {
+class CameraManager :
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	CameraManager() = default;
+	CameraManager() : IGameEditor("cameraManager") {};
 	~CameraManager() = default;
 
 	void Init();
 
 	void Update();
 
+	void ImGui() override;
 	//--------- accessor -----------------------------------------------------
 
 	void SetCamera(BaseCamera* gameCamera);

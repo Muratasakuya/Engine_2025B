@@ -269,9 +269,6 @@
     <ClCompile Include="Engine\Core\Graphics\Mesh\Mesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\MeshRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -371,7 +368,6 @@
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletStructures.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletBuilder.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\Mesh.h" />
-    <ClInclude Include="Engine\Core\Graphics\Pipeline\MeshShaderPipelineState.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshRegistry.h" />
   </ItemGroup>
   <ItemGroup>

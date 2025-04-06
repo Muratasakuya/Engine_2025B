@@ -22,6 +22,7 @@ public:
 
 	void Update() override;
 
+	void ImGui() override;
 private:
 	//========================================================================
 	//	private Methods
