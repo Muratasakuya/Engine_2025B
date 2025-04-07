@@ -19,8 +19,8 @@ public:
 	AnimationComponentManager() = default;
 	~AnimationComponentManager() = default;
 
-	void AddComponent(EntityID entity, std::any args) override;
-	void RemoveComponent(EntityID entity) override;
+	void AddComponent(uint32_t entity, std::any args) override;
+	void RemoveComponent(uint32_t entity) override;
 
 	void Update() override;
 
@@ -28,8 +28,8 @@ public:
 
 		//--------- accessor -----------------------------------------------------
 
-	AnimationComponent* GetComponent(EntityID entity) override;
-	std::vector<AnimationComponent*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
+	AnimationComponent* GetComponent(uint32_t entity) override;
+	std::vector<AnimationComponent*> GetComponentList([[maybe_unused]] uint32_t entity) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -39,6 +39,6 @@ private:
 
 	std::vector<AnimationComponent> components_;
 
-	std::unordered_map<EntityID, size_t> entityToIndex_;
-	std::vector<EntityID> indexToEntity_;
+	std::unordered_map<uint32_t, size_t> entityToIndex_;
+	std::vector<uint32_t> indexToEntity_;
 };

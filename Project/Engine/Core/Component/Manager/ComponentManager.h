@@ -69,19 +69,19 @@ public:
 	//--------- object3D -----------------------------------------------------
 
 	// 追加、作成処理
-	EntityID CreateObject3D(const std::string& modelName, const std::string& objectName,
+	uint32_t CreateObject3D(const std::string& modelName, const std::string& objectName,
 		const std::optional<std::string>& groupName,
 		const std::optional<std::string>& animationName);
 	// 指定されたidのentity削除
-	void RemoveObject3D(EntityID id);
+	void RemoveObject3D(uint32_t id);
 
 	//--------- object2D -----------------------------------------------------
 
 	// 追加、作成処理
-	EntityID CreateObject2D(const std::string& textureName, const std::string& objectName,
+	uint32_t CreateObject2D(const std::string& textureName, const std::string& objectName,
 		const std::optional<std::string>& groupName = std::nullopt);
 	// 指定されたidのentity削除
-	void RemoveObject2D(EntityID id);
+	void RemoveObject2D(uint32_t id);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -92,18 +92,18 @@ public:
 	// imgui
 	void SelectObject();
 	void EditObject();
-	void SetImGuiFunc(EntityID entityId, std::function<void()> func);
+	void SetImGuiFunc(uint32_t entityId, std::function<void()> func);
 
 	// componentの取得
 	template <typename T>
-	T* GetComponent(EntityID id);
+	T* GetComponent(uint32_t id);
 	template <typename T>
-	std::vector<T*> GetComponentList(EntityID entity);
+	std::vector<T*> GetComponentList(uint32_t entity);
 
 	// entityの数取得
-	const std::vector<EntityID>& GetEntityList(ComponentType type) const;
+	const std::vector<uint32_t>& GetEntityList(ComponentType type) const;
 
-	EntityID GetEntityIndex(ComponentType type, EntityID id) const { return entityManagers_[static_cast<uint32_t>(type)]->GetIndex(id); }
+	uint32_t GetEntityIndex(ComponentType type, uint32_t id) const { return entityManagers_[static_cast<uint32_t>(type)]->GetIndex(id); }
 private:
 	//========================================================================
 	//	private Methods
@@ -132,9 +132,9 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	template <typename T, typename... Args>
-	void AddComponent(EntityID entity, Args&&... args);
+	void AddComponent(uint32_t entity, Args&&... args);
 	template <typename T>
-	void RemoveComponent(EntityID entity);
+	void RemoveComponent(uint32_t entity);
 };
 
 //============================================================================
@@ -150,7 +150,7 @@ inline void ComponentManager::RegisterComponentManager(IComponent<T>* manager) {
 }
 
 template<typename T, typename ...Args>
-inline void ComponentManager::AddComponent(EntityID entity, Args && ...args) {
+inline void ComponentManager::AddComponent(uint32_t entity, Args && ...args) {
 
 	if ((Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true))) {
 
@@ -159,7 +159,7 @@ inline void ComponentManager::AddComponent(EntityID entity, Args && ...args) {
 }
 
 template<typename T>
-inline void ComponentManager::RemoveComponent(EntityID entity) {
+inline void ComponentManager::RemoveComponent(uint32_t entity) {
 
 	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
 
@@ -168,7 +168,7 @@ inline void ComponentManager::RemoveComponent(EntityID entity) {
 }
 
 template<typename T>
-inline T* ComponentManager::GetComponent(EntityID id) {
+inline T* ComponentManager::GetComponent(uint32_t id) {
 
 	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
 
@@ -178,7 +178,7 @@ inline T* ComponentManager::GetComponent(EntityID id) {
 }
 
 template<typename T>
-inline std::vector<T*> ComponentManager::GetComponentList(EntityID id) {
+inline std::vector<T*> ComponentManager::GetComponentList(uint32_t id) {
 
 	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
 

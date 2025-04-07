@@ -60,7 +60,7 @@ void ImGuiComponentManager::CreateGroup() {
 
 	// entityGroupの作成
 	// 3D
-	for (const EntityID id : entity3DManager_->GetIndexToEntity()) {
+	for (const uint32_t id : entity3DManager_->GetIndexToEntity()) {
 
 		const auto& entity = entity3DManager_->GetNames()[entity3DManager_->GetIndex(id)];
 		std::string group = entity.groupName.value_or("");
@@ -68,7 +68,7 @@ void ImGuiComponentManager::CreateGroup() {
 	}
 
 	// 2D
-	for (const EntityID id : entity2DManager_->GetIndexToEntity()) {
+	for (const uint32_t id : entity2DManager_->GetIndexToEntity()) {
 
 		const auto& entity = entity2DManager_->GetNames()[entity2DManager_->GetIndex(id)];
 		std::string group = entity.groupName.value_or("");
@@ -181,7 +181,7 @@ void ImGuiComponentManager::EditObject() {
 	EditObject2D();
 }
 
-void ImGuiComponentManager::SetImGuiFunc(EntityID entityId, std::function<void()> func) {
+void ImGuiComponentManager::SetImGuiFunc(uint32_t entityId, std::function<void()> func) {
 
 	object3D_.imguiFunc_[entityId] = func;
 }
@@ -222,7 +222,7 @@ void ImGuiComponentManager::EditObject3D() {
 
 			if (Algorithm::Find(object3D_.imguiFunc_, *object3D_.selectedId_)) {
 
-				EntityID id = *object3D_.selectedId_;
+				uint32_t id = *object3D_.selectedId_;
 				object3D_.imguiFunc_.at(id)();
 			}
 			ImGui::EndTabItem();
@@ -328,7 +328,7 @@ void ImGuiComponentManager::EditObject2D() {
 
 			if (Algorithm::Find(object2D_.imguiFunc_, *object2D_.selectedId_)) {
 
-				EntityID id = *object2D_.selectedId_;
+				uint32_t id = *object2D_.selectedId_;
 				object2D_.imguiFunc_.at(id)();
 			}
 			ImGui::EndTabItem();

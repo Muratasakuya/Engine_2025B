@@ -215,7 +215,7 @@
     <ClCompile Include="Engine\Core\Graphics\Context\MeshCommandContext.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Mesh\InstancedMesh.cpp">
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Component\SpriteComponent.cpp">
@@ -363,7 +363,7 @@
     <ClInclude Include="Engine\Core\Component\AnimationComponent.h" />
     <ClInclude Include="Engine\Core\Component\Manager\AnimationComponentManager.h" />
     <ClInclude Include="Engine\Core\Graphics\Context\MeshCommandContext.h" />
-    <ClInclude Include="Engine\Core\Graphics\Mesh\InstancedMesh.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h" />
     <ClInclude Include="Engine\Core\Component\SpriteComponent.h" />
     <ClInclude Include="Engine\Core\Component\Manager\SpriteComponentManager.h" />
     <ClInclude Include="Game\Camera\Camera2D.h" />

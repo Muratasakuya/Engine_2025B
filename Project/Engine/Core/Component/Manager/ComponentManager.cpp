@@ -41,12 +41,12 @@ void ComponentManager::EditObject() {
 	imguiComponentManager_->EditObject();
 }
 
-void ComponentManager::SetImGuiFunc(EntityID entityId, std::function<void()> func) {
+void ComponentManager::SetImGuiFunc(uint32_t entityId, std::function<void()> func) {
 
 	imguiComponentManager_->SetImGuiFunc(entityId, func);
 }
 
-const std::vector<EntityID>& ComponentManager::GetEntityList(ComponentType type) const {
+const std::vector<uint32_t>& ComponentManager::GetEntityList(ComponentType type) const {
 
 	return entityManagers_[static_cast<uint32_t>(type)]->GetIndexToEntity();
 }
@@ -104,14 +104,14 @@ void ComponentManager::Update() {
 	}
 }
 
-EntityID ComponentManager::CreateObject3D(
+uint32_t ComponentManager::CreateObject3D(
 	const std::string& modelName, const std::string& objectName,
 	const std::optional<std::string>& groupName, const std::optional<std::string>& animationName) {
 
 	animationName;
 
 	// entityID発行
-	EntityID id = entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName, groupName);
+	uint32_t id = entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName, groupName);
 
 	// object3Dに必要なcomponentを追加
 	AddComponent<Transform3DComponent>(id);
@@ -126,11 +126,11 @@ EntityID ComponentManager::CreateObject3D(
 	return id;
 }
 
-EntityID ComponentManager::CreateObject2D(const std::string& textureName, const std::string& objectName,
+uint32_t ComponentManager::CreateObject2D(const std::string& textureName, const std::string& objectName,
 	const std::optional<std::string>& groupName) {
 
 	// entityID発行
-	EntityID id = entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->CreateEntity(objectName, groupName);
+	uint32_t id = entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->CreateEntity(objectName, groupName);
 
 	// object2Dに必要なcomponentを追加
 	AddComponent<Transform2DComponent>(id);
@@ -142,7 +142,7 @@ EntityID ComponentManager::CreateObject2D(const std::string& textureName, const 
 	return id;
 }
 
-void ComponentManager::RemoveObject3D(EntityID id) {
+void ComponentManager::RemoveObject3D(uint32_t id) {
 
 	// idの削除
 	entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->RemoveEntity(id);
@@ -152,7 +152,7 @@ void ComponentManager::RemoveObject3D(EntityID id) {
 	RemoveComponent<Material>(id);
 }
 
-void ComponentManager::RemoveObject2D(EntityID id) {
+void ComponentManager::RemoveObject2D(uint32_t id) {
 
 	// idの削除
 	entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->RemoveEntity(id);

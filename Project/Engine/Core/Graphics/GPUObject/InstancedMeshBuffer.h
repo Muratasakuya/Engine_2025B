@@ -9,47 +9,39 @@
 #include <Engine/Core/Component/Base/IComponent.h>
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
 
-// front
-class SRVManager;
-
 //============================================================================
 //	structure
 //============================================================================
 
 struct MeshInstancingData {
 
-	// srv処理用
-	uint32_t matrixSrvIndex;
-	std::vector<uint32_t> materialSrvIndices;
-
 	// instance数
 	uint32_t maxInstance;
 	uint32_t numInstance;
 
 	// buffer更新用のデータ
-	std::vector<TransformationMatrix> matrixComponents;
-	std::vector<std::vector<Material>> materialComponents;
+	std::vector<TransformationMatrix> matrixUploadData;
+	std::vector<std::vector<Material>> materialUploadData;
 
 	// buffer
 	DxConstBuffer<TransformationMatrix> matrix;
 	std::vector<DxConstBuffer<Material>> materials;
 
+	// meshの数
 	size_t meshNum;
 };
 
 //============================================================================
-//	InstancedMesh class
+//	InstancedMeshBuffer class
 //============================================================================
-class InstancedMesh {
+class InstancedMeshBuffer {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	InstancedMesh() = default;
-	~InstancedMesh() = default;
-
-	void Init(ID3D12Device* device, SRVManager* srvManager);
+	InstancedMeshBuffer() = default;
+	~InstancedMeshBuffer() = default;
 
 	void Create(class Mesh* mesh, const std::string& name, uint32_t numInstance);
 
@@ -59,7 +51,9 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetComponent(const std::string& name, const TransformationMatrix& matrix,
+	void SetDevice(ID3D12Device* device);
+
+	void SetUploadData(const std::string& name, const TransformationMatrix& matrix,
 		const std::vector<Material>& materials);
 
 	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return meshGroups_; }
@@ -71,9 +65,6 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	ID3D12Device* device_;
-	SRVManager* srvManager_;
-
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvBufferDesc_;
 
 	std::unordered_map<std::string, MeshInstancingData> meshGroups_;
 

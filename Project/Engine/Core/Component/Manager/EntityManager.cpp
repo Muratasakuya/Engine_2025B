@@ -11,14 +11,14 @@
 //	EntityManager classMethods
 //============================================================================
 
-EntityID EntityManager::CreateEntity(const std::string& name,
+uint32_t EntityManager::CreateEntity(const std::string& name,
 	const std::optional<std::string>& groupName) {
 
-	EntityID id = nextId_;
+	uint32_t id = nextId_;
 	++nextId_;
 	std::string uniqueName = CheckName(name);
 
-	EntityID index = static_cast<EntityID>(entityInformations_.size());
+	uint32_t index = static_cast<uint32_t>(entityInformations_.size());
 	entityInformations_.emplace_back(EntityInformation{ uniqueName, groupName });
 	entityToIndex_[id] = index;
 	indexToEntity_.push_back(id);
@@ -26,15 +26,15 @@ EntityID EntityManager::CreateEntity(const std::string& name,
 	return id;
 }
 
-void EntityManager::RemoveEntity(EntityID id) {
+void EntityManager::RemoveEntity(uint32_t id) {
 
 	if (!Algorithm::Find(entityToIndex_, id)) {
 		return;
 	}
 
 	auto it = entityToIndex_.find(id);
-	EntityID index = it->second;
-	EntityID lastIndex = static_cast<EntityID>(entityInformations_.size() - 1);
+	uint32_t index = it->second;
+	uint32_t lastIndex = static_cast<uint32_t>(entityInformations_.size() - 1);
 
 	if (index != lastIndex) {
 
@@ -42,7 +42,7 @@ void EntityManager::RemoveEntity(EntityID id) {
 		std::swap(entityInformations_[index], entityInformations_[lastIndex]);
 
 		// 交換されたentityIdを更新
-		EntityID movedId = indexToEntity_[lastIndex];
+		uint32_t movedId = indexToEntity_[lastIndex];
 		indexToEntity_[index] = movedId;
 		entityToIndex_[movedId] = index;
 	}
@@ -53,7 +53,7 @@ void EntityManager::RemoveEntity(EntityID id) {
 	entityToIndex_.erase(id);
 }
 
-EntityID EntityManager::GetIndex(EntityID id) const {
+uint32_t EntityManager::GetIndex(uint32_t id) const {
 
 	if (Algorithm::Find(entityToIndex_, id, true)) {
 

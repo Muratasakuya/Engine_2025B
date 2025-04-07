@@ -3,7 +3,6 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Base/IComponent.h>
 #include <Engine/Core/Component/User/Collider.h>
 
 //============================================================================
@@ -34,8 +33,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	EntityID modelIdA_;
-	EntityID modelIdB_;
+	uint32_t modelIdA_;
+	uint32_t modelIdB_;
 
 	// collision
 	ColliderComponent* colliderA_;
