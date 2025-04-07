@@ -181,6 +181,12 @@ void ImGuiComponentManager::EditObject() {
 	EditObject2D();
 }
 
+void ImGuiComponentManager::Reset() {
+
+	object2D_.selectedId_ = std::nullopt;
+	object3D_.selectedId_ = std::nullopt;
+}
+
 void ImGuiComponentManager::SetImGuiFunc(uint32_t entityId, std::function<void()> func) {
 
 	object3D_.imguiFunc_[entityId] = func;
@@ -262,7 +268,7 @@ void ImGuiComponentManager::Object3DMaterial() {
 		return;
 	}
 
-	std::vector<Material*> materials = materialManager_->GetComponentList(*object3D_.selectedId_);
+	std::vector<MaterialComponent*> materials = materialManager_->GetComponentList(*object3D_.selectedId_);
 
 	ImGui::PushItemWidth(itemWidth_);
 	// Materialの選択

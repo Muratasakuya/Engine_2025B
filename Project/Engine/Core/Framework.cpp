@@ -68,7 +68,7 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	// scene管理クラス初期化
 	sceneManager_ = std::make_unique<SceneManager>(
-		Scene::Title, asset_.get(), cameraManager_.get(),
+		Scene::Game, asset_.get(), cameraManager_.get(),
 		graphicsCore_->GetPostProcessManager());
 
 	Input::GetInstance()->Init(winApp_.get());
@@ -96,8 +96,7 @@ void Framework::InitComponent() {
 
 	// component初期化、CS用のCommandList
 	ComponentManager::GetInstance()->Init(
-		graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Compute),
-		asset_.get(), graphicsCore_->GetSRVManager(), graphicsCore_->GetGPUObjectSystem());
+		graphicsCore_->GetDevice(), asset_.get(), graphicsCore_->GetGPUObjectSystem());
 
 	// 3D
 	// transform

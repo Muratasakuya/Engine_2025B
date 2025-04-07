@@ -56,13 +56,13 @@ void InstancedMeshBuffer::Create(Mesh* mesh,
 }
 
 void InstancedMeshBuffer::SetUploadData(const std::string& name,
-	const TransformationMatrix& matrix, const std::vector<Material>& materials) {
+	const TransformationMatrix& matrix, const std::vector<MaterialComponent>& materials) {
 
 	meshGroups_[name].matrixUploadData.emplace_back(matrix);
 
 	for (uint32_t meshIndex = 0; meshIndex < meshGroups_[name].materialUploadData.size(); ++meshIndex) {
 
-		meshGroups_[name].materialUploadData[meshIndex].emplace_back(materials[meshIndex]);
+		meshGroups_[name].materialUploadData[meshIndex].emplace_back(materials[meshIndex].material);
 	}
 
 	// instance数インクリメント

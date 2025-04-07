@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
+#include <Engine/Core/Component/User/ComponentHelper.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
 //	Object3DEditor classMethods
@@ -13,20 +15,95 @@ void Object3DEditor::Init(Asset* asset) {
 
 	asset_ = nullptr;
 	asset_ = asset;
+
+	editLayoutEnable_ = false;
+
+	// json適応、設定
+	ApplyJson();
 }
 
 void Object3DEditor::ImGui() {
 
 	// editorの関数群
 
+	// editor内のlayoutを調整
+	EditLayout();
+
+	ImGui::Separator();
+
 	// objectの追加
 	AddObject();
+
+	// objectの選択
+	SelectObject();
+
+	// objectの操作
+	EditObject();
+}
+
+void Object3DEditor::SaveEditLayoutParameter() {
+
+	Json data;
+
+	data["addParameterWidth_"] = addParameterWidth_;
+	data["upLayoutHeight_"] = upLayoutHeight_;
+
+	JsonAdapter::Save(baseJsonPath_ + "editorLayoutParameter.json", data);
+}
+
+void Object3DEditor::ApplyJson() {
+
+	// editor内のlayoutParameterを設定
+	ApplyEditLayoutParameter();
+}
+
+void Object3DEditor::ApplyEditLayoutParameter() {
+
+	if (!JsonAdapter::LoadAssert(baseJsonPath_ + "editorLayoutParameter.json")) {
+		return;
+	}
+
+	Json data = JsonAdapter::Load(baseJsonPath_ + "editorLayoutParameter.json");
+
+	addParameterWidth_ = JsonAdapter::GetValue<float>(data, "addParameterWidth_");
+	upLayoutHeight_ = JsonAdapter::GetValue<float>(data, "upLayoutHeight_");
+}
+
+void Object3DEditor::EditLayout() {
+
+	ImGui::Checkbox("editLayout", &editLayoutEnable_);
+
+	if (!editLayoutEnable_) {
+		return;
+	}
+
+	ImGui::Begin("objectEditorLayout");
+
+	if (ImGui::Button("Save")) {
+
+		SaveEditLayoutParameter();
+	}
+
+	// addParameter
+	ImGui::DragFloat("addParameterWidth", &addParameterWidth_, 0.5f);
+	ImGui::DragFloat("upLayoutHeight", &upLayoutHeight_, 0.5f);
+
+	ImGui::End();
 }
 
 void Object3DEditor::AddObject() {
 
+	// 範囲開始
+	ImGui::BeginChild("leftLayout",
+		ImVec2(0.0f, upLayoutHeight_),
+		ImGuiChildFlags_Border |
+		ImGuiChildFlags_ResizeX);
+
 	// 現在loadされているmodel
 	const std::vector<std::string> modelKeys = asset_->GetModelKeys();
+
+	// 横幅設定
+	ImGui::PushItemWidth(addParameterWidth_);
 
 	// modelの名前の選択
 	if (ImGui::BeginCombo("Model", modelKeys[addSelectedObjectIndex_].c_str())) {
@@ -50,6 +127,57 @@ void Object3DEditor::AddObject() {
 	addObjectName_.InputText("ObjectName##Add");
 	// 追加するgroupの名前
 	addGroupName_.InputText("GroupName##Add");
+
+	if (ImGui::Button("Add Object")) {
+
+		// 名前が入力されていなければ追加出来ない
+		if (!addModelName_.empty() &&
+			!addObjectName_.name.empty() &&
+			!addGroupName_.name.empty()) {
+
+			// 入力された名前で追加
+			GameObjectHelper::CreateObject3D(
+				addModelName_, addObjectName_.name, addGroupName_.name);
+
+			// 追加されたタイミングで入力をリセット
+			addModelName_.clear();
+			addObjectName_.Reset();
+			addGroupName_.Reset();
+		}
+	}
+
+	ImGui::PopItemWidth();
+
+	// 終了
+	ImGui::EndChild();
+}
+
+void Object3DEditor::SelectObject() {
+
+	// 追加と横並びにする
+	ImGui::SameLine();
+
+	// 範囲開始
+	ImGui::BeginChild("rightLayout",
+		ImVec2(0.0f, upLayoutHeight_),
+		ImGuiChildFlags_Border);
+
+	ImGui::Text("selectObject");
+
+	// 終了
+	ImGui::EndChild();
+}
+
+void Object3DEditor::EditObject() {
+
+	// 範囲開始
+	ImGui::BeginChild("bottomLayout",
+		ImVec2(), ImGuiChildFlags_Border);
+
+	ImGui::Text("editObject");
+
+	// 終了
+	ImGui::EndChild();
 }
 
 void Object3DEditor::InputTextValue::InputText(const std::string& label) {
@@ -61,4 +189,11 @@ void Object3DEditor::InputTextValue::InputText(const std::string& label) {
 
 		name = nameBuffer;
 	}
+}
+
+void Object3DEditor::InputTextValue::Reset() {
+
+	// 入力をリセット
+	nameBuffer[0] = '\0';
+	name.clear();
 }

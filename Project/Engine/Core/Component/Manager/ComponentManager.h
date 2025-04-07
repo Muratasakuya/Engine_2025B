@@ -50,8 +50,7 @@ public:
 	ComponentManager() = default;
 	~ComponentManager() = default;
 
-	void Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
-		Asset* asset, SRVManager* srvManager, GPUObjectSystem* gpuObjectSystem);
+	void Init(ID3D12Device* device, Asset* asset, GPUObjectSystem* gpuObjectSystem);
 
 	void InitImGui(
 		// 3D
@@ -93,6 +92,7 @@ public:
 	void SelectObject();
 	void EditObject();
 	void SetImGuiFunc(uint32_t entityId, std::function<void()> func);
+	void ResetImGui();
 
 	// componentの取得
 	template <typename T>

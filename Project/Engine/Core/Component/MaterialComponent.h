@@ -3,27 +3,40 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
 
 //============================================================================
-//	StageField class
+//	UVTransform
 //============================================================================
-class StageField {
+
+struct UVTransform {
+
+	Vector3 scale;
+	Vector3 rotate;
+	Vector3 translate;
+};
+
+//============================================================================
+//	MaterialComponent class
+//============================================================================
+class MaterialComponent {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	StageField() = default;
-	~StageField();
+	MaterialComponent() = default;
+	~MaterialComponent() = default;
 
 	void Init();
-private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
+
+	void UpdateUVTransform();
+
+	void ImGui(float itemSize);
 
 	//--------- variables ----------------------------------------------------
 
-	uint32_t objectId_;
+	Material material;
+
+	UVTransform uvTransform;
 };

@@ -1,6 +1,11 @@
 #include "SceneManager.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Component/Manager/ComponentManager.h>
+
+//============================================================================
 //	SceneManager classMethods
 //============================================================================
 
@@ -64,4 +69,7 @@ void SceneManager::LoadScene(Scene scene) {
 	currentScene_.reset();
 	// 次のScene
 	currentScene_ = factory_->Create(scene);
+
+	// imgui選択をリセット
+	ComponentManager::GetInstance()->ResetImGui();
 }

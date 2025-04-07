@@ -4,7 +4,7 @@
 //	JsonAdapter classMethods
 //============================================================================*/
 
-const std::string& JsonAdapter::baseDirectoryFilePath_ = "./Resources/Json/";
+const std::string& JsonAdapter::baseDirectoryFilePath_ = "./Assets/Json/";
 
 void JsonAdapter::Save(const std::string& saveDirectoryFilePath, const Json& jsonData) {
 

@@ -46,25 +46,23 @@ void ComponentManager::SetImGuiFunc(uint32_t entityId, std::function<void()> fun
 	imguiComponentManager_->SetImGuiFunc(entityId, func);
 }
 
+void ComponentManager::ResetImGui() {
+
+	imguiComponentManager_->Reset();
+}
+
 const std::vector<uint32_t>& ComponentManager::GetEntityList(ComponentType type) const {
 
 	return entityManagers_[static_cast<uint32_t>(type)]->GetIndexToEntity();
 }
 
-void ComponentManager::Init(ID3D12Device* device, ID3D12GraphicsCommandList* commandList,
-	Asset* asset, SRVManager* srvManager, GPUObjectSystem* gpuObjectSystem) {
+void ComponentManager::Init(ID3D12Device* device, Asset* asset, GPUObjectSystem* gpuObjectSystem) {
 
 	device_ = nullptr;
 	device_ = device;
 
-	commandList_ = nullptr;
-	commandList_ = commandList;
-
 	asset_ = nullptr;
 	asset_ = asset;
-
-	srvManager_ = nullptr;
-	srvManager_ = srvManager;
 
 	gpuObjectSystem_ = nullptr;
 	gpuObjectSystem_ = gpuObjectSystem;
@@ -118,7 +116,7 @@ uint32_t ComponentManager::CreateObject3D(
 
 	auto transform = GetComponent<Transform3DComponent>(id);
 	transform->SetInstancingName(modelName);
-	AddComponent<Material>(id, asset_->GetModelData(modelName), asset_);
+	AddComponent<MaterialComponent>(id, asset_->GetModelData(modelName), asset_);
 
 	// buffer作成
 	gpuObjectSystem_->CreateMesh(modelName);
@@ -149,7 +147,7 @@ void ComponentManager::RemoveObject3D(uint32_t id) {
 
 	// object3Dで使用していたcomponentの削除
 	RemoveComponent<Transform3DComponent>(id);
-	RemoveComponent<Material>(id);
+	RemoveComponent<MaterialComponent>(id);
 }
 
 void ComponentManager::RemoveObject2D(uint32_t id) {
