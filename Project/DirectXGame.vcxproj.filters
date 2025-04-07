@@ -236,9 +236,6 @@
     <ClCompile Include="Engine\Editor\Manager\GameEditorManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Editor\TestEditor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -285,6 +282,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object3D\Environment\StageField.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Editor\Object\Object3DEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -370,7 +370,6 @@
     <ClInclude Include="Engine\Core\Component\User\ComponentHelper.h" />
     <ClInclude Include="Engine\Editor\Base\IGameEditor.h" />
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
-    <ClInclude Include="Game\Editor\TestEditor.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.h" />
     <ClInclude Include="Engine\Core\Graphics\Context\PostProcessCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.h" />
@@ -390,6 +389,7 @@
     <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h" />
     <ClInclude Include="Game\Algorithm\StateTimer.h" />
     <ClInclude Include="Game\Object3D\Environment\StageField.h" />
+    <ClInclude Include="Game\Editor\Object\Object3DEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

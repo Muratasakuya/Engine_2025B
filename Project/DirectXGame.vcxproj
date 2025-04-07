@@ -234,10 +234,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Editor\TestEditor.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\GPUObject\GPUObjectSystem.cpp">
       <SubType>
       </SubType>
@@ -318,6 +314,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Camera\LightViewCamera.cpp" />
     <ClCompile Include="Game\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Game\Editor\Object\Object3DEditor.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Object2D\SceneTransition\FadeTransition.cpp">
       <SubType>
       </SubType>
@@ -472,7 +472,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Editor\TestEditor.h">
+    <ClInclude Include="Game\Editor\Object\Object3DEditor.h">
       <SubType>
       </SubType>
     </ClInclude>

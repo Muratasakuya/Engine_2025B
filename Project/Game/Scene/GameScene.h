@@ -6,6 +6,9 @@
 #include <Game/Scene/Methods/IScene.h>
 #include <Game/Camera/GameCamera.h>
 
+// editor
+#include <Game/Editor/Object/Object3DEditor.h>
+
 // object
 #include <Game/Object3D/Environment/StageField.h>
 
@@ -32,6 +35,9 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	// editor
+	std::unique_ptr<Object3DEditor> object3DEditor_;
 
 	std::unique_ptr<GameCamera> gameCamera_;
 
