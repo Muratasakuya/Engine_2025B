@@ -37,7 +37,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	EntityID fadeSpriteId_;
+	uint32_t fadeSpriteId_;
 
 	StateTimer beginTimer_;
 	StateTimer waitTimer_;

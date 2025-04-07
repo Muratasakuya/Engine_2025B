@@ -9,8 +9,6 @@
 #include <vector>
 #include <unordered_map>
 #include <any>
-// using
-using EntityID = uint32_t;
 
 //============================================================================
 //	IComponentManager class
@@ -21,8 +19,8 @@ public:
 	IComponentManager() = default;
 	virtual ~IComponentManager() = default;
 
-	virtual void AddComponent(EntityID id, std::any args) = 0;
-	virtual void RemoveComponent(EntityID id) = 0;
+	virtual void AddComponent(uint32_t id, std::any args) = 0;
+	virtual void RemoveComponent(uint32_t id) = 0;
 
 	virtual void Update() = 0;
 };
@@ -43,6 +41,6 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	virtual T* GetComponent(EntityID entity) = 0;
-	virtual std::vector<T*> GetComponentList(EntityID entity) = 0;
+	virtual T* GetComponent(uint32_t entity) = 0;
+	virtual std::vector<T*> GetComponentList(uint32_t entity) = 0;
 };

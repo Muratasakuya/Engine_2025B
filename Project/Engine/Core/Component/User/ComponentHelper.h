@@ -25,10 +25,10 @@ public:
 	//========================================================================
 
 	template <typename T>
-	static T* GetComponent(EntityID id);
+	static T* GetComponent(uint32_t id);
 
 	template <typename T>
-	static std::vector<T*> GetComponentList(EntityID id);
+	static std::vector<T*> GetComponentList(uint32_t id);
 private:
 	//========================================================================
 	//	private Methods
@@ -50,22 +50,22 @@ public:
 	//========================================================================
 
 	// imgui
-	static void SetImGuiFunc(EntityID entityId, std::function<void()> func);
+	static void SetImGuiFunc(uint32_t entityId, std::function<void()> func);
 
 	//--------- object3D -----------------------------------------------------
 
-	static EntityID CreateObject3D(const std::string& modelName, const std::string& objectName,
+	static uint32_t CreateObject3D(const std::string& modelName, const std::string& objectName,
 		const std::optional<std::string>& groupName = std::nullopt,
 		const std::optional<std::string>& animationName = std::nullopt);
 
-	static void RemoveObject3D(EntityID id);
+	static void RemoveObject3D(uint32_t id);
 
 	//--------- object2D -----------------------------------------------------
 
-	static EntityID CreateObject2D(const std::string& textureName, const std::string& objectName,
+	static uint32_t CreateObject2D(const std::string& textureName, const std::string& objectName,
 		const std::optional<std::string>& groupName = std::nullopt);
 
-	static void RemoveObject2D(EntityID id);
+	static void RemoveObject2D(uint32_t id);
 private:
 	//========================================================================
 	//	private Methods

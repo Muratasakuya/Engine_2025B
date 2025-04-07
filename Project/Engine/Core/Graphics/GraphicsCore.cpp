@@ -161,7 +161,7 @@ void GraphicsCore::InitRenderer(Asset* asset) {
 
 	// rendererManager
 	gpuObjectSystem_ = std::make_unique<GPUObjectSystem>();
-	gpuObjectSystem_->Init(dxDevice_->Get(), srvManager_.get(), asset);
+	gpuObjectSystem_->Init(dxDevice_->Get(), asset);
 
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();

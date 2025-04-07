@@ -3,14 +3,12 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Mesh/InstancedMesh.h>
+#include <Engine/Core/Graphics/GPUObject/InstancedMeshBuffer.h>
 #include <Engine/Core/Graphics/Mesh/MeshRegistry.h>
 #include <Engine/Core/Component/SpriteComponent.h>
 
 // c++
 #include <unordered_map>
-// entityID
-using EntityID = uint32_t;
 
 //============================================================================
 //	structure
@@ -36,7 +34,7 @@ public:
 	GPUObjectSystem() = default;
 	~GPUObjectSystem() = default;
 
-	void Init(ID3D12Device* device, SRVManager* srvManager, Asset* asset);
+	void Init(ID3D12Device* device, Asset* asset);
 
 	void Update();
 
@@ -47,14 +45,14 @@ public:
 	//--------- object2D -----------------------------------------------------
 
 	// 追加、作成処理
-	void CreateObject2D(EntityID id, SpriteComponent* sprite, ID3D12Device* device);
+	void CreateObject2D(uint32_t id, SpriteComponent* sprite, ID3D12Device* device);
 	// 指定されたidのbuffer削除
-	void RemoveObject2D(EntityID id);
+	void RemoveObject2D(uint32_t id);
 
 	//--------- accessor -----------------------------------------------------
 
 	// 3D
-	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return instancedMesh_->GetInstancingData(); }
+	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return instancedMeshBuffer_->GetInstancingData(); }
 
 	// meshの取得
 	Mesh* GetMesh(const std::string& name) const { return meshRegistry_->GetMesh(name); }
@@ -70,7 +68,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// 3D
-	std::unique_ptr<InstancedMesh> instancedMesh_;
+	std::unique_ptr<InstancedMeshBuffer> instancedMeshBuffer_;
 	std::unique_ptr<MeshRegistry> meshRegistry_;
 
 	// 2D
@@ -78,8 +76,8 @@ private:
 
 	// buffer管理
 	// 2D
-	std::unordered_map<EntityID, size_t> object2DBufferToIndex_;
-	std::vector<EntityID> indexToObject2DBuffer_;
+	std::unordered_map<uint32_t, size_t> object2DBufferToIndex_;
+	std::vector<uint32_t> indexToObject2DBuffer_;
 
 	//--------- functions ----------------------------------------------------
 

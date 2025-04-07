@@ -52,7 +52,7 @@ void GameScene::Init(
 	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
 	for (uint32_t index = 0; index < kNumObject; ++index) {
 
-		EntityID id = GameObjectHelper::CreateObject3D("multiMaterial", "multiMaterial", "MultiMaterial");
+		uint32_t id = GameObjectHelper::CreateObject3D("multiMaterial", "multiMaterial", "MultiMaterial");
 		auto transform = Component::GetComponent<Transform3DComponent>(id);
 
 		uint32_t x = index % gridSize;
@@ -64,7 +64,7 @@ void GameScene::Init(
 
 	for (uint32_t index = 0; index < kNumObject; ++index) {
 
-		EntityID id = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot");
+		uint32_t id = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot");
 		auto transform = Component::GetComponent<Transform3DComponent>(id);
 
 		uint32_t x = index % gridSize;
@@ -77,7 +77,7 @@ void GameScene::Init(
 
 	for (uint32_t index = 0; index < kNumObject; ++index) {
 
-		EntityID id = GameObjectHelper::CreateObject3D("suzanne", "suzanne", "Suzanne");
+		uint32_t id = GameObjectHelper::CreateObject3D("suzanne", "suzanne", "Suzanne");
 		auto transform = Component::GetComponent<Transform3DComponent>(id);
 
 		uint32_t x = index % gridSize;

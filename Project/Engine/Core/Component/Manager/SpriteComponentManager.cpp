@@ -10,7 +10,7 @@
 //	SpriteComponentManager classMethods
 //============================================================================
 
-void SpriteComponentManager::AddComponent([[maybe_unused]] EntityID entity, std::any args) {
+void SpriteComponentManager::AddComponent([[maybe_unused]] uint32_t entity, std::any args) {
 
 	size_t index = components_.size();
 
@@ -26,7 +26,7 @@ void SpriteComponentManager::AddComponent([[maybe_unused]] EntityID entity, std:
 	transforms_.push_back(transform);
 }
 
-void SpriteComponentManager::RemoveComponent(EntityID entity) {
+void SpriteComponentManager::RemoveComponent(uint32_t entity) {
 
 	if (!Algorithm::Find(entityToIndex_, entity)) {
 		return;
@@ -42,7 +42,7 @@ void SpriteComponentManager::RemoveComponent(EntityID entity) {
 		std::swap(transforms_[index], transforms_[lastIndex]);
 
 		// 交換されたentityIdを更新
-		EntityID movedEntityId = indexToEntity_[lastIndex];
+		uint32_t movedEntityId = indexToEntity_[lastIndex];
 		entityToIndex_[movedEntityId] = index;
 		indexToEntity_[index] = movedEntityId;
 	}
@@ -62,7 +62,7 @@ void SpriteComponentManager::Update() {
 	}
 }
 
-SpriteComponent* SpriteComponentManager::GetComponent(EntityID entity) {
+SpriteComponent* SpriteComponentManager::GetComponent(uint32_t entity) {
 
 	if (Algorithm::Find(entityToIndex_, entity)) {
 

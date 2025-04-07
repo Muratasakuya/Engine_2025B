@@ -19,15 +19,15 @@ public:
 	Transform3DManager() = default;
 	~Transform3DManager() = default;
 
-	void AddComponent(EntityID entity, std::any args) override;
-	void RemoveComponent(EntityID entity) override;
+	void AddComponent(uint32_t entity, std::any args) override;
+	void RemoveComponent(uint32_t entity) override;
 
 	void Update() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	Transform3DComponent* GetComponent(EntityID entity) override;
-	std::vector<Transform3DComponent*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
+	Transform3DComponent* GetComponent(uint32_t entity) override;
+	std::vector<Transform3DComponent*> GetComponentList([[maybe_unused]] uint32_t entity) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -37,8 +37,8 @@ private:
 
 	std::vector<Transform3DComponent> components_;
 
-	std::unordered_map<EntityID, size_t> entityToIndex_;
-	std::vector<EntityID> indexToEntity_;
+	std::unordered_map<uint32_t, size_t> entityToIndex_;
+	std::vector<uint32_t> indexToEntity_;
 };
 
 //============================================================================
@@ -54,15 +54,15 @@ public:
 	Transform2DManager() = default;
 	~Transform2DManager() = default;
 
-	void AddComponent(EntityID entity, std::any args) override;
-	void RemoveComponent(EntityID entity) override;
+	void AddComponent(uint32_t entity, std::any args) override;
+	void RemoveComponent(uint32_t entity) override;
 
 	void Update() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	Transform2DComponent* GetComponent(EntityID entity) override;
-	std::vector<Transform2DComponent*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
+	Transform2DComponent* GetComponent(uint32_t entity) override;
+	std::vector<Transform2DComponent*> GetComponentList([[maybe_unused]] uint32_t entity) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -72,6 +72,6 @@ private:
 
 	std::vector<std::unique_ptr<Transform2DComponent>> components_;
 
-	std::unordered_map<EntityID, size_t> entityToIndex_;
-	std::vector<EntityID> indexToEntity_;
+	std::unordered_map<uint32_t, size_t> entityToIndex_;
+	std::vector<uint32_t> indexToEntity_;
 };

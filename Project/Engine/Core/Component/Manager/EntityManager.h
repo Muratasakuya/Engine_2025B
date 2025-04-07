@@ -11,9 +11,6 @@
 #include <optional>
 #include <algorithm>
 
-// entityID
-using EntityID = uint32_t;
-
 //============================================================================
 //	EntityManager class
 //============================================================================
@@ -38,18 +35,18 @@ public:
 	EntityManager() = default;
 	~EntityManager() = default;
 
-	EntityID CreateEntity(const std::string& name,
+	uint32_t CreateEntity(const std::string& name,
 		const std::optional<std::string>& groupName);
 
-	void RemoveEntity(EntityID id);
+	void RemoveEntity(uint32_t id);
 
 	//--------- accessor -----------------------------------------------------
 
 	const std::vector<EntityInformation>& GetNames() const { return entityInformations_; }
 
-	const std::vector<EntityID>& GetIndexToEntity() const { return indexToEntity_; }
+	const std::vector<uint32_t>& GetIndexToEntity() const { return indexToEntity_; }
 
-	EntityID GetIndex(EntityID id) const;
+	uint32_t GetIndex(uint32_t id) const;
 private:
 	//========================================================================
 	//	private Methods
@@ -57,11 +54,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	EntityID nextId_;
+	uint32_t nextId_;
 	std::vector<EntityInformation> entityInformations_;
 
-	std::unordered_map<EntityID, EntityID> entityToIndex_;
-	std::vector<EntityID> indexToEntity_;
+	std::unordered_map<uint32_t, uint32_t> entityToIndex_;
+	std::vector<uint32_t> indexToEntity_;
 
 	std::unordered_map<std::string, int> nameCounts_;
 

@@ -37,5 +37,5 @@ private:
 
 	std::unique_ptr<FadeTransition> fadeTransition_;
 
-	EntityID titleNameId_;
+	uint32_t titleNameId_;
 };

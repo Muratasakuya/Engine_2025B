@@ -11,7 +11,7 @@
 //	AnimationComponentManager classMethods
 //============================================================================
 
-void AnimationComponentManager::AddComponent(EntityID entity, std::any args) {
+void AnimationComponentManager::AddComponent(uint32_t entity, std::any args) {
 
 	size_t index = components_.size();
 
@@ -22,7 +22,7 @@ void AnimationComponentManager::AddComponent(EntityID entity, std::any args) {
 		std::any_cast<std::tuple<std::optional<std::string>, Asset*>>(args);
 
 	// animationをしない場合でも要素は追加しておく
-	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
+	components_.resize(std::max(static_cast<uint32_t>(components_.size()), entity + 1));
 	if (!animationName.has_value()) {
 		return;
 	}
@@ -31,7 +31,7 @@ void AnimationComponentManager::AddComponent(EntityID entity, std::any args) {
 	components_[entity].SetPlayAnimation(*animationName, true);
 }
 
-void AnimationComponentManager::RemoveComponent(EntityID entity) {
+void AnimationComponentManager::RemoveComponent(uint32_t entity) {
 
 	if (!Algorithm::Find(entityToIndex_, entity)) {
 		return;
@@ -46,7 +46,7 @@ void AnimationComponentManager::RemoveComponent(EntityID entity) {
 		std::swap(components_[index], components_[lastIndex]);
 
 		// 交換されたentityIdを更新
-		EntityID movedEntityId = indexToEntity_[lastIndex];
+		uint32_t movedEntityId = indexToEntity_[lastIndex];
 		entityToIndex_[movedEntityId] = index;
 		indexToEntity_[index] = movedEntityId;
 	}
@@ -66,7 +66,7 @@ void AnimationComponentManager::Update() {
 	}
 }
 
-AnimationComponent* AnimationComponentManager::GetComponent(EntityID entity) {
+AnimationComponent* AnimationComponentManager::GetComponent(uint32_t entity) {
 
 	if (Algorithm::Find(entityToIndex_, entity)) {
 

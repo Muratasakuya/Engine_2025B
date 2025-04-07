@@ -23,16 +23,16 @@ public:
 	MaterialManager() = default;
 	~MaterialManager() = default;
 
-	void AddComponent(EntityID entity, std::any args) override;
+	void AddComponent(uint32_t entity, std::any args) override;
 
-	void RemoveComponent(EntityID entity) override;
+	void RemoveComponent(uint32_t entity) override;
 
 	void Update() override {};
 
 	//--------- accessor -----------------------------------------------------
 
-	Material* GetComponent(EntityID entity) override;
-	std::vector<Material*> GetComponentList(EntityID entity) override;
+	Material* GetComponent(uint32_t entity) override;
+	std::vector<Material*> GetComponentList(uint32_t entity) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -42,8 +42,8 @@ private:
 
 	std::vector<std::vector<Material>> components_;
 
-	std::unordered_map<EntityID, size_t> entityToIndex_;
-	std::vector<EntityID> indexToEntity_;
+	std::unordered_map<uint32_t, size_t> entityToIndex_;
+	std::vector<uint32_t> indexToEntity_;
 };
 
 //============================================================================
@@ -59,16 +59,16 @@ public:
 	SpriteMaterialManager() = default;
 	~SpriteMaterialManager() = default;
 
-	void AddComponent(EntityID entity, std::any args) override;
+	void AddComponent(uint32_t entity, std::any args) override;
 
-	void RemoveComponent(EntityID entity) override;
+	void RemoveComponent(uint32_t entity) override;
 
 	void Update() override {};
 
 	//--------- accessor -----------------------------------------------------
 
-	SpriteMaterial* GetComponent(EntityID entity) override;
-	std::vector<SpriteMaterial*> GetComponentList([[maybe_unused]] EntityID entity) override { return { nullptr }; }
+	SpriteMaterial* GetComponent(uint32_t entity) override;
+	std::vector<SpriteMaterial*> GetComponentList([[maybe_unused]] uint32_t entity) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -78,6 +78,6 @@ private:
 
 	std::vector<SpriteMaterial> components_;
 
-	std::unordered_map<EntityID, size_t> entityToIndex_;
-	std::vector<EntityID> indexToEntity_;
+	std::unordered_map<uint32_t, size_t> entityToIndex_;
+	std::vector<uint32_t> indexToEntity_;
 };

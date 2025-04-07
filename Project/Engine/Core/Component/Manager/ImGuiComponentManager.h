@@ -24,9 +24,6 @@ class Transform2DManager;
 class SpriteMaterialManager;
 class SpriteComponentManager;
 
-// entityID
-using EntityID = uint32_t;
-
 //============================================================================
 //	ImGuiComponentManager class
 //============================================================================
@@ -54,7 +51,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetImGuiFunc(EntityID entityId, std::function<void()> func);
+	void SetImGuiFunc(uint32_t entityId, std::function<void()> func);
 private:
 	//========================================================================
 	//	private Methods
@@ -75,13 +72,13 @@ private:
 
 		// imguiで選択されたidの保持
 		std::optional<uint32_t> selectedId_ = std::nullopt;
-		std::unordered_map<EntityID, std::function<void()>> imguiFunc_;
+		std::unordered_map<uint32_t, std::function<void()>> imguiFunc_;
 	};
 
 	struct EntityReference {
 
 		EntityType type;
-		EntityID id;
+		uint32_t id;
 	};
 
 	//--------- variables ----------------------------------------------------

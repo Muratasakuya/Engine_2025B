@@ -174,7 +174,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Mesh\InstancedMesh.cpp">
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -404,7 +404,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\Mesh\InstancedMesh.h">
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h">
       <SubType>
       </SubType>
     </ClInclude>

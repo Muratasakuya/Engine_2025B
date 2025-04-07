@@ -15,7 +15,7 @@
 // 3D
 //============================================================================
 
-void Transform3DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any args) {
+void Transform3DManager::AddComponent(uint32_t entity, [[maybe_unused]] std::any args) {
 
 	size_t index = components_.size();
 
@@ -23,7 +23,7 @@ void Transform3DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any
 	indexToEntity_.emplace_back(entity);
 
 	// component追加
-	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
+	components_.resize(std::max(static_cast<uint32_t>(components_.size()), entity + 1));
 
 	// 追加
 	components_[entity] = Transform3DComponent();
@@ -31,7 +31,7 @@ void Transform3DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any
 	components_[entity].UpdateMatrix();
 }
 
-void Transform3DManager::RemoveComponent(EntityID entity) {
+void Transform3DManager::RemoveComponent(uint32_t entity) {
 
 	if (!Algorithm::Find(entityToIndex_, entity)) {
 		return;
@@ -46,7 +46,7 @@ void Transform3DManager::RemoveComponent(EntityID entity) {
 		std::swap(components_[index], components_[lastIndex]);
 
 		// 交換されたentityIdを更新
-		EntityID movedEntityId = indexToEntity_[lastIndex];
+		uint32_t movedEntityId = indexToEntity_[lastIndex];
 		entityToIndex_[movedEntityId] = index;
 		indexToEntity_[index] = movedEntityId;
 	}
@@ -66,7 +66,7 @@ void Transform3DManager::Update() {
 	}
 }
 
-Transform3DComponent* Transform3DManager::GetComponent(EntityID entity) {
+Transform3DComponent* Transform3DManager::GetComponent(uint32_t entity) {
 
 	if (Algorithm::Find(entityToIndex_, entity)) {
 
@@ -81,7 +81,7 @@ Transform3DComponent* Transform3DManager::GetComponent(EntityID entity) {
 // 2D
 //============================================================================
 
-void Transform2DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any args) {
+void Transform2DManager::AddComponent(uint32_t entity, [[maybe_unused]] std::any args) {
 
 	size_t index = components_.size();
 
@@ -89,7 +89,7 @@ void Transform2DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any
 	indexToEntity_.emplace_back(entity);
 
 	// component追加
-	components_.resize(std::max(static_cast<EntityID>(components_.size()), entity + 1));
+	components_.resize(std::max(static_cast<uint32_t>(components_.size()), entity + 1));
 
 	// 追加
 	components_[entity] = std::make_unique<Transform2DComponent>();
@@ -97,7 +97,7 @@ void Transform2DManager::AddComponent(EntityID entity, [[maybe_unused]] std::any
 	components_[entity]->UpdateMatrix();
 }
 
-void Transform2DManager::RemoveComponent(EntityID entity) {
+void Transform2DManager::RemoveComponent(uint32_t entity) {
 
 	if (!Algorithm::Find(entityToIndex_, entity)) {
 		return;
@@ -112,7 +112,7 @@ void Transform2DManager::RemoveComponent(EntityID entity) {
 		std::swap(components_[index], components_[lastIndex]);
 
 		// 交換されたentityIdを更新
-		EntityID movedEntityId = indexToEntity_[lastIndex];
+		uint32_t movedEntityId = indexToEntity_[lastIndex];
 		entityToIndex_[movedEntityId] = index;
 		indexToEntity_[index] = movedEntityId;
 	}
@@ -132,7 +132,7 @@ void Transform2DManager::Update() {
 	}
 }
 
-Transform2DComponent* Transform2DManager::GetComponent(EntityID entity) {
+Transform2DComponent* Transform2DManager::GetComponent(uint32_t entity) {
 
 	if (Algorithm::Find(entityToIndex_, entity)) {
 
