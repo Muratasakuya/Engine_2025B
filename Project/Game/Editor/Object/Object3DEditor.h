@@ -9,6 +9,7 @@
 // c++
 #include <string>
 #include <optional>
+#include <unordered_map>
 // front
 class Asset;
 
@@ -63,6 +64,14 @@ private:
 	InputTextValue addObjectName_; // objectの名前
 	InputTextValue addGroupName_;  // groupに入れる名前
 
+	// selecrObject
+	std::unordered_map<std::string, int> selectObjects_; // 追加されたobject
+	std::optional<int> selectObjectIndex_;               // 選択したobjectのindex
+	int selectedMaterialIndex_;                          // materialのindex
+
+	// editObject
+	float itemWidth_; // 表示するparameterの操作objectの横幅
+
 	//--------- functions ----------------------------------------------------
 
 	// json適応、設定
@@ -80,4 +89,7 @@ private:
 	void SelectObject();
 	// objectの操作
 	void EditObject();
+	// ↑の操作
+	void EditTransform();
+	void EditMaterial();
 };
