@@ -30,6 +30,7 @@ void MaterialComponent::ImGui(float itemSize) {
 	// 色
 	ImGui::SeparatorText("Color");
 
+	ImGui::PushItemWidth(itemSize);
 	ImGui::ColorEdit4("color", &material.color.r);
 	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f A:%4.3f",
 		material.color.r, material.color.g,
@@ -40,24 +41,19 @@ void MaterialComponent::ImGui(float itemSize) {
 	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f",
 		material.emissionColor.x, material.emissionColor.y,
 		material.emissionColor.z);
-	ImGui::PushItemWidth(itemSize);
 	ImGui::DragFloat("emissiveIntensity", &material.emissiveIntensity, 0.01f);
-	ImGui::PopItemWidth();
 
 	// UV
 	ImGui::SeparatorText("UV");
 
 	// transform
-	ImGui::PushItemWidth(itemSize);
 	ImGui::DragFloat2("uvTranslate", &uvTransform.translate.x, 0.1f);
 	ImGui::SliderAngle("uvRotate", &uvTransform.rotate.z);
 	ImGui::DragFloat2("uvScale", &uvTransform.scale.x, 0.1f);
-	ImGui::PopItemWidth();
 
 	// Lighting
 	ImGui::SeparatorText("Lighting");
 
-	ImGui::PushItemWidth(itemSize);
 	ImGui::SliderInt("enableLighting", &material.enableLighting, 0, 1);
 	if (ImGui::SliderInt("phongReflection", &material.enablePhongReflection, 0, 1)) {
 		if (material.enablePhongReflection) {
@@ -71,19 +67,15 @@ void MaterialComponent::ImGui(float itemSize) {
 			material.enablePhongReflection = 0;
 		}
 	}
-	ImGui::PopItemWidth();
 
 	if (material.enablePhongReflection ||
 		material.enableBlinnPhongReflection) {
 
 		ImGui::ColorEdit3("specularColor", &material.specularColor.x);
 
-		ImGui::PushItemWidth(itemSize);
 		ImGui::DragFloat("phongRefShininess", &material.phongRefShininess, 0.01f);
-		ImGui::PopItemWidth();
 	}
 
-	ImGui::PushItemWidth(168.0f);
 	ImGui::DragFloat("shadowRate", &material.shadowRate, 0.01f, 0.0f, 8.0f);
 	ImGui::PopItemWidth();
 }

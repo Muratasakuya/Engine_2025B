@@ -5,9 +5,9 @@
 //============================================================================
 #include <Engine/Core/Component/Base/IComponent.h>
 #include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/Component/MaterialComponent.h>
 #include <Engine/Core/Component/AnimationComponent.h>
 #include <Engine/Core/Component/SpriteComponent.h>
-#include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
 
 // imgui
 #include <imgui.h>

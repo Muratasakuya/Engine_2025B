@@ -16,7 +16,10 @@ void Object3DEditor::Init(Asset* asset) {
 	asset_ = nullptr;
 	asset_ = asset;
 
+	// 初期化値
 	editLayoutEnable_ = false;
+	selectObjectIndex_ = std::nullopt;
+	selectedMaterialIndex_ = -1;
 
 	// json適応、設定
 	ApplyJson();
@@ -47,6 +50,7 @@ void Object3DEditor::SaveEditLayoutParameter() {
 
 	data["addParameterWidth_"] = addParameterWidth_;
 	data["upLayoutHeight_"] = upLayoutHeight_;
+	data["itemWidth_"] = itemWidth_;
 
 	JsonAdapter::Save(baseJsonPath_ + "editorLayoutParameter.json", data);
 }
@@ -67,6 +71,7 @@ void Object3DEditor::ApplyEditLayoutParameter() {
 
 	addParameterWidth_ = JsonAdapter::GetValue<float>(data, "addParameterWidth_");
 	upLayoutHeight_ = JsonAdapter::GetValue<float>(data, "upLayoutHeight_");
+	itemWidth_ = JsonAdapter::GetValue<float>(data, "itemWidth_");
 }
 
 void Object3DEditor::EditLayout() {
@@ -87,6 +92,7 @@ void Object3DEditor::EditLayout() {
 	// addParameter
 	ImGui::DragFloat("addParameterWidth", &addParameterWidth_, 0.5f);
 	ImGui::DragFloat("upLayoutHeight", &upLayoutHeight_, 0.5f);
+	ImGui::DragFloat("itemWidth", &itemWidth_, 0.5f);
 
 	ImGui::End();
 }
@@ -135,8 +141,8 @@ void Object3DEditor::AddObject() {
 			!addObjectName_.name.empty() &&
 			!addGroupName_.name.empty()) {
 
-			// 入力された名前で追加
-			GameObjectHelper::CreateObject3D(
+			// 入力された名前で選択リストに追加
+			selectObjects_[addObjectName_.name] = GameObjectHelper::CreateObject3D(
 				addModelName_, addObjectName_.name, addGroupName_.name);
 
 			// 追加されたタイミングで入力をリセット
@@ -162,7 +168,20 @@ void Object3DEditor::SelectObject() {
 		ImVec2(0.0f, upLayoutHeight_),
 		ImGuiChildFlags_Border);
 
-	ImGui::Text("selectObject");
+	// 追加されたobjectの一覧を表示し選択できるようにする
+	for (const auto& [name, id] : selectObjects_) {
+
+		bool isSelected = (selectObjectIndex_.value_or(-1) == static_cast<int>(id));
+		if (ImGui::Selectable(name.c_str(), isSelected)) {
+
+			// 選択されたindex、idを設定
+			selectObjectIndex_ = id;
+		}
+		if (isSelected) {
+
+			ImGui::SetItemDefaultFocus();
+		}
+	}
 
 	// 終了
 	ImGui::EndChild();
@@ -174,10 +193,77 @@ void Object3DEditor::EditObject() {
 	ImGui::BeginChild("bottomLayout",
 		ImVec2(), ImGuiChildFlags_Border);
 
-	ImGui::Text("editObject");
+	if (ImGui::BeginTabBar("Object3DTabs")) {
+		if (ImGui::BeginTabItem("Transform")) {
+
+			// transformの操作
+			EditTransform();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Material")) {
+
+			// materialの操作
+			EditMaterial();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
 
 	// 終了
 	ImGui::EndChild();
+}
+
+void Object3DEditor::EditTransform() {
+
+	// 選択されていなければ何もしない
+	if (!selectObjectIndex_.has_value()) {
+		return;
+	}
+
+	Transform3DComponent* transform =
+		Component::GetComponent<Transform3DComponent>(selectObjectIndex_.value());
+
+	transform->ImGui(itemWidth_);
+}
+
+void Object3DEditor::EditMaterial() {
+
+	// 選択されていなければ何もしない
+	if (!selectObjectIndex_.has_value()) {
+		return;
+	}
+
+	std::vector<MaterialComponent*> materials =
+		Component::GetComponentList<MaterialComponent>(selectObjectIndex_.value());
+
+	ImGui::PushItemWidth(itemWidth_);
+	// Materialの選択
+	if (ImGui::BeginCombo("SelectMaterial", ("Material " + std::to_string(selectedMaterialIndex_)).c_str())) {
+		for (size_t i = 0; i < materials.size(); ++i) {
+
+			bool isSelected = (selectedMaterialIndex_ == static_cast<int>(i));
+			std::string label = "Material " + std::to_string(i);
+			if (ImGui::Selectable(label.c_str(), isSelected)) {
+
+				selectedMaterialIndex_ = static_cast<int>(i);
+			}
+			if (isSelected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+	ImGui::PopItemWidth();
+
+	// 選択されたMaterialを表示
+	if (!materials.empty()) {
+
+		// materialのサイズに制限
+		selectedMaterialIndex_ = std::clamp(selectedMaterialIndex_, 0, static_cast<int>(materials.size() - 1));
+		materials[selectedMaterialIndex_]->ImGui(itemWidth_);
+	}
 }
 
 void Object3DEditor::InputTextValue::InputText(const std::string& label) {
