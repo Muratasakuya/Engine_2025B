@@ -17,7 +17,7 @@ template std::vector<TYPE*> Component::GetComponentList<TYPE>(uint32_t);
 
 // 3D
 INSTANTIATE_GET_COMPONENT(Transform3DComponent)
-INSTANTIATE_GET_COMPONENT(Material)
+INSTANTIATE_GET_COMPONENT(MaterialComponent)
 INSTANTIATE_GET_COMPONENT(AnimationComponent)
 // 2D
 INSTANTIATE_GET_COMPONENT(Transform2DComponent)
@@ -25,7 +25,7 @@ INSTANTIATE_GET_COMPONENT(SpriteMaterial)
 INSTANTIATE_GET_COMPONENT(SpriteComponent)
 
 // 3D
-INSTANTIATE_GET_COMPONENTLIST(Material)
+INSTANTIATE_GET_COMPONENTLIST(MaterialComponent)
 
 template<typename T>
 T* Component::GetComponent(uint32_t id) {

@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Component/Base/IComponent.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
+#include <Engine/Core/Component/MaterialComponent.h>
 
 // front
 class Asset;
@@ -14,7 +14,7 @@ class Asset;
 //	MaterialManager class
 //============================================================================
 class MaterialManager :
-	public IComponent<Material> {
+	public IComponent<MaterialComponent> {
 public:
 	//========================================================================
 	//	public Methods
@@ -27,12 +27,12 @@ public:
 
 	void RemoveComponent(uint32_t entity) override;
 
-	void Update() override {};
+	void Update() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	Material* GetComponent(uint32_t entity) override;
-	std::vector<Material*> GetComponentList(uint32_t entity) override;
+	MaterialComponent* GetComponent(uint32_t entity) override;
+	std::vector<MaterialComponent*> GetComponentList(uint32_t entity) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -40,7 +40,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<std::vector<Material>> components_;
+	std::vector<std::vector<MaterialComponent>> components_;
 
 	std::unordered_map<uint32_t, size_t> entityToIndex_;
 	std::vector<uint32_t> indexToEntity_;

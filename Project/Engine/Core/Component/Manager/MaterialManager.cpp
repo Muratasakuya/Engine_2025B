@@ -34,7 +34,7 @@ void MaterialManager::AddComponent(uint32_t entity, std::any args) {
 	for (uint32_t meshIndex = 0; meshIndex < modelData.meshes.size(); ++meshIndex) {
 
 		components_[entity][meshIndex].Init();
-		components_[entity][meshIndex].textureIndex =
+		components_[entity][meshIndex].material.textureIndex =
 			asset->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
 	}
 }
@@ -65,7 +65,19 @@ void MaterialManager::RemoveComponent(uint32_t entity) {
 	entityToIndex_.erase(entity);
 }
 
-Material* MaterialManager::GetComponent(uint32_t entity) {
+void MaterialManager::Update() {
+
+	for (auto& component : components_) {
+
+		// uvTransform更新
+		for (uint32_t meshIndex = 0; meshIndex < component.size(); ++meshIndex) {
+		
+			component[meshIndex].UpdateUVTransform();
+		}
+	}
+}
+
+MaterialComponent* MaterialManager::GetComponent(uint32_t entity) {
 
 	// 単一のmaterialのみ返す
 	// multiMaterialの時はGetComponentList()から取得する
@@ -78,15 +90,15 @@ Material* MaterialManager::GetComponent(uint32_t entity) {
 	return nullptr;
 }
 
-std::vector<Material*> MaterialManager::GetComponentList(uint32_t entity) {
+std::vector<MaterialComponent*> MaterialManager::GetComponentList(uint32_t entity) {
 
 	// 配列のmaterialを返す
-	std::vector<Material*> materials;
+	std::vector<MaterialComponent*> materials;
 
 	if (Algorithm::Find(entityToIndex_, entity)) {
 
 		size_t index = entityToIndex_.at(entity);
-		for (Material& mat : components_.at(index)) {
+		for (MaterialComponent& mat : components_.at(index)) {
 
 			materials.emplace_back(&mat);
 		}

@@ -4,8 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
 #include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/Component/MaterialComponent.h>
 #include <Engine/Core/Component/Base/IComponent.h>
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
 
@@ -54,7 +54,7 @@ public:
 	void SetDevice(ID3D12Device* device);
 
 	void SetUploadData(const std::string& name, const TransformationMatrix& matrix,
-		const std::vector<Material>& materials);
+		const std::vector<MaterialComponent>& materials);
 
 	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return meshGroups_; }
 private:

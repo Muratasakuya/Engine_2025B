@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Component/User/ComponentHelper.h>
+#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 //============================================================================
@@ -28,6 +29,16 @@ void GameScene::Init(
 	asset->LoadModel("suzanne");
 
 	//========================================================================
+	//	postProcess
+	//========================================================================
+
+	postProcessManager_ = postProcessManager;
+
+	// bloom処理
+	postProcessManager_->Create({ PostProcess::Bloom });
+	postProcessManager_->AddProcess(PostProcess::Bloom);
+
+	//========================================================================
 	//	camera
 	//========================================================================
 
@@ -45,53 +56,9 @@ void GameScene::Init(
 
 	stageField_ = std::make_unique<StageField>();
 	stageField_->Init();
-
-	const uint32_t kNumObject = 320;
-	const float offset = 6.0f;
-	const float offsetY = 4.0f;
-	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
-	for (uint32_t index = 0; index < kNumObject; ++index) {
-
-		uint32_t id = GameObjectHelper::CreateObject3D("multiMaterial", "multiMaterial", "MultiMaterial");
-		auto transform = Component::GetComponent<Transform3DComponent>(id);
-
-		uint32_t x = index % gridSize;
-		uint32_t z = index / gridSize;
-
-		transform->translation.x = x * offset;
-		transform->translation.z = z * offset;
-	}
-
-	for (uint32_t index = 0; index < kNumObject; ++index) {
-
-		uint32_t id = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot");
-		auto transform = Component::GetComponent<Transform3DComponent>(id);
-
-		uint32_t x = index % gridSize;
-		uint32_t z = index / gridSize;
-
-		transform->translation.x = x * offset;
-		transform->translation.y = offsetY;
-		transform->translation.z = z * offset;
-	}
-
-	for (uint32_t index = 0; index < kNumObject; ++index) {
-
-		uint32_t id = GameObjectHelper::CreateObject3D("suzanne", "suzanne", "Suzanne");
-		auto transform = Component::GetComponent<Transform3DComponent>(id);
-
-		uint32_t x = index % gridSize;
-		uint32_t z = index / gridSize;
-
-		transform->translation.x = x * offset;
-		transform->translation.y = offsetY * 2.0f;
-		transform->translation.z = z * offset;
-	}
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	gameCamera_->Update();
-
-	stageField_->Update();
 }

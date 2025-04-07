@@ -49,6 +49,9 @@ public:
 	// 選択したobjectの操作
 	void EditObject();
 
+	// 選択全解除
+	void Reset();
+
 	//--------- accessor -----------------------------------------------------
 
 	void SetImGuiFunc(uint32_t entityId, std::function<void()> func);

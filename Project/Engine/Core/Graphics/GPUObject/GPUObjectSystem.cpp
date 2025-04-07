@@ -96,8 +96,8 @@ void GPUObjectSystem::UpdateObject3D() {
 	// entityごとのGPUデータ転送
 	for (uint32_t id : entityList) {
 
-		std::vector<Material*> materialPtrs = componentManager->GetComponentList<Material>(id);
-		std::vector<Material> materials;
+		std::vector<MaterialComponent*> materialPtrs = componentManager->GetComponentList<MaterialComponent>(id);
+		std::vector<MaterialComponent> materials;
 		materials.reserve(materialPtrs.size());
 
 		for (const auto* mat : materialPtrs) {

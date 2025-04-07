@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
+#include <Lib/MathUtils/MathUtils.h>
 
 // c++
 #include <string>
@@ -40,11 +41,21 @@ private:
 		std::string name;     // 入力した文字を取得する用
 
 		void InputText(const std::string& label);
+
+		void Reset();
 	};
 
 	//--------- variables ----------------------------------------------------
 
 	Asset* asset_;
+
+	// json
+	const std::string baseJsonPath_ = "Object3DEditor/";
+
+	// editorParameter
+	bool editLayoutEnable_;   // editor内のlayoutを調整するかどうか
+	float addParameterWidth_; // 追加選択の横幅
+	float upLayoutHeight_;    // 上のlayoutの高さ
 
 	// addObject
 	int addSelectedObjectIndex_;   // modelのindex
@@ -54,6 +65,19 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	// json適応、設定
+	void ApplyJson();
+	// editorLayout
+	void SaveEditLayoutParameter();
+	void ApplyEditLayoutParameter();
+
+	// editor内のlayoutを調整
+	void EditLayout();
+
 	// objectの追加
 	void AddObject();
+	// objectの選択
+	void SelectObject();
+	// objectの操作
+	void EditObject();
 };
