@@ -1,4 +1,4 @@
-#include "PostProcessManager.h"
+#include "PostProcessSystem.h"
 
 //============================================================================
 //	include
@@ -9,10 +9,10 @@
 #include <Engine/Asset/Asset.h>
 
 //============================================================================
-//	PostProcessManager classMethods
+//	PostProcessSystem classMethods
 //============================================================================
 
-void PostProcessManager::AddProcess(PostProcess process) {
+void PostProcessSystem::AddProcess(PostProcess process) {
 
 	// 追加
 	if (Algorithm::Find(initProcesses_, process, true)) {
@@ -21,7 +21,7 @@ void PostProcessManager::AddProcess(PostProcess process) {
 	}
 }
 
-void PostProcessManager::RemoveProcess(PostProcess process) {
+void PostProcessSystem::RemoveProcess(PostProcess process) {
 
 	// 削除
 	if (Algorithm::Find(activeProcesses_, process, true)) {
@@ -31,13 +31,13 @@ void PostProcessManager::RemoveProcess(PostProcess process) {
 	}
 }
 
-void PostProcessManager::ClearProcess() {
+void PostProcessSystem::ClearProcess() {
 
 	// 全て削除
 	activeProcesses_.clear();
 }
 
-void PostProcessManager::InputProcessTexture(
+void PostProcessSystem::InputProcessTexture(
 	const std::string& textureName, PostProcess process, Asset* asset) {
 
 	// texture設定
@@ -47,8 +47,8 @@ void PostProcessManager::InputProcessTexture(
 	}
 }
 
-void PostProcessManager::Init(ID3D12Device8* device, DxShaderCompiler* shaderComplier,
-	SRVManager* srvManager, uint32_t width, uint32_t height) {
+void PostProcessSystem::Init(ID3D12Device8* device, DxShaderCompiler* shaderComplier,
+	SRVDescriptor* srvDescriptor, uint32_t width, uint32_t height) {
 
 	width_ = width;
 	height_ = height;
@@ -56,21 +56,21 @@ void PostProcessManager::Init(ID3D12Device8* device, DxShaderCompiler* shaderCom
 	device_ = nullptr;
 	device_ = device;
 
-	srvManager_ = nullptr;
-	srvManager_ = srvManager;
+	srvDescriptor_ = nullptr;
+	srvDescriptor_ = srvDescriptor;
 
 	bloomEnable_ = false;
 
 	// pipeline初期化
-	pipelineManager_ = std::make_unique<PostProcessPipelineManager>();
-	pipelineManager_->Init(device, srvManager, shaderComplier);
+	pipeline_ = std::make_unique<PostProcessPipeline>();
+	pipeline_->Init(device, srvDescriptor_, shaderComplier);
 
 	// offscreenPipeline初期化
 	offscreenPipeline_ = std::make_unique<PipelineState>();
-	offscreenPipeline_->Create("CopyTexture.json", device, srvManager, shaderComplier);
+	offscreenPipeline_->Create("CopyTexture.json", device, srvDescriptor_, shaderComplier);
 }
 
-void PostProcessManager::Create(const std::vector<PostProcess>& processes) {
+void PostProcessSystem::Create(const std::vector<PostProcess>& processes) {
 
 	if (!initProcesses_.empty() || processes.empty()) {
 		return;
@@ -84,11 +84,11 @@ void PostProcessManager::Create(const std::vector<PostProcess>& processes) {
 		if (process == PostProcess::Bloom) {
 
 			bloom_ = std::make_unique<BloomProcessor>();
-			bloom_->Init(device_, srvManager_, width_, height_);
+			bloom_->Init(device_, srvDescriptor_, width_, height_);
 		} else {
 
 			processors_[process] = std::make_unique<ComputePostProcessor>();
-			processors_[process]->Init(device_, srvManager_, width_, height_);
+			processors_[process]->Init(device_, srvDescriptor_, width_, height_);
 
 			PostProcessType type = GetPostProcessType(process);
 			CreateCBuffer(type);
@@ -96,7 +96,7 @@ void PostProcessManager::Create(const std::vector<PostProcess>& processes) {
 	}
 }
 
-void PostProcessManager::Execute(RenderTexture* inputTexture, DxCommand* dxCommand) {
+void PostProcessSystem::Execute(RenderTexture* inputTexture, DxCommand* dxCommand) {
 
 	if (activeProcesses_.empty()) {
 
@@ -127,7 +127,7 @@ void PostProcessManager::Execute(RenderTexture* inputTexture, DxCommand* dxComma
 		if (processors_.find(process) != processors_.end()) {
 
 			// pipeline設定
-			pipelineManager_->SetPipeline(commandList, type);
+			pipeline_->SetPipeline(commandList, type);
 			// buffer設定
 			ExecuteCBuffer(commandList, type);
 			// 実行
@@ -167,7 +167,7 @@ void PostProcessManager::Execute(RenderTexture* inputTexture, DxCommand* dxComma
 	// 最終的なframeBufferに設定するGPUHandleの設定
 	if (bloomEnable_) {
 
-		bloom_->Execute(dxCommand, pipelineManager_.get(), inputGPUHandle);
+		bloom_->Execute(dxCommand, pipeline_.get(), inputGPUHandle);
 		frameBufferGPUHandle_ = bloom_->GetGPUHandle();
 	} else {
 
@@ -175,7 +175,7 @@ void PostProcessManager::Execute(RenderTexture* inputTexture, DxCommand* dxComma
 	}
 }
 
-void PostProcessManager::RenderFrameBuffer(DxCommand* dxCommand) {
+void PostProcessSystem::RenderFrameBuffer(DxCommand* dxCommand) {
 
 	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
 
@@ -189,7 +189,7 @@ void PostProcessManager::RenderFrameBuffer(DxCommand* dxCommand) {
 	commandList->DrawInstanced(vertexCount, 1, 0, 0);
 }
 
-void PostProcessManager::ImGui() {
+void PostProcessSystem::ImGui() {
 
 	// 各bufferのimgui表示
 	for (const auto& buffer : std::views::values(buffers_)) {
@@ -203,7 +203,7 @@ void PostProcessManager::ImGui() {
 	}
 }
 
-void PostProcessManager::ToWrite(DxCommand* dxCommand) {
+void PostProcessSystem::ToWrite(DxCommand* dxCommand) {
 
 	if (activeProcesses_.empty()) {
 		return;
@@ -245,7 +245,7 @@ void PostProcessManager::ToWrite(DxCommand* dxCommand) {
 	}
 }
 
-void PostProcessManager::CreateCBuffer(PostProcessType type) {
+void PostProcessSystem::CreateCBuffer(PostProcessType type) {
 
 	switch (type) {
 	case PostProcessType::HorizontalBlur: {
@@ -331,7 +331,7 @@ void PostProcessManager::CreateCBuffer(PostProcessType type) {
 	}
 }
 
-void PostProcessManager::ExecuteCBuffer(
+void PostProcessSystem::ExecuteCBuffer(
 	ID3D12GraphicsCommandList* commandList, PostProcessType type) {
 
 	if (Algorithm::Find(buffers_, type)) {
@@ -349,7 +349,7 @@ void PostProcessManager::ExecuteCBuffer(
 	}
 }
 
-PostProcessType PostProcessManager::GetPostProcessType(PostProcess process) const {
+PostProcessType PostProcessSystem::GetPostProcessType(PostProcess process) const {
 
 	// userが指定したprocessのenumはpipelineのenumとは
 	// 異なるのでpipeline用に変更する

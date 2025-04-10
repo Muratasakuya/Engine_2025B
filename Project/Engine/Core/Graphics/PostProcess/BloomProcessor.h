@@ -22,11 +22,11 @@ public:
 	BloomProcessor() = default;
 	~BloomProcessor() = default;
 
-	void Init(ID3D12Device* device, class SRVManager* srvManager,
+	void Init(ID3D12Device* device, class SRVDescriptor* srvDescriptor,
 		uint32_t width, uint32_t height);
 
 	void Execute(class DxCommand* dxCommand,
-		class PostProcessPipelineManager* pipeline,
+		class PostProcessPipeline* pipeline,
 		const D3D12_GPU_DESCRIPTOR_HANDLE& inputGPUHandle);
 
 	void ToWrite(class DxCommand* dxCommand);

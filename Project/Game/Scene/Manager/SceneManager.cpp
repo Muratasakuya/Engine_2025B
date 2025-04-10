@@ -10,7 +10,7 @@
 //============================================================================
 
 SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManager,
-	PostProcessManager* postProcessManager) {
+	PostProcessSystem* postProcessSystem) {
 
 	asset_ = nullptr;
 	asset_ = asset;
@@ -18,8 +18,8 @@ SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManag
 	cameraManager_ = nullptr;
 	cameraManager_ = cameraManager;
 
-	postProcessManager_ = nullptr;
-	postProcessManager_ = postProcessManager;
+	postProcessSystem_ = nullptr;
+	postProcessSystem_ = postProcessSystem;
 
 	factory_ = std::make_unique<SceneFactory>();
 
@@ -27,7 +27,7 @@ SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManag
 	sceneTransition_->Init();
 
 	LoadScene(scene);
-	currentScene_->Init(asset_, cameraManager, postProcessManager);
+	currentScene_->Init(asset_, cameraManager, postProcessSystem);
 }
 
 void SceneManager::Update() {
@@ -53,7 +53,7 @@ void SceneManager::SwitchScene() {
 
 void SceneManager::InitNextScene() {
 
-	currentScene_->Init(asset_, cameraManager_, postProcessManager_);
+	currentScene_->Init(asset_, cameraManager_, postProcessSystem_);
 	isSceneSwitching_ = false;
 }
 

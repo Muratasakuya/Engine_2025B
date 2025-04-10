@@ -34,7 +34,7 @@ public:
 	virtual ~PipelineState() = default;
 
 	void Create(const std::string& fileName, ID3D12Device8* device,
-		class SRVManager* srvManager, DxShaderCompiler* shaderCompiler);
+		class SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler);
 
 	//--------- accessor -----------------------------------------------------
 

@@ -3,33 +3,21 @@
 //============================================================================
 //	include
 //============================================================================
-
-// windows
-#include <Windows.h>
-// directX
-#include <d3d12.h>
-// c++
-#include <cstdint>
-#include <string>
+#include <Engine/Core/Graphics/Descriptors/BaseDescriptor.h>
 
 //============================================================================
-//	ImGuiManager class
+//	RTVDescriptor class
 //============================================================================
-class ImGuiManager {
+class RTVDescriptor :
+	public BaseDescriptor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ImGuiManager() = default;
-	~ImGuiManager() = default;
+	RTVDescriptor() :BaseDescriptor(16) {};
+	~RTVDescriptor() = default;
 
-	void Init(HWND hwnd, UINT bufferCount, ID3D12Device* device, class SRVManager* srvManager);
-
-	void Begin();
-	void End();
-
-	void Draw(ID3D12GraphicsCommandList* commandList);
-
-	void Finalize();
+	void Create(D3D12_CPU_DESCRIPTOR_HANDLE& handle, ID3D12Resource* resource,
+		const D3D12_RENDER_TARGET_VIEW_DESC& desc);
 };

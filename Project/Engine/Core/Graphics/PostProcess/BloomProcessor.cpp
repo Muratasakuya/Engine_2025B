@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Context/PostProcessCommandContext.h>
-#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessPipelineManager.h>
+#include <Engine/Core/Graphics/PostProcess/PostProcessPipeline.h>
 
 // imgui
 #include <imgui.h>
@@ -14,27 +14,27 @@
 //	BloomProcessor classMethods
 //============================================================================
 
-void BloomProcessor::Init(ID3D12Device* device, SRVManager* srvManager,
+void BloomProcessor::Init(ID3D12Device* device, SRVDescriptor* srvDescriptor,
 	uint32_t width, uint32_t height) {
 
 	//  輝度抽出用
 	luminanceProcess_ = std::make_unique<ComputePostProcessor>();
-	luminanceProcess_->Init(device, srvManager, width, height);
+	luminanceProcess_->Init(device, srvDescriptor, width, height);
 	luminanceExtractBuffer_ = std::make_unique<PostProcessBuffer<LuminanceExtractForGPU>>();
 	luminanceExtractBuffer_->Init(device, 2);
 	// 水平ブラー用
 	horizontalBlur_ = std::make_unique<ComputePostProcessor>();
-	horizontalBlur_->Init(device, srvManager, width, height);
+	horizontalBlur_->Init(device, srvDescriptor, width, height);
 	horizontalBlurBuffer_ = std::make_unique<PostProcessBuffer<HorizonBlurForGPU>>();
 	horizontalBlurBuffer_->Init(device, 2);
 	// 垂直ブラー用
 	verticalBlur_ = std::make_unique<ComputePostProcessor>();
-	verticalBlur_->Init(device, srvManager, width, height);
+	verticalBlur_->Init(device, srvDescriptor, width, height);
 	verticalBlurBuffer_ = std::make_unique<PostProcessBuffer<VerticalBlurForGPU>>();
 	verticalBlurBuffer_->Init(device, 2);
 	// 加算合成用
 	textureCombine_ = std::make_unique<ComputePostProcessor>();
-	textureCombine_->Init(device, srvManager, width, height);
+	textureCombine_->Init(device, srvDescriptor, width, height);
 	// 予め垂直ブラー用をかけた後のGPUHandleを取得しておく
 	textureCombine_->SetProcessTexureGPUHandle(verticalBlur_->GetSRVGPUHandle());
 
@@ -55,7 +55,7 @@ void BloomProcessor::Init(ID3D12Device* device, SRVManager* srvManager,
 }
 
 void BloomProcessor::Execute(
-	DxCommand* dxCommand, PostProcessPipelineManager* pipeline,
+	DxCommand* dxCommand, PostProcessPipeline* pipeline,
 	const D3D12_GPU_DESCRIPTOR_HANDLE& inputGPUHandle) {
 
 	// bufferの更新

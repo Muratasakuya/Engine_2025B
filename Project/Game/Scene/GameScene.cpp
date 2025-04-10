@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Component/ComponentHelper.h>
-#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
+#include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
 //============================================================================
@@ -15,7 +15,7 @@
 void GameScene::Init(
 	[[maybe_unused]] Asset* asset,
 	[[maybe_unused]] CameraManager* cameraManager,
-	[[maybe_unused]] PostProcessManager* postProcessManager
+	[[maybe_unused]] PostProcessSystem* postProcessSystem
 ) {
 
 	//========================================================================
@@ -32,11 +32,11 @@ void GameScene::Init(
 	//	postProcess
 	//========================================================================
 
-	postProcessManager_ = postProcessManager;
+	postProcessSystem_ = postProcessSystem;
 
 	// bloom処理
-	postProcessManager_->Create({ PostProcess::Bloom });
-	postProcessManager_->AddProcess(PostProcess::Bloom);
+	postProcessSystem_->Create({ PostProcess::Bloom });
+	postProcessSystem_->AddProcess(PostProcess::Bloom);
 
 	//========================================================================
 	//	camera

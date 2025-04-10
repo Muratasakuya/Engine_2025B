@@ -4,16 +4,16 @@
 //	Asset classMethods
 //============================================================================
 
-void Asset::Init(ID3D12Device* device, DxCommand* dxCommand, SRVManager* srvManager) {
+void Asset::Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor) {
 
 	textureManager_ = std::make_unique<TextureManager>();
-	textureManager_->Init(device, dxCommand, srvManager);
+	textureManager_->Init(device, dxCommand, srvDescriptor);
 
 	modelLoader_ = std::make_unique<ModelLoader>();
 	modelLoader_->Init(textureManager_.get());
 
 	animationManager_ = std::make_unique<AnimationManager>();
-	animationManager_->Init(device, srvManager, modelLoader_.get());
+	animationManager_->Init(device, srvDescriptor, modelLoader_.get());
 }
 
 void Asset::LoadTexture(const std::string& textureName) {

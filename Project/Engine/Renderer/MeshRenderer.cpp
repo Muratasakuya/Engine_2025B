@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/DxCommand.h>
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
@@ -15,20 +15,20 @@
 //============================================================================
 
 void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
-	DxShaderCompiler* shaderCompiler, SRVManager* srvManager) {
+	DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor) {
 
-	srvManager_ = nullptr;
-	srvManager_ = srvManager;
+	srvDescriptor_ = nullptr;
+	srvDescriptor_ = srvDescriptor;
 
 	shadowMap_ = nullptr;
 	shadowMap_ = shadowMap;
 
 	// pipeline作成
 	meshShaderPipeline_ = std::make_unique<PipelineState>();
-	meshShaderPipeline_->Create("MeshStandard.json", device, srvManager, shaderCompiler);
+	meshShaderPipeline_->Create("MeshStandard.json", device, srvDescriptor, shaderCompiler);
 
 	meshShaderZPassPipeline_ = std::make_unique<PipelineState>();
-	meshShaderZPassPipeline_->Create("MeshDepth.json", device, srvManager, shaderCompiler);
+	meshShaderZPassPipeline_->Create("MeshDepth.json", device, srvDescriptor, shaderCompiler);
 
 	// buffer作成
 	viewProjectionBuffer_.CreateConstBuffer(device);
@@ -157,7 +157,7 @@ void MeshRenderer::SetCommonBuffer(bool debugEnable, ID3D12GraphicsCommandList6*
 
 	// allTexture
 	commandList->SetGraphicsRootDescriptorTable(9,
-		srvManager_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+		srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 	// shadowMap
 	commandList->SetGraphicsRootDescriptorTable(10,
 		shadowMap_->GetGPUHandle());

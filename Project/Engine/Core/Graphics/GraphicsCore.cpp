@@ -101,8 +101,9 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 	dxCommand_->Create(device);
 
 	// RTV初期化
-	rtvManager_ = std::make_unique<RTVManager>();
-	rtvManager_->Init(device);
+	rtvDescriptor_ = std::make_unique<RTVDescriptor>();
+	rtvDescriptor_->Init(device, DescriptorType(
+		D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE));
 
 	// DXC初期化
 	dxShaderComplier_ = std::make_unique<DxShaderCompiler>();
@@ -111,50 +112,53 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 	// 画面設定
 	dxSwapChain_ = std::make_unique<DxSwapChain>();
 	dxSwapChain_->Create(width, height, windowClearColor_, winApp,
-		dxDevice_->GetDxgiFactory(), dxCommand_->GetQueue(), rtvManager_.get());
+		dxDevice_->GetDxgiFactory(), dxCommand_->GetQueue(), rtvDescriptor_.get());
 
 	// DSV初期化
-	dsvManager_ = std::make_unique<DSVManager>();
-	dsvManager_->Init(width, height, dxDevice_->Get());
+	dsvDescriptor_ = std::make_unique<DSVDescriptor>();
+	dsvDescriptor_->Init(device, DescriptorType(
+		D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE));
+	dsvDescriptor_->InitFrameBufferDSV(width, height);
 
 	// SRV初期化
-	srvManager_ = std::make_unique<SRVManager>();
-	srvManager_->Init(dxDevice_->Get());
+	srvDescriptor_ = std::make_unique<SRVDescriptor>();
+	srvDescriptor_->Init(device, DescriptorType(
+		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE));
 
 #ifdef _DEBUG
 	imguiManager_ = std::make_unique<ImGuiManager>();
 	imguiManager_->Init(winApp->GetHwnd(),
-		dxSwapChain_->GetDesc().BufferCount, device, srvManager_.get());
+		dxSwapChain_->GetDesc().BufferCount, device, srvDescriptor_.get());
 #endif // _DEBUG
 
 	// renderTexture作成
 	renderTexture_ = std::make_unique<RenderTexture>();
 	renderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
-		device, rtvManager_.get(), srvManager_.get());
+		device, rtvDescriptor_.get(), srvDescriptor_.get());
 
 	// gui用texture作成
 #ifdef _DEBUG
 	guiRenderTexture_ = std::make_unique<GuiRenderTexture>();
 	guiRenderTexture_->Create(width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		device, srvManager_.get());
+		device, srvDescriptor_.get());
 #endif // _DEBUG
 
 	// debugSceneRenderTexture作成
 #ifdef _DEBUG
 	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
 	debugSceneRenderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
-		device, rtvManager_.get(), srvManager_.get());
+		device, rtvDescriptor_.get(), srvDescriptor_.get());
 #endif // _DEBUG
 
 	// shadowMap作成
 	shadowMap_ = std::make_unique<ShadowMap>();
 	shadowMap_->Create(shadowMapWidth_, shadowMapHeight_,
-		dsvManager_.get(), srvManager_.get());
+		dsvDescriptor_.get(), srvDescriptor_.get());
 
 	// postProcessSystem初期化
-	postProcessManager_ = std::make_unique<PostProcessManager>();
-	postProcessManager_->Init(device, dxShaderComplier_.get(),
-		srvManager_.get(), width, height);
+	postProcessSystem_ = std::make_unique<PostProcessSystem>();
+	postProcessSystem_->Init(device, dxShaderComplier_.get(),
+		srvDescriptor_.get(), width, height);
 }
 
 void GraphicsCore::InitRenderer(Asset* asset) {
@@ -165,11 +169,11 @@ void GraphicsCore::InitRenderer(Asset* asset) {
 
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();
-	meshRenderer_->Init(dxDevice_->Get(), shadowMap_.get(), dxShaderComplier_.get(), srvManager_.get());
+	meshRenderer_->Init(dxDevice_->Get(), shadowMap_.get(), dxShaderComplier_.get(), srvDescriptor_.get());
 
 	// sprite描画初期化
 	spriteRenderer_ = std::make_unique<SpriteRenderer>();
-	spriteRenderer_->Init(dxDevice_->Get(), srvManager_.get(), dxShaderComplier_.get());
+	spriteRenderer_->Init(dxDevice_->Get(), srvDescriptor_.get(), dxShaderComplier_.get());
 }
 
 void GraphicsCore::Finalize(HWND hwnd) {
@@ -183,17 +187,17 @@ void GraphicsCore::Finalize(HWND hwnd) {
 
 	dxDevice_.reset();
 	dxCommand_.reset();
-	rtvManager_.reset();
+	rtvDescriptor_.reset();
 	dxSwapChain_.reset();
-	dsvManager_.reset();
-	srvManager_.reset();
+	dsvDescriptor_.reset();
+	srvDescriptor_.reset();
 	dxShaderComplier_.reset();
 	renderTexture_.reset();
 #ifdef _DEBUG
 	debugSceneRenderTexture_.reset();
 #endif // _DEBUG
 	shadowMap_.reset();
-	postProcessManager_.reset();
+	postProcessSystem_.reset();
 	meshRenderer_.reset();
 	spriteRenderer_.reset();
 }
@@ -258,11 +262,11 @@ void GraphicsCore::RenderZPass() {
 void GraphicsCore::RenderOffscreenTexture() {
 
 	// srvDescriptorHeap設定
-	dxCommand_->SetDescriptorHeaps({ srvManager_->GetDescriptorHeap() });
+	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
 
 	dxCommand_->SetRenderTargets(renderTexture_->GetRenderTarget(),
-		dsvManager_->GetFrameCPUHandle());
-	dxCommand_->ClearDepthStencilView(dsvManager_->GetFrameCPUHandle());
+		dsvDescriptor_->GetFrameCPUHandle());
+	dxCommand_->ClearDepthStencilView(dsvDescriptor_->GetFrameCPUHandle());
 	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
 
 	// 描画処理
@@ -273,14 +277,14 @@ void GraphicsCore::RenderOffscreenTexture() {
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
 	// postProcess処理実行
-	postProcessManager_->Execute(renderTexture_.get(), dxCommand_.get());
+	postProcessSystem_->Execute(renderTexture_.get(), dxCommand_.get());
 }
 
 void GraphicsCore::RenderDebugSceneRenderTexture() {
 
 	dxCommand_->SetRenderTargets(debugSceneRenderTexture_->GetRenderTarget(),
-		dsvManager_->GetFrameCPUHandle());
-	dxCommand_->ClearDepthStencilView(dsvManager_->GetFrameCPUHandle());
+		dsvDescriptor_->GetFrameCPUHandle());
+	dxCommand_->ClearDepthStencilView(dsvDescriptor_->GetFrameCPUHandle());
 	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
 
 	// 描画処理
@@ -297,11 +301,11 @@ void GraphicsCore::RenderFrameBuffer() {
 	dxCommand_->TransitionBarriers({ dxSwapChain_->GetCurrentResource() },
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	dxCommand_->SetRenderTargets(dxSwapChain_->GetRenderTarget(),
-		dsvManager_->GetFrameCPUHandle());
+		dsvDescriptor_->GetFrameCPUHandle());
 	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
 
 	// frameBufferへ結果を描画
-	postProcessManager_->RenderFrameBuffer(dxCommand_.get());
+	postProcessSystem_->RenderFrameBuffer(dxCommand_.get());
 
 	// sprite描画、postPrecessを適用しない
 	spriteRenderer_->RenderIrrelevant(gpuObjectSystem_.get(),
@@ -361,7 +365,7 @@ void GraphicsCore::EndRenderFrame() {
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 
 	// CSへの書き込み状態へ遷移
-	postProcessManager_->ToWrite(dxCommand_.get());
+	postProcessSystem_->ToWrite(dxCommand_.get());
 
 	// ComputeCommandを非同期で実行
 	dxCommand_->StartComputeCommands();

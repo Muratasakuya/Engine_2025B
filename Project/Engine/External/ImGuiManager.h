@@ -3,30 +3,33 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Lib/ComPtr.h>
 
+// windows
+#include <Windows.h>
 // directX
 #include <d3d12.h>
 // c++
-#include <vector>
+#include <cstdint>
 #include <string>
-// json
-#include <Externals/nlohmann/json.hpp>
-// using
-using Json = nlohmann::json;
 
 //============================================================================
-//	DxRootSignature class
+//	ImGuiManager class
 //============================================================================
-class DxRootSignature {
+class ImGuiManager {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	DxRootSignature() = default;
-	~DxRootSignature() = default;
+	ImGuiManager() = default;
+	~ImGuiManager() = default;
 
-	void Create(const Json& json, ID3D12Device* device, class SRVDescriptor* srvDescriptor,
-		ComPtr<ID3D12RootSignature>& rootSignature);
+	void Init(HWND hwnd, UINT bufferCount, ID3D12Device* device, class SRVDescriptor* srvDescriptor);
+
+	void Begin();
+	void End();
+
+	void Draw(ID3D12GraphicsCommandList* commandList);
+
+	void Finalize();
 };

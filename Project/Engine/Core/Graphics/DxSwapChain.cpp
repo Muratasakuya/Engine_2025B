@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/DxDevice.h>
-#include <Engine/Core/Graphics/Managers/RTVManager.h>
+#include <Engine/Core/Graphics/Descriptors/RTVDescriptor.h>
 #include <Engine/Core/Window/WinApp.h>
 
 //============================================================================
@@ -12,7 +12,7 @@
 //============================================================================
 
 void DxSwapChain::Create(uint32_t width, uint32_t height, Color clearColor, WinApp* winApp,
-	IDXGIFactory7* factory, ID3D12CommandQueue* queue, RTVManager* rtvManager) {
+	IDXGIFactory7* factory, ID3D12CommandQueue* queue, RTVDescriptor* rtvDescriptor) {
 
 	// renderTargetの設定
 	renderTarget_.width = width;
@@ -45,7 +45,7 @@ void DxSwapChain::Create(uint32_t width, uint32_t height, Color clearColor, WinA
 		resources_[index]->SetName((L"backBufferResource" + std::to_wstring(index)).c_str());
 
 		// RTV作成
-		rtvManager->Create(rtvHandles_[index], resources_[index].Get(), rtvDesc);
+		rtvDescriptor->Create(rtvHandles_[index], resources_[index].Get(), rtvDesc);
 	}
 }
 

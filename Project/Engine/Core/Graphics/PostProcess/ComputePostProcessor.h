@@ -24,7 +24,7 @@ public:
 	ComputePostProcessor() = default;
 	~ComputePostProcessor() = default;
 
-	void Init(ID3D12Device* device, class SRVManager* srvManager,
+	void Init(ID3D12Device* device, class SRVDescriptor* srvDescriptor,
 		uint32_t width, uint32_t height);
 
 	//--------- accessor -----------------------------------------------------

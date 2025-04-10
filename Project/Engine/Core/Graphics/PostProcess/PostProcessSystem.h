@@ -6,7 +6,7 @@
 #include <Engine/Core/Graphics/PostProcess/PostProcessType.h>
 #include <Engine/Core/Graphics/PostProcess/BloomProcessor.h>
 #include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBuffer.h>
-#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessPipelineManager.h>
+#include <Engine/Core/Graphics/PostProcess/PostProcessPipeline.h>
 #include <Engine/Editor/Base/IGameEditor.h>
 #include <Lib/MathUtils/Algorithm.h>
 
@@ -14,23 +14,23 @@
 #include <vector>
 #include <unordered_map>
 // front
-class SRVManager;
+class SRVDescriptor;
 
 //============================================================================
-//	PostProcessManager class
+//	PostProcessSystem class
 //============================================================================
-class PostProcessManager :
+class PostProcessSystem :
 	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PostProcessManager() : IGameEditor("postProcess") {};
-	~PostProcessManager() = default;
+	PostProcessSystem() : IGameEditor("postProcess") {};
+	~PostProcessSystem() = default;
 
 	void Init(ID3D12Device8* device, class DxShaderCompiler* shaderComplier,
-		SRVManager* srvManager, uint32_t width, uint32_t height);
+		SRVDescriptor* srvDescriptor, uint32_t width, uint32_t height);
 
 	// postProcess作成
 	void Create(const std::vector<PostProcess>& processes);
@@ -68,12 +68,12 @@ private:
 	uint32_t width_;
 	uint32_t height_;
 	ID3D12Device* device_;
-	SRVManager* srvManager_;
+	SRVDescriptor* srvDescriptor_;
 
 	//--------- variables ----------------------------------------------------
 
 	// pipeline
-	std::unique_ptr<PostProcessPipelineManager> pipelineManager_;
+	std::unique_ptr<PostProcessPipeline> pipeline_;
 	std::unique_ptr<PipelineState> offscreenPipeline_;
 
 	std::vector<PostProcess> initProcesses_;   // 初期化済み
@@ -100,11 +100,11 @@ private:
 };
 
 //============================================================================
-//	PostProcessManager templateMethods
+//	PostProcessSystem templateMethods
 //============================================================================
 
 template<typename T>
-inline void PostProcessManager::SetParameter(const T& parameter, PostProcess process) {
+inline void PostProcessSystem::SetParameter(const T& parameter, PostProcess process) {
 
 	PostProcessType type = GetPostProcessType(process);
 

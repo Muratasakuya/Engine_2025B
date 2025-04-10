@@ -11,32 +11,35 @@
 #include <cstdint>
 
 //============================================================================
-//	SRVManager class
+//	structure
 //============================================================================
-class SRVManager {
+
+// descriptorの種類
+struct DescriptorType {
+
+	D3D12_DESCRIPTOR_HEAP_TYPE heapType;
+	D3D12_DESCRIPTOR_HEAP_FLAGS heapFlags;
+};
+
+//============================================================================
+//	BaseDescriptor class
+//============================================================================
+class BaseDescriptor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	SRVManager() = default;
-	~SRVManager() = default;
+	BaseDescriptor(uint32_t maxDescriptorCount);
+	virtual ~BaseDescriptor() = default;
 
-	void Init(ID3D12Device* device);
-
-	void CreateSRV(uint32_t& srvIndex, ID3D12Resource* resource,
-		const D3D12_SHADER_RESOURCE_VIEW_DESC& desc);
-
-	void CreateUAV(uint32_t& uavIndex, ID3D12Resource* resource,
-		const D3D12_UNORDERED_ACCESS_VIEW_DESC& desc);
-
-	void IncrementIndex();
+	void Init(ID3D12Device* device, const DescriptorType& descriptorType);
 
 	//--------- accessor -----------------------------------------------------
 
-	uint32_t GetMaxSRVCount() const { return kMaxSRVCount_; }
+	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32_t index) const;
 
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index);
+	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index) const;
 
 	ID3D12DescriptorHeap* GetDescriptorHeap() const { return descriptorHeap_.Get(); }
 private:
@@ -46,18 +49,22 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	uint32_t descriptorSize_;
+protected:
+	//========================================================================
+	//	protected Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
 	ID3D12Device* device_;
 
-	const uint32_t kMaxSRVCount_ = 512;
+	uint32_t maxDescriptorCount_;
 	uint32_t useIndex_;
 
 	ComPtr<ID3D12DescriptorHeap> descriptorHeap_;
 
-	uint32_t descriptorSize_;
-
 	//--------- functions ----------------------------------------------------
-
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32_t index);
 
 	uint32_t Allocate();
 };

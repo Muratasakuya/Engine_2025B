@@ -21,7 +21,7 @@ TitleScene::~TitleScene() {
 void TitleScene::Init(
 	[[maybe_unused]] Asset* asset,
 	[[maybe_unused]] CameraManager* cameraManager,
-	[[maybe_unused]] PostProcessManager* postProcessManager
+	[[maybe_unused]] PostProcessSystem* postProcessSystem
 ) {
 
 	//========================================================================
