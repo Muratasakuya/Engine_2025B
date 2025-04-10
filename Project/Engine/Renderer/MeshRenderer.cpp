@@ -46,6 +46,7 @@ void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
 void MeshRenderer::Update(CameraManager* cameraManager) {
 
 	// buffer更新
+	// 分けるべき
 	viewProjectionBuffer_.TransferData(cameraManager->GetCamera()->GetViewProjectionMatrix());
 	lightViewProjectionBuffer_.TransferData(cameraManager->GetLightViewCamera()->GetViewProjectionMatrix());
 	cameraPosBuffer_.TransferData(cameraManager->GetCamera()->GetTransform().translation);

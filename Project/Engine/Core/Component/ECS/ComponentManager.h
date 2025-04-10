@@ -47,7 +47,7 @@ public:
 
 	void Update();
 
-	// componentManagerの追加
+	// componentStoreの追加
 	template <typename T>
 	void RegisterComponentStore(IComponentStore<T>* manager);
 
