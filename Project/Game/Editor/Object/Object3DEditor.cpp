@@ -158,10 +158,6 @@ void Object3DEditor::AddObject() {
 				addModelName_, uniqueObjectName, addGroupName_.name);
 			// 追加
 			groupedSelectObjects_[addGroupName_.name][uniqueObjectName] = id;
-
-			// 追加されたタイミングで入力をリセット
-			addObjectName_.Reset();
-			addGroupName_.Reset();
 		}
 	}
 }

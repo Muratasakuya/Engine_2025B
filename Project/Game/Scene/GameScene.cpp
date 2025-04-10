@@ -27,6 +27,7 @@ void GameScene::Init(
 	asset->LoadModel("teapot");
 	asset->LoadModel("multiMaterial");
 	asset->LoadModel("suzanne");
+	asset->LoadModel("walk");
 
 	//========================================================================
 	//	postProcess
