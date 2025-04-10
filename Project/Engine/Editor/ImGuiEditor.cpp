@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Input/Input.h>
 
 // imgui表示
 #include <Engine/Editor/ImGuiInspector.h>
@@ -26,9 +27,31 @@ void ImGuiEditor::Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle
 
 	// サイズの変更、移動不可
 	windowFlag_ = ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
+
+	// 初期状態は表示
+	displayEnable_ = true;
 }
 
 void ImGuiEditor::Display() {
+
+	// imguiの表示切り替え
+	// F11で行う
+	if (displayEnable_) {
+		if (Input::GetInstance()->TriggerKey(DIK_F11)) {
+
+			displayEnable_ = false;
+		}
+	} else {
+
+		if (Input::GetInstance()->TriggerKey(DIK_F11)) {
+
+			displayEnable_ = true;
+		}
+	}
+
+	if (!displayEnable_) {
+		return;
+	}
 
 	// ドッキング設定
 	ImGui::DockSpaceOverViewport
