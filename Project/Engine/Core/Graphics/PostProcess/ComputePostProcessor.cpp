@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 
 //============================================================================
 //	ComputePostProcessor classMethods
@@ -37,7 +37,7 @@ void ComputePostProcessor::CreateTextureResource(
 	assert(SUCCEEDED(hr));
 }
 
-void ComputePostProcessor::Init(ID3D12Device* device, SRVManager* srvManager,
+void ComputePostProcessor::Init(ID3D12Device* device, SRVDescriptor* srvDescriptor,
 	uint32_t width, uint32_t height) {
 
 	textureSize_.x = static_cast<float>(width);
@@ -53,8 +53,8 @@ void ComputePostProcessor::Init(ID3D12Device* device, SRVManager* srvManager,
 	uavDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
 	uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
 	uavDesc.Texture2D.MipSlice = 0;
-	srvManager->CreateUAV(uavIndex, outputTextureResource_.Get(), uavDesc);
-	uavGPUHandle_ = srvManager->GetGPUHandle(uavIndex);
+	srvDescriptor->CreateUAV(uavIndex, outputTextureResource_.Get(), uavDesc);
+	uavGPUHandle_ = srvDescriptor->GetGPUHandle(uavIndex);
 
 	// SRV作成
 	uint32_t srvIndex = 0;
@@ -64,8 +64,8 @@ void ComputePostProcessor::Init(ID3D12Device* device, SRVManager* srvManager,
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
-	srvManager->CreateSRV(srvIndex, outputTextureResource_.Get(), srvDesc);
-	srvGPUHandle_ = srvManager->GetGPUHandle(srvIndex);
+	srvDescriptor->CreateSRV(srvIndex, outputTextureResource_.Get(), srvDesc);
+	srvGPUHandle_ = srvDescriptor->GetGPUHandle(srvIndex);
 }
 
 void ComputePostProcessor::SetProcessTexureGPUHandle(const D3D12_GPU_DESCRIPTOR_HANDLE& gpuHandle) {

@@ -34,6 +34,10 @@ public:
 	static Json Load(const std::string& loadDirectoryFilePath);
 	static bool LoadAssert(const std::string& loadDirectoryFilePath);
 
+	// value
+	template <typename T>
+	static T GetValue(const Json& data, const std::string& key);
+
 	// object
 	template <typename T>
 	static Json FromObject(const T& obj);
@@ -68,6 +72,18 @@ private:
 //============================================================================*/
 //	JsonAdapter templateMethods
 //============================================================================*/
+
+template<typename T>
+inline T JsonAdapter::GetValue(const Json& data, const std::string& key) {
+
+	if (data.contains(key)) {
+
+		return data.at(key).get<T>();
+	}
+
+	// 存在しない場合
+	return T{};
+}
 
 template<typename T>
 inline Json JsonAdapter::FromObject(const T& obj) {

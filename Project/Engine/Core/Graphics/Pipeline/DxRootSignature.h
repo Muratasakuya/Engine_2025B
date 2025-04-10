@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComPtr.h>
+#include <Engine/Core/Graphics/Lib/ComPtr.h>
 
 // directX
 #include <d3d12.h>
@@ -27,6 +27,6 @@ public:
 	DxRootSignature() = default;
 	~DxRootSignature() = default;
 
-	void Create(const Json& json, ID3D12Device* device, class SRVManager* srvManager,
+	void Create(const Json& json, ID3D12Device* device, class SRVDescriptor* srvDescriptor,
 		ComPtr<ID3D12RootSignature>& rootSignature);
 };

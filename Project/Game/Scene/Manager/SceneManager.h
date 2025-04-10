@@ -5,6 +5,7 @@
 //============================================================================
 #include <Game/Scene/Methods/IScene.h>
 #include <Game/Scene/Methods/SceneFactory.h>
+#include <Game/Scene/Methods/SceneTransition.h>
 
 // c++
 #include <memory>
@@ -19,7 +20,7 @@ public:
 	//========================================================================
 
 	SceneManager(Scene scene, Asset* asset, CameraManager* cameraManager,
-		PostProcessManager* postProcessManager);
+		PostProcessSystem* postProcessSystem);
 	~SceneManager() = default;
 
 	void Update();
@@ -28,7 +29,7 @@ public:
 
 	void InitNextScene();
 
-	void SetNextScene(Scene scene);
+	void SetNextScene(Scene scene, std::unique_ptr<ITransition> transition);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -42,11 +43,13 @@ private:
 
 	Asset* asset_;
 	CameraManager* cameraManager_;
-	PostProcessManager* postProcessManager_;
+	PostProcessSystem* postProcessSystem_;
 
 	std::unique_ptr<IScene> currentScene_;
 
 	std::unique_ptr<SceneFactory> factory_;
+
+	std::unique_ptr<SceneTransition> sceneTransition_;
 
 	Scene nextScene_;
 	bool isSceneSwitching_;

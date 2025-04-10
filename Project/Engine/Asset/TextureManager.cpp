@@ -6,7 +6,7 @@
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Core/Graphics/DxCommand.h>
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Asset/Filesystem.h>
 
 //============================================================================
@@ -14,7 +14,7 @@
 //============================================================================
 
 void TextureManager::Init(ID3D12Device* device, DxCommand* dxCommand,
-	SRVManager* srvManager) {
+	SRVDescriptor* srvDescriptor) {
 
 	device_ = nullptr;
 	device_ = device;
@@ -22,8 +22,8 @@ void TextureManager::Init(ID3D12Device* device, DxCommand* dxCommand,
 	dxCommand_ = nullptr;
 	dxCommand_ = dxCommand;
 
-	srvManager_ = nullptr;
-	srvManager_ = srvManager;
+	srvDescriptor_ = nullptr;
+	srvDescriptor_ = srvDescriptor;
 
 	baseDirectoryPath_ = "./Assets/Textures/";
 	isCacheValid_ = false;
@@ -73,8 +73,8 @@ void TextureManager::Load(const std::string& textureName) {
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = static_cast<UINT>(texture.metadata.mipLevels);
-	srvManager_->CreateSRV(texture.srvIndex, texture.resource.Get(), srvDesc);
-	texture.gpuHandle = srvManager_->GetGPUHandle(texture.srvIndex);
+	srvDescriptor_->CreateSRV(texture.srvIndex, texture.resource.Get(), srvDesc);
+	texture.gpuHandle = srvDescriptor_->GetGPUHandle(texture.srvIndex);
 
 	std::wstring resourceName = std::wstring(identifier.begin(), identifier.end());
 	texture.resource->SetName(resourceName.c_str());

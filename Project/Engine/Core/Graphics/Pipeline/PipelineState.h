@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComPtr.h>
-#include <Engine/Core/Lib/DxStructures.h>
+#include <Engine/Core/Graphics/Lib/ComPtr.h>
+#include <Engine/Core/Graphics/Lib/DxStructures.h>
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 
 // directX
@@ -34,7 +34,7 @@ public:
 	virtual ~PipelineState() = default;
 
 	void Create(const std::string& fileName, ID3D12Device8* device,
-		class SRVManager* srvManager, DxShaderCompiler* shaderCompiler);
+		class SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler);
 
 	//--------- accessor -----------------------------------------------------
 

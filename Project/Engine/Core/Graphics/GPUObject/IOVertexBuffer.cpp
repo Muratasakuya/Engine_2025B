@@ -3,14 +3,14 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 
 //============================================================================
 //	IOVertexBuffer classMethods
 //============================================================================
 
 void IOVertexBuffer::Init(UINT vertexNum, ID3D12Resource* vertexResource,
-	ID3D12Device* device, SRVManager* srvManager) {
+	ID3D12Device* device, SRVDescriptor* srvDescriptor) {
 
 	// inputVertexData
 	// SRVDesc設定
@@ -23,8 +23,8 @@ void IOVertexBuffer::Init(UINT vertexNum, ID3D12Resource* vertexResource,
 	srvDesc.Buffer.NumElements = vertexNum;
 	srvDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(ModelVertexData));
 	// SRV作成
-	srvManager->CreateSRV(inputVertex_.srvIndex, vertexResource, srvDesc);
-	inputVertex_.srvHandle.second = srvManager->GetGPUHandle(inputVertex_.srvIndex);
+	srvDescriptor->CreateSRV(inputVertex_.srvIndex, vertexResource, srvDesc);
+	inputVertex_.srvHandle.second = srvDescriptor->GetGPUHandle(inputVertex_.srvIndex);
 
 	// outputVertexData
 	DxConstBuffer::CreateUavVertexBuffer(device, vertexNum);
@@ -38,6 +38,6 @@ void IOVertexBuffer::Init(UINT vertexNum, ID3D12Resource* vertexResource,
 	uavDesc.Buffer.NumElements = vertexNum;
 	uavDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(ModelVertexData));
 	// UAV作成
-	srvManager->CreateUAV(outputVertex_.uavIndex, this->GetResource(), uavDesc);
-	outputVertex_.uavHandle.second = srvManager->GetGPUHandle(outputVertex_.uavIndex);
+	srvDescriptor->CreateUAV(outputVertex_.uavIndex, this->GetResource(), uavDesc);
+	outputVertex_.uavHandle.second = srvDescriptor->GetGPUHandle(outputVertex_.uavIndex);
 }

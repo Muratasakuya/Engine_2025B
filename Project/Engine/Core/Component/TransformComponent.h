@@ -9,17 +9,6 @@
 #include <Lib/MathUtils/Quaternion.h>
 
 //============================================================================
-//	UVTransform
-//============================================================================
-
-struct UVTransform {
-
-	Vector3 scale;
-	Vector3 rotate;
-	Vector3 translate;
-};
-
-//============================================================================
 //	Transform3DComponent class
 //============================================================================
 class Transform3DComponent {
@@ -97,6 +86,8 @@ public:
 	void UpdateMatrix();
 
 	void ImGui(float itemSize);
+
+	void SetCenterPos();
 
 	//--------- variables ----------------------------------------------------
 

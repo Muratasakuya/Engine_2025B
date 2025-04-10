@@ -14,6 +14,11 @@
 void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 	UINT instanceCount, uint32_t meshIndex, Mesh* mesh) {
 
+	// 処理するinstanceがない場合は早期リターン
+	if (instanceCount == 0) {
+		return;
+	}
+
 	// buffers
 	commandList->SetGraphicsRootShaderResourceView(0,
 		mesh->GetVertexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());

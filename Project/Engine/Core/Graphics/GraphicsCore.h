@@ -8,20 +8,19 @@
 #include <Engine/Core/Graphics/DxSwapChain.h>
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Core/Graphics/PostProcess/Manager/PostProcessManager.h>
+#include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
+#include <Engine/Core/Graphics/Descriptors/RTVDescriptor.h>
+#include <Engine/Core/Graphics/Descriptors/DSVDescriptor.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
+#include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
+#include <Engine/External/ImGuiManager.h>
 
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>
 #include <Engine/Renderer/SpriteRenderer.h>
 
-// managers
-#include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
-#include <Engine/Core/Graphics/Managers/RTVManager.h>
-#include <Engine/Core/Graphics/Managers/DSVManager.h>
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
-#include <Engine/Core/Graphics/Managers/ImGuiManager.h>
 // c++
 #include <memory>
 
@@ -55,13 +54,13 @@ public:
 
 	DxCommand* GetDxCommand() const { return dxCommand_.get(); }
 
-	SRVManager* GetSRVManager() const { return srvManager_.get(); }
+	SRVDescriptor* GetSRVDescriptor() const { return srvDescriptor_.get(); }
 
 	DxShaderCompiler* GetDxShaderCompiler() const { return dxShaderComplier_.get(); }
 
 	GPUObjectSystem* GetGPUObjectSystem() const { return gpuObjectSystem_.get(); }
 
-	PostProcessManager* GetPostProcessManager() const { return postProcessManager_.get(); }
+	PostProcessSystem* GetPostProcessSystem() const { return postProcessSystem_.get(); }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return debugSceneRenderTexture_->GetGPUHandle(); }
@@ -98,14 +97,14 @@ private:
 
 	std::unique_ptr<ShadowMap> shadowMap_;
 
-	std::unique_ptr<PostProcessManager> postProcessManager_;
+	std::unique_ptr<PostProcessSystem> postProcessSystem_;
 
 	std::unique_ptr<MeshRenderer> meshRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;
 
-	std::unique_ptr<RTVManager> rtvManager_;
-	std::unique_ptr<DSVManager> dsvManager_;
-	std::unique_ptr<SRVManager> srvManager_;
+	std::unique_ptr<RTVDescriptor> rtvDescriptor_;
+	std::unique_ptr<DSVDescriptor> dsvDescriptor_;
+	std::unique_ptr<SRVDescriptor> srvDescriptor_;
 
 	std::unique_ptr<ImGuiManager> imguiManager_;
 

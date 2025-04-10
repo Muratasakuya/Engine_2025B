@@ -3,7 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/DebugScene/DebugScene.h>
+#include <Game/Scene/TitleScene.h>
+#include <Game/Scene/GameScene.h>
 
 //============================================================================
 //	SceneFactory classMethods
@@ -12,17 +13,13 @@
 std::unique_ptr<IScene> SceneFactory::Create(Scene scene) {
 
 	switch (scene) {
-	case Scene::Debug:
-
-		return std::make_unique<DebugScene>();
 	case Scene::Title:
 
-		return nullptr;
+		return std::make_unique<TitleScene>();
 	case Scene::Game:
 
-		return nullptr;
-	default:
-
-		return nullptr;
+		return std::make_unique<GameScene>();
 	}
+
+	return nullptr;
 }

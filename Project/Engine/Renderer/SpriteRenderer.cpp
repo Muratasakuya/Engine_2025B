@@ -10,19 +10,19 @@
 //	SpriteRenderer classMethods
 //============================================================================
 
-void SpriteRenderer::Init(ID3D12Device8* device, SRVManager* srvManager,
+void SpriteRenderer::Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 	DxShaderCompiler* shaderCompiler) {
 
 	// pipeline作成
 	pipelines_[static_cast<uint32_t>(RenderMode::IrrelevantPostProcess)] =
 		std::make_unique<PipelineState>();
 	pipelines_[static_cast<uint32_t>(RenderMode::IrrelevantPostProcess)]->Create(
-		"IrrelevantPostProcessObject2D.json", device, srvManager, shaderCompiler);
+		"IrrelevantPostProcessObject2D.json", device, srvDescriptor, shaderCompiler);
 
 	pipelines_[static_cast<uint32_t>(RenderMode::ApplyPostProcess)] =
 		std::make_unique<PipelineState>();
 	pipelines_[static_cast<uint32_t>(RenderMode::ApplyPostProcess)]->Create(
-		"ApplyPostProcessObject2D.json", device, srvManager, shaderCompiler);
+		"ApplyPostProcessObject2D.json", device, srvDescriptor, shaderCompiler);
 
 	// buffer作成
 	viewProjectionBuffer_.CreateConstBuffer(device);
