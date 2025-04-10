@@ -10,14 +10,12 @@
 #include <Engine/Core/Graphics/Pipeline/DxDepthRaster.h>
 #include <Engine/Core/Graphics/Pipeline/DxBlendState.h>
 
-class SRVManager;
-
 //============================================================================
 //	PipelineState classMethods
 //============================================================================
 
 void PipelineState::Create(const std::string& fileName, ID3D12Device8* device,
-	SRVManager* srvManager, DxShaderCompiler* shaderCompiler) {
+	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler) {
 
 	// pipelineの種類
 	PipelineType pipelineType{};
@@ -47,7 +45,7 @@ void PipelineState::Create(const std::string& fileName, ID3D12Device8* device,
 
 	// rootSignatureの作成
 	DxRootSignature dxRootSignature;
-	dxRootSignature.Create(json, device, srvManager, rootSignature_);
+	dxRootSignature.Create(json, device, srvDescriptor, rootSignature_);
 
 	// pipelineごとの分岐処理
 	// pipeline作成

@@ -8,7 +8,7 @@
 #include <Lib/MathUtils/Vector4.h>
 #include <Lib/MathUtils/Matrix4x4.h>
 #include <Lib/MathUtils/Quaternion.h>
-#include <Engine/Core/Lib/ComPtr.h>
+#include <Engine/Core/Graphics/Lib/ComPtr.h>
 
 // assimp
 #include <assimp/scene.h>

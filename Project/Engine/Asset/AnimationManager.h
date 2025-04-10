@@ -12,7 +12,7 @@
 // c++
 #include <unordered_map>
 // front
-class SRVManager;
+class SRVDescriptor;
 class ModelLoader;
 
 //============================================================================
@@ -27,7 +27,7 @@ public:
 	AnimationManager() = default;
 	~AnimationManager() = default;
 
-	void Init(ID3D12Device* device, SRVManager* srvManager, ModelLoader* modelLoader);
+	void Init(ID3D12Device* device, SRVDescriptor* srvDescriptor, ModelLoader* modelLoader);
 
 	void Load(const std::string& animationName, const std::string& modelName);
 
@@ -55,7 +55,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	ID3D12Device* device_;
-	SRVManager* srvManager_;
+	SRVDescriptor* srvDescriptor_;
 	ModelLoader* modelLoader_;
 
 	std::string baseDirectoryPath_;

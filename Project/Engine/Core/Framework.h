@@ -10,10 +10,11 @@
 #include <Game/Scene/Manager/SceneManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 
-// component
-#include <Engine/Core/Component/Manager/TransformManager.h>
-#include <Engine/Core/Component/Manager/MaterialManager.h>
-#include <Engine/Core/Component/Manager/SpriteComponentManager.h>
+// stores
+#include <Engine/Core/Component/Store/TransformStore.h>
+#include <Engine/Core/Component/Store/MaterialStore.h>
+#include <Engine/Core/Component/Store/AnimationStore.h>
+#include <Engine/Core/Component/Store/SpriteStore.h>
 
 // directX
 #include <dxgidebug.h>
@@ -53,16 +54,16 @@ private:
 
 	std::unique_ptr<CameraManager> cameraManager_;
 
-	// componentManagers
+	// componentStores
 
 	// 3D
-	std::unique_ptr<Transform3DManager> transform3DComponentManager_;
-	std::unique_ptr<MaterialManager> materialManager_;
+	std::unique_ptr<Transform3DStore> transform3DStore_;
+	std::unique_ptr<MaterialStore> materialStore_;
 
 	// 2D
-	std::unique_ptr<Transform2DManager> transform2DComponentManager_;
-	std::unique_ptr<SpriteMaterialManager> spriteMaterialManager_;
-	std::unique_ptr<SpriteComponentManager> spriteComponentManager_;
+	std::unique_ptr<Transform2DStore> transform2DStore_;
+	std::unique_ptr<SpriteMaterialStore> spriteMaterialStore_;
+	std::unique_ptr<SpriteStore> spriteStore_;
 
 	//--------- functions ----------------------------------------------------
 

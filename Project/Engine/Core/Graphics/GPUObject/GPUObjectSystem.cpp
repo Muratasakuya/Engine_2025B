@@ -5,19 +5,19 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Manager/ComponentManager.h>
+#include <Engine/Core/Component/ECS/ComponentManager.h>
 
 //============================================================================
 //	GPUObjectSystem classMethods
 //============================================================================
 
-void GPUObjectSystem::Init(ID3D12Device* device, SRVManager* srvManager, Asset* asset) {
+void GPUObjectSystem::Init(ID3D12Device* device, Asset* asset) {
 
 	meshRegistry_ = std::make_unique<MeshRegistry>();
 	meshRegistry_->Init(device, asset);
 
-	instancedMesh_ = std::make_unique<InstancedMesh>();
-	instancedMesh_->Init(device, srvManager);
+	instancedMeshBuffer_ = std::make_unique<InstancedMeshBuffer>();
+	instancedMeshBuffer_->SetDevice(device);
 }
 
 void GPUObjectSystem::CreateMesh(const std::string& modelName) {
@@ -29,51 +29,44 @@ void GPUObjectSystem::CreateMesh(const std::string& modelName) {
 	const uint32_t kMaxInstanceNum = 4096;
 
 	// instancingデータ作成
-	instancedMesh_->Create(meshRegistry_->GetMeshes().at(modelName).get(),
+	instancedMeshBuffer_->Create(meshRegistry_->GetMeshes().at(modelName).get(),
 		modelName, kMaxInstanceNum);
 }
 
-void GPUObjectSystem::CreateObject2D(EntityID id, SpriteComponent* sprite, ID3D12Device* device) {
+void GPUObjectSystem::CreateObject2D(uint32_t entityId, SpriteComponent* sprite, ID3D12Device* device) {
 
 	size_t index = object2DBuffers_.size();
 
-	object2DBufferToIndex_[id] = index;
-	indexToObject2DBuffer_.emplace_back(id);
-
-	object2DBuffers_.resize(std::max(static_cast<EntityID>(object2DBuffers_.size()), id + 1));
-
+	// buffer追加
+	object2DBuffers_.emplace_back();
 	// buffer作成
-	object2DBuffers_[id].matrix.CreateConstBuffer(device);
-	object2DBuffers_[id].material.CreateConstBuffer(device);
-
+	object2DBuffers_.back().matrix.CreateConstBuffer(device);
+	object2DBuffers_.back().material.CreateConstBuffer(device);
 	// spriteの情報を取得
-	object2DBuffers_[id].sprite.sprite = sprite;
+	object2DBuffers_.back().sprite.sprite = sprite;
+
+	// index設定
+	object2DBufferToIndex_[entityId] = index;
+	indexToObject2DBuffer_.push_back(entityId);
 }
 
-void GPUObjectSystem::RemoveObject2D(EntityID id) {
+void GPUObjectSystem::RemoveObject2D(uint32_t entityId) {
 
-	if (!Algorithm::Find(object2DBufferToIndex_, id)) {
+	// 見つかなければ削除しない
+	if (!Algorithm::Find(object2DBufferToIndex_, entityId)) {
 		return;
 	}
 
-	size_t index = object2DBufferToIndex_.at(id);
+	// indexを末尾と交換して削除
+	size_t index = object2DBufferToIndex_.at(entityId);
 	size_t lastIndex = object2DBuffers_.size() - 1;
 
-	if (index != lastIndex) {
+	// bufferIndex削除
+	SwapToPopbackIndex(entityId);
 
-		// 末尾と交換
-		std::swap(object2DBuffers_[index], object2DBuffers_[lastIndex]);
-
-		// 交換されたentityIdを更新
-		EntityID movedEntityId = indexToObject2DBuffer_[lastIndex];
-		object2DBufferToIndex_[movedEntityId] = index;
-		indexToObject2DBuffer_[index] = movedEntityId;
-	}
-
-	// 末尾を削除
+	// buffer削除
+	std::swap(object2DBuffers_[index], object2DBuffers_[lastIndex]);
 	object2DBuffers_.pop_back();
-	indexToObject2DBuffer_.pop_back();
-	object2DBufferToIndex_.erase(id);
 }
 
 void GPUObjectSystem::Update() {
@@ -85,35 +78,53 @@ void GPUObjectSystem::Update() {
 	UpdateObject2D();
 }
 
+void GPUObjectSystem::SwapToPopbackIndex(uint32_t entityId) {
+
+	size_t index = object2DBufferToIndex_.at(entityId);
+	size_t lastIndex = object2DBuffers_.size() - 1;
+
+	if (index != lastIndex) {
+
+		// 交換されたentityIdを更新
+		uint32_t movedEntityId = indexToObject2DBuffer_[lastIndex];
+		object2DBufferToIndex_[movedEntityId] = index;
+		indexToObject2DBuffer_[index] = movedEntityId;
+	}
+
+	// 末尾を削除
+	indexToObject2DBuffer_.pop_back();
+	object2DBufferToIndex_.erase(entityId);
+}
+
 void GPUObjectSystem::UpdateObject3D() {
 
 	auto componentManager = ComponentManager::GetInstance();
 
-	instancedMesh_->Reset();
+	instancedMeshBuffer_->Reset();
 
 	const auto& entityList = componentManager->GetEntityList(ComponentType::Object3D);
 
 	// entityごとのGPUデータ転送
-	for (EntityID id : entityList) {
+	for (uint32_t id : entityList) {
 
-		std::vector<Material*> materialPtrs = componentManager->GetComponentList<Material>(id);
-		std::vector<Material> materials;
+		std::vector<MaterialComponent*> materialPtrs = componentManager->GetComponentList<MaterialComponent>(id);
+
+		std::vector<MaterialComponent> materials;
 		materials.reserve(materialPtrs.size());
 
-		for (const auto* mat : materialPtrs) {
+		for (const auto* material : materialPtrs) {
 
-			materials.emplace_back(*mat);
+			materials.emplace_back(*material);
 		}
 
 		const Transform3DComponent* transform = componentManager->GetComponent<Transform3DComponent>(id);
-		TransformationMatrix matrix{};
 
 		// bufferに送るデータをセット
-		instancedMesh_->SetComponent(transform->GetInstancingName(),
+		instancedMeshBuffer_->SetUploadData(transform->GetInstancingName(),
 			transform->matrix, materials);
 	}
 
-	instancedMesh_->Update();
+	instancedMeshBuffer_->Update();
 }
 
 void GPUObjectSystem::UpdateObject2D() {
@@ -122,7 +133,7 @@ void GPUObjectSystem::UpdateObject2D() {
 
 	// entityごとのGPUデータ転送
 	for (size_t index = 0; index < indexToObject2DBuffer_.size(); ++index) {
-		EntityID id = indexToObject2DBuffer_[index];
+		uint32_t id = indexToObject2DBuffer_[index];
 
 		object2DBuffers_[index].matrix.TransferData(componentManager->GetComponent<Transform2DComponent>(id)->matrix);
 		object2DBuffers_[index].material.TransferData(*componentManager->GetComponent<SpriteMaterial>(id));

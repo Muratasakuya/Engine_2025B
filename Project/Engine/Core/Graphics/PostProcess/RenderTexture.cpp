@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Managers/RTVManager.h>
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/RTVDescriptor.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 
 //============================================================================
 //	RenderTexture classMethods
@@ -50,7 +50,7 @@ void RenderTexture::CreateTextureResource(ComPtr<ID3D12Resource>& resource,
 }
 
 void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
-	DXGI_FORMAT format, ID3D12Device* device, RTVManager* rtvManager, SRVManager* srvManager) {
+	DXGI_FORMAT format, ID3D12Device* device, RTVDescriptor* rtvDescriptor, SRVDescriptor* srvDescriptor) {
 
 	// renderTargetの設定
 	renderTarget_.width = width;
@@ -65,7 +65,7 @@ void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
 	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 	rtvDesc.Format = format;
 	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	rtvManager->Create(renderTarget_.rtvHandle, resource_.Get(), rtvDesc);
+	rtvDescriptor->Create(renderTarget_.rtvHandle, resource_.Get(), rtvDesc);
 
 	// SRV作成
 	uint32_t srvIndex = 0;
@@ -75,8 +75,8 @@ void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
-	srvManager->CreateSRV(srvIndex, resource_.Get(), srvDesc);
-	gpuHandle_ = srvManager->GetGPUHandle(srvIndex);
+	srvDescriptor->CreateSRV(srvIndex, resource_.Get(), srvDesc);
+	gpuHandle_ = srvDescriptor->GetGPUHandle(srvIndex);
 
 	++textureCount_;
 }
@@ -116,7 +116,7 @@ void GuiRenderTexture::CreateTextureResource(ComPtr<ID3D12Resource>& resource,
 }
 
 void GuiRenderTexture::Create(uint32_t width, uint32_t height,
-	DXGI_FORMAT format, ID3D12Device* device, SRVManager* srvManager) {
+	DXGI_FORMAT format, ID3D12Device* device, SRVDescriptor* srvDescriptor) {
 
 	// texture作成
 	CreateTextureResource(resource_, width, height, format, device);
@@ -129,8 +129,8 @@ void GuiRenderTexture::Create(uint32_t width, uint32_t height,
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
-	srvManager->CreateSRV(srvIndex, resource_.Get(), srvDesc);
-	gpuHandle_ = srvManager->GetGPUHandle(srvIndex);
+	srvDescriptor->CreateSRV(srvIndex, resource_.Get(), srvDesc);
+	gpuHandle_ = srvDescriptor->GetGPUHandle(srvIndex);
 
 	++textureCount_;
 }

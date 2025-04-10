@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Component/Base/IComponent.h>
 
 // c++
 #include <string>
@@ -10,7 +11,7 @@
 class Asset;
 class CameraManager;
 class SceneManager;
-class PostProcessManager;
+class PostProcessSystem;
 
 //============================================================================
 //	Scene
@@ -18,7 +19,6 @@ class PostProcessManager;
 
 enum class Scene {
 
-	Debug,
 	Title,
 	Game
 };
@@ -36,7 +36,7 @@ public:
 	virtual ~IScene() = default;
 
 	virtual void Init(Asset* asset, CameraManager* cameraManager,
-		PostProcessManager* postProcessManager) = 0;
+		PostProcessSystem* postProcessSystem) = 0;
 
 	virtual void Update(SceneManager* sceneManager) = 0;
 protected:
@@ -47,5 +47,5 @@ protected:
 	//--------- variables ----------------------------------------------------
 
 	CameraManager* cameraManager_;
-	PostProcessManager* postProcessManager_;
+	PostProcessSystem* postProcessSystem_;
 };

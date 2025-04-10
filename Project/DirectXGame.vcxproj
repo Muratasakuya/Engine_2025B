@@ -142,27 +142,31 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\ColliderComponent.cpp">
+    <ClCompile Include="Engine\Collision\CollisionBody.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\AnimationComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Store\AnimationStore.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\CollisionManager.cpp">
+    <ClCompile Include="Engine\Collision\CollisionManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\ComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\ECS\ComponentManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\EntityManager.cpp">
+    <ClCompile Include="Engine\Core\Component\ECS\EntityRegistry.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\SpriteComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Store\SpriteStore.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Component\MaterialComponent.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -170,11 +174,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\User\ComponentHelper.cpp">
+    <ClCompile Include="Engine\Core\Component\ComponentHelper.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Mesh\InstancedMesh.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -206,7 +214,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -214,7 +222,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessPipeline.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -230,7 +238,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Editor\TestEditor.cpp">
+    <ClCompile Include="Game\Algorithm\StateTimer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -238,11 +246,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\TransformManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Store\TransformStore.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\MaterialManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Store\MaterialStore.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -256,13 +264,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Graphics\DxDevice.cpp" />
     <ClCompile Include="Engine\Core\Graphics\DxSwapChain.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GraphicsCore.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\Managers\DSVManager.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\Managers\ImGuiManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.cpp" />
+    <ClCompile Include="Engine\External\ImGuiManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Managers\RTVManager.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\Managers\SRVManager.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\RTVDescriptor.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\SRVDescriptor.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxBlendState.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxDepthRaster.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxInputLayout.cpp" />
@@ -272,14 +280,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Graphics\PostProcess\RenderTexture.cpp" />
     <ClCompile Include="Engine\Core\Graphics\PostProcess\ShadowMap.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GPUObject\CBufferStructures.cpp" />
-    <ClCompile Include="Engine\Core\Lib\Collision.cpp">
+    <ClCompile Include="Engine\Collision\CollisionGeometry.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Lib\DxUtils.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\Lib\DxUtils.cpp" />
     <ClCompile Include="Engine\Asset\Filesystem.cpp" />
     <ClCompile Include="Engine\Core\Window\WinApp.cpp" />
-    <ClCompile Include="Engine\Core\Component\Manager\ImGuiComponentManager.cpp">
+    <ClCompile Include="Engine\Editor\ImGuiInspector.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -301,7 +309,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\User\Collider.cpp" />
+    <ClCompile Include="Engine\Collision\Collider.cpp" />
     <ClCompile Include="Game\Camera\Base\BaseCamera.cpp" />
     <ClCompile Include="Game\Camera\Camera2D.cpp">
       <SubType>
@@ -314,14 +322,37 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
     <ClCompile Include="Game\Camera\LightViewCamera.cpp" />
     <ClCompile Include="Game\Camera\Manager\CameraManager.cpp" />
-    <ClCompile Include="Game\Object3D\TemplateObject3D.cpp">
+    <ClCompile Include="Game\Editor\Object\Object3DEditor.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Scene\DebugScene\DebugScene.cpp" />
+    <ClCompile Include="Game\Object2D\SceneTransition\FadeTransition.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Environment\StageField.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Template\TemplateObject3D.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameScene.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Scene\Manager\SceneManager.cpp" />
     <ClCompile Include="Game\Scene\Methods\IScene.cpp" />
     <ClCompile Include="Game\Scene\Methods\SceneFactory.cpp" />
+    <ClCompile Include="Game\Scene\Methods\SceneTransition.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\TitleScene.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Time\GameTimer.cpp" />
     <ClCompile Include="Lib\Adapter\Easing.cpp" />
     <ClCompile Include="Lib\Adapter\JsonAdapter.cpp" />
@@ -349,27 +380,31 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\ColliderComponent.h">
+    <ClInclude Include="Engine\Collision\CollisionBody.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Manager\AnimationComponentManager.h">
+    <ClInclude Include="Engine\Core\Component\Store\AnimationStore.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Manager\CollisionManager.h">
+    <ClInclude Include="Engine\Collision\CollisionManager.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Manager\ComponentManager.h">
+    <ClInclude Include="Engine\Core\Component\ECS\ComponentManager.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Manager\EntityManager.h">
+    <ClInclude Include="Engine\Core\Component\ECS\EntityRegistry.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Manager\SpriteComponentManager.h">
+    <ClInclude Include="Engine\Core\Component\Store\SpriteStore.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Component\MaterialComponent.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -377,11 +412,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\User\ComponentHelper.h">
+    <ClInclude Include="Engine\Core\Component\ComponentHelper.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\Mesh\InstancedMesh.h">
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -417,7 +456,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.h">
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -425,7 +464,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.h">
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessPipeline.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -445,7 +484,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Editor\TestEditor.h">
+    <ClInclude Include="Game\Algorithm\StateTimer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Editor\Object\Object3DEditor.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -453,11 +496,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Manager\TransformManager.h">
+    <ClInclude Include="Engine\Core\Component\Store\TransformStore.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Manager\MaterialManager.h">
+    <ClInclude Include="Engine\Core\Component\Store\MaterialStore.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -472,13 +515,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Graphics\DxDevice.h" />
     <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
     <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\DSVManager.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\ImGuiManager.h">
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.h" />
+    <ClInclude Include="Engine\External\ImGuiManager.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\Managers\RTVManager.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\SRVManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\RTVDescriptor.h" />
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\SRVDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxBlendState.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxDepthRaster.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxInputLayout.h" />
@@ -488,16 +531,16 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\CBufferStructures.h" />
-    <ClInclude Include="Engine\Core\Lib\Collision.h">
+    <ClInclude Include="Engine\Collision\CollisionGeometry.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
-    <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
-    <ClInclude Include="Engine\Core\Lib\DxUtils.h" />
+    <ClInclude Include="Engine\Core\Graphics\Lib\ComPtr.h" />
+    <ClInclude Include="Engine\Core\Graphics\Lib\DxStructures.h" />
+    <ClInclude Include="Engine\Core\Graphics\Lib\DxUtils.h" />
     <ClInclude Include="Engine\Asset\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\ImGuiComponentManager.h">
+    <ClInclude Include="Engine\Editor\ImGuiInspector.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -518,7 +561,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\User\Collider.h" />
+    <ClInclude Include="Engine\Collision\Collider.h" />
     <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
     <ClInclude Include="Game\Camera\Camera2D.h">
       <SubType>
@@ -532,14 +575,37 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Camera\LightViewCamera.h" />
     <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Light\PunctualLight.h" />
-    <ClInclude Include="Game\Object3D\TemplateObject3D.h">
+    <ClInclude Include="Game\Object2D\Base\ITransition.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Scene\DebugScene\DebugScene.h" />
+    <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Environment\StageField.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Template\TemplateObject3D.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameScene.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Scene\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scene\Methods\IScene.h" />
     <ClInclude Include="Game\Scene\Methods\SceneFactory.h" />
+    <ClInclude Include="Game\Scene\Methods\SceneTransition.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\TitleScene.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Time\GameTimer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />

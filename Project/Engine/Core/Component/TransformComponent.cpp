@@ -124,8 +124,7 @@ void Transform2DComponent::ImGui(float itemSize) {
 
 	if (ImGui::Button("Set CenterPos", ImVec2(itemSize, 22.0f))) {
 
-		translation.x = static_cast<float>(WinApp::GetWindowWidth()) / 2.0f;
-		translation.y = static_cast<float>(WinApp::GetWindowHeight()) / 2.0f;
+		SetCenterPos();
 	}
 
 	if (ImGui::Button("Set CenterAnchor", ImVec2(itemSize, 22.0f))) {
@@ -155,4 +154,10 @@ void Transform2DComponent::ImGui(float itemSize) {
 	ImGui::DragFloat2("textureLeftTop", &textureLeftTop.x, 1.0f);
 	ImGui::DragFloat2("textureSize", &textureSize.x, 1.0f);
 	ImGui::PopItemWidth();
+}
+
+void Transform2DComponent::SetCenterPos() {
+
+	translation.x = static_cast<float>(WinApp::GetWindowWidth()) / 2.0f;
+	translation.y = static_cast<float>(WinApp::GetWindowHeight()) / 2.0f;
 }
