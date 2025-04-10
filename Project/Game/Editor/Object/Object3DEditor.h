@@ -64,13 +64,21 @@ private:
 	InputTextValue addObjectName_; // objectの名前
 	InputTextValue addGroupName_;  // groupに入れる名前
 
+	// save
+	InputTextValue saveGroupName_; // 保存するgroupの名前
+	InputTextValue saveFileName_;  // 保存するjsonの名前
+
 	// selecrObject
-	std::unordered_map<std::string, int> selectObjects_; // 追加されたobject
-	std::optional<int> selectObjectIndex_;               // 選択したobjectのindex
-	int selectedMaterialIndex_;                          // materialのindex
+	// 追加されたobject
+	std::unordered_map<std::string, std::unordered_map<std::string, int>> groupedSelectObjects_;
+	std::optional<int> selectObjectIndex_; // 選択したobjectのindex
+	int selectedMaterialIndex_;            // materialのindex
 
 	// editObject
 	float itemWidth_; // 表示するparameterの操作objectの横幅
+
+	// 名前の登録
+	std::unordered_map<std::string, int> nameCounts_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -79,17 +87,27 @@ private:
 	// editorLayout
 	void SaveEditLayoutParameter();
 	void ApplyEditLayoutParameter();
+	// json保存
+	void SaveJson();
 
 	// editor内のlayoutを調整
 	void EditLayout();
 
 	// objectの追加
 	void AddObject();
+	// objectの保存
+	void SaveObjects();
 	// objectの選択
 	void SelectObject();
 	// objectの操作
 	void EditObject();
+	void RemoveObject();
 	// ↑の操作
+	void EditMesh();
 	void EditTransform();
 	void EditMaterial();
+
+	// 名前が重複しないようにする
+	std::string CheckName(const std::string& name);
+	std::string SplitBaseNameAndNumber(const std::string& name, int& number);
 };

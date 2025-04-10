@@ -23,16 +23,16 @@ public:
 	MaterialManager() = default;
 	~MaterialManager() = default;
 
-	void AddComponent(uint32_t entity, std::any args) override;
+	void AddComponent(uint32_t entityId, std::any args) override;
 
-	void RemoveComponent(uint32_t entity) override;
+	void RemoveComponent(uint32_t entityId) override;
 
 	void Update() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	MaterialComponent* GetComponent(uint32_t entity) override;
-	std::vector<MaterialComponent*> GetComponentList(uint32_t entity) override;
+	MaterialComponent* GetComponent(uint32_t entityId) override;
+	std::vector<MaterialComponent*> GetComponentList(uint32_t entityId) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -41,9 +41,6 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::vector<std::vector<MaterialComponent>> components_;
-
-	std::unordered_map<uint32_t, size_t> entityToIndex_;
-	std::vector<uint32_t> indexToEntity_;
 };
 
 //============================================================================
@@ -59,16 +56,16 @@ public:
 	SpriteMaterialManager() = default;
 	~SpriteMaterialManager() = default;
 
-	void AddComponent(uint32_t entity, std::any args) override;
+	void AddComponent(uint32_t entityId, std::any args) override;
 
-	void RemoveComponent(uint32_t entity) override;
+	void RemoveComponent(uint32_t entityId) override;
 
 	void Update() override {};
 
 	//--------- accessor -----------------------------------------------------
 
-	SpriteMaterial* GetComponent(uint32_t entity) override;
-	std::vector<SpriteMaterial*> GetComponentList([[maybe_unused]] uint32_t entity) override { return { nullptr }; }
+	SpriteMaterial* GetComponent(uint32_t entityId) override;
+	std::vector<SpriteMaterial*> GetComponentList([[maybe_unused]] uint32_t entityId) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -77,7 +74,4 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::vector<SpriteMaterial> components_;
-
-	std::unordered_map<uint32_t, size_t> entityToIndex_;
-	std::vector<uint32_t> indexToEntity_;
 };

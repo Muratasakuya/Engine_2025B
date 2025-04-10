@@ -45,9 +45,9 @@ public:
 	//--------- object2D -----------------------------------------------------
 
 	// 追加、作成処理
-	void CreateObject2D(uint32_t id, SpriteComponent* sprite, ID3D12Device* device);
+	void CreateObject2D(uint32_t entityId, SpriteComponent* sprite, ID3D12Device* device);
 	// 指定されたidのbuffer削除
-	void RemoveObject2D(uint32_t id);
+	void RemoveObject2D(uint32_t entityId);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -80,6 +80,8 @@ private:
 	std::vector<uint32_t> indexToObject2DBuffer_;
 
 	//--------- functions ----------------------------------------------------
+
+	void SwapToPopbackIndex(uint32_t entityId);
 
 	// bufferの更新処理
 	// 3D
