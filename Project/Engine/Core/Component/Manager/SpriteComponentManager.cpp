@@ -10,12 +10,9 @@
 //	SpriteComponentManager classMethods
 //============================================================================
 
-void SpriteComponentManager::AddComponent([[maybe_unused]] uint32_t entity, std::any args) {
+void SpriteComponentManager::AddComponent([[maybe_unused]] uint32_t entityId, std::any args) {
 
 	size_t index = components_.size();
-
-	entityToIndex_[entity] = index;
-	indexToEntity_.emplace_back(entity);
 
 	auto [textureName, transform, device, asset] =
 		std::any_cast<std::tuple<std::string, Transform2DComponent*, ID3D12Device*, Asset*>>(args);
@@ -24,34 +21,28 @@ void SpriteComponentManager::AddComponent([[maybe_unused]] uint32_t entity, std:
 	components_.push_back(std::make_unique<SpriteComponent>(device, asset, textureName, *transform));
 	// transform追加
 	transforms_.push_back(transform);
+
+	// index設定
+	SetEntityIndex(entityId, index);
 }
 
-void SpriteComponentManager::RemoveComponent(uint32_t entity) {
+void SpriteComponentManager::RemoveComponent(uint32_t entityId) {
 
-	if (!Algorithm::Find(entityToIndex_, entity)) {
+	// 見つかなければ削除しない
+	if (!Algorithm::Find(entityToIndex_, entityId)) {
 		return;
 	}
 
-	size_t index = entityToIndex_.at(entity);
+	// indexを末尾と交換して削除
+	size_t index = entityToIndex_.at(entityId);
 	size_t lastIndex = components_.size() - 1;
 
-	if (index != lastIndex) {
+	// entityIndex削除
+	SwapToPopbackIndex(entityId, lastIndex);
 
-		// 末尾と交換
-		std::swap(components_[index], components_[lastIndex]);
-		std::swap(transforms_[index], transforms_[lastIndex]);
-
-		// 交換されたentityIdを更新
-		uint32_t movedEntityId = indexToEntity_[lastIndex];
-		entityToIndex_[movedEntityId] = index;
-		indexToEntity_[index] = movedEntityId;
-	}
-
-	// 末尾を削除
+	// component削除
+	std::swap(components_[index], components_[lastIndex]);
 	components_.pop_back();
-	transforms_.pop_back();
-	indexToEntity_.pop_back();
-	entityToIndex_.erase(entity);
 }
 
 void SpriteComponentManager::Update() {
@@ -62,11 +53,11 @@ void SpriteComponentManager::Update() {
 	}
 }
 
-SpriteComponent* SpriteComponentManager::GetComponent(uint32_t entity) {
+SpriteComponent* SpriteComponentManager::GetComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(entityToIndex_, entity)) {
+	if (Algorithm::Find(entityToIndex_, entityId)) {
 
-		size_t index = entityToIndex_.at(entity);
+		size_t index = entityToIndex_.at(entityId);
 		return components_.at(index).get();
 
 	}

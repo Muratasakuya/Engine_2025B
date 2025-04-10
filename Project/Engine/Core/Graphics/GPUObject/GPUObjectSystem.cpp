@@ -33,47 +33,40 @@ void GPUObjectSystem::CreateMesh(const std::string& modelName) {
 		modelName, kMaxInstanceNum);
 }
 
-void GPUObjectSystem::CreateObject2D(uint32_t id, SpriteComponent* sprite, ID3D12Device* device) {
+void GPUObjectSystem::CreateObject2D(uint32_t entityId, SpriteComponent* sprite, ID3D12Device* device) {
 
 	size_t index = object2DBuffers_.size();
 
-	object2DBufferToIndex_[id] = index;
-	indexToObject2DBuffer_.emplace_back(id);
-
-	object2DBuffers_.resize(std::max(static_cast<uint32_t>(object2DBuffers_.size()), id + 1));
-
+	// buffer追加
+	object2DBuffers_.emplace_back();
 	// buffer作成
-	object2DBuffers_[id].matrix.CreateConstBuffer(device);
-	object2DBuffers_[id].material.CreateConstBuffer(device);
-
+	object2DBuffers_.back().matrix.CreateConstBuffer(device);
+	object2DBuffers_.back().material.CreateConstBuffer(device);
 	// spriteの情報を取得
-	object2DBuffers_[id].sprite.sprite = sprite;
+	object2DBuffers_.back().sprite.sprite = sprite;
+
+	// index設定
+	object2DBufferToIndex_[entityId] = index;
+	indexToObject2DBuffer_.push_back(entityId);
 }
 
-void GPUObjectSystem::RemoveObject2D(uint32_t id) {
+void GPUObjectSystem::RemoveObject2D(uint32_t entityId) {
 
-	if (!Algorithm::Find(object2DBufferToIndex_, id)) {
+	// 見つかなければ削除しない
+	if (!Algorithm::Find(object2DBufferToIndex_, entityId)) {
 		return;
 	}
 
-	size_t index = object2DBufferToIndex_.at(id);
+	// indexを末尾と交換して削除
+	size_t index = object2DBufferToIndex_.at(entityId);
 	size_t lastIndex = object2DBuffers_.size() - 1;
 
-	if (index != lastIndex) {
+	// bufferIndex削除
+	SwapToPopbackIndex(entityId);
 
-		// 末尾と交換
-		std::swap(object2DBuffers_[index], object2DBuffers_[lastIndex]);
-
-		// 交換されたentityIdを更新
-		uint32_t movedEntityId = indexToObject2DBuffer_[lastIndex];
-		object2DBufferToIndex_[movedEntityId] = index;
-		indexToObject2DBuffer_[index] = movedEntityId;
-	}
-
-	// 末尾を削除
+	// buffer削除
+	std::swap(object2DBuffers_[index], object2DBuffers_[lastIndex]);
 	object2DBuffers_.pop_back();
-	indexToObject2DBuffer_.pop_back();
-	object2DBufferToIndex_.erase(id);
 }
 
 void GPUObjectSystem::Update() {
@@ -83,6 +76,24 @@ void GPUObjectSystem::Update() {
 	UpdateObject3D();
 	// 2D
 	UpdateObject2D();
+}
+
+void GPUObjectSystem::SwapToPopbackIndex(uint32_t entityId) {
+
+	size_t index = object2DBufferToIndex_.at(entityId);
+	size_t lastIndex = object2DBuffers_.size() - 1;
+
+	if (index != lastIndex) {
+
+		// 交換されたentityIdを更新
+		uint32_t movedEntityId = indexToObject2DBuffer_[lastIndex];
+		object2DBufferToIndex_[movedEntityId] = index;
+		indexToObject2DBuffer_[index] = movedEntityId;
+	}
+
+	// 末尾を削除
+	indexToObject2DBuffer_.pop_back();
+	object2DBufferToIndex_.erase(entityId);
 }
 
 void GPUObjectSystem::UpdateObject3D() {
@@ -97,16 +108,16 @@ void GPUObjectSystem::UpdateObject3D() {
 	for (uint32_t id : entityList) {
 
 		std::vector<MaterialComponent*> materialPtrs = componentManager->GetComponentList<MaterialComponent>(id);
+
 		std::vector<MaterialComponent> materials;
 		materials.reserve(materialPtrs.size());
 
-		for (const auto* mat : materialPtrs) {
+		for (const auto* material : materialPtrs) {
 
-			materials.emplace_back(*mat);
+			materials.emplace_back(*material);
 		}
 
 		const Transform3DComponent* transform = componentManager->GetComponent<Transform3DComponent>(id);
-		TransformationMatrix matrix{};
 
 		// bufferに送るデータをセット
 		instancedMeshBuffer_->SetUploadData(transform->GetInstancingName(),

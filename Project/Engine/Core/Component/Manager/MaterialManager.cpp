@@ -16,53 +16,46 @@
 // 3D
 //============================================================================
 
-void MaterialManager::AddComponent(uint32_t entity, std::any args) {
+void MaterialManager::AddComponent(uint32_t entityId, std::any args) {
 
 	size_t index = components_.size();
-
-	entityToIndex_[entity] = index;
-	indexToEntity_.emplace_back(entity);
 
 	auto [modelData, asset] =
 		std::any_cast<std::tuple<ModelData, Asset*>>(args);
 
 	// component追加
-	components_.resize(std::max(static_cast<uint32_t>(components_.size()), entity + 1));
+	components_.emplace_back();
 
-	// 追加、ModelのMeshの数に合わせる
-	components_[entity].resize(modelData.meshes.size());
+	// 追加、modelのmeshの数に合わせる
+	components_.back().resize(modelData.meshes.size());
 	for (uint32_t meshIndex = 0; meshIndex < modelData.meshes.size(); ++meshIndex) {
 
-		components_[entity][meshIndex].Init();
-		components_[entity][meshIndex].material.textureIndex =
+		components_.back()[meshIndex].Init();
+		components_.back()[meshIndex].material.textureIndex =
 			asset->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
 	}
+
+	// index設定
+	SetEntityIndex(entityId, index);
 }
 
-void MaterialManager::RemoveComponent(uint32_t entity) {
+void MaterialManager::RemoveComponent(uint32_t entityId) {
 
-	if (!Algorithm::Find(entityToIndex_, entity)) {
+	// 見つかなければ削除しない
+	if (!Algorithm::Find(entityToIndex_, entityId)) {
 		return;
 	}
 
-	size_t index = entityToIndex_.at(entity);
+	// indexを末尾と交換して削除
+	size_t index = entityToIndex_.at(entityId);
 	size_t lastIndex = components_.size() - 1;
 
-	if (index != lastIndex) {
+	// entityIndex削除
+	SwapToPopbackIndex(entityId, lastIndex);
 
-		// 末尾と交換
-		std::swap(components_[index], components_[lastIndex]);
-
-		// 交換されたentityIdを更新
-		uint32_t movedEntityId = indexToEntity_[lastIndex];
-		entityToIndex_[movedEntityId] = index;
-		indexToEntity_[index] = movedEntityId;
-	}
-
-	// 末尾を削除
+	// component削除
+	std::swap(components_[index], components_[lastIndex]);
 	components_.pop_back();
-	indexToEntity_.pop_back();
-	entityToIndex_.erase(entity);
 }
 
 void MaterialManager::Update() {
@@ -71,38 +64,44 @@ void MaterialManager::Update() {
 
 		// uvTransform更新
 		for (uint32_t meshIndex = 0; meshIndex < component.size(); ++meshIndex) {
-		
+
 			component[meshIndex].UpdateUVTransform();
 		}
 	}
 }
 
-MaterialComponent* MaterialManager::GetComponent(uint32_t entity) {
+MaterialComponent* MaterialManager::GetComponent(uint32_t entityId) {
 
 	// 単一のmaterialのみ返す
 	// multiMaterialの時はGetComponentList()から取得する
-	if (Algorithm::Find(entityToIndex_, entity)) {
+	if (Algorithm::Find(entityToIndex_, entityId)) {
 
-		size_t index = entityToIndex_.at(entity);
+		size_t index = entityToIndex_.at(entityId);
 		return &components_.at(index).front();
 
 	}
 	return nullptr;
 }
 
-std::vector<MaterialComponent*> MaterialManager::GetComponentList(uint32_t entity) {
+std::vector<MaterialComponent*> MaterialManager::GetComponentList(uint32_t entityId) {
 
 	// 配列のmaterialを返す
 	std::vector<MaterialComponent*> materials;
 
-	if (Algorithm::Find(entityToIndex_, entity)) {
+	if (Algorithm::Find(entityToIndex_, entityId)) {
 
-		size_t index = entityToIndex_.at(entity);
+		size_t index = entityToIndex_.at(entityId);
 		for (MaterialComponent& mat : components_.at(index)) {
 
 			materials.emplace_back(&mat);
 		}
 	}
+	if (materials.size() == 0) {
+
+		int a = 0;
+		++a;
+	}
+
 	return materials;
 }
 
@@ -110,52 +109,42 @@ std::vector<MaterialComponent*> MaterialManager::GetComponentList(uint32_t entit
 // 2D
 //============================================================================
 
-void SpriteMaterialManager::AddComponent(uint32_t entity, [[maybe_unused]] std::any args) {
+void SpriteMaterialManager::AddComponent(uint32_t entityId, [[maybe_unused]] std::any args) {
 
 	size_t index = components_.size();
 
-	entityToIndex_[entity] = index;
-	indexToEntity_.emplace_back(entity);
-
 	// component追加
-	components_.resize(std::max(static_cast<uint32_t>(components_.size()), entity + 1));
+	components_.emplace_back();
+	components_.back().Init();
 
-	// 追加
-	components_[entity] = SpriteMaterial();
-	components_[entity].Init();
+	// index設定
+	SetEntityIndex(entityId, index);
 }
 
-void SpriteMaterialManager::RemoveComponent(uint32_t entity) {
+void SpriteMaterialManager::RemoveComponent(uint32_t entityId) {
 
-	if (!Algorithm::Find(entityToIndex_, entity)) {
+	// 見つかなければ削除しない
+	if (!Algorithm::Find(entityToIndex_, entityId)) {
 		return;
 	}
 
-	size_t index = entityToIndex_.at(entity);
+	// indexを末尾と交換して削除
+	size_t index = entityToIndex_.at(entityId);
 	size_t lastIndex = components_.size() - 1;
 
-	if (index != lastIndex) {
+	// entityIndex削除
+	SwapToPopbackIndex(entityId, lastIndex);
 
-		// 末尾と交換
-		std::swap(components_[index], components_[lastIndex]);
-
-		// 交換されたentityIdを更新
-		uint32_t movedEntityId = indexToEntity_[lastIndex];
-		entityToIndex_[movedEntityId] = index;
-		indexToEntity_[index] = movedEntityId;
-	}
-
-	// 末尾を削除
+	// component削除
+	std::swap(components_[index], components_[lastIndex]);
 	components_.pop_back();
-	indexToEntity_.pop_back();
-	entityToIndex_.erase(entity);
 }
 
-SpriteMaterial* SpriteMaterialManager::GetComponent(uint32_t entity) {
+SpriteMaterial* SpriteMaterialManager::GetComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(entityToIndex_, entity)) {
+	if (Algorithm::Find(entityToIndex_, entityId)) {
 
-		size_t index = entityToIndex_.at(entity);
+		size_t index = entityToIndex_.at(entityId);
 		return &components_.at(index);
 
 	}

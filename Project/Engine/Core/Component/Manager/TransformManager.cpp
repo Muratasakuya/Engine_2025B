@@ -15,46 +15,36 @@
 // 3D
 //============================================================================
 
-void Transform3DManager::AddComponent(uint32_t entity, [[maybe_unused]] std::any args) {
+void Transform3DManager::AddComponent(uint32_t entityId, [[maybe_unused]] std::any args) {
 
 	size_t index = components_.size();
 
-	entityToIndex_[entity] = index;
-	indexToEntity_.emplace_back(entity);
-
 	// component追加
-	components_.resize(std::max(static_cast<uint32_t>(components_.size()), entity + 1));
+	components_.emplace_back();
+	components_.back().Init();
+	components_.back().UpdateMatrix();
 
-	// 追加
-	components_[entity] = Transform3DComponent();
-	components_[entity].Init();
-	components_[entity].UpdateMatrix();
+	// index設定
+	SetEntityIndex(entityId, index);
 }
 
-void Transform3DManager::RemoveComponent(uint32_t entity) {
+void Transform3DManager::RemoveComponent(uint32_t entityId) {
 
-	if (!Algorithm::Find(entityToIndex_, entity)) {
+	// 見つかなければ削除しない
+	if (!Algorithm::Find(entityToIndex_, entityId)) {
 		return;
 	}
 
-	size_t index = entityToIndex_.at(entity);
+	// indexを末尾と交換して削除
+	size_t index = entityToIndex_.at(entityId);
 	size_t lastIndex = components_.size() - 1;
 
-	if (index != lastIndex) {
+	// entityIndex削除
+	SwapToPopbackIndex(entityId, lastIndex);
 
-		// 末尾と交換
-		std::swap(components_[index], components_[lastIndex]);
-
-		// 交換されたentityIdを更新
-		uint32_t movedEntityId = indexToEntity_[lastIndex];
-		entityToIndex_[movedEntityId] = index;
-		indexToEntity_[index] = movedEntityId;
-	}
-
-	// 末尾を削除
+	// component削除
+	std::swap(components_[index], components_[lastIndex]);
 	components_.pop_back();
-	indexToEntity_.pop_back();
-	entityToIndex_.erase(entity);
 }
 
 void Transform3DManager::Update() {
@@ -66,11 +56,11 @@ void Transform3DManager::Update() {
 	}
 }
 
-Transform3DComponent* Transform3DManager::GetComponent(uint32_t entity) {
+Transform3DComponent* Transform3DManager::GetComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(entityToIndex_, entity)) {
+	if (Algorithm::Find(entityToIndex_, entityId)) {
 
-		size_t index = entityToIndex_.at(entity);
+		size_t index = entityToIndex_.at(entityId);
 		return &components_.at(index);
 
 	}
@@ -81,46 +71,36 @@ Transform3DComponent* Transform3DManager::GetComponent(uint32_t entity) {
 // 2D
 //============================================================================
 
-void Transform2DManager::AddComponent(uint32_t entity, [[maybe_unused]] std::any args) {
+void Transform2DManager::AddComponent(uint32_t entityId, [[maybe_unused]] std::any args) {
 
 	size_t index = components_.size();
 
-	entityToIndex_[entity] = index;
-	indexToEntity_.emplace_back(entity);
-
 	// component追加
-	components_.resize(std::max(static_cast<uint32_t>(components_.size()), entity + 1));
+	components_.push_back(std::make_unique<Transform2DComponent>());
+	components_.back()->Init();
+	components_.back()->UpdateMatrix();
 
-	// 追加
-	components_[entity] = std::make_unique<Transform2DComponent>();
-	components_[entity]->Init();
-	components_[entity]->UpdateMatrix();
+	// index設定
+	SetEntityIndex(entityId, index);
 }
 
-void Transform2DManager::RemoveComponent(uint32_t entity) {
+void Transform2DManager::RemoveComponent(uint32_t entityId) {
 
-	if (!Algorithm::Find(entityToIndex_, entity)) {
+	// 見つかなければ削除しない
+	if (!Algorithm::Find(entityToIndex_, entityId)) {
 		return;
 	}
 
-	size_t index = entityToIndex_.at(entity);
+	// indexを末尾と交換して削除
+	size_t index = entityToIndex_.at(entityId);
 	size_t lastIndex = components_.size() - 1;
 
-	if (index != lastIndex) {
+	// entityIndex削除
+	SwapToPopbackIndex(entityId, lastIndex);
 
-		// 末尾と交換
-		std::swap(components_[index], components_[lastIndex]);
-
-		// 交換されたentityIdを更新
-		uint32_t movedEntityId = indexToEntity_[lastIndex];
-		entityToIndex_[movedEntityId] = index;
-		indexToEntity_[index] = movedEntityId;
-	}
-
-	// 末尾を削除
+	// component削除
+	std::swap(components_[index], components_[lastIndex]);
 	components_.pop_back();
-	indexToEntity_.pop_back();
-	entityToIndex_.erase(entity);
 }
 
 void Transform2DManager::Update() {
@@ -132,11 +112,11 @@ void Transform2DManager::Update() {
 	}
 }
 
-Transform2DComponent* Transform2DManager::GetComponent(uint32_t entity) {
+Transform2DComponent* Transform2DManager::GetComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(entityToIndex_, entity)) {
+	if (Algorithm::Find(entityToIndex_, entityId)) {
 
-		size_t index = entityToIndex_.at(entity);
+		size_t index = entityToIndex_.at(entityId);
 		return components_.at(index).get();
 
 	}

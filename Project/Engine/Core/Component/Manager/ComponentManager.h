@@ -80,7 +80,7 @@ public:
 	uint32_t CreateObject2D(const std::string& textureName, const std::string& objectName,
 		const std::optional<std::string>& groupName = std::nullopt);
 	// 指定されたidのentity削除
-	void RemoveObject2D(uint32_t id);
+	void RemoveObject2D(uint32_t entityId);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -96,14 +96,14 @@ public:
 
 	// componentの取得
 	template <typename T>
-	T* GetComponent(uint32_t id);
+	T* GetComponent(uint32_t entityId);
 	template <typename T>
-	std::vector<T*> GetComponentList(uint32_t entity);
+	std::vector<T*> GetComponentList(uint32_t entityId);
 
 	// entityの数取得
 	const std::vector<uint32_t>& GetEntityList(ComponentType type) const;
 
-	uint32_t GetEntityIndex(ComponentType type, uint32_t id) const { return entityManagers_[static_cast<uint32_t>(type)]->GetIndex(id); }
+	uint32_t GetEntityIndex(ComponentType type, uint32_t entityId) const { return entityManagers_[static_cast<uint32_t>(type)]->GetIndex(entityId); }
 private:
 	//========================================================================
 	//	private Methods
@@ -132,9 +132,9 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	template <typename T, typename... Args>
-	void AddComponent(uint32_t entity, Args&&... args);
+	void AddComponent(uint32_t entityId, Args&&... args);
 	template <typename T>
-	void RemoveComponent(uint32_t entity);
+	void RemoveComponent(uint32_t entityId);
 };
 
 //============================================================================
@@ -150,39 +150,39 @@ inline void ComponentManager::RegisterComponentManager(IComponent<T>* manager) {
 }
 
 template<typename T, typename ...Args>
-inline void ComponentManager::AddComponent(uint32_t entity, Args && ...args) {
+inline void ComponentManager::AddComponent(uint32_t entityId, Args && ...args) {
 
 	if ((Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true))) {
 
-		static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->AddComponent(entity, std::make_tuple(std::forward<Args>(args)...));
+		static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->AddComponent(entityId, std::make_tuple(std::forward<Args>(args)...));
 	}
 }
 
 template<typename T>
-inline void ComponentManager::RemoveComponent(uint32_t entity) {
+inline void ComponentManager::RemoveComponent(uint32_t entityId) {
 
 	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
 
-		static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->RemoveComponent(entity);
+		static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->RemoveComponent(entityId);
 	}
 }
 
 template<typename T>
-inline T* ComponentManager::GetComponent(uint32_t id) {
+inline T* ComponentManager::GetComponent(uint32_t entityId) {
 
 	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
 
-		return static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponent(id);
+		return static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponent(entityId);
 	}
 	return nullptr;
 }
 
 template<typename T>
-inline std::vector<T*> ComponentManager::GetComponentList(uint32_t id) {
+inline std::vector<T*> ComponentManager::GetComponentList(uint32_t entityId) {
 
 	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
 
-		return static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponentList(id);
+		return static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponentList(entityId);
 	}
 	return { nullptr };
 }

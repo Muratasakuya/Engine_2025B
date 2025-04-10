@@ -20,15 +20,15 @@ public:
 	SpriteComponentManager() = default;
 	~SpriteComponentManager() = default;
 
-	void AddComponent(uint32_t entity, std::any args) override;
-	void RemoveComponent(uint32_t entity) override;
+	void AddComponent(uint32_t entityId, std::any args) override;
+	void RemoveComponent(uint32_t entityId) override;
 
 	void Update() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	SpriteComponent* GetComponent(uint32_t entity) override;
-	std::vector<SpriteComponent*> GetComponentList([[maybe_unused]] uint32_t entity) override { return { nullptr }; }
+	SpriteComponent* GetComponent(uint32_t entityId) override;
+	std::vector<SpriteComponent*> GetComponentList([[maybe_unused]] uint32_t entityId) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -39,7 +39,4 @@ private:
 	std::vector<std::unique_ptr<SpriteComponent>> components_;
 	// spriteのvertex更新用
 	std::vector<Transform2DComponent*> transforms_;
-
-	std::unordered_map<uint32_t, size_t> entityToIndex_;
-	std::vector<uint32_t> indexToEntity_;
 };

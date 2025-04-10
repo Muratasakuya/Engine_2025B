@@ -140,25 +140,25 @@ uint32_t ComponentManager::CreateObject2D(const std::string& textureName, const 
 	return id;
 }
 
-void ComponentManager::RemoveObject3D(uint32_t id) {
+void ComponentManager::RemoveObject3D(uint32_t entityId) {
 
 	// idの削除
-	entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->RemoveEntity(id);
+	entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->RemoveEntity(entityId);
 
 	// object3Dで使用していたcomponentの削除
-	RemoveComponent<Transform3DComponent>(id);
-	RemoveComponent<MaterialComponent>(id);
+	RemoveComponent<Transform3DComponent>(entityId);
+	RemoveComponent<MaterialComponent>(entityId);
 }
 
-void ComponentManager::RemoveObject2D(uint32_t id) {
+void ComponentManager::RemoveObject2D(uint32_t entityId) {
 
 	// idの削除
-	entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->RemoveEntity(id);
+	entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->RemoveEntity(entityId);
 
 	// buffer削除
-	gpuObjectSystem_->RemoveObject2D(id);
+	gpuObjectSystem_->RemoveObject2D(entityId);
 	// object2Dで使用していたcomponentの削除
-	RemoveComponent<Transform2DComponent>(id);
-	RemoveComponent<SpriteMaterial>(id);
-	RemoveComponent<SpriteComponent>(id);
+	RemoveComponent<Transform2DComponent>(entityId);
+	RemoveComponent<SpriteMaterial>(entityId);
+	RemoveComponent<SpriteComponent>(entityId);
 }
