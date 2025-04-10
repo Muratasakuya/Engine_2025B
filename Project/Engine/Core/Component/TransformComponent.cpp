@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>
@@ -51,6 +52,20 @@ void Transform3DComponent::ImGui(float itemSize) {
 		rotation.x, rotation.y, rotation.z, rotation.w);
 	ImGui::DragFloat3("scale", &scale.x, 0.01f);
 	ImGui::PopItemWidth();
+}
+
+void Transform3DComponent::ToJson(Json& data) {
+
+	data["scale"] = scale.ToJson();
+	data["rotation"] = rotation.ToJson();
+	data["translation"] = translation.ToJson();
+}
+
+void Transform3DComponent::FromJson(const Json& data) {
+
+	scale = JsonAdapter::ToObject<Vector3>(data["scale"]);
+	rotation = JsonAdapter::ToObject<Quaternion>(data["rotation"]);
+	translation = JsonAdapter::ToObject<Vector3>(data["translation"]);
 }
 
 Vector3 Transform3DComponent::GetWorldPos() const {

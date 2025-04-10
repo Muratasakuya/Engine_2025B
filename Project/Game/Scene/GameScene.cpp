@@ -54,9 +54,6 @@ void GameScene::Init(
 
 	object3DEditor_ = std::make_unique<Object3DEditor>();
 	object3DEditor_->Init(asset);
-
-	stageField_ = std::make_unique<StageField>();
-	stageField_->Init();
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

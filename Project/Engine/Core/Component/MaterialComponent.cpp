@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>
@@ -78,4 +79,48 @@ void MaterialComponent::ImGui(float itemSize) {
 
 	ImGui::DragFloat("shadowRate", &material.shadowRate, 0.01f, 0.0f, 8.0f);
 	ImGui::PopItemWidth();
+}
+
+void MaterialComponent::ToJson(Json& data) {
+
+	// Material
+	// color
+	data["color"] = material.color.ToJson();
+	data["emissionColor"] = material.emissionColor.ToJson();
+	data["emissiveIntensity"] = material.emissiveIntensity;
+	// lighting
+	data["enableLighting"] = material.enableLighting;
+	data["enableHalfLambert"] = material.enableHalfLambert;
+	data["enablePhongReflection"] = material.enablePhongReflection;
+	data["enableBlinnPhongReflection"] = material.enableBlinnPhongReflection;
+	data["phongRefShininess"] = material.phongRefShininess;
+	data["specularColor"] = material.specularColor.ToJson();
+	data["shadowRate"] = material.shadowRate;
+
+	// UV
+	data["uvScale"] = uvTransform.scale.ToJson();
+	data["uvRotate"] = uvTransform.rotate.ToJson();
+	data["uvTranslate"] = uvTransform.translate.ToJson();
+}
+
+void MaterialComponent::FromJson(const Json& data) {
+
+	// Material
+	// color
+	material.color = JsonAdapter::ToObject<Color>(data["color"]);
+	material.emissionColor = JsonAdapter::ToObject<Vector3>(data["emissionColor"]);
+	material.emissiveIntensity = data["emissiveIntensity"];
+	// lighting
+	material.enableLighting = data["enableLighting"];
+	material.enableHalfLambert = data["enableHalfLambert"];
+	material.enablePhongReflection = data["enablePhongReflection"];
+	material.enableBlinnPhongReflection = data["enableBlinnPhongReflection"];
+	material.phongRefShininess = data["phongRefShininess"];
+	material.specularColor = JsonAdapter::ToObject<Vector3>(data["specularColor"]);
+	material.shadowRate = data["shadowRate"];
+
+	// UV
+	uvTransform.scale = JsonAdapter::ToObject<Vector3>(data["uvScale"]);
+	uvTransform.rotate = JsonAdapter::ToObject<Vector3>(data["uvRotate"]);
+	uvTransform.translate = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
 }
