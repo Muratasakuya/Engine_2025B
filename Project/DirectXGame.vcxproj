@@ -178,6 +178,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.cpp">
       <SubType>
       </SubType>
@@ -210,7 +214,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -218,7 +222,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessPipeline.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -260,13 +264,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Graphics\DxDevice.cpp" />
     <ClCompile Include="Engine\Core\Graphics\DxSwapChain.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GraphicsCore.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\Managers\DSVManager.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\Managers\ImGuiManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.cpp" />
+    <ClCompile Include="Engine\External\ImGuiManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Managers\RTVManager.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\Managers\SRVManager.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\RTVDescriptor.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\SRVDescriptor.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxBlendState.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxDepthRaster.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxInputLayout.cpp" />
@@ -412,6 +416,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h">
       <SubType>
       </SubType>
@@ -448,7 +456,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.h">
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -456,7 +464,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.h">
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessPipeline.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -507,13 +515,13 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Graphics\DxDevice.h" />
     <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
     <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\DSVManager.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\ImGuiManager.h">
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.h" />
+    <ClInclude Include="Engine\External\ImGuiManager.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\Managers\RTVManager.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\SRVManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\RTVDescriptor.h" />
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\SRVDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxBlendState.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxDepthRaster.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxInputLayout.h" />

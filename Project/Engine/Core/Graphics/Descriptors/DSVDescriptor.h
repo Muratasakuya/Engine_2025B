@@ -3,26 +3,22 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Lib/ComPtr.h>
-
-// directX
-#include <d3d12.h>
-// c++
-#include <cstdint>
+#include <Engine/Core/Graphics/Descriptors/BaseDescriptor.h>
 
 //============================================================================
-//	DSVManager class
+//	DSVDescriptor class
 //============================================================================
-class DSVManager {
+class DSVDescriptor :
+	public BaseDescriptor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	DSVManager() = default;
-	~DSVManager() = default;
+	DSVDescriptor() :BaseDescriptor(4) {};
+	~DSVDescriptor() = default;
 
-	void Init(uint32_t width, uint32_t height, ID3D12Device* device);
+	void InitFrameBufferDSV(uint32_t width, uint32_t height);
 
 	void CreateDSV(uint32_t width, uint32_t height,
 		D3D12_CPU_DESCRIPTOR_HANDLE& handle, ComPtr<ID3D12Resource>& resource,
@@ -30,9 +26,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const D3D12_CPU_DESCRIPTOR_HANDLE& GetFrameCPUHandle() const { return dsvCpuHandle_; }
-
-	D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(uint32_t index);
+	const D3D12_CPU_DESCRIPTOR_HANDLE& GetFrameCPUHandle() const { return dsvCPUHandle_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -40,24 +34,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	ID3D12Device* device_;
-
-	static const uint32_t kMaxDSVCount_;
-	uint32_t useIndex_;
-
-	ComPtr<ID3D12DescriptorHeap> descriptorHeap_;
-
-	uint32_t descriptorSize_;
-
 	ComPtr<ID3D12Resource> resource_;
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuHandle_;
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvCPUHandle_;
 
 	//--------- functions ----------------------------------------------------
 
 	void CreateDepthResource(ComPtr<ID3D12Resource>& resource, uint32_t width, uint32_t height,
 		DXGI_FORMAT resourceFormat, DXGI_FORMAT depthClearFormat);
-
-	D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(uint32_t index);
-
-	uint32_t Allocate();
 };

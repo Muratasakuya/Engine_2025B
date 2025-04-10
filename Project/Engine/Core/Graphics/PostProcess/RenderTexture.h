@@ -7,8 +7,8 @@
 #include <Engine/Core/Graphics/Lib/ComPtr.h>
 
 // front
-class RTVManager;
-class SRVManager;
+class RTVDescriptor;
+class SRVDescriptor;
 
 //============================================================================
 //	RenderTexture class
@@ -23,7 +23,7 @@ public:
 	~RenderTexture() = default;
 
 	void Create(uint32_t width, uint32_t height, const Color& color,
-		DXGI_FORMAT format, ID3D12Device* device, RTVManager* rtvManager, SRVManager* srvManager);
+		DXGI_FORMAT format, ID3D12Device* device, RTVDescriptor* rtvDescriptor, SRVDescriptor* srvDescriptor);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -65,7 +65,7 @@ public:
 	~GuiRenderTexture() = default;
 
 	void Create(uint32_t width, uint32_t height, DXGI_FORMAT format,
-		ID3D12Device* device, SRVManager* srvManager);
+		ID3D12Device* device, SRVDescriptor* srvDescriptor);
 
 	//--------- accessor -----------------------------------------------------
 

@@ -15,7 +15,7 @@
 #include <memory>
 #include <ranges>
 // front
-class SRVManager;
+class SRVDescriptor;
 class ShadowMap;
 class GPUObjectSystem;
 
@@ -32,7 +32,7 @@ public:
 	~MeshRenderer() = default;
 
 	void Init(ID3D12Device8* device, ShadowMap* shadowMap,
-		DxShaderCompiler* shaderCompiler, SRVManager* srvManager);
+		DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
 
 	void Update(class CameraManager* cameraManager);
 
@@ -48,7 +48,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	SRVManager* srvManager_;
+	SRVDescriptor* srvDescriptor_;
 	ShadowMap* shadowMap_;
 
 	std::unique_ptr<PipelineState> meshShaderPipeline_;

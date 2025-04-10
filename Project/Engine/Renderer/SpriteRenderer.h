@@ -24,7 +24,7 @@ public:
 	SpriteRenderer() = default;
 	~SpriteRenderer() = default;
 
-	void Init(ID3D12Device8* device, class SRVManager* srvManager,
+	void Init(ID3D12Device8* device, class SRVDescriptor* srvDescriptor,
 		class DxShaderCompiler* shaderCompiler);
 
 	void Update(class CameraManager* cameraManager);

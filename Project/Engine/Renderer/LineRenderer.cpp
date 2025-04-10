@@ -30,7 +30,7 @@ void LineRenderer::Finalize() {
 }
 
 void LineRenderer::Init(ID3D12Device8* device, ID3D12GraphicsCommandList* commandList,
-	SRVManager* srvManager, DxShaderCompiler* shaderCompiler, CameraManager* cameraManager) {
+	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler, CameraManager* cameraManager) {
 
 	commandList_ = nullptr;
 	commandList_ = commandList;
@@ -39,7 +39,7 @@ void LineRenderer::Init(ID3D12Device8* device, ID3D12GraphicsCommandList* comman
 	cameraManager_ = cameraManager;
 
 	pipeline_ = std::make_unique<PipelineState>();
-	pipeline_->Create("PrimitiveLine.json", device, srvManager, shaderCompiler);
+	pipeline_->Create("PrimitiveLine.json", device, srvDescriptor, shaderCompiler);
 
 	vertexBuffer_.CreateVertexBuffer(device, kMaxLineCount_ * kVertexCountLine_);
 

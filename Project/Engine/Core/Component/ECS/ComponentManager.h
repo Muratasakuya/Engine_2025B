@@ -17,7 +17,6 @@
 #include <unordered_map>
 // front
 class Asset;
-class SRVManager;
 class GPUObjectSystem;
 
 //============================================================================
@@ -25,7 +24,7 @@ class GPUObjectSystem;
 //============================================================================
 
 // componentの種類
-enum class ComponentType 
+enum class ComponentType
 	: uint32_t {
 	Object3D,
 	Object2D,
@@ -95,7 +94,6 @@ private:
 	ID3D12Device* device_;
 	ID3D12GraphicsCommandList* commandList_;
 	Asset* asset_;
-	SRVManager* srvManager_;
 	GPUObjectSystem* gpuObjectSystem_;
 
 	//--------- variables ----------------------------------------------------

@@ -1,4 +1,4 @@
-#include "DSVManager.h"
+#include "DSVDescriptor.h"
 
 //============================================================================
 //	include
@@ -7,12 +7,10 @@
 #include <Engine/Core/Debug/Assert.h>
 
 //============================================================================
-//	DSVManager classMethods
+//	DSVDescriptor classMethods
 //============================================================================
 
-const uint32_t DSVManager::kMaxDSVCount_ = 2;
-
-void DSVManager::CreateDepthResource(ComPtr<ID3D12Resource>& resource,
+void DSVDescriptor::CreateDepthResource(ComPtr<ID3D12Resource>& resource,
 	uint32_t width, uint32_t height,
 	DXGI_FORMAT resourceFormat, DXGI_FORMAT depthClearFormat) {
 
@@ -47,28 +45,14 @@ void DSVManager::CreateDepthResource(ComPtr<ID3D12Resource>& resource,
 	assert(SUCCEEDED(hr));
 }
 
-void DSVManager::Init(uint32_t width, uint32_t height, ID3D12Device* device) {
-
-	device_ = nullptr;
-	device_ = device;
-
-	D3D12_DESCRIPTOR_HEAP_DESC heapDesc{};
-
-	// DSV
-	heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	heapDesc.NumDescriptors = kMaxDSVCount_;
-	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-
-	// descriptor生成
-	DxUtils::MakeDescriptorHeap(descriptorHeap_, device, heapDesc);
-	descriptorSize_ = device->GetDescriptorHandleIncrementSize(heapDesc.Type);
+void DSVDescriptor::InitFrameBufferDSV(uint32_t width, uint32_t height) {
 
 	// frameBuffer
-	CreateDSV(width, height, dsvCpuHandle_, resource_,
+	CreateDSV(width, height, dsvCPUHandle_, resource_,
 		DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_D24_UNORM_S8_UINT);
 }
 
-void DSVManager::CreateDSV(uint32_t width, uint32_t height,
+void DSVDescriptor::CreateDSV(uint32_t width, uint32_t height,
 	D3D12_CPU_DESCRIPTOR_HANDLE& handle, ComPtr<ID3D12Resource>& resource,
 	DXGI_FORMAT resourceFormat, DXGI_FORMAT depthClearFormat) {
 
@@ -86,30 +70,4 @@ void DSVManager::CreateDSV(uint32_t width, uint32_t height,
 	dsvDesc.Flags = D3D12_DSV_FLAG_NONE;
 
 	device_->CreateDepthStencilView(resource.Get(), &dsvDesc, handle);
-}
-
-uint32_t DSVManager::Allocate() {
-
-	if (!DxUtils::CanAllocateIndex(useIndex_, kMaxDSVCount_)) {
-		ASSERT(FALSE, "Cannot allocate more DSVs, maximum count reached");
-	}
-
-	int index = useIndex_;
-	useIndex_++;
-
-	return index;
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE DSVManager::GetCPUHandle(uint32_t index) {
-
-	D3D12_CPU_DESCRIPTOR_HANDLE handleCPU = descriptorHeap_.Get()->GetCPUDescriptorHandleForHeapStart();
-	handleCPU.ptr += (descriptorSize_ * index);
-	return handleCPU;
-}
-
-D3D12_GPU_DESCRIPTOR_HANDLE DSVManager::GetGPUHandle(uint32_t index) {
-
-	D3D12_GPU_DESCRIPTOR_HANDLE handleGPU = descriptorHeap_.Get()->GetGPUDescriptorHandleForHeapStart();
-	handleGPU.ptr += (descriptorSize_ * index);
-	return handleGPU;
 }

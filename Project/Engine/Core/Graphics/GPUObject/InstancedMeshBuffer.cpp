@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================

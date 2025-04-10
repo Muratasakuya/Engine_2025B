@@ -23,7 +23,7 @@ public:
 	~TitleScene();
 
 	void Init(Asset* asset, CameraManager* cameraManager,
-		PostProcessManager* postProcessManager) override;
+		PostProcessSystem* postProcessSystem) override;
 
 	void Update(SceneManager* sceneManager) override;
 private:

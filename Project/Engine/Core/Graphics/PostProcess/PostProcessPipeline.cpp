@@ -1,4 +1,4 @@
-#include "PostProcessPipelineManager.h"
+#include "PostProcessPipeline.h"
 
 //============================================================================
 //	include
@@ -6,10 +6,10 @@
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
-//	PostProcessPipelineManager classMethods
+//	PostProcessPipeline classMethods
 //============================================================================
 
-void PostProcessPipelineManager::Init(ID3D12Device8* device, SRVManager* srvManager,
+void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 	DxShaderCompiler* shaderCompiler) {
 
 	// shaderDataFileName
@@ -33,11 +33,11 @@ void PostProcessPipelineManager::Init(ID3D12Device8* device, SRVManager* srvMana
 	for (const uint32_t& type : Algorithm::GetEnumArray(PostProcessType::Count)) {
 
 		pipelines_[type] = std::make_unique<PipelineState>();
-		pipelines_[type]->Create(fileNames[type], device, srvManager, shaderCompiler);
+		pipelines_[type]->Create(fileNames[type], device, srvDescriptor, shaderCompiler);
 	}
 }
 
-void PostProcessPipelineManager::SetPipeline(ID3D12GraphicsCommandList* commandList, PostProcessType type) {
+void PostProcessPipeline::SetPipeline(ID3D12GraphicsCommandList* commandList, PostProcessType type) {
 
 	commandList->SetComputeRootSignature(pipelines_[static_cast<uint32_t>(type)]->GetRootSignature());
 	commandList->SetPipelineState(pipelines_[static_cast<uint32_t>(type)]->GetComputePipeline());

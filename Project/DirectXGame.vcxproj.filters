@@ -38,13 +38,13 @@
     <ClCompile Include="Engine\Core\Debug\Logger.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Managers\DSVManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Managers\RTVManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\RTVDescriptor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Managers\SRVManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\SRVDescriptor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Pipeline\DxBlendState.cpp">
@@ -152,7 +152,7 @@
     <ClCompile Include="Game\Time\GameTimer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Managers\ImGuiManager.cpp">
+    <ClCompile Include="Engine\External\ImGuiManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\ImGuiEditor.cpp">
@@ -239,7 +239,7 @@
     <ClCompile Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Context\PostProcessCommandContext.cpp">
@@ -254,7 +254,7 @@
     <ClCompile Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.cpp">
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\PostProcessPipeline.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\MeshletBuilder.cpp">
@@ -290,6 +290,9 @@
     <ClCompile Include="Engine\Core\Component\MaterialComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -303,9 +306,9 @@
     <ClInclude Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
     <ClInclude Include="Engine\Core\Debug\Logger.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\DSVManager.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\RTVManager.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\SRVManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.h" />
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\RTVDescriptor.h" />
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\SRVDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxBlendState.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxDepthRaster.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxInputLayout.h" />
@@ -344,7 +347,7 @@
     <ClInclude Include="Game\Scene\Methods\IScene.h" />
     <ClInclude Include="Game\Scene\Methods\SceneFactory.h" />
     <ClInclude Include="Game\Time\GameTimer.h" />
-    <ClInclude Include="Engine\Core\Graphics\Managers\ImGuiManager.h" />
+    <ClInclude Include="Engine\External\ImGuiManager.h" />
     <ClInclude Include="Engine\Editor\ImGuiEditor.h" />
     <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Game\Camera\DebugCamera.h" />
@@ -375,12 +378,12 @@
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.h" />
     <ClInclude Include="Engine\Core\Graphics\Context\PostProcessCommandContext.h" />
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessSystem.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessType.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\BloomProcessor.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.h" />
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\Manager\PostProcessPipelineManager.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessPipeline.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletStructures.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshletBuilder.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\Mesh.h" />
@@ -394,6 +397,7 @@
     <ClInclude Include="Game\Object3D\Environment\StageField.h" />
     <ClInclude Include="Game\Editor\Object\Object3DEditor.h" />
     <ClInclude Include="Engine\Core\Component\MaterialComponent.h" />
+    <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

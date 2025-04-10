@@ -11,18 +11,18 @@
 #include <array>
 
 //============================================================================
-//	PostProcessPipelineManager class
+//	PostProcessPipeline class
 //============================================================================
-class PostProcessPipelineManager {
+class PostProcessPipeline {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PostProcessPipelineManager() = default;
-	~PostProcessPipelineManager() = default;
+	PostProcessPipeline() = default;
+	~PostProcessPipeline() = default;
 
-	void Init(ID3D12Device8* device, class SRVManager* srvManager, class DxShaderCompiler* shaderCompiler);
+	void Init(ID3D12Device8* device, class SRVDescriptor* srvDescriptor, class DxShaderCompiler* shaderCompiler);
 
 	//--------- accessor -----------------------------------------------------
 

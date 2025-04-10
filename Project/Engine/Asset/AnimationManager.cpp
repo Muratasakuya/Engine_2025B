@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Debug/Logger.h>
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Engine/Asset/ModelLoader.h>
 #include <Engine/Asset/Filesystem.h>
@@ -14,13 +14,13 @@
 //	AnimationManager classMethods
 //============================================================================
 
-void AnimationManager::Init(ID3D12Device* device, SRVManager* srvManager, ModelLoader* modelLoader) {
+void AnimationManager::Init(ID3D12Device* device, SRVDescriptor* srvDescriptor, ModelLoader* modelLoader) {
 
 	device_ = nullptr;
 	device_ = device;
 
-	srvManager_ = nullptr;
-	srvManager_ = srvManager;
+	srvDescriptor_ = nullptr;
+	srvDescriptor_ = srvDescriptor;
 
 	modelLoader_ = nullptr;
 	modelLoader_ = modelLoader;
@@ -293,8 +293,8 @@ SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, co
 	paletteResourceSrvDesc.Buffer.NumElements = static_cast<UINT>(skeletons_[animationName].joints.size());
 	paletteResourceSrvDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(WellForGPU));
 	// SRV作成
-	srvManager_->CreateSRV(srvIndex_, skinCluster.paletteResource.Get(), paletteResourceSrvDesc);
-	skinCluster.paletteSrvHandle.second = srvManager_->GetGPUHandle(srvIndex_);
+	srvDescriptor_->CreateSRV(srvIndex_, skinCluster.paletteResource.Get(), paletteResourceSrvDesc);
+	skinCluster.paletteSrvHandle.second = srvDescriptor_->GetGPUHandle(srvIndex_);
 
 	// influence用のResourceを確保、頂点ごとにinfluence情報を追加できるようにする
 	DxUtils::CreateBufferResource(device_, skinCluster.influenceResource,
@@ -320,8 +320,8 @@ SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, co
 	influenceResourceSrvDesc.Buffer.NumElements = static_cast<UINT>(modelLoader_->GetModelData(modelName).meshes.front().vertices.size());
 	influenceResourceSrvDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(VertexInfluence));
 	// SRV作成
-	srvManager_->CreateSRV(srvIndex_, skinCluster.influenceResource.Get(), influenceResourceSrvDesc);
-	skinCluster.influenceSrvHandle.second = srvManager_->GetGPUHandle(srvIndex_);
+	srvDescriptor_->CreateSRV(srvIndex_, skinCluster.influenceResource.Get(), influenceResourceSrvDesc);
+	skinCluster.influenceSrvHandle.second = srvDescriptor_->GetGPUHandle(srvIndex_);
 
 	// InverseBindPoseMatrixを格納する場所を作成して単位行列で埋める
 	skinCluster.inverseBindPoseMatrices.resize(skeletons_[animationName].joints.size());

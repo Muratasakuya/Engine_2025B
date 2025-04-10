@@ -23,7 +23,7 @@ public:
 	//========================================================================
 
 	void Init(ID3D12Device8* device, ID3D12GraphicsCommandList* commandList,
-		class SRVManager* srvManager, class DxShaderCompiler* shaderCompiler,
+		class SRVDescriptor* srvDescriptor, class DxShaderCompiler* shaderCompiler,
 		CameraManager* cameraManager);
 
 	void DrawLine3D(const Vector3& pointA, const Vector3& pointB, const Color& color);

@@ -10,8 +10,8 @@
 // c++
 #include <cstdint>
 // front
-class DSVManager;
-class SRVManager;
+class DSVDescriptor;
+class SRVDescriptor;
 
 //============================================================================
 //	ShadowMap class
@@ -25,7 +25,7 @@ public:
 	ShadowMap() = default;
 	~ShadowMap() = default;
 
-	void Create(uint32_t width, uint32_t height, DSVManager* dsvManager, SRVManager* srvManager);
+	void Create(uint32_t width, uint32_t height, DSVDescriptor* dsvDescriptor, SRVDescriptor* srvDescriptor);
 
 	//--------- accessor -----------------------------------------------------
 

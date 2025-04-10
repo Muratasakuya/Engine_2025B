@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 
 // imgui
 #include <imgui.h>
@@ -15,7 +15,7 @@
 //	ImGuiManager classMethods
 //============================================================================
 
-void ImGuiManager::Init(HWND hwnd, UINT bufferCount, ID3D12Device* device, SRVManager* srvManager) {
+void ImGuiManager::Init(HWND hwnd, UINT bufferCount, ID3D12Device* device, SRVDescriptor* srvDescriptor) {
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -25,11 +25,11 @@ void ImGuiManager::Init(HWND hwnd, UINT bufferCount, ID3D12Device* device, SRVMa
 		device,
 		bufferCount,
 		DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		srvManager->GetDescriptorHeap(),
-		srvManager->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(),
-		srvManager->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+		srvDescriptor->GetDescriptorHeap(),
+		srvDescriptor->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(),
+		srvDescriptor->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 
-	srvManager->IncrementIndex();
+	srvDescriptor->IncrementIndex();
 
 	//========================================================================
 	//	imguiConfig

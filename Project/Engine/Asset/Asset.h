@@ -22,7 +22,7 @@ public:
 	Asset() = default;
 	~Asset() = default;
 
-	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVManager* srvManager);
+	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor);
 
 	void LoadTexture(const std::string& textureName);
 	void LoadModel(const std::string& modelName);

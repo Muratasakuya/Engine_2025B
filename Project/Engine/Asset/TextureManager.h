@@ -14,7 +14,7 @@
 #include <unordered_map>
 // front
 class DxCommand;
-class SRVManager;
+class SRVDescriptor;
 
 //============================================================================
 //	TextureManager class
@@ -28,7 +28,7 @@ public:
 	TextureManager() = default;
 	~TextureManager() = default;
 
-	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVManager* srvManager);
+	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor);
 
 	void Load(const std::string& textureName);
 
@@ -60,7 +60,7 @@ private:
 
 	ID3D12Device* device_;
 	DxCommand* dxCommand_;
-	SRVManager* srvManager_;
+	SRVDescriptor* srvDescriptor_;
 
 	std::string baseDirectoryPath_;
 

@@ -4,13 +4,13 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Core/Graphics/Managers/SRVManager.h>
+#include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 
 //============================================================================
 //	DxRootSignature classMethods
 //============================================================================
 
-void DxRootSignature::Create(const Json& json, ID3D12Device* device, SRVManager* srvManager,
+void DxRootSignature::Create(const Json& json, ID3D12Device* device, SRVDescriptor* srvDescriptor,
 	ComPtr<ID3D12RootSignature>& rootSignature) {
 
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
@@ -79,7 +79,7 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device, SRVManager*
 					param["DescriptorRange"]["NumDescriptors"] == "srvCount") {
 
 					// srvの数だけ設定する
-					numDescriptors = srvManager->GetMaxSRVCount();
+					numDescriptors = srvDescriptor->GetMaxSRVCount();
 				}
 
 				if (param["DescriptorRange"].contains("RegisterSpace")) {

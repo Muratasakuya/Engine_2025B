@@ -20,7 +20,7 @@ public:
 	~IOVertexBuffer() = default;
 
 	void Init(UINT vertexNum, ID3D12Resource* vertexResource,
-		ID3D12Device* device, class SRVManager* SRVManager);
+		ID3D12Device* device, class SRVDescriptor* srvDescriptor);
 
 	//--------- accessor -----------------------------------------------------
 
