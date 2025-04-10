@@ -65,8 +65,12 @@ private:
 	InputTextValue addGroupName_;  // groupに入れる名前
 
 	// save
-	InputTextValue saveGroupName_; // 保存するgroupの名前
-	InputTextValue saveFileName_;  // 保存するjsonの名前
+	InputTextValue saveFileName_; // 保存するjsonの名前
+	int saveSelectedGroupIndex_;  // groupのindex
+	std::string saveGroupName_;   // groupの名前
+	// load
+	InputTextValue loadFileName_; // 読み込み用のjsonの名前
+	std::vector<std::string> loadFileNames_; // 読みこまれたjsonの名前
 
 	// selecrObject
 	// 追加されたobject
@@ -87,8 +91,10 @@ private:
 	// editorLayout
 	void SaveEditLayoutParameter();
 	void ApplyEditLayoutParameter();
-	// json保存
-	void SaveJson();
+	// object
+	void SaveObjectJson();
+	void ApplyObjectJson(const std::string& fileName);
+	void LoadJson();
 
 	// editor内のlayoutを調整
 	void EditLayout();

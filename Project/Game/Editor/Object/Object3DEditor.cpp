@@ -38,6 +38,8 @@ void Object3DEditor::ImGui() {
 	AddObject();
 	// objectの保存
 	SaveObjects();
+	// file読み込み
+	LoadJson();
 
 	// objectの選択
 	SelectObject();
@@ -61,6 +63,9 @@ void Object3DEditor::ApplyJson() {
 
 	// editor内のlayoutParameterを設定
 	ApplyEditLayoutParameter();
+
+	// objects
+	ApplyObjectJson("testObject.json");
 }
 
 void Object3DEditor::ApplyEditLayoutParameter() {
@@ -68,7 +73,7 @@ void Object3DEditor::ApplyEditLayoutParameter() {
 	if (!JsonAdapter::LoadAssert(baseJsonPath_ + "editorLayoutParameter.json")) {
 		return;
 	}
-
+	// 読み込み
 	Json data = JsonAdapter::Load(baseJsonPath_ + "editorLayoutParameter.json");
 
 	addParameterWidth_ = JsonAdapter::GetValue<float>(data, "addParameterWidth_");
@@ -76,9 +81,103 @@ void Object3DEditor::ApplyEditLayoutParameter() {
 	itemWidth_ = JsonAdapter::GetValue<float>(data, "itemWidth_");
 }
 
-void Object3DEditor::SaveJson() {
+void Object3DEditor::SaveObjectJson() {
 
+	// 選択されたgroupNameで保存
+	Json data;
 
+	// groupに登録されていたobjectの分だけ保存
+	for (const auto& [objectName, id] : groupedSelectObjects_[saveGroupName_]) {
+
+		Transform3DComponent* transform =
+			Component::GetComponent<Transform3DComponent>(id);
+		// transform
+		transform->ToJson(data[objectName]["Transform"]);
+
+		std::vector<MaterialComponent*> materials =
+			Component::GetComponentList<MaterialComponent>(id);
+		// material
+		for (uint32_t index = 0; index < materials.size(); ++index) {
+
+			materials[index]->ToJson(data[objectName]["Material" + std::to_string(index)]);
+		}
+
+		// name
+		data[objectName]["Name"]["objectName"] = objectName;
+		data[objectName]["Name"]["groupName"] = saveGroupName_;
+		data[objectName]["Name"]["instancingName"] = transform->GetInstancingName();
+	}
+
+	// 保存
+	JsonAdapter::Save(baseJsonPath_ + saveFileName_.name, data);
+}
+
+void Object3DEditor::ApplyObjectJson(const std::string& fileName) {
+
+	// すでに読みこまれていたら読みこまない
+	for (const auto& name : loadFileNames_) {
+		if (name == fileName) {
+			return;
+		}
+	}
+
+	if (!JsonAdapter::LoadAssert(baseJsonPath_ + fileName)) {
+		return;
+	}
+	// 読み込み
+	Json data = JsonAdapter::Load(baseJsonPath_ + fileName);
+
+	for (const auto& [objectName, objectData] : data.items()) {
+
+		// name
+		std::string groupName = objectData["Name"]["groupName"];
+		std::string instancingName = objectData["Name"]["instancingName"];
+
+		// object作成
+		uint32_t id = GameObjectHelper::CreateObject3D(instancingName, objectName, groupName);
+
+		// transform適用
+		Transform3DComponent* transform = Component::GetComponent<Transform3DComponent>(id);
+		transform->FromJson(objectData["Transform"]);
+
+		// material適用
+		std::vector<MaterialComponent*> materials = Component::GetComponentList<MaterialComponent>(id);
+		for (uint32_t index = 0; index < materials.size(); ++index) {
+
+			std::string materialKey = "Material" + std::to_string(index);
+			if (objectData.contains(materialKey)) {
+
+				materials[index]->FromJson(objectData[materialKey]);
+			}
+		}
+
+		// groupedSelectObjectsに登録
+		groupedSelectObjects_[groupName][objectName] = id;
+	}
+
+	// 読みこみ済みに追加
+	loadFileNames_.emplace_back(fileName);
+}
+
+void Object3DEditor::LoadJson() {
+
+	ImGui::SeparatorText("Load");
+
+	// 読み込みを行うfile(.json)の名前
+	loadFileName_.InputText("FileName##Load");
+
+	if (ImGui::Button("Load File")) {
+
+		ApplyObjectJson(loadFileName_.name);
+
+		// 読み込んで適応したタイミングで入力をリセット
+		loadFileName_.Reset();
+	}
+
+	ImGui::PopItemWidth();
+
+	// AddObjectにbeginはある、終了
+	ImGui::EndChild();
 }
 
 void Object3DEditor::EditLayout() {
@@ -91,7 +190,7 @@ void Object3DEditor::EditLayout() {
 
 	ImGui::Begin("objectEditorLayout");
 
-	if (ImGui::Button("Save")) {
+	if (ImGui::Button("Save File")) {
 
 		SaveEditLayoutParameter();
 	}
@@ -164,27 +263,51 @@ void Object3DEditor::AddObject() {
 
 void Object3DEditor::SaveObjects() {
 
+	if (groupedSelectObjects_.empty()) {
+
+		ImGui::SeparatorText("Impossible Save");
+		return;
+	}
+
 	ImGui::SeparatorText("Save");
 
-	// 追加するobjectの名前
+	// 保存するfile(.json)の名前
 	saveFileName_.InputText("FileName##Save");
-	// 保存するgroupの名前
-	saveGroupName_.InputText("GroupName##Save");
+
+	// グループ名一覧を取得
+	std::vector<std::string> groupNames;
+	for (const auto& pair : groupedSelectObjects_) {
+
+		groupNames.push_back(pair.first);
+	}
+	// 保存するgroupの名前を選択
+	if (ImGui::BeginCombo("GroupName##Save", groupNames[saveSelectedGroupIndex_].c_str())) {
+		for (int index = 0; index < groupNames.size(); ++index) {
+
+			const bool isSelected = (saveSelectedGroupIndex_ == index);
+			if (ImGui::Selectable(groupNames[index].c_str(), isSelected)) {
+
+				// 保存するgroupを設定
+				saveSelectedGroupIndex_ = index;
+				saveGroupName_ = groupNames[index];
+			}
+			if (isSelected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
 
 	// json保存
 	if (ImGui::Button("Save GroupObjects")) {
 
-		SaveJson();
+		SaveObjectJson();
 
 		// 保存されたタイミングで入力をリセット
+		saveSelectedGroupIndex_ = 0;
 		saveFileName_.Reset();
-		saveGroupName_.Reset();
+		saveGroupName_.clear();
 	}
-
-	ImGui::PopItemWidth();
-
-	// AddObjectにbeginはある、終了
-	ImGui::EndChild();
 }
 
 void Object3DEditor::SelectObject() {

@@ -10,7 +10,6 @@
 #include <Game/Editor/Object/Object3DEditor.h>
 
 // object
-#include <Game/Object3D/Environment/StageField.h>
 
 //============================================================================
 //	GameScene class
@@ -40,6 +39,4 @@ private:
 	std::unique_ptr<Object3DEditor> object3DEditor_;
 
 	std::unique_ptr<GameCamera> gameCamera_;
-
-	std::unique_ptr<StageField> stageField_;
 };

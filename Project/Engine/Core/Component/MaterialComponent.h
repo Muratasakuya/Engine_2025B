@@ -34,6 +34,9 @@ public:
 
 	void ImGui(float itemSize);
 
+	void ToJson(Json& data);
+	void FromJson(const Json& data);
+
 	//--------- variables ----------------------------------------------------
 
 	Material material;
