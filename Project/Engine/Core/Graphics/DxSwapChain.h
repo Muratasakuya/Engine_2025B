@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/DxStructures.h>
-#include <Engine/Core/Lib/ComPtr.h>
+#include <Engine/Core/Graphics/Lib/DxStructures.h>
+#include <Engine/Core/Graphics/Lib/ComPtr.h>
 
 // driectX
 #include <d3d12.h>

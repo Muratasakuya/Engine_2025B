@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Manager/ComponentManager.h>
+#include <Engine/Core/Component/ECS/ComponentManager.h>
 
 //============================================================================
 //	ComponentHelper classMethods
@@ -42,11 +42,6 @@ std::vector<T*> Component::GetComponentList(uint32_t id) {
 //============================================================================
 //	GameObjectHelper classMethods
 //============================================================================
-
-void GameObjectHelper::SetImGuiFunc(uint32_t entityId, std::function<void()> func) {
-
-	ComponentManager::GetInstance()->SetImGuiFunc(entityId, func);
-}
 
 uint32_t GameObjectHelper::CreateObject3D(const std::string& modelName,
 	const std::string& objectName, const std::optional<std::string>& groupName,

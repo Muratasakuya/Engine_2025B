@@ -29,16 +29,16 @@ void CollisionManager::Finalize() {
 	}
 }
 
-ColliderComponent* CollisionManager::AddComponent(const CollisionShape::Shapes& shape) {
+CollisionBody* CollisionManager::AddCollisionBody(const CollisionShape::Shapes& shape) {
 
-	ColliderComponent* collider = new ColliderComponent();
+	CollisionBody* collider = new CollisionBody();
 	collider->SetShape(shape);
 	colliders_.emplace_back(collider);
 
 	return collider;
 }
 
-void CollisionManager::RemoveComponent(ColliderComponent* collider) {
+void CollisionManager::RemoveCollisionBody(CollisionBody* collider) {
 
 	auto itA = std::find(colliders_.begin(), colliders_.end(), collider);
 	if (itA != colliders_.end()) {
@@ -67,7 +67,7 @@ void CollisionManager::Update() {
 		return;
 	}
 
-	std::unordered_set<std::pair<ColliderComponent*, ColliderComponent*>, pair_hash> currentCollisions;
+	std::unordered_set<std::pair<CollisionBody*, CollisionBody*>, pair_hash> currentCollisions;
 
 	for (auto itA = colliders_.begin(); itA != colliders_.end(); ++itA) {
 
@@ -76,8 +76,8 @@ void CollisionManager::Update() {
 
 		for (; itB != colliders_.end(); ++itB) {
 
-			ColliderComponent* colliderA = *itA;
-			ColliderComponent* colliderB = *itB;
+			CollisionBody* colliderA = *itA;
+			CollisionBody* colliderB = *itB;
 
 			if (colliderA->GetTargetType() != colliderB->GetType() &&
 				colliderB->GetTargetType() != colliderA->GetType()) {
@@ -113,7 +113,7 @@ void CollisionManager::Update() {
 	DrawCollider();
 }
 
-bool CollisionManager::IsColliding(ColliderComponent* colliderA, ColliderComponent* colliderB) {
+bool CollisionManager::IsColliding(CollisionBody* colliderA, CollisionBody* colliderB) {
 
 	// 形状取得
 	const auto& shapeA = colliderA->GetShape();

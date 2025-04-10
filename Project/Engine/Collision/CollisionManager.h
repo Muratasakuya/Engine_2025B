@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/ColliderComponent.h>
-#include <Engine/Core/Lib/Collision.h>
+#include <Engine/Collision/CollisionBody.h>
+#include <Engine/Collision/CollisionGeometry.h>
 
 // c++
 #include <list>
@@ -20,12 +20,9 @@ public:
 	//	public Methods
 	//========================================================================
 
-	CollisionManager() = default;
-	~CollisionManager() = default;
+	CollisionBody* AddCollisionBody(const CollisionShape::Shapes& shape);
 
-	ColliderComponent* AddComponent(const CollisionShape::Shapes& shape);
-
-	void RemoveComponent(ColliderComponent* collider);
+	void RemoveCollisionBody(CollisionBody* collider);
 
 	void ClearAllCollision();
 
@@ -52,12 +49,17 @@ private:
 
 	static CollisionManager* instance_;
 
-	std::list<ColliderComponent*> colliders_;
-	std::unordered_set<std::pair<ColliderComponent*, ColliderComponent*>, pair_hash> preCollisions_;
+	std::list<CollisionBody*> colliders_;
+	std::unordered_set<std::pair<CollisionBody*, CollisionBody*>, pair_hash> preCollisions_;
 
 	//--------- functions ----------------------------------------------------
 
-	bool IsColliding(ColliderComponent* colliderA, ColliderComponent* colliderB);
+	bool IsColliding(CollisionBody* colliderA, CollisionBody* colliderB);
 
 	void DrawCollider();
+
+	CollisionManager() = default;
+	~CollisionManager() = default;
+	CollisionManager(const CollisionManager&) = delete;
+	CollisionManager& operator=(const CollisionManager&) = delete;
 };

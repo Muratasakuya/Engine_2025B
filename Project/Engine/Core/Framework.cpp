@@ -5,8 +5,8 @@
 //============================================================================
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Input/Input.h>
-#include <Engine/Core/Component/Manager/ComponentManager.h>
-#include <Engine/Core/Component/Manager/CollisionManager.h>
+#include <Engine/Core/Component/ECS/ComponentManager.h>
+#include <Engine/Collision/CollisionManager.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Game/Time/GameTimer.h>
 
@@ -100,30 +100,22 @@ void Framework::InitComponent() {
 
 	// 3D
 	// transform
-	transform3DComponentManager_ = std::make_unique<Transform3DManager>();
-	ComponentManager::GetInstance()->RegisterComponentManager(transform3DComponentManager_.get());
+	transform3DStore_ = std::make_unique<Transform3DStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(transform3DStore_.get());
 	// material
-	materialManager_ = std::make_unique<MaterialManager>();
-	ComponentManager::GetInstance()->RegisterComponentManager(materialManager_.get());
+	materialStore_ = std::make_unique<MaterialStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(materialStore_.get());
 
 	// 2D
 	// transform
-	transform2DComponentManager_ = std::make_unique<Transform2DManager>();
-	ComponentManager::GetInstance()->RegisterComponentManager(transform2DComponentManager_.get());
+	transform2DStore_ = std::make_unique<Transform2DStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(transform2DStore_.get());
 	// material
-	spriteMaterialManager_ = std::make_unique<SpriteMaterialManager>();
-	ComponentManager::GetInstance()->RegisterComponentManager(spriteMaterialManager_.get());
+	spriteMaterialStore_ = std::make_unique<SpriteMaterialStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(spriteMaterialStore_.get());
 	// sprite
-	spriteComponentManager_ = std::make_unique<SpriteComponentManager>();
-	ComponentManager::GetInstance()->RegisterComponentManager(spriteComponentManager_.get());
-
-	// imgui
-	ComponentManager::GetInstance()->InitImGui(
-		// 3D
-		transform3DComponentManager_.get(), materialManager_.get(),
-		// 2D
-		transform2DComponentManager_.get(), spriteMaterialManager_.get(),
-		spriteComponentManager_.get());
+	spriteStore_ = std::make_unique<SpriteStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(spriteStore_.get());
 }
 
 void Framework::Update() {
@@ -190,10 +182,6 @@ void Framework::Finalize() {
 	graphicsCore_.reset();
 	winApp_.reset();
 	asset_.reset();
-	transform3DComponentManager_.reset();
-	transform2DComponentManager_.reset();
-	materialManager_.reset();
-	spriteComponentManager_.reset();
 
 	ComponentManager::GetInstance()->Finalize();
 

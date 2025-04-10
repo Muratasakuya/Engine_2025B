@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
-#include <Engine/Core/Component/User/ComponentHelper.h>
+#include <Engine/Core/Component/ComponentHelper.h>
 
 //============================================================================
 //	FadeTransition classMethods

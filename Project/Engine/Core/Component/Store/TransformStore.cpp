@@ -1,129 +1,36 @@
 #define NOMINMAX
 
-#include "MaterialManager.h"
+#include "TransformStore.h"
 
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Asset/Asset.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
-//	MaterialManager classMethods
+//	TransformStore classMethods
 //============================================================================
 
 //============================================================================
 // 3D
 //============================================================================
 
-void MaterialManager::AddComponent(uint32_t entityId, std::any args) {
-
-	size_t index = components_.size();
-
-	auto [modelData, asset] =
-		std::any_cast<std::tuple<ModelData, Asset*>>(args);
-
-	// component追加
-	components_.emplace_back();
-
-	// 追加、modelのmeshの数に合わせる
-	components_.back().resize(modelData.meshes.size());
-	for (uint32_t meshIndex = 0; meshIndex < modelData.meshes.size(); ++meshIndex) {
-
-		components_.back()[meshIndex].Init();
-		components_.back()[meshIndex].material.textureIndex =
-			asset->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
-	}
-
-	// index設定
-	SetEntityIndex(entityId, index);
-}
-
-void MaterialManager::RemoveComponent(uint32_t entityId) {
-
-	// 見つかなければ削除しない
-	if (!Algorithm::Find(entityToIndex_, entityId)) {
-		return;
-	}
-
-	// indexを末尾と交換して削除
-	size_t index = entityToIndex_.at(entityId);
-	size_t lastIndex = components_.size() - 1;
-
-	// entityIndex削除
-	SwapToPopbackIndex(entityId, lastIndex);
-
-	// component削除
-	std::swap(components_[index], components_[lastIndex]);
-	components_.pop_back();
-}
-
-void MaterialManager::Update() {
-
-	for (auto& component : components_) {
-
-		// uvTransform更新
-		for (uint32_t meshIndex = 0; meshIndex < component.size(); ++meshIndex) {
-
-			component[meshIndex].UpdateUVTransform();
-		}
-	}
-}
-
-MaterialComponent* MaterialManager::GetComponent(uint32_t entityId) {
-
-	// 単一のmaterialのみ返す
-	// multiMaterialの時はGetComponentList()から取得する
-	if (Algorithm::Find(entityToIndex_, entityId)) {
-
-		size_t index = entityToIndex_.at(entityId);
-		return &components_.at(index).front();
-
-	}
-	return nullptr;
-}
-
-std::vector<MaterialComponent*> MaterialManager::GetComponentList(uint32_t entityId) {
-
-	// 配列のmaterialを返す
-	std::vector<MaterialComponent*> materials;
-
-	if (Algorithm::Find(entityToIndex_, entityId)) {
-
-		size_t index = entityToIndex_.at(entityId);
-		for (MaterialComponent& mat : components_.at(index)) {
-
-			materials.emplace_back(&mat);
-		}
-	}
-	if (materials.size() == 0) {
-
-		int a = 0;
-		++a;
-	}
-
-	return materials;
-}
-
-//============================================================================
-// 2D
-//============================================================================
-
-void SpriteMaterialManager::AddComponent(uint32_t entityId, [[maybe_unused]] std::any args) {
+void Transform3DStore::AddComponent(uint32_t entityId, [[maybe_unused]] std::any args) {
 
 	size_t index = components_.size();
 
 	// component追加
 	components_.emplace_back();
 	components_.back().Init();
+	components_.back().UpdateMatrix();
 
 	// index設定
 	SetEntityIndex(entityId, index);
 }
 
-void SpriteMaterialManager::RemoveComponent(uint32_t entityId) {
+void Transform3DStore::RemoveComponent(uint32_t entityId) {
 
-	// 見つかなければ削除しない
+	// 見つからなければ削除しない
 	if (!Algorithm::Find(entityToIndex_, entityId)) {
 		return;
 	}
@@ -140,12 +47,77 @@ void SpriteMaterialManager::RemoveComponent(uint32_t entityId) {
 	components_.pop_back();
 }
 
-SpriteMaterial* SpriteMaterialManager::GetComponent(uint32_t entityId) {
+void Transform3DStore::Update() {
+
+	for (auto& component : components_) {
+
+		// 行列更新
+		component.UpdateMatrix();
+	}
+}
+
+Transform3DComponent* Transform3DStore::GetComponent(uint32_t entityId) {
 
 	if (Algorithm::Find(entityToIndex_, entityId)) {
 
 		size_t index = entityToIndex_.at(entityId);
 		return &components_.at(index);
+
+	}
+	return nullptr;
+}
+
+//============================================================================
+// 2D
+//============================================================================
+
+void Transform2DStore::AddComponent(uint32_t entityId, [[maybe_unused]] std::any args) {
+
+	size_t index = components_.size();
+
+	// component追加
+	components_.push_back(std::make_unique<Transform2DComponent>());
+	components_.back()->Init();
+	components_.back()->UpdateMatrix();
+
+	// index設定
+	SetEntityIndex(entityId, index);
+}
+
+void Transform2DStore::RemoveComponent(uint32_t entityId) {
+
+	// 見つからなければ削除しない
+	if (!Algorithm::Find(entityToIndex_, entityId)) {
+		return;
+	}
+
+	// indexを末尾と交換して削除
+	size_t index = entityToIndex_.at(entityId);
+	size_t lastIndex = components_.size() - 1;
+
+	// entityIndex削除
+	SwapToPopbackIndex(entityId, lastIndex);
+
+	// component削除
+	std::swap(components_[index], components_[lastIndex]);
+	components_.pop_back();
+}
+
+void Transform2DStore::Update() {
+
+	for (auto& component : components_) {
+
+		// 行列更新
+		component->UpdateMatrix();
+	}
+}
+
+Transform2DComponent* Transform2DStore::GetComponent(uint32_t entityId) {
+
+	if (Algorithm::Find(entityToIndex_, entityId)) {
+
+		size_t index = entityToIndex_.at(entityId);
+		return components_.at(index).get();
 
 	}
 	return nullptr;

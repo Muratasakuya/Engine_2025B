@@ -1,16 +1,16 @@
-#include "ColliderComponent.h"
+#include "CollisionBody.h"
 
 //============================================================================
-//	ColliderComponent classMethods
+//	Collider classMethods
 //============================================================================
-#include <Engine/Core/Component/User/Collider.h>
+#include <Engine/Collision/Collider.h>
 #include <Engine/Core/Debug/Assert.h>
 
 //============================================================================
-//	ColliderComponent classMethods
+//	CollisionBody  classMethods
 //============================================================================
 
-void ColliderComponent::TriggerOnCollisionEnter(ColliderComponent* collider) {
+void CollisionBody::TriggerOnCollisionEnter(CollisionBody* collider) {
 
 	if (onEnter_) {
 
@@ -19,7 +19,7 @@ void ColliderComponent::TriggerOnCollisionEnter(ColliderComponent* collider) {
 	}
 }
 
-void ColliderComponent::TriggerOnCollisionStay(ColliderComponent* collider) {
+void CollisionBody::TriggerOnCollisionStay(CollisionBody* collider) {
 
 	if (onStay_) {
 
@@ -28,7 +28,7 @@ void ColliderComponent::TriggerOnCollisionStay(ColliderComponent* collider) {
 	}
 }
 
-void ColliderComponent::TriggerOnCollisionExit(ColliderComponent* collider) {
+void CollisionBody::TriggerOnCollisionExit(CollisionBody* collider) {
 
 	if (onExit_) {
 
@@ -37,7 +37,7 @@ void ColliderComponent::TriggerOnCollisionExit(ColliderComponent* collider) {
 	}
 }
 
-void ColliderComponent::UpdateSphere(const CollisionShape::Sphere& sphere) {
+void CollisionBody::UpdateSphere(const CollisionShape::Sphere& sphere) {
 
 	if (std::holds_alternative<CollisionShape::Sphere>(shape_)) {
 
@@ -48,7 +48,7 @@ void ColliderComponent::UpdateSphere(const CollisionShape::Sphere& sphere) {
 	}
 }
 
-void ColliderComponent::UpdateOBB(const CollisionShape::OBB& obb) {
+void CollisionBody::UpdateOBB(const CollisionShape::OBB& obb) {
 
 	if (std::holds_alternative<CollisionShape::OBB>(shape_)) {
 
@@ -59,7 +59,7 @@ void ColliderComponent::UpdateOBB(const CollisionShape::OBB& obb) {
 	}
 }
 
-void ColliderComponent::SetType(ColliderType type, ColliderType target) {
+void CollisionBody::SetType(ColliderType type, ColliderType target) {
 
 	type_ = type;
 	targetType_ = target;

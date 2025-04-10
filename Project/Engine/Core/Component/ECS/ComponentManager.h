@@ -3,12 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Manager/EntityManager.h>
-#include <Engine/Core/Component/Manager/TransformManager.h>
-#include <Engine/Core/Component/Manager/MaterialManager.h>
-#include <Engine/Core/Component/Manager/AnimationComponentManager.h>
-#include <Engine/Core/Component/Manager/SpriteComponentManager.h>
-#include <Engine/Core/Component/Manager/ImGuiComponentManager.h>
+#include <Engine/Core/Component/ECS/EntityRegistry.h>
+#include <Engine/Core/Component/Base/IComponent.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // directX
@@ -29,7 +25,8 @@ class GPUObjectSystem;
 //============================================================================
 
 // componentの種類
-enum class ComponentType : uint32_t {
+enum class ComponentType 
+	: uint32_t {
 	Object3D,
 	Object2D,
 	Trail,
@@ -47,23 +44,13 @@ public:
 	//	public Methods
 	//========================================================================
 
-	ComponentManager() = default;
-	~ComponentManager() = default;
-
 	void Init(ID3D12Device* device, Asset* asset, GPUObjectSystem* gpuObjectSystem);
-
-	void InitImGui(
-		// 3D
-		Transform3DManager* transform3DManager, MaterialManager* materialManager,
-		// 2D
-		Transform2DManager* transform2DManager, SpriteMaterialManager* SpriteMaterialManager,
-		SpriteComponentManager* spriteComponentManager);
 
 	void Update();
 
 	// componentManagerの追加
 	template <typename T>
-	void RegisterComponentManager(IComponent<T>* manager);
+	void RegisterComponentStore(IComponentStore<T>* manager);
 
 	//--------- object3D -----------------------------------------------------
 
@@ -88,12 +75,6 @@ public:
 	static ComponentManager* GetInstance();
 	static void Finalize();
 
-	// imgui
-	void SelectObject();
-	void EditObject();
-	void SetImGuiFunc(uint32_t entityId, std::function<void()> func);
-	void ResetImGui();
-
 	// componentの取得
 	template <typename T>
 	T* GetComponent(uint32_t entityId);
@@ -103,7 +84,7 @@ public:
 	// entityの数取得
 	const std::vector<uint32_t>& GetEntityList(ComponentType type) const;
 
-	uint32_t GetEntityIndex(ComponentType type, uint32_t entityId) const { return entityManagers_[static_cast<uint32_t>(type)]->GetIndex(entityId); }
+	uint32_t GetEntityIndex(ComponentType type, uint32_t entityId) const;
 private:
 	//========================================================================
 	//	private Methods
@@ -122,12 +103,9 @@ private:
 	static ComponentManager* instance_;
 
 	// entity番号の管理
-	std::array<std::unique_ptr<EntityManager>, kComponentCount> entityManagers_;
-	// 登録済みのcomponentManager
-	std::unordered_map<std::type_index, void*> componentManagers_;
-
-	// imgui
-	std::unique_ptr<ImGuiComponentManager> imguiComponentManager_;
+	std::array<std::unique_ptr<EntityRegistry>, kComponentCount> entityRegistries_;
+	// 登録済みのcomponentStore
+	std::unordered_map<std::type_index, void*> componentStores_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -135,6 +113,11 @@ private:
 	void AddComponent(uint32_t entityId, Args&&... args);
 	template <typename T>
 	void RemoveComponent(uint32_t entityId);
+
+	ComponentManager() = default;
+	~ComponentManager() = default;
+	ComponentManager(const ComponentManager&) = delete;
+	ComponentManager& operator=(const ComponentManager&) = delete;
 };
 
 //============================================================================
@@ -142,37 +125,37 @@ private:
 //============================================================================
 
 template<typename T>
-inline void ComponentManager::RegisterComponentManager(IComponent<T>* manager) {
+inline void ComponentManager::RegisterComponentStore(IComponentStore<T>* manager) {
 
 	ASSERT(manager, "not create this ComponentClass");
 
-	componentManagers_[std::type_index(typeid(T))] = manager;
+	componentStores_[std::type_index(typeid(T))] = manager;
 }
 
 template<typename T, typename ...Args>
 inline void ComponentManager::AddComponent(uint32_t entityId, Args && ...args) {
 
-	if ((Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true))) {
+	if ((Algorithm::Find(componentStores_, std::type_index(typeid(T)), true))) {
 
-		static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->AddComponent(entityId, std::make_tuple(std::forward<Args>(args)...));
+		static_cast<IComponentStore<T>*>(componentStores_.at(std::type_index(typeid(T))))->AddComponent(entityId, std::make_tuple(std::forward<Args>(args)...));
 	}
 }
 
 template<typename T>
 inline void ComponentManager::RemoveComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
+	if (Algorithm::Find(componentStores_, std::type_index(typeid(T)), true)) {
 
-		static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->RemoveComponent(entityId);
+		static_cast<IComponentStore<T>*>(componentStores_.at(std::type_index(typeid(T))))->RemoveComponent(entityId);
 	}
 }
 
 template<typename T>
 inline T* ComponentManager::GetComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
+	if (Algorithm::Find(componentStores_, std::type_index(typeid(T)), true)) {
 
-		return static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponent(entityId);
+		return static_cast<IComponentStore<T>*>(componentStores_.at(std::type_index(typeid(T))))->GetComponent(entityId);
 	}
 	return nullptr;
 }
@@ -180,9 +163,9 @@ inline T* ComponentManager::GetComponent(uint32_t entityId) {
 template<typename T>
 inline std::vector<T*> ComponentManager::GetComponentList(uint32_t entityId) {
 
-	if (Algorithm::Find(componentManagers_, std::type_index(typeid(T)), true)) {
+	if (Algorithm::Find(componentStores_, std::type_index(typeid(T)), true)) {
 
-		return static_cast<IComponent<T>*>(componentManagers_.at(std::type_index(typeid(T))))->GetComponentList(entityId);
+		return static_cast<IComponentStore<T>*>(componentStores_.at(std::type_index(typeid(T))))->GetComponentList(entityId);
 	}
 	return { nullptr };
 }

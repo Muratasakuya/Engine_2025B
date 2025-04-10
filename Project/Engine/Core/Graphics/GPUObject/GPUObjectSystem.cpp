@@ -5,7 +5,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Manager/ComponentManager.h>
+#include <Engine/Core/Component/ECS/ComponentManager.h>
 
 //============================================================================
 //	GPUObjectSystem classMethods

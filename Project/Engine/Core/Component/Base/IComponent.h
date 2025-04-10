@@ -11,33 +11,36 @@
 #include <any>
 
 //============================================================================
-//	IComponentManager class
+//	IComponentBase class
 //============================================================================
-class IComponentManager {
-public:
-
-	IComponentManager() = default;
-	virtual ~IComponentManager() = default;
-
-	virtual void AddComponent(uint32_t entityId, std::any args) = 0;
-	virtual void RemoveComponent(uint32_t entityId) = 0;
-
-	virtual void Update() = 0;
-};
-
-//============================================================================
-//	IComponent class
-//============================================================================
-template <typename T>
-class IComponent :
-	public IComponentManager {
+class IComponentBase {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IComponent() = default;
-	virtual ~IComponent() = default;
+	IComponentBase() = default;
+	virtual ~IComponentBase() = default;
+
+	virtual void Update() = 0;
+};
+
+//============================================================================
+//	IComponentStore class
+//============================================================================
+template <typename T>
+class IComponentStore :
+	public IComponentBase {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	IComponentStore() = default;
+	virtual ~IComponentStore() = default;
+
+	virtual void AddComponent(uint32_t entityId, std::any args) = 0;
+	virtual void RemoveComponent(uint32_t entityId) = 0;
 
 	void SetEntityIndex(uint32_t entityId, size_t currentComponentIndex);
 
@@ -61,11 +64,11 @@ protected:
 };
 
 //============================================================================
-//	IComponent templateMethods
+//	IComponentStore templateMethods
 //============================================================================
 
 template<typename T>
-inline void IComponent<T>::SetEntityIndex(uint32_t entityId, size_t currentComponentIndex) {
+inline void IComponentStore<T>::SetEntityIndex(uint32_t entityId, size_t currentComponentIndex) {
 
 	// index設定
 	entityToIndex_[entityId] = currentComponentIndex;
@@ -73,7 +76,7 @@ inline void IComponent<T>::SetEntityIndex(uint32_t entityId, size_t currentCompo
 }
 
 template<typename T>
-inline void IComponent<T>::SwapToPopbackIndex(uint32_t entityId, size_t lastIndex) {
+inline void IComponentStore<T>::SwapToPopbackIndex(uint32_t entityId, size_t lastIndex) {
 
 	size_t index = entityToIndex_.at(entityId);
 

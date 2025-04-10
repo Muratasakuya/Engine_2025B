@@ -12,12 +12,12 @@
 #include <algorithm>
 
 //============================================================================
-//	EntityManager class
+//	EntityRegistry class
 //============================================================================
-class EntityManager {
-private:
+class EntityRegistry {
+public:
 	//========================================================================
-	//	private Methods
+	//	public Methods
 	//========================================================================
 
 	//--------- structure ----------------------------------------------------
@@ -32,8 +32,8 @@ public:
 	//	public Methods
 	//========================================================================
 
-	EntityManager() = default;
-	~EntityManager() = default;
+	EntityRegistry() = default;
+	~EntityRegistry() = default;
 
 	uint32_t CreateEntity(const std::string& name,
 		const std::optional<std::string>& groupName);

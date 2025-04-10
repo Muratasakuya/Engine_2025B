@@ -1,6 +1,6 @@
 #define NOMINMAX
 
-#include "EntityManager.h"
+#include "EntityRegistry.h"
 
 //============================================================================
 //	include
@@ -8,10 +8,10 @@
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
-//	EntityManager classMethods
+//	EntityRegistry classMethods
 //============================================================================
 
-uint32_t EntityManager::CreateEntity(const std::string& name,
+uint32_t EntityRegistry::CreateEntity(const std::string& name,
 	const std::optional<std::string>& groupName) {
 
 	uint32_t id = nextId_;
@@ -26,7 +26,7 @@ uint32_t EntityManager::CreateEntity(const std::string& name,
 	return id;
 }
 
-void EntityManager::RemoveEntity(uint32_t id) {
+void EntityRegistry::RemoveEntity(uint32_t id) {
 
 	if (!Algorithm::Find(entityToIndex_, id)) {
 		return;
@@ -53,7 +53,7 @@ void EntityManager::RemoveEntity(uint32_t id) {
 	entityToIndex_.erase(id);
 }
 
-uint32_t EntityManager::GetIndex(uint32_t id) const {
+uint32_t EntityRegistry::GetIndex(uint32_t id) const {
 
 	if (Algorithm::Find(entityToIndex_, id, true)) {
 
@@ -62,7 +62,7 @@ uint32_t EntityManager::GetIndex(uint32_t id) const {
 	return UINT();
 }
 
-std::string EntityManager::CheckName(const std::string& name) {
+std::string EntityRegistry::CheckName(const std::string& name) {
 
 	int trailingNumber = 0;
 	std::string base = SplitBaseNameAndNumber(name, trailingNumber);
@@ -87,7 +87,7 @@ std::string EntityManager::CheckName(const std::string& name) {
 	return uniqueName;
 }
 
-std::string EntityManager::SplitBaseNameAndNumber(const std::string& name, int& number) {
+std::string EntityRegistry::SplitBaseNameAndNumber(const std::string& name, int& number) {
 
 	int idx = static_cast<int>(name.size()) - 1;
 	while (idx >= 0 && std::isdigit(name[idx])) {
