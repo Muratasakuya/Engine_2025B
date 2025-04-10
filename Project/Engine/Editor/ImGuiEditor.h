@@ -41,6 +41,9 @@ private:
 
 	ImGuiWindowFlags windowFlag_;
 
+	// imgui表示フラグ
+	bool displayEnable_;
+
 	//--------- functions ----------------------------------------------------
 
 	// renderTextureの描画
