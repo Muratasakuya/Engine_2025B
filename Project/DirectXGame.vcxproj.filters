@@ -86,7 +86,7 @@
     <ClCompile Include="Engine\Core\Graphics\GPUObject\CBufferStructures.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Lib\DxUtils.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Lib\DxUtils.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Asset\Filesystem.cpp">
@@ -125,7 +125,7 @@
     <ClCompile Include="Lib\MathUtils\Vector4.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\User\Collider.cpp">
+    <ClCompile Include="Engine\Collision\Collider.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Camera\Base\BaseCamera.cpp">
@@ -167,28 +167,28 @@
     <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\ComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\ECS\ComponentManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\EntityManager.cpp">
+    <ClCompile Include="Engine\Core\Component\ECS\EntityRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\TransformManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Store\TransformStore.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\MaterialManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Store\MaterialStore.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\ImGuiComponentManager.cpp">
+    <ClCompile Include="Engine\Editor\ImGuiInspector.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\ColliderComponent.cpp">
+    <ClCompile Include="Engine\Collision\CollisionBody.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Lib\Collision.cpp">
+    <ClCompile Include="Engine\Collision\CollisionGeometry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\CollisionManager.cpp">
+    <ClCompile Include="Engine\Collision\CollisionManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object3D\Template\TemplateObject3D.cpp">
@@ -209,7 +209,7 @@
     <ClCompile Include="Engine\Core\Component\AnimationComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\AnimationComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Store\AnimationStore.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Context\MeshCommandContext.cpp">
@@ -221,13 +221,13 @@
     <ClCompile Include="Engine\Core\Component\SpriteComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Manager\SpriteComponentManager.cpp">
+    <ClCompile Include="Engine\Core\Component\Store\SpriteStore.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Camera\Camera2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\User\ComponentHelper.cpp">
+    <ClCompile Include="Engine\Core\Component\ComponentHelper.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\Base\IGameEditor.cpp">
@@ -319,9 +319,9 @@
     <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\CBufferStructures.h" />
-    <ClInclude Include="Engine\Core\Lib\ComPtr.h" />
-    <ClInclude Include="Engine\Core\Lib\DxStructures.h" />
-    <ClInclude Include="Engine\Core\Lib\DxUtils.h" />
+    <ClInclude Include="Engine\Core\Graphics\Lib\ComPtr.h" />
+    <ClInclude Include="Engine\Core\Graphics\Lib\DxStructures.h" />
+    <ClInclude Include="Engine\Core\Graphics\Lib\DxUtils.h" />
     <ClInclude Include="Engine\Asset\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
     <ClInclude Include="Engine\Core\Framework.h" />
@@ -334,7 +334,7 @@
     <ClInclude Include="Lib\MathUtils\Vector2.h" />
     <ClInclude Include="Lib\MathUtils\Vector3.h" />
     <ClInclude Include="Lib\MathUtils\Vector4.h" />
-    <ClInclude Include="Engine\Core\Component\User\Collider.h" />
+    <ClInclude Include="Engine\Collision\Collider.h" />
     <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
     <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
     <ClInclude Include="Game\Camera\GameCamera.h" />
@@ -350,27 +350,27 @@
     <ClInclude Include="Game\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Renderer\LineRenderer.h" />
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\ComponentManager.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\EntityManager.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\TransformManager.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\MaterialManager.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\ImGuiComponentManager.h" />
-    <ClInclude Include="Engine\Core\Component\ColliderComponent.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\CollisionManager.h" />
-    <ClInclude Include="Engine\Core\Lib\Collision.h" />
+    <ClInclude Include="Engine\Core\Component\ECS\ComponentManager.h" />
+    <ClInclude Include="Engine\Core\Component\ECS\EntityRegistry.h" />
+    <ClInclude Include="Engine\Core\Component\Store\TransformStore.h" />
+    <ClInclude Include="Engine\Core\Component\Store\MaterialStore.h" />
+    <ClInclude Include="Engine\Editor\ImGuiInspector.h" />
+    <ClInclude Include="Engine\Collision\CollisionBody.h" />
+    <ClInclude Include="Engine\Collision\CollisionManager.h" />
+    <ClInclude Include="Engine\Collision\CollisionGeometry.h" />
     <ClInclude Include="Game\Object3D\Template\TemplateObject3D.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h" />
     <ClInclude Include="Engine\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Engine\Core\Component\Base\IComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\GPUObjectSystem.h" />
     <ClInclude Include="Engine\Core\Component\AnimationComponent.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\AnimationComponentManager.h" />
+    <ClInclude Include="Engine\Core\Component\Store\AnimationStore.h" />
     <ClInclude Include="Engine\Core\Graphics\Context\MeshCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h" />
     <ClInclude Include="Engine\Core\Component\SpriteComponent.h" />
-    <ClInclude Include="Engine\Core\Component\Manager\SpriteComponentManager.h" />
+    <ClInclude Include="Engine\Core\Component\Store\SpriteStore.h" />
     <ClInclude Include="Game\Camera\Camera2D.h" />
-    <ClInclude Include="Engine\Core\Component\User\ComponentHelper.h" />
+    <ClInclude Include="Engine\Core\Component\ComponentHelper.h" />
     <ClInclude Include="Engine\Editor\Base\IGameEditor.h" />
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.h" />

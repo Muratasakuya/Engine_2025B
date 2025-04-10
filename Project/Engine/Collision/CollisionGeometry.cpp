@@ -1,4 +1,4 @@
-#include "Collision.h"
+#include "CollisionGeometry.h"
 
 //============================================================================
 //	Collision Methods

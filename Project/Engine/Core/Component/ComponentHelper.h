@@ -49,9 +49,6 @@ public:
 	//	public Methods
 	//========================================================================
 
-	// imgui
-	static void SetImGuiFunc(uint32_t entityId, std::function<void()> func);
-
 	//--------- object3D -----------------------------------------------------
 
 	static uint32_t CreateObject3D(const std::string& modelName, const std::string& objectName,

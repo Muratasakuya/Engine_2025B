@@ -6,7 +6,7 @@
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Core/Graphics/Managers/SRVManager.h>
-#include <Engine/Core/Lib/DxUtils.h>
+#include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Engine/Asset/ModelLoader.h>
 #include <Engine/Asset/Filesystem.h>
 

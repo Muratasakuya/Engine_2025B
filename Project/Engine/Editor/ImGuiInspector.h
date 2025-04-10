@@ -14,35 +14,16 @@
 #include <algorithm>
 #include <functional>
 // front
-class EntityManager;
-// 3D
-class Transform3DManager;
-class MaterialManager;
-class ModelComponentManager;
-// 2D
-class Transform2DManager;
-class SpriteMaterialManager;
-class SpriteComponentManager;
+class EntityRegistry;
 
 //============================================================================
-//	ImGuiComponentManager class
+//	ImGuiInspector class
 //============================================================================
-class ImGuiComponentManager {
+class ImGuiInspector {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
-
-	ImGuiComponentManager() = default;
-	~ImGuiComponentManager() = default;
-
-	void Init(
-		// 3D
-		EntityManager* entity3DManager, Transform3DManager* transform3DManager,
-		MaterialManager* materialManager,
-		// 2D
-		EntityManager* entity2DManager, Transform2DManager* transform2DManager,
-		SpriteMaterialManager* spriteMaterialManager, SpriteComponentManager* spriteComponentManager);
 
 	// objectの選択
 	void SelectObject();
@@ -53,6 +34,14 @@ public:
 	void Reset();
 
 	//--------- accessor -----------------------------------------------------
+
+	// singleton
+	static ImGuiInspector* GetInstance();
+	static void Finalize();
+
+	void SetEntityManager(
+		EntityRegistry* entity3DRegistry,
+		EntityRegistry* entity2DRegistry);
 
 	void SetImGuiFunc(uint32_t entityId, std::function<void()> func);
 private:
@@ -86,15 +75,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// 3D
-	EntityManager* entity3DManager_;
-	Transform3DManager* transform3DManager_;
-	MaterialManager* materialManager_;
-	// 2D
-	EntityManager* entity2DManager_;
-	Transform2DManager* transform2DManager_;
-	SpriteMaterialManager* spriteMaterialManager_;
-	SpriteComponentManager* spriteComponentManager_;
+	EntityRegistry* entity3DRegistry_;
+	EntityRegistry* entity2DRegistry_;
+
+	static ImGuiInspector* instance_;
 
 	const float itemWidth_ = 168.0f;
 
@@ -106,6 +90,11 @@ private:
 	EditImGui object2D_;
 
 	//--------- functions ----------------------------------------------------
+
+	ImGuiInspector() = default;
+	~ImGuiInspector() = default;
+	ImGuiInspector(const ImGuiInspector&) = delete;
+	ImGuiInspector& operator=(const ImGuiInspector&) = delete;
 
 	//----------- group ------------------------------------------------------
 

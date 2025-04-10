@@ -7,17 +7,17 @@
 #include <Engine/Core/Component/Base/IComponent.h>
 
 //============================================================================
-//	AnimationComponentManager class
+//	AnimationStore class
 //============================================================================
-class AnimationComponentManager :
-	public IComponent<AnimationComponent> {
+class AnimationStore :
+	public IComponentStore<AnimationComponent> {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	AnimationComponentManager() = default;
-	~AnimationComponentManager() = default;
+	AnimationStore() = default;
+	~AnimationStore() = default;
 
 	void AddComponent(uint32_t entityId, std::any args) override;
 	void RemoveComponent(uint32_t entityId) override;

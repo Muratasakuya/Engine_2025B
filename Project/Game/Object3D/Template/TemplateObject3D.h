@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/User/Collider.h>
+#include <Engine/Collision/Collider.h>
 
 //============================================================================
 //	TemplateObject3D class
@@ -21,11 +21,11 @@ public:
 	void Update();
 
 	// collision
-	void OnCollisionEnter(const ColliderComponent* collider) override;
+	void OnCollisionEnter(const CollisionBody* collisionBody) override;
 
-	void OnCollisionStay(const ColliderComponent* collider) override;
+	void OnCollisionStay(const CollisionBody* collisionBody) override;
 
-	void OnCollisionExit(const ColliderComponent* collider) override;
+	void OnCollisionExit(const CollisionBody* collisionBody) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -37,8 +37,8 @@ private:
 	uint32_t modelIdB_;
 
 	// collision
-	ColliderComponent* colliderA_;
-	ColliderComponent* colliderB_;
+	CollisionBody* collisionBodyA_;
+	CollisionBody* collisionBodyB_;
 
 	//--------- functions ----------------------------------------------------
 

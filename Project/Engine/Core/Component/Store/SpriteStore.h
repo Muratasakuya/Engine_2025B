@@ -8,17 +8,17 @@
 #include <Engine/Core/Component/Base/IComponent.h>
 
 //============================================================================
-//	SpriteComponentManager class
+//	SpriteStore class
 //============================================================================
-class SpriteComponentManager :
-	public IComponent<SpriteComponent> {
+class SpriteStore :
+	public IComponentStore<SpriteComponent> {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	SpriteComponentManager() = default;
-	~SpriteComponentManager() = default;
+	SpriteStore() = default;
+	~SpriteStore() = default;
 
 	void AddComponent(uint32_t entityId, std::any args) override;
 	void RemoveComponent(uint32_t entityId) override;

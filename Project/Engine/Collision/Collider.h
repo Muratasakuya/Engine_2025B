@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/ColliderComponent.h>
+#include <Engine/Collision/CollisionBody.h>
 
 // c++
 #include <string>
@@ -22,12 +22,12 @@ public:
 	~Collider() = default;
 
 	// collision
-	ColliderComponent* AddCollider(const CollisionShape::Shapes& shape);
-	void RemoveCollider(ColliderComponent* collider);
+	CollisionBody* AddCollider(const CollisionShape::Shapes& shape);
+	void RemoveCollider(CollisionBody* collisionBody);
 
-	virtual void OnCollisionEnter([[maybe_unused]] const ColliderComponent* collider) {};
+	virtual void OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {};
 
-	virtual void OnCollisionStay([[maybe_unused]] const ColliderComponent* collider) {};
+	virtual void OnCollisionStay([[maybe_unused]] const CollisionBody* collisionBody) {};
 
-	virtual void OnCollisionExit([[maybe_unused]] const ColliderComponent* collider) {};
+	virtual void OnCollisionExit([[maybe_unused]] const CollisionBody* collisionBody) {};
 };

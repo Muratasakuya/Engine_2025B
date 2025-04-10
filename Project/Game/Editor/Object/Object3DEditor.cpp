@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
-#include <Engine/Core/Component/User/ComponentHelper.h>
+#include <Engine/Core/Component/ComponentHelper.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================

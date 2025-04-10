@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/Manager/ComponentManager.h>
+#include <Engine/Editor/ImGuiInspector.h>
 
 //============================================================================
 //	SceneManager classMethods
@@ -71,5 +71,5 @@ void SceneManager::LoadScene(Scene scene) {
 	currentScene_ = factory_->Create(scene);
 
 	// imgui選択をリセット
-	ComponentManager::GetInstance()->ResetImGui();
+	ImGuiInspector::GetInstance()->Reset();
 }

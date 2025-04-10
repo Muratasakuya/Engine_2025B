@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/User/ComponentHelper.h>
+#include <Engine/Core/Component/ComponentHelper.h>
 
 // imgui
 #include <imgui.h>
@@ -19,11 +19,11 @@ TemplateObject3D::TemplateObject3D() {
 
 	GameObjectHelper::CreateObject2D("uvChecker", "uvChecker");
 
-	colliderA_ = Collider::AddCollider(CollisionShape::Sphere());
-	colliderA_->SetType(ColliderType::Type_None, ColliderType::Type_Test);
+	collisionBodyA_ = Collider::AddCollider(CollisionShape::Sphere());
+	collisionBodyA_->SetType(ColliderType::Type_None, ColliderType::Type_Test);
 
-	colliderB_ = Collider::AddCollider(CollisionShape::OBB());
-	colliderB_->SetType(ColliderType::Type_Test, ColliderType::Type_None);
+	collisionBodyB_ = Collider::AddCollider(CollisionShape::OBB());
+	collisionBodyB_->SetType(ColliderType::Type_Test, ColliderType::Type_None);
 }
 
 TemplateObject3D::~TemplateObject3D() {
@@ -47,27 +47,27 @@ void TemplateObject3D::UpdateCollision() {
 		return;
 	}
 
-	colliderA_->UpdateSphere({ .center = transformA->translation,.radius = 1.0f });
+	collisionBodyA_->UpdateSphere({ .center = transformA->translation,.radius = 1.0f });
 
 	if (!transformB) {
 		return;
 	}
 
-	colliderB_->UpdateOBB({
+	collisionBodyB_->UpdateOBB({
 		.center = transformB->translation,
 		.size = transformB->scale,
 		.rotate = transformB->rotation });
 }
 
-void TemplateObject3D::OnCollisionEnter(const ColliderComponent* collider) {
+void TemplateObject3D::OnCollisionEnter(const CollisionBody* collisionBody) {
 
-	if (colliderA_->GetTargetType() == collider->GetType()) {
+	if (collisionBodyA_->GetTargetType() == collisionBody->GetType()) {
 
 		int test = 0;
 		++test;
 	}
 
-	if (colliderB_->GetTargetType() == collider->GetType()) {
+	if (collisionBodyB_->GetTargetType() == collisionBody->GetType()) {
 
 		int test = 0;
 		++test;
@@ -75,13 +75,13 @@ void TemplateObject3D::OnCollisionEnter(const ColliderComponent* collider) {
 }
 
 void TemplateObject3D::OnCollisionStay(
-	[[maybe_unused]] const ColliderComponent* collider) {
+	[[maybe_unused]] const CollisionBody* collisionBody) {
 
 
 }
 
 void TemplateObject3D::OnCollisionExit(
-	[[maybe_unused]] const ColliderComponent* collider) {
+	[[maybe_unused]] const CollisionBody* collisionBody) {
 
 
 }

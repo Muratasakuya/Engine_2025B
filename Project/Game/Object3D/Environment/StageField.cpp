@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/User/ComponentHelper.h>
+#include <Engine/Core/Component/ComponentHelper.h>
 
 //============================================================================
 //	StageField classMethods

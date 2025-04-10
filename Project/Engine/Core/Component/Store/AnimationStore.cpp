@@ -1,34 +1,36 @@
-#include "SpriteComponentManager.h"
+#define NOMINMAX
+
+#include "AnimationStore.h"
 
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/TransformComponent.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
-//	SpriteComponentManager classMethods
+//	AnimationStore classMethods
 //============================================================================
 
-void SpriteComponentManager::AddComponent([[maybe_unused]] uint32_t entityId, std::any args) {
+void AnimationStore::AddComponent(uint32_t entityId, std::any args) {
 
 	size_t index = components_.size();
 
-	auto [textureName, transform, device, asset] =
-		std::any_cast<std::tuple<std::string, Transform2DComponent*, ID3D12Device*, Asset*>>(args);
+	auto [animationName, asset] =
+		std::any_cast<std::tuple<std::optional<std::string>, Asset*>>(args);
 
+	// animationをしない場合でも要素は追加しておく
 	// component追加
-	components_.push_back(std::make_unique<SpriteComponent>(device, asset, textureName, *transform));
-	// transform追加
-	transforms_.push_back(transform);
-
+	components_.emplace_back();
+	components_.back().Init(*animationName, asset);
+	components_.back().SetPlayAnimation(*animationName, true);
+	
 	// index設定
 	SetEntityIndex(entityId, index);
 }
 
-void SpriteComponentManager::RemoveComponent(uint32_t entityId) {
+void AnimationStore::RemoveComponent(uint32_t entityId) {
 
-	// 見つかなければ削除しない
+	// 見つからなければ削除しない
 	if (!Algorithm::Find(entityToIndex_, entityId)) {
 		return;
 	}
@@ -45,20 +47,21 @@ void SpriteComponentManager::RemoveComponent(uint32_t entityId) {
 	components_.pop_back();
 }
 
-void SpriteComponentManager::Update() {
+void AnimationStore::Update() {
 
-	for (uint32_t index = 0; index < components_.size(); ++index) {
+	for (auto& component : components_) {
 
-		components_[index]->UpdateVertex(*transforms_[index]);
+		// animation更新処理
+		component.Update();
 	}
 }
 
-SpriteComponent* SpriteComponentManager::GetComponent(uint32_t entityId) {
+AnimationComponent* AnimationStore::GetComponent(uint32_t entityId) {
 
 	if (Algorithm::Find(entityToIndex_, entityId)) {
 
 		size_t index = entityToIndex_.at(entityId);
-		return components_.at(index).get();
+		return &components_.at(index);
 
 	}
 	return nullptr;

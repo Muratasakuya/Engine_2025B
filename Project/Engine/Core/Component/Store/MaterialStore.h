@@ -3,31 +3,36 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/TransformComponent.h>
 #include <Engine/Core/Component/Base/IComponent.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Component/MaterialComponent.h>
+
+// front
+class Asset;
 
 //============================================================================
-//	Transform3DManager class
+//	MaterialStore class
 //============================================================================
-class Transform3DManager :
-	public IComponent<Transform3DComponent> {
+class MaterialStore :
+	public IComponentStore<MaterialComponent> {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	Transform3DManager() = default;
-	~Transform3DManager() = default;
+	MaterialStore() = default;
+	~MaterialStore() = default;
 
 	void AddComponent(uint32_t entityId, std::any args) override;
+
 	void RemoveComponent(uint32_t entityId) override;
 
 	void Update() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	Transform3DComponent* GetComponent(uint32_t entityId) override;
-	std::vector<Transform3DComponent*> GetComponentList([[maybe_unused]] uint32_t entityId) override { return { nullptr }; }
+	MaterialComponent* GetComponent(uint32_t entityId) override;
+	std::vector<MaterialComponent*> GetComponentList(uint32_t entityId) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -35,31 +40,32 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<Transform3DComponent> components_;
+	std::vector<std::vector<MaterialComponent>> components_;
 };
 
 //============================================================================
-//	Transform2DManager class
+//	SpriteMaterialStore class
 //============================================================================
-class Transform2DManager :
-	public IComponent<Transform2DComponent> {
+class SpriteMaterialStore :
+	public IComponentStore<SpriteMaterial> {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	Transform2DManager() = default;
-	~Transform2DManager() = default;
+	SpriteMaterialStore() = default;
+	~SpriteMaterialStore() = default;
 
 	void AddComponent(uint32_t entityId, std::any args) override;
+
 	void RemoveComponent(uint32_t entityId) override;
 
-	void Update() override;
+	void Update() override {};
 
 	//--------- accessor -----------------------------------------------------
 
-	Transform2DComponent* GetComponent(uint32_t entityId) override;
-	std::vector<Transform2DComponent*> GetComponentList([[maybe_unused]] uint32_t entityId) override { return { nullptr }; }
+	SpriteMaterial* GetComponent(uint32_t entityId) override;
+	std::vector<SpriteMaterial*> GetComponentList([[maybe_unused]] uint32_t entityId) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -67,5 +73,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<std::unique_ptr<Transform2DComponent>> components_;
+	std::vector<SpriteMaterial> components_;
 };

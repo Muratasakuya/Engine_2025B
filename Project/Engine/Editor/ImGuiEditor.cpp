@@ -5,7 +5,7 @@
 //============================================================================
 
 // imgui表示
-#include <Engine/Core/Component/Manager/ComponentManager.h>
+#include <Engine/Editor/ImGuiInspector.h>
 #include <Engine/Editor/Manager/GameEditorManager.h>
 #include <Game/Camera/Manager/CameraManager.h>
 #include <Game/Time/GameTimer.h>
@@ -80,7 +80,7 @@ void ImGuiEditor::Hierarchy() {
 		if (ImGui::BeginTabItem("GameObject")) {
 
 			// scene内のobject選択
-			ComponentManager::GetInstance()->SelectObject();
+			ImGuiInspector::GetInstance()->SelectObject();
 			ImGui::EndTabItem();
 		}
 
@@ -107,7 +107,7 @@ void ImGuiEditor::Inspector() {
 		if (ImGui::BeginTabItem("GameObject")) {
 
 			// scene内のobject選択
-			ComponentManager::GetInstance()->EditObject();
+			ImGuiInspector::GetInstance()->EditObject();
 			ImGui::EndTabItem();
 		}
 

@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/Collision.h>
+#include <Engine/Collision/CollisionGeometry.h>
 
 // c++
 #include <cstdint>
@@ -41,9 +41,9 @@ inline ColliderType& operator&=(ColliderType& lhs, ColliderType rhs) {
 }
 
 //============================================================================
-//	ColliderComponent class
+//	CollisionBody  class
 //============================================================================
-class ColliderComponent {
+class CollisionBody {
 public:
 	//========================================================================
 	//	public Methods
@@ -51,18 +51,18 @@ public:
 
 	//--------- functions ----------------------------------------------------
 
-	ColliderComponent() = default;
-	~ColliderComponent() = default;
+	CollisionBody() = default;
+	~CollisionBody() = default;
 
-	void TriggerOnCollisionEnter(ColliderComponent* collider);
+	void TriggerOnCollisionEnter(CollisionBody* collider);
 
-	void TriggerOnCollisionStay(ColliderComponent* collider);
+	void TriggerOnCollisionStay(CollisionBody* collider);
 
-	void TriggerOnCollisionExit(ColliderComponent* collider);
+	void TriggerOnCollisionExit(CollisionBody* collider);
 
-	void SetOnCollisionEnter(std::function<void(ColliderComponent*)> onCollisionEnter) { onEnter_ = onCollisionEnter; }
-	void SetOnCollisionStay(std::function<void(ColliderComponent*)> onCollisionEnter) { onStay_ = onCollisionEnter; }
-	void SetOnCollisionExit(std::function<void(ColliderComponent*)> onCollisionEnter) { onExit_ = onCollisionEnter; }
+	void SetOnCollisionEnter(std::function<void(CollisionBody*)> onCollisionEnter) { onEnter_ = onCollisionEnter; }
+	void SetOnCollisionStay(std::function<void(CollisionBody*)> onCollisionEnter) { onStay_ = onCollisionEnter; }
+	void SetOnCollisionExit(std::function<void(CollisionBody*)> onCollisionEnter) { onExit_ = onCollisionEnter; }
 
 	void UpdateSphere(const CollisionShape::Sphere& sphere);
 	void UpdateOBB(const CollisionShape::OBB& obb);
@@ -84,7 +84,7 @@ private:
 
 	//--------- using --------------------------------------------------------
 
-	using CollisionCallback = std::function<void(ColliderComponent*)>;
+	using CollisionCallback = std::function<void(CollisionBody*)>;
 
 	//--------- variables ----------------------------------------------------
 

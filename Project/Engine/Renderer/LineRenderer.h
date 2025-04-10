@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Engine/Core/Lib/Collision.h>
+#include <Engine/Collision/CollisionGeometry.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 // c++

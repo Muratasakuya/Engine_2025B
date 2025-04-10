@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Lib/ComPtr.h>
+#include <Engine/Core/Graphics/Lib/ComPtr.h>
 #include <Lib/MathUtils/Vector4.h>
 
 // directX

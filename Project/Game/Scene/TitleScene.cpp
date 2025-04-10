@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
-#include <Engine/Core/Component/User/ComponentHelper.h>
+#include <Engine/Core/Component/ComponentHelper.h>
 #include <Engine/Input/Input.h>
 #include <Game/Camera/Manager/CameraManager.h>
 #include <Game/Scene/Manager/SceneManager.h>

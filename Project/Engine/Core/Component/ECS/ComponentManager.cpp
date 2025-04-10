@@ -6,6 +6,7 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
+#include <Engine/Editor/ImGuiInspector.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
@@ -31,29 +32,14 @@ void ComponentManager::Finalize() {
 	}
 }
 
-void ComponentManager::SelectObject() {
-
-	imguiComponentManager_->SelectObject();
-}
-
-void ComponentManager::EditObject() {
-
-	imguiComponentManager_->EditObject();
-}
-
-void ComponentManager::SetImGuiFunc(uint32_t entityId, std::function<void()> func) {
-
-	imguiComponentManager_->SetImGuiFunc(entityId, func);
-}
-
-void ComponentManager::ResetImGui() {
-
-	imguiComponentManager_->Reset();
-}
-
 const std::vector<uint32_t>& ComponentManager::GetEntityList(ComponentType type) const {
 
-	return entityManagers_[static_cast<uint32_t>(type)]->GetIndexToEntity();
+	return entityRegistries_[static_cast<uint32_t>(type)]->GetIndexToEntity();
+}
+
+uint32_t ComponentManager::GetEntityIndex(ComponentType type, uint32_t entityId) const {
+
+	return entityRegistries_[static_cast<uint32_t>(type)]->GetIndex(entityId);
 }
 
 void ComponentManager::Init(ID3D12Device* device, Asset* asset, GPUObjectSystem* gpuObjectSystem) {
@@ -69,36 +55,21 @@ void ComponentManager::Init(ID3D12Device* device, Asset* asset, GPUObjectSystem*
 
 	for (uint32_t type : Algorithm::GetEnumArray(ComponentType::Count)) {
 
-		entityManagers_[type] = std::make_unique<EntityManager>();
+		entityRegistries_[type] = std::make_unique<EntityRegistry>();
 	}
-}
 
-void ComponentManager::InitImGui(
-
-	// 3D
-	Transform3DManager* transform3DManager, MaterialManager* materialManager,
-	// 2D
-	Transform2DManager* transform2DManager, SpriteMaterialManager* spriteMaterialManager,
-	SpriteComponentManager* spriteComponentManager) {
-
-#ifdef _DEBUG
-	imguiComponentManager_ = std::make_unique<ImGuiComponentManager>();
-	imguiComponentManager_->Init(
-		// 3D
-		entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)].get(), transform3DManager,
-		materialManager,
-		// 2D
-		entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)].get(), transform2DManager,
-		spriteMaterialManager, spriteComponentManager);
-#endif // _DEBUG
+	// inspectorへentityManagerをセット
+	ImGuiInspector::GetInstance()->SetEntityManager(
+		entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)].get(),
+		entityRegistries_[static_cast<uint32_t>(ComponentType::Object2D)].get());
 }
 
 void ComponentManager::Update() {
 
 	// 全Componentの更新処理
-	for (const auto& [type, manager] : componentManagers_) {
+	for (const auto& [type, manager] : componentStores_) {
 
-		static_cast<IComponentManager*>(manager)->Update();
+		static_cast<IComponentBase*>(manager)->Update();
 	}
 }
 
@@ -109,7 +80,7 @@ uint32_t ComponentManager::CreateObject3D(
 	animationName;
 
 	// entityID発行
-	uint32_t id = entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName, groupName);
+	uint32_t id = entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName, groupName);
 
 	// object3Dに必要なcomponentを追加
 	AddComponent<Transform3DComponent>(id);
@@ -128,7 +99,7 @@ uint32_t ComponentManager::CreateObject2D(const std::string& textureName, const 
 	const std::optional<std::string>& groupName) {
 
 	// entityID発行
-	uint32_t id = entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->CreateEntity(objectName, groupName);
+	uint32_t id = entityRegistries_[static_cast<uint32_t>(ComponentType::Object2D)]->CreateEntity(objectName, groupName);
 
 	// object2Dに必要なcomponentを追加
 	AddComponent<Transform2DComponent>(id);
@@ -143,7 +114,7 @@ uint32_t ComponentManager::CreateObject2D(const std::string& textureName, const 
 void ComponentManager::RemoveObject3D(uint32_t entityId) {
 
 	// idの削除
-	entityManagers_[static_cast<uint32_t>(ComponentType::Object3D)]->RemoveEntity(entityId);
+	entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)]->RemoveEntity(entityId);
 
 	// object3Dで使用していたcomponentの削除
 	RemoveComponent<Transform3DComponent>(entityId);
@@ -153,7 +124,7 @@ void ComponentManager::RemoveObject3D(uint32_t entityId) {
 void ComponentManager::RemoveObject2D(uint32_t entityId) {
 
 	// idの削除
-	entityManagers_[static_cast<uint32_t>(ComponentType::Object2D)]->RemoveEntity(entityId);
+	entityRegistries_[static_cast<uint32_t>(ComponentType::Object2D)]->RemoveEntity(entityId);
 
 	// buffer削除
 	gpuObjectSystem_->RemoveObject2D(entityId);
