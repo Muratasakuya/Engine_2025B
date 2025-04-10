@@ -11,3 +11,4 @@ EngineInformation:     load texture: monsterBall
 EngineInformation:     load model: multiMaterial
 EngineInformation:     load texture: white
 EngineInformation:     load model: suzanne
+EngineInformation:     load model: walk
