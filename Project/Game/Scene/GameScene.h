@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Scene/Light/PunctualLight.h>
 #include <Game/Scene/Methods/IScene.h>
 #include <Game/Camera/GameCamera.h>
 
@@ -25,7 +26,7 @@ public:
 	~GameScene() = default;
 
 	void Init(Asset* asset, CameraManager* cameraManager,
-		PostProcessSystem* postProcessSystem) override;
+		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
 
 	void Update(SceneManager* sceneManager) override;
 private:
@@ -38,5 +39,8 @@ private:
 	// editor
 	std::unique_ptr<Object3DEditor> object3DEditor_;
 
+	// camera
 	std::unique_ptr<GameCamera> gameCamera_;
+	// light
+	std::unique_ptr<PunctualLight> gameLight_;
 };

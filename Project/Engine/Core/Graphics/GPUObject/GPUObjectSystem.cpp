@@ -18,6 +18,10 @@ void GPUObjectSystem::Init(ID3D12Device* device, Asset* asset) {
 
 	instancedMeshBuffer_ = std::make_unique<InstancedMeshBuffer>();
 	instancedMeshBuffer_->SetDevice(device);
+
+	// sceneBuffer作成
+	sceneConstBuffer_ = std::make_unique<SceneConstBuffer>();
+	sceneConstBuffer_->Create(device);
 }
 
 void GPUObjectSystem::CreateMesh(const std::string& modelName) {
@@ -69,9 +73,12 @@ void GPUObjectSystem::RemoveObject2D(uint32_t entityId) {
 	object2DBuffers_.pop_back();
 }
 
-void GPUObjectSystem::Update() {
+void GPUObjectSystem::Update(CameraManager* cameraManager,
+	LightManager* lightManager) {
 
 	// buffer更新
+	// scene
+	sceneConstBuffer_->Update(cameraManager, lightManager);
 	// 3D
 	UpdateObject3D();
 	// 2D

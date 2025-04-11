@@ -190,6 +190,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\Mesh.cpp">
       <SubType>
       </SubType>
@@ -235,6 +239,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Editor\Manager\GameEditorManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Light\LightManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -310,18 +322,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Collision\Collider.cpp" />
-    <ClCompile Include="Game\Camera\Base\BaseCamera.cpp" />
-    <ClCompile Include="Game\Camera\Camera2D.cpp">
+    <ClCompile Include="Engine\Scene\Camera\BaseCamera.cpp" />
+    <ClCompile Include="Engine\Scene\Camera\Camera2D.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Camera\DebugCamera.cpp">
+    <ClCompile Include="Engine\Scene\Camera\DebugCamera.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
-    <ClCompile Include="Game\Camera\LightViewCamera.cpp" />
-    <ClCompile Include="Game\Camera\Manager\CameraManager.cpp" />
+    <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp" />
+    <ClCompile Include="Engine\Scene\Camera\CameraManager.cpp" />
     <ClCompile Include="Game\Editor\Object\Object3DEditor.cpp">
       <SubType>
       </SubType>
@@ -424,6 +436,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Mesh\Mesh.h">
       <SubType>
       </SubType>
@@ -477,6 +493,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Scene\Light\LightManager.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -558,19 +578,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Collision\Collider.h" />
-    <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
-    <ClInclude Include="Game\Camera\Camera2D.h">
+    <ClInclude Include="Engine\Scene\Camera\BaseCamera.h" />
+    <ClInclude Include="Engine\Scene\Camera\Camera2D.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Camera\DebugCamera.h">
+    <ClInclude Include="Engine\Scene\Camera\DebugCamera.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Camera\GameCamera.h" />
-    <ClInclude Include="Game\Camera\LightViewCamera.h" />
-    <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
-    <ClInclude Include="Game\Light\PunctualLight.h" />
+    <ClInclude Include="Engine\Scene\Camera\LightViewCamera.h" />
+    <ClInclude Include="Engine\Scene\Camera\CameraManager.h" />
+    <ClInclude Include="Engine\Scene\Light\PunctualLight.h" />
     <ClInclude Include="Game\Object2D\Base\ITransition.h">
       <SubType>
       </SubType>

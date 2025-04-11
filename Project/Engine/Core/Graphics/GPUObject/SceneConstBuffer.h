@@ -3,42 +3,30 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Scene/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Matrix4x4.h>
 
-// directX
-#include <d3d12.h>
-// c++
-#include <memory>
-#include <ranges>
-// front
-class SRVDescriptor;
-class ShadowMap;
-class GPUObjectSystem;
-
 //============================================================================
-//	MeshRenderer class
+//	SceneConstBuffer class
 //============================================================================
-class MeshRenderer {
+class SceneConstBuffer {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	MeshRenderer() = default;
-	~MeshRenderer() = default;
+	SceneConstBuffer() = default;
+	~SceneConstBuffer() = default;
 
-	void Init(ID3D12Device8* device, ShadowMap* shadowMap,
-		DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
+	void Create(ID3D12Device* device);
 
-	void RenderingZPass(GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
+	void Update(class CameraManager* cameraManager,
+		class LightManager* lightManager);
 
-	void Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
+	void SetZPassCommands(ID3D12GraphicsCommandList* commandList);
+	void SetMainPassCommands(bool debugEnable, ID3D12GraphicsCommandList* commandList);
 private:
 	//========================================================================
 	//	private Methods
@@ -46,9 +34,18 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	SRVDescriptor* srvDescriptor_;
-	ShadowMap* shadowMap_;
+	// camera
+	// main
+	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;
+	DxConstBuffer<Matrix4x4> lightViewProjectionBuffer_;
+	DxConstBuffer<Vector3> cameraPosBuffer_;
+	// debug
+	DxConstBuffer<Matrix4x4> debugSceneViewProjectionBuffer_;
+	DxConstBuffer<Vector3> debugSceneCameraPosBuffer_;
 
-	std::unique_ptr<PipelineState> meshShaderPipeline_;
-	std::unique_ptr<PipelineState> meshShaderZPassPipeline_;
+	// light
+	DxConstBuffer<PunctualLight> lightBuffer_;
+
+	//--------- functions ----------------------------------------------------
+
 };

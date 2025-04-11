@@ -7,8 +7,11 @@
 #include <Engine/Core/Graphics/GraphicsCore.h>
 #include <Engine/Asset/Asset.h>
 #include <Engine/Editor/ImGuiEditor.h>
+
+// scene
+#include <Engine/Scene/Camera/CameraManager.h>
+#include <Engine/Scene/Light/LightManager.h>
 #include <Game/Scene/Manager/SceneManager.h>
-#include <Game/Camera/Manager/CameraManager.h>
 
 // stores
 #include <Engine/Core/Component/Store/TransformStore.h>
@@ -53,6 +56,7 @@ private:
 	std::unique_ptr<SceneManager> sceneManager_;
 
 	std::unique_ptr<CameraManager> cameraManager_;
+	std::unique_ptr<LightManager> lightManager_;
 
 	// componentStores
 

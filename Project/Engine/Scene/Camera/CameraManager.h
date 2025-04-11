@@ -4,10 +4,10 @@
 //	include
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
-#include <Game/Camera/Base/BaseCamera.h>
-#include <Game/Camera/DebugCamera.h>
-#include <Game/Camera/LightViewCamera.h>
-#include <Game/Camera/Camera2D.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
+#include <Engine/Scene/Camera/DebugCamera.h>
+#include <Engine/Scene/Camera/LightViewCamera.h>
+#include <Engine/Scene/Camera/Camera2D.h>
 
 // c++
 #include <memory>

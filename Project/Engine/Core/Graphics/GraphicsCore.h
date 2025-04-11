@@ -46,7 +46,8 @@ public:
 
 	void BeginRenderFrame();
 
-	void Render(class CameraManager* cameraManager);
+	void Render(class CameraManager* cameraManager,
+		class LightManager* lightManager);
 
 	//--------- accessor -----------------------------------------------------
 

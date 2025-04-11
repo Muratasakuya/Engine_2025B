@@ -6,7 +6,8 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Renderer/LineRenderer.h>
-#include <Game/Camera/Manager/CameraManager.h>
+#include <Engine/Scene/Camera/CameraManager.h>
+#include <Engine/Scene/Light/LightManager.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -206,12 +207,12 @@ void GraphicsCore::Finalize(HWND hwnd) {
 //	Rendering Pass
 //============================================================================
 
-void GraphicsCore::Render(CameraManager* cameraManager) {
+void GraphicsCore::Render(CameraManager* cameraManager,
+	LightManager* lightManager) {
 
 	// bufferの更新
-	meshRenderer_->Update(cameraManager);
 	spriteRenderer_->Update(cameraManager);
-	gpuObjectSystem_->Update();
+	gpuObjectSystem_->Update(cameraManager, lightManager);
 
 	// zPass
 	RenderZPass();

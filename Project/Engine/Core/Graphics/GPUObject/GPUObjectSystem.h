@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/InstancedMeshBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Mesh/MeshRegistry.h>
 #include <Engine/Core/Component/SpriteComponent.h>
 
@@ -36,7 +37,8 @@ public:
 
 	void Init(ID3D12Device* device, Asset* asset);
 
-	void Update();
+	void Update(class CameraManager* cameraManager,
+		class LightManager* lightManager);
 
 	//--------- object3D -----------------------------------------------------
 
@@ -50,6 +52,9 @@ public:
 	void RemoveObject2D(uint32_t entityId);
 
 	//--------- accessor -----------------------------------------------------
+
+	// scene
+	SceneConstBuffer* GetSceneBuffer() const { return sceneConstBuffer_.get(); }
 
 	// 3D
 	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return instancedMeshBuffer_->GetInstancingData(); }
@@ -66,6 +71,9 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	// scene
+	std::unique_ptr<SceneConstBuffer> sceneConstBuffer_;
 
 	// 3D
 	std::unique_ptr<InstancedMeshBuffer> instancedMeshBuffer_;

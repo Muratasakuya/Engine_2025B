@@ -3,29 +3,26 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/Methods/IScene.h>
-#include <Game/Camera/GameCamera.h>
-
-// object
-#include <Game/Object2D/SceneTransition/FadeTransition.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
 
 //============================================================================
-//	TitleScene class
+//	LightViewCamera class
 //============================================================================
-class TitleScene :
-	public IScene {
+class LightViewCamera :
+	public BaseCamera {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	TitleScene() = default;
-	~TitleScene();
+	LightViewCamera() = default;
+	~LightViewCamera() = default;
 
-	void Init(Asset* asset, CameraManager* cameraManager,
-		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
+	void Init() override;
 
-	void Update(SceneManager* sceneManager) override;
+	void Update() override;
+
+	void ImGui() override;
 private:
 	//========================================================================
 	//	private Methods
@@ -33,9 +30,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unique_ptr<GameCamera> gameCamera_;
+	Vector3 translation_; //* ライトの位置
+	Vector3 target_;      //* 注視点
+	Vector3 upDirection_; //* 上方向
 
-	std::unique_ptr<FadeTransition> fadeTransition_;
+	float orthoSize_;
 
-	uint32_t titleNameId_;
+	float nearPlane_;
+	float farPlane_;
 };

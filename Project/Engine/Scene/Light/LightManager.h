@@ -3,26 +3,29 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Camera/Base/BaseCamera.h>
+#include <Engine/Editor/Base/IGameEditor.h>
+#include <Engine/Scene/Light/PunctualLight.h>
 
 //============================================================================
-//	DebugCamera class
+//	LightManager class
 //============================================================================
-class DebugCamera :
-	public BaseCamera {
+class LightManager :
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	DebugCamera() = default;
-	~DebugCamera() = default;
+	LightManager() : IGameEditor("lightManager") {};
+	~LightManager() = default;
 
-	void Init() override;
+	void ImGui();
 
-	void Update() override;
+	//--------- accessor -----------------------------------------------------
 
-	void ImGui() override;
+	void SetLight(PunctualLight* gameLight);
+
+	PunctualLight* GetLight() const;
 private:
 	//========================================================================
 	//	private Methods
@@ -30,13 +33,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	Matrix4x4 rotateMatrix_;
-
-	// マウスホイール移動感度
-	float zoomRate_;
-
-	//--------- functions ----------------------------------------------------
-
-	// 移動
-	void Move();
+	std::optional<PunctualLight*> gameLight_;
 };

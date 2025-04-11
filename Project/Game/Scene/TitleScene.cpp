@@ -3,10 +3,12 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Asset/Asset.h>
+#include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Component/ComponentHelper.h>
+#include <Engine/Scene/Camera/CameraManager.h>
+#include <Engine/Scene/Light/LightManager.h>
+#include <Engine/Asset/Asset.h>
 #include <Engine/Input/Input.h>
-#include <Game/Camera/Manager/CameraManager.h>
 #include <Game/Scene/Manager/SceneManager.h>
 
 //============================================================================
@@ -21,6 +23,7 @@ TitleScene::~TitleScene() {
 void TitleScene::Init(
 	[[maybe_unused]] Asset* asset,
 	[[maybe_unused]] CameraManager* cameraManager,
+	[[maybe_unused]] LightManager* lightManager,
 	[[maybe_unused]] PostProcessSystem* postProcessSystem
 ) {
 

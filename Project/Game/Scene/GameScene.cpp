@@ -3,10 +3,11 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Asset/Asset.h>
-#include <Engine/Core/Component/ComponentHelper.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
-#include <Game/Camera/Manager/CameraManager.h>
+#include <Engine/Core/Component/ComponentHelper.h>
+#include <Engine/Scene/Camera/CameraManager.h>
+#include <Engine/Scene/Light/LightManager.h>
+#include <Engine/Asset/Asset.h>
 
 //============================================================================
 //	TitleScene classMethods
@@ -15,6 +16,7 @@
 void GameScene::Init(
 	[[maybe_unused]] Asset* asset,
 	[[maybe_unused]] CameraManager* cameraManager,
+	[[maybe_unused]] LightManager* lightManager,
 	[[maybe_unused]] PostProcessSystem* postProcessSystem
 ) {
 
@@ -40,13 +42,20 @@ void GameScene::Init(
 	postProcessSystem_->AddProcess(PostProcess::Bloom);
 
 	//========================================================================
-	//	camera
+	//	sceneObject
 	//========================================================================
 
+	// camera
 	gameCamera_ = std::make_unique<GameCamera>();
 	gameCamera_->Init();
 
 	cameraManager->SetCamera(gameCamera_.get());
+
+	// light
+	gameLight_ = std::make_unique<PunctualLight>();
+	gameLight_->Init();
+
+	lightManager->SetLight(gameLight_.get());
 
 	//========================================================================
 	//	initObject
