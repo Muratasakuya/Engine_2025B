@@ -281,7 +281,7 @@
     <ClCompile Include="Game\Algorithm\StateTimer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Editor\Object\Object3DEditor.cpp">
+    <ClCompile Include="Engine\Editor\Object\Object3DEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Component\MaterialComponent.cpp">
@@ -297,6 +297,12 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveEditor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -400,11 +406,13 @@
     <ClInclude Include="Game\Scene\Methods\SceneTransition.h" />
     <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h" />
     <ClInclude Include="Game\Algorithm\StateTimer.h" />
-    <ClInclude Include="Game\Editor\Object\Object3DEditor.h" />
+    <ClInclude Include="Engine\Editor\Object\Object3DEditor.h" />
     <ClInclude Include="Engine\Core\Component\MaterialComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.h" />
     <ClInclude Include="Engine\Scene\Light\LightManager.h" />
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveEditor.h" />
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveRegistry.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
