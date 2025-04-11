@@ -32,7 +32,7 @@ void CameraManager::Init() {
 
 void CameraManager::Update() {
 
-#ifdef _DEBUGIm
+#ifdef _DEBUG
 	debugCamera_->Update();
 #endif // _DEBUG
 

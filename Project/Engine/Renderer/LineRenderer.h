@@ -65,7 +65,7 @@ private:
 	CameraManager* cameraManager_;
 
 	// 線分の最大数
-	static constexpr const uint32_t kMaxLineCount_ = 2048;
+	static constexpr const uint32_t kMaxLineCount_ = 8096;
 	// 線分の頂点数
 	static constexpr const uint32_t kVertexCountLine_ = 2;
 

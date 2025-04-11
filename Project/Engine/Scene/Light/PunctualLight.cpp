@@ -34,7 +34,7 @@ void DirectionalLight::ImGui(float itemWidth) {
 void PointLight::Init() {
 
 	color = Color::White();
-	pos = { 0.0f,0.0f,0.0f };
+	pos = { 0.0f,8.0f,0.0f };
 	radius = 5.0f;
 	intensity = 0.8f;
 	decay = 1.0f;
@@ -58,10 +58,10 @@ void PointLight::ImGui(float itemWidth) {
 void SpotLight::Init() {
 
 	color = Color::White();
-	pos = { 0.0f,0.0f,0.0f };
+	pos = { 0.0f,8.0f,0.0f };
 	distance = 10.0f;
 	intensity = 0.8f;
-	direction = { -1.0f,-1.0f,0.0f };
+	direction = { 0.0f,-1.0f,0.0f };
 	decay = 1.0f;
 	cosAngle = std::cos(std::numbers::pi_v<float> / 3.0f);
 	cosFalloffStart = 1.0f;
@@ -75,7 +75,7 @@ void SpotLight::ImGui(float itemWidth) {
 
 	ImGui::ColorEdit4("color##SpotLight", &color.r);
 	ImGui::DragFloat3("pos##SpotLight", &pos.x, 0.1f);
-	ImGui::DragFloat3("direction##SpotLight", &direction.x, 0.1f);
+	ImGui::DragFloat3("direction##SpotLight", &direction.x, 0.01f);
 	ImGui::DragFloat("distance##SpotLight", &distance, 0.01f);
 	ImGui::DragFloat("intensity##SpotLight", &intensity, 0.01f);
 	ImGui::DragFloat("decay##SpotLight", &decay, 0.01f);
