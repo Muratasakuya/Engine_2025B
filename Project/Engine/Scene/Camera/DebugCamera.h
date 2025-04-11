@@ -3,20 +3,20 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Camera/Base/BaseCamera.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
 
 //============================================================================
-//	LightViewCamera class
+//	DebugCamera class
 //============================================================================
-class LightViewCamera :
+class DebugCamera :
 	public BaseCamera {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	LightViewCamera() = default;
-	~LightViewCamera() = default;
+	DebugCamera() = default;
+	~DebugCamera() = default;
 
 	void Init() override;
 
@@ -30,12 +30,13 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	Vector3 translation_; //* ライトの位置
-	Vector3 target_;      //* 注視点
-	Vector3 upDirection_; //* 上方向
+	Matrix4x4 rotateMatrix_;
 
-	float orthoSize_;
+	// マウスホイール移動感度
+	float zoomRate_;
 
-	float nearPlane_;
-	float farPlane_;
+	//--------- functions ----------------------------------------------------
+
+	// 移動
+	void Move();
 };

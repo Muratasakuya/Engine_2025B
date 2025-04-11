@@ -49,8 +49,12 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	winApp_ = std::make_unique<WinApp>();
 	winApp_->Create(width, height, title);
 
+	// scene
+	// camera
 	cameraManager_ = std::make_unique<CameraManager>();
 	cameraManager_->Init();
+	// light
+	lightManager_ = std::make_unique<LightManager>();
 
 	// directXSystem初期化
 	InitDirectX(width, height);
@@ -69,7 +73,7 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	// scene管理クラス初期化
 	sceneManager_ = std::make_unique<SceneManager>(
 		Scene::Game, asset_.get(), cameraManager_.get(),
-		graphicsCore_->GetPostProcessSystem());
+		lightManager_.get(), graphicsCore_->GetPostProcessSystem());
 
 	Input::GetInstance()->Init(winApp_.get());
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
@@ -163,7 +167,7 @@ void Framework::Draw() {
 	GameTimer::BeginDrawCount();
 
 	// 描画処理
-	graphicsCore_->Render(cameraManager_.get());
+	graphicsCore_->Render(cameraManager_.get(), lightManager_.get());
 	// scene遷移依頼
 	sceneManager_->SwitchScene();
 	// lineReset

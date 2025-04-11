@@ -10,13 +10,16 @@
 //============================================================================
 
 SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManager,
-	PostProcessSystem* postProcessSystem) {
+	LightManager* lightManager, PostProcessSystem* postProcessSystem) {
 
 	asset_ = nullptr;
 	asset_ = asset;
 
 	cameraManager_ = nullptr;
 	cameraManager_ = cameraManager;
+
+	lightManager_ = nullptr;
+	lightManager_ = lightManager;
 
 	postProcessSystem_ = nullptr;
 	postProcessSystem_ = postProcessSystem;
@@ -27,7 +30,7 @@ SceneManager::SceneManager(Scene scene, Asset* asset, CameraManager* cameraManag
 	sceneTransition_->Init();
 
 	LoadScene(scene);
-	currentScene_->Init(asset_, cameraManager, postProcessSystem);
+	currentScene_->Init(asset_, cameraManager, lightManager, postProcessSystem);
 }
 
 void SceneManager::Update() {
@@ -53,7 +56,8 @@ void SceneManager::SwitchScene() {
 
 void SceneManager::InitNextScene() {
 
-	currentScene_->Init(asset_, cameraManager_, postProcessSystem_);
+	currentScene_->Init(asset_, cameraManager_,
+		lightManager_, postProcessSystem_);
 	isSceneSwitching_ = false;
 }
 

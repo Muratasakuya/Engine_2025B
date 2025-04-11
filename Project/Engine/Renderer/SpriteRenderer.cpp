@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
-#include <Game/Camera/Manager/CameraManager.h>
+#include <Engine/Scene/Camera/CameraManager.h>
 
 //============================================================================
 //	SpriteRenderer classMethods

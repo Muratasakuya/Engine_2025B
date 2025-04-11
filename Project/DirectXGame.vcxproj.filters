@@ -128,16 +128,16 @@
     <ClCompile Include="Engine\Collision\Collider.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Camera\Base\BaseCamera.cpp">
+    <ClCompile Include="Engine\Scene\Camera\BaseCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Camera\Manager\CameraManager.cpp">
+    <ClCompile Include="Engine\Scene\Camera\CameraManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Camera\GameCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Camera\LightViewCamera.cpp">
+    <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Scene\Manager\SceneManager.cpp">
@@ -161,7 +161,7 @@
     <ClCompile Include="Engine\Input\Input.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Camera\DebugCamera.cpp">
+    <ClCompile Include="Engine\Scene\Camera\DebugCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
@@ -224,7 +224,7 @@
     <ClCompile Include="Engine\Core\Component\Store\SpriteStore.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Camera\Camera2D.cpp">
+    <ClCompile Include="Engine\Scene\Camera\Camera2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Component\ComponentHelper.cpp">
@@ -290,6 +290,15 @@
     <ClCompile Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Light\LightManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -335,11 +344,11 @@
     <ClInclude Include="Lib\MathUtils\Vector3.h" />
     <ClInclude Include="Lib\MathUtils\Vector4.h" />
     <ClInclude Include="Engine\Collision\Collider.h" />
-    <ClInclude Include="Game\Camera\Base\BaseCamera.h" />
-    <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Engine\Scene\Camera\BaseCamera.h" />
+    <ClInclude Include="Engine\Scene\Camera\CameraManager.h" />
     <ClInclude Include="Game\Camera\GameCamera.h" />
-    <ClInclude Include="Game\Camera\LightViewCamera.h" />
-    <ClInclude Include="Game\Light\PunctualLight.h" />
+    <ClInclude Include="Engine\Scene\Camera\LightViewCamera.h" />
+    <ClInclude Include="Engine\Scene\Light\PunctualLight.h" />
     <ClInclude Include="Game\Scene\Manager\SceneManager.h" />
     <ClInclude Include="Game\Scene\Methods\IScene.h" />
     <ClInclude Include="Game\Scene\Methods\SceneFactory.h" />
@@ -347,7 +356,7 @@
     <ClInclude Include="Engine\External\ImGuiManager.h" />
     <ClInclude Include="Engine\Editor\ImGuiEditor.h" />
     <ClInclude Include="Engine\Input\Input.h" />
-    <ClInclude Include="Game\Camera\DebugCamera.h" />
+    <ClInclude Include="Engine\Scene\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Renderer\LineRenderer.h" />
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
     <ClInclude Include="Engine\Core\Component\ECS\ComponentManager.h" />
@@ -369,7 +378,7 @@
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h" />
     <ClInclude Include="Engine\Core\Component\SpriteComponent.h" />
     <ClInclude Include="Engine\Core\Component\Store\SpriteStore.h" />
-    <ClInclude Include="Game\Camera\Camera2D.h" />
+    <ClInclude Include="Engine\Scene\Camera\Camera2D.h" />
     <ClInclude Include="Engine\Core\Component\ComponentHelper.h" />
     <ClInclude Include="Engine\Editor\Base\IGameEditor.h" />
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
@@ -394,6 +403,8 @@
     <ClInclude Include="Game\Editor\Object\Object3DEditor.h" />
     <ClInclude Include="Engine\Core\Component\MaterialComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.h" />
+    <ClInclude Include="Engine\Scene\Light\LightManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

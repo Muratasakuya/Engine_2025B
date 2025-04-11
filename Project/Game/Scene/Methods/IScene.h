@@ -10,6 +10,7 @@
 // front
 class Asset;
 class CameraManager;
+class LightManager;
 class SceneManager;
 class PostProcessSystem;
 
@@ -35,7 +36,10 @@ public:
 	IScene() = default;
 	virtual ~IScene() = default;
 
-	virtual void Init(Asset* asset, CameraManager* cameraManager,
+	virtual void Init(
+		Asset* asset,
+		CameraManager* cameraManager,
+		LightManager* lightManager,
 		PostProcessSystem* postProcessSystem) = 0;
 
 	virtual void Update(SceneManager* sceneManager) = 0;
@@ -47,5 +51,6 @@ protected:
 	//--------- variables ----------------------------------------------------
 
 	CameraManager* cameraManager_;
+	LightManager* lightManager_;
 	PostProcessSystem* postProcessSystem_;
 };
