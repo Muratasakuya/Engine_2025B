@@ -19,8 +19,9 @@ public:
 	LightManager() : IGameEditor("lightManager") {};
 	~LightManager() = default;
 
-	void ImGui();
+	void Update();
 
+	void ImGui() override;
 	//--------- accessor -----------------------------------------------------
 
 	void SetLight(PunctualLight* gameLight);
@@ -34,4 +35,9 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::optional<PunctualLight*> gameLight_;
+
+	//--------- functions ----------------------------------------------------
+
+	void DisplayPointLight();
+	void DisplaySpotLight();
 };

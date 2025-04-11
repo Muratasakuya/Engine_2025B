@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Game/Camera/Manager/CameraManager.h>
+#include <Engine/Scene/Camera/CameraManager.h>
 
 //============================================================================
 //	LineRenderer classMethods

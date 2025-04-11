@@ -154,6 +154,7 @@ void Framework::UpdateScene() {
 
 	sceneManager_->Update();
 	cameraManager_->Update();
+	lightManager_->Update();
 
 	CollisionManager::GetInstance()->Update();
 }
