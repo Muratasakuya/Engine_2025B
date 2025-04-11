@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Input/Input.h>
+#include <Engine/Core/Component/ComponentHelper.h>
 
 //============================================================================
 //	DebugCamera classMethods
