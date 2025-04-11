@@ -3,32 +3,25 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Scene/Light/PunctualLight.h>
-#include <Game/Scene/Methods/IScene.h>
-#include <Game/Camera/GameCamera.h>
-
-// editor
-#include <Engine/Editor/Object/Object3DEditor.h>
-
-// object
+#include <Engine/Editor/Base/IGameEditor.h>
+#include <Engine/Editor/Primitive/PrimitiveRegistry.h>
 
 //============================================================================
-//	GameScene class
+//	PrimitiveEditor class
 //============================================================================
-class GameScene :
-	public IScene {
+class PrimitiveEditor :
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	GameScene() = default;
-	~GameScene() = default;
+	PrimitiveEditor() : IGameEditor("primitiveEditor") {};
+	~PrimitiveEditor() = default;
 
-	void Init(Asset* asset, CameraManager* cameraManager,
-		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
+	void Init();
 
-	void Update(SceneManager* sceneManager) override;
+	void ImGui() override;
 private:
 	//========================================================================
 	//	private Methods
@@ -36,11 +29,23 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// editor
-	std::unique_ptr<Object3DEditor> object3DEditor_;
+	// json
+	const std::string baseJsonPath_ = "primitiveEditor/";
 
-	// camera
-	std::unique_ptr<GameCamera> gameCamera_;
-	// light
-	std::unique_ptr<PunctualLight> gameLight_;
+	// editor操作
+	bool editLayoutEnable_;
+
+	// primitiveの登録
+	std::unique_ptr<PrimitiveRegistry> primitiveRegistry_;
+
+	//--------- functions ----------------------------------------------------
+
+	// json適応、設定
+	void ApplyJson();
+	// editorLayout
+	void ApplyEditLayoutParameter();
+	void SaveEditLayoutParameter();
+
+	// editor内のlayoutを調整
+	void EditLayout();
 };

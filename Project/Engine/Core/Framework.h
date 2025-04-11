@@ -19,6 +19,9 @@
 #include <Engine/Core/Component/Store/AnimationStore.h>
 #include <Engine/Core/Component/Store/SpriteStore.h>
 
+// editor
+#include <Engine/Editor/Primitive/PrimitiveEditor.h>
+
 // directX
 #include <dxgidebug.h>
 #include <dxgi1_6.h>
@@ -57,6 +60,9 @@ private:
 
 	std::unique_ptr<CameraManager> cameraManager_;
 	std::unique_ptr<LightManager> lightManager_;
+
+	// editor
+	std::unique_ptr<PrimitiveEditor> primitiveEditor_;
 
 	// componentStores
 
