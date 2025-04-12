@@ -1,0 +1,45 @@
+#pragma once
+
+//============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Graphics/Mesh/PrimitiveMesh.h>
+
+// c++
+#include <memory>
+// front
+class Asset;
+
+//============================================================================
+//	PrimitiveMeshComponent class
+//============================================================================
+class PrimitiveMeshComponent {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	PrimitiveMeshComponent() = default;
+	~PrimitiveMeshComponent() = default;
+
+	void Init(ID3D12Device* device, Asset* asset, const std::string& modelName);
+
+	//--------- accessor -----------------------------------------------------
+
+	PrimitiveMesh* GetPrimitiveMesh() const { return primitiveMesh_.get(); }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	Asset* asset_;
+
+	std::unique_ptr<PrimitiveMesh> primitiveMesh_;
+
+	//--------- functions ----------------------------------------------------
+
+	// meshletの作成
+	ResourceMesh CreateMeshlet(const std::string& modelName);
+};

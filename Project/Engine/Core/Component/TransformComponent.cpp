@@ -17,22 +17,35 @@
 // 3D
 //============================================================================
 
-void Transform3DComponent::Init() {
+void BaseTransform::Init() {
 
 	scale = Vector3::AnyInit(1.0f);
 	rotation.Init();
 	translation.Init();
 
 	eulerRotate_.Init();
+	prevScale = Vector3::AnyInit(1.0f);
 }
 
-void Transform3DComponent::UpdateMatrix() {
+void BaseTransform::UpdateMatrix() {
+
+	// 値に変更がなければ更新しない
+	if (scale == prevScale &&
+		rotation == prevRotation &&
+		translation == prevTranslation) {
+		return;
+	}
 
 	// 行列を更新
 	matrix.Update(parent, scale, rotation, translation);
+
+	// 値を保存
+	prevScale = scale;
+	prevRotation = rotation;
+	prevTranslation = translation;
 }
 
-void Transform3DComponent::ImGui(float itemSize) {
+void BaseTransform::ImGui(float itemSize) {
 
 	ImGui::PushItemWidth(itemSize);
 	if (ImGui::Button("Reset")) {
@@ -54,21 +67,21 @@ void Transform3DComponent::ImGui(float itemSize) {
 	ImGui::PopItemWidth();
 }
 
-void Transform3DComponent::ToJson(Json& data) {
+void BaseTransform::ToJson(Json& data) {
 
 	data["scale"] = scale.ToJson();
 	data["rotation"] = rotation.ToJson();
 	data["translation"] = translation.ToJson();
 }
 
-void Transform3DComponent::FromJson(const Json& data) {
+void BaseTransform::FromJson(const Json& data) {
 
 	scale = JsonAdapter::ToObject<Vector3>(data["scale"]);
 	rotation = JsonAdapter::ToObject<Quaternion>(data["rotation"]);
 	translation = JsonAdapter::ToObject<Vector3>(data["translation"]);
 }
 
-Vector3 Transform3DComponent::GetWorldPos() const {
+Vector3 BaseTransform::GetWorldPos() const {
 
 	Vector3 worldPos{};
 	worldPos.x = matrix.world.m[3][0];
@@ -78,27 +91,27 @@ Vector3 Transform3DComponent::GetWorldPos() const {
 	return worldPos;
 }
 
-Vector3 Transform3DComponent::GetForward() const {
+Vector3 BaseTransform::GetForward() const {
 	return Vector3(matrix.world.m[2][0], matrix.world.m[2][1], matrix.world.m[2][2]).Normalize();
 }
 
-Vector3 Transform3DComponent::GetBack() const {
+Vector3 BaseTransform::GetBack() const {
 	return Vector3(-GetForward().x, -GetForward().y, -GetForward().z);
 }
 
-Vector3 Transform3DComponent::GetRight() const {
+Vector3 BaseTransform::GetRight() const {
 	return Vector3(matrix.world.m[0][0], matrix.world.m[0][1], matrix.world.m[0][2]).Normalize();
 }
 
-Vector3 Transform3DComponent::GetLeft() const {
+Vector3 BaseTransform::GetLeft() const {
 	return Vector3(-GetRight().x, -GetRight().y, -GetRight().z);
 }
 
-Vector3 Transform3DComponent::GetUp() const {
+Vector3 BaseTransform::GetUp() const {
 	return Vector3(matrix.world.m[1][0], matrix.world.m[1][1], matrix.world.m[1][2]).Normalize();
 }
 
-Vector3 Transform3DComponent::GetDown() const {
+Vector3 BaseTransform::GetDown() const {
 	return Vector3(-GetUp().x, -GetUp().y, -GetUp().z);
 }
 

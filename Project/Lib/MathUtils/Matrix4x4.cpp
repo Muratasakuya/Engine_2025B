@@ -92,6 +92,17 @@ Matrix4x4& Matrix4x4::operator=(const Matrix4x4& other) {
 	return *this;
 }
 
+bool Matrix4x4::operator==(const Matrix4x4& other) const {
+	for (int i = 0; i < 4; ++i) {
+		for (int j = 0; j < 4; ++j) {
+			if (m[i][j] != other.m[i][j]) {
+				return false;
+			}
+		}
+	}
+	return true;
+}
+
 Matrix4x4 Matrix4x4::Zero() {
 	return Matrix4x4{ 0.0f, 0.0f, 0.0f, 0.0f,
 						0.0f, 0.0f, 0.0f, 0.0f,

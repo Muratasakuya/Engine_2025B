@@ -305,6 +305,12 @@
     <ClCompile Include="Engine\Editor\Primitive\PrimitiveRegistry.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Component\PrimitiveMeshComponent.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -413,6 +419,8 @@
     <ClInclude Include="Engine\Scene\Light\LightManager.h" />
     <ClInclude Include="Engine\Editor\Primitive\PrimitiveEditor.h" />
     <ClInclude Include="Engine\Editor\Primitive\PrimitiveRegistry.h" />
+    <ClInclude Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.h" />
+    <ClInclude Include="Engine\Core\Component\PrimitiveMeshComponent.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

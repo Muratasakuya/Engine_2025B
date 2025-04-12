@@ -32,6 +32,8 @@ void PrimitiveEditor::ImGui() {
 
 	// 作成されたprimitiveを選択
 	primitiveRegistry_->SelectPrimiviveMesh();
+
+	// 選択されたprimitiveの操作
 }
 
 void PrimitiveEditor::EditLayout() {

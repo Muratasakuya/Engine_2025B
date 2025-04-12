@@ -39,6 +39,8 @@ public:
 
 	Vector3 operator*(const Vector3& v) const;
 
+	bool operator==(const Quaternion& other) const;
+
 	//----------- json -------------------------------------------------------
 
 	Json ToJson() const;
