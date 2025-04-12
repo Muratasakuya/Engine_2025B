@@ -74,13 +74,8 @@ MaterialComponent* MaterialStore::GetComponent(uint32_t entityId) {
 
 	// 単一のmaterialのみ返す
 	// multiMaterialの時はGetComponentList()から取得する
-	if (Algorithm::Find(entityToIndex_, entityId)) {
-
-		size_t index = entityToIndex_.at(entityId);
-		return &components_.at(index).front();
-
-	}
-	return nullptr;
+	size_t index = entityToIndex_[entityId];
+	return &components_[index].front();
 }
 
 std::vector<MaterialComponent*> MaterialStore::GetComponentList(uint32_t entityId) {
@@ -88,18 +83,10 @@ std::vector<MaterialComponent*> MaterialStore::GetComponentList(uint32_t entityI
 	// 配列のmaterialを返す
 	std::vector<MaterialComponent*> materials;
 
-	if (Algorithm::Find(entityToIndex_, entityId)) {
+	size_t index = entityToIndex_[entityId];
+	for (MaterialComponent& mat : components_[index]) {
 
-		size_t index = entityToIndex_.at(entityId);
-		for (MaterialComponent& mat : components_.at(index)) {
-
-			materials.emplace_back(&mat);
-		}
-	}
-	if (materials.size() == 0) {
-
-		int a = 0;
-		++a;
+		materials.emplace_back(&mat);
 	}
 
 	return materials;
@@ -142,11 +129,6 @@ void SpriteMaterialStore::RemoveComponent(uint32_t entityId) {
 
 SpriteMaterial* SpriteMaterialStore::GetComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(entityToIndex_, entityId)) {
-
-		size_t index = entityToIndex_.at(entityId);
-		return &components_.at(index);
-
-	}
-	return nullptr;
+	size_t index = entityToIndex_[entityId];
+	return &components_[index];
 }

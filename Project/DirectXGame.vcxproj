@@ -146,6 +146,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Component\PrimitiveMeshComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Component\Store\AnimationStore.cpp">
       <SubType>
       </SubType>
@@ -203,6 +207,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\MeshRegistry.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -400,6 +408,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\Component\PrimitiveMeshComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Component\Store\AnimationStore.h">
       <SubType>
       </SubType>
@@ -461,6 +473,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Mesh\MeshRegistry.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.h">
       <SubType>
       </SubType>
     </ClInclude>

@@ -66,26 +66,51 @@ void GPUObjectSystem::RemoveObject2D(uint32_t entityId) {
 	size_t lastIndex = object2DBuffers_.size() - 1;
 
 	// bufferIndex削除
-	SwapToPopbackIndex(entityId);
+	SwapToPopbackObject2D(entityId);
 
 	// buffer削除
 	std::swap(object2DBuffers_[index], object2DBuffers_[lastIndex]);
 	object2DBuffers_.pop_back();
 }
 
-void GPUObjectSystem::Update(CameraManager* cameraManager,
-	LightManager* lightManager) {
+void GPUObjectSystem::CreateEffect(uint32_t entityId,
+	PrimitiveMesh* primitiveMesh, ID3D12Device* device) {
 
-	// buffer更新
-	// scene
-	sceneConstBuffer_->Update(cameraManager, lightManager);
-	// 3D
-	UpdateObject3D();
-	// 2D
-	UpdateObject2D();
+	size_t index = effectBuffers_.size();
+
+	// buffer追加
+	effectBuffers_.emplace_back();
+	// buffer作成
+	effectBuffers_.back().matrix.CreateConstBuffer(device);
+	effectBuffers_.back().material.CreateConstBuffer(device);
+	// primitiveMeshの情報を取得
+	effectBuffers_.back().primitiveMesh = primitiveMesh;
+
+	// index設定
+	effectBufferToIndex_[entityId] = index;
+	indexToEffectBuffer_.push_back(entityId);
 }
 
-void GPUObjectSystem::SwapToPopbackIndex(uint32_t entityId) {
+void GPUObjectSystem::RemoveEffect(uint32_t entityId) {
+
+	// 見つかなければ削除しない
+	if (!Algorithm::Find(effectBufferToIndex_, entityId)) {
+		return;
+	}
+
+	// indexを末尾と交換して削除
+	size_t index = effectBufferToIndex_.at(entityId);
+	size_t lastIndex = effectBuffers_.size() - 1;
+
+	// bufferIndex削除
+	SwapToPopbackEffect(entityId);
+
+	// buffer削除
+	std::swap(effectBuffers_[index], effectBuffers_[lastIndex]);
+	effectBuffers_.pop_back();
+}
+
+void GPUObjectSystem::SwapToPopbackObject2D(uint32_t entityId) {
 
 	size_t index = object2DBufferToIndex_.at(entityId);
 	size_t lastIndex = object2DBuffers_.size() - 1;
@@ -101,6 +126,36 @@ void GPUObjectSystem::SwapToPopbackIndex(uint32_t entityId) {
 	// 末尾を削除
 	indexToObject2DBuffer_.pop_back();
 	object2DBufferToIndex_.erase(entityId);
+}
+
+void GPUObjectSystem::SwapToPopbackEffect(uint32_t entityId) {
+
+	size_t index = effectBufferToIndex_.at(entityId);
+	size_t lastIndex = effectBuffers_.size() - 1;
+
+	if (index != lastIndex) {
+
+		// 交換されたentityIdを更新
+		uint32_t movedEntityId = indexToEffectBuffer_[lastIndex];
+		effectBufferToIndex_[movedEntityId] = index;
+		indexToEffectBuffer_[index] = movedEntityId;
+	}
+
+	// 末尾を削除
+	indexToEffectBuffer_.pop_back();
+	effectBufferToIndex_.erase(entityId);
+}
+
+void GPUObjectSystem::Update(CameraManager* cameraManager,
+	LightManager* lightManager) {
+
+	// buffer更新
+	// scene
+	sceneConstBuffer_->Update(cameraManager, lightManager);
+	// 3D
+	UpdateObject3D();
+	// 2D
+	UpdateObject2D();
 }
 
 void GPUObjectSystem::UpdateObject3D() {

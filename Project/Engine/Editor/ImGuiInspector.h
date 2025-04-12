@@ -83,6 +83,8 @@ private:
 	const float itemWidth_ = 168.0f;
 
 	std::unordered_map<std::string, std::vector<EntityReference>> groupedEntities_;
+	std::vector<uint32_t> prevEntity3DIds_;
+	std::vector<uint32_t> prevEntity2DIds_;
 
 	EditImGui object3D_;
 	int selectedMaterialIndex_ = 0;
