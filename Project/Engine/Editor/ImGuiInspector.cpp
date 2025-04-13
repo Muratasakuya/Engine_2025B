@@ -54,24 +54,33 @@ void ImGuiInspector::SelectObject() {
 
 void ImGuiInspector::CreateGroup() {
 
-	// グループをクリア
-	groupedEntities_.clear();
+	// entity取得
+	const auto& current3DIds = entity3DRegistry_->GetIndexToEntity();
+	const auto& current2DIds = entity2DRegistry_->GetIndexToEntity();
 
-	// entityGroupの作成
-	// 3D
-	for (const uint32_t id : entity3DRegistry_->GetIndexToEntity()) {
+	// 変更があった場合に更新
+	if (current3DIds != prevEntity3DIds_ || current2DIds != prevEntity2DIds_) {
+		
+		// entityGroupの作成
+		// 3D
+		for (const uint32_t id : entity3DRegistry_->GetIndexToEntity()) {
 
-		const auto& entity = entity3DRegistry_->GetNames()[entity3DRegistry_->GetIndex(id)];
-		std::string group = entity.groupName.value_or("");
-		groupedEntities_[group].push_back(EntityReference(EntityType::Object3D, id));
-	}
+			const auto& entity = entity3DRegistry_->GetNames()[entity3DRegistry_->GetIndex(id)];
+			std::string group = entity.groupName.value_or("");
+			groupedEntities_[group].push_back(EntityReference(EntityType::Object3D, id));
+		}
 
-	// 2D
-	for (const uint32_t id : entity2DRegistry_->GetIndexToEntity()) {
+		// 2D
+		for (const uint32_t id : entity2DRegistry_->GetIndexToEntity()) {
 
-		const auto& entity = entity2DRegistry_->GetNames()[entity2DRegistry_->GetIndex(id)];
-		std::string group = entity.groupName.value_or("");
-		groupedEntities_[group].push_back(EntityReference(EntityType::Object2D, id));
+			const auto& entity = entity2DRegistry_->GetNames()[entity2DRegistry_->GetIndex(id)];
+			std::string group = entity.groupName.value_or("");
+			groupedEntities_[group].push_back(EntityReference(EntityType::Object2D, id));
+		}
+
+		// 現在の状態を保存
+		prevEntity3DIds_ = current3DIds;
+		prevEntity2DIds_ = current2DIds;
 	}
 }
 

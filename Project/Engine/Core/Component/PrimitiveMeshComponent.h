@@ -3,32 +3,30 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Scene/Light/PunctualLight.h>
-#include <Game/Scene/Methods/IScene.h>
-#include <Game/Camera/GameCamera.h>
+#include <Engine/Core/Graphics/Mesh/PrimitiveMesh.h>
 
-// editor
-#include <Engine/Editor/Object/Object3DEditor.h>
-
-// object
+// c++
+#include <memory>
+// front
+class Asset;
 
 //============================================================================
-//	GameScene class
+//	PrimitiveMeshComponent class
 //============================================================================
-class GameScene :
-	public IScene {
+class PrimitiveMeshComponent {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	GameScene() = default;
-	~GameScene() = default;
+	PrimitiveMeshComponent() = default;
+	~PrimitiveMeshComponent() = default;
 
-	void Init(Asset* asset, CameraManager* cameraManager,
-		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
+	void Init(ID3D12Device* device, Asset* asset, const std::string& modelName);
 
-	void Update(SceneManager* sceneManager) override;
+	//--------- accessor -----------------------------------------------------
+
+	PrimitiveMesh* GetPrimitiveMesh() const { return primitiveMesh_.get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -36,11 +34,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// editor
-	std::unique_ptr<Object3DEditor> object3DEditor_;
+	Asset* asset_;
 
-	// camera
-	std::unique_ptr<GameCamera> gameCamera_;
-	// light
-	std::unique_ptr<PunctualLight> gameLight_;
+	std::unique_ptr<PrimitiveMesh> primitiveMesh_;
+
+	//--------- functions ----------------------------------------------------
+
+	// meshletの作成
+	ResourceMesh CreateMeshlet(const std::string& modelName);
 };

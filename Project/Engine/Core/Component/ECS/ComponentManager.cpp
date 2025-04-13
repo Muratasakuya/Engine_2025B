@@ -133,3 +133,24 @@ void ComponentManager::RemoveObject2D(uint32_t entityId) {
 	RemoveComponent<SpriteMaterial>(entityId);
 	RemoveComponent<SpriteComponent>(entityId);
 }
+
+uint32_t ComponentManager::CreateEffect(
+	const std::string& modelName, const std::string& objectName,
+	const std::optional<std::string>& groupName) {
+
+	modelName;
+	objectName;
+	groupName;
+
+	// entityID発行
+	//uint32_t id = entityRegistries_[static_cast<uint32_t>(ComponentType::Effect)]->CreateEntity(objectName, groupName);
+
+	// effectに必要なcomponentを追加
+
+	return 0;
+}
+
+void ComponentManager::RemoveEffect(uint32_t entityId) {
+
+	entityId;
+}

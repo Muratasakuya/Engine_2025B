@@ -58,13 +58,8 @@ void Transform3DStore::Update() {
 
 Transform3DComponent* Transform3DStore::GetComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(entityToIndex_, entityId)) {
-
-		size_t index = entityToIndex_.at(entityId);
-		return &components_.at(index);
-
-	}
-	return nullptr;
+	size_t index = entityToIndex_[entityId];
+	return &components_[index];
 }
 
 //============================================================================
@@ -114,11 +109,6 @@ void Transform2DStore::Update() {
 
 Transform2DComponent* Transform2DStore::GetComponent(uint32_t entityId) {
 
-	if (Algorithm::Find(entityToIndex_, entityId)) {
-
-		size_t index = entityToIndex_.at(entityId);
-		return components_.at(index).get();
-
-	}
-	return nullptr;
+	size_t index = entityToIndex_[entityId];
+	return components_[index].get();
 }

@@ -8,7 +8,7 @@
 // imgui表示
 #include <Engine/Editor/ImGuiInspector.h>
 #include <Engine/Editor/Manager/GameEditorManager.h>
-#include <Game/Camera/Manager/CameraManager.h>
+#include <Engine/Scene/Camera/CameraManager.h>
 #include <Game/Time/GameTimer.h>
 
 //============================================================================
