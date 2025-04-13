@@ -64,22 +64,10 @@ void GameScene::Init(
 	object3DEditor_ = std::make_unique<Object3DEditor>();
 	object3DEditor_->Init(asset);
 
-	const uint32_t kNumObject = 320;
+	const uint32_t kNumObject = 800;
 	const float offset = 6.0f;
 	const float offsetY = 4.0f;
 	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
-	for (uint32_t index = 0; index < kNumObject; ++index) {
-
-		uint32_t id = GameObjectHelper::CreateObject3D("multiMaterial", "multiMaterial", "MultiMaterial");
-		auto transform = Component::GetComponent<Transform3DComponent>(id);
-
-		uint32_t x = index % gridSize;
-		uint32_t z = index / gridSize;
-
-		transform->translation.x = x * offset;
-		transform->translation.z = z * offset;
-	}
-
 	for (uint32_t index = 0; index < kNumObject; ++index) {
 
 		uint32_t id = GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot");
@@ -90,19 +78,6 @@ void GameScene::Init(
 
 		transform->translation.x = x * offset;
 		transform->translation.y = offsetY;
-		transform->translation.z = z * offset;
-	}
-
-	for (uint32_t index = 0; index < kNumObject; ++index) {
-
-		uint32_t id = GameObjectHelper::CreateObject3D("suzanne", "suzanne", "Suzanne");
-		auto transform = Component::GetComponent<Transform3DComponent>(id);
-
-		uint32_t x = index % gridSize;
-		uint32_t z = index / gridSize;
-
-		transform->translation.x = x * offset;
-		transform->translation.y = offsetY * 2.0f;
 		transform->translation.z = z * offset;
 	}
 }

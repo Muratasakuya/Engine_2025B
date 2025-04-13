@@ -83,8 +83,8 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 	windowWidth_ = width;
 	windowHeight_ = height;
 
-	shadowMapWidth_ = 2048;
-	shadowMapHeight_ = 2048;
+	shadowMapWidth_ = 4096;
+	shadowMapHeight_ = 4096;
 
 	windowClearColor_ = Color(0.016f, 0.016f, 0.08f, 1.0f);
 
