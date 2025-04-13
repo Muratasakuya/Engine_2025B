@@ -35,7 +35,6 @@ struct Object2DForGPU {
 // 登録したらCreate関数と、Remove関数を作成し。
 // GPUObjectSystemクラスでBufferの更新を行う
 // EffectRendererクラスを作成し、pipelineを作成、描画を行えるようにする
-// バイト行ってきます！
 
 //============================================================================
 //	RenderObjectManager class

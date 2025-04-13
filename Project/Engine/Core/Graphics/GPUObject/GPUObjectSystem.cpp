@@ -30,7 +30,7 @@ void GPUObjectSystem::CreateMesh(const std::string& modelName) {
 	meshRegistry_->RegisterMesh(modelName);
 
 	// 最大instance数
-	const uint32_t kMaxInstanceNum = 4096;
+	const uint32_t kMaxInstanceNum = 16192;
 
 	// instancingデータ作成
 	instancedMeshBuffer_->Create(meshRegistry_->GetMeshes().at(modelName).get(),
