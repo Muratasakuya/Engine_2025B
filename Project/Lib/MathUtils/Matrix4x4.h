@@ -30,6 +30,8 @@ public:
 
 	Matrix4x4& operator=(const Matrix4x4& other);
 
+	bool operator==(const Matrix4x4& other) const;
+
 	//--------- functions ----------------------------------------------------
 
 	static Matrix4x4 Zero();

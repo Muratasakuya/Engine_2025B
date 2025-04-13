@@ -146,6 +146,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Component\PrimitiveMeshComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Component\Store\AnimationStore.cpp">
       <SubType>
       </SubType>
@@ -206,6 +210,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\PostProcess\BloomProcessor.cpp">
       <SubType>
       </SubType>
@@ -239,6 +247,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Editor\Manager\GameEditorManager.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveEditor.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveRegistry.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -334,7 +350,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
     <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp" />
     <ClCompile Include="Engine\Scene\Camera\CameraManager.cpp" />
-    <ClCompile Include="Game\Editor\Object\Object3DEditor.cpp">
+    <ClCompile Include="Engine\Editor\Object\Object3DEditor.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -389,6 +405,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Collision\CollisionBody.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Component\PrimitiveMeshComponent.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -456,6 +476,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\PostProcess\BloomProcessor.h">
       <SubType>
       </SubType>
@@ -496,6 +520,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveEditor.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveRegistry.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Scene\Light\LightManager.h">
       <SubType>
       </SubType>
@@ -504,7 +536,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Editor\Object\Object3DEditor.h">
+    <ClInclude Include="Engine\Editor\Object\Object3DEditor.h">
       <SubType>
       </SubType>
     </ClInclude>

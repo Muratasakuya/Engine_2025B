@@ -6,7 +6,7 @@
 #include <Engine/Core/Component/ECS/ComponentManager.h>
 
 //============================================================================
-//	ComponentHelper classMethods
+//	define
 //============================================================================
 
 #define INSTANTIATE_GET_COMPONENT(TYPE) \
@@ -26,6 +26,10 @@ INSTANTIATE_GET_COMPONENT(SpriteComponent)
 
 // 3D
 INSTANTIATE_GET_COMPONENTLIST(MaterialComponent)
+
+//============================================================================
+//	ComponentHelper classMethods
+//============================================================================
 
 template<typename T>
 T* Component::GetComponent(uint32_t id) {

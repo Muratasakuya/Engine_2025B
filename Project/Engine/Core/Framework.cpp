@@ -79,6 +79,10 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
 		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
 		graphicsCore_->GetSRVDescriptor(), graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
+
+	// editor初期化
+	primitiveEditor_ = std::make_unique<PrimitiveEditor>();
+	primitiveEditor_->Init();
 }
 
 void Framework::InitDirectX(uint32_t width, uint32_t height) {

@@ -42,6 +42,10 @@ Vector3 Quaternion::operator*(const Vector3& v) const {
 	return Vector3(result.x, result.y, result.z);
 }
 
+bool Quaternion::operator==(const Quaternion& other) const {
+	return x == other.x && y == other.y && z == other.z && w == other.w;
+}
+
 Json Quaternion::ToJson() const {
 	return Json{ {"x", x}, {"y", y}, {"z", z}, {"w", w} };
 }

@@ -6,6 +6,7 @@
 #include <Engine/Core/Graphics/GPUObject/InstancedMeshBuffer.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Mesh/MeshRegistry.h>
+#include <Engine/Core/Graphics/Mesh/PrimitiveMesh.h>
 #include <Engine/Core/Component/SpriteComponent.h>
 
 // c++
@@ -16,12 +17,25 @@
 //============================================================================
 
 // GPUに送るデータ
+struct EffectForGPU {
+
+	DxConstBuffer<TransformationMatrix> matrix;
+	DxConstBuffer<EffectMaterial> material;
+	PrimitiveMesh* primitiveMesh;
+};
+
 struct Object2DForGPU {
 
 	DxConstBuffer<Matrix4x4> matrix;
 	DxConstBuffer<SpriteMaterial> material;
 	SpriteReference sprite;
 };
+
+// effect用のStoreクラスを作成し、ComponentManagerに登録
+// 登録したらCreate関数と、Remove関数を作成し。
+// GPUObjectSystemクラスでBufferの更新を行う
+// EffectRendererクラスを作成し、pipelineを作成、描画を行えるようにする
+// バイト行ってきます！
 
 //============================================================================
 //	RenderObjectManager class
@@ -50,6 +64,13 @@ public:
 	void CreateObject2D(uint32_t entityId, SpriteComponent* sprite, ID3D12Device* device);
 	// 指定されたidのbuffer削除
 	void RemoveObject2D(uint32_t entityId);
+
+	//---------- effect ------------------------------------------------------
+
+	// 追加、作成処理
+	void CreateEffect(uint32_t entityId, PrimitiveMesh* primitiveMesh, ID3D12Device* device);
+	// 指定されたidのbuffer削除
+	void RemoveEffect(uint32_t entityId);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -82,14 +103,22 @@ private:
 	// 2D
 	std::vector<Object2DForGPU> object2DBuffers_;
 
+	// effect
+	std::vector<EffectForGPU> effectBuffers_;
+
 	// buffer管理
 	// 2D
 	std::unordered_map<uint32_t, size_t> object2DBufferToIndex_;
 	std::vector<uint32_t> indexToObject2DBuffer_;
 
+	// effect
+	std::unordered_map<uint32_t, size_t> effectBufferToIndex_;
+	std::vector<uint32_t> indexToEffectBuffer_;
+
 	//--------- functions ----------------------------------------------------
 
-	void SwapToPopbackIndex(uint32_t entityId);
+	void SwapToPopbackObject2D(uint32_t entityId);
+	void SwapToPopbackEffect(uint32_t entityId);
 
 	// bufferの更新処理
 	// 3D

@@ -18,7 +18,6 @@ public:
 	Mesh() = default;
 	~Mesh() = default;
 
-	// 初期化
 	void Init(ID3D12Device* device, const ResourceMesh& resource);
 
 	//--------- accessor -----------------------------------------------------

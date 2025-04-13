@@ -12,7 +12,7 @@
 #include <cstdint>
 #include <string>
 // front
-class Transform3DComponent;
+class BaseTransform;
 
 //============================================================================
 //	CBufferStructures
@@ -23,7 +23,7 @@ struct TransformationMatrix {
 	Matrix4x4 world;
 	Matrix4x4 worldInverseTranspose;
 
-	void Update(const Transform3DComponent* parent, const Vector3& scale,
+	void Update(const BaseTransform* parent, const Vector3& scale,
 		const Quaternion& rotation, const Vector3& translation);
 };
 
@@ -44,6 +44,17 @@ struct Material {
 	float shadowRate;
 	float phongRefShininess;
 	Vector3 specularColor;
+	float emissiveIntensity;
+	Vector3 emissionColor;
+	Matrix4x4 uvTransform;
+
+	void Init();
+};
+
+struct EffectMaterial {
+
+	Color color;
+	uint32_t textureIndex;
 	float emissiveIntensity;
 	Vector3 emissionColor;
 	Matrix4x4 uvTransform;

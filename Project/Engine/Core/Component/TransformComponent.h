@@ -9,16 +9,16 @@
 #include <Lib/MathUtils/Quaternion.h>
 
 //============================================================================
-//	Transform3DComponent class
+//	BaseTransform class
 //============================================================================
-class Transform3DComponent {
+class BaseTransform {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	Transform3DComponent() = default;
-	~Transform3DComponent() = default;
+	BaseTransform() = default;
+	virtual ~BaseTransform() = default;
 
 	void Init();
 
@@ -45,10 +45,6 @@ public:
 
 	Vector3 GetDown() const;
 
-	// mesh、これはどこか別の場所に移す予定 //
-	void SetInstancingName(const std::string& name) { meshInstancingName_ = name; }
-	const std::string& GetInstancingName() const { return meshInstancingName_; }
-
 	//--------- variables ----------------------------------------------------
 
 	Vector3 scale;
@@ -57,8 +53,7 @@ public:
 
 	TransformationMatrix matrix;
 
-	const Transform3DComponent* parent = nullptr;
-
+	const BaseTransform* parent = nullptr;
 private:
 	//========================================================================
 	//	private Methods
@@ -68,8 +63,53 @@ private:
 
 	Vector3 eulerRotate_;
 
+	Vector3 prevScale;
+	Quaternion prevRotation;
+	Vector3 prevTranslation;
+};
+
+//============================================================================
+//	Transform3DComponent class
+//============================================================================
+class Transform3DComponent :
+	public BaseTransform {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	Transform3DComponent() = default;
+	~Transform3DComponent() = default;
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetInstancingName(const std::string& name) { meshInstancingName_ = name; }
+	const std::string& GetInstancingName() const { return meshInstancingName_; }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
 	// meshInstancing用の名前
 	std::string meshInstancingName_;
+};
+
+//============================================================================
+//	EffectTransform class
+//============================================================================
+class EffectTransform :
+	public BaseTransform {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	EffectTransform() = default;
+	~EffectTransform() = default;
+
+	// 特に今のところは実装無し
 };
 
 //============================================================================
