@@ -80,7 +80,7 @@ private:
 
 	static ImGuiInspector* instance_;
 
-	const float itemWidth_ = 168.0f;
+	const float itemWidth_ = 192.0f;
 
 	std::unordered_map<std::string, std::vector<EntityReference>> groupedEntities_;
 	std::vector<uint32_t> prevEntity3DIds_;

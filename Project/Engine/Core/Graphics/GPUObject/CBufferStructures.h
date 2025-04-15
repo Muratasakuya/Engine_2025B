@@ -56,7 +56,9 @@ struct EffectMaterial {
 	Color color;
 	uint32_t textureIndex;
 	float emissiveIntensity;
+	float pad1[2];
 	Vector3 emissionColor;
+	float pad2;
 	Matrix4x4 uvTransform;
 
 	void Init();

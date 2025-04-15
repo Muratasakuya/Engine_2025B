@@ -3,36 +3,31 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-
-// c++
-#include <memory>
-#include <ranges>
-// front
-class SRVDescriptor;
-class ShadowMap;
-class GPUObjectSystem;
+#include <Engine/Core/Component/PrimitiveMeshComponent.h>
+#include <Engine/Core/Component/Base/IComponent.h>
 
 //============================================================================
-//	MeshRenderer class
+//	PrimitiveMeshStore class
 //============================================================================
-class MeshRenderer {
+class PrimitiveMeshStore :
+	public IComponentStore<PrimitiveMeshComponent> {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	MeshRenderer() = default;
-	~MeshRenderer() = default;
+	PrimitiveMeshStore() = default;
+	~PrimitiveMeshStore() = default;
 
-	void Init(ID3D12Device8* device, ShadowMap* shadowMap,
-		DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
+	void AddComponent(uint32_t entityId, std::any args) override;
+	void RemoveComponent(uint32_t entityId) override;
 
-	void RenderingZPass(GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
+	void Update() override;
 
-	void Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
+	//--------- accessor -----------------------------------------------------
+
+	PrimitiveMeshComponent* GetComponent(uint32_t entityId) override;
+	std::vector<PrimitiveMeshComponent*> GetComponentList([[maybe_unused]] uint32_t entityId) override { return { nullptr }; }
 private:
 	//========================================================================
 	//	private Methods
@@ -40,9 +35,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	SRVDescriptor* srvDescriptor_;
-	ShadowMap* shadowMap_;
-
-	std::unique_ptr<PipelineState> meshShaderPipeline_;
-	std::unique_ptr<PipelineState> meshShaderZPassPipeline_;
+	std::vector<PrimitiveMeshComponent> components_;
 };

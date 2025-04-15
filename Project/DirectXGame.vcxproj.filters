@@ -311,6 +311,12 @@
     <ClCompile Include="Engine\Core\Component\PrimitiveMeshComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Component\Store\PrimitiveMeshStore.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer\EffectRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -421,6 +427,8 @@
     <ClInclude Include="Engine\Editor\Primitive\PrimitiveRegistry.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.h" />
     <ClInclude Include="Engine\Core\Component\PrimitiveMeshComponent.h" />
+    <ClInclude Include="Engine\Core\Component\Store\PrimitiveMeshStore.h" />
+    <ClInclude Include="Engine\Renderer\EffectRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

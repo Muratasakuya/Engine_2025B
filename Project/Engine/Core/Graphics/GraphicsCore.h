@@ -19,6 +19,7 @@
 
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>
+#include <Engine/Renderer/EffectRenderer.h>
 #include <Engine/Renderer/SpriteRenderer.h>
 
 // c++
@@ -101,6 +102,7 @@ private:
 	std::unique_ptr<PostProcessSystem> postProcessSystem_;
 
 	std::unique_ptr<MeshRenderer> meshRenderer_;
+	std::unique_ptr<EffectRenderer> effectRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;
 
 	std::unique_ptr<RTVDescriptor> rtvDescriptor_;

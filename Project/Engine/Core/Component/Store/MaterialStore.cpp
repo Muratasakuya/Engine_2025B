@@ -93,6 +93,61 @@ std::vector<MaterialComponent*> MaterialStore::GetComponentList(uint32_t entityI
 }
 
 //============================================================================
+// Effect
+//============================================================================
+
+void EffectMaterialStore::AddComponent(uint32_t entityId, std::any args) {
+
+	size_t index = components_.size();
+
+	auto [textureName, asset] =
+		std::any_cast<std::tuple<std::string, Asset*>>(args);
+
+	// component追加
+	components_.emplace_back();
+	components_.back().Init();
+	components_.back().material.textureIndex =
+		asset->GetTextureGPUIndex(textureName);
+
+	// index設定
+	SetEntityIndex(entityId, index);
+}
+
+void EffectMaterialStore::RemoveComponent(uint32_t entityId) {
+
+	// 見つからなければ削除しない
+	if (!Algorithm::Find(entityToIndex_, entityId)) {
+		return;
+	}
+
+	// indexを末尾と交換して削除
+	size_t index = entityToIndex_.at(entityId);
+	size_t lastIndex = components_.size() - 1;
+
+	// entityIndex削除
+	SwapToPopbackIndex(entityId, lastIndex);
+
+	// component削除
+	std::swap(components_[index], components_[lastIndex]);
+	components_.pop_back();
+}
+
+void EffectMaterialStore::Update() {
+
+	for (auto& component : components_) {
+
+		// uvTransform更新
+		component.UpdateUVTransform();
+	}
+}
+
+EffectMaterialComponent* EffectMaterialStore::GetComponent(uint32_t entityId) {
+
+	size_t index = entityToIndex_[entityId];
+	return &components_[index];
+}
+
+//============================================================================
 // 2D
 //============================================================================
 

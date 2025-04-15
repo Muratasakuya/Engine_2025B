@@ -16,6 +16,7 @@
 // stores
 #include <Engine/Core/Component/Store/TransformStore.h>
 #include <Engine/Core/Component/Store/MaterialStore.h>
+#include <Engine/Core/Component/Store/PrimitiveMeshStore.h>
 #include <Engine/Core/Component/Store/AnimationStore.h>
 #include <Engine/Core/Component/Store/SpriteStore.h>
 
@@ -49,6 +50,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::unique_ptr<WinApp> winApp_;
+	bool fullscreenEnable_;
 
 	std::unique_ptr<GraphicsCore> graphicsCore_;
 
@@ -69,6 +71,11 @@ private:
 	// 3D
 	std::unique_ptr<Transform3DStore> transform3DStore_;
 	std::unique_ptr<MaterialStore> materialStore_;
+
+	// effect
+	std::unique_ptr<EffectTransformStore> effectTransformStore_;
+	std::unique_ptr<EffectMaterialStore> effectMaterialStore_;
+	std::unique_ptr<PrimitiveMeshStore> primitiveMeshStore_;
 
 	// 2D
 	std::unique_ptr<Transform2DStore> transform2DStore_;

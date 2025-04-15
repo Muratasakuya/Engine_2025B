@@ -7,29 +7,24 @@
 
 // c++
 #include <memory>
-#include <ranges>
 // front
 class SRVDescriptor;
-class ShadowMap;
 class GPUObjectSystem;
 
 //============================================================================
-//	MeshRenderer class
+//	EffectRenderer class
 //============================================================================
-class MeshRenderer {
+class EffectRenderer {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	MeshRenderer() = default;
-	~MeshRenderer() = default;
+	EffectRenderer() = default;
+	~EffectRenderer() = default;
 
-	void Init(ID3D12Device8* device, ShadowMap* shadowMap,
-		DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
-
-	void RenderingZPass(GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
+	void Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
+		SRVDescriptor* srvDescriptor);
 
 	void Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 		ID3D12GraphicsCommandList6* commandList);
@@ -41,8 +36,6 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	SRVDescriptor* srvDescriptor_;
-	ShadowMap* shadowMap_;
-
+	
 	std::unique_ptr<PipelineState> meshShaderPipeline_;
-	std::unique_ptr<PipelineState> meshShaderZPassPipeline_;
 };
