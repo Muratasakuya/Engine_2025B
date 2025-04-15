@@ -59,6 +59,7 @@ void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
 
 		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
 
+			// 描画処理
 			commandContext.DispatchMesh(commandList,
 				instancingBuffers[name].numInstance, meshIndex, mesh.get());
 		}
@@ -103,6 +104,7 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 			commandList->SetGraphicsRootShaderResourceView(8,
 				instancingBuffers[name].materials[meshIndex].GetResource()->GetGPUVirtualAddress());
 
+			// 描画処理
 			commandContext.DispatchMesh(commandList,
 				instancingBuffers[name].numInstance, meshIndex, mesh.get());
 		}

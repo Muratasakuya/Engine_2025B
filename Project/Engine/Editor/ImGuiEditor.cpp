@@ -37,13 +37,13 @@ void ImGuiEditor::Display() {
 	// imguiの表示切り替え
 	// F11で行う
 	if (displayEnable_) {
-		if (Input::GetInstance()->TriggerKey(DIK_F11)) {
+		if (Input::GetInstance()->TriggerKey(DIK_F10)) {
 
 			displayEnable_ = false;
 		}
 	} else {
 
-		if (Input::GetInstance()->TriggerKey(DIK_F11)) {
+		if (Input::GetInstance()->TriggerKey(DIK_F10)) {
 
 			displayEnable_ = true;
 		}
@@ -72,7 +72,7 @@ void ImGuiEditor::Display() {
 void ImGuiEditor::MainWindow() {
 
 	// 表示する画像サイズ
-	const ImVec2 imageSize(864.0f, 486.0f);
+	const ImVec2 imageSize(1216,	684);
 
 	ImGui::Begin("Game");
 

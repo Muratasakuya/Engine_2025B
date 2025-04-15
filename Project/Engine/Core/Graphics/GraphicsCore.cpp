@@ -172,6 +172,10 @@ void GraphicsCore::InitRenderer(Asset* asset) {
 	meshRenderer_ = std::make_unique<MeshRenderer>();
 	meshRenderer_->Init(dxDevice_->Get(), shadowMap_.get(), dxShaderComplier_.get(), srvDescriptor_.get());
 
+	// effect描画初期化
+	effectRenderer_ = std::make_unique<EffectRenderer>();
+	effectRenderer_->Init(dxDevice_->Get(), dxShaderComplier_.get(), srvDescriptor_.get());
+
 	// sprite描画初期化
 	spriteRenderer_ = std::make_unique<SpriteRenderer>();
 	spriteRenderer_->Init(dxDevice_->Get(), srvDescriptor_.get(), dxShaderComplier_.get());
@@ -200,6 +204,7 @@ void GraphicsCore::Finalize(HWND hwnd) {
 	shadowMap_.reset();
 	postProcessSystem_.reset();
 	meshRenderer_.reset();
+	effectRenderer_.reset();
 	spriteRenderer_.reset();
 }
 
@@ -325,6 +330,10 @@ void GraphicsCore::Renderers(bool debugEnable) {
 
 	// 通常描画処理
 	meshRenderer_->Rendering(debugEnable, gpuObjectSystem_.get(),
+		dxCommand_->GetCommandList(CommandListType::Graphics));
+
+	// effect描画
+	effectRenderer_->Rendering(debugEnable, gpuObjectSystem_.get(),
 		dxCommand_->GetCommandList(CommandListType::Graphics));
 
 	// sprite描画、postPrecess適用

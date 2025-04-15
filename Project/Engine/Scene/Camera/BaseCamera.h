@@ -46,7 +46,7 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
-	const float itemWidth_ = 168.0f;
+	const float itemWidth_ = 192.0f;
 
 	float fovY_;
 	float nearClip_;

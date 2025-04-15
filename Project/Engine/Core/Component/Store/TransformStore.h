@@ -39,6 +39,38 @@ private:
 };
 
 //============================================================================
+//	EffectTransformStore class
+//============================================================================
+class EffectTransformStore :
+	public IComponentStore<EffectTransformComponent> {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	EffectTransformStore() = default;
+	~EffectTransformStore() = default;
+
+	void AddComponent(uint32_t entityId, std::any args) override;
+	void RemoveComponent(uint32_t entityId) override;
+
+	void Update() override;
+
+	//--------- accessor -----------------------------------------------------
+
+	EffectTransformComponent* GetComponent(uint32_t entityId) override;
+	std::vector<EffectTransformComponent*> GetComponentList([[maybe_unused]] uint32_t entityId) override { return { nullptr }; }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	std::vector<EffectTransformComponent> components_;
+};
+
+//============================================================================
 //	Transform2DStore class
 //============================================================================
 class Transform2DStore :

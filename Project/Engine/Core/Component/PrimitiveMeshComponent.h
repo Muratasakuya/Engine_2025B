@@ -27,6 +27,16 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	PrimitiveMesh* GetPrimitiveMesh() const { return primitiveMesh_.get(); }
+
+	//--------- operator -----------------------------------------------------
+
+	// this <-> orther
+	PrimitiveMeshComponent(PrimitiveMeshComponent&&) noexcept = default;
+	PrimitiveMeshComponent& operator=(PrimitiveMeshComponent&&) noexcept = default;
+
+	// ×copy
+	PrimitiveMeshComponent(const PrimitiveMeshComponent&) = delete;
+	PrimitiveMeshComponent& operator=(const PrimitiveMeshComponent&) = delete;
 private:
 	//========================================================================
 	//	private Methods

@@ -54,16 +54,16 @@ void SpriteRenderer::RenderIrrelevant(GPUObjectSystem* gpuObjectSystem,
 		viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	// indexBuffer設定
 	commandList->IASetIndexBuffer(&object2DBuffers.front().
-		sprite.sprite->GetIndexBuffer().GetIndexBuffer());
+		sprite->GetIndexBuffer().GetIndexBuffer());
 
 	for (const auto& buffer : object2DBuffers) {
-		if (buffer.sprite.sprite->GetPostProcessEnable()) {
+		if (buffer.sprite->GetPostProcessEnable()) {
 			continue;
 		}
 
-		commandList->IASetVertexBuffers(0, 1, &buffer.sprite.sprite->GetVertexBuffer().GetVertexBuffer());
+		commandList->IASetVertexBuffers(0, 1, &buffer.sprite->GetVertexBuffer().GetVertexBuffer());
 
-		commandList->SetGraphicsRootDescriptorTable(0, buffer.sprite.sprite->GetTextureGPUHandle());
+		commandList->SetGraphicsRootDescriptorTable(0, buffer.sprite->GetTextureGPUHandle());
 		commandList->SetGraphicsRootConstantBufferView(1, buffer.matrix.GetResource()->GetGPUVirtualAddress());
 		commandList->SetGraphicsRootConstantBufferView(3, buffer.material.GetResource()->GetGPUVirtualAddress());
 
@@ -91,17 +91,17 @@ void SpriteRenderer::RenderApply(SpriteLayer layer, GPUObjectSystem* gpuObjectSy
 		viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	// indexBuffer設定
 	commandList->IASetIndexBuffer(&object2DBuffers.front().
-		sprite.sprite->GetIndexBuffer().GetIndexBuffer());
+		sprite->GetIndexBuffer().GetIndexBuffer());
 
 	for (const auto& buffer : object2DBuffers) {
-		if (buffer.sprite.sprite->GetLayer() == layer) {
-			if (!buffer.sprite.sprite->GetPostProcessEnable()) {
+		if (buffer.sprite->GetLayer() == layer) {
+			if (!buffer.sprite->GetPostProcessEnable()) {
 				continue;
 			}
 
-			commandList->IASetVertexBuffers(0, 1, &buffer.sprite.sprite->GetVertexBuffer().GetVertexBuffer());
+			commandList->IASetVertexBuffers(0, 1, &buffer.sprite->GetVertexBuffer().GetVertexBuffer());
 
-			commandList->SetGraphicsRootDescriptorTable(0, buffer.sprite.sprite->GetTextureGPUHandle());
+			commandList->SetGraphicsRootDescriptorTable(0, buffer.sprite->GetTextureGPUHandle());
 			commandList->SetGraphicsRootConstantBufferView(1, buffer.matrix.GetResource()->GetGPUVirtualAddress());
 			commandList->SetGraphicsRootConstantBufferView(3, buffer.material.GetResource()->GetGPUVirtualAddress());
 

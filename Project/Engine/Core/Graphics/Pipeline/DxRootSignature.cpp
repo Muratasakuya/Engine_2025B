@@ -149,11 +149,26 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device, SRVDescript
 					staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 					staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
 					staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_WRAP;
+				} else if (addressMode == "MIRROR") {
+
+					staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_MIRROR;
+					staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_MIRROR;
+					staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_MIRROR;
 				} else if (addressMode == "CLAMP") {
 
 					staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 					staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
 					staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_CLAMP;
+				} else if (addressMode == "BORDER") {
+
+					staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+					staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+					staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_BORDER;
+				} else if (addressMode == "MIRROR_ONCE") {
+
+					staticSampler.AddressU = D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE;
+					staticSampler.AddressV = D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE;
+					staticSampler.AddressW = D3D12_TEXTURE_ADDRESS_MODE_MIRROR_ONCE;
 				}
 
 				if (comparisonFunc == "NEVER") {

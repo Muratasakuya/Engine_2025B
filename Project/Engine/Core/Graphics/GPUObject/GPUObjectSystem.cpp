@@ -47,7 +47,7 @@ void GPUObjectSystem::CreateObject2D(uint32_t entityId, SpriteComponent* sprite,
 	object2DBuffers_.back().matrix.CreateConstBuffer(device);
 	object2DBuffers_.back().material.CreateConstBuffer(device);
 	// spriteの情報を取得
-	object2DBuffers_.back().sprite.sprite = sprite;
+	object2DBuffers_.back().sprite = sprite;
 
 	// index設定
 	object2DBufferToIndex_[entityId] = index;
@@ -74,7 +74,7 @@ void GPUObjectSystem::RemoveObject2D(uint32_t entityId) {
 }
 
 void GPUObjectSystem::CreateEffect(uint32_t entityId,
-	PrimitiveMesh* primitiveMesh, ID3D12Device* device) {
+	PrimitiveMeshComponent* primitiveMesh, ID3D12Device* device) {
 
 	size_t index = effectBuffers_.size();
 
@@ -84,7 +84,7 @@ void GPUObjectSystem::CreateEffect(uint32_t entityId,
 	effectBuffers_.back().matrix.CreateConstBuffer(device);
 	effectBuffers_.back().material.CreateConstBuffer(device);
 	// primitiveMeshの情報を取得
-	effectBuffers_.back().primitiveMesh = primitiveMesh;
+	effectBuffers_.back().primitiveMesh = primitiveMesh->GetPrimitiveMesh();
 
 	// index設定
 	effectBufferToIndex_[entityId] = index;
@@ -154,6 +154,8 @@ void GPUObjectSystem::Update(CameraManager* cameraManager,
 	sceneConstBuffer_->Update(cameraManager, lightManager);
 	// 3D
 	UpdateObject3D();
+	// effect
+	UpdateEffect();
 	// 2D
 	UpdateObject2D();
 }
@@ -187,6 +189,19 @@ void GPUObjectSystem::UpdateObject3D() {
 	}
 
 	instancedMeshBuffer_->Update();
+}
+
+void GPUObjectSystem::UpdateEffect() {
+
+	auto componentManager = ComponentManager::GetInstance();
+
+	// entityごとのGPUデータ転送
+	for (size_t index = 0; index < indexToEffectBuffer_.size(); ++index) {
+		uint32_t id = indexToEffectBuffer_[index];
+
+		effectBuffers_[index].matrix.TransferData(componentManager->GetComponent<EffectTransformComponent>(id)->matrix);
+		effectBuffers_[index].material.TransferData(componentManager->GetComponent<EffectMaterialComponent>(id)->material);
+	}
 }
 
 void GPUObjectSystem::UpdateObject2D() {

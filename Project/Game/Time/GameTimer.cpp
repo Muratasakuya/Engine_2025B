@@ -64,13 +64,6 @@ void GameTimer::ImGui() {
 
 	ImGui::Text("updateTime:      %.2f  ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間
 	ImGui::Text("drawTime:        %.2f ms", GetSmoothedDrawTime());    // 描画処理にかかった時間
-
-	float frameTime = ImGui::GetIO().Framerate;
-	if (frameTime < 55.0f) {
-
-		int test = 0;
-		++test;
-	}
 }
 
 void GameTimer::BeginUpdateCount() {
