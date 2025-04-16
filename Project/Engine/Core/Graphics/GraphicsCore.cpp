@@ -146,9 +146,16 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 
 	// debugSceneRenderTexture作成
 #ifdef _DEBUG
+	copyTexturePipeline_ = std::make_unique<PipelineState>();
+	copyTexturePipeline_->Create("CopySceneTexture.json",
+		device, srvDescriptor_.get(), dxShaderComplier_.get());
+
 	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
 	debugSceneRenderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
 		device, rtvDescriptor_.get(), srvDescriptor_.get());
+
+	copyTextureProcessor_ = std::make_unique<ComputePostProcessor>();
+	copyTextureProcessor_->Init(device, srvDescriptor_.get(), width, height);
 #endif // _DEBUG
 
 	// shadowMap作成
@@ -296,9 +303,28 @@ void GraphicsCore::RenderDebugSceneRenderTexture() {
 	// 描画処理
 	Renderers(true);
 
-	// RenderTarget -> PixelShader
+	// RenderTarget -> ComputeShader
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+
+	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
+
+	// α値を調整するためにCSで計算を行う
+	commandList->SetComputeRootSignature(copyTexturePipeline_->GetRootSignature());
+	commandList->SetPipelineState(copyTexturePipeline_->GetComputePipeline());
+
+	commandList->SetComputeRootDescriptorTable(0, copyTextureProcessor_->GetUAVGPUHandle());
+	commandList->SetComputeRootDescriptorTable(1, debugSceneRenderTexture_->GetGPUHandle());
+
+	UINT threadGroupCountX = static_cast<UINT>(copyTextureProcessor_->GetTextureSize().x + 7) / 8;
+	UINT threadGroupCountY = static_cast<UINT>(copyTextureProcessor_->GetTextureSize().y + 7) / 8;
+
+	// 実行処理
+	commandList->Dispatch(threadGroupCountX, threadGroupCountY, 1);
+
+	// UnorderedAccess -> PixelShader
+	dxCommand_->TransitionBarriers({ copyTextureProcessor_->GetOutputTextureResource() },
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
 void GraphicsCore::RenderFrameBuffer() {
@@ -359,9 +385,13 @@ void GraphicsCore::EndRenderFrame() {
 	imguiManager_->End();
 	imguiManager_->Draw(dxCommand_->GetCommandList(CommandListType::Graphics));
 
-	// PixelShader -> RenderTarget
+	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+	// PixelShader -> UnorderedAccess
+	dxCommand_->TransitionBarriers({ copyTextureProcessor_->GetOutputTextureResource() },
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 #endif // _DEBUG
 
 	// PixelShader -> Write
