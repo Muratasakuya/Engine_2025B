@@ -24,8 +24,13 @@ public:
 
 	void Init(ID3D12Device* device, Asset* asset, const std::string& modelName);
 
+	void Update();
+
 	void ImGui(float itemWidth);
 	//--------- accessor -----------------------------------------------------
+
+	// 頂点情報
+	ResourceMesh* GetResourceMesh() { return resourceMesh_.get(); };
 
 	PrimitiveMesh* GetPrimitiveMesh() const { return primitiveMesh_.get(); }
 
@@ -47,6 +52,9 @@ private:
 
 	Asset* asset_;
 
+	// 頂点リソース情報
+	std::unique_ptr<ResourceMesh> resourceMesh_;
+
 	std::unique_ptr<PrimitiveMesh> primitiveMesh_;
 
 	// imgui
@@ -55,5 +63,9 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// meshletの作成
-	ResourceMesh CreateMeshlet(const std::string& modelName);
+	std::unique_ptr<ResourceMesh> CreateMeshlet(const std::string& modelName);
+
+	void SelectBlendMode();
+
+	void EditVertex();
 };

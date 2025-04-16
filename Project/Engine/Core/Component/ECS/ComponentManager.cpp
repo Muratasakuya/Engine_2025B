@@ -108,7 +108,7 @@ uint32_t ComponentManager::CreateEffect(const std::string& modelName, const std:
 	// buffer作成
 	gpuObjectSystem_->CreateEffect(id, GetComponent<PrimitiveMeshComponent>(id), device_);
 
-	return 0;
+	return id;
 }
 
 uint32_t ComponentManager::CreateObject2D(const std::string& textureName, const std::string& objectName,

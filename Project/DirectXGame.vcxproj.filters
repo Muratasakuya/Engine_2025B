@@ -320,6 +320,9 @@
     <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshData.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshTool.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -433,6 +436,7 @@
     <ClInclude Include="Engine\Core\Component\Store\PrimitiveMeshStore.h" />
     <ClInclude Include="Engine\Renderer\EffectRenderer.h" />
     <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshData.h" />
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshTool.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

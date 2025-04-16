@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
 #include <Engine/Editor/Primitive/PrimitiveRegistry.h>
+#include <Engine/Editor/Primitive/PrimitiveMeshTool.h>
 
 //============================================================================
 //	PrimitiveEditor class
@@ -37,6 +38,8 @@ private:
 
 	// primitiveの登録
 	std::unique_ptr<PrimitiveRegistry> primitiveRegistry_;
+	// primitiveの操作
+	std::unique_ptr<PrimitiveMeshTool> primitiveTool_;
 
 	//--------- functions ----------------------------------------------------
 

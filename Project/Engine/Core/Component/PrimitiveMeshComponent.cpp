@@ -20,17 +20,31 @@ void PrimitiveMeshComponent::Init(ID3D12Device* device, Asset* asset,
 	asset_ = asset;
 
 	// 頂点、meshlet生成
-	const ResourceMesh resourceMesh = CreateMeshlet(modelName);
+	resourceMesh_ = CreateMeshlet(modelName);
 
 	// buffer作成
 	primitiveMesh_ = std::make_unique<PrimitiveMesh>();
-	primitiveMesh_->Init(device, resourceMesh);
+	primitiveMesh_->Init(device, *resourceMesh_.get());
+}
+
+void PrimitiveMeshComponent::Update() {
+
+	// buffer更新
+	primitiveMesh_->Update(*resourceMesh_.get());
 }
 
 void PrimitiveMeshComponent::ImGui(float itemWidth) {
 
 	// 横幅設定
 	ImGui::PushItemWidth(itemWidth);
+
+	// blendModeの選択
+	SelectBlendMode();
+
+	ImGui::PopItemWidth();
+}
+
+void PrimitiveMeshComponent::SelectBlendMode() {
 
 	const std::vector<std::string> blendModeNames = {
 		"ModeNormal",
@@ -57,10 +71,9 @@ void PrimitiveMeshComponent::ImGui(float itemWidth) {
 		}
 		ImGui::EndCombo();
 	}
-	ImGui::PopItemWidth();
 }
 
-ResourceMesh PrimitiveMeshComponent::CreateMeshlet(const std::string& modelName) {
+std::unique_ptr<ResourceMesh> PrimitiveMeshComponent::CreateMeshlet(const std::string& modelName) {
 
 	MeshletBuilder meshletBuilder{};
 
@@ -68,7 +81,8 @@ ResourceMesh PrimitiveMeshComponent::CreateMeshlet(const std::string& modelName)
 	ModelData modelData = asset_->GetModelData(modelName);
 
 	// 頂点、meshlet生成
-	ResourceMesh resourceMesh = meshletBuilder.ParseMesh(modelData);
+	std::unique_ptr<ResourceMesh> resourceMeshPtr = std::make_unique<ResourceMesh>();
+	*resourceMeshPtr = meshletBuilder.ParseMesh(modelData);
 
-	return resourceMesh;
+	return std::move(resourceMeshPtr);
 }

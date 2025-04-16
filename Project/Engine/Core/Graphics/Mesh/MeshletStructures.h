@@ -57,4 +57,17 @@ struct ResourceMesh {
 	std::vector<std::vector<ResourceMeshlet>> meshlets;
 	std::vector<std::vector<uint32_t>> uniqueVertexIndices;
 	std::vector<std::vector<ResourcePrimitiveIndex>> primitiveIndices;
+
+	// operator
+	ResourceMesh& operator=(const ResourceMesh& other) {
+		if (this != &other) {
+			meshCount_ = other.meshCount_;
+			vertices = other.vertices;
+			indices = other.indices;
+			meshlets = other.meshlets;
+			uniqueVertexIndices = other.uniqueVertexIndices;
+			primitiveIndices = other.primitiveIndices;
+		}
+		return *this;
+	}
 };

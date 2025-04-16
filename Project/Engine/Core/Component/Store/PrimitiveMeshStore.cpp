@@ -44,7 +44,12 @@ void PrimitiveMeshStore::RemoveComponent(uint32_t entityId) {
 }
 
 void PrimitiveMeshStore::Update() {
-	// 今のところ更新処理はなし
+	
+	// 頂点bufferの更新
+	for (auto& component : components_) {
+
+		component.Update();
+	}
 }
 
 PrimitiveMeshComponent* PrimitiveMeshStore::GetComponent(uint32_t entityId) {
