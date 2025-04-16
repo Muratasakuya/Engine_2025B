@@ -25,6 +25,7 @@ void GameScene::Init(
 	//========================================================================
 
 	asset->LoadTexture("uvChecker");
+	asset->LoadTexture("circle");
 
 	asset->LoadModel("stageField");
 	asset->LoadModel("teapot");
@@ -69,8 +70,9 @@ void GameScene::Init(
 	GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot");
 
 	GameObjectHelper::CreateObject3D("plane", "plane", "Plane");
+	GameObjectHelper::CreateObject2D("uvChecker", "uvChecker", "Plane");
 
-	uint32_t id = GameObjectHelper::CreateEffect("teapot", "uvChecker", "teapot", "TeapotTest");
+	uint32_t id = GameObjectHelper::CreateEffect("plane", "circle", "planeEffect", "Plane");
 	auto transform = Component::GetComponent<EffectTransformComponent>(id);
 	transform->translation.y = 2.0f;
 	transform->translation.z = -1.0f;

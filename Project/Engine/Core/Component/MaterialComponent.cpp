@@ -169,6 +169,9 @@ void EffectMaterialComponent::ImGui(float itemSize) {
 		material.color.r, material.color.g,
 		material.color.b, material.color.a);
 
+	// discard閾値
+	ImGui::DragFloat("alphaReference", &material.alphaReference, 0.01f);
+
 	// 発行色
 	ImGui::ColorEdit3("emissionColor", &material.emissionColor.x);
 	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f",
@@ -194,6 +197,7 @@ void EffectMaterialComponent::ToJson(Json& data) {
 	data["color"] = material.color.ToJson();
 	data["emissionColor"] = material.emissionColor.ToJson();
 	data["emissiveIntensity"] = material.emissiveIntensity;
+	data["alphaReference"] = material.alphaReference;
 
 	// UV
 	data["uvScale"] = uvTransform.scale.ToJson();
@@ -208,6 +212,7 @@ void EffectMaterialComponent::FromJson(const Json& data) {
 	material.color = JsonAdapter::ToObject<Color>(data["color"]);
 	material.emissionColor = JsonAdapter::ToObject<Vector3>(data["emissionColor"]);
 	material.emissiveIntensity = data["emissiveIntensity"];
+	material.alphaReference = data["alphaReference"];
 
 	// UV
 	uvTransform.scale = JsonAdapter::ToObject<Vector3>(data["uvScale"]);

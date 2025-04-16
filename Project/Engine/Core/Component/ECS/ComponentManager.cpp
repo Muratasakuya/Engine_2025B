@@ -61,6 +61,7 @@ void ComponentManager::Init(ID3D12Device* device, Asset* asset, GPUObjectSystem*
 	// inspectorへentityManagerをセット
 	ImGuiInspector::GetInstance()->SetEntityManager(
 		entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)].get(),
+		entityRegistries_[static_cast<uint32_t>(ComponentType::Effect)].get(),
 		entityRegistries_[static_cast<uint32_t>(ComponentType::Object2D)].get());
 }
 
@@ -141,7 +142,9 @@ void ComponentManager::RemoveEffect(uint32_t entityId) {
 	// idの削除
 	entityRegistries_[static_cast<uint32_t>(ComponentType::Effect)]->RemoveEntity(entityId);
 
-	// object3Dで使用していたcomponentの削除
+	// buffer削除
+	gpuObjectSystem_->RemoveEffect(entityId);
+	// effectで使用していたcomponentの削除
 	RemoveComponent<EffectTransformComponent>(entityId);
 	RemoveComponent<EffectMaterialComponent>(entityId);
 	RemoveComponent<PrimitiveMeshComponent>(entityId);

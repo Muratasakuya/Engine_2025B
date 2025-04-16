@@ -9,6 +9,7 @@
 #include <Engine/Core/Graphics/Pipeline/DxInputLayout.h>
 #include <Engine/Core/Graphics/Pipeline/DxDepthRaster.h>
 #include <Engine/Core/Graphics/Pipeline/DxBlendState.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	PipelineState classMethods
@@ -66,6 +67,11 @@ void PipelineState::Create(const std::string& fileName, ID3D12Device8* device,
 		break;
 	}
 	}
+}
+
+ID3D12PipelineState* PipelineState::GetGraphicsPipeline(BlendMode blendMode) const {
+
+	return graphicsPipelinepipelineStates_[blendMode].Get();
 }
 
 Json PipelineState::LoadFile(const std::string& fileName) {
@@ -134,8 +140,9 @@ void PipelineState::CreateVertexPipeline(const Json& json, ID3D12Device8* device
 
 	const auto& stateJson = json["PipelineState"][0];
 	std::string topologyType = stateJson.value("TopologyType", "TRIANGLE");
-	std::string dsvFormat = stateJson.value("DSVFormat", "D24_UNORM_S8_UINT");
-	std::string rtvFormat = stateJson.value("RTVFormats", "R32G32B32A32_FLOAT");
+	std::string dsvFormat = stateJson["DSVFormat"];
+	std::string rtvFormat = stateJson["RTVFormats"];
+	std::string blendMode = stateJson["BlendMode"];
 
 	if (topologyType == "TRIANGLE") {
 
@@ -164,21 +171,43 @@ void PipelineState::CreateVertexPipeline(const Json& json, ID3D12Device8* device
 		pipelineDesc.RTVFormats[0] = DXGI_FORMAT_R32_FLOAT;
 	}
 
-	// BlendState
-	DxBlendState dxBlendState;
-	D3D12_RENDER_TARGET_BLEND_DESC blendState;
+	// 全てのblendModeで作成
+	if (blendMode == "ALL") {
+		for (const auto& blend : Algorithm::GetEnumArray(BlendMode::BlendCount)) {
 
-	// blendMode:Normalで作成
-	dxBlendState.Create(kBlendModeNormal, blendState);
-	pipelineDesc.BlendState.RenderTarget[0] = blendState;
+			// BlendState
+			DxBlendState dxBlendState;
+			D3D12_RENDER_TARGET_BLEND_DESC blendState;
+			dxBlendState.Create(static_cast<BlendMode>(blend), blendState);
+			pipelineDesc.BlendState.RenderTarget[0] = blendState;
 
-	// 生成
-	graphicsPipelinepipelineState_ = nullptr;
-	HRESULT hr = device->CreateGraphicsPipelineState(
-		&pipelineDesc,
-		IID_PPV_ARGS(&graphicsPipelinepipelineState_));
-	if (FAILED(hr)) {
-		ASSERT(FALSE, "assert createPipeline");
+			// 生成
+			graphicsPipelinepipelineStates_[blend] = nullptr;
+			HRESULT hr = device->CreateGraphicsPipelineState(
+				&pipelineDesc,
+				IID_PPV_ARGS(&graphicsPipelinepipelineStates_[blend]));
+			if (FAILED(hr)) {
+				ASSERT(FALSE, "assert createPipeline");
+			}
+		}
+	}
+	// それ以外はすべてnormalで作成
+	else {
+
+		// BlendState
+		DxBlendState dxBlendState;
+		D3D12_RENDER_TARGET_BLEND_DESC blendState;
+		dxBlendState.Create(static_cast<BlendMode>(kBlendModeNormal), blendState);
+		pipelineDesc.BlendState.RenderTarget[0] = blendState;
+
+		// 生成
+		graphicsPipelinepipelineStates_[kBlendModeNormal] = nullptr;
+		HRESULT hr = device->CreateGraphicsPipelineState(
+			&pipelineDesc,
+			IID_PPV_ARGS(&graphicsPipelinepipelineStates_[kBlendModeNormal]));
+		if (FAILED(hr)) {
+			ASSERT(FALSE, "assert createPipeline");
+		}
 	}
 }
 
@@ -192,13 +221,6 @@ void PipelineState::CreateMeshPipeline(const Json& json, ID3D12Device8* device,
 	D3D12_DEPTH_STENCIL_DESC depthDesc{};
 	depthRaster.Create(json, rasterizerDesc, depthDesc);
 
-	// BlendState
-	DxBlendState dxBlendState;
-	D3D12_RENDER_TARGET_BLEND_DESC blendState;
-
-	// blendMode:Normalで作成
-	dxBlendState.Create(kBlendModeNormal, blendState);
-
 	// sampleDesc設定
 	DXGI_SAMPLE_DESC sampleDesc{};
 	sampleDesc.Count = 1;
@@ -210,8 +232,9 @@ void PipelineState::CreateMeshPipeline(const Json& json, ID3D12Device8* device,
 	pipelineDesc.SampleMask = UINT_MAX;
 
 	const auto& stateJson = json["PipelineState"][0];
-	std::string dsvFormat = stateJson.value("DSVFormat", "D24_UNORM_S8_UINT");
-	std::string rtvFormat = stateJson.value("RTVFormats", "R32G32B32A32_FLOAT");
+	std::string dsvFormat = stateJson["DSVFormat"];
+	std::string rtvFormat = stateJson["RTVFormats"];
+	std::string blendMode = stateJson["BlendMode"];
 	if (dsvFormat == "D24_UNORM_S8_UINT") {
 
 		pipelineDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -243,22 +266,61 @@ void PipelineState::CreateMeshPipeline(const Json& json, ID3D12Device8* device,
 		shaderBlobs.back().Get()->GetBufferSize()
 	};
 
-	pipelineDesc.RasterizerState = rasterizerDesc;
-	pipelineDesc.BlendState.RenderTarget[0] = blendState;
-	pipelineDesc.DepthStencilState = depthDesc;
-	pipelineDesc.SampleDesc = sampleDesc;
+	// 全てのblendModeで作成
+	if (blendMode == "ALL") {
+		for (const auto& blend : Algorithm::GetEnumArray(BlendMode::BlendCount)) {
 
-	auto pipelineStream = CD3DX12_PIPELINE_MESH_STATE_STREAM(pipelineDesc);
+			// BlendState
+			DxBlendState dxBlendState;
+			D3D12_RENDER_TARGET_BLEND_DESC blendState;
+			dxBlendState.Create(static_cast<BlendMode>(blend), blendState);
+			pipelineDesc.BlendState.RenderTarget[0] = blendState;
 
-	D3D12_PIPELINE_STATE_STREAM_DESC streamDesc;
-	streamDesc.pPipelineStateSubobjectStream = &pipelineStream;
-	streamDesc.SizeInBytes = sizeof(pipelineStream);
+			pipelineDesc.RasterizerState = rasterizerDesc;
+			pipelineDesc.BlendState.RenderTarget[0] = blendState;
+			pipelineDesc.DepthStencilState = depthDesc;
+			pipelineDesc.SampleDesc = sampleDesc;
 
-	// 生成
-	HRESULT hr = device->CreatePipelineState(&streamDesc,
-		IID_PPV_ARGS(graphicsPipelinepipelineState_.GetAddressOf()));
-	if (FAILED(hr)) {
-		ASSERT(FALSE, "assert createPipeline");
+			auto pipelineStream = CD3DX12_PIPELINE_MESH_STATE_STREAM(pipelineDesc);
+
+			D3D12_PIPELINE_STATE_STREAM_DESC streamDesc;
+			streamDesc.pPipelineStateSubobjectStream = &pipelineStream;
+			streamDesc.SizeInBytes = sizeof(pipelineStream);
+
+			// 生成
+			HRESULT hr = device->CreatePipelineState(&streamDesc,
+				IID_PPV_ARGS(graphicsPipelinepipelineStates_[blend].GetAddressOf()));
+			if (FAILED(hr)) {
+				ASSERT(FALSE, "assert createPipeline");
+			}
+		}
+	}
+	// それ以外はすべてnormalで作成
+	else {
+
+		// BlendState
+		DxBlendState dxBlendState;
+		D3D12_RENDER_TARGET_BLEND_DESC blendState;
+		dxBlendState.Create(static_cast<BlendMode>(kBlendModeNormal), blendState);
+		pipelineDesc.BlendState.RenderTarget[0] = blendState;
+
+		pipelineDesc.RasterizerState = rasterizerDesc;
+		pipelineDesc.BlendState.RenderTarget[0] = blendState;
+		pipelineDesc.DepthStencilState = depthDesc;
+		pipelineDesc.SampleDesc = sampleDesc;
+
+		auto pipelineStream = CD3DX12_PIPELINE_MESH_STATE_STREAM(pipelineDesc);
+
+		D3D12_PIPELINE_STATE_STREAM_DESC streamDesc;
+		streamDesc.pPipelineStateSubobjectStream = &pipelineStream;
+		streamDesc.SizeInBytes = sizeof(pipelineStream);
+
+		// 生成
+		HRESULT hr = device->CreatePipelineState(&streamDesc,
+			IID_PPV_ARGS(graphicsPipelinepipelineStates_[kBlendModeNormal].GetAddressOf()));
+		if (FAILED(hr)) {
+			ASSERT(FALSE, "assert createPipeline");
+		}
 	}
 }
 

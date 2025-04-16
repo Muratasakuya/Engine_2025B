@@ -38,7 +38,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	ID3D12PipelineState* GetGraphicsPipeline() const { return graphicsPipelinepipelineState_.Get(); };
+	ID3D12PipelineState* GetGraphicsPipeline(BlendMode blendMode = kBlendModeNormal) const;
 	ID3D12PipelineState* GetComputePipeline() const { return computePipelineState_.Get(); };
 
 	ID3D12RootSignature* GetRootSignature() const { return rootSignature_.Get(); }
@@ -59,7 +59,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	ComPtr<ID3D12PipelineState> graphicsPipelinepipelineState_;
+	// blendModeの数だけ用意する
+	std::array<ComPtr<ID3D12PipelineState>, BlendCount> graphicsPipelinepipelineStates_;
 
 	ComPtr<ID3D12PipelineState> computePipelineState_;
 

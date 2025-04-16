@@ -4,12 +4,12 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
+#include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
 
 // c++
 #include <memory>
 // front
 class SRVDescriptor;
-class GPUObjectSystem;
 
 //============================================================================
 //	EffectRenderer class
@@ -36,6 +36,15 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	SRVDescriptor* srvDescriptor_;
-	
+
+	std::unordered_map<BlendMode, std::vector<EffectForGPU>> buffers_;
+	size_t bufferCount_;
+	std::vector<BlendMode> prevBlendModes_;
+
 	std::unique_ptr<PipelineState> meshShaderPipeline_;
+
+	//--------- functionsc ----------------------------------------------------
+
+	void UpdateBuffers(const std::vector<EffectForGPU>& effectBuffers);
+	bool UpdateBlendMode(const std::vector<EffectForGPU>& effectBuffers);
 };

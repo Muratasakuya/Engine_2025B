@@ -150,22 +150,22 @@ void Transform2DComponent::ImGui(float itemSize) {
 
 	ImGui::SeparatorText("Config");
 
-	if (ImGui::Button("Set CenterPos", ImVec2(itemSize, 22.0f))) {
+	if (ImGui::Button("Set CenterPos", ImVec2(itemSize, 40.0f))) {
 
 		SetCenterPos();
 	}
 
-	if (ImGui::Button("Set CenterAnchor", ImVec2(itemSize, 22.0f))) {
+	if (ImGui::Button("Set CenterAnchor", ImVec2(itemSize, 40.0f))) {
 
 		anchorPoint = Vector2::AnyInit(0.5f);
 	}
 
-	if (ImGui::Button("Set LeftAnchor", ImVec2(itemSize, 22.0f))) {
+	if (ImGui::Button("Set LeftAnchor", ImVec2(itemSize, 40.0f))) {
 
 		anchorPoint = Vector2::AnyInit(0.0f);
 	}
 
-	if (ImGui::Button("Set RightAnchor", ImVec2(itemSize, 22.0f))) {
+	if (ImGui::Button("Set RightAnchor", ImVec2(itemSize, 40.0f))) {
 
 		anchorPoint = Vector2::AnyInit(1.0f);
 	}

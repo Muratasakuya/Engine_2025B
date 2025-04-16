@@ -34,10 +34,15 @@ void ImGuiInspector::Finalize() {
 	}
 }
 
-void ImGuiInspector::SetEntityManager(EntityRegistry* entity3DRegistry, EntityRegistry* entity2DRegistry) {
+void ImGuiInspector::SetEntityManager(EntityRegistry* entity3DRegistry,
+	EntityRegistry* effectRegistry,
+	EntityRegistry* entity2DRegistry) {
 
 	entity3DRegistry_ = nullptr;
 	entity3DRegistry_ = entity3DRegistry;
+
+	effectRegistry_ = nullptr;
+	effectRegistry_ = effectRegistry;
 
 	entity2DRegistry_ = nullptr;
 	entity2DRegistry_ = entity2DRegistry;
@@ -56,11 +61,16 @@ void ImGuiInspector::CreateGroup() {
 
 	// entity取得
 	const auto& current3DIds = entity3DRegistry_->GetIndexToEntity();
+	const auto& currentEffectIds = effectRegistry_->GetIndexToEntity();
 	const auto& current2DIds = entity2DRegistry_->GetIndexToEntity();
 
 	// 変更があった場合に更新
-	if (current3DIds != prevEntity3DIds_ || current2DIds != prevEntity2DIds_) {
-		
+	if (current3DIds != prevEntity3DIds_ ||
+		currentEffectIds != prevEffectIds_ ||
+		current2DIds != prevEntity2DIds_) {
+
+		groupedEntities_.clear();
+
 		// entityGroupの作成
 		// 3D
 		for (const uint32_t id : entity3DRegistry_->GetIndexToEntity()) {
@@ -68,6 +78,14 @@ void ImGuiInspector::CreateGroup() {
 			const auto& entity = entity3DRegistry_->GetNames()[entity3DRegistry_->GetIndex(id)];
 			std::string group = entity.groupName.value_or("");
 			groupedEntities_[group].push_back(EntityReference(EntityType::Object3D, id));
+		}
+
+		// effect
+		for (const uint32_t id : effectRegistry_->GetIndexToEntity()) {
+
+			const auto& entity = effectRegistry_->GetNames()[effectRegistry_->GetIndex(id)];
+			std::string group = entity.groupName.value_or("");
+			groupedEntities_[group].push_back(EntityReference(EntityType::Effect, id));
 		}
 
 		// 2D
@@ -80,6 +98,7 @@ void ImGuiInspector::CreateGroup() {
 
 		// 現在の状態を保存
 		prevEntity3DIds_ = current3DIds;
+		prevEffectIds_ = currentEffectIds;
 		prevEntity2DIds_ = current2DIds;
 	}
 }
@@ -91,7 +110,7 @@ void ImGuiInspector::SelectGroupedObject() {
 		if (!groupName.empty()) {
 			if (ImGui::TreeNode(groupName.c_str())) {
 
-				// Object3D表示
+				// object3D表示
 				bool has3D = std::any_of(entities.begin(), entities.end(), [](const auto& ref) {
 					return ref.type == EntityType::Object3D;
 					});
@@ -105,12 +124,33 @@ void ImGuiInspector::SelectGroupedObject() {
 						if (ImGui::Selectable(name.c_str(), selected)) {
 
 							object3D_.selectedId_ = ref.id;
+							effect_.selectedId_ = std::nullopt;
 							object2D_.selectedId_ = std::nullopt;
 						}
 					}
 				}
 
-				// Object2D表示
+				// effect表示
+				bool hasEffect = std::any_of(entities.begin(), entities.end(), [](const auto& ref) {
+					return ref.type == EntityType::Effect;
+					});
+				if (hasEffect) {
+					for (const auto& ref : entities) {
+						if (ref.type != EntityType::Effect) continue;
+
+						const auto& name = effectRegistry_->GetNames().at(effectRegistry_->GetIndex(ref.id)).name;
+						bool selected = (effect_.selectedId_ == ref.id);
+
+						if (ImGui::Selectable(name.c_str(), selected)) {
+
+							effect_.selectedId_ = ref.id;
+							object3D_.selectedId_ = std::nullopt;
+							object2D_.selectedId_ = std::nullopt;
+						}
+					}
+				}
+
+				// object2D表示
 				bool has2D = std::any_of(entities.begin(), entities.end(), [](const auto& ref) {
 					return ref.type == EntityType::Object2D;
 					});
@@ -125,6 +165,7 @@ void ImGuiInspector::SelectGroupedObject() {
 
 							object2D_.selectedId_ = ref.id;
 							object3D_.selectedId_ = std::nullopt;
+							effect_.selectedId_ = std::nullopt;
 						}
 					}
 				}
@@ -156,6 +197,27 @@ void ImGuiInspector::SelectUnGroupedObject() {
 				if (ImGui::Selectable(name.c_str(), selected)) {
 
 					object3D_.selectedId_ = ref.id;
+					effect_.selectedId_ = std::nullopt;
+					object2D_.selectedId_ = std::nullopt;
+				}
+			}
+		}
+
+		// effect表示
+		bool hasEffect = std::any_of(ungroupedEntities.begin(), ungroupedEntities.end(), [](const auto& ref) {
+			return ref.type == EntityType::Effect;
+			});
+		if (hasEffect) {
+			for (const auto& ref : ungroupedEntities) {
+				if (ref.type != EntityType::Effect) continue;
+
+				const auto& name = effectRegistry_->GetNames().at(effectRegistry_->GetIndex(ref.id)).name;
+				bool selected = (effect_.selectedId_ == ref.id);
+
+				if (ImGui::Selectable(name.c_str(), selected)) {
+
+					effect_.selectedId_ = ref.id;
+					object3D_.selectedId_ = std::nullopt;
 					object2D_.selectedId_ = std::nullopt;
 				}
 			}
@@ -176,6 +238,7 @@ void ImGuiInspector::SelectUnGroupedObject() {
 
 					object2D_.selectedId_ = ref.id;
 					object3D_.selectedId_ = std::nullopt;
+					effect_.selectedId_ = std::nullopt;
 				}
 			}
 		}
@@ -186,6 +249,7 @@ void ImGuiInspector::EditObject() {
 
 	// 各objectの操作
 	EditObject3D();
+	EditEffect();
 	EditObject2D();
 }
 
@@ -214,11 +278,6 @@ void ImGuiInspector::EditObject3D() {
 	ImGui::Separator();
 
 	if (ImGui::BeginTabBar("Object3DTabs")) {
-
-		if (ImGui::BeginTabItem("Rendering")) {
-
-			ImGui::EndTabItem();
-		}
 
 		if (ImGui::BeginTabItem("Transform")) {
 
@@ -303,6 +362,98 @@ void ImGuiInspector::Object3DMaterial() {
 		selectedMaterialIndex_ = std::clamp(selectedMaterialIndex_, 0, static_cast<int>(materials.size() - 1));
 		materials[selectedMaterialIndex_]->ImGui(itemWidth_);
 	}
+}
+
+void ImGuiInspector::EditEffect() {
+
+	if (!effect_.selectedId_.has_value()) {
+		return;
+	}
+
+	ASSERT(Component::GetComponent<EffectTransformComponent>(effect_.selectedId_.value()), "does not exist effect:transform");
+	ASSERT(Component::GetComponent<EffectMaterialComponent>(effect_.selectedId_.value()), "does not exist effect:material");
+
+	EffectInformation();
+
+	ImGui::Separator();
+
+	if (ImGui::BeginTabBar("EffectTabs")) {
+		if (ImGui::BeginTabItem("Mesh")) {
+
+			EffectMesh();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Transform")) {
+
+			EffectTransform();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Material")) {
+
+			EffectMaterial();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Individual")) {
+
+			if (Algorithm::Find(effect_.imguiFunc_, *effect_.selectedId_)) {
+
+				uint32_t id = *effect_.selectedId_;
+				effect_.imguiFunc_.at(id)();
+			}
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
+}
+
+void ImGuiInspector::EffectInformation() {
+
+	ImGui::Text("name: %s", effectRegistry_->GetNames().at(effectRegistry_->GetIndex(*effect_.selectedId_)).name.c_str());
+	ImGui::Text("entityId: %d", *effect_.selectedId_);
+
+	// 選択中のEffectの削除
+	if (ImGui::Button("remove")) {
+
+		ComponentManager::GetInstance()->RemoveEffect(*effect_.selectedId_);
+		effect_.selectedId_ = std::nullopt;
+	}
+}
+
+void ImGuiInspector::EffectMesh() {
+
+	if (!effect_.selectedId_.has_value()) {
+		return;
+	}
+
+	PrimitiveMeshComponent* primitiveMesh = Component::GetComponent<PrimitiveMeshComponent>(*effect_.selectedId_);
+
+	primitiveMesh->ImGui(itemWidth_);
+}
+
+void ImGuiInspector::EffectTransform() {
+
+	if (!effect_.selectedId_.has_value()) {
+		return;
+	}
+
+	EffectTransformComponent* transform = Component::GetComponent<EffectTransformComponent>(*effect_.selectedId_);
+
+	transform->ImGui(itemWidth_);
+}
+
+void ImGuiInspector::EffectMaterial() {
+
+	if (!effect_.selectedId_.has_value()) {
+		return;
+	}
+
+	EffectMaterialComponent* material = Component::GetComponent<EffectMaterialComponent>(*effect_.selectedId_);
+
+	material->ImGui(itemWidth_);
 }
 
 void ImGuiInspector::EditObject2D() {
