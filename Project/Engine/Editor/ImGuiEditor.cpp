@@ -72,7 +72,7 @@ void ImGuiEditor::Display() {
 void ImGuiEditor::MainWindow() {
 
 	// 表示する画像サイズ
-	const ImVec2 imageSize(1216,	684);
+	const ImVec2 imageSize(1216.0f, 684.0f);
 
 	ImGui::Begin("Game");
 

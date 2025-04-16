@@ -36,6 +36,8 @@ public:
 	// editor
 	void ApplyEditLayoutParameter(const Json& data);
 	void SaveEditLayoutParameter(Json& data);
+
+	const std::optional<int>& GetSelectIndex() const { return selectPrimitiveIndex_; }
 private:
 	//========================================================================
 	//	private Methods

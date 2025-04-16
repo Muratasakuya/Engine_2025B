@@ -64,18 +64,7 @@ void GameScene::Init(
 	//	initObject
 	//========================================================================
 
-	object3DEditor_ = std::make_unique<Object3DEditor>();
-	object3DEditor_->Init(asset);
 
-	GameObjectHelper::CreateObject3D("teapot", "teapot", "Teapot");
-
-	GameObjectHelper::CreateObject3D("plane", "plane", "Plane");
-	GameObjectHelper::CreateObject2D("uvChecker", "uvChecker", "Plane");
-
-	uint32_t id = GameObjectHelper::CreateEffect("plane", "circle", "planeEffect", "Plane");
-	auto transform = Component::GetComponent<EffectTransformComponent>(id);
-	transform->translation.y = 2.0f;
-	transform->translation.z = -1.0f;
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

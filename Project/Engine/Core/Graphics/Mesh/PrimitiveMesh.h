@@ -21,6 +21,7 @@ public:
 
 	void Init(ID3D12Device* device, const ResourceMesh& resource);
 
+	void Update(const ResourceMesh& resource);
 	//--------- accessor -----------------------------------------------------
 
 	void SetBlendMode(BlendMode blendMode) { blendMode_ = blendMode; }

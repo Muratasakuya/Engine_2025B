@@ -14,6 +14,8 @@ void PrimitiveEditor::Init(Asset* asset) {
 	primitiveRegistry_ = std::make_unique<PrimitiveRegistry>();
 	primitiveRegistry_->Init(asset);
 
+	primitiveTool_ = std::make_unique<PrimitiveMeshTool>();
+
 	// 初期化値
 	editLayoutEnable_ = false;
 
@@ -35,6 +37,7 @@ void PrimitiveEditor::ImGui() {
 	primitiveRegistry_->SelectPrimiviveMesh();
 
 	// 選択されたprimitiveの操作
+	primitiveTool_->EditPrimitiveMesh(primitiveRegistry_->GetSelectIndex());
 }
 
 void PrimitiveEditor::EditLayout() {
