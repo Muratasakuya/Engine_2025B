@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
+#include <Engine/Asset/AssetStructure.h>
 
 // assimp
 #include <assimp/scene.h>
@@ -25,6 +26,7 @@ public:
 	~MeshletBuilder() = default;
 
 	ResourceMesh ParseMesh(const aiScene* scene);
+	ResourceMesh ParseMesh(const ModelData& modelData);
 
 private:
 	//========================================================================
@@ -35,6 +37,7 @@ private:
 
 	// 頂点設定
 	void SetVertex(ResourceMesh& destinationMesh, const aiScene* scene);
+	void SetVertex(ResourceMesh& destinationMesh, const ModelData& modelData);
 
 	// 最適化処理
 	void Optimize(ResourceMesh& destinationMesh);

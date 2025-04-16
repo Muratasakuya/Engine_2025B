@@ -89,7 +89,7 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	// editor初期化
 	primitiveEditor_ = std::make_unique<PrimitiveEditor>();
-	primitiveEditor_->Init();
+	primitiveEditor_->Init(asset_.get());
 
 	// 最初からfullScreen設定
 	fullscreenEnable_ = true;
@@ -211,6 +211,7 @@ void Framework::Finalize() {
 
 	sceneManager_.reset();
 	primitiveMeshStore_.reset();
+	spriteStore_.reset();
 	graphicsCore_.reset();
 	winApp_.reset();
 	asset_.reset();

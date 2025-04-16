@@ -41,6 +41,7 @@ public:
 
 	void SetEntityManager(
 		EntityRegistry* entity3DRegistry,
+		EntityRegistry* effectRegistry,
 		EntityRegistry* entity2DRegistry);
 
 	void SetImGuiFunc(uint32_t entityId, std::function<void()> func);
@@ -54,8 +55,8 @@ private:
 	enum class EntityType {
 
 		Object3D,
+		Effect,
 		Object2D,
-		Trail,
 	};
 
 	//--------- structure ----------------------------------------------------
@@ -75,19 +76,23 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	EntityRegistry* entity3DRegistry_;
-	EntityRegistry* entity2DRegistry_;
-
 	static ImGuiInspector* instance_;
+
+	EntityRegistry* entity3DRegistry_;
+	EntityRegistry* effectRegistry_;
+	EntityRegistry* entity2DRegistry_;
 
 	const float itemWidth_ = 192.0f;
 
 	std::unordered_map<std::string, std::vector<EntityReference>> groupedEntities_;
 	std::vector<uint32_t> prevEntity3DIds_;
+	std::vector<uint32_t> prevEffectIds_;
 	std::vector<uint32_t> prevEntity2DIds_;
 
 	EditImGui object3D_;
 	int selectedMaterialIndex_ = 0;
+
+	EditImGui effect_;
 
 	EditImGui object2D_;
 
@@ -114,6 +119,15 @@ private:
 	void Object3DInformation();
 	void Object3DTransform();
 	void Object3DMaterial();
+
+	//--------- Effect -------------------------------------------------------
+
+	// Effect詳細、操作
+	void EditEffect();
+	void EffectInformation();
+	void EffectMesh();
+	void EffectTransform();
+	void EffectMaterial();
 
 	//--------- object2D -----------------------------------------------------
 

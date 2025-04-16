@@ -28,6 +28,12 @@ void Asset::LoadAnimation(const std::string& animationName, const std::string& m
 	animationManager_->Load(animationName, modelName);
 }
 
+void Asset::MakeModel(const std::string& modelName,
+	const std::vector<ModelVertexData>& vertexData,
+	const std::vector<uint32_t>& indexData) {
+	modelLoader_->Make(modelName, vertexData, indexData);
+}
+
 const D3D12_GPU_DESCRIPTOR_HANDLE& Asset::GetGPUHandle(const std::string textureName) const {
 	return textureManager_->GetGPUHandle(textureName);
 }

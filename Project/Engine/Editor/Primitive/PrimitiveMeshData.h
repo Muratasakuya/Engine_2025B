@@ -3,25 +3,30 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
-#include <Engine/Editor/Primitive/PrimitiveRegistry.h>
+#include <Engine/Asset/AssetStructure.h>
+
+// front
+class Asset;
 
 //============================================================================
-//	PrimitiveEditor class
+//	PrimitiveMeshData class
 //============================================================================
-class PrimitiveEditor :
-	public IGameEditor {
+class PrimitiveMeshData {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PrimitiveEditor() : IGameEditor("primitiveEditor") {};
-	~PrimitiveEditor() = default;
+	PrimitiveMeshData() = default;
+	~PrimitiveMeshData() = default;
 
-	void Init(class Asset* asset);
+	void Create(Asset* asset);
 
-	void ImGui() override;
+	//--------- accessor -----------------------------------------------------
+
+	const std::vector<std::string>& GetNames() const { return meshNames_; }
+
+	const MeshModelData& GetMeshData(const std::string& name) const;
 private:
 	//========================================================================
 	//	private Methods
@@ -29,23 +34,15 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// json
-	const std::string baseJsonPath_ = "primitiveEditor/";
+	Asset* asset_;
 
-	// editor操作
-	bool editLayoutEnable_;
+	// primitiveMeshの名前
+	std::vector<std::string> meshNames_;
 
-	// primitiveの登録
-	std::unique_ptr<PrimitiveRegistry> primitiveRegistry_;
+	// string型で保持するモデルの頂点情報
+	std::unordered_map<std::string, MeshModelData> meshData_;
 
 	//--------- functions ----------------------------------------------------
 
-	// json適応、設定
-	void ApplyJson();
-	// editorLayout
-	void ApplyEditLayoutParameter();
-	void SaveEditLayoutParameter();
-
-	// editor内のlayoutを調整
-	void EditLayout();
+	void CreatePlane();
 };

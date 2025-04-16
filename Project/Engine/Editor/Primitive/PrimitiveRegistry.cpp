@@ -3,6 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
+#include <Engine/Core\Component/ComponentHelper.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
@@ -12,7 +14,13 @@
 //	PrimitiveRegistry classMethods
 //============================================================================
 
-void PrimitiveRegistry::Init() {
+void PrimitiveRegistry::Init(Asset* asset) {
+
+	asset_ = nullptr;
+	asset_ = asset;
+
+	primitiveMeshData_ = std::make_unique<PrimitiveMeshData>();
+	primitiveMeshData_->Create(asset);
 
 	selectPrimitiveIndex_ = std::nullopt;
 }
@@ -34,30 +42,38 @@ void PrimitiveRegistry::RegistryPrimitiveMesh() {
 
 	ImGui::SeparatorText("Create");
 
-	// 作成できるprimitive形状のリスト
-	const std::vector<std::string> primitiveShapeList = {
-
-		"plane",    // 平面
-		"triangle", // 三角形
-		"box",      // 直方体
-		"circle",   // 円
-		"ring",     // 円、中が空洞のもの
-		"cylinder"  // 円柱
-	};
-
 	// 横幅設定
 	ImGui::PushItemWidth(parameterWidth_);
 
 	// primitiveの選択
-	if (ImGui::BeginCombo("Primitive", primitiveShapeList[createSelectedPrimitiveIndex_].c_str())) {
-		for (int index = 0; index < primitiveShapeList.size(); ++index) {
+	if (ImGui::BeginCombo("Primitive", primitiveMeshData_->GetNames()[createSelectedPrimitiveIndex_].c_str())) {
+		for (int index = 0; index < primitiveMeshData_->GetNames().size(); ++index) {
 
 			const bool isSelected = (createSelectedPrimitiveIndex_ == index);
-			if (ImGui::Selectable(primitiveShapeList[index].c_str(), isSelected)) {
+			if (ImGui::Selectable(primitiveMeshData_->GetNames()[index].c_str(), isSelected)) {
 
 				// 追加する予定のmodelを設定
 				createSelectedPrimitiveIndex_ = index;
-				createPrimitiveName_ = primitiveShapeList[index];
+				createPrimitiveName_ = primitiveMeshData_->GetNames()[index];
+			}
+			if (isSelected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	// textureの選択
+	const std::vector<std::string> textureKeys = asset_->GetTextureKeys();
+	if (ImGui::BeginCombo("Texture", textureKeys[createSelectedTextureIndex_].c_str())) {
+		for (int index = 0; index < textureKeys.size(); ++index) {
+
+			const bool isSelected = (createSelectedTextureIndex_ == index);
+			if (ImGui::Selectable(textureKeys[index].c_str(), isSelected)) {
+
+				// 追加する予定のtexture設定
+				createSelectedTextureIndex_ = index;
+				createTextureName_ = textureKeys[index];
 			}
 			if (isSelected) {
 				ImGui::SetItemDefaultFocus();
@@ -81,10 +97,12 @@ void PrimitiveRegistry::RegistryPrimitiveMesh() {
 			// primitriveの名前を足す
 			uniqueObjectName = uniqueObjectName + ":" + createPrimitiveName_;
 
-			// 0にはprimitiveEffect用のindexが入る
-			selectPrimitives_[uniqueObjectName] = testPrimitiveIndex_;
-			// 仮のインクリメント
-			++testPrimitiveIndex_;
+			// 追加、作成
+			selectPrimitives_[uniqueObjectName] =
+				GameObjectHelper::CreateEffect(
+					createPrimitiveName_,
+					createTextureName_,
+					uniqueObjectName);
 		}
 	}
 

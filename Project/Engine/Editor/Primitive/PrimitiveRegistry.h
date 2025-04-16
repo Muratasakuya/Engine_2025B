@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Editor/Primitive/PrimitiveMeshData.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 // c++
@@ -22,7 +23,7 @@ public:
 	PrimitiveRegistry() = default;
 	~PrimitiveRegistry() = default;
 
-	void Init();
+	void Init(Asset* asset);
 
 	void EditLayout();
 
@@ -35,9 +36,6 @@ public:
 	// editor
 	void ApplyEditLayoutParameter(const Json& data);
 	void SaveEditLayoutParameter(Json& data);
-
-	//--------- accessor -----------------------------------------------------
-
 private:
 	//========================================================================
 	//	private Methods
@@ -57,18 +55,23 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	Asset* asset_;
+
+	std::unique_ptr<PrimitiveMeshData> primitiveMeshData_;
+
 	// editorParameter
 	float parameterWidth_; // 追加選択の横幅
 	float upLayoutHeight_; // 上のlayoutの高さ
 
 	// create
 	int createSelectedPrimitiveIndex_; // 作成するprimitiveのindex
+	int createSelectedTextureIndex_;   // 作成するprimitiveのTextureindex
 	std::string createPrimitiveName_;  // 作成するprimitiveの名前
+	std::string createTextureName_;    // 作成するprimitiveのtextureの名前
 	InputTextValue createObjectName_;  // 保存するときのobjectの名前
 
 	// select
 	std::unordered_map<std::string, int> selectPrimitives_; // 追加されたprimitive
-	int testPrimitiveIndex_;                                // とりあえずのindex
 	std::optional<int> selectPrimitiveIndex_;               // 選択したprimitiveのindex
 
 	// 名前の登録

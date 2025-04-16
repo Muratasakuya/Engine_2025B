@@ -21,6 +21,7 @@ cbuffer Material : register(b0) {
 
 	float4 color;
 	uint textureIndex;
+	float alphaReference;
 	float emissiveIntensity;
 	float3 emissionColor;
 	float4x4 uvTransform;
@@ -43,8 +44,8 @@ PSOutput main(MSOutput input) {
 	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), uvTransform);
 	float4 textureColor = gTextures[textureIndex].Sample(gSampler, transformUV.xy);
 	
-	// discardA’l‚ğCBuffer‚Å“n‚¹‚é‚æ‚¤‚É‚·‚é
-	if (textureColor.a < 0.5f) {
+	// discard‚É‚æ‚épixelŠü‹p
+	if (textureColor.a < alphaReference) {
 		discard;
 	}
 	

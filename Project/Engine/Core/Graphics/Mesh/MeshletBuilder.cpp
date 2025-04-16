@@ -21,6 +21,23 @@ ResourceMesh MeshletBuilder::ParseMesh(const aiScene* scene) {
 	return destinationMesh;
 }
 
+ResourceMesh MeshletBuilder::ParseMesh(const ModelData& modelData) {
+
+	// 出力
+	ResourceMesh destinationMesh{};
+
+	// 頂点情報の設定
+	SetVertex(destinationMesh, modelData);
+
+	// 最適化処理
+	Optimize(destinationMesh);
+
+	// meshlet生成処理
+	CreateMeshlet(destinationMesh);
+
+	return destinationMesh;
+}
+
 void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const aiScene* scene) {
 
 	// meshの数
@@ -64,6 +81,44 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const aiScene* sce
 			destinationMesh.indices[meshIndex][i * 3 + 1] = face.mIndices[1];
 			destinationMesh.indices[meshIndex][i * 3 + 2] = face.mIndices[2];
 		}
+	}
+}
+
+void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const ModelData& modelData) {
+
+	// meshの数
+	destinationMesh.meshCount_ = static_cast<uint32_t>(modelData.meshes.size());
+
+	// メモリをmesh数分確保する
+	destinationMesh.vertices.resize(destinationMesh.meshCount_);
+	destinationMesh.indices.resize(destinationMesh.meshCount_);
+
+	// meshの数分
+	for (uint32_t meshIndex = 0; meshIndex < destinationMesh.meshCount_; ++meshIndex) {
+
+		const MeshModelData& meshData = modelData.meshes[meshIndex];
+
+		// 頂点データ分メモリを確保する
+		destinationMesh.vertices[meshIndex].resize(meshData.vertices.size());
+
+		for (uint32_t i = 0; i < meshData.vertices.size(); ++i) {
+
+			Vector4 pos = meshData.vertices[i].pos;
+			Vector3 normal = meshData.vertices[i].normal;
+			Vector2 texcoord = meshData.vertices[i].texcoord;
+
+			// 頂点情報を格納
+			destinationMesh.vertices[meshIndex][i] = MeshVertex(
+
+				Vector4(pos.x, pos.y, pos.z, 1.0f),
+				Vector2(texcoord.x, texcoord.y),
+				Vector3(normal.x, normal.y, normal.z));
+		}
+
+		// 頂点インデックスのメモリを確保する
+		destinationMesh.indices[meshIndex].resize(meshData.indices.size());
+		// インデックス情報を格納
+		destinationMesh.indices[meshIndex] = meshData.indices;
 	}
 }
 

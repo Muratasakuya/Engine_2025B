@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
+#include <Engine/Core/Graphics/Lib/DxStructures.h>
 
 //============================================================================
 //	PrimitiveMesh class
@@ -22,6 +23,10 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetBlendMode(BlendMode blendMode) { blendMode_ = blendMode; }
+
+	BlendMode GetBlendMode() const { return blendMode_; }
+
 	// meshlet数
 	uint32_t GetMeshletCount() const { return meshletCount_; }
 
@@ -38,6 +43,8 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	BlendMode blendMode_;
 
 	// meshlet数
 	uint32_t meshletCount_;

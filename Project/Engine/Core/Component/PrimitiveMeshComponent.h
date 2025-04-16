@@ -24,6 +24,7 @@ public:
 
 	void Init(ID3D12Device* device, Asset* asset, const std::string& modelName);
 
+	void ImGui(float itemWidth);
 	//--------- accessor -----------------------------------------------------
 
 	PrimitiveMesh* GetPrimitiveMesh() const { return primitiveMesh_.get(); }
@@ -47,6 +48,9 @@ private:
 	Asset* asset_;
 
 	std::unique_ptr<PrimitiveMesh> primitiveMesh_;
+
+	// imgui
+	int selectBlendModeIndex_;
 
 	//--------- functions ----------------------------------------------------
 

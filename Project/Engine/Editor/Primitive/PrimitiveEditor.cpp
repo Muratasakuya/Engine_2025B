@@ -9,9 +9,10 @@
 //	PrimitiveEditor classMethods
 //============================================================================
 
-void PrimitiveEditor::Init() {
+void PrimitiveEditor::Init(Asset* asset) {
 
 	primitiveRegistry_ = std::make_unique<PrimitiveRegistry>();
+	primitiveRegistry_->Init(asset);
 
 	// 初期化値
 	editLayoutEnable_ = false;
