@@ -437,6 +437,7 @@
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\CopyTexture.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />
