@@ -13,6 +13,7 @@ struct MSInput {
 	float4 position;
 	float2 texcoord;
 	float3 normal;
+	float4 color;
 };
 
 //============================================================================
@@ -131,7 +132,9 @@ out indices uint3 polys[126] // 出力三角形インデックス
 		output.normal = mul(input.normal, worldInverseTranspose);
 		
 		// meshletの色
-		output.color = meshlet.color;
+		output.meshletColor = meshlet.color;
+		// 頂点の色
+		output.vertexColor = input.color;
 	
 		float4 worldPos = mul(input.position, world);
 		output.worldPosition = worldPos.xyz;

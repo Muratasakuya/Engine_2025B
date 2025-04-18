@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Component/ComponentHelper.h>
 #include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Utility/UVHelper.h>
 
 // imgui
 #include <imgui.h>
@@ -22,11 +23,22 @@ void PrimitiveMeshTool::EditPrimitiveMesh(const std::optional<int>& selectIndex)
 
 	selectIndex_ = selectIndex;
 
+	PrimitiveMeshComponent* primitiveMesh =
+		Component::GetComponent<PrimitiveMeshComponent>(selectIndex.value());
+
+	primitiveMesh->ImGui(itemWidth_);
+
 	if (ImGui::BeginTabBar("PrimitiveMeshTabs")) {
 
 		if (ImGui::BeginTabItem("Transform")) {
 
 			EditTransform();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Material")) {
+
+			EditMaterial();
 			ImGui::EndTabItem();
 		}
 
@@ -40,9 +52,6 @@ void PrimitiveMeshTool::EditPrimitiveMesh(const std::optional<int>& selectIndex)
 	}
 
 	// 常に行う処理
-
-	PrimitiveMeshComponent* primitiveMesh =
-		Component::GetComponent<PrimitiveMeshComponent>(selectIndex.value());
 
 	// drawLineで疑似的にwireFrame描画を行う
 	DrawPrimitiveWireFrame(primitiveMesh);
@@ -59,6 +68,19 @@ void PrimitiveMeshTool::EditTransform() {
 		Component::GetComponent<EffectTransformComponent>(selectIndex_.value());
 
 	transform->ImGui(itemWidth_);
+}
+
+void PrimitiveMeshTool::EditMaterial() {
+
+	// なにも値が入っていなければ処理しない
+	if (!selectIndex_.has_value()) {
+		return;
+	}
+
+	EffectMaterialComponent* material =
+		Component::GetComponent<EffectMaterialComponent>(selectIndex_.value());
+
+	material->ImGui(itemWidth_);
 }
 
 void PrimitiveMeshTool::EditPrimitive() {
@@ -84,6 +106,13 @@ void PrimitiveMeshTool::EditPrimitive() {
 
 			// texcoordを操作する
 			EditTexcoord(primitiveMesh);
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("VertexColor")) {
+
+			// vertexColorを操作する
+			EditVertexColor(primitiveMesh);
 			ImGui::EndTabItem();
 		}
 
@@ -130,6 +159,7 @@ void PrimitiveMeshTool::EditTexcoord(PrimitiveMeshComponent* primitiveMesh) {
 
 	// meshの数
 	for (uint32_t meshIndex = 0; meshIndex < resourceMesh->meshCount_; ++meshIndex) {
+
 		uint32_t vertexIndex = 0;
 		for (auto& vertex : resourceMesh->vertices[meshIndex]) {
 
@@ -137,6 +167,51 @@ void PrimitiveMeshTool::EditTexcoord(PrimitiveMeshComponent* primitiveMesh) {
 
 			// texcoordを操作
 			ImGui::DragFloat2(("texcoord" + std::to_string(vertexIndex)).c_str(), &texcoord.x, 0.01f);
+			++vertexIndex;
+		}
+	}
+
+	// 連番画像の1枚にtexcoord座標が合うように計算を行う
+	ImGui::InputInt("textureSerialCount", &textureSerialCount_);
+	if (ImGui::Button("Apply serialTexcoord")) {
+
+		// 新しいtexcoordを設定
+		std::vector<Vector2> newTexcoords = UVHelper::ApplyFrameTexcoord(*resourceMesh, textureSerialCount_);
+		// meshの数
+		for (uint32_t meshIndex = 0; meshIndex < resourceMesh->meshCount_; ++meshIndex) {
+			for (uint32_t vertexIndex = 0; vertexIndex < resourceMesh->vertices[meshIndex].size(); ++vertexIndex) {
+
+				resourceMesh->vertices[meshIndex][vertexIndex].texcoord = newTexcoords[vertexIndex];
+			}
+		}
+
+		// texcoordの1枚分のサイズをmaterialのscroll値に設定
+		EffectMaterialComponent* material =
+			Component::GetComponent<EffectMaterialComponent>(selectIndex_.value());
+		material->SetUVScrollValue(1.0f / textureSerialCount_);
+	}
+
+	ImGui::PopItemWidth();
+}
+
+void PrimitiveMeshTool::EditVertexColor(PrimitiveMeshComponent* primitiveMesh) {
+
+	// 頂点情報取得
+	ResourceMesh* resourceMesh = primitiveMesh->GetResourceMesh();
+
+	ImGui::SeparatorText("VertexColor");
+
+	ImGui::PushItemWidth(itemWidth_ * 1.5f);
+
+	// meshの数
+	for (uint32_t meshIndex = 0; meshIndex < resourceMesh->meshCount_; ++meshIndex) {
+		uint32_t vertexIndex = 0;
+		for (auto& vertex : resourceMesh->vertices[meshIndex]) {
+
+			Color& color = vertex.color;
+
+			// vertexColorを操作
+			ImGui::ColorEdit4(("color" + std::to_string(vertexIndex)).c_str(), &color.r);
 			++vertexIndex;
 		}
 	}
