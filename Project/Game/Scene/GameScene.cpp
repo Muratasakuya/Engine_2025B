@@ -26,6 +26,11 @@ void GameScene::Init(
 
 	asset->LoadTexture("uvChecker");
 	asset->LoadTexture("circle");
+	asset->LoadTexture("testUVAnimation_1");
+	asset->LoadTexture("sirialFireEffect");
+	asset->LoadTexture("sirialFireDotEffect");
+	asset->LoadTexture("sirialHitEffect");
+	asset->LoadTexture("effectCircle");
 
 	asset->LoadModel("stageField");
 	asset->LoadModel("teapot");

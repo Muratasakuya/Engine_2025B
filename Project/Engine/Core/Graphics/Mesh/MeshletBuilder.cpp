@@ -112,7 +112,8 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const ModelData& m
 
 				Vector4(pos.x, pos.y, pos.z, 1.0f),
 				Vector2(texcoord.x, texcoord.y),
-				Vector3(normal.x, normal.y, normal.z));
+				Vector3(normal.x, normal.y, normal.z),
+				Color(1.0f, 1.0f, 1.0f, 1.0f));
 		}
 
 		// 頂点インデックスのメモリを確保する

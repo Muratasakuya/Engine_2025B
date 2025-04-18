@@ -21,6 +21,7 @@ cbuffer Material : register(b0) {
 
 	float4 color;
 	uint textureIndex;
+	uint useVertexColor;
 	float alphaReference;
 	float emissiveIntensity;
 	float3 emissionColor;
@@ -52,6 +53,13 @@ PSOutput main(MSOutput input) {
 	// 色
 	output.color.rgb = color.rgb * textureColor.rgb;
 	
+	//頂点カラー適応
+	if (useVertexColor == 1) {
+
+		// rgbのみ
+		output.color.rgb *= input.vertexColor.rgb;
+	}
+	
 	// emission処理
 	// 発光色
 	float3 emission = emissionColor * emissiveIntensity;
@@ -59,7 +67,7 @@ PSOutput main(MSOutput input) {
 	output.color.rgb += emission * textureColor.rgb;
 
 	// α値
-	output.color.a = color.a * textureColor.a;
+	output.color.a = color.a * input.vertexColor.a * textureColor.a;
 	
 	return output;
 }

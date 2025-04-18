@@ -41,6 +41,7 @@ void Material::Init() {
 void EffectMaterial::Init() {
 
 	color = Color::White();
+	useVertexColor = false;
 	alphaReference = 0.0f;
 	emissiveIntensity = 0.0f;
 	emissionColor = Vector3(1.0f, 1.0f, 1.0f);

@@ -19,6 +19,7 @@ struct MeshVertex {
 	Vector4 pos;
 	Vector2 texcoord;
 	Vector3 normal;
+	Color color;
 };
 
 // meshlet情報の格納

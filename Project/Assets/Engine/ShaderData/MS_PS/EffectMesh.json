@@ -18,7 +18,7 @@
         { "RootIndex": 7, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 0 }
     ],
     "StaticSampler": [
-        { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "CLAMP","ComparisonFunc": "NEVER", "ShaderRegister": 0 }
+        { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER", "ShaderRegister": 0 }
     ],
     "Rasterizer":[
         {
