@@ -21,9 +21,6 @@ public:
 	~PrimitiveMeshTool() = default;
 
 	void EditPrimitiveMesh(const std::optional<int>& selectIndex);
-
-	//--------- accessor -----------------------------------------------------
-
 private:
 	//========================================================================
 	//	private Methods

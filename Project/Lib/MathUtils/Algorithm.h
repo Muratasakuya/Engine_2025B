@@ -8,6 +8,9 @@
 // c++
 #include <cstdint>
 #include <vector>
+#include <utility>
+#include <algorithm>
+#include <any>
 
 //============================================================================
 //	Algorithm namespace
@@ -82,5 +85,16 @@ namespace Algorithm {
 		}
 
 		return found;
+	}
+
+	//========================================================================
+	// Math
+	//========================================================================
+
+	// 線形補間
+	template <typename T>
+	inline T Lerp(const T& start, const T& end, float t) {
+
+		return start + (end - start) * t;
 	}
 }

@@ -9,9 +9,9 @@
 #include <type_traits>
 
 //============================================================================*/
-//	Random class
+//	RandomGenerator class
 //============================================================================*/
-class Random {
+class RandomGenerator {
 public:
 	//========================================================================*/
 	//	public Methods
@@ -23,7 +23,7 @@ public:
 };
 
 template<typename T>
-inline T Random::Generate(T min, T max) {
+inline T RandomGenerator::Generate(T min, T max) {
 
 	static_assert(std::is_arithmetic<T>::value, "T must be an arithmetic type");
 

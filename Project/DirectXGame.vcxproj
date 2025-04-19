@@ -282,6 +282,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Utility\SimpleAnimation.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Utility\UVHelper.cpp">
       <SubType>
       </SubType>
@@ -568,6 +572,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Utility\SimpleAnimation.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Utility\UVHelper.h">
       <SubType>
       </SubType>
@@ -693,7 +701,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Time\GameTimer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
-    <ClInclude Include="Lib\Adapter\Random.h" />
+    <ClInclude Include="Lib\Adapter\RandomGenerator.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h">
       <SubType>
       </SubType>

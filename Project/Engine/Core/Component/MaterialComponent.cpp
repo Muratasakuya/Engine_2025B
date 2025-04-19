@@ -142,9 +142,6 @@ void EffectMaterialComponent::Init() {
 
 	material.Init();
 	uvTransform.scale = Vector3::AnyInit(1.0f);
-
-	uvScrollEnable_ = false;
-	roopUVScrollEnable_ = false;
 }
 
 void EffectMaterialComponent::UpdateUVTransform() {
@@ -153,7 +150,7 @@ void EffectMaterialComponent::UpdateUVTransform() {
 	UpdateUVScroll();
 
 	// 値に変更がなければ更新しない
-	if (uvTransform == prevUVTransform) {
+	if (uvTransform == prevUVTransform_) {
 		return;
 	}
 
@@ -162,51 +159,16 @@ void EffectMaterialComponent::UpdateUVTransform() {
 		uvTransform.scale, uvTransform.rotate, uvTransform.translate);
 
 	// 値を保存
-	prevUVTransform = uvTransform;
+	prevUVTransform_ = uvTransform;
 }
 
 void EffectMaterialComponent::UpdateUVScroll() {
 
-	// uvScroll無効の時
-	if (!uvScrollEnable_) {
-		uvScrollElapsedTime_ = 0.0f;
-		return;
-	}
-
-	// uvScroll有効の時
-
-	// 経過時間を加算
-	uvScrollElapsedTime_ += GameTimer::GetDeltaTime();
-	if (uvScrollElapsedTime_ > uvScrollWaitTime_) {
-	} else {
-		return;
-	}
-
 	// スクロール量を計算
-	uvTransform.translate.x += addUVTranslateValue_.x;
-	totalScrollValue_ += addUVTranslateValue_.x;
-
-	uvTransform.translate.y += addUVTranslateValue_.y;
-
-	// 経過時間を初期化
-	uvScrollElapsedTime_ = 0.0f;
-
-	// 1.0fを超えたとき
-	if (totalScrollValue_ > 1.0f) {
-
-		// roopUVScrollEnableがfalseの時
-		if (!roopUVScrollEnable_) {
-
-			// uvScrollを無効にする
-			uvScrollEnable_ = false;
-			uvTransform.translate.x = 0.0f;
-		}
-		// 0.0fに戻す
-		totalScrollValue_ = 0.0f;
-	}
+	uvScrollAnimation_.MoveValue(uvTransform.translate.x);
 }
 
-void EffectMaterialComponent::ImGui(float itemSize) {
+void EffectMaterialComponent::EditMaterial(float itemSize) {
 
 	// 色
 	ImGui::SeparatorText("Color");
@@ -233,23 +195,45 @@ void EffectMaterialComponent::ImGui(float itemSize) {
 	// UV
 	ImGui::SeparatorText("UV");
 
-	// addValue
-	ImGui::DragFloat2("addUVTranslateValue", &addUVTranslateValue_.x, 0.025f);
-	// 経過時間、待ち時間を表示
-	ImGui::Text("uvScrollElapsedTime: %4.3f", uvScrollElapsedTime_);
-	ImGui::DragFloat("uvScrollWaitTime", &uvScrollWaitTime_, 0.001f);
-	ImGui::Checkbox("roopUVScrollEnable", &roopUVScrollEnable_);
-	if (ImGui::Button("uvScrollEnable")) {
-
-		uvScrollEnable_ = !uvScrollEnable_;
-	}
-
 	// transform
 	ImGui::DragFloat2("uvTranslate", &uvTransform.translate.x, 0.1f);
 	ImGui::SliderAngle("uvRotate", &uvTransform.rotate.z);
 	ImGui::DragFloat2("uvScale", &uvTransform.scale.x, 0.1f);
 
 	ImGui::PopItemWidth();
+}
+
+void EffectMaterialComponent::ImGui(float itemSize) {
+
+	if (ImGui::BeginTabBar("PrimitiveMeshTabs")) {
+
+		if (ImGui::BeginTabItem("Material")) {
+
+			// material
+			EditMaterial(itemSize);
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("UVAnimation")) {
+
+			if (ImGui::Button("Start", ImVec2(itemSize, 32.0f))) {
+
+				uvScrollAnimation_.Start();
+				uvTransform.translate.x = 0.0f;
+			}
+
+			if (ImGui::Button("Reset", ImVec2(itemSize, 32.0f))) {
+
+				uvScrollAnimation_.Reset();
+			}
+
+			// uvScroll
+			uvScrollAnimation_.ImGui();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
 }
 
 void EffectMaterialComponent::ToJson(Json& data) {
@@ -280,4 +264,19 @@ void EffectMaterialComponent::FromJson(const Json& data) {
 	uvTransform.scale = JsonAdapter::ToObject<Vector3>(data["uvScale"]);
 	uvTransform.rotate = JsonAdapter::ToObject<Vector3>(data["uvRotate"]);
 	uvTransform.translate = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
+}
+
+void EffectMaterialComponent::SetUVScrollValue(float value) {
+
+	// スクロール量を設定
+	uvScrollAnimation_.move_.moveValue = value;
+}
+
+void swap(EffectMaterialComponent& a, EffectMaterialComponent& b) noexcept {
+
+	using std::swap;
+	swap(a.material, b.material);
+	swap(a.uvTransform, b.uvTransform);
+	swap(a.prevUVTransform_, b.prevUVTransform_);
+	swap(a.uvScrollAnimation_, b.uvScrollAnimation_);
 }
