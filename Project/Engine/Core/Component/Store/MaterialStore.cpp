@@ -128,7 +128,7 @@ void EffectMaterialStore::RemoveComponent(uint32_t entityId) {
 	SwapToPopbackIndex(entityId, lastIndex);
 
 	// component削除
-	std::swap(components_[index], components_[lastIndex]);
+	swap(components_[index], components_[lastIndex]);
 	components_.pop_back();
 }
 

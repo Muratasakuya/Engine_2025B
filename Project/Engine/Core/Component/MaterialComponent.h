@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
+#include <Engine/Utility/SimpleAnimation.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
@@ -86,13 +87,17 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	// 横scrollのみ、縦は未実装
-	void SetUVScrollValue(float value) { addUVTranslateValue_.x = value; }
+	void SetUVScrollValue(float value);
 
 	//--------- variables ----------------------------------------------------
 
 	EffectMaterial material;
 
 	UVTransform uvTransform;
+
+	//--------- firend -------------------------------------------------------
+
+	friend void swap(EffectMaterialComponent& a, EffectMaterialComponent& b) noexcept;
 private:
 	//========================================================================
 	//	private Methods
@@ -100,19 +105,13 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	UVTransform prevUVTransform;
+	SimpleAnimation<float> uvScrollAnimation_;
 
-	Vector2 addUVTranslateValue_;
-	bool uvScrollEnable_;
-
-	bool roopUVScrollEnable_; // ループするかどうか
-	float totalScrollValue_;  // スクロール量の合計値
-
-	// UVTransformを操作するための変数
-	float uvScrollElapsedTime_; // 経過時間
-	float uvScrollWaitTime_;    // 待ち時間
+	UVTransform prevUVTransform_;
 
 	//--------- functions ----------------------------------------------------
 
 	void UpdateUVScroll();
+
+	void EditMaterial(float itemSize);
 };
