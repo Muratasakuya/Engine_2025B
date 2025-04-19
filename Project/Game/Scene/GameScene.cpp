@@ -70,7 +70,8 @@ void GameScene::Init(
 	//	initObject
 	//========================================================================
 
-	GameObjectHelper::CreateObject3D("bricks", "bricks", "bricks");
+	GameObjectHelper::CreateObject3D("bricks", "bricks", "Bricks");
+	GameObjectHelper::CreateObject3D("plane", "plane", "Plane");
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

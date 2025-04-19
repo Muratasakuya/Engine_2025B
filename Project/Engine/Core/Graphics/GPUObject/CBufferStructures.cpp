@@ -29,7 +29,6 @@ void Material::Init() {
 	enableNormalMap = false;
 	enableLighting = true;
 	enableHalfLambert = true;
-	enablePhongReflection = false;
 	enableBlinnPhongReflection = false;
 	shadowRate = 0.25f;
 	phongRefShininess = 1.0f;
