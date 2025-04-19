@@ -21,6 +21,13 @@ void Framework::Run() {
 		Update();
 		Draw();
 
+		// fullScreen切り替え
+		if (Input::GetInstance()->TriggerKey(DIK_F11)) {
+
+			fullscreenEnable_ = !fullscreenEnable_;
+			winApp_->SetFullscreen(fullscreenEnable_);
+		}
+
 		if (winApp_->ProcessMessage() ||
 			Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
 			break;
@@ -82,7 +89,11 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	// editor初期化
 	primitiveEditor_ = std::make_unique<PrimitiveEditor>();
-	primitiveEditor_->Init();
+	primitiveEditor_->Init(asset_.get());
+
+	// 最初からfullScreen設定
+	fullscreenEnable_ = true;
+	winApp_->SetFullscreen(fullscreenEnable_);
 }
 
 void Framework::InitDirectX(uint32_t width, uint32_t height) {
@@ -113,6 +124,17 @@ void Framework::InitComponent() {
 	// material
 	materialStore_ = std::make_unique<MaterialStore>();
 	ComponentManager::GetInstance()->RegisterComponentStore(materialStore_.get());
+
+	// effect
+	// transform
+	effectTransformStore_ = std::make_unique<EffectTransformStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(effectTransformStore_.get());
+	// material
+	effectMaterialStore_ = std::make_unique<EffectMaterialStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(effectMaterialStore_.get());
+	// transform
+	primitiveMeshStore_ = std::make_unique<PrimitiveMeshStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(primitiveMeshStore_.get());
 
 	// 2D
 	// transform
@@ -188,6 +210,8 @@ void Framework::Finalize() {
 	LineRenderer::GetInstance()->Finalize();
 
 	sceneManager_.reset();
+	primitiveMeshStore_.reset();
+	spriteStore_.reset();
 	graphicsCore_.reset();
 	winApp_.reset();
 	asset_.reset();

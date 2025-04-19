@@ -19,6 +19,10 @@ template std::vector<TYPE*> Component::GetComponentList<TYPE>(uint32_t);
 INSTANTIATE_GET_COMPONENT(Transform3DComponent)
 INSTANTIATE_GET_COMPONENT(MaterialComponent)
 INSTANTIATE_GET_COMPONENT(AnimationComponent)
+// effect
+INSTANTIATE_GET_COMPONENT(EffectTransformComponent)
+INSTANTIATE_GET_COMPONENT(EffectMaterialComponent)
+INSTANTIATE_GET_COMPONENT(PrimitiveMeshComponent)
 // 2D
 INSTANTIATE_GET_COMPONENT(Transform2DComponent)
 INSTANTIATE_GET_COMPONENT(SpriteMaterial)
@@ -55,9 +59,21 @@ uint32_t GameObjectHelper::CreateObject3D(const std::string& modelName,
 		modelName, objectName, groupName, animationName);
 }
 
-void GameObjectHelper::RemoveObject3D(uint32_t id) {
+void GameObjectHelper::RemoveObject3D(uint32_t entityId) {
 
-	ComponentManager::GetInstance()->RemoveObject3D(id);
+	ComponentManager::GetInstance()->RemoveObject3D(entityId);
+}
+
+uint32_t GameObjectHelper::CreateEffect(const std::string& modelName, const std::string& textureName,
+	const std::string& objectName, const std::optional<std::string>& groupName) {
+
+	return ComponentManager::GetInstance()->CreateEffect(
+		modelName, textureName, objectName, groupName);
+}
+
+void GameObjectHelper::RemoveEffect(uint32_t entityId) {
+
+	ComponentManager::GetInstance()->RemoveEffect(entityId);
 }
 
 uint32_t GameObjectHelper::CreateObject2D(const std::string& textureName,
@@ -67,7 +83,7 @@ uint32_t GameObjectHelper::CreateObject2D(const std::string& textureName,
 		textureName, objectName, groupName);
 }
 
-void GameObjectHelper::RemoveObject2D(uint32_t id) {
+void GameObjectHelper::RemoveObject2D(uint32_t entityId) {
 
-	ComponentManager::GetInstance()->RemoveObject2D(id);
+	ComponentManager::GetInstance()->RemoveObject2D(entityId);
 }

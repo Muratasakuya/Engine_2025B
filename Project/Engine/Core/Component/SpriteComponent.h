@@ -84,13 +84,3 @@ private:
 
 	void SetMetaDataTextureSize(Transform2DComponent& transform);
 };
-
-//============================================================================
-//	SpriteComponent structure
-//============================================================================
-
-// 受け取るsprite情報
-struct SpriteReference {
-
-	SpriteComponent* sprite;
-};

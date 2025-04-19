@@ -40,7 +40,7 @@ void ImGuiManager::Init(HWND hwnd, UINT bufferCount, ID3D12Device* device, SRVDe
 	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
 	const std::string fontFilePath = "Assets/Engine/ImGuiFont/FiraMono-Bold.ttf";
-	io.Fonts->AddFontFromFileTTF(fontFilePath.c_str(), 16.0f);
+	io.Fonts->AddFontFromFileTTF(fontFilePath.c_str(), 24.0f);
 
 	// 背景色設定
 	ImGuiStyle& style = ImGui::GetStyle();

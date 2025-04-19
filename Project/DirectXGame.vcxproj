@@ -166,6 +166,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Component\Store\PrimitiveMeshStore.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Component\Store\SpriteStore.cpp">
       <SubType>
       </SubType>
@@ -254,7 +258,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshData.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshTool.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Editor\Primitive\PrimitiveRegistry.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer\EffectRenderer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -263,6 +279,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\SimpleAnimation.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\UVHelper.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -428,6 +452,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\Component\Store\PrimitiveMeshStore.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Component\Store\SpriteStore.h">
       <SubType>
       </SubType>
@@ -524,11 +552,31 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshData.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshTool.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Editor\Primitive\PrimitiveRegistry.h">
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Renderer\EffectRenderer.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Scene\Light\LightManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\SimpleAnimation.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\UVHelper.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -653,7 +701,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Time\GameTimer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
-    <ClInclude Include="Lib\Adapter\Random.h" />
+    <ClInclude Include="Lib\Adapter\RandomGenerator.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h">
       <SubType>
       </SubType>
@@ -669,6 +717,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Lib\MathUtils\Vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\CopyTexture.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">MSmain</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">6.5</ShaderModel>

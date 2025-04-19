@@ -34,7 +34,8 @@
     "PipelineState":[
         {
             "DSVFormat": "D32_FLOAT",
-            "RTVFormats": "R32_FLOAT"
+            "RTVFormats": "R32_FLOAT",
+            "BlendMode": "NORMAL"
         }
     ]
 }

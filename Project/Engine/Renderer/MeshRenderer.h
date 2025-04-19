@@ -4,13 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Engine/Scene/Light/PunctualLight.h>
-#include <Lib/MathUtils/Vector3.h>
-#include <Lib/MathUtils/Matrix4x4.h>
 
-// directX
-#include <d3d12.h>
 // c++
 #include <memory>
 #include <ranges>

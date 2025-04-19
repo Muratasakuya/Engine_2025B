@@ -26,6 +26,10 @@ public:
 
 	void Load(const std::string& modelName);
 
+	void Make(const std::string& modelName,
+		const std::vector<ModelVertexData>& vertexData,
+		const std::vector<uint32_t>& indexData);
+
 	//--------- accessor -----------------------------------------------------
 
 	const ModelData& GetModelData(const std::string& modelName) const;

@@ -61,6 +61,7 @@ void ComponentManager::Init(ID3D12Device* device, Asset* asset, GPUObjectSystem*
 	// inspectorへentityManagerをセット
 	ImGuiInspector::GetInstance()->SetEntityManager(
 		entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)].get(),
+		entityRegistries_[static_cast<uint32_t>(ComponentType::Effect)].get(),
 		entityRegistries_[static_cast<uint32_t>(ComponentType::Object2D)].get());
 }
 
@@ -88,9 +89,24 @@ uint32_t ComponentManager::CreateObject3D(
 	auto transform = GetComponent<Transform3DComponent>(id);
 	transform->SetInstancingName(modelName);
 	AddComponent<MaterialComponent>(id, asset_->GetModelData(modelName), asset_);
-
 	// buffer作成
 	gpuObjectSystem_->CreateMesh(modelName);
+
+	return id;
+}
+
+uint32_t ComponentManager::CreateEffect(const std::string& modelName, const std::string& textureName,
+	const std::string& objectName, const std::optional<std::string>& groupName) {
+
+	// entityID発行
+	uint32_t id = entityRegistries_[static_cast<uint32_t>(ComponentType::Effect)]->CreateEntity(objectName, groupName);
+
+	// effectに必要なcomponentを追加
+	AddComponent<EffectTransformComponent>(id);
+	AddComponent<EffectMaterialComponent>(id, textureName, asset_);
+	AddComponent<PrimitiveMeshComponent>(id, device_, asset_, modelName);
+	// buffer作成
+	gpuObjectSystem_->CreateEffect(id, GetComponent<PrimitiveMeshComponent>(id), device_);
 
 	return id;
 }
@@ -121,6 +137,19 @@ void ComponentManager::RemoveObject3D(uint32_t entityId) {
 	RemoveComponent<MaterialComponent>(entityId);
 }
 
+void ComponentManager::RemoveEffect(uint32_t entityId) {
+
+	// idの削除
+	entityRegistries_[static_cast<uint32_t>(ComponentType::Effect)]->RemoveEntity(entityId);
+
+	// buffer削除
+	gpuObjectSystem_->RemoveEffect(entityId);
+	// effectで使用していたcomponentの削除
+	RemoveComponent<EffectTransformComponent>(entityId);
+	RemoveComponent<EffectMaterialComponent>(entityId);
+	RemoveComponent<PrimitiveMeshComponent>(entityId);
+}
+
 void ComponentManager::RemoveObject2D(uint32_t entityId) {
 
 	// idの削除
@@ -132,25 +161,4 @@ void ComponentManager::RemoveObject2D(uint32_t entityId) {
 	RemoveComponent<Transform2DComponent>(entityId);
 	RemoveComponent<SpriteMaterial>(entityId);
 	RemoveComponent<SpriteComponent>(entityId);
-}
-
-uint32_t ComponentManager::CreateEffect(
-	const std::string& modelName, const std::string& objectName,
-	const std::optional<std::string>& groupName) {
-
-	modelName;
-	objectName;
-	groupName;
-
-	// entityID発行
-	//uint32_t id = entityRegistries_[static_cast<uint32_t>(ComponentType::Effect)]->CreateEntity(objectName, groupName);
-
-	// effectに必要なcomponentを追加
-
-	return 0;
-}
-
-void ComponentManager::RemoveEffect(uint32_t entityId) {
-
-	entityId;
 }
