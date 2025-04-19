@@ -20,6 +20,8 @@ struct MeshVertex {
 	Vector2 texcoord;
 	Vector3 normal;
 	Color color;
+	Vector3 tangent;
+	Vector3 bitangent;
 };
 
 // meshlet情報の格納

@@ -33,6 +33,14 @@ void MaterialStore::AddComponent(uint32_t entityId, std::any args) {
 		components_.back()[meshIndex].Init();
 		components_.back()[meshIndex].material.textureIndex =
 			asset->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
+
+		// normalMap用のTextureがあれば設定する
+		if (modelData.meshes[meshIndex].normalMapTexture.has_value()) {
+
+			components_.back()[meshIndex].material.normalMapTextureIndex =
+				asset->GetTextureGPUIndex(modelData.meshes[meshIndex].normalMapTexture.value());
+			components_.back()[meshIndex].material.enableNormalMap = true;
+		}
 	}
 
 	// index設定

@@ -14,6 +14,7 @@
 void DebugCamera::Init() {
 
 	zoomRate_ = 1.0f;
+	panSpeed_ = 0.1f;
 
 	// 初期値設定
 	fovY_ = 0.45f;
@@ -75,8 +76,9 @@ void DebugCamera::ImGui() {
 		transform_.rotation.x, transform_.rotation.y, transform_.rotation.z, transform_.rotation.w);
 
 	ImGui::DragFloat("zoomRate##DebugCamera", &zoomRate_, 0.01f);
+	ImGui::DragFloat("panSpeed##DebugCamera", &panSpeed_, 0.01f);
 	ImGui::DragFloat("fovY##DebugCamera", &fovY_, 0.01f);
-	ImGui::DragFloat("farClip##DebugCamera", &fovY_, 1.0f);
+	ImGui::DragFloat("farClip##DebugCamera", &farClip_, 1.0f);
 
 	ImGui::PopItemWidth();
 }
@@ -87,7 +89,6 @@ void DebugCamera::Move() {
 	float deltaY = Input::GetInstance()->GetMouseMoveValue().y;
 
 	const float rotateSpeed = 0.01f;
-	const float panSpeed = 0.1f;
 
 	// 右クリック
 	if (Input::GetInstance()->PushMouseRight()) {
@@ -99,8 +100,8 @@ void DebugCamera::Move() {
 	// 中クリック + Shift
 	if (Input::GetInstance()->PushMouseCenter() && Input::GetInstance()->PushKey(DIK_LSHIFT)) {
 
-		Vector3 right = { panSpeed * deltaX, 0.0f, 0.0f };
-		Vector3 up = { 0.0f, -panSpeed * deltaY, 0.0f };
+		Vector3 right = { panSpeed_ * deltaX, 0.0f, 0.0f };
+		Vector3 up = { 0.0f, -panSpeed_ * deltaY, 0.0f };
 
 		// 平行移動ベクトルを変換
 		right = Vector3::TransferNormal(right, transform_.matrix.world);
