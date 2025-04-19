@@ -26,18 +26,20 @@ void GameScene::Init(
 
 	asset->LoadTexture("uvChecker");
 	asset->LoadTexture("circle");
-	asset->LoadTexture("testUVAnimation_1");
-	asset->LoadTexture("sirialFireEffect");
-	asset->LoadTexture("sirialFireDotEffect");
 	asset->LoadTexture("sirialHitEffect");
 	asset->LoadTexture("effectCircle");
+
+	// normalMap
+	asset->LoadTexture("Bricks_Color");
+	asset->LoadTexture("Bricks_NormalDX");
 
 	asset->LoadModel("stageField");
 	asset->LoadModel("teapot");
 	asset->LoadModel("plane");
 	asset->LoadModel("multiMaterial");
 	asset->LoadModel("suzanne");
-	asset->LoadModel("walk");
+	asset->LoadModel("bricks");
+	asset->LoadModel("sponza");
 
 	//========================================================================
 	//	postProcess
@@ -69,7 +71,7 @@ void GameScene::Init(
 	//	initObject
 	//========================================================================
 
-
+	GameObjectHelper::CreateObject3D("sponza", "sponza", "Sponza");
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

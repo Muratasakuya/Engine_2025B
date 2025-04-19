@@ -37,6 +37,8 @@ struct Material {
 
 	float4 color;
 	uint textureIndex;
+	uint normalMapTextureIndex;
+	int enableNormalMap;
 	int enableLighting;
 	int enableHalfLambert;
 	int enablePhongReflection;
@@ -75,20 +77,35 @@ PSOutput main(MSOutput input) {
 	float4 textureColor = gTextures[gMaterials[id].textureIndex].Sample(gSampler, transformUV.xy);
 	
 	//========================================================================*/
+	//* NormalMap *//
+	
+	float3 normal = input.normal;
+	
+	if (gMaterials[id].enableNormalMap == 1) {
+		
+		// 法線マップを使用するときは法線を再設定する
+		float3 localNormal = gTextures[gMaterials[id].normalMapTextureIndex].Sample(gSampler, transformUV.xy).xyz;
+		// 法線を0～1の範囲から-1～1の範囲に復元する
+		localNormal = (localNormal - 0.5f) * 2.0f;
+		// タンジェントスペースの法線をワールドスペースに変換する
+		normal = input.tangent * localNormal.x + input.biNormal * localNormal.y + normal * localNormal.z;
+	}
+	
+	//========================================================================*/
 	//* Lighting *//
 	
 	if (gMaterials[id].enableLighting == 1) {
 		
 		if (gMaterials[id].enableHalfLambert == 1) {
 
-			float NdotL = dot(normalize(input.normal), normalize(-directionalLight.direction));
+			float NdotL = dot(normalize(normal), normalize(-directionalLight.direction));
 			float cos = pow(NdotL * 0.5f + 0.5f, 2.0f);
 			
 			// rgb
 			output.color.rgb = gMaterials[id].color.rgb * textureColor.rgb * directionalLight.color.rgb * cos * directionalLight.intensity;
 		} else {
 
-			float cos = saturate(dot(normalize(input.normal), -directionalLight.direction));
+			float cos = saturate(dot(normalize(normal), -directionalLight.direction));
 			
 			// rgb
 			output.color.rgb =
@@ -116,10 +133,10 @@ PSOutput main(MSOutput input) {
 			/// PointLight
 
 			// 入射光の反射ベクトルの計算
-			float3 reflectPointLight = reflect(pointLightDirection, normalize(input.normal));
+			float3 reflectPointLight = reflect(pointLightDirection, normalize(normal));
 			float RdotEPointLight = dot(reflectPointLight, toEye);
 			float specularPowPointLight = pow(saturate(RdotEPointLight), gMaterials[id].shininess);
-			float NdotLPointLight = dot(normalize(input.normal), -pointLightDirection);
+			float NdotLPointLight = dot(normalize(normal), -pointLightDirection);
 			float cosPointLight = pow(NdotLPointLight * 0.5f + 0.5f, 2.0f);
 			// 拡散反射
 			float3 diffusePointLight =
@@ -132,10 +149,10 @@ PSOutput main(MSOutput input) {
 			/// SpotLight
 			
 			// 入射光の反射ベクトルの計算
-			float3 reflectSpotLight = reflect(spotLightDirectionOnSurface, normalize(input.normal));
+			float3 reflectSpotLight = reflect(spotLightDirectionOnSurface, normalize(normal));
 			float RdotESpotLight = dot(reflectSpotLight, toEye);
 			float specularPowSpotLight = pow(saturate(RdotESpotLight), gMaterials[id].shininess);
-			float NdotLSpotLight = dot(normalize(input.normal), -spotLightDirectionOnSurface);
+			float NdotLSpotLight = dot(normalize(normal), -spotLightDirectionOnSurface);
 			float cosSpotLight = pow(NdotLSpotLight * 0.5f + 0.5f, 2.0f);
 			float cosAngle = dot(spotLightDirectionOnSurface, spotLight.direction);
 			float falloffFactor = saturate((cosAngle - spotLight.cosAngle) / (spotLight.cosFalloffStart - spotLight.cosAngle));
@@ -173,10 +190,10 @@ PSOutput main(MSOutput input) {
 			/// PointLight
 
 			float3 halfVectorPointLight = normalize(-pointLightDirection + toEye);
-			float NDotHPointLight = dot(normalize(input.normal), halfVectorPointLight);
+			float NDotHPointLight = dot(normalize(normal), halfVectorPointLight);
 			float specularPowPointLight = pow(saturate(NDotHPointLight), gMaterials[id].shininess);
 
-			float NdotLPointLight = dot(normalize(input.normal), -pointLightDirection);
+			float NdotLPointLight = dot(normalize(normal), -pointLightDirection);
 			float cosPointLight = pow(NdotLPointLight * 0.5f + 0.5f, 2.0f);
 
 			// 拡散反射
@@ -191,10 +208,10 @@ PSOutput main(MSOutput input) {
 			/// SpotLight
 
 			float3 halfVectorSpotLight = normalize(-spotLightDirectionOnSurface + toEye);
-			float NDotHSpotLight = dot(normalize(input.normal), halfVectorSpotLight);
+			float NDotHSpotLight = dot(normalize(normal), halfVectorSpotLight);
 			float specularPowSpotLight = pow(saturate(NDotHSpotLight), gMaterials[id].shininess);
 
-			float NdotLSpotLight = dot(normalize(input.normal), -spotLightDirectionOnSurface);
+			float NdotLSpotLight = dot(normalize(normal), -spotLightDirectionOnSurface);
 			float cosSpotLight = pow(NdotLSpotLight * 0.5f + 0.5f, 2.0f);
 
 			float cosAngle = dot(spotLightDirectionOnSurface, spotLight.direction);
@@ -241,7 +258,7 @@ PSOutput main(MSOutput input) {
 		shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f) {
 		
 		// 法線と光の方向の内積を計算
-		float NdotL = max(0.0f, dot(input.normal, directionalLight.direction));
+		float NdotL = max(0.0f, dot(normal, directionalLight.direction));
 
 		float slopeScale = 1.0f;
 		float constantBias = 0.001f;

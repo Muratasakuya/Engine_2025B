@@ -26,6 +26,7 @@ void TransformationMatrix::Update(const BaseTransform* parent, const Vector3& sc
 void Material::Init() {
 
 	color = Color::White();
+	enableNormalMap = false;
 	enableLighting = true;
 	enableHalfLambert = true;
 	enablePhongReflection = false;
