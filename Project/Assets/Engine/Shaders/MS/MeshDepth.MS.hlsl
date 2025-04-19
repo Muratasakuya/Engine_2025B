@@ -14,6 +14,8 @@ struct MSInput {
 	float2 texcoord;
 	float3 normal;
 	float4 color;
+	float3 tangent;
+	float3 biNormal;
 };
 
 //============================================================================
@@ -92,7 +94,7 @@ out indices uint3 polys[126] // 出力三角形インデックス
 	// 現在のグループに対応するmeshletを取得
 	Meshlet meshlet = gMeshlets[meshletIndex];
 	
-	// インスタンスのワールド行列と逆転置行列を取得
+	// インスタンスのワールド行列を取得
 	float4x4 world = gTransforms[instanceIndex].world;
 	
 	// メッシュシェーダーの出力数、頂点数、プリミティブ数を設定

@@ -41,7 +41,16 @@ ResourceMesh MeshRegistry::CreateMeshlet(const std::string& modelName) {
 
 	Assimp::Importer importer;
 	ModelData modelData = asset_->GetModelData(modelName);
-	const aiScene* scene = importer.ReadFile(modelData.fullPath, aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(modelData.fullPath,
+		aiProcess_FlipWindingOrder |
+		aiProcess_FlipUVs |
+		aiProcess_Triangulate |
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_ImproveCacheLocality |
+		aiProcess_RemoveRedundantMaterials |
+		aiProcess_SortByPType);
 
 	// 頂点、meshlet生成
 	ResourceMesh resourceMesh = meshletBuilder.ParseMesh(scene);

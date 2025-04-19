@@ -14,6 +14,8 @@ struct MSInput {
 	float2 texcoord;
 	float3 normal;
 	float4 color;
+	float3 tangent;
+	float3 biNormal;
 };
 
 //============================================================================
@@ -130,6 +132,10 @@ out indices uint3 polys[126] // 出力三角形インデックス
 		
 		// 法線
 		output.normal = mul(input.normal, worldInverseTranspose);
+		
+		// 接線
+		output.tangent = normalize(mul(input.tangent, worldInverseTranspose));
+		output.biNormal = normalize(mul(input.biNormal, worldInverseTranspose));
 		
 		// meshletの色
 		output.meshletColor = meshlet.color;

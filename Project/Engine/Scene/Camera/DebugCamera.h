@@ -34,6 +34,7 @@ private:
 
 	// マウスホイール移動感度
 	float zoomRate_;
+	float panSpeed_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -37,6 +37,8 @@ struct Material {
 
 	Color color;
 	uint32_t textureIndex;
+	uint32_t normalMapTextureIndex;
+	int32_t enableNormalMap;
 	int32_t enableLighting;
 	int32_t enableHalfLambert;
 	int32_t enablePhongReflection;
