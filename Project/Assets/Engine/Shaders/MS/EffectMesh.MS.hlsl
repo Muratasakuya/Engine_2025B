@@ -14,6 +14,8 @@ struct MSInput {
 	float2 texcoord;
 	float3 normal;
 	float4 color;
+	float3 tangent;
+	float3 biNormal;
 };
 
 //============================================================================

@@ -59,15 +59,20 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const aiScene* sce
 		for (uint32_t i = 0; i < sourceMesh->mNumVertices; ++i) {
 
 			aiVector3D* pos = &(sourceMesh->mVertices[i]);
-			aiVector3D* normal = &(sourceMesh->mNormals[i]);
 			aiVector3D* texcoord = &(sourceMesh->mTextureCoords[0][i]);
+			aiVector3D* normal = &(sourceMesh->mNormals[i]);
+			aiVector3D* tangent = &(sourceMesh->mTangents[i]);
+			aiVector3D* biNormal = &(sourceMesh->mBitangents[i]);
 
 			// 頂点情報を格納
 			destinationMesh.vertices[meshIndex][i] = MeshVertex(
 
 				Vector4(-pos->x, pos->y, pos->z, 1.0f),
 				Vector2(texcoord->x, texcoord->y),
-				Vector3(-normal->x, normal->y, normal->z));
+				Vector3(-normal->x, normal->y, normal->z),
+				Color(1.0f, 1.0f, 1.0f, 1.0f),
+				Vector3(-tangent->x, tangent->y, tangent->z),
+				Vector3(-biNormal->x, biNormal->y, biNormal->z));
 		}
 
 		// 頂点インデックスのメモリを確保する
@@ -104,8 +109,8 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const ModelData& m
 		for (uint32_t i = 0; i < meshData.vertices.size(); ++i) {
 
 			Vector4 pos = meshData.vertices[i].pos;
-			Vector3 normal = meshData.vertices[i].normal;
 			Vector2 texcoord = meshData.vertices[i].texcoord;
+			Vector3 normal = meshData.vertices[i].normal;
 
 			// 頂点情報を格納
 			destinationMesh.vertices[meshIndex][i] = MeshVertex(

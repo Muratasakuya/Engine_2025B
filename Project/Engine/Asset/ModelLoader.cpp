@@ -99,7 +99,16 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 	modelData.fullPath = filePath; // フルパスを格納
 
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(filePath.c_str(), aiProcess_FlipWindingOrder | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(filePath.c_str(),
+		aiProcess_FlipWindingOrder |
+		aiProcess_FlipUVs |
+		aiProcess_Triangulate |
+		aiProcess_GenSmoothNormals |
+		aiProcess_CalcTangentSpace |
+		aiProcess_JoinIdenticalVertices |
+		aiProcess_ImproveCacheLocality |
+		aiProcess_RemoveRedundantMaterials |
+		aiProcess_SortByPType);
 
 	// メッシュがないのには対応しない
 	assert(scene->HasMeshes());
@@ -169,6 +178,8 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 
 		// material解析
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+
+		// _DIFFUSE
 		if (material->GetTextureCount(aiTextureType_DIFFUSE) != 0) {
 
 			aiString textureName;
@@ -180,6 +191,24 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 			meshModelData.textureName = identifier;
 
 			textureManager_->Load(meshModelData.textureName.value());
+		}
+		// NORMALS
+		if (material->GetTextureCount(aiTextureType_NORMALS) > 0 ||
+			material->GetTextureCount(aiTextureType_HEIGHT) > 0) {
+
+			aiString normalMapName;
+
+			if (material->GetTexture(aiTextureType_NORMALS, 0, &normalMapName) != AI_SUCCESS) {
+				material->GetTexture(aiTextureType_HEIGHT, 0, &normalMapName);
+			}
+
+			meshModelData.normalMapTexture = normalMapName.C_Str();
+
+			std::filesystem::path normalNamePath(meshModelData.normalMapTexture.value());
+			std::string normalIdentifier = normalNamePath.stem().string();
+			meshModelData.normalMapTexture = normalIdentifier;
+
+			textureManager_->Load(meshModelData.normalMapTexture.value());
 		}
 
 		modelData.meshes.push_back(meshModelData);
