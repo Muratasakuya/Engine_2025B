@@ -60,6 +60,14 @@ public:
 	// 指定されたidのentity削除
 	void RemoveObject3D(uint32_t id);
 
+	//---------- effect ------------------------------------------------------
+
+	// 追加、作成処理
+	uint32_t CreateEffect(const std::string& modelName, const std::string& textureName,
+		const std::string& objectName, const std::optional<std::string>& groupName = std::nullopt);
+	// 指定されたidのentity削除
+	void RemoveEffect(uint32_t entityId);
+
 	//--------- object2D -----------------------------------------------------
 
 	// 追加、作成処理
@@ -67,14 +75,6 @@ public:
 		const std::optional<std::string>& groupName = std::nullopt);
 	// 指定されたidのentity削除
 	void RemoveObject2D(uint32_t entityId);
-
-	//---------- effect ------------------------------------------------------
-
-	// 追加、作成処理
-	uint32_t CreateEffect(const std::string& modelName, const std::string& objectName,
-		const std::optional<std::string>& groupName = std::nullopt);
-	// 指定されたidのentity削除
-	void RemoveEffect(uint32_t entityId);
 
 	//--------- accessor -----------------------------------------------------
 

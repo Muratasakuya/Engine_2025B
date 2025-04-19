@@ -28,6 +28,10 @@ public:
 	void LoadModel(const std::string& modelName);
 	void LoadAnimation(const std::string& animationName, const std::string& modelName);
 
+	void MakeModel(const std::string& modelName,
+		const std::vector<ModelVertexData>& vertexData,
+		const std::vector<uint32_t>& indexData);
+
 	// texture
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;
 	uint32_t GetTextureGPUIndex(const std::string& textureName) const;

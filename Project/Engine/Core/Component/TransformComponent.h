@@ -99,15 +99,15 @@ private:
 //============================================================================
 //	EffectTransform class
 //============================================================================
-class EffectTransform :
+class EffectTransformComponent :
 	public BaseTransform {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	EffectTransform() = default;
-	~EffectTransform() = default;
+	EffectTransformComponent() = default;
+	~EffectTransformComponent() = default;
 
 	// 特に今のところは実装無し
 };

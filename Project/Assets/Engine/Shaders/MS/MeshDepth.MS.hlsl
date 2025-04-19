@@ -13,6 +13,7 @@ struct MSInput {
 	float4 position;
 	float2 texcoord;
 	float3 normal;
+	float4 color;
 };
 
 //============================================================================

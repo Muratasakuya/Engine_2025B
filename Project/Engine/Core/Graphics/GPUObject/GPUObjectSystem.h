@@ -6,7 +6,7 @@
 #include <Engine/Core/Graphics/GPUObject/InstancedMeshBuffer.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Mesh/MeshRegistry.h>
-#include <Engine/Core/Graphics/Mesh/PrimitiveMesh.h>
+#include <Engine/Core/Component/PrimitiveMeshComponent.h>
 #include <Engine/Core/Component/SpriteComponent.h>
 
 // c++
@@ -28,14 +28,8 @@ struct Object2DForGPU {
 
 	DxConstBuffer<Matrix4x4> matrix;
 	DxConstBuffer<SpriteMaterial> material;
-	SpriteReference sprite;
+	SpriteComponent* sprite;
 };
-
-// effect用のStoreクラスを作成し、ComponentManagerに登録
-// 登録したらCreate関数と、Remove関数を作成し。
-// GPUObjectSystemクラスでBufferの更新を行う
-// EffectRendererクラスを作成し、pipelineを作成、描画を行えるようにする
-// バイト行ってきます！
 
 //============================================================================
 //	RenderObjectManager class
@@ -58,19 +52,19 @@ public:
 
 	void CreateMesh(const std::string& modelName);
 
+	//---------- effect ------------------------------------------------------
+
+	// 追加、作成処理
+	void CreateEffect(uint32_t entityId, PrimitiveMeshComponent* primitiveMesh, ID3D12Device* device);
+	// 指定されたidのbuffer削除
+	void RemoveEffect(uint32_t entityId);
+
 	//--------- object2D -----------------------------------------------------
 
 	// 追加、作成処理
 	void CreateObject2D(uint32_t entityId, SpriteComponent* sprite, ID3D12Device* device);
 	// 指定されたidのbuffer削除
 	void RemoveObject2D(uint32_t entityId);
-
-	//---------- effect ------------------------------------------------------
-
-	// 追加、作成処理
-	void CreateEffect(uint32_t entityId, PrimitiveMesh* primitiveMesh, ID3D12Device* device);
-	// 指定されたidのbuffer削除
-	void RemoveEffect(uint32_t entityId);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -83,6 +77,9 @@ public:
 	// meshの取得
 	Mesh* GetMesh(const std::string& name) const { return meshRegistry_->GetMesh(name); }
 	const std::unordered_map<std::string, std::unique_ptr<Mesh>>& GetMeshes() const { return meshRegistry_->GetMeshes(); }
+
+	// effect
+	const std::vector<EffectForGPU>& GetEffectBuffers() const { return effectBuffers_; }
 
 	// 2D
 	const std::vector<Object2DForGPU>& GetObject2DBuffers() const { return object2DBuffers_; }
@@ -123,6 +120,8 @@ private:
 	// bufferの更新処理
 	// 3D
 	void UpdateObject3D();
+	// effect
+	void UpdateEffect();
 	// 2D
 	void UpdateObject2D();
 };

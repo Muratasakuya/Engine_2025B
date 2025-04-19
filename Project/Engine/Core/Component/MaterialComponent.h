@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
+#include <Engine/Utility/SimpleAnimation.h>
+#include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
 //	UVTransform
@@ -82,11 +84,20 @@ public:
 	void ToJson(Json& data);
 	void FromJson(const Json& data);
 
+	//--------- accessor -----------------------------------------------------
+
+	// 横scrollのみ、縦は未実装
+	void SetUVScrollValue(float value);
+
 	//--------- variables ----------------------------------------------------
 
 	EffectMaterial material;
 
 	UVTransform uvTransform;
+
+	//--------- firend -------------------------------------------------------
+
+	friend void swap(EffectMaterialComponent& a, EffectMaterialComponent& b) noexcept;
 private:
 	//========================================================================
 	//	private Methods
@@ -94,5 +105,13 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	UVTransform prevUVTransform;
+	SimpleAnimation<float> uvScrollAnimation_;
+
+	UVTransform prevUVTransform_;
+
+	//--------- functions ----------------------------------------------------
+
+	void UpdateUVScroll();
+
+	void EditMaterial(float itemSize);
 };

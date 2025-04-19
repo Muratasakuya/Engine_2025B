@@ -85,3 +85,18 @@ void SceneConstBuffer::SetMainPassCommands(bool debugEnable, ID3D12GraphicsComma
 	commandList->SetGraphicsRootConstantBufferView(11,
 		lightBuffer_.GetResource()->GetGPUVirtualAddress());
 }
+
+void SceneConstBuffer::SetViewProCommand(bool debugEnable, ID3D12GraphicsCommandList* commandList) {
+
+	if (!debugEnable) {
+
+		// viewProjection
+		commandList->SetGraphicsRootConstantBufferView(5,
+			viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+	} else {
+
+		// viewProjection
+		commandList->SetGraphicsRootConstantBufferView(5,
+			debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+	}
+}

@@ -27,6 +27,7 @@ public:
 
 	void SetZPassCommands(ID3D12GraphicsCommandList* commandList);
 	void SetMainPassCommands(bool debugEnable, ID3D12GraphicsCommandList* commandList);
+	void SetViewProCommand(bool debugEnable, ID3D12GraphicsCommandList* commandList);
 private:
 	//========================================================================
 	//	private Methods

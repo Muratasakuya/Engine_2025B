@@ -311,6 +311,24 @@
     <ClCompile Include="Engine\Core\Component\PrimitiveMeshComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Component\Store\PrimitiveMeshStore.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer\EffectRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshTool.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\UVHelper.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\SimpleAnimation.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -349,7 +367,7 @@
     <ClInclude Include="Engine\Renderer\MeshRenderer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
-    <ClInclude Include="Lib\Adapter\Random.h" />
+    <ClInclude Include="Lib\Adapter\RandomGenerator.h" />
     <ClInclude Include="Lib\MathUtils\Matrix4x4.h" />
     <ClInclude Include="Lib\MathUtils\Quaternion.h" />
     <ClInclude Include="Lib\MathUtils\Vector2.h" />
@@ -421,10 +439,17 @@
     <ClInclude Include="Engine\Editor\Primitive\PrimitiveRegistry.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.h" />
     <ClInclude Include="Engine\Core\Component\PrimitiveMeshComponent.h" />
+    <ClInclude Include="Engine\Core\Component\Store\PrimitiveMeshStore.h" />
+    <ClInclude Include="Engine\Renderer\EffectRenderer.h" />
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshData.h" />
+    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshTool.h" />
+    <ClInclude Include="Engine\Utility\UVHelper.h" />
+    <ClInclude Include="Engine\Utility\SimpleAnimation.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\CopyTexture.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />

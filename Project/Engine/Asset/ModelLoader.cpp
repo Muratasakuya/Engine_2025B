@@ -50,6 +50,23 @@ void ModelLoader::Load(const std::string& modelName) {
 	Logger::Log("load model: " + modelName);
 }
 
+void ModelLoader::Make(const std::string& modelName,
+	const std::vector<ModelVertexData>& vertexData,
+	const std::vector<uint32_t>& indexData) {
+
+	ModelData modelData{};
+	MeshModelData meshData{};
+
+	// 頂点情報設定
+	meshData.vertices = vertexData;
+	meshData.indices = indexData;
+
+	meshData.textureName = std::nullopt;
+	modelData.meshes.push_back(meshData);
+
+	models_[modelName] = modelData;
+}
+
 const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
 
 	ASSERT(models_.find(modelName) != models_.end(), "not found model" + modelName);

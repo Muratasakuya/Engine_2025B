@@ -19,6 +19,7 @@
 
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>
+#include <Engine/Renderer/EffectRenderer.h>
 #include <Engine/Renderer/SpriteRenderer.h>
 
 // c++
@@ -64,7 +65,7 @@ public:
 	PostProcessSystem* GetPostProcessSystem() const { return postProcessSystem_.get(); }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return debugSceneRenderTexture_->GetGPUHandle(); }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return copyTextureProcessor_->GetSRVGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }
 private:
 	//========================================================================
@@ -94,13 +95,16 @@ private:
 	std::unique_ptr<RenderTexture> renderTexture_;
 	std::unique_ptr<GuiRenderTexture> guiRenderTexture_;
 
+	std::unique_ptr<PipelineState> copyTexturePipeline_;
 	std::unique_ptr<RenderTexture> debugSceneRenderTexture_;
+	std::unique_ptr<ComputePostProcessor> copyTextureProcessor_;
 
 	std::unique_ptr<ShadowMap> shadowMap_;
 
 	std::unique_ptr<PostProcessSystem> postProcessSystem_;
 
 	std::unique_ptr<MeshRenderer> meshRenderer_;
+	std::unique_ptr<EffectRenderer> effectRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;
 
 	std::unique_ptr<RTVDescriptor> rtvDescriptor_;

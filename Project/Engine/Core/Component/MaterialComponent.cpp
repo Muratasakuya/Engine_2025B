@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Game/Time/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
@@ -145,8 +146,11 @@ void EffectMaterialComponent::Init() {
 
 void EffectMaterialComponent::UpdateUVTransform() {
 
+	// uvScrollを更新
+	UpdateUVScroll();
+
 	// 値に変更がなければ更新しない
-	if (uvTransform == prevUVTransform) {
+	if (uvTransform == prevUVTransform_) {
 		return;
 	}
 
@@ -155,10 +159,16 @@ void EffectMaterialComponent::UpdateUVTransform() {
 		uvTransform.scale, uvTransform.rotate, uvTransform.translate);
 
 	// 値を保存
-	prevUVTransform = uvTransform;
+	prevUVTransform_ = uvTransform;
 }
 
-void EffectMaterialComponent::ImGui(float itemSize) {
+void EffectMaterialComponent::UpdateUVScroll() {
+
+	// スクロール量を計算
+	uvScrollAnimation_.MoveValue(uvTransform.translate.x);
+}
+
+void EffectMaterialComponent::EditMaterial(float itemSize) {
 
 	// 色
 	ImGui::SeparatorText("Color");
@@ -168,6 +178,12 @@ void EffectMaterialComponent::ImGui(float itemSize) {
 	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f A:%4.3f",
 		material.color.r, material.color.g,
 		material.color.b, material.color.a);
+
+	// 頂点カラーを使用するかどうか
+	ImGui::SliderInt("useVertexColor", &material.useVertexColor, 0, 1);
+
+	// discard閾値
+	ImGui::DragFloat("alphaReference", &material.alphaReference, 0.01f);
 
 	// 発行色
 	ImGui::ColorEdit3("emissionColor", &material.emissionColor.x);
@@ -187,6 +203,39 @@ void EffectMaterialComponent::ImGui(float itemSize) {
 	ImGui::PopItemWidth();
 }
 
+void EffectMaterialComponent::ImGui(float itemSize) {
+
+	if (ImGui::BeginTabBar("PrimitiveMeshTabs")) {
+
+		if (ImGui::BeginTabItem("Material")) {
+
+			// material
+			EditMaterial(itemSize);
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("UVAnimation")) {
+
+			if (ImGui::Button("Start", ImVec2(itemSize, 32.0f))) {
+
+				uvScrollAnimation_.Start();
+				uvTransform.translate.x = 0.0f;
+			}
+
+			if (ImGui::Button("Reset", ImVec2(itemSize, 32.0f))) {
+
+				uvScrollAnimation_.Reset();
+			}
+
+			// uvScroll
+			uvScrollAnimation_.ImGui();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
+}
+
 void EffectMaterialComponent::ToJson(Json& data) {
 
 	// Material
@@ -194,6 +243,7 @@ void EffectMaterialComponent::ToJson(Json& data) {
 	data["color"] = material.color.ToJson();
 	data["emissionColor"] = material.emissionColor.ToJson();
 	data["emissiveIntensity"] = material.emissiveIntensity;
+	data["alphaReference"] = material.alphaReference;
 
 	// UV
 	data["uvScale"] = uvTransform.scale.ToJson();
@@ -208,9 +258,25 @@ void EffectMaterialComponent::FromJson(const Json& data) {
 	material.color = JsonAdapter::ToObject<Color>(data["color"]);
 	material.emissionColor = JsonAdapter::ToObject<Vector3>(data["emissionColor"]);
 	material.emissiveIntensity = data["emissiveIntensity"];
+	material.alphaReference = data["alphaReference"];
 
 	// UV
 	uvTransform.scale = JsonAdapter::ToObject<Vector3>(data["uvScale"]);
 	uvTransform.rotate = JsonAdapter::ToObject<Vector3>(data["uvRotate"]);
 	uvTransform.translate = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
+}
+
+void EffectMaterialComponent::SetUVScrollValue(float value) {
+
+	// スクロール量を設定
+	uvScrollAnimation_.move_.moveValue = value;
+}
+
+void swap(EffectMaterialComponent& a, EffectMaterialComponent& b) noexcept {
+
+	using std::swap;
+	swap(a.material, b.material);
+	swap(a.uvTransform, b.uvTransform);
+	swap(a.prevUVTransform_, b.prevUVTransform_);
+	swap(a.uvScrollAnimation_, b.uvScrollAnimation_);
 }

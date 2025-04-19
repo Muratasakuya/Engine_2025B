@@ -16,6 +16,13 @@ void PrimitiveMesh::Init(ID3D12Device* device, const ResourceMesh& resource) {
 	TransferBuffer(resource);
 }
 
+void PrimitiveMesh::Update(const ResourceMesh& resource) {
+
+	// buffer転送
+	// 頂点
+	vertices_.TransferVectorData(resource.vertices.front());
+}
+
 void PrimitiveMesh::CreateBuffer(ID3D12Device* device, const ResourceMesh& resource) {
 
 	// multiMeshは作らないので、vector<T>.front()で処理を行う

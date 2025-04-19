@@ -86,5 +86,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	const float itemWidth_ = 162.0f;
+	const float itemWidth_ = 192.0f;
 };

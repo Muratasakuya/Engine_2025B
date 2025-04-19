@@ -44,6 +44,39 @@ private:
 };
 
 //============================================================================
+//	EffectMaterialStore class
+//============================================================================
+class EffectMaterialStore :
+	public IComponentStore<EffectMaterialComponent> {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	EffectMaterialStore() = default;
+	~EffectMaterialStore() = default;
+
+	void AddComponent(uint32_t entityId, std::any args) override;
+
+	void RemoveComponent(uint32_t entityId) override;
+
+	void Update() override;
+
+	//--------- accessor -----------------------------------------------------
+
+	EffectMaterialComponent* GetComponent(uint32_t entityId) override;
+	std::vector<EffectMaterialComponent*> GetComponentList([[maybe_unused]] uint32_t entityId) override { return { nullptr }; }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	std::vector<EffectMaterialComponent> components_;
+};
+
+//============================================================================
 //	SpriteMaterialStore class
 //============================================================================
 class SpriteMaterialStore :
