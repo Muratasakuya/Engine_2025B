@@ -39,7 +39,6 @@ void GameScene::Init(
 	asset->LoadModel("multiMaterial");
 	asset->LoadModel("suzanne");
 	asset->LoadModel("bricks");
-	asset->LoadModel("sponza");
 
 	//========================================================================
 	//	postProcess
@@ -71,7 +70,7 @@ void GameScene::Init(
 	//	initObject
 	//========================================================================
 
-	GameObjectHelper::CreateObject3D("sponza", "sponza", "Sponza");
+	GameObjectHelper::CreateObject3D("bricks", "bricks", "bricks");
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
