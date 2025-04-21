@@ -42,10 +42,12 @@ PSOutput main(MSOutput input) {
 	if (gMaterials[id].enableLighting == 1) {
 		if (gMaterials[id].enableHalfLambert == 1) {
 			
+			// halfLambertˆ—
 			output.color.rgb = CalculateLambertLighting(id, normal, diffuseColor.rgb);
 		}
 		if (gMaterials[id].enableBlinnPhongReflection == 1) {
 			
+			// blinnPhongˆ—
 			output.color.rgb += CalculateBlinnPhongLighting(id, normal, diffuseColor.rgb, input);
 		}
 	} else {

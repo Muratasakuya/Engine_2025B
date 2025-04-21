@@ -75,13 +75,6 @@ float3 GetNormalMap(uint id, float4 transformUV, MSOutput input) {
 	return normal;
 }
 
-float3 ApplyEmission(uint id, float3 color, float4 textureColor) {
-	
-	float3 emission = gMaterials[id].emissionColor * gMaterials[id].emissiveIntensity;
-	
-	return emission + textureColor.rgb;
-}
-
 float3 CalculateLambertLighting(uint id, float3 normal, float3 diffuseColor) {
 	
 	float NdotL = dot(normalize(normal), normalize(-directionalLight.direction));

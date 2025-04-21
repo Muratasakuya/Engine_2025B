@@ -30,7 +30,7 @@ void GPUObjectSystem::CreateMesh(const std::string& modelName) {
 	meshRegistry_->RegisterMesh(modelName);
 
 	// 最大instance数
-	const uint32_t kMaxInstanceNum = 16192;
+	const uint32_t kMaxInstanceNum = 0xffff;
 
 	// instancingデータ作成
 	instancedMeshBuffer_->Create(meshRegistry_->GetMeshes().at(modelName).get(),
@@ -162,6 +162,10 @@ void GPUObjectSystem::Update(CameraManager* cameraManager,
 
 void GPUObjectSystem::UpdateObject3D() {
 
+	if (isUploadBufer_) {
+		return;
+	}
+
 	auto componentManager = ComponentManager::GetInstance();
 
 	instancedMeshBuffer_->Reset();
@@ -189,6 +193,8 @@ void GPUObjectSystem::UpdateObject3D() {
 	}
 
 	instancedMeshBuffer_->Update();
+
+	isUploadBufer_ = true;
 }
 
 void GPUObjectSystem::UpdateEffect() {
