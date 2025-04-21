@@ -112,6 +112,9 @@ private:
 	std::unordered_map<uint32_t, size_t> effectBufferToIndex_;
 	std::vector<uint32_t> indexToEffectBuffer_;
 
+	// debug
+	bool isUploadBufer_ = false;
+
 	//--------- functions ----------------------------------------------------
 
 	void SwapToPopbackObject2D(uint32_t entityId);

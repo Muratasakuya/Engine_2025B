@@ -454,5 +454,6 @@
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />
     <None Include="Assets\Engine\Shaders\MS\StandardMSFunction.hlsli" />
+    <None Include="Assets\Engine\Shaders\MS\EffectMSFunction.hlsli" />
   </ItemGroup>
 </Project>
