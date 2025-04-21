@@ -1,3 +1,5 @@
+#define NOMINMAX
+
 #include "MeshCommandContext.h"
 
 //============================================================================
@@ -32,18 +34,37 @@ void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 	commandList->SetGraphicsRootConstantBufferView(5,
 		mesh->GetMeshletCountBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
 
-	// threadGroup数
-	UINT threadGroupCountX = mesh->GetMeshletCount(meshIndex) * instanceCount;
-
 	// threadGroupCountXの最大値
 	const UINT maxThreadGroupCount = 65535;
-	if (threadGroupCountX > maxThreadGroupCount) {
+	const UINT meshletCount = mesh->GetMeshletCount(meshIndex);
 
-		ASSERT(FALSE, "threadGroupCountX > maxThreadGroupCount");
+	// threadGroup数
+	UINT totalThreadGroupCountX = meshletCount * instanceCount;
+
+	// 最大数を超過した場合、分割して実行
+	if (totalThreadGroupCountX > maxThreadGroupCount) {
+
+		// 1度に実行できる最大instance数を計算
+		UINT maxInstancesPerDispatch = maxThreadGroupCount / meshletCount;
+
+		// 分割して実行
+		UINT remainingInstances = instanceCount;
+		while (remainingInstances > 0) {
+
+			UINT dispatchInstanceCount = std::min(remainingInstances, maxInstancesPerDispatch);
+			UINT dispatchThreadGroupCountX = dispatchInstanceCount * meshletCount;
+
+			// 実行
+			commandList->DispatchMesh(dispatchThreadGroupCountX, 1, 1);
+
+			// 残りのinstance数を更新
+			remainingInstances -= dispatchInstanceCount;
+		}
 	}
-
-	// 実行
-	commandList->DispatchMesh(threadGroupCountX, 1, 1);
+	// 超過しない場合はそのまま実行
+	else {
+		commandList->DispatchMesh(totalThreadGroupCountX, 1, 1);
+	}
 }
 
 void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList, PrimitiveMesh* mesh) {

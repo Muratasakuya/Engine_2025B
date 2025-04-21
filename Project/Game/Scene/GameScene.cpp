@@ -29,10 +29,6 @@ void GameScene::Init(
 	asset->LoadTexture("sirialHitEffect");
 	asset->LoadTexture("effectCircle");
 
-	// normalMap
-	asset->LoadTexture("Bricks_Color");
-	asset->LoadTexture("Bricks_NormalDX");
-
 	asset->LoadModel("stageField");
 	asset->LoadModel("teapot");
 	asset->LoadModel("plane");
@@ -70,7 +66,7 @@ void GameScene::Init(
 	//	initObject
 	//========================================================================
 
-	GameObjectHelper::CreateObject3D("bricks", "bricks", "bricks");
+
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

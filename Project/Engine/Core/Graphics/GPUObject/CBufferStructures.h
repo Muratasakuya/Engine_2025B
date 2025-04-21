@@ -41,7 +41,6 @@ struct Material {
 	int32_t enableNormalMap;
 	int32_t enableLighting;
 	int32_t enableHalfLambert;
-	int32_t enablePhongReflection;
 	int32_t enableBlinnPhongReflection;
 	float shadowRate;
 	float phongRefShininess;
