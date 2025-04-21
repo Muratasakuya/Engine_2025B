@@ -65,24 +65,11 @@ void MaterialComponent::ImGui(float itemSize) {
 	ImGui::SeparatorText("Lighting");
 
 	ImGui::SliderInt("enableLighting", &material.enableLighting, 0, 1);
-	if (ImGui::SliderInt("phongReflection", &material.enablePhongReflection, 0, 1)) {
-		if (material.enablePhongReflection) {
+	ImGui::SliderInt("blinnPhongReflection", &material.enableBlinnPhongReflection, 0, 1);
 
-			material.enableBlinnPhongReflection = 0;
-		}
-	}
-	if (ImGui::SliderInt("blinnPhongReflection", &material.enableBlinnPhongReflection, 0, 1)) {
-		if (material.enableBlinnPhongReflection) {
-
-			material.enablePhongReflection = 0;
-		}
-	}
-
-	if (material.enablePhongReflection ||
-		material.enableBlinnPhongReflection) {
+	if (material.enableBlinnPhongReflection) {
 
 		ImGui::ColorEdit3("specularColor", &material.specularColor.x);
-
 		ImGui::DragFloat("phongRefShininess", &material.phongRefShininess, 0.01f);
 	}
 
@@ -100,7 +87,6 @@ void MaterialComponent::ToJson(Json& data) {
 	// lighting
 	data["enableLighting"] = material.enableLighting;
 	data["enableHalfLambert"] = material.enableHalfLambert;
-	data["enablePhongReflection"] = material.enablePhongReflection;
 	data["enableBlinnPhongReflection"] = material.enableBlinnPhongReflection;
 	data["phongRefShininess"] = material.phongRefShininess;
 	data["specularColor"] = material.specularColor.ToJson();
@@ -122,7 +108,6 @@ void MaterialComponent::FromJson(const Json& data) {
 	// lighting
 	material.enableLighting = data["enableLighting"];
 	material.enableHalfLambert = data["enableHalfLambert"];
-	material.enablePhongReflection = data["enablePhongReflection"];
 	material.enableBlinnPhongReflection = data["enableBlinnPhongReflection"];
 	material.phongRefShininess = data["phongRefShininess"];
 	material.specularColor = JsonAdapter::ToObject<Vector3>(data["specularColor"]);
