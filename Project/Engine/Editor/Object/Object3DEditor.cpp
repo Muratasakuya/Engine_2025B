@@ -48,6 +48,13 @@ void Object3DEditor::ImGui() {
 	EditObject();
 }
 
+uint32_t Object3DEditor::GetObjectId(const std::string& name, const std::string& groupName) const {
+
+	// 作成されたobjectからidを取得する
+	uint32_t id = groupedSelectObjects_.at(groupName).at(name);
+	return id;
+}
+
 void Object3DEditor::SaveEditLayoutParameter() {
 
 	Json data;
@@ -65,7 +72,7 @@ void Object3DEditor::ApplyJson() {
 	ApplyEditLayoutParameter();
 
 	// objects
-	ApplyObjectJson("testObject.json");
+	ApplyObjectJson("enviromentObject.json");
 }
 
 void Object3DEditor::ApplyEditLayoutParameter() {
