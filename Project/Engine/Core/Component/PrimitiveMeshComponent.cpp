@@ -19,6 +19,8 @@ void PrimitiveMeshComponent::Init(ID3D12Device* device, Asset* asset,
 	asset_ = nullptr;
 	asset_ = asset;
 
+	modelName_ = modelName;
+
 	// 頂点、meshlet生成
 	resourceMesh_ = CreateMeshlet(modelName);
 

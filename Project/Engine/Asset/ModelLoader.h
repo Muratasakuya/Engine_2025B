@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
+#include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
 
 // c++
 #include <unordered_map>
@@ -29,6 +30,7 @@ public:
 	void Make(const std::string& modelName,
 		const std::vector<ModelVertexData>& vertexData,
 		const std::vector<uint32_t>& indexData);
+	void Export(const ResourceMesh& modelData, const std::string& filePath);
 
 	//--------- accessor -----------------------------------------------------
 

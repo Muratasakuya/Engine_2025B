@@ -3,6 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
+#include <Engine/Core/Component/ComponentHelper.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
@@ -10,6 +12,9 @@
 //============================================================================
 
 void PrimitiveEditor::Init(Asset* asset) {
+
+	asset_ = nullptr;
+	asset_ = asset;
 
 	primitiveRegistry_ = std::make_unique<PrimitiveRegistry>();
 	primitiveRegistry_->Init(asset);
@@ -35,6 +40,9 @@ void PrimitiveEditor::ImGui() {
 
 	// 作成されたprimitiveを選択
 	primitiveRegistry_->SelectPrimiviveMesh();
+
+	// obj出力
+	OutputPrimitive();
 
 	// 選択されたprimitiveの操作
 	primitiveTool_->EditPrimitiveMesh(primitiveRegistry_->GetSelectIndex());
@@ -87,4 +95,20 @@ void PrimitiveEditor::SaveEditLayoutParameter() {
 
 	// 保存処理
 	JsonAdapter::Save(baseJsonPath_ + "editorLayoutParameter.json", data);
+}
+
+void PrimitiveEditor::OutputPrimitive() {
+
+	const auto& primitiveIndex = primitiveRegistry_->GetSelectIndex();
+	if (!primitiveIndex.has_value()) {
+		return;
+	}
+
+	if (ImGui::Button("Output Primitive", ImVec2(192.0f, 32.0f))) {
+
+		// 現在の状態のprimitveを.obj出力する
+		PrimitiveMeshComponent* primitive = Component::GetComponent<PrimitiveMeshComponent>(*primitiveIndex);
+		const std::string filePath = "Primitives/" + primitive->GetModelName() + ".obj";
+		asset_->Export(*primitive->GetResourceMesh(), filePath);
+	}
 }
