@@ -29,6 +29,8 @@ public:
 	void ImGui(float itemWidth);
 	//--------- accessor -----------------------------------------------------
 
+	const std::string& GetModelName() const { return modelName_; }
+
 	// 頂点情報
 	ResourceMesh* GetResourceMesh() { return resourceMesh_.get(); };
 
@@ -51,6 +53,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	Asset* asset_;
+	std::string modelName_;
 
 	// 頂点リソース情報
 	std::unique_ptr<ResourceMesh> resourceMesh_;
@@ -66,6 +69,4 @@ private:
 	std::unique_ptr<ResourceMesh> CreateMeshlet(const std::string& modelName);
 
 	void SelectBlendMode();
-
-	void EditVertex();
 };

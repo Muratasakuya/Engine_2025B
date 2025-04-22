@@ -162,10 +162,6 @@ void GPUObjectSystem::Update(CameraManager* cameraManager,
 
 void GPUObjectSystem::UpdateObject3D() {
 
-	if (isUploadBufer_) {
-		return;
-	}
-
 	auto componentManager = ComponentManager::GetInstance();
 
 	instancedMeshBuffer_->Reset();
@@ -193,8 +189,6 @@ void GPUObjectSystem::UpdateObject3D() {
 	}
 
 	instancedMeshBuffer_->Update();
-
-	isUploadBufer_ = true;
 }
 
 void GPUObjectSystem::UpdateEffect() {

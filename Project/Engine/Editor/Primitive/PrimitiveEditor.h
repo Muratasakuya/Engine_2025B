@@ -7,6 +7,9 @@
 #include <Engine/Editor/Primitive/PrimitiveRegistry.h>
 #include <Engine/Editor/Primitive/PrimitiveMeshTool.h>
 
+// front
+class Asset;
+
 //============================================================================
 //	PrimitiveEditor class
 //============================================================================
@@ -20,7 +23,7 @@ public:
 	PrimitiveEditor() : IGameEditor("primitiveEditor") {};
 	~PrimitiveEditor() = default;
 
-	void Init(class Asset* asset);
+	void Init(Asset* asset);
 
 	void ImGui() override;
 private:
@@ -32,6 +35,8 @@ private:
 
 	// json
 	const std::string baseJsonPath_ = "primitiveEditor/";
+
+	Asset* asset_;
 
 	// editor操作
 	bool editLayoutEnable_;
@@ -48,6 +53,9 @@ private:
 	// editorLayout
 	void ApplyEditLayoutParameter();
 	void SaveEditLayoutParameter();
+
+	// obj出力
+	void OutputPrimitive();
 
 	// editor内のlayoutを調整
 	void EditLayout();
