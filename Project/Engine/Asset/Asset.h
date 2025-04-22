@@ -31,6 +31,7 @@ public:
 	void MakeModel(const std::string& modelName,
 		const std::vector<ModelVertexData>& vertexData,
 		const std::vector<uint32_t>& indexData);
+	void Export(const ResourceMesh& modelData, const std::string& filePath);
 
 	// texture
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;

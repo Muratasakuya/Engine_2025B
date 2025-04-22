@@ -7,6 +7,7 @@ EngineInformation:     load texture: circle
 EngineInformation:     load texture: sirialHitEffect
 EngineInformation:     load texture: effectCircle
 EngineInformation:     load texture: stageField
+EngineInformation:     load texture: stageFieldNormalMap
 EngineInformation:     load model: stageField
 EngineInformation:     load model: teapot
 EngineInformation:     load model: plane
@@ -17,3 +18,4 @@ EngineInformation:     load model: suzanne
 EngineInformation:     load texture: Bricks_Color
 EngineInformation:     load texture: Bricks_NormalDX
 EngineInformation:     load model: bricks
+EngineInformation:     load model: primitivePlane
