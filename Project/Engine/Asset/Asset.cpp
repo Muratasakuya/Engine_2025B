@@ -34,6 +34,10 @@ void Asset::MakeModel(const std::string& modelName,
 	modelLoader_->Make(modelName, vertexData, indexData);
 }
 
+void Asset::Export(const ResourceMesh& modelData, const std::string& filePath) {
+	modelLoader_->Export(modelData, filePath);
+}
+
 const D3D12_GPU_DESCRIPTOR_HANDLE& Asset::GetGPUHandle(const std::string textureName) const {
 	return textureManager_->GetGPUHandle(textureName);
 }

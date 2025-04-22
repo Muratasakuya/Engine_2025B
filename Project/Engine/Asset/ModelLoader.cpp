@@ -67,6 +67,61 @@ void ModelLoader::Make(const std::string& modelName,
 	models_[modelName] = modelData;
 }
 
+void ModelLoader::Export(const ResourceMesh& modelData, const std::string& filePath) {
+
+	// filePath
+	const std::string fullPath = "./Assets/Models/" + filePath;
+	std::ofstream file(fullPath);
+
+	// 開けないファイルはエラー
+	if (!file.is_open()) {
+		ASSERT(FALSE, fullPath + "is not found");
+	}
+
+	// index0のみ
+	const uint32_t meshIndex = 0;
+
+	// 頂点
+	std::vector<MeshVertex> vertices = modelData.vertices[meshIndex];
+	std::vector<uint32_t> indices = modelData.indices[meshIndex];
+
+	// 頂点データを書き込む
+	for (auto& vertex : vertices) {
+
+		// 読み込みで*-1.0fするので先んじて*-1.0fしておく
+		vertex.pos.x *= -1.0f;
+		file << "v " << vertex.pos.x << " " << vertex.pos.y << " " << vertex.pos.z << "\n";
+	}
+
+	// テクスチャ座標の書き込み
+	for (const auto& vertex : vertices) {
+
+		file << "vt " << vertex.texcoord.x << " " << vertex.texcoord.y << "\n";
+	}
+
+	// 法線データを書き込む
+	for (auto& vertex : vertices) {
+
+		// 読み込みで*-1.0fするので先んじて*-1.0fしておく
+		vertex.normal.x *= -1.0f;
+		file << "vn " << vertex.normal.x << " " << vertex.normal.y << " " << vertex.normal.z << "\n";
+	}
+
+	// 面の書き込み、index情報を設定
+	size_t numTriangles = indices.size() / 3;
+	for (size_t i = 0; i < numTriangles; ++i) {
+
+		// インデックスを1から始めるため+1をする
+		file << "f "
+			<< indices[i * 3 + 0] + 1 << "/" << indices[i * 3 + 0] + 1 << "/" << indices[i * 3 + 0] + 1 << " "
+			<< indices[i * 3 + 1] + 1 << "/" << indices[i * 3 + 1] + 1 << "/" << indices[i * 3 + 1] + 1 << " "
+			<< indices[i * 3 + 2] + 1 << "/" << indices[i * 3 + 2] + 1 << "/" << indices[i * 3 + 2] + 1 << "\n";
+	}
+
+	// 書き込み完了
+	file.close();
+}
+
 const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
 
 	ASSERT(models_.find(modelName) != models_.end(), "not found model" + modelName);

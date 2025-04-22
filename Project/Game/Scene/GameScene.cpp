@@ -36,6 +36,9 @@ void GameScene::Init(
 	asset->LoadModel("suzanne");
 	asset->LoadModel("bricks");
 
+	// primitive
+	asset->LoadModel("primitivePlane");
+
 	//========================================================================
 	//	postProcess
 	//========================================================================
@@ -66,7 +69,8 @@ void GameScene::Init(
 	//	initObject
 	//========================================================================
 
-
+	object3DEditor_ = std::make_unique<Object3DEditor>();
+	object3DEditor_->Init(asset);
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
