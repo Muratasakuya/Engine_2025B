@@ -29,6 +29,10 @@ public:
 	void Init(Asset* asset);
 
 	void ImGui() override;
+
+	//--------- accessor -----------------------------------------------------
+
+	uint32_t GetObjectId(const std::string& name, const std::string& groupName) const;
 private:
 	//========================================================================
 	//	private Methods
