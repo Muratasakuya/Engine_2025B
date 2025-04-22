@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Component/ComponentHelper.h>
+#include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
 #include <Engine/Asset/Asset.h>
