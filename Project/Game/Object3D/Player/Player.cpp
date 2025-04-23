@@ -23,7 +23,6 @@ void Player::Update() {
 
 	// behaviorの更新
 	behavior_->Update();
-
 	// 各partsの更新
 	partsController_->Update(behavior_->GetCurrentBehaviours());
 }

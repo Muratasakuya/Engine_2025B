@@ -71,6 +71,9 @@ void FollowCamera::UpdateMatrix() {
 		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
 
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
+
+	// billboardMatrixを計算
+	BaseCamera::CalBillboardMatrix();
 }
 
 void FollowCamera::ImGui() {

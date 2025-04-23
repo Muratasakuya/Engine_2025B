@@ -66,7 +66,12 @@ void PlayerAttackBehavior::BehaviourRequest() {
 
 void PlayerAttackBehavior::ImGui() {
 
+	ImGui::SeparatorText("BehaviorSet");
 
+	if (ImGui::Button("Parry", ImVec2(itemWidth_, 32.0f))) {
+
+		moveBehaviour_ = PlayerBehaviorType::Parry;
+	}
 }
 
 bool PlayerAttackBehavior::CheckCurrentBehaviors(

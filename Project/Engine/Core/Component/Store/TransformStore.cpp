@@ -6,6 +6,7 @@
 //	include
 //============================================================================
 #include <Lib/MathUtils/Algorithm.h>
+#include <Engine/Scene/Camera/CameraManager.h>
 
 //============================================================================
 //	TransformStore classMethods
@@ -66,6 +67,12 @@ Transform3DComponent* Transform3DStore::GetComponent(uint32_t entityId) {
 // Effect
 //============================================================================
 
+void EffectTransformStore::Init(CameraManager* cameraManager) {
+
+	cameraManager_ = nullptr;
+	cameraManager_ = cameraManager;
+}
+
 void EffectTransformStore::AddComponent(uint32_t entityId, std::any args) {
 
 	size_t index = components_.size();
@@ -73,7 +80,6 @@ void EffectTransformStore::AddComponent(uint32_t entityId, std::any args) {
 	// component追加
 	components_.push_back(std::make_unique<EffectTransformComponent>());
 	components_.back()->Init();
-	components_.back()->UpdateMatrix();
 
 	// index設定
 	SetEntityIndex(entityId, index);
@@ -100,10 +106,11 @@ void EffectTransformStore::RemoveComponent(uint32_t entityId) {
 
 void EffectTransformStore::Update() {
 
+	Matrix4x4 billboardMatrix = cameraManager_->GetCamera()->GetBillboardMatrixMatrix();
 	for (auto& component : components_) {
 
 		// 行列更新
-		component->UpdateMatrix();
+		component->UpdateMatrix(billboardMatrix);
 	}
 }
 
