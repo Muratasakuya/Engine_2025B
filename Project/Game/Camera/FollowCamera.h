@@ -3,36 +3,30 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/Methods/IScene.h>
-#include <Engine/Scene/Light/PunctualLight.h>
-
-// camera
-#include <Game/Camera/GameCamera.h>
-#include <Game/Camera/FollowCamera.h>
-
-// editor
-#include <Engine/Editor/Object/Object3DEditor.h>
-
-// object
-#include <Game/Object3D/Player/Player.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
 
 //============================================================================
-//	GameScene class
+//	FollowCamera class
 //============================================================================
-class GameScene :
-	public IScene {
+class FollowCamera :
+	public BaseCamera {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	GameScene() = default;
-	~GameScene() = default;
+	FollowCamera() = default;
+	~FollowCamera() = default;
 
-	void Init(Asset* asset, CameraManager* cameraManager,
-		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
+	void Init() override;
 
-	void Update(SceneManager* sceneManager) override;
+	void Update() override;
+
+	void ImGui() override;
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetTarget(const Transform3DComponent& target) { target_ = &target; }
 private:
 	//========================================================================
 	//	private Methods
@@ -40,18 +34,25 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// editor
-	std::unique_ptr<Object3DEditor> object3DEditor_;
+	const Transform3DComponent* target_;
+	float aspectRatio_;
 
-	// camera
-	std::unique_ptr<FollowCamera> followCamera_;
-	// light
-	std::unique_ptr<PunctualLight> gameLight_;
+	// parameter
+	Vector3 offsetTranslation_; // 追従相手との距離
+	Vector3 interTarget_;       // 追従中間target位置
 
-	// objects
-	std::unique_ptr<Player> player_;
+	float lerpRate_; // 補間速度
 
 	//--------- functions ----------------------------------------------------
 
-	void Load(Asset* asset);
+	// init
+	void InitParam();
+
+	// update
+	void Move();
+	void UpdateMatrix();
+
+	// json
+	void ApplyJson();
+	void SaveJson();
 };

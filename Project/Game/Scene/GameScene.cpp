@@ -42,10 +42,10 @@ void GameScene::Init(
 	//========================================================================
 
 	// camera
-	gameCamera_ = std::make_unique<GameCamera>();
-	gameCamera_->Init();
+	followCamera_ = std::make_unique<FollowCamera>();
+	followCamera_->Init();
 
-	cameraManager->SetCamera(gameCamera_.get());
+	cameraManager->SetCamera(followCamera_.get());
 
 	// light
 	gameLight_ = std::make_unique<PunctualLight>();
@@ -62,11 +62,14 @@ void GameScene::Init(
 
 	player_ = std::make_unique<Player>();
 	player_->Init();
+
+	// 追従先を設定する: player
+	followCamera_->SetTarget(player_->GetTransform());
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 
-	gameCamera_->Update();
+	followCamera_->Update();
 
 	player_->Update();
 }

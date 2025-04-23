@@ -22,6 +22,10 @@ public:
 	void Init();
 
 	void Update();
+
+	//--------- accessor -----------------------------------------------------
+
+	const Transform3DComponent& GetTransform() const { return partsController_->GetTransform(); }
 private:
 	//========================================================================
 	//	private Methods

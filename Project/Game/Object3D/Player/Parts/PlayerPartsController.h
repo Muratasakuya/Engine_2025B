@@ -29,6 +29,10 @@ public:
 	void Update();
 
 	void ImGui() override;
+
+	//--------- accessor -----------------------------------------------------
+
+	const Transform3DComponent& GetTransform() const { return body_->GetTransform(); }
 private:
 	//========================================================================
 	//	private Methods
