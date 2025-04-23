@@ -6,6 +6,9 @@
 #include <Engine/Core/Component/TransformComponent.h>
 #include <Engine/Core/Component/MaterialComponent.h>
 
+// front
+class Input;
+
 //============================================================================
 //	BasePlayerParts class
 //============================================================================
@@ -57,7 +60,12 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
+	Input* input_;
+
 	// components
 	Transform3DComponent* transform_;
 	MaterialComponent* material_;
+
+	// 共通parameter
+	PartsParameter parameter_;
 };

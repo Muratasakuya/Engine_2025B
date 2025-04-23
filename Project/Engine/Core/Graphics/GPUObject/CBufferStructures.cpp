@@ -13,10 +13,21 @@
 //============================================================================
 
 void TransformationMatrix::Update(const BaseTransform* parent, const Vector3& scale,
-	const Quaternion& rotation, const Vector3& translation) {
+	const Quaternion& rotation, const Vector3& translation,
+	const std::optional<Matrix4x4>& billboardMatrix) {
 
-	world = Matrix4x4::MakeAxisAffineMatrix(
-		scale, rotation, translation);
+	// billboardMatrixに値が入っていればbillboardMatrixでrotateを計算する
+	if (billboardMatrix.has_value()) {
+
+		Matrix4x4 scaleMatrix = Matrix4x4::MakeScaleMatrix(scale);
+		Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(translation);
+
+		world = scaleMatrix * billboardMatrix.value() * translateMatrix;
+	} else {
+
+		world = Matrix4x4::MakeAxisAffineMatrix(
+			scale, rotation, translation);
+	}
 	if (parent) {
 		world = world * parent->matrix.world;
 	}

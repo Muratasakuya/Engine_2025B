@@ -48,6 +48,8 @@ public:
 
 	Vector3 GetDown() const;
 
+	bool IsDirty() const { return isDirty_; }
+
 	//--------- variables ----------------------------------------------------
 
 	Vector3 scale;
@@ -57,8 +59,6 @@ public:
 	TransformationMatrix matrix;
 
 	const BaseTransform* parent = nullptr;
-
-	bool IsDirty() const { return isDirty_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -117,7 +117,33 @@ public:
 	EffectTransformComponent() = default;
 	~EffectTransformComponent() = default;
 
-	// 特に今のところは実装無し
+	void Init();
+
+	void UpdateMatrix(const Matrix4x4& billboardMatrix);
+
+	//--------- accessor -----------------------------------------------------
+
+	bool IsDirty() const { return isDirty_; }
+
+	//--------- variables ----------------------------------------------------
+
+	// billboardMatrixを使用するか
+	bool useBillboardMatrix_;
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	Vector3 eulerRotate_;
+
+	Vector3 prevScale;
+	Quaternion prevRotation;
+	Vector3 prevTranslation;
+
+	// 変更があったかどうかのフラグ
+	bool isDirty_;
 };
 
 //============================================================================

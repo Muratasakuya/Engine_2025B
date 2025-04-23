@@ -39,6 +39,7 @@ public:
 	const Matrix4x4& GetViewMatrix() const { return viewMatrix_; }
 	const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix_; }
 	const Matrix4x4& GetViewProjectionMatrix() const { return viewProjectionMatrix_; }
+	const Matrix4x4& GetBillboardMatrixMatrix() const { return billboardMatrix_; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -46,7 +47,7 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
-	const float itemWidth_ = 192.0f;
+	const float itemWidth_ = 224.0f;
 
 	float fovY_;
 	float nearClip_;
@@ -59,4 +60,10 @@ protected:
 	Matrix4x4 projectionMatrix_;
 
 	Matrix4x4 viewProjectionMatrix_;
+
+	Matrix4x4 billboardMatrix_;
+
+	//--------- functions ----------------------------------------------------
+
+	void CalBillboardMatrix();
 };

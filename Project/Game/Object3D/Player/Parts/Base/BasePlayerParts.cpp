@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Component/ComponentHelper.h>
+#include <Engine/Input/Input.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
@@ -11,6 +12,9 @@
 //============================================================================
 
 void BasePlayerParts::Init(const std::string& modelName) {
+
+	input_ = nullptr;
+	input_ = Input::GetInstance();
 
 	const std::string groupName = "Player";
 
@@ -59,8 +63,9 @@ void BasePlayerParts::SetParent(const Transform3DComponent& parent) {
 
 void BasePlayerParts::SetParam(const PartsParameter& param) {
 
-	// 値を設定
-	transform_->translation = param.offsetTranslation;
+	// 必要な値を設定
+	parameter_.offsetTranslation = param.offsetTranslation;
+	transform_->translation = parameter_.offsetTranslation;
 }
 
 const Transform3DComponent& BasePlayerParts::GetTransform() const {
