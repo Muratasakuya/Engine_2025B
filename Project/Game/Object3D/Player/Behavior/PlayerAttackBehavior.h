@@ -4,37 +4,20 @@
 //	include
 //============================================================================
 
-// c++
-#include <string>
-#include <optional>
-// imgui
-#include <imgui.h>
-
 //============================================================================
-//	IGameEditor class
+//	PlayerAttackBehavior class
 //============================================================================
-class IGameEditor {
+class PlayerAttackBehavior {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IGameEditor(const std::string& name);
-	virtual ~IGameEditor();
-
-	virtual void ImGui() = 0;
+	PlayerAttackBehavior() = default;
+	~PlayerAttackBehavior() = default;
 
 	//--------- accessor -----------------------------------------------------
 
-	const std::string& GetName() const { return name_; }
-protected:
-	//========================================================================
-	//	protected Methods
-	//========================================================================
-
-	//--------- variables ----------------------------------------------------
-
-	static constexpr const float itemWidth_ = 224.0f;
 private:
 	//========================================================================
 	//	private Methods
@@ -42,5 +25,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::string name_;
+
+
+	//--------- functions ----------------------------------------------------
+
 };
