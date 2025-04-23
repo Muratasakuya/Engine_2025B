@@ -30,11 +30,19 @@ void BaseTransform::Init() {
 void BaseTransform::UpdateMatrix() {
 
 	// 値に変更がなければ更新しない
-	if (scale == prevScale &&
-		rotation == prevRotation &&
-		translation == prevTranslation) {
+	bool selfUnchanged =
+		(scale == prevScale &&
+			rotation == prevRotation &&
+			translation == prevTranslation);
+
+	// 親と自分の値が変わっていなければ更新しない
+	if (selfUnchanged && (!parent || !parent->IsDirty())) {
+
+		isDirty_ = false;
 		return;
 	}
+	// どちらかに変更があれば更新
+	isDirty_ = true;
 
 	// 行列を更新
 	matrix.Update(parent, scale, rotation, translation);
@@ -56,6 +64,8 @@ void BaseTransform::ImGui(float itemSize) {
 
 		eulerRotate_.Init();
 	}
+	ImGui::Text(std::format("isDirty: {}", isDirty_).c_str());
+
 	ImGui::DragFloat3("translation", &translation.x, 0.01f);
 	if (ImGui::DragFloat3("rotation", &eulerRotate_.x, 0.01f)) {
 
