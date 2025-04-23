@@ -723,6 +723,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Object3D\Player\Behavior\PlayerBehaviorType.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Object3D\Player\Parts\Base\BasePlayerParts.h" />
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerBody.h">
       <SubType>

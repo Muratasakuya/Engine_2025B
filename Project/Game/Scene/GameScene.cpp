@@ -61,7 +61,7 @@ void GameScene::Init(
 	object3DEditor_->Init(asset);
 
 	player_ = std::make_unique<Player>();
-	player_->Init();
+	player_->Init(followCamera_.get());
 
 	// 追従先を設定する: player
 	followCamera_->SetTarget(player_->GetTransform());

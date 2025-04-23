@@ -481,6 +481,7 @@
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerLeftHand.h" />
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerSword.h" />
     <ClInclude Include="Game\Camera\FollowCamera.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\PlayerBehaviorType.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

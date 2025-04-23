@@ -6,6 +6,8 @@
 
 // 各parts
 #include <Game/Object3D/Player/Parts/PlayerPartsController.h>
+// behavior
+#include <Game/Object3D/Player/Behavior/PlayerAttackBehavior.h>
 
 //============================================================================
 //	Player class
@@ -19,7 +21,7 @@ public:
 	Player() = default;
 	~Player() = default;
 
-	void Init();
+	void Init(FollowCamera* followCamera);
 
 	void Update();
 
@@ -35,4 +37,7 @@ private:
 
 	// 各parts
 	std::unique_ptr<PlayerPartsController> partsController_;
+
+	// behavior
+	std::unique_ptr<PlayerAttackBehavior> behavior_;
 };
