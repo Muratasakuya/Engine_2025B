@@ -9,11 +9,13 @@
 //	PlayerPartsController classMethods
 //============================================================================
 
-void PlayerPartsController::InitParts() {
+void PlayerPartsController::InitParts(FollowCamera* followCamera) {
 
 	// 体
 	body_ = std::make_unique<PlayerBody>();
 	body_->Init();
+	// followCameraを設定する
+	body_->SetFollowCamera(followCamera);
 
 	// 手
 	// 右
@@ -34,27 +36,50 @@ void PlayerPartsController::InitParts() {
 	sword_->SetParent(rightHand_->GetTransform());
 }
 
-void PlayerPartsController::Init() {
-
-	// 各partsの初期化
-	InitParts();
-
-	// json適応
-	ApplyJson();
-}
-
-void PlayerPartsController::Update() {
-
-	// 各partsに値を設定して更新
-	SetUpdateParam();
-}
-
-void PlayerPartsController::SetUpdateParam() {
+void PlayerPartsController::SetParam() {
 
 	// 値を設定
 	rightHand_->SetParam(rightHandParam_);
 	leftHand_->SetParam(leftHandParam_);
 	sword_->SetParam(swordParam_);
+}
+
+void PlayerPartsController::Init(FollowCamera* followCamera) {
+
+	// 各partsの初期化
+	InitParts(followCamera);
+
+	// json適応
+	ApplyJson();
+
+	// 各partsに値を設定
+	SetParam();
+}
+
+void PlayerPartsController::Update(const std::unordered_set<PlayerBehaviorType>& behaviors) {
+
+	// 設定されたbehaviorで更新
+	UpdateBehavior(behaviors);
+}
+
+void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehaviorType>& behaviors) {
+
+	// 歩き
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Walk })) {
+
+		body_->UpdateWalk();
+
+		// 体の向きを合わせる
+		body_->RotateToDirection();
+	}
+	// ダッシュ
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Dash })) {
+
+		body_->UpdateDash();
+
+		// 体の向きを合わせる
+		body_->RotateToDirection();
+	}
 }
 
 void PlayerPartsController::ImGui() {
@@ -66,6 +91,12 @@ void PlayerPartsController::ImGui() {
 
 	if (ImGui::BeginTabBar("PlayerPartsControllerTabs")) {
 
+		if (ImGui::BeginTabItem("Body")) {
+
+			body_->ImGui();
+			ImGui::EndTabItem();
+		}
+		
 		if (ImGui::BeginTabItem("RightHand")) {
 
 			rightHandParam_.ImGui();
@@ -107,4 +138,18 @@ void PlayerPartsController::SaveJson() {
 	rightHandParam_.SaveJson();
 	leftHandParam_.SaveJson();
 	swordParam_.SaveJson();
+
+	// 各クラスごと
+	body_->SaveJson();
+}
+
+bool PlayerPartsController::CheckCurrentBehaviors(const std::unordered_set<PlayerBehaviorType>& currentBehaviors,
+	const std::initializer_list<PlayerBehaviorType> behaviours) {
+
+	for (auto state : behaviours) {
+		if (currentBehaviors.find(state) == currentBehaviors.end()) {
+			return false;
+		}
+	}
+	return true;
 }

@@ -4,12 +4,16 @@
 //	include
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
+#include <Game/Object3D/Player/Behavior/PlayerBehaviorType.h>
 
 // 各parts
 #include <Game/Object3D/Player/Parts/PlayerBody.h>
 #include <Game/Object3D/Player/Parts/PlayerRightHand.h>
 #include <Game/Object3D/Player/Parts/PlayerLeftHand.h>
 #include <Game/Object3D/Player/Parts/PlayerSword.h>
+
+// c++
+#include <unordered_set>
 
 //============================================================================
 //	PlayerPartsController class
@@ -24,9 +28,9 @@ public:
 	PlayerPartsController() :IGameEditor("PlayerPartsController") {};
 	~PlayerPartsController() = default;
 
-	void Init();
+	void Init(FollowCamera* followCamera);
 
-	void Update();
+	void Update(const std::unordered_set<PlayerBehaviorType>& behaviors);
 
 	void ImGui() override;
 
@@ -61,9 +65,14 @@ private:
 	void ApplyJson();
 	void SaveJson();
 
-	// update
-	void SetUpdateParam();
-
 	// init
-	void InitParts();
+	void InitParts(FollowCamera* followCamera);
+	void SetParam();
+
+	// update
+	void UpdateBehavior(const std::unordered_set<PlayerBehaviorType>& behaviors);
+
+	// 現在のbehaviourに含まれているか
+	bool CheckCurrentBehaviors(const std::unordered_set<PlayerBehaviorType>& currentBehaviors,
+		const std::initializer_list<PlayerBehaviorType> behaviours);
 };
