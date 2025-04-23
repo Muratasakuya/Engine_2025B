@@ -128,6 +128,7 @@ void Framework::InitComponent() {
 	// effect
 	// transform
 	effectTransformStore_ = std::make_unique<EffectTransformStore>();
+	effectTransformStore_->Init(cameraManager_.get());
 	ComponentManager::GetInstance()->RegisterComponentStore(effectTransformStore_.get());
 	// material
 	effectMaterialStore_ = std::make_unique<EffectMaterialStore>();

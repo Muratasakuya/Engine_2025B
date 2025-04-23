@@ -6,6 +6,9 @@
 #include <Engine/Core/Component/TransformComponent.h>
 #include <Engine/Core/Component/Base/IComponent.h>
 
+// front
+class CameraManager;
+
 //============================================================================
 //	Transform3DStore class
 //============================================================================
@@ -51,6 +54,8 @@ public:
 	EffectTransformStore() = default;
 	~EffectTransformStore() = default;
 
+	void Init(CameraManager* cameraManager);
+
 	void AddComponent(uint32_t entityId, std::any args) override;
 	void RemoveComponent(uint32_t entityId) override;
 
@@ -66,6 +71,8 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	CameraManager* cameraManager_;
 
 	std::vector<std::unique_ptr<EffectTransformComponent>> components_;
 };
