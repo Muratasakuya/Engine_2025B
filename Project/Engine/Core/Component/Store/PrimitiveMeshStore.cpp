@@ -17,8 +17,8 @@ void PrimitiveMeshStore::AddComponent(uint32_t entityId, std::any args) {
 		std::any_cast<std::tuple<ID3D12Device*, Asset*, std::string>>(args);
 
 	// component追加
-	components_.emplace_back();
-	components_.back().Init(device, asset, modelName);
+	components_.push_back(std::make_unique<PrimitiveMeshComponent>());
+	components_.back()->Init(device, asset, modelName);
 
 	// index設定
 	SetEntityIndex(entityId, index);
@@ -48,12 +48,12 @@ void PrimitiveMeshStore::Update() {
 	// 頂点bufferの更新
 	for (auto& component : components_) {
 
-		component.Update();
+		component->Update();
 	}
 }
 
 PrimitiveMeshComponent* PrimitiveMeshStore::GetComponent(uint32_t entityId) {
 
 	size_t index = entityToIndex_[entityId];
-	return &components_[index];
+	return components_[index].get();
 }

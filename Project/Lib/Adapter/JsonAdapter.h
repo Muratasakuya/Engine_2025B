@@ -33,6 +33,7 @@ public:
 	static void Save(const std::string& saveDirectoryFilePath, const Json& jsonData);
 	static Json Load(const std::string& loadDirectoryFilePath);
 	static bool LoadAssert(const std::string& loadDirectoryFilePath);
+	static bool LoadCheck(const std::string& loadDirectoryFilePath, Json& data);
 
 	// value
 	template <typename T>

@@ -25,20 +25,7 @@ void GameScene::Init(
 	//	load
 	//========================================================================
 
-	asset->LoadTexture("uvChecker");
-	asset->LoadTexture("circle");
-	asset->LoadTexture("sirialHitEffect");
-	asset->LoadTexture("effectCircle");
-
-	asset->LoadModel("stageField");
-	asset->LoadModel("teapot");
-	asset->LoadModel("plane");
-	asset->LoadModel("multiMaterial");
-	asset->LoadModel("suzanne");
-	asset->LoadModel("bricks");
-
-	// primitive
-	asset->LoadModel("primitivePlane");
+	Load(asset);
 
 	//========================================================================
 	//	postProcess
@@ -72,9 +59,29 @@ void GameScene::Init(
 
 	object3DEditor_ = std::make_unique<Object3DEditor>();
 	object3DEditor_->Init(asset);
+
+	player_ = std::make_unique<Player>();
+	player_->Init();
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	gameCamera_->Update();
+
+	player_->Update();
+}
+
+void GameScene::Load(Asset* asset) {
+
+	// player
+	asset->LoadModel("playerBody");
+	asset->LoadModel("playerLeftHand");
+	asset->LoadModel("playerRightHand");
+	asset->LoadModel("playerSword");
+
+	// environment
+	asset->LoadModel("stageField");
+
+	// primitive
+	asset->LoadModel("primitivePlane");
 }

@@ -35,7 +35,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<Transform3DComponent> components_;
+	std::vector<std::unique_ptr<Transform3DComponent>> components_;
 };
 
 //============================================================================
@@ -67,7 +67,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<EffectTransformComponent> components_;
+	std::vector<std::unique_ptr<EffectTransformComponent>> components_;
 };
 
 //============================================================================

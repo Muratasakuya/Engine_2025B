@@ -4,37 +4,24 @@
 //	include
 //============================================================================
 
-// c++
-#include <string>
-#include <optional>
-// imgui
-#include <imgui.h>
+// 各parts
+#include <Game/Object3D/Player/Parts/PlayerPartsController.h>
 
 //============================================================================
-//	IGameEditor class
+//	Player class
 //============================================================================
-class IGameEditor {
+class Player {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IGameEditor(const std::string& name);
-	virtual ~IGameEditor();
+	Player() = default;
+	~Player() = default;
 
-	virtual void ImGui() = 0;
+	void Init();
 
-	//--------- accessor -----------------------------------------------------
-
-	const std::string& GetName() const { return name_; }
-protected:
-	//========================================================================
-	//	protected Methods
-	//========================================================================
-
-	//--------- variables ----------------------------------------------------
-
-	static constexpr const float itemWidth_ = 224.0f;
+	void Update();
 private:
 	//========================================================================
 	//	private Methods
@@ -42,5 +29,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::string name_;
+	// 各parts
+	std::unique_ptr<PlayerPartsController> partsController_;
 };

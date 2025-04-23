@@ -126,6 +126,10 @@ float3 ApplyShadow(uint id, float3 normal, float3 color, MSOutput input) {
 	
 	float3 outputColor = color.rgb;
 	
+	if (input.normal.y == 0.0f) {
+		return outputColor;
+	}
+	
 	if (shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f &&
 		shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f) {
 		

@@ -35,5 +35,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<PrimitiveMeshComponent> components_;
+	std::vector<std::unique_ptr<PrimitiveMeshComponent>> components_;
 };

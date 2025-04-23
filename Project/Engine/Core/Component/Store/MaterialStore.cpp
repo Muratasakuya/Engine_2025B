@@ -30,16 +30,17 @@ void MaterialStore::AddComponent(uint32_t entityId, std::any args) {
 	components_.back().resize(modelData.meshes.size());
 	for (uint32_t meshIndex = 0; meshIndex < modelData.meshes.size(); ++meshIndex) {
 
-		components_.back()[meshIndex].Init();
-		components_.back()[meshIndex].material.textureIndex =
+		components_.back()[meshIndex] = std::make_unique<MaterialComponent>();
+		components_.back()[meshIndex]->Init();
+		components_.back()[meshIndex]->material.textureIndex =
 			asset->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
 
 		// normalMap用のTextureがあれば設定する
 		if (modelData.meshes[meshIndex].normalMapTexture.has_value()) {
 
-			components_.back()[meshIndex].material.normalMapTextureIndex =
+			components_.back()[meshIndex]->material.normalMapTextureIndex =
 				asset->GetTextureGPUIndex(modelData.meshes[meshIndex].normalMapTexture.value());
-			components_.back()[meshIndex].material.enableNormalMap = true;
+			components_.back()[meshIndex]->material.enableNormalMap = true;
 		}
 	}
 
@@ -73,7 +74,7 @@ void MaterialStore::Update() {
 		// uvTransform更新
 		for (uint32_t meshIndex = 0; meshIndex < component.size(); ++meshIndex) {
 
-			component[meshIndex].UpdateUVTransform();
+			component[meshIndex]->UpdateUVTransform();
 		}
 	}
 }
@@ -83,20 +84,19 @@ MaterialComponent* MaterialStore::GetComponent(uint32_t entityId) {
 	// 単一のmaterialのみ返す
 	// multiMaterialの時はGetComponentList()から取得する
 	size_t index = entityToIndex_[entityId];
-	return &components_[index].front();
+	return components_[index].front().get();
 }
 
 std::vector<MaterialComponent*> MaterialStore::GetComponentList(uint32_t entityId) {
 
-	// 配列のmaterialを返す
-	std::vector<MaterialComponent*> materials;
-
 	size_t index = entityToIndex_[entityId];
-	for (MaterialComponent& mat : components_[index]) {
-
-		materials.emplace_back(&mat);
+	
+	// 各ptrをgetして渡す
+	std::vector<MaterialComponent*> materials(components_[index].size());
+	for (uint32_t meshIndex = 0; meshIndex < materials.size(); ++meshIndex) {
+		materials[meshIndex] = components_[index][meshIndex].get();
 	}
-
+	
 	return materials;
 }
 
@@ -112,9 +112,9 @@ void EffectMaterialStore::AddComponent(uint32_t entityId, std::any args) {
 		std::any_cast<std::tuple<std::string, Asset*>>(args);
 
 	// component追加
-	components_.emplace_back();
-	components_.back().Init();
-	components_.back().material.textureIndex =
+	components_.push_back(std::make_unique<EffectMaterialComponent>());
+	components_.back()->Init();
+	components_.back()->material.textureIndex =
 		asset->GetTextureGPUIndex(textureName);
 
 	// index設定
@@ -145,14 +145,14 @@ void EffectMaterialStore::Update() {
 	for (auto& component : components_) {
 
 		// uvTransform更新
-		component.UpdateUVTransform();
+		component->UpdateUVTransform();
 	}
 }
 
 EffectMaterialComponent* EffectMaterialStore::GetComponent(uint32_t entityId) {
 
 	size_t index = entityToIndex_[entityId];
-	return &components_[index];
+	return components_[index].get();
 }
 
 //============================================================================
@@ -164,8 +164,8 @@ void SpriteMaterialStore::AddComponent(uint32_t entityId, [[maybe_unused]] std::
 	size_t index = components_.size();
 
 	// component追加
-	components_.emplace_back();
-	components_.back().Init();
+	components_.push_back(std::make_unique<SpriteMaterial>());
+	components_.back()->Init();
 
 	// index設定
 	SetEntityIndex(entityId, index);
@@ -193,5 +193,5 @@ void SpriteMaterialStore::RemoveComponent(uint32_t entityId) {
 SpriteMaterial* SpriteMaterialStore::GetComponent(uint32_t entityId) {
 
 	size_t index = entityToIndex_[entityId];
-	return &components_[index];
+	return components_[index].get();
 }
