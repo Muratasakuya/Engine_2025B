@@ -64,14 +64,9 @@ void PlayerPartsController::Update(const std::unordered_set<PlayerBehaviorType>&
 
 void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehaviorType>& behaviors) {
 
-	// 歩き
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Walk })) {
+	// 歩き処理
+	body_->UpdateWalk();
 
-		body_->UpdateWalk();
-
-		// 体の向きを合わせる
-		body_->RotateToDirection();
-	}
 	// ダッシュ
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Dash })) {
 
@@ -80,6 +75,9 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 		// 体の向きを合わせる
 		body_->RotateToDirection();
 	}
+
+	// 体の向きを移動に合わせる
+	body_->RotateToDirection();
 }
 
 void PlayerPartsController::ImGui() {

@@ -49,7 +49,6 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// update
-	void MoveWalk();
 	void MoveDash();
 	void BehaviourRequest();
 

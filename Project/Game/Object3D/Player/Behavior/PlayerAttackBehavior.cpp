@@ -17,40 +17,11 @@ void PlayerAttackBehavior::Init() {
 
 void PlayerAttackBehavior::Update() {
 
-	// 歩き処理
-	MoveWalk();
 	// ダッシュ処理
 	MoveDash();
 
 	// behaviourを設定する
 	BehaviourRequest();
-}
-
-void PlayerAttackBehavior::MoveWalk() {
-
-	// dash中は歩き処理を行わない
-	if (CheckCurrentBehaviors({ PlayerBehaviorType::Dash })) {
-		return;
-	}
-
-	// WASDどれか押していたら
-	bool inputKey =
-		input_->PushKey(DIK_W) ||
-		input_->PushKey(DIK_A) ||
-		input_->PushKey(DIK_S) ||
-		input_->PushKey(DIK_D);
-
-	// 歩きを設定する
-	if (inputKey) {
-
-		moveBehaviour_ = PlayerBehaviorType::Walk;
-	} else {
-		// 歩き中にWASDを離したら歩きを止める
-		if (CheckCurrentBehaviors({ PlayerBehaviorType::Walk })) {
-
-			currentMoveBehaviours_.erase(PlayerBehaviorType::Walk);
-		}
-	}
 }
 
 void PlayerAttackBehavior::MoveDash() {
@@ -67,7 +38,7 @@ void PlayerAttackBehavior::MoveDash() {
 		// 右クリックでダッシュ
 		if (input_->PushMouseLeft()) {
 
-			moveBehaviour_ = PlayerBehaviorType::Walk;
+			moveBehaviour_ = PlayerBehaviorType::Dash;
 		} else {
 			// ダッシュ中に右クリックを離したらダッシュを止める
 			if (CheckCurrentBehaviors({ PlayerBehaviorType::Dash })) {
