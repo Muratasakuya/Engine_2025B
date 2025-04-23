@@ -329,6 +329,30 @@
     <ClCompile Include="Engine\Utility\SimpleAnimation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Player.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Behavior\PlayerAttackBehavior.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Parts\Base\BasePlayerParts.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Parts\PlayerPartsController.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Parts\PlayerBody.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Parts\PlayerRightHand.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Parts\PlayerLeftHand.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Parts\PlayerSword.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -445,6 +469,14 @@
     <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshTool.h" />
     <ClInclude Include="Engine\Utility\UVHelper.h" />
     <ClInclude Include="Engine\Utility\SimpleAnimation.h" />
+    <ClInclude Include="Game\Object3D\Player\Player.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\PlayerAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\Base\BasePlayerParts.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerPartsController.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerBody.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerRightHand.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerLeftHand.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerSword.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

@@ -8,6 +8,9 @@
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Quaternion.h>
 
+// c++
+#include <format>
+
 //============================================================================
 //	BaseTransform class
 //============================================================================
@@ -54,6 +57,8 @@ public:
 	TransformationMatrix matrix;
 
 	const BaseTransform* parent = nullptr;
+
+	bool IsDirty() const { return isDirty_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -66,6 +71,9 @@ private:
 	Vector3 prevScale;
 	Quaternion prevRotation;
 	Vector3 prevTranslation;
+
+	// 変更があったかどうかのフラグ
+	bool isDirty_;
 };
 
 //============================================================================

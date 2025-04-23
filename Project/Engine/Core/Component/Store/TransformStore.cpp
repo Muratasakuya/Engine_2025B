@@ -20,9 +20,9 @@ void Transform3DStore::AddComponent(uint32_t entityId, [[maybe_unused]] std::any
 	size_t index = components_.size();
 
 	// component追加
-	components_.emplace_back();
-	components_.back().Init();
-	components_.back().UpdateMatrix();
+	components_.push_back(std::make_unique<Transform3DComponent>());
+	components_.back()->Init();
+	components_.back()->UpdateMatrix();
 
 	// index設定
 	SetEntityIndex(entityId, index);
@@ -52,14 +52,14 @@ void Transform3DStore::Update() {
 	for (auto& component : components_) {
 
 		// 行列更新
-		component.UpdateMatrix();
+		component->UpdateMatrix();
 	}
 }
 
 Transform3DComponent* Transform3DStore::GetComponent(uint32_t entityId) {
 
 	size_t index = entityToIndex_[entityId];
-	return &components_[index];
+	return components_[index].get();
 }
 
 //============================================================================
@@ -71,9 +71,9 @@ void EffectTransformStore::AddComponent(uint32_t entityId, std::any args) {
 	size_t index = components_.size();
 
 	// component追加
-	components_.emplace_back();
-	components_.back().Init();
-	components_.back().UpdateMatrix();
+	components_.push_back(std::make_unique<EffectTransformComponent>());
+	components_.back()->Init();
+	components_.back()->UpdateMatrix();
 
 	// index設定
 	SetEntityIndex(entityId, index);
@@ -103,14 +103,14 @@ void EffectTransformStore::Update() {
 	for (auto& component : components_) {
 
 		// 行列更新
-		component.UpdateMatrix();
+		component->UpdateMatrix();
 	}
 }
 
 EffectTransformComponent* EffectTransformStore::GetComponent(uint32_t entityId) {
 
 	size_t index = entityToIndex_[entityId];
-	return &components_[index];
+	return components_[index].get();
 }
 
 //============================================================================

@@ -67,3 +67,18 @@ bool JsonAdapter::LoadAssert(const std::string& loadDirectoryFilePath) {
 
 	return true;
 }
+
+bool JsonAdapter::LoadCheck(const std::string& loadDirectoryFilePath, Json& data) {
+
+	std::string fullPath = baseDirectoryFilePath_ + loadDirectoryFilePath;
+	std::ifstream file(fullPath);
+
+	if (!file.is_open()) {
+		return false;
+	}
+
+	file >> data;
+	file.close();
+
+	return true;
+}

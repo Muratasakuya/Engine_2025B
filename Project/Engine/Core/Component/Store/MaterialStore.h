@@ -40,7 +40,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<std::vector<MaterialComponent>> components_;
+	std::vector<std::vector<std::unique_ptr<MaterialComponent>>> components_;
 };
 
 //============================================================================
@@ -73,7 +73,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<EffectMaterialComponent> components_;
+	std::vector<std::unique_ptr<EffectMaterialComponent>> components_;
 };
 
 //============================================================================
@@ -106,5 +106,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<SpriteMaterial> components_;
+	std::vector<std::unique_ptr<SpriteMaterial>> components_;
 };

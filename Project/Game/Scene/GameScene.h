@@ -11,6 +11,7 @@
 #include <Engine/Editor/Object/Object3DEditor.h>
 
 // object
+#include <Game/Object3D/Player/Player.h>
 
 //============================================================================
 //	GameScene class
@@ -43,4 +44,11 @@ private:
 	std::unique_ptr<GameCamera> gameCamera_;
 	// light
 	std::unique_ptr<PunctualLight> gameLight_;
+
+	// objects
+	std::unique_ptr<Player> player_;
+
+	//--------- functions ----------------------------------------------------
+
+	void Load(Asset* asset);
 };
