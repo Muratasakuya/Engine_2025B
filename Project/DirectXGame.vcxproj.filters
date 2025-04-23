@@ -353,6 +353,9 @@
     <ClCompile Include="Game\Object3D\Player\Parts\PlayerSword.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Camera\FollowCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -477,6 +480,7 @@
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerRightHand.h" />
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerLeftHand.h" />
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerSword.h" />
+    <ClInclude Include="Game\Camera\FollowCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
