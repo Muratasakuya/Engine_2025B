@@ -8,7 +8,6 @@
 enum class PlayerBehaviorType {
 
 	// 移動
-	Walk,
 	Dash,
 
 	// 攻撃

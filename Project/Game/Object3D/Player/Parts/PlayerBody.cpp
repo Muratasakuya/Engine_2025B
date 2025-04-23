@@ -47,8 +47,8 @@ void PlayerBody::UpdateWalk() {
 	}
 
 	// 移動量を加算
-	transform_->translation.x += parameter_.offsetTranslation.x + move_.x;
-	transform_->translation.z += parameter_.offsetTranslation.x + move_.z;
+	transform_->translation.x += move_.x;
+	transform_->translation.z += move_.z;
 }
 
 void PlayerBody::UpdateDash() {
@@ -61,7 +61,7 @@ void PlayerBody::ImGui() {
 	ImGui::PushItemWidth(parameter_.itemWidth);
 
 	ImGui::DragFloat3("moveVelocity", &moveVelocity_.x, 0.1f);
-	ImGui::DragFloat("moveDecay", &moveDecay_, 0.1f);
+	ImGui::DragFloat("moveDecay", &moveDecay_, 0.1f, 0.0f, 1.0f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.1f);
 
 	ImGui::PopItemWidth();

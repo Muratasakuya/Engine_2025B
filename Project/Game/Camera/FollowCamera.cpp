@@ -112,6 +112,7 @@ void FollowCamera::ApplyJson() {
 	nearClip_ = JsonAdapter::GetValue<float>(data, "nearClip_");
 	farClip_ = JsonAdapter::GetValue<float>(data, "farClip_");
 	offsetTranslation_ = JsonAdapter::ToObject<Vector3>(data["offsetTranslation_"]);
+	eulerRotation_ = JsonAdapter::ToObject<Vector3>(data["eulerRotation_"]);
 	lerpRate_ = JsonAdapter::GetValue<float>(data, "lerpRate_");
 }
 
@@ -123,6 +124,7 @@ void FollowCamera::SaveJson() {
 	data["nearClip_"] = nearClip_;
 	data["farClip_"] = farClip_;
 	data["offsetTranslation_"] = JsonAdapter::FromObject<Vector3>(offsetTranslation_);
+	data["eulerRotation_"] = JsonAdapter::FromObject<Vector3>(eulerRotation_);
 	data["lerpRate_"] = lerpRate_;
 
 	JsonAdapter::Save("Camera/followCamera.json", data);
