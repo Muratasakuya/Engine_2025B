@@ -71,11 +71,13 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Dash })) {
 
 		body_->UpdateDash();
-
-		// 体の向きを合わせる
-		body_->RotateToDirection();
 	}
 
+	// 攻撃受け流し
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Parry })) {
+
+
+	}
 	// 体の向きを移動に合わせる
 	body_->RotateToDirection();
 }

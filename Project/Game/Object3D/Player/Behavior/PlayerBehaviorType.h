@@ -13,4 +13,7 @@ enum class PlayerBehaviorType {
 	// 攻撃
 	NormalAttack, // 歩きながら攻撃
 	DashAttack,   // 走りながら攻撃
+
+	// 攻撃受け流し
+	Parry,
 };

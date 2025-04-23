@@ -24,13 +24,8 @@ struct TransformationMatrix {
 	Matrix4x4 worldInverseTranspose;
 
 	void Update(const BaseTransform* parent, const Vector3& scale,
-		const Quaternion& rotation, const Vector3& translation);
-};
-
-struct MSTestTransformationMatrix {
-
-	Matrix4x4 world;
-	Matrix4x4 viewProjection;
+		const Quaternion& rotation, const Vector3& translation,
+		const std::optional<Matrix4x4>& billboardMatrix = std::nullopt);
 };
 
 struct Material {

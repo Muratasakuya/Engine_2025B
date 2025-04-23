@@ -126,6 +126,48 @@ Vector3 BaseTransform::GetDown() const {
 }
 
 //============================================================================
+// Effect
+//============================================================================
+
+void EffectTransformComponent::Init() {
+
+	BaseTransform::Init();
+	useBillboardMatrix_ = false;
+}
+
+void EffectTransformComponent::UpdateMatrix(const Matrix4x4& billboardMatrix) {
+
+	// 値に変更がなければ更新しない
+	bool selfUnchanged =
+		(scale == prevScale &&
+			rotation == prevRotation &&
+			translation == prevTranslation);
+
+	// 親と自分の値が変わっていなければ更新しない
+	if (selfUnchanged && (!parent || !parent->IsDirty())) {
+
+		isDirty_ = false;
+		return;
+	}
+	// どちらかに変更があれば更新
+	isDirty_ = true;
+
+	// 行列を更新
+	std::optional<Matrix4x4> billboard = std::nullopt;
+	// billboardMatrixを使用
+	if (useBillboardMatrix_) {
+
+		billboard = billboardMatrix;
+	}
+	matrix.Update(parent, scale, rotation, translation, billboard);
+
+	// 値を保存
+	prevScale = scale;
+	prevRotation = rotation;
+	prevTranslation = translation;
+}
+
+//============================================================================
 // 2D
 //============================================================================
 
