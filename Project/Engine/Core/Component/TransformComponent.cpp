@@ -144,7 +144,10 @@ void EffectTransformComponent::UpdateMatrix(const Matrix4x4& billboardMatrix) {
 			translation == prevTranslation);
 
 	// 親と自分の値が変わっていなければ更新しない
-	if (selfUnchanged && (!parent || !parent->IsDirty())) {
+	// useBillboardMatrixがtrueならずっと更新する
+	if (selfUnchanged &&
+		(!parent || !parent->IsDirty()) &&
+		!useBillboardMatrix_) {
 
 		isDirty_ = false;
 		return;
@@ -165,6 +168,14 @@ void EffectTransformComponent::UpdateMatrix(const Matrix4x4& billboardMatrix) {
 	prevScale = scale;
 	prevRotation = rotation;
 	prevTranslation = translation;
+}
+
+void EffectTransformComponent::ImGui(float itemSize) {
+
+	BaseTransform::ImGui(itemSize);
+
+	// billboardMatrix使用フラグ
+	ImGui::Checkbox("useBillboardMatrix", &useBillboardMatrix_);
 }
 
 //============================================================================

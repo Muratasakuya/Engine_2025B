@@ -184,11 +184,6 @@ void PrimitiveMeshTool::EditTexcoord(PrimitiveMeshComponent* primitiveMesh) {
 				resourceMesh->vertices[meshIndex][vertexIndex].texcoord = newTexcoords[vertexIndex];
 			}
 		}
-
-		// texcoordの1枚分のサイズをmaterialのscroll値に設定
-		EffectMaterialComponent* material =
-			Component::GetComponent<EffectMaterialComponent>(selectIndex_.value());
-		material->SetUVScrollValue(1.0f / textureSerialCount_);
 	}
 
 	ImGui::PopItemWidth();

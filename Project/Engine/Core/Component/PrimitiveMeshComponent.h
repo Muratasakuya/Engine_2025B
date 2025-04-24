@@ -29,6 +29,8 @@ public:
 	void ImGui(float itemWidth);
 	//--------- accessor -----------------------------------------------------
 
+	void SetBlendMode(BlendMode blendMode);
+
 	const std::string& GetModelName() const { return modelName_; }
 
 	// 頂点情報

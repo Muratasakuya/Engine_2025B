@@ -1,0 +1,90 @@
+{
+    "AlphaAnimation": {
+        "loop_.interval": 0.0,
+        "loop_.isEnd": false,
+        "loop_.isLoop": true,
+        "loop_.isStart": true,
+        "loop_.maxCount": 1024,
+        "move_.easingType": 0,
+        "move_.end": 0.0,
+        "move_.moveValue": 0.0,
+        "move_.start": 1.0,
+        "time_.end": 0.3199999928474426,
+        "time_.movedValueInterval": 0.0,
+        "time_.useScaledDeltaTime": false
+    },
+    "Material": {
+        "alphaReference": 0.0,
+        "color": {
+            "a": 0.41240227222442627,
+            "b": 0.5472956895828247,
+            "g": 0.6430768966674805,
+            "r": 0.09695620834827423
+        },
+        "emissionColor": {
+            "x": 0.03362839296460152,
+            "y": 0.605143129825592,
+            "z": 0.6830769181251526
+        },
+        "emissiveIntensity": 0.4000000059604645,
+        "uvRotate": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "uvScale": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "uvTranslate": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    },
+    "ScaleAnimation": {
+        "loop_.interval": 0.0,
+        "loop_.isEnd": false,
+        "loop_.isLoop": true,
+        "loop_.isStart": true,
+        "loop_.maxCount": 1024,
+        "move_.easingType": 13,
+        "move_.end": {
+            "x": 4.0,
+            "y": 4.0,
+            "z": 1.0
+        },
+        "move_.moveValue": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "move_.start": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "time_.end": 0.3199999928474426,
+        "time_.movedValueInterval": 0.0,
+        "time_.useScaledDeltaTime": false
+    },
+    "Transform": {
+        "rotation": {
+            "w": 1.0,
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "scale": {
+            "x": 3.994194269180298,
+            "y": 3.994194269180298,
+            "z": 0.9985485672950745
+        },
+        "translation": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    }
+}

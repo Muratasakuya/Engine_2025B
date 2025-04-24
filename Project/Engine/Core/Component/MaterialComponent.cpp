@@ -131,9 +131,6 @@ void EffectMaterialComponent::Init() {
 
 void EffectMaterialComponent::UpdateUVTransform() {
 
-	// uvScrollを更新
-	UpdateUVScroll();
-
 	// 値に変更がなければ更新しない
 	if (uvTransform == prevUVTransform_) {
 		return;
@@ -147,13 +144,7 @@ void EffectMaterialComponent::UpdateUVTransform() {
 	prevUVTransform_ = uvTransform;
 }
 
-void EffectMaterialComponent::UpdateUVScroll() {
-
-	// スクロール量を計算
-	uvScrollAnimation_.MoveValue(uvTransform.translate.x);
-}
-
-void EffectMaterialComponent::EditMaterial(float itemSize) {
+void EffectMaterialComponent::ImGui(float itemSize) {
 
 	// 色
 	ImGui::SeparatorText("Color");
@@ -188,39 +179,6 @@ void EffectMaterialComponent::EditMaterial(float itemSize) {
 	ImGui::PopItemWidth();
 }
 
-void EffectMaterialComponent::ImGui(float itemSize) {
-
-	if (ImGui::BeginTabBar("PrimitiveMeshTabs")) {
-
-		if (ImGui::BeginTabItem("Material")) {
-
-			// material
-			EditMaterial(itemSize);
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("UVAnimation")) {
-
-			if (ImGui::Button("Start", ImVec2(itemSize, 32.0f))) {
-
-				uvScrollAnimation_.Start();
-				uvTransform.translate.x = 0.0f;
-			}
-
-			if (ImGui::Button("Reset", ImVec2(itemSize, 32.0f))) {
-
-				uvScrollAnimation_.Reset();
-			}
-
-			// uvScroll
-			uvScrollAnimation_.ImGui();
-			ImGui::EndTabItem();
-		}
-
-		ImGui::EndTabBar();
-	}
-}
-
 void EffectMaterialComponent::ToJson(Json& data) {
 
 	// Material
@@ -251,17 +209,10 @@ void EffectMaterialComponent::FromJson(const Json& data) {
 	uvTransform.translate = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
 }
 
-void EffectMaterialComponent::SetUVScrollValue(float value) {
-
-	// スクロール量を設定
-	uvScrollAnimation_.move_.moveValue = value;
-}
-
 void swap(EffectMaterialComponent& a, EffectMaterialComponent& b) noexcept {
 
 	using std::swap;
 	swap(a.material, b.material);
 	swap(a.uvTransform, b.uvTransform);
 	swap(a.prevUVTransform_, b.prevUVTransform_);
-	swap(a.uvScrollAnimation_, b.uvScrollAnimation_);
 }

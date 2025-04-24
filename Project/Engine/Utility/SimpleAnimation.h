@@ -5,6 +5,7 @@
 //============================================================================
 #include <Game/Time/GameTimer.h>
 #include <Lib/Adapter/Easing.h>
+#include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 #include <Lib/MathUtils/MathUtils.h>
 
@@ -82,6 +83,10 @@ public:
 	void Start();
 	// リセット
 	void Reset();
+
+	// json
+	void ToJson(Json& data);
+	void FromJson(const Json& data);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -423,4 +428,84 @@ inline void swap(SimpleAnimation<U>& a, SimpleAnimation<U>& b) noexcept {
 	std::swap(a.loop_, b.loop_);
 	std::swap(a.time_, b.time_);
 	std::swap(a.move_, b.move_);
+}
+
+template<typename T>
+inline void SimpleAnimation<T>::ToJson(Json& data) {
+
+	// loopの値を保存
+	data["loop_.isLoop"] = loop_.isLoop;
+	data["loop_.isStart"] = loop_.isStart;
+	data["loop_.isEnd"] = loop_.isEnd;
+	data["loop_.maxCount"] = loop_.maxCount;
+	data["loop_.interval"] = loop_.interval;
+
+	// timeの値を保存
+	data["time_.useScaledDeltaTime"] = time_.useScaledDeltaTime;
+	data["time_.end"] = time_.end;
+	data["time_.movedValueInterval"] = time_.movedValueInterval;
+
+	// moveの値を保存
+	if constexpr (std::is_same_v<T, float> || std::is_same_v<T, int>) {
+
+		data["move_.start"] = move_.start;
+		data["move_.end"] = move_.end;
+		data["move_.moveValue"] = move_.moveValue;
+	} else if constexpr (std::is_same_v<T, Vector2>) {
+
+		data["move_.start"] = JsonAdapter::FromObject<Vector2>(move_.start);
+		data["move_.end"] = JsonAdapter::FromObject<Vector2>(move_.end);
+		data["move_.moveValue"] = JsonAdapter::FromObject<Vector2>(move_.moveValue);
+	} else if constexpr (std::is_same_v<T, Vector3>) {
+
+		data["move_.start"] = JsonAdapter::FromObject<Vector3>(move_.start);
+		data["move_.end"] = JsonAdapter::FromObject<Vector3>(move_.end);
+		data["move_.moveValue"] = JsonAdapter::FromObject<Vector3>(move_.moveValue);
+	} else if constexpr (std::is_same_v<T, Color>) {
+
+		data["move_.start"] = JsonAdapter::FromObject<Color>(move_.start);
+		data["move_.end"] = JsonAdapter::FromObject<Color>(move_.end);
+		data["move_.moveValue"] = JsonAdapter::FromObject<Color>(move_.moveValue);
+	}
+	data["move_.easingType"] = move_.easingType;
+}
+
+template<typename T>
+inline void SimpleAnimation<T>::FromJson(const Json& data) {
+
+	// loopの値を保存
+	loop_.isLoop = JsonAdapter::GetValue<bool>(data, "loop_.isLoop");
+	loop_.isStart = JsonAdapter::GetValue<float>(data, "loop_.isStart");
+	loop_.isEnd = JsonAdapter::GetValue<float>(data, "loop_.isEnd");
+	loop_.maxCount = JsonAdapter::GetValue<uint32_t>(data, "loop_.maxCount");
+	loop_.interval = JsonAdapter::GetValue<float>(data, "loop_.interval");
+
+	// timeの値を保存
+	time_.useScaledDeltaTime = JsonAdapter::GetValue<float>(data, "time_.useScaledDeltaTime");
+	time_.end = JsonAdapter::GetValue<float>(data, "time_.end");
+	time_.movedValueInterval = JsonAdapter::GetValue<float>(data, "time_.movedValueInterval");
+
+	// moveの値を保存
+	if constexpr (std::is_same_v<T, float> || std::is_same_v<T, int>) {
+
+		move_.start = JsonAdapter::GetValue<float>(data, "move_.start");
+		move_.end = JsonAdapter::GetValue<float>(data, "move_.end");
+		move_.moveValue = JsonAdapter::GetValue<float>(data, "move_.moveValue");
+	} else if constexpr (std::is_same_v<T, Vector2>) {
+
+		move_.start = JsonAdapter::ToObject<Vector2>(data["move_.start"]);
+		move_.end = JsonAdapter::ToObject<Vector2>(data["move_.end"]);
+		move_.moveValue = JsonAdapter::ToObject<Vector2>(data["move_.moveValue"]);
+	} else if constexpr (std::is_same_v<T, Vector3>) {
+
+		move_.start = JsonAdapter::ToObject<Vector3>(data["move_.start"]);
+		move_.end = JsonAdapter::ToObject<Vector3>(data["move_.end"]);
+		move_.moveValue = JsonAdapter::ToObject<Vector3>(data["move_.moveValue"]);
+	} else if constexpr (std::is_same_v<T, Color>) {
+
+		move_.start = JsonAdapter::ToObject<Color>(data["move_.start"]);
+		move_.end = JsonAdapter::ToObject<Color>(data["move_.end"]);
+		move_.moveValue = JsonAdapter::ToObject<Color>(data["move_.moveValue"]);
+	}
+	move_.easingType = JsonAdapter::GetValue<EasingType>(data, "move_.easingType");
 }

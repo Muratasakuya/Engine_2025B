@@ -38,10 +38,16 @@ private:
 	float aspectRatio_;
 
 	// parameter
-	Vector3 offsetTranslation_; // 追従相手との距離
-	Vector3 interTarget_;       // 追従中間target位置
+	Vector3 offsetTranslation_;    // 追従相手との距離
+	Vector3 interTarget_;          // 追従中間target位置
+	float eulerRotateClampPlusX_;  // カメラのX軸回転の制限: +
+	float eulerRotateClampMinusX_; // カメラのX軸回転の制限: -
 
-	float lerpRate_; // 補間速度
+	float lerpRate_;      // 補間速度
+	Vector2 sensitivity_; // マウス感度
+	
+	// editor
+	bool isDebugMode_;
 
 	//--------- functions ----------------------------------------------------
 
