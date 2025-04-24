@@ -1,0 +1,58 @@
+{
+    "alphaReference": 0.0,
+    "color": {
+        "a": 1.0,
+        "b": 0.5415748357772827,
+        "g": 0.6584615707397461,
+        "r": 0.1519526243209839
+    },
+    "emissionColor": {
+        "x": 0.0,
+        "y": 0.3843787610530853,
+        "z": 0.5384615659713745
+    },
+    "emissiveIntensity": 32.0,
+    "loop_.interval": 0.0,
+    "loop_.isEnd": false,
+    "loop_.isLoop": false,
+    "loop_.isStart": false,
+    "loop_.maxCount": 0,
+    "move_.easingType": 0,
+    "move_.end": 1.0,
+    "move_.moveValue": 0.0625,
+    "move_.start": 0.0,
+    "rotation": {
+        "w": 1.0,
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "scale": {
+        "x": 2.5999999046325684,
+        "y": 2.5999999046325684,
+        "z": 1.0
+    },
+    "time_.end": 0.0,
+    "time_.movedValueInterval": 0.02800000086426735,
+    "time_.useScaledDeltaTime": false,
+    "translation": {
+        "x": 0.0,
+        "y": 0.3799999952316284,
+        "z": 0.0
+    },
+    "uvRotate": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0
+    },
+    "uvScale": {
+        "x": 1.0,
+        "y": 1.0,
+        "z": 1.0
+    },
+    "uvTranslate": {
+        "x": 1.0,
+        "y": 0.0,
+        "z": 0.0
+    }
+}

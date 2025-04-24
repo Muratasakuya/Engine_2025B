@@ -46,6 +46,11 @@ void PrimitiveMeshComponent::ImGui(float itemWidth) {
 	ImGui::PopItemWidth();
 }
 
+void PrimitiveMeshComponent::SetBlendMode(BlendMode blendMode) {
+
+	primitiveMesh_->SetBlendMode(blendMode);
+}
+
 void PrimitiveMeshComponent::SelectBlendMode() {
 
 	const std::vector<std::string> blendModeNames = {

@@ -38,7 +38,7 @@ void PrimitiveMeshData::CreatePlane() {
 	auto& meshData = meshData_[meshNames_.back()];
 
 	// 半分のサイズ
-	const float halfSize = 0.5f;
+	const float halfSize = 2.0f;
 	// 法線
 	const Vector3 normal = Vector3(0.0f, 0.0f, 1.0f);
 

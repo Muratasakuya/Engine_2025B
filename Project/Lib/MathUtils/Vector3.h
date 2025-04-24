@@ -52,6 +52,9 @@ public:
 	bool operator==(const Vector3& other) const;
 	bool operator!=(const Vector3& other) const;
 
+	bool operator>=(const Vector3& other) const;
+	bool operator<=(const Vector3& other) const;
+
 	//----------- json -------------------------------------------------------
 
 	Json ToJson() const;

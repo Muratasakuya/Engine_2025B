@@ -82,9 +82,17 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadModel("playerRightHand");
 	asset->LoadModel("playerSword");
 
+	// effect
+	asset->LoadTexture("effectCircle");
+	asset->LoadTexture("sirialHitEffect");
+	asset->LoadTexture("sirialLightning_0");
+	asset->LoadTexture("sirialLightning_1");
+
 	// environment
 	asset->LoadModel("stageField");
 
 	// primitive
-	asset->LoadModel("primitivePlane");
+	asset->LoadModel("sirialHitEffectPlane");
+	asset->LoadModel("effectDefaultPlane");
+	asset->LoadModel("sirialLightningEffectPlane");
 }
