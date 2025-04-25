@@ -9,6 +9,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include <numbers>
+#include <string>
 
 //============================================================================*/
 //	Easing
@@ -43,37 +44,43 @@ float EaseInOutBounce(float t);
 
 enum class EasingType {
 
-    // EaseIn
-    EaseInSine,
-    EaseInQuad,
-    EaseInCubic,
-    EaseInQuart,
-    EaseInQuint,
-    EaseInExpo,
-    EaseInCirc,
-    EaseInBack,
-    EaseInBounce,
+	// EaseIn
+	EaseInSine,
+	EaseInQuad,
+	EaseInCubic,
+	EaseInQuart,
+	EaseInQuint,
+	EaseInExpo,
+	EaseInCirc,
+	EaseInBack,
+	EaseInBounce,
 
-    // EaseOut
-    EaseOutSine,
-    EaseOutQuad,
-    EaseOutCubic,
-    EaseOutQuart,
-    EaseOutQuint,
-    EaseOutExpo,
-    EaseOutCirc,
-    EaseOutBack,
-    EaseOutBounce,
+	// EaseOut
+	EaseOutSine,
+	EaseOutQuad,
+	EaseOutCubic,
+	EaseOutQuart,
+	EaseOutQuint,
+	EaseOutExpo,
+	EaseOutCirc,
+	EaseOutBack,
+	EaseOutBounce,
 
-    // EaseInOut
-    EaseInOutSine,
-    EaseInOutQuad,
-    EaseInOutCubic,
-    EaseInOutQuart,
-    EaseInOutQuint,
-    EaseInOutExpo,
-    EaseInOutCirc,
-    EaseInOutBounce,
+	// EaseInOut
+	EaseInOutSine,
+	EaseInOutQuad,
+	EaseInOutCubic,
+	EaseInOutQuart,
+	EaseInOutQuint,
+	EaseInOutExpo,
+	EaseInOutCirc,
+	EaseInOutBounce,
 };
 
 float EasedValue(EasingType easingType, float t);
+
+namespace Easing {
+
+	// imgui選択
+	void SelectEasingType(EasingType& easingType, const std::string& lebel = "label");
+}

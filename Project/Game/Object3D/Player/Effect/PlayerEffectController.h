@@ -4,10 +4,10 @@
 //	include
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
-#include <Game/Object3D/Player/Effect/PlayerBurstHitEffect.h>
-#include <Game/Object3D/Player/Effect/PlayerLightningHitEffect.h>
-#include <Game/Object3D/Player/Effect/PlayerCircleHitEffect.h>
 #include <Game/Object3D/Player/Behavior/PlayerBehaviorType.h>
+
+// effect
+#include <Game/Object3D/Player/Effect/PlayerLightningHitEffect.h>
 
 // c++
 #include <unordered_set>
@@ -38,15 +38,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// 広がる円のeffect
-	std::unique_ptr<PlayerCircleHitEffect> circleHitEffect_;
-	// 爆ぜるようなeffect
-	std::unique_ptr<PlayerBurstHitEffect> burstHitEffect_;
 	// 稲妻のようなeffect
-	std::unique_ptr<PlayerLightningHitEffect> lightningHitEffect0_;
-	std::unique_ptr<PlayerLightningHitEffect> lightningHitEffect1_;
-	std::unique_ptr<PlayerLightningHitEffect> lightningHitEffect2_;
-	std::unique_ptr<PlayerLightningHitEffect> lightningHitEffect3_;
+	std::unique_ptr<PlayerLightningHitEffect> lightningHitEffect_;
 
 	float timer_;
 	bool isAttack_;

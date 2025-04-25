@@ -39,7 +39,7 @@ private:
 		uint32_t currentCount; // 現在のループの回数
 		float currentInterval; // 現在のループの間隔
 
-		void ImGui();
+		void ImGui(const std::string& label);
 	};
 
 	struct Time {
@@ -51,8 +51,6 @@ private:
 		float movedValueInterval;        // 動かす値の間隔
 		float currentMovedValueInterval; // 現在の動かす値の間隔
 		float currentT;                  // 現在のt値
-
-		void ImGui();
 	};
 
 	struct Move {
@@ -61,8 +59,6 @@ private:
 		T end;                 // 終了値
 		T moveValue;           // 動かす値、currentTに沿わずendまで動く
 		EasingType easingType; // イージングの種類
-
-		void ImGui();
 	};
 public:
 	//========================================================================
@@ -72,7 +68,7 @@ public:
 	SimpleAnimation() = default;
 	~SimpleAnimation() = default;
 
-	void ImGui();
+	void ImGui(const std::string& label);
 
 	// 0.0fから1.0fの間で補間された値を取得
 	void LerpValue(T& value);
@@ -92,6 +88,9 @@ public:
 
 	// animationを行うかどうか
 	bool IsStart() const { return loop_.isStart; };
+
+	// 終了したかどうか
+	bool IsFinished() const { return loop_.isEnd; }
 	//--------- firend -------------------------------------------------------
 
 	template <typename U>
@@ -109,7 +108,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	const float itemSize_ = 200.0f; // imguiのサイズ
+	const float itemSize_ = 224.0f; // imguiのサイズ
 
 	//--------- functions ----------------------------------------------------
 
@@ -126,13 +125,94 @@ private:
 //============================================================================
 
 template<typename T>
-inline void SimpleAnimation<T>::ImGui() {
+inline void SimpleAnimation<T>::ImGui(const std::string& label) {
 
 	ImGui::PushItemWidth(itemSize_);
 
-	loop_.ImGui();
-	time_.ImGui();
-	move_.ImGui();
+	if (ImGui::BeginTabBar(("SimpleAnimation##" + label).c_str())) {
+
+		// 共通
+		if (ImGui::BeginTabItem(("Loop##" + label).c_str())) {
+
+			loop_.ImGui(label);
+			ImGui::EndTabItem();
+		}
+		// 補間で動く値の操作
+		if (ImGui::BeginTabItem(("LerpValue##" + label).c_str())) {
+
+			ImGui::SeparatorText("Time");
+
+			// 経過時間
+			ImGui::Text(std::format("elapsed: {}", time_.elapsed).c_str());
+			ImGui::Text(std::format("currentT: {}", time_.currentT).c_str());
+
+			ImGui::Checkbox(("useScaledDeltaTime##Time" + label).c_str(), &time_.useScaledDeltaTime);
+			ImGui::DragFloat(("end##Time" + label).c_str(), &time_.end, 0.01f);
+
+			ImGui::SeparatorText("Move");
+
+			if constexpr (std::is_same_v<T, float>) {
+
+				ImGui::DragFloat(("start##Move" + label).c_str(), &move_.start, 0.01f);
+				ImGui::DragFloat(("end##Move" + label).c_str(), &move_.end, 0.01f);
+			} else if constexpr (std::is_same_v<T, int>) {
+
+				ImGui::DragInt(("start##Move" + label).c_str(), &move_.start, 1);
+				ImGui::DragInt(("end##Move" + label).c_str(), &move_.end, 1);
+			} else if constexpr (std::is_same_v<T, Vector2>) {
+
+				ImGui::DragFloat2(("start##Move" + label).c_str(), &move_.start.x, 0.01f);
+				ImGui::DragFloat2(("end##Move" + label).c_str(), &move_.end.x, 0.01f);
+			} else if constexpr (std::is_same_v<T, Vector3>) {
+
+				ImGui::DragFloat3(("start##Move" + label).c_str(), &move_.start.x, 0.01f);
+				ImGui::DragFloat3(("end##Move" + label).c_str(), &move_.end.x, 0.01f);
+			} else if constexpr (std::is_same_v<T, Color>) {
+
+				ImGui::ColorEdit4(("start##Move" + label).c_str(), &move_.start.a);
+				ImGui::ColorEdit4(("end##Move" + label).c_str(), &move_.end.a);
+			}
+
+			Easing::SelectEasingType(move_.easingType, label);
+			ImGui::EndTabItem();
+		}
+		// 一定値でendまで動く値の操作
+		if (ImGui::BeginTabItem(("MoveValue##" + label).c_str())) {
+
+			ImGui::SeparatorText("Time");
+
+			ImGui::Text(std::format("currentMovedValueInterval: {}", time_.currentMovedValueInterval).c_str());
+
+			ImGui::Checkbox(("useScaledDeltaTime##Time" + label).c_str(), &time_.useScaledDeltaTime);
+			ImGui::DragFloat(("movedValueInterval##Time" + label).c_str(), &time_.movedValueInterval, 0.001f);
+
+			ImGui::SeparatorText("Move");
+
+			if constexpr (std::is_same_v<T, float>) {
+
+				ImGui::DragFloat(("start##Move" + label).c_str(), &move_.start, 0.01f);
+				ImGui::DragFloat(("end##Move" + label).c_str(), &move_.end, 0.01f);
+			} else if constexpr (std::is_same_v<T, int>) {
+
+				ImGui::DragInt(("end##Move" + label).c_str(), &move_.end, 1);
+				ImGui::DragInt(("moveValue##Move" + label).c_str(), &move_.moveValue, 1);
+			} else if constexpr (std::is_same_v<T, Vector2>) {
+
+				ImGui::DragFloat2(("end##Move" + label).c_str(), &move_.end.x, 0.01f);
+				ImGui::DragFloat2(("moveValue##Move" + label).c_str(), &move_.moveValue.x, 0.01f);
+			} else if constexpr (std::is_same_v<T, Vector3>) {
+
+				ImGui::DragFloat3(("end##Move" + label).c_str(), &move_.end.x, 0.01f);
+				ImGui::DragFloat3(("moveValue##Move" + label).c_str(), &move_.moveValue.x, 0.01f);
+			} else if constexpr (std::is_same_v<T, Color>) {
+
+				ImGui::ColorEdit4(("end##Move" + label).c_str(), &move_.end.a);
+				ImGui::ColorEdit4(("moveValue##Move" + label).c_str(), &move_.moveValue.a);
+			}
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
 
 	ImGui::PopItemWidth();
 }
@@ -256,6 +336,7 @@ inline void SimpleAnimation<T>::UpdateMoveValue(T& value) {
 	if (value >= move_.end) {
 
 		// ループの終了フラグを立てる
+		value = move_.end;
 		loop_.isEnd = true;
 	}
 }
@@ -296,130 +377,16 @@ inline void SimpleAnimation<T>::UpdateLoop(T& value) {
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::Loop::ImGui() {
+inline void SimpleAnimation<T>::Loop::ImGui(const std::string& label) {
 
 	ImGui::SeparatorText("Loop");
 
 	// 終了フラグ
 	ImGui::Text(std::format("isEnd: {}", isEnd).c_str());
 	ImGui::Text(std::format("loopCount: {}", currentCount).c_str());
-	ImGui::Checkbox("isLoop##Loop", &isLoop);
-
-	ImGui::DragInt("maxCount##Loop", (int*)&maxCount, 1.0f, 0, 100);
-	ImGui::DragFloat("interval##Loop", &interval, 0.01f, 0.0f, 10.0f);
-}
-
-template<typename T>
-inline void SimpleAnimation<T>::Time::ImGui() {
-
-	ImGui::SeparatorText("Time");
-
-	// 経過時間
-	ImGui::Text(std::format("elapsed: {}", elapsed).c_str());
-	ImGui::Text(std::format("currentT: {}", currentT).c_str());
-	ImGui::Text(std::format("currentMovedValueInterval: {}", currentMovedValueInterval).c_str());
-
-	ImGui::Checkbox("useScaledDeltaTime##Time", &useScaledDeltaTime);
-	ImGui::DragFloat("end##Time", &end, 0.01f, 0.0f, 10.0f);
-	ImGui::DragFloat("movedValueInterval##Time", &movedValueInterval, 0.001f, 0.0f, 10.0f);
-}
-
-template<typename T>
-inline void SimpleAnimation<T>::Move::ImGui() {
-
-	ImGui::SeparatorText("Move");
-
-	if constexpr (std::is_same_v<T, float>) {
-
-		ImGui::DragFloat("start##Move", &start, 0.01f);
-		ImGui::DragFloat("end##Move", &end, 0.01f);
-		ImGui::DragFloat("moveValue##Move", &moveValue, 0.01f);
-	} else if constexpr (std::is_same_v<T, int>) {
-
-		ImGui::DragInt("start##Move", &start, 1);
-		ImGui::DragInt("end##Move", &end, 1);
-		ImGui::DragInt("moveValue##Move", &moveValue, 1);
-	} else if constexpr (std::is_same_v<T, Vector2>) {
-
-		ImGui::DragFloat2("start##Move", &start.x, 0.01f);
-		ImGui::DragFloat2("end##Move", &end.x, 0.01f);
-		ImGui::DragFloat2("moveValue##Move", &moveValue.x, 0.01f);
-	} else if constexpr (std::is_same_v<T, Vector3>) {
-
-		ImGui::DragFloat3("start##Move", &start.x, 0.01f);
-		ImGui::DragFloat3("end##Move", &end.x, 0.01f);
-		ImGui::DragFloat3("moveValue##Move", &moveValue.x, 0.01f);
-	} else if constexpr (std::is_same_v<T, Color>) {
-
-		ImGui::ColorEdit4("start##Move", &start.a);
-		ImGui::ColorEdit4("end##Move", &end.a);
-		ImGui::ColorEdit4("moveValue##Move", &moveValue.a);
-	}
-
-	const char* easingOptions[] = {
-			"EaseInSine", "EaseInQuad", "EaseInCubic", "EaseInQuart", "EaseInQuint", "EaseInExpo", "EaseInCirc", "EaseInBack", "EaseInBounce",
-			"EaseOutSine", "EaseOutQuad", "EaseOutCubic", "EaseOutQuart", "EaseOutQuint", "EaseOutExpo", "EaseOutCirc", "EaseOutBack", "EaseOutBounce",
-			"EaseInOutSine", "EaseInOutQuad", "EaseInOutCubic", "EaseInOutQuart", "EaseInOutQuint", "EaseInOutExpo", "EaseInOutCirc", "EaseInOutBounce"
-	};
-
-	// Enum values
-	const char* easeInOptions[] = {
-		"EaseInSine", "EaseInQuad", "EaseInCubic", "EaseInQuart", "EaseInQuint", "EaseInExpo", "EaseInCirc", "EaseInBack", "EaseInBounce"
-	};
-	const char* easeOutOptions[] = {
-		"EaseOutSine", "EaseOutQuad", "EaseOutCubic", "EaseOutQuart", "EaseOutQuint", "EaseOutExpo", "EaseOutCirc", "EaseOutBack", "EaseOutBounce"
-	};
-	const char* easeInOutOptions[] = {
-		"EaseInOutSine", "EaseInOutQuad", "EaseInOutCubic", "EaseInOutQuart", "EaseInOutQuint", "EaseInOutExpo", "EaseInOutCirc", "EaseInOutBounce"
-	};
-
-	int easingIndex = static_cast<int>(easingType);
-	if (ImGui::BeginCombo("EasingType", easingOptions[easingIndex])) {
-
-		// EaseIn
-		if (ImGui::BeginCombo("EaseIn", "")) {
-			for (int i = 0; i < IM_ARRAYSIZE(easeInOptions); i++) {
-				const bool isSelected = (easingIndex == i);
-				if (ImGui::Selectable(easeInOptions[i], isSelected)) {
-
-					easingType = static_cast<EasingType>(i);
-					easingIndex = i;
-				}
-				if (isSelected) ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-
-		// EaseOut
-		if (ImGui::BeginCombo("EaseOut", "")) {
-			for (int i = 0; i < IM_ARRAYSIZE(easeOutOptions); i++) {
-				const bool isSelected = (easingIndex == i + IM_ARRAYSIZE(easeInOptions));
-				if (ImGui::Selectable(easeOutOptions[i], isSelected)) {
-
-					easingType = static_cast<EasingType>(i + IM_ARRAYSIZE(easeInOptions));
-					easingIndex = i + IM_ARRAYSIZE(easeInOptions);
-				}
-				if (isSelected) ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-
-		// EaseInOut
-		if (ImGui::BeginCombo("EaseInOut", "")) {
-			for (int i = 0; i < IM_ARRAYSIZE(easeInOutOptions); i++) {
-				const bool isSelected = (easingIndex == i + IM_ARRAYSIZE(easeInOptions) + IM_ARRAYSIZE(easeOutOptions));
-				if (ImGui::Selectable(easeInOutOptions[i], isSelected)) {
-
-					easingType = static_cast<EasingType>(i + IM_ARRAYSIZE(easeInOptions) + IM_ARRAYSIZE(easeOutOptions));
-					easingIndex = i + IM_ARRAYSIZE(easeInOptions) + IM_ARRAYSIZE(easeOutOptions);
-				}
-				if (isSelected) ImGui::SetItemDefaultFocus();
-			}
-			ImGui::EndCombo();
-		}
-
-		ImGui::EndCombo();
-	}
+	ImGui::Checkbox(("isLoop##Loop" + label).c_str(), &isLoop);
+	ImGui::DragInt(("maxCount##Loop" + label).c_str(), (int*)&maxCount, 1.0f, 0, 100);
+	ImGui::DragFloat(("interval##Loop" + label).c_str(), &interval, 0.01f, 0.0f, 10.0f);
 }
 
 template<typename U>

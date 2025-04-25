@@ -1,5 +1,8 @@
 #include "Easing.h"
 
+// imgui
+#include <imgui.h>
+
 // Ease In Sine
 float EaseInSine(float t) {
 	return 1.0f - std::cos((t * std::numbers::pi_v<float>) / 2.0f);
@@ -190,5 +193,73 @@ float EasedValue(EasingType easingType, float t) {
 	case EasingType::EaseOutBounce: return EaseOutBounce(t);
 	case EasingType::EaseInOutBounce: return EaseInOutBounce(t);
 	default: return t;
+	}
+}
+
+void Easing::SelectEasingType(EasingType& easingType, const std::string& lebel) {
+
+	const char* easingOptions[] = {
+			"EaseInSine", "EaseInQuad", "EaseInCubic", "EaseInQuart", "EaseInQuint", "EaseInExpo", "EaseInCirc", "EaseInBack", "EaseInBounce",
+			"EaseOutSine", "EaseOutQuad", "EaseOutCubic", "EaseOutQuart", "EaseOutQuint", "EaseOutExpo", "EaseOutCirc", "EaseOutBack", "EaseOutBounce",
+			"EaseInOutSine", "EaseInOutQuad", "EaseInOutCubic", "EaseInOutQuart", "EaseInOutQuint", "EaseInOutExpo", "EaseInOutCirc", "EaseInOutBounce"
+	};
+
+	// Enum values
+	const char* easeInOptions[] = {
+		"EaseInSine", "EaseInQuad", "EaseInCubic", "EaseInQuart", "EaseInQuint", "EaseInExpo", "EaseInCirc", "EaseInBack", "EaseInBounce"
+	};
+	const char* easeOutOptions[] = {
+		"EaseOutSine", "EaseOutQuad", "EaseOutCubic", "EaseOutQuart", "EaseOutQuint", "EaseOutExpo", "EaseOutCirc", "EaseOutBack", "EaseOutBounce"
+	};
+	const char* easeInOutOptions[] = {
+		"EaseInOutSine", "EaseInOutQuad", "EaseInOutCubic", "EaseInOutQuart", "EaseInOutQuint", "EaseInOutExpo", "EaseInOutCirc", "EaseInOutBounce"
+	};
+
+	int easingIndex = static_cast<int>(easingType);
+	if (ImGui::BeginCombo(("EasingType##" + lebel).c_str(), easingOptions[easingIndex])) {
+
+		// EaseIn
+		if (ImGui::BeginCombo("EaseIn", "")) {
+			for (int i = 0; i < IM_ARRAYSIZE(easeInOptions); i++) {
+				const bool isSelected = (easingIndex == i);
+				if (ImGui::Selectable(easeInOptions[i], isSelected)) {
+
+					easingType = static_cast<EasingType>(i);
+					easingIndex = i;
+				}
+				if (isSelected) ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		// EaseOut
+		if (ImGui::BeginCombo("EaseOut", "")) {
+			for (int i = 0; i < IM_ARRAYSIZE(easeOutOptions); i++) {
+				const bool isSelected = (easingIndex == i + IM_ARRAYSIZE(easeInOptions));
+				if (ImGui::Selectable(easeOutOptions[i], isSelected)) {
+
+					easingType = static_cast<EasingType>(i + IM_ARRAYSIZE(easeInOptions));
+					easingIndex = i + IM_ARRAYSIZE(easeInOptions);
+				}
+				if (isSelected) ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		// EaseInOut
+		if (ImGui::BeginCombo("EaseInOut", "")) {
+			for (int i = 0; i < IM_ARRAYSIZE(easeInOutOptions); i++) {
+				const bool isSelected = (easingIndex == i + IM_ARRAYSIZE(easeInOptions) + IM_ARRAYSIZE(easeOutOptions));
+				if (ImGui::Selectable(easeInOutOptions[i], isSelected)) {
+
+					easingType = static_cast<EasingType>(i + IM_ARRAYSIZE(easeInOptions) + IM_ARRAYSIZE(easeOutOptions));
+					easingIndex = i + IM_ARRAYSIZE(easeInOptions) + IM_ARRAYSIZE(easeOutOptions);
+				}
+				if (isSelected) ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndCombo();
+		}
+
+		ImGui::EndCombo();
 	}
 }

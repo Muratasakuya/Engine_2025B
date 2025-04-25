@@ -1,16 +1,16 @@
 {
     "Material": {
-        "alphaReference": 0.38999998569488525,
+        "alphaReference": 0.4000000059604645,
         "color": {
-            "a": 0.0,
+            "a": 1.0,
             "b": 1.0,
             "g": 1.0,
             "r": 1.0
         },
         "emissionColor": {
-            "x": 0.7723076939582825,
+            "x": 1.0,
             "y": 1.0,
-            "z": 0.9390485286712646
+            "z": 1.0
         },
         "emissiveIntensity": 32.0,
         "uvRotate": {
@@ -24,7 +24,7 @@
             "z": 1.0
         },
         "uvTranslate": {
-            "x": 0.0,
+            "x": 1.0,
             "y": 0.0,
             "z": 0.0
         }
@@ -66,11 +66,6 @@
             "x": 3.200000047683716,
             "y": 2.0,
             "z": 1.3200000524520874
-        },
-        "translation": {
-            "x": -10.739999771118164,
-            "y": 8.15999984741211,
-            "z": 0.0
         }
     },
     "UvScrollAnimation": {
@@ -84,7 +79,7 @@
         "move_.moveValue": 0.0625,
         "move_.start": 0.0,
         "time_.end": 0.0,
-        "time_.movedValueInterval": 0.032999999821186066,
+        "time_.movedValueInterval": 0.06800000369548798,
         "time_.useScaledDeltaTime": false
     }
 }
