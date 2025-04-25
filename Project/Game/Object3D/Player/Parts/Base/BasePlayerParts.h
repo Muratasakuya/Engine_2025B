@@ -5,7 +5,10 @@
 //============================================================================
 #include <Engine/Core/Component/TransformComponent.h>
 #include <Engine/Core/Component/MaterialComponent.h>
+#include <Game/Object3D/Player/Behavior/IPlayerBehavior.h>
 
+// c++
+#include <unordered_map>
 // front
 class Input;
 
@@ -34,7 +37,7 @@ public:
 
 		// json
 		void ApplyJson();
-		void SaveJson(); 
+		void SaveJson();
 	};
 public:
 	//========================================================================
@@ -46,6 +49,9 @@ public:
 
 	void Init(const std::string& modelName);
 
+	// behavior
+	void RegisterBehavior(PlayerBehaviorType type, std::unique_ptr<IPlayerBehavior> behavior);
+	void ExecuteBehavior(PlayerBehaviorType type);
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const Transform3DComponent& parent);
@@ -65,6 +71,9 @@ protected:
 	// components
 	Transform3DComponent* transform_;
 	MaterialComponent* material_;
+
+	// behavior
+	std::unordered_map<PlayerBehaviorType, std::unique_ptr<IPlayerBehavior>> behaviors_;
 
 	// 共通parameter
 	PartsParameter parameter_;

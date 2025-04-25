@@ -14,8 +14,6 @@ void PlayerEffectController::Init() {
 	lightningHitEffect_ = std::make_unique<PlayerLightningHitEffect>();
 	lightningHitEffect_->Init();
 
-	isAttack_ = false;
-
 	// json適応
 	ApplyJson();
 }
@@ -38,26 +36,6 @@ void PlayerEffectController::UpdateBehavior(const std::unordered_set<PlayerBehav
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Parry })) {
 
 
-	}
-
-	// animationをさせる
-	if (!isAttack_) {
-		if (Input::GetInstance()->TriggerKey(DIK_E)) {
-
-			isAttack_ = true;
-
-			lightningHitEffect_->StartAnimation(Vector3());
-		}
-	} else {
-
-		timer_ += GameTimer::GetDeltaTime();
-		if (timer_ > 1.0f) {
-
-			timer_ = 0.0f;
-			isAttack_ = false;
-
-			lightningHitEffect_->Reset();
-		}
 	}
 
 	// 更新は常に行う、triggerで発生

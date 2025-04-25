@@ -26,14 +26,19 @@ void PlayerPartsController::InitParts(FollowCamera* followCamera) {
 	leftHand_->Init();
 
 	// 剣
-	sword_ = std::make_unique<PlayerSword>();
-	sword_->Init();
+	// 右
+	rightSword_ = std::make_unique<PlayerRightSword>();
+	rightSword_->Init();
+	// 左
+	leftSword_ = std::make_unique<PlayerLeftSword>();
+	leftSword_->Init();
 
 	// 手に親を設定する
 	rightHand_->SetParent(body_->GetTransform());
 	leftHand_->SetParent(body_->GetTransform());
 	// 剣に親を設定する
-	sword_->SetParent(rightHand_->GetTransform());
+	rightSword_->SetParent(rightHand_->GetTransform());
+	leftSword_->SetParent(leftHand_->GetTransform());
 }
 
 void PlayerPartsController::SetParam() {
@@ -41,7 +46,8 @@ void PlayerPartsController::SetParam() {
 	// 値を設定
 	rightHand_->SetParam(rightHandParam_);
 	leftHand_->SetParam(leftHandParam_);
-	sword_->SetParam(swordParam_);
+	rightSword_->SetParam(rightSwordParam_);
+	leftSword_->SetParam(leftSwordParam_);
 }
 
 void PlayerPartsController::Init(FollowCamera* followCamera) {
@@ -70,13 +76,38 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 	// ダッシュ
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Dash })) {
 
-		body_->UpdateDash();
+		ForEachParts([](BasePlayerParts* part) {
+			part->ExecuteBehavior(PlayerBehaviorType::Dash); });
 	}
+	// 止まっている状態から攻撃...1段目
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::NormalAttack })) {
 
+		ForEachParts([](BasePlayerParts* part) {
+			part->ExecuteBehavior(PlayerBehaviorType::NormalAttack); });
+	}
+	// ダッシュ攻撃...1段目
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::DashAttack })) {
+
+		ForEachParts([](BasePlayerParts* part) {
+			part->ExecuteBehavior(PlayerBehaviorType::DashAttack); });
+	}
+	// 攻撃2段目
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack2nd })) {
+
+		ForEachParts([](BasePlayerParts* part) {
+			part->ExecuteBehavior(PlayerBehaviorType::Attack2nd); });
+	}
+	// 攻撃3段目
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack3rd })) {
+
+		ForEachParts([](BasePlayerParts* part) {
+			part->ExecuteBehavior(PlayerBehaviorType::Attack3rd); });
+	}
 	// 攻撃受け流し
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Parry })) {
 
-
+		ForEachParts([](BasePlayerParts* part) {
+			part->ExecuteBehavior(PlayerBehaviorType::Parry); });
 	}
 	// 体の向きを移動に合わせる
 	body_->RotateToDirection();
@@ -96,7 +127,7 @@ void PlayerPartsController::ImGui() {
 			body_->ImGui();
 			ImGui::EndTabItem();
 		}
-		
+
 		if (ImGui::BeginTabItem("RightHand")) {
 
 			rightHandParam_.ImGui();
@@ -109,11 +140,21 @@ void PlayerPartsController::ImGui() {
 			ImGui::EndTabItem();
 		}
 
-		if (ImGui::BeginTabItem("Sword")) {
+		if (ImGui::BeginTabItem("RightSword")) {
 
-			swordParam_.ImGui();
+			rightSwordParam_.ImGui();
+			rightSword_->ImGui();
 			ImGui::EndTabItem();
 		}
+
+		if (ImGui::BeginTabItem("LeftSword")) {
+
+			leftSwordParam_.ImGui();
+			leftSword_->ImGui();
+			ImGui::EndTabItem();
+		}
+
+		SetParam();
 
 		ImGui::EndTabBar();
 	}
@@ -124,12 +165,14 @@ void PlayerPartsController::ApplyJson() {
 	// 名前を設定
 	rightHandParam_.name = "rightHandParam";
 	leftHandParam_.name = "leftHandParam";
-	swordParam_.name = "swordParam";
+	rightSwordParam_.name = "rightSwordParam";
+	leftSwordParam_.name = "leftSwordParam";
 
 	// 各parameterの値を適応
 	rightHandParam_.ApplyJson();
 	leftHandParam_.ApplyJson();
-	swordParam_.ApplyJson();
+	rightSwordParam_.ApplyJson();
+	leftSwordParam_.ApplyJson();
 }
 
 void PlayerPartsController::SaveJson() {
@@ -137,10 +180,13 @@ void PlayerPartsController::SaveJson() {
 	// 各parameterの値を保存
 	rightHandParam_.SaveJson();
 	leftHandParam_.SaveJson();
-	swordParam_.SaveJson();
+	rightSwordParam_.SaveJson();
+	leftSwordParam_.SaveJson();
 
 	// 各クラスごと
 	body_->SaveJson();
+	rightSword_->SaveJson();
+	leftSword_->SaveJson();
 }
 
 bool PlayerPartsController::CheckCurrentBehaviors(const std::unordered_set<PlayerBehaviorType>& currentBehaviors,

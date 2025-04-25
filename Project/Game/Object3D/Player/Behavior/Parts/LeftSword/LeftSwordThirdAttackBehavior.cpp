@@ -1,10 +1,5 @@
-#include "PlayerSword.h"
+#include "LeftSwordThirdAttackBehavior.h"
 
 //============================================================================
-//	PlayerSword classMethods
+//  LeftSwordThirdAttackBehavior classMethods
 //============================================================================
-
-void PlayerSword::Init() {
-
-	BasePlayerParts::Init("playerSword");
-}

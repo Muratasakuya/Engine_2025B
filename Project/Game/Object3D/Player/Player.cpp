@@ -15,8 +15,8 @@ void Player::Init(FollowCamera* followCamera) {
 	partsController_->Init(followCamera);
 
 	// behaviorの初期化
-	behavior_ = std::make_unique<PlayerAttackBehavior>();
-	behavior_->Init();
+	behaviorController_ = std::make_unique<PlayerBehaviorController>();
+	behaviorController_->Init();
 
 	// effectの初期化
 	effectController_ = std::make_unique<PlayerEffectController>();
@@ -26,9 +26,9 @@ void Player::Init(FollowCamera* followCamera) {
 void Player::Update() {
 
 	// behaviorの更新
-	behavior_->Update();
+	behaviorController_->Update();
 	// 各partsの更新
-	partsController_->Update(behavior_->GetCurrentBehaviours());
+	partsController_->Update(behaviorController_->GetCurrentBehaviours());
 	// effectの更新
-	effectController_->Update(behavior_->GetCurrentBehaviours());
+	effectController_->Update(behaviorController_->GetCurrentBehaviours());
 }

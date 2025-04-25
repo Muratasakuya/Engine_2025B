@@ -402,8 +402,6 @@ inline void SimpleAnimation<T>::ToJson(Json& data) {
 
 	// loopの値を保存
 	data["loop_.isLoop"] = loop_.isLoop;
-	data["loop_.isStart"] = loop_.isStart;
-	data["loop_.isEnd"] = loop_.isEnd;
 	data["loop_.maxCount"] = loop_.maxCount;
 	data["loop_.interval"] = loop_.interval;
 
@@ -442,8 +440,6 @@ inline void SimpleAnimation<T>::FromJson(const Json& data) {
 
 	// loopの値を保存
 	loop_.isLoop = JsonAdapter::GetValue<bool>(data, "loop_.isLoop");
-	loop_.isStart = JsonAdapter::GetValue<float>(data, "loop_.isStart");
-	loop_.isEnd = JsonAdapter::GetValue<float>(data, "loop_.isEnd");
 	loop_.maxCount = JsonAdapter::GetValue<uint32_t>(data, "loop_.maxCount");
 	loop_.interval = JsonAdapter::GetValue<float>(data, "loop_.interval");
 

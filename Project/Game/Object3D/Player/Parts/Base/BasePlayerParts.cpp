@@ -28,6 +28,20 @@ void BasePlayerParts::Init(const std::string& modelName) {
 	material_ = Component::GetComponent<MaterialComponent>(entityId);
 }
 
+void BasePlayerParts::RegisterBehavior(PlayerBehaviorType type,
+	std::unique_ptr<IPlayerBehavior> behavior) {
+
+	behaviors_[type] = std::move(behavior);
+}
+
+void BasePlayerParts::ExecuteBehavior(PlayerBehaviorType type) {
+
+	if (behaviors_.count(type)) {
+
+		behaviors_[type]->Execute(this);
+	}
+}
+
 void BasePlayerParts::PartsParameter::ImGui() {
 
 	ImGui::PushItemWidth(itemWidth);
