@@ -21,8 +21,35 @@ void TransformationMatrix::Update(const BaseTransform* parent, const Vector3& sc
 
 		Matrix4x4 scaleMatrix = Matrix4x4::MakeScaleMatrix(scale);
 		Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(translation);
+		Quaternion billboardRot = Quaternion::FromRotationMatrix(billboardMatrix.value());
 
-		world = scaleMatrix * billboardMatrix.value() * translateMatrix;
+		// 回転行列取得
+		Quaternion normalizedRotation = Quaternion::Normalize(rotation);
+		Matrix4x4 fullRotMat = Quaternion::MakeRotateMatrix(normalizedRotation);
+
+		Vector3 xAxis = Vector3::TransferNormal(Vector3(1.0f, 0.0f, 0.0f), fullRotMat);
+		Vector3 zAxis = Vector3::TransferNormal(Vector3(0.0f, 0.0f, 1.0f), fullRotMat);
+
+		// XZだけの回転行列作成
+		Vector3 newZ = Vector3::Normalize(zAxis);
+		Vector3 newX = Vector3::Normalize(xAxis);
+		Vector3 newY = Vector3::Normalize(Vector3::Cross(newZ, newX));
+		newX = Vector3::Normalize(Vector3::Cross(newY, newZ)); // 再直交化（必要なら）
+
+		// XZの回転行列からquaternionを取得
+		Matrix4x4 xzRotMatrix = {
+			newX.x, newX.y, newX.z, 0.0f,
+			newY.x, newY.y, newY.z, 0.0f,
+			newZ.x, newZ.y, newZ.z, 0.0f,
+			0.0f,   0.0f,   0.0f,   1.0f };
+		Quaternion xzRotation = Quaternion::FromRotationMatrix(xzRotMatrix);
+
+		// Y軸はbillboard、XZはrotation
+		Quaternion finalRotation = Quaternion::Multiply(Quaternion::Conjugate(billboardRot), xzRotation);
+		finalRotation = Quaternion::Normalize(finalRotation);
+
+		Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(finalRotation);
+		world = scaleMatrix * rotateMatrix * translateMatrix;
 	} else {
 
 		world = Matrix4x4::MakeAxisAffineMatrix(

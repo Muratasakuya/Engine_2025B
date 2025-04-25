@@ -103,11 +103,15 @@ void PrimitiveEditor::OutputPrimitive() {
 	if (!primitiveIndex.has_value()) {
 		return;
 	}
+	
+	ImGui::PushItemWidth(itemWidth_);
 
 	// 保存するfile(.json)の名前
 	inputExportObjText_.InputText("FileName##Save");
 
-	if (ImGui::Button("Output Primitive", ImVec2(192.0f, 32.0f))) {
+	ImGui::PopItemWidth();
+
+	if (ImGui::Button("Output Primitive", ImVec2(224.0f, 32.0f))) {
 
 		// 現在の状態のprimitveを.obj出力する
 		PrimitiveMeshComponent* primitive = Component::GetComponent<PrimitiveMeshComponent>(*primitiveIndex);
