@@ -22,7 +22,7 @@ public:
 	PlayerBody() = default;
 	~PlayerBody() = default;
 
-	void Init();
+	void Init(FollowCamera* followCamera);
 
 	// 歩き処理
 	void UpdateWalk();
@@ -33,9 +33,6 @@ public:
 
 	// json
 	void SaveJson();
-	//--------- accessor -----------------------------------------------------
-
-	void SetFollowCamera(FollowCamera* followCamera) { followCamera_ = followCamera; };
 private:
 	//========================================================================
 	//	private Methods
@@ -52,17 +49,11 @@ private:
 	float moveDecay_;        // 速度減衰率
 	float rotationLerpRate_; // 回転補間割合
 
-	// dash
-	float dashSpeed_;
-	std::unique_ptr<SimpleAnimation<float>> dashLerpValue_;
-
 	//--------- functions ----------------------------------------------------
 
 	// json
 	void ApplyJson();
 
 	// init
-	void InitParam();
-
-	void InputKey(Vector2& inputValue);
+	void InitBehaviors(const Json& data);
 };

@@ -13,9 +13,7 @@ void PlayerPartsController::InitParts(FollowCamera* followCamera) {
 
 	// 体
 	body_ = std::make_unique<PlayerBody>();
-	body_->Init();
-	// followCameraを設定する
-	body_->SetFollowCamera(followCamera);
+	body_->Init(followCamera);
 
 	// 手
 	// 右
@@ -78,12 +76,17 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 
 		ForEachParts([](BasePlayerParts* part) {
 			part->ExecuteBehavior(PlayerBehaviorType::Dash); });
+	} else {
+
+		// 状態をリセットする
+		ForEachParts([](BasePlayerParts* part) {
+			part->ResetBehavior(PlayerBehaviorType::Dash); });
 	}
 	// 止まっている状態から攻撃...1段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::NormalAttack })) {
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_1st })) {
 
 		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::NormalAttack); });
+			part->ExecuteBehavior(PlayerBehaviorType::Attack_1st); });
 	}
 	// ダッシュ攻撃...1段目
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::DashAttack })) {
@@ -92,16 +95,16 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 			part->ExecuteBehavior(PlayerBehaviorType::DashAttack); });
 	}
 	// 攻撃2段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack2nd })) {
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_2nd })) {
 
 		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Attack2nd); });
+			part->ExecuteBehavior(PlayerBehaviorType::Attack_2nd); });
 	}
 	// 攻撃3段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack3rd })) {
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_3rd })) {
 
 		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Attack3rd); });
+			part->ExecuteBehavior(PlayerBehaviorType::Attack_3rd); });
 	}
 	// 攻撃受け流し
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Parry })) {

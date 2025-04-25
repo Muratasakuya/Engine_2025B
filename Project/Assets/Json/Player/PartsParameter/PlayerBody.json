@@ -1,15 +1,17 @@
 {
-    "dashLerpValue": {
-        "loop_.interval": 0.0,
-        "loop_.isLoop": false,
-        "loop_.maxCount": 0,
-        "move_.easingType": 14,
-        "move_.end": 1.399999976158142,
-        "move_.moveValue": 0.0,
-        "move_.start": 0.0,
-        "time_.end": 0.4000000059604645,
-        "time_.movedValueInterval": 0.0,
-        "time_.useScaledDeltaTime": false
+    "PlayerBodyBehavior": {
+        "DashSpeedLerpValue": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": 0.7200000286102295,
+            "move_.moveValue": 0.0,
+            "move_.start": 0.0,
+            "time_.end": 0.4000000059604645,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        }
     },
     "moveDecay_": 0.9399999976158142,
     "moveVelocity_": {

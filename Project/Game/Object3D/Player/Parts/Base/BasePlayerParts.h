@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Component/TransformComponent.h>
 #include <Engine/Core/Component/MaterialComponent.h>
-#include <Game/Object3D/Player/Behavior/IPlayerBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/Base/IPlayerBehavior.h>
 
 // c++
 #include <unordered_map>
@@ -52,11 +52,19 @@ public:
 	// behavior
 	void RegisterBehavior(PlayerBehaviorType type, std::unique_ptr<IPlayerBehavior> behavior);
 	void ExecuteBehavior(PlayerBehaviorType type);
+
+	// リセット
+	void ResetBehavior(PlayerBehaviorType type);
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const Transform3DComponent& parent);
 
 	void SetParam(const PartsParameter& param);
+
+	// transform
+	void SetScale(const Vector3& scale) { transform_->scale = scale; }
+	void SetRotate(const Quaternion& rotate) { transform_->rotation = rotate; }
+	void SetTranslate(const Vector3& translate) { transform_->translation = translate; }
 
 	const Transform3DComponent& GetTransform() const;
 protected:
@@ -77,4 +85,8 @@ protected:
 
 	// 共通parameter
 	PartsParameter parameter_;
+
+	//--------- functions ----------------------------------------------------
+
+	void InputKey(Vector2& inputValue);
 };

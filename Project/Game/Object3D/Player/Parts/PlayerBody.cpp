@@ -7,22 +7,27 @@
 #include <Game/Camera/FollowCamera.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
+// behaviors
+#include <Game/Object3D/Player/Behavior/Parts/Body/PlayerBodyDashBehavior.h>
+
 //============================================================================
 //	PlayerBody classMethods
 //============================================================================
 
-void PlayerBody::InitParam() {
+void PlayerBody::InitBehaviors(const Json& data) {
 
-	// parameter初期化
-	dashLerpValue_ = std::make_unique<SimpleAnimation<float>>();
+	// dash
+	const Json& behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
+		std::make_unique<PlayerBodyDashBehavior>(behaviorData, followCamera_));
 }
 
-void PlayerBody::Init() {
+void PlayerBody::Init(FollowCamera* followCamera) {
+
+	followCamera_ = nullptr;
+	followCamera_ = followCamera;
 
 	BasePlayerParts::Init("playerBody");
-
-	// parameter初期化
-	InitParam();
 
 	// json適応
 	ApplyJson();
@@ -60,43 +65,16 @@ void PlayerBody::UpdateWalk() {
 	transform_->translation.z += move_.z;
 }
 
-void PlayerBody::UpdateDash() {
+void PlayerBody::RotateToDirection() {
 
-	// 補間処理はダッシュ中のみ
-	if (!dashLerpValue_->IsStart()) {
+	Vector3 direction = Vector3(move_.x, 0.0f, move_.z).Normalize();
 
-		// 補間処理を開始
-		dashLerpValue_->time_.elapsed = 0.0f;
-		dashSpeed_ = dashLerpValue_->move_.start;
-		dashLerpValue_->Start();
-	}
-	// 値を補完
-	dashLerpValue_->LerpValue(dashSpeed_);
-
-	Vector2 inputValue{};
-	// inputの値を取得
-	InputKey(inputValue);
-
-	if (std::fabs(inputValue.x) > FLT_EPSILON || std::fabs(inputValue.y) > FLT_EPSILON) {
-
-		// 入力がある場合のみ速度を計算する
-		Vector3 inputDirection(inputValue.x, 0.0f, inputValue.y);
-		inputDirection = Vector3::Normalize(inputDirection);
-
-		Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(followCamera_->GetTransform().rotation);
-		Vector3 rotatedDirection = Vector3::TransferNormal(inputDirection, rotateMatrix);
-		rotatedDirection = Vector3::Normalize(rotatedDirection);
-
-		move_ = rotatedDirection * moveVelocity_ * dashSpeed_;
-	} else {
-
-		// 入力がなくてもダッシュ速度を維持する
-		move_ *= 1.0f;
+	if (direction.Length() <= 0.0f) {
+		return;
 	}
 
-	// 移動量を加算
-	transform_->translation.x += move_.x;
-	transform_->translation.z += move_.z;
+	Quaternion targetRotation = Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f));
+	transform_->rotation = Quaternion::Slerp(transform_->rotation, targetRotation, rotationLerpRate_);
 }
 
 void PlayerBody::ImGui() {
@@ -110,24 +88,12 @@ void PlayerBody::ImGui() {
 		ImGui::DragFloat("rotationLerpRate##Walk", &rotationLerpRate_, 0.1f);
 	}
 
-	if (ImGui::CollapsingHeader("Dash")) {
+	if (ImGui::CollapsingHeader("DashBehavior")) {
 
-		dashLerpValue_->ImGui("dashLerpValue");
+		behaviors_[PlayerBehaviorType::Dash]->ImGui();
 	}
 
 	ImGui::PopItemWidth();
-}
-
-void PlayerBody::RotateToDirection() {
-
-	Vector3 direction = Vector3(move_.x, 0.0f, move_.z).Normalize();
-
-	if (direction.Length() <= 0.0f) {
-		return;
-	}
-
-	Quaternion targetRotation = Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f));
-	transform_->rotation = Quaternion::Slerp(transform_->rotation, targetRotation, rotationLerpRate_);
 }
 
 void PlayerBody::ApplyJson() {
@@ -141,7 +107,8 @@ void PlayerBody::ApplyJson() {
 	moveDecay_ = JsonAdapter::GetValue<float>(data, "moveDecay_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 
-	dashLerpValue_->FromJson(data["dashLerpValue"]);
+	// behaviors初期化
+	InitBehaviors(data);
 }
 
 void PlayerBody::SaveJson() {
@@ -151,25 +118,11 @@ void PlayerBody::SaveJson() {
 	data["moveVelocity_"] = JsonAdapter::FromObject<Vector3>(moveVelocity_);
 	data["moveDecay_"] = moveDecay_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
-	dashLerpValue_->ToJson(data["dashLerpValue"]);
+
+	for (const auto& behaviors : std::views::values(behaviors_)) {
+
+		behaviors->SaveJson(data["PlayerBodyBehavior"]);
+	}
 
 	JsonAdapter::Save(parameter_.baseFilePath + "PlayerBody.json", data);
-}
-
-void PlayerBody::InputKey(Vector2& inputValue) {
-
-	if (input_->PushKey(DIK_W)) {
-
-		inputValue.y += 1.0f;
-	} else if (input_->PushKey(DIK_S)) {
-
-		inputValue.y -= 1.0f;
-	}
-	if (input_->PushKey(DIK_D)) {
-
-		inputValue.x += 1.0f;
-	} else if (input_->PushKey(DIK_A)) {
-
-		inputValue.x -= 1.0f;
-	}
 }
