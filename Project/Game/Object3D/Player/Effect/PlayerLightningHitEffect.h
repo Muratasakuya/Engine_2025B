@@ -3,15 +3,13 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/TransformComponent.h>
-#include <Engine/Core/Component/MaterialComponent.h>
-#include <Engine/Core/Component/PrimitiveMeshComponent.h>
-#include <Engine/Utility/SimpleAnimation.h>
+#include <Game/Object3D/Base/BasePrimitiveEffect.h>
 
 //============================================================================
 //	PlayerLightningHitEffect class
 //============================================================================
-class PlayerLightningHitEffect {
+class PlayerLightningHitEffect :
+	public BasePrimitiveEffect {
 public:
 	//========================================================================
 	//	public Methods
@@ -24,18 +22,15 @@ public:
 
 	void UpdateAnimation();
 
-	void ImGui();
-
+	// animation制御
+	void StartAnimation(const Vector3& translate);
 	void Reset();
+
+	// imgui
+	void ImGui();
 
 	// json
 	void SaveJson();
-
-	//--------- accessor -----------------------------------------------------
-
-	void StartAnimation();
-
-	void SetParent(const BaseTransform& parent);
 private:
 	//========================================================================
 	//	private Methods
@@ -43,27 +38,17 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	EffectTransformComponent* transform_;
-	EffectMaterialComponent* material_;
-	PrimitiveMeshComponent* mesh_;
-
-	// parameter
+	// animations
 	// scale
 	std::unique_ptr<SimpleAnimation<Vector3>> scaleAnimation_;
 	// scroll
 	std::unique_ptr<SimpleAnimation<float>> uvScrollAnimation_;
-	// alpha
-	std::unique_ptr<SimpleAnimation<float>> alphaAnimation_;
-
-	// emitEditor
-	bool emitEffect_;
 
 	//--------- functions ----------------------------------------------------
 
 	// json
-	void ApplyJson();
+	void ApplyJson() override;
 
 	// init
-	void InitComponent();
-	void InitAnimation();
+	void InitAnimation() override;
 };

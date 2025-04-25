@@ -386,19 +386,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Object3D\Base\BasePrimitiveEffect.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Behavior\PlayerAttackBehavior.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Effect\PlayerCircleHitEffect.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Effect\PlayerEffectController.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Effect\PlayerBurstHitEffect.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -735,6 +731,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Object3D\Base\BasePrimitiveEffect.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Object3D\Player\Behavior\PlayerAttackBehavior.h">
       <SubType>
       </SubType>
@@ -743,15 +743,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Effect\PlayerCircleHitEffect.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Game\Object3D\Player\Effect\PlayerEffectController.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Effect\PlayerBurstHitEffect.h" />
     <ClInclude Include="Game\Object3D\Player\Effect\PlayerLightningHitEffect.h">
       <SubType>
       </SubType>

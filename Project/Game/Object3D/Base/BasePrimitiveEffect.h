@@ -9,56 +9,51 @@
 #include <Engine/Utility/SimpleAnimation.h>
 
 //============================================================================
-//	PlayerBurstHitEffect class
+//	BasePrimitiveEffect class
 //============================================================================
-class PlayerBurstHitEffect {
+class BasePrimitiveEffect {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerBurstHitEffect() = default;
-	~PlayerBurstHitEffect() = default;
+	BasePrimitiveEffect() = default;
+	virtual ~BasePrimitiveEffect() = default;
 
-	void Init();
-
-	void UpdateAnimation();
-
-	void ImGui();
-
-	// json
-	void SaveJson();
-
-	void Reset();
+	void Init(const std::string& modelName, const std::string& textureName,
+		const std::string& objectName, const std::string& groupName);
 
 	//--------- accessor -----------------------------------------------------
 
-	void StartAnimation();
-
-	const EffectTransformComponent& GetTransform() const { return *transform_; }
-private:
+protected:
 	//========================================================================
-	//	private Methods
+	//	protected Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
+	// imgui
+	const float itemWidth_ = 224.0f;
+
+	// components
 	EffectTransformComponent* transform_;
 	EffectMaterialComponent* material_;
 	PrimitiveMeshComponent* mesh_;
 
-	// parameter
-	std::unique_ptr<SimpleAnimation<float>> uvScrollAnimation_;
-
-	// emitEditor
-	bool emitEffect_;
-
 	//--------- functions ----------------------------------------------------
 
 	// json
-	void ApplyJson();
+	virtual void ApplyJson() {}
+	void ApplyComponent(const Json& data);
+	void SaveComponent(Json& data);
+
+	// imgui
+	void EditComponent();
 
 	// init
-	void InitComponent();
-	void InitAnimation();
+	virtual void InitAnimation() {}
+
+	// helper
+	// 描画範囲外に移す
+	void OutsideEffect();
 };
