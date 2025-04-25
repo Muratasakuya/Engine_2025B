@@ -26,8 +26,14 @@ public:
 
 	void ImGui();
 
+	void Reset();
+
 	// json
 	void SaveJson();
+
+	//--------- accessor -----------------------------------------------------
+
+	void StartAnimation();
 private:
 	//========================================================================
 	//	private Methods

@@ -47,13 +47,10 @@ void PlayerCircleHitEffect::Init() {
 
 void PlayerCircleHitEffect::UpdateAnimation() {
 
-	if (emitEffect_) {
-
-		// scale処理を行う
-		scaleAnimation_->LerpValue(transform_->scale);
-		// alpha処理を行う
-		alphaAnimation_->LerpValue(material_->material.color.a);
-	}
+	// scale処理を行う
+	scaleAnimation_->LerpValue(transform_->scale);
+	// alpha処理を行う
+	alphaAnimation_->LerpValue(material_->material.color.a);
 }
 
 void PlayerCircleHitEffect::ImGui() {
@@ -80,6 +77,36 @@ void PlayerCircleHitEffect::ImGui() {
 	}
 }
 
+void PlayerCircleHitEffect::Reset() {
+
+	scaleAnimation_->Reset();
+	alphaAnimation_->Reset();
+	transform_->scale = Vector3::AnyInit(0.0f);
+}
+
+void PlayerCircleHitEffect::StartAnimation() {
+
+	scaleAnimation_->Start();
+	alphaAnimation_->Start();
+}
+
+void PlayerCircleHitEffect::ApplyJson() {
+
+	Json data;
+	if (!JsonAdapter::LoadCheck("Player/Effect/playerCircleHitEffect.json", data)) {
+		return;
+	}
+
+	// transform設定
+	transform_->FromJson(data["Transform"]);
+	transform_->scale = Vector3::AnyInit(0.0f);
+	// material設定
+	material_->FromJson(data["Material"]);
+	// animation設定
+	scaleAnimation_->FromJson(data["ScaleAnimation"]);
+	alphaAnimation_->FromJson(data["AlphaAnimation"]);
+}
+
 void PlayerCircleHitEffect::SaveJson() {
 
 	Json data;
@@ -93,20 +120,4 @@ void PlayerCircleHitEffect::SaveJson() {
 	alphaAnimation_->ToJson(data["AlphaAnimation"]);
 
 	JsonAdapter::Save("Player/Effect/playerCircleHitEffect.json", data);
-}
-
-void PlayerCircleHitEffect::ApplyJson() {
-
-	Json data;
-	if (!JsonAdapter::LoadCheck("Player/Effect/playerCircleHitEffect.json", data)) {
-		return;
-	}
-
-	// transform設定
-	transform_->FromJson(data["Transform"]);
-	// material設定
-	material_->FromJson(data["Material"]);
-	// animation設定
-	scaleAnimation_->FromJson(data["ScaleAnimation"]);
-	alphaAnimation_->FromJson(data["AlphaAnimation"]);
 }

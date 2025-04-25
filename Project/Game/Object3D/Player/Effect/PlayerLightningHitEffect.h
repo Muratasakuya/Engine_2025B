@@ -9,16 +9,16 @@
 #include <Engine/Utility/SimpleAnimation.h>
 
 //============================================================================
-//	PlayerBurstHitEffect class
+//	PlayerLightningHitEffect class
 //============================================================================
-class PlayerBurstHitEffect {
+class PlayerLightningHitEffect {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerBurstHitEffect() = default;
-	~PlayerBurstHitEffect() = default;
+	PlayerLightningHitEffect() = default;
+	~PlayerLightningHitEffect() = default;
 
 	void Init();
 
@@ -26,16 +26,16 @@ public:
 
 	void ImGui();
 
+	void Reset();
+
 	// json
 	void SaveJson();
-
-	void Reset();
 
 	//--------- accessor -----------------------------------------------------
 
 	void StartAnimation();
 
-	const EffectTransformComponent& GetTransform() const { return *transform_; }
+	void SetParent(const BaseTransform& parent);
 private:
 	//========================================================================
 	//	private Methods
@@ -48,7 +48,12 @@ private:
 	PrimitiveMeshComponent* mesh_;
 
 	// parameter
+	// scale
+	std::unique_ptr<SimpleAnimation<Vector3>> scaleAnimation_;
+	// scroll
 	std::unique_ptr<SimpleAnimation<float>> uvScrollAnimation_;
+	// alpha
+	std::unique_ptr<SimpleAnimation<float>> alphaAnimation_;
 
 	// emitEditor
 	bool emitEffect_;
