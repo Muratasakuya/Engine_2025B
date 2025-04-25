@@ -41,9 +41,6 @@ private:
 	// 稲妻のようなeffect
 	std::unique_ptr<PlayerLightningHitEffect> lightningHitEffect_;
 
-	float timer_;
-	bool isAttack_;
-
 	//--------- functions ----------------------------------------------------
 
 	// json

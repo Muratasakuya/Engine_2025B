@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Utility/SimpleAnimation.h>
 #include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
 
 // front
@@ -23,13 +24,10 @@ public:
 
 	void Init();
 
-	// 向きの更新
-	void RotateToDirection();
-
 	// 歩き処理
 	void UpdateWalk();
-	// ダッシュ処理
-	void UpdateDash();
+	// 向きの更新
+	void RotateToDirection();
 
 	void ImGui();
 
@@ -54,10 +52,17 @@ private:
 	float moveDecay_;        // 速度減衰率
 	float rotationLerpRate_; // 回転補間割合
 
+	// dash
+	float dashSpeed_;
+	std::unique_ptr<SimpleAnimation<float>> dashLerpValue_;
+
 	//--------- functions ----------------------------------------------------
 
 	// json
 	void ApplyJson();
+
+	// init
+	void InitParam();
 
 	void InputKey(Vector2& inputValue);
 };

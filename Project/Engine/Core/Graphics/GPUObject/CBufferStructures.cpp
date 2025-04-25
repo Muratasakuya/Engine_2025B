@@ -34,7 +34,7 @@ void TransformationMatrix::Update(const BaseTransform* parent, const Vector3& sc
 		Vector3 newZ = Vector3::Normalize(zAxis);
 		Vector3 newX = Vector3::Normalize(xAxis);
 		Vector3 newY = Vector3::Normalize(Vector3::Cross(newZ, newX));
-		newX = Vector3::Normalize(Vector3::Cross(newY, newZ)); // 再直交化（必要なら）
+		newX = Vector3::Normalize(Vector3::Cross(newY, newZ));
 
 		// XZの回転行列からquaternionを取得
 		Matrix4x4 xzRotMatrix = {

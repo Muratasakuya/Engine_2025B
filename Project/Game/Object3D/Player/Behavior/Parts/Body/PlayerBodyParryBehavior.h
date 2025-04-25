@@ -3,22 +3,18 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
 
 //============================================================================
-//	PlayerSword class
+//	PlayerBodyParryBehavior class
 //============================================================================
-class PlayerSword :
-	public BasePlayerParts {
+class PlayerBodyParryBehavior {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerSword() = default;
-	~PlayerSword() = default;
-
-	void Init();
+	PlayerBodyParryBehavior() = default;
+	~PlayerBodyParryBehavior() = default;
 
 	//--------- accessor -----------------------------------------------------
 

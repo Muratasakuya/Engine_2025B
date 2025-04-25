@@ -1,4 +1,4 @@
-#include "PlayerAttackBehavior.h"
+#include "PlayerBehaviorController.h"
 
 //============================================================================
 //	include
@@ -6,16 +6,16 @@
 #include <Engine/Input/Input.h>
 
 //============================================================================
-//	PlayerAttackBehavior classMethods
+//	PlayerBehaviorController classMethods
 //============================================================================
 
-void PlayerAttackBehavior::Init() {
+void PlayerBehaviorController::Init() {
 
 	input_ = nullptr;
 	input_ = Input::GetInstance();
 }
 
-void PlayerAttackBehavior::Update() {
+void PlayerBehaviorController::Update() {
 
 	// ダッシュ処理
 	MoveDash();
@@ -24,7 +24,7 @@ void PlayerAttackBehavior::Update() {
 	BehaviourRequest();
 }
 
-void PlayerAttackBehavior::MoveDash() {
+void PlayerBehaviorController::MoveDash() {
 
 	// WASDどれか押していたら
 	bool inputKey =
@@ -36,7 +36,7 @@ void PlayerAttackBehavior::MoveDash() {
 	// ダッシュを設定する
 	if (inputKey) {
 		// 右クリックでダッシュ
-		if (input_->PushMouseLeft()) {
+		if (input_->PushMouseRight()) {
 
 			moveBehaviour_ = PlayerBehaviorType::Dash;
 		} else {
@@ -49,7 +49,7 @@ void PlayerAttackBehavior::MoveDash() {
 	}
 }
 
-void PlayerAttackBehavior::BehaviourRequest() {
+void PlayerBehaviorController::BehaviourRequest() {
 
 	// 行動が追加されていれば設定する
 	if (moveBehaviour_.has_value()) {
@@ -64,17 +64,42 @@ void PlayerAttackBehavior::BehaviourRequest() {
 	}
 }
 
-void PlayerAttackBehavior::ImGui() {
+void PlayerBehaviorController::ImGui() {
 
 	ImGui::SeparatorText("BehaviorSet");
 
+	// 止まっている状態から攻撃...1段目
+	if (ImGui::Button("NormalAttack", ImVec2(itemWidth_, 32.0f))) {
+
+		moveBehaviour_ = PlayerBehaviorType::NormalAttack;
+	}
+
+	// ダッシュ攻撃...1段目
+	if (ImGui::Button("DashAttack", ImVec2(itemWidth_, 32.0f))) {
+
+		moveBehaviour_ = PlayerBehaviorType::DashAttack;
+	}
+
+	// 攻撃2段目
+	if (ImGui::Button("Attack2nd", ImVec2(itemWidth_, 32.0f))) {
+
+		moveBehaviour_ = PlayerBehaviorType::Attack2nd;
+	}
+
+	// 攻撃3段目
+	if (ImGui::Button("Attack3rd", ImVec2(itemWidth_, 32.0f))) {
+
+		moveBehaviour_ = PlayerBehaviorType::Attack3rd;
+	}
+
+	// 攻撃受け流し
 	if (ImGui::Button("Parry", ImVec2(itemWidth_, 32.0f))) {
 
 		moveBehaviour_ = PlayerBehaviorType::Parry;
 	}
 }
 
-bool PlayerAttackBehavior::CheckCurrentBehaviors(
+bool PlayerBehaviorController::CheckCurrentBehaviors(
 	const std::initializer_list<PlayerBehaviorType> behaviours) {
 
 	for (auto state : behaviours) {
@@ -85,7 +110,7 @@ bool PlayerAttackBehavior::CheckCurrentBehaviors(
 	return true;
 }
 
-const std::unordered_set<PlayerBehaviorType>& PlayerAttackBehavior::GetCurrentBehaviours() const {
+const std::unordered_set<PlayerBehaviorType>& PlayerBehaviorController::GetCurrentBehaviours() const {
 
 	return currentMoveBehaviours_;
 }
