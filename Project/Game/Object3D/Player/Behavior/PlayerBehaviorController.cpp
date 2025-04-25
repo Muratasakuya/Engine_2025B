@@ -69,9 +69,9 @@ void PlayerBehaviorController::ImGui() {
 	ImGui::SeparatorText("BehaviorSet");
 
 	// 止まっている状態から攻撃...1段目
-	if (ImGui::Button("NormalAttack", ImVec2(itemWidth_, 32.0f))) {
+	if (ImGui::Button("Attack_1st", ImVec2(itemWidth_, 32.0f))) {
 
-		moveBehaviour_ = PlayerBehaviorType::NormalAttack;
+		moveBehaviour_ = PlayerBehaviorType::Attack_1st;
 	}
 
 	// ダッシュ攻撃...1段目
@@ -81,15 +81,15 @@ void PlayerBehaviorController::ImGui() {
 	}
 
 	// 攻撃2段目
-	if (ImGui::Button("Attack2nd", ImVec2(itemWidth_, 32.0f))) {
+	if (ImGui::Button("Attack_2nd", ImVec2(itemWidth_, 32.0f))) {
 
-		moveBehaviour_ = PlayerBehaviorType::Attack2nd;
+		moveBehaviour_ = PlayerBehaviorType::Attack_2nd;
 	}
 
 	// 攻撃3段目
-	if (ImGui::Button("Attack3rd", ImVec2(itemWidth_, 32.0f))) {
+	if (ImGui::Button("Attack_3rd", ImVec2(itemWidth_, 32.0f))) {
 
-		moveBehaviour_ = PlayerBehaviorType::Attack3rd;
+		moveBehaviour_ = PlayerBehaviorType::Attack_3rd;
 	}
 
 	// 攻撃受け流し

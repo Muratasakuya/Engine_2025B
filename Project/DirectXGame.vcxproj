@@ -390,10 +390,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Behavior\IPlayerBehavior.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Base\IPlayerBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashAttackBehavior.cpp">
       <SubType>
       </SubType>
@@ -439,7 +436,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordDashAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordDashBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordFirstAttackBehavior.cpp" />
-    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior (1).cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordSecondAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordThirdAttackBehavior.cpp" />
@@ -796,6 +792,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Base\IPlayerBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashAttackBehavior.h">
       <SubType>
       </SubType>

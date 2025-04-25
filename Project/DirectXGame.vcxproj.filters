@@ -368,9 +368,6 @@
     <ClCompile Include="Game\Object3D\Player\Parts\PlayerLeftSword.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Behavior\IPlayerBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashBehavior.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -452,9 +449,6 @@
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordFirstAttackBehavior.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior (1).cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -462,6 +456,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordThirdAttackBehavior.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Base\IPlayerBehavior.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -625,6 +622,7 @@
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordFirstAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordSecondAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Base\IPlayerBehavior.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

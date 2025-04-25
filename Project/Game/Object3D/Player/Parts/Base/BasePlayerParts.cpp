@@ -42,6 +42,14 @@ void BasePlayerParts::ExecuteBehavior(PlayerBehaviorType type) {
 	}
 }
 
+void BasePlayerParts::ResetBehavior(PlayerBehaviorType type) {
+
+	if (behaviors_.count(type)) {
+
+		behaviors_[type]->Reset();
+	}
+}
+
 void BasePlayerParts::PartsParameter::ImGui() {
 
 	ImGui::PushItemWidth(itemWidth);
@@ -84,4 +92,22 @@ void BasePlayerParts::SetParam(const PartsParameter& param) {
 
 const Transform3DComponent& BasePlayerParts::GetTransform() const {
 	return *transform_;
+}
+
+void BasePlayerParts::InputKey(Vector2& inputValue) {
+
+	if (input_->PushKey(DIK_W)) {
+
+		inputValue.y += 1.0f;
+	} else if (input_->PushKey(DIK_S)) {
+
+		inputValue.y -= 1.0f;
+	}
+	if (input_->PushKey(DIK_D)) {
+
+		inputValue.x += 1.0f;
+	} else if (input_->PushKey(DIK_A)) {
+
+		inputValue.x -= 1.0f;
+	}
 }
