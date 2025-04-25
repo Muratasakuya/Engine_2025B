@@ -46,10 +46,16 @@ void PlayerBurstHitEffect::Init() {
 
 void PlayerBurstHitEffect::UpdateAnimation() {
 
-	if (emitEffect_) {
+	if (!uvScrollAnimation_->loop_.isStart) {
+		Reset();
+	}
 
-		// uvScroll処理を行う
-		uvScrollAnimation_->MoveValue(material_->uvTransform.translate.x);
+	// uvScroll処理を行う
+	uvScrollAnimation_->MoveValue(material_->uvTransform.translate.x);
+
+	if (material_->uvTransform.translate.x >= 1.0f) {
+
+		Reset();
 	}
 }
 
@@ -78,6 +84,7 @@ void PlayerBurstHitEffect::ApplyJson() {
 	transform_->FromJson(data);
 	// material設定
 	material_->FromJson(data);
+	material_->material.color.a = 0.0f;
 	// animation設定
 	uvScrollAnimation_->FromJson(data);
 }
@@ -94,4 +101,17 @@ void PlayerBurstHitEffect::SaveJson() {
 	uvScrollAnimation_->ToJson(data);
 
 	JsonAdapter::Save("Player/Effect/playerBurstHitEffect.json", data);
+}
+
+void PlayerBurstHitEffect::Reset() {
+
+	uvScrollAnimation_->Reset();
+	material_->material.color.a = 0.0f;
+	material_->uvTransform.translate.x = 0.0f;
+}
+
+void PlayerBurstHitEffect::StartAnimation() {
+
+	uvScrollAnimation_->Start();
+	material_->material.color.a = 1.0f;
 }

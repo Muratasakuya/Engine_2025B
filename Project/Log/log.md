@@ -16,3 +16,4 @@ EngineInformation:     load texture: stageFieldNormalMap
 EngineInformation:     load model: stageField
 EngineInformation:     load model: sirialHitEffectPlane
 EngineInformation:     load model: effectDefaultPlane
+EngineInformation:     load model: sirialLightningEffectPlane
