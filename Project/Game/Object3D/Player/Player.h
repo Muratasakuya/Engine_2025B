@@ -7,7 +7,9 @@
 // 各parts
 #include <Game/Object3D/Player/Parts/PlayerPartsController.h>
 // behavior
-#include <Game/Object3D/Player/Behavior/PlayerAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/PlayerBehaviorController.h>
+// effect
+#include <Game/Object3D/Player/Effect/PlayerEffectController.h>
 
 //============================================================================
 //	Player class
@@ -39,5 +41,8 @@ private:
 	std::unique_ptr<PlayerPartsController> partsController_;
 
 	// behavior
-	std::unique_ptr<PlayerAttackBehavior> behavior_;
+	std::unique_ptr<PlayerBehaviorController> behaviorController_;
+
+	// effect
+	std::unique_ptr<PlayerEffectController> effectController_;
 };

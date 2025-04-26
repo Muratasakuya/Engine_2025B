@@ -121,6 +121,7 @@ public:
 
 	void UpdateMatrix(const Matrix4x4& billboardMatrix);
 
+	void ImGui(float itemSize);
 	//--------- accessor -----------------------------------------------------
 
 	bool IsDirty() const { return isDirty_; }

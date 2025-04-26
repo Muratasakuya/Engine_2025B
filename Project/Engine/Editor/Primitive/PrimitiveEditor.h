@@ -31,10 +31,23 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	struct InputTextValue {
+
+		char nameBuffer[128]; // imgui入力用
+		std::string name;     // 入力した文字を取得する用
+
+		void InputText(const std::string& label);
+
+		void Reset();
+	};
+
 	//--------- variables ----------------------------------------------------
 
 	// json
 	const std::string baseJsonPath_ = "primitiveEditor/";
+	InputTextValue inputExportObjText_;
 
 	Asset* asset_;
 

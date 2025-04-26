@@ -10,7 +10,8 @@
 #include <Game/Object3D/Player/Parts/PlayerBody.h>
 #include <Game/Object3D/Player/Parts/PlayerRightHand.h>
 #include <Game/Object3D/Player/Parts/PlayerLeftHand.h>
-#include <Game/Object3D/Player/Parts/PlayerSword.h>
+#include <Game/Object3D/Player/Parts/PlayerRightSword.h>
+#include <Game/Object3D/Player/Parts/PlayerLeftSword.h>
 
 // c++
 #include <unordered_set>
@@ -52,12 +53,15 @@ private:
 	std::unique_ptr<PlayerLeftHand> leftHand_;   // 左
 
 	// 武器(剣)、右手が親
-	std::unique_ptr<PlayerSword> sword_;
+	std::unique_ptr<PlayerRightSword> rightSword_; // 右
+	std::unique_ptr<PlayerLeftSword> leftSword_;   // 左
 
 	// parameter
+	BasePlayerParts::PartsParameter bodyParam_;
 	BasePlayerParts::PartsParameter rightHandParam_;
 	BasePlayerParts::PartsParameter leftHandParam_;
-	BasePlayerParts::PartsParameter swordParam_;
+	BasePlayerParts::PartsParameter rightSwordParam_;
+	BasePlayerParts::PartsParameter leftSwordParam_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -75,4 +79,23 @@ private:
 	// 現在のbehaviourに含まれているか
 	bool CheckCurrentBehaviors(const std::unordered_set<PlayerBehaviorType>& currentBehaviors,
 		const std::initializer_list<PlayerBehaviorType> behaviours);
+
+	// 各partsの関数呼び出し
+	template <typename T>
+	void ForEachParts(T function);
 };
+
+//============================================================================
+//	PlayerPartsController templateMethods
+//============================================================================
+
+template<typename T>
+inline void PlayerPartsController::ForEachParts(T function) {
+
+	// 関数の呼び出し
+	function(body_.get());
+	function(rightHand_.get());
+	function(leftHand_.get());
+	function(rightSword_.get());
+	function(leftSword_.get());
+}

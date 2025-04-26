@@ -79,7 +79,7 @@ uint groupId : SV_GroupID, // グループID
 out vertices MSOutput verts[64], // 出力頂点
 out indices uint3 polys[126] // 出力三角形インデックス
 ) {
-	
+		
 	// 現在のグループに対応するmeshletを取得
 	Meshlet meshlet = gMeshlets[groupId];
 	

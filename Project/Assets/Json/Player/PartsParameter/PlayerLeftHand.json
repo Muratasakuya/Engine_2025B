@@ -1,0 +1,28 @@
+{
+    "PlayerLeftHandBehavior": {
+        "RotationLerpValue": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 0.0,
+                "y": -0.800000011920929,
+                "z": 0.0
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "time_.end": 0.6000000238418579,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        }
+    }
+}

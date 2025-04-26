@@ -1,10 +1,5 @@
-#include "PlayerSword.h"
+#include "LeftHandWalkBehavior.h"
 
 //============================================================================
-//	PlayerSword classMethods
+//  LeftHandWalkBehavior classMethods
 //============================================================================
-
-void PlayerSword::Init() {
-
-	BasePlayerParts::Init("playerSword");
-}

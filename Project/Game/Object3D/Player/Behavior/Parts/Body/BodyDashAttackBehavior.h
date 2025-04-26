@@ -3,22 +3,18 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
 
 //============================================================================
-//	PlayerSword class
+//	BodyDashAttackBehavior class
 //============================================================================
-class PlayerSword :
-	public BasePlayerParts {
+class BodyDashAttackBehavior {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerSword() = default;
-	~PlayerSword() = default;
-
-	void Init();
+	BodyDashAttackBehavior() = default;
+	~BodyDashAttackBehavior() = default;
 
 	//--------- accessor -----------------------------------------------------
 

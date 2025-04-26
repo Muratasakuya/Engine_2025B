@@ -7,11 +7,40 @@
 #include <Game/Camera/FollowCamera.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
+// behaviors
+#include <Game/Object3D/Player/Behavior/Parts/Body/BodyWaitBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/Body/BodyDashBehavior.h>
+
 //============================================================================
 //	PlayerBody classMethods
 //============================================================================
 
-void PlayerBody::Init() {
+void PlayerBody::InitBehaviors() {
+
+	// wait
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
+		std::make_unique<BodyWaitBehavior>(std::nullopt));
+	// dash
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
+		std::make_unique<BodyDashBehavior>(std::nullopt, followCamera_));
+}
+
+void PlayerBody::InitBehaviors(const Json& data) {
+
+	// wait
+	Json behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
+		std::make_unique<BodyWaitBehavior>(behaviorData));
+	// dash
+	behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
+		std::make_unique<BodyDashBehavior>(behaviorData, followCamera_));
+}
+
+void PlayerBody::Init(FollowCamera* followCamera) {
+
+	followCamera_ = nullptr;
+	followCamera_ = followCamera;
 
 	BasePlayerParts::Init("playerBody");
 
@@ -51,22 +80,6 @@ void PlayerBody::UpdateWalk() {
 	transform_->translation.z += move_.z;
 }
 
-void PlayerBody::UpdateDash() {
-
-
-}
-
-void PlayerBody::ImGui() {
-
-	ImGui::PushItemWidth(parameter_.itemWidth);
-
-	ImGui::DragFloat3("moveVelocity", &moveVelocity_.x, 0.1f);
-	ImGui::DragFloat("moveDecay", &moveDecay_, 0.1f, 0.0f, 1.0f);
-	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.1f);
-
-	ImGui::PopItemWidth();
-}
-
 void PlayerBody::RotateToDirection() {
 
 	Vector3 direction = Vector3(move_.x, 0.0f, move_.z).Normalize();
@@ -79,16 +92,46 @@ void PlayerBody::RotateToDirection() {
 	transform_->rotation = Quaternion::Slerp(transform_->rotation, targetRotation, rotationLerpRate_);
 }
 
+void PlayerBody::ImGui() {
+
+	ImGui::PushItemWidth(parameter_.itemWidth);
+
+	if (ImGui::CollapsingHeader("Walk")) {
+
+		ImGui::DragFloat3("moveVelocity##Walk", &moveVelocity_.x, 0.1f);
+		ImGui::DragFloat("moveDecay##Walk", &moveDecay_, 0.1f, 0.0f, 1.0f);
+		ImGui::DragFloat("rotationLerpRate##Walk", &rotationLerpRate_, 0.1f);
+	}
+
+	if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("DashBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Dash]->ImGui();
+	}
+
+	ImGui::PopItemWidth();
+}
+
 void PlayerBody::ApplyJson() {
 
 	Json data;
 	if (!JsonAdapter::LoadCheck(parameter_.baseFilePath + "PlayerBody.json", data)) {
+
+		// behaviors初期化
+		InitBehaviors();
 		return;
 	}
 
 	moveVelocity_ = JsonAdapter::ToObject<Vector3>(data["moveVelocity_"]);
 	moveDecay_ = JsonAdapter::GetValue<float>(data, "moveDecay_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
+
+	// behaviors初期化
+	InitBehaviors(data);
 }
 
 void PlayerBody::SaveJson() {
@@ -99,23 +142,10 @@ void PlayerBody::SaveJson() {
 	data["moveDecay_"] = moveDecay_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
 
+	for (const auto& behaviors : std::views::values(behaviors_)) {
+
+		behaviors->SaveJson(data["PlayerBodyBehavior"]);
+	}
+
 	JsonAdapter::Save(parameter_.baseFilePath + "PlayerBody.json", data);
-}
-
-void PlayerBody::InputKey(Vector2& inputValue) {
-
-	if (input_->PushKey(DIK_W)) {
-
-		inputValue.y += 1.0f;
-	} else if (input_->PushKey(DIK_S)) {
-
-		inputValue.y -= 1.0f;
-	}
-	if (input_->PushKey(DIK_D)) {
-
-		inputValue.x += 1.0f;
-	} else if (input_->PushKey(DIK_A)) {
-
-		inputValue.x -= 1.0f;
-	}
 }
