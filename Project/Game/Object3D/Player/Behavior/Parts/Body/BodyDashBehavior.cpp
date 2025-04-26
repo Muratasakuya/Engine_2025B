@@ -1,4 +1,4 @@
-#include "PlayerBodyDashBehavior.h"
+#include "BodyDashBehavior.h"
 
 //============================================================================
 //	include
@@ -7,20 +7,25 @@
 #include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
 
 //============================================================================
-//	PlayerBodyDashBehavior classMethods
+//	BodyDashBehavior classMethods
 //============================================================================
 
-PlayerBodyDashBehavior::PlayerBodyDashBehavior(const Json& data, FollowCamera* followCamera) {
+BodyDashBehavior::BodyDashBehavior(const std::optional<Json>& data, FollowCamera* followCamera) {
 
 	followCamera_ = nullptr;
 	followCamera_ = followCamera;
 
 	speedLerpValue_ = std::make_unique<SimpleAnimation<float>>();
-	const Json& animationData = data.contains("DashSpeedLerpValue") ? data["DashSpeedLerpValue"] : Json();
-	speedLerpValue_->FromJson(animationData);
+
+	if (data.has_value()) {
+
+		const Json& jsonData = data.value();
+		const Json& animationData = jsonData.contains("DashSpeedLerpValue") ? jsonData["DashSpeedLerpValue"] : Json();
+		speedLerpValue_->FromJson(animationData);
+	}
 }
 
-void PlayerBodyDashBehavior::Execute(BasePlayerParts* parts) {
+void BodyDashBehavior::Execute(BasePlayerParts* parts) {
 
 	// 補間処理はダッシュ中のみ
 	if (!speedLerpValue_->IsStart()) {
@@ -30,7 +35,7 @@ void PlayerBodyDashBehavior::Execute(BasePlayerParts* parts) {
 		speed_ = speedLerpValue_->move_.start;
 		speedLerpValue_->Start();
 	}
-	// 値を補完
+	// 値を補間
 	speedLerpValue_->LerpValue(speed_);
 
 	Vector2 inputValue{};
@@ -56,18 +61,18 @@ void PlayerBodyDashBehavior::Execute(BasePlayerParts* parts) {
 	parts->SetTranslate(translation);
 }
 
-void PlayerBodyDashBehavior::Reset() {
+void BodyDashBehavior::Reset() {
 
 	// 初期化する
 	speedLerpValue_->Reset();
 }
 
-void PlayerBodyDashBehavior::ImGui() {
+void BodyDashBehavior::ImGui() {
 
 	speedLerpValue_->ImGui("PlayerBodyDashBehavior_speedLerpValue_");
 }
 
-void PlayerBodyDashBehavior::SaveJson(Json& data) {
+void BodyDashBehavior::SaveJson(Json& data) {
 
 	// 値の保存
 	speedLerpValue_->ToJson(data["DashSpeedLerpValue"]);

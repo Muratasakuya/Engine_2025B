@@ -19,6 +19,11 @@ public:
 	~PlayerRightHand() = default;
 
 	void Init();
+
+	void ImGui();
+
+	// json
+	void SaveJson();
 private:
 	//========================================================================
 	//	private Methods
@@ -26,8 +31,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
-
 	//--------- functions ----------------------------------------------------
 
+	// json
+	void ApplyJson();
+
+	// init
+	void InitBehaviors();
+	void InitBehaviors(const Json& data);
 };

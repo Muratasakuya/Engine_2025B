@@ -5,16 +5,16 @@
 //============================================================================
 
 //============================================================================
-//	PlayerBodyFirstAttackBehavior class
+//	BodyWalkBehavior class
 //============================================================================
-class PlayerBodyFirstAttackBehavior {
+class BodyWalkBehavior {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerBodyFirstAttackBehavior() = default;
-	~PlayerBodyFirstAttackBehavior() = default;
+	BodyWalkBehavior() = default;
+	~BodyWalkBehavior() = default;
 
 	//--------- accessor -----------------------------------------------------
 

@@ -71,6 +71,18 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 	// 歩き処理
 	body_->UpdateWalk();
 
+	// 待ち
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Wait })) {
+
+		ForEachParts([](BasePlayerParts* part) {
+			part->ExecuteBehavior(PlayerBehaviorType::Wait); });
+	}
+	// 歩き
+	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Walk })) {
+
+		ForEachParts([](BasePlayerParts* part) {
+			part->ExecuteBehavior(PlayerBehaviorType::Walk); });
+	}
 	// ダッシュ
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Dash })) {
 
@@ -134,12 +146,14 @@ void PlayerPartsController::ImGui() {
 		if (ImGui::BeginTabItem("RightHand")) {
 
 			rightHandParam_.ImGui();
+			rightHand_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("LeftHand")) {
 
 			leftHandParam_.ImGui();
+			leftHand_->ImGui();
 			ImGui::EndTabItem();
 		}
 
@@ -188,6 +202,8 @@ void PlayerPartsController::SaveJson() {
 
 	// 各クラスごと
 	body_->SaveJson();
+	rightHand_->SaveJson();
+	leftHand_->SaveJson();
 	rightSword_->SaveJson();
 	leftSword_->SaveJson();
 }

@@ -3,7 +3,6 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Utility/SimpleAnimation.h>
 #include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
 
 // front
@@ -55,5 +54,6 @@ private:
 	void ApplyJson();
 
 	// init
+	void InitBehaviors();
 	void InitBehaviors(const Json& data);
 };

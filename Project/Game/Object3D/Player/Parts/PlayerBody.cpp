@@ -8,18 +8,25 @@
 #include <Lib/Adapter/JsonAdapter.h>
 
 // behaviors
-#include <Game/Object3D/Player/Behavior/Parts/Body/PlayerBodyDashBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/Body/BodyDashBehavior.h>
 
 //============================================================================
 //	PlayerBody classMethods
 //============================================================================
+
+void PlayerBody::InitBehaviors() {
+
+	// dash
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
+		std::make_unique<BodyDashBehavior>(std::nullopt, followCamera_));
+}
 
 void PlayerBody::InitBehaviors(const Json& data) {
 
 	// dash
 	const Json& behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
-		std::make_unique<PlayerBodyDashBehavior>(behaviorData, followCamera_));
+		std::make_unique<BodyDashBehavior>(behaviorData, followCamera_));
 }
 
 void PlayerBody::Init(FollowCamera* followCamera) {
@@ -100,6 +107,9 @@ void PlayerBody::ApplyJson() {
 
 	Json data;
 	if (!JsonAdapter::LoadCheck(parameter_.baseFilePath + "PlayerBody.json", data)) {
+
+		// behaviors初期化
+		InitBehaviors();
 		return;
 	}
 

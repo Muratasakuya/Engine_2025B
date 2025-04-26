@@ -9,6 +9,17 @@
 //	IPlayerBehavior classMethods
 //============================================================================
 
+Quaternion IPlayerBehavior::CalRotationAxisAngle(const Vector3& rotationAngle) {
+
+	Quaternion rotation = Quaternion::Normalize(Quaternion::
+		MakeRotateAxisAngleQuaternion(Vector3(1.0f, 0.0f, 0.0f), rotationAngle.x) *
+		Quaternion::
+		MakeRotateAxisAngleQuaternion(Vector3(0.0f, 1.0f, 0.0f), rotationAngle.y) *
+		Quaternion::
+		MakeRotateAxisAngleQuaternion(Vector3(0.0f, 0.0f, 1.0f), rotationAngle.z));
+	return  rotation;
+}
+
 void IPlayerBehavior::InputKey(Vector2& inputValue) {
 
 	Input* input = Input::GetInstance();

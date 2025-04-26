@@ -5,16 +5,16 @@
 //============================================================================
 
 //============================================================================
-//	PlayerBodyDashAttackBehavior class
+//	BodyWaitBehavior class
 //============================================================================
-class PlayerBodyDashAttackBehavior {
+class BodyWaitBehavior {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerBodyDashAttackBehavior() = default;
-	~PlayerBodyDashAttackBehavior() = default;
+	BodyWaitBehavior() = default;
+	~BodyWaitBehavior() = default;
 
 	//--------- accessor -----------------------------------------------------
 

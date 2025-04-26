@@ -1,5 +1,5 @@
-#include "PlayerBodyFirstAttackBehavior.h"
+#include "BodyFirstAttackBehavior.h"
 
 //============================================================================
-//	PlayerBodyFirstAttackBehavior classMethods
+//	BodyFirstAttackBehavior classMethods
 //============================================================================
