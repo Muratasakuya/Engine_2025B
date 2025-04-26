@@ -103,12 +103,38 @@ void PrimitiveEditor::OutputPrimitive() {
 	if (!primitiveIndex.has_value()) {
 		return;
 	}
+	
+	ImGui::PushItemWidth(itemWidth_);
 
-	if (ImGui::Button("Output Primitive", ImVec2(192.0f, 32.0f))) {
+	// 保存するfile(.json)の名前
+	inputExportObjText_.InputText("FileName##Save");
+
+	ImGui::PopItemWidth();
+
+	if (ImGui::Button("Output Primitive", ImVec2(224.0f, 32.0f))) {
 
 		// 現在の状態のprimitveを.obj出力する
 		PrimitiveMeshComponent* primitive = Component::GetComponent<PrimitiveMeshComponent>(*primitiveIndex);
-		const std::string filePath = "Primitives/" + primitive->GetModelName() + ".obj";
+		const std::string filePath = "Primitives/" + inputExportObjText_.name + ".obj";
 		asset_->Export(*primitive->GetResourceMesh(), filePath);
+		inputExportObjText_.Reset();
 	}
+}
+
+void PrimitiveEditor::InputTextValue::InputText(const std::string& label) {
+
+	// 名前の入力
+	if (ImGui::InputText(label.c_str(),
+		nameBuffer,
+		IM_ARRAYSIZE(nameBuffer))) {
+
+		name = nameBuffer;
+	}
+}
+
+void PrimitiveEditor::InputTextValue::Reset() {
+
+	// 入力をリセット
+	nameBuffer[0] = '\0';
+	name.clear();
 }

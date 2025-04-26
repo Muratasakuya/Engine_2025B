@@ -84,11 +84,6 @@ public:
 	void ToJson(Json& data);
 	void FromJson(const Json& data);
 
-	//--------- accessor -----------------------------------------------------
-
-	// 横scrollのみ、縦は未実装
-	void SetUVScrollValue(float value);
-
 	//--------- variables ----------------------------------------------------
 
 	EffectMaterial material;
@@ -105,13 +100,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	SimpleAnimation<float> uvScrollAnimation_;
-
 	UVTransform prevUVTransform_;
-
-	//--------- functions ----------------------------------------------------
-
-	void UpdateUVScroll();
-
-	void EditMaterial(float itemSize);
 };

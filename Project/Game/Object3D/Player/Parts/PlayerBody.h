@@ -21,23 +21,17 @@ public:
 	PlayerBody() = default;
 	~PlayerBody() = default;
 
-	void Init();
-
-	// 向きの更新
-	void RotateToDirection();
+	void Init(FollowCamera* followCamera);
 
 	// 歩き処理
 	void UpdateWalk();
-	// ダッシュ処理
-	void UpdateDash();
+	// 向きの更新
+	void RotateToDirection();
 
 	void ImGui();
 
 	// json
 	void SaveJson();
-	//--------- accessor -----------------------------------------------------
-
-	void SetFollowCamera(FollowCamera* followCamera) { followCamera_ = followCamera; };
 private:
 	//========================================================================
 	//	private Methods
@@ -59,5 +53,7 @@ private:
 	// json
 	void ApplyJson();
 
-	void InputKey(Vector2& inputValue);
+	// init
+	void InitBehaviors();
+	void InitBehaviors(const Json& data);
 };

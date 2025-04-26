@@ -63,6 +63,14 @@ bool Vector3::operator!=(const Vector3& other) const {
 	return !(*this == other);
 }
 
+bool Vector3::operator>=(const Vector3& other) const {
+	return this->Length() >= other.Length();
+}
+
+bool Vector3::operator<=(const Vector3& other) const {
+	return this->Length() <= other.Length();
+}
+
 Json Vector3::ToJson() const {
 	return Json{ {"x", x}, {"y", y}, {"z", z} };
 }
