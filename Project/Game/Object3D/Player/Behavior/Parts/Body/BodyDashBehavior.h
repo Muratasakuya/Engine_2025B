@@ -6,17 +6,17 @@
 #include <Game/Object3D/Player/Behavior/Parts/Base/IPlayerBehavior.h>
 
 //============================================================================
-//	RightHandDashBehavior class
+//	BodyDashBehavior class
 //============================================================================
-class RightHandDashBehavior :
+class BodyDashBehavior :
 	public IPlayerBehavior {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	RightHandDashBehavior(const std::optional<Json>& data);
-	~RightHandDashBehavior() = default;
+	BodyDashBehavior(const std::optional<Json>& data, FollowCamera* followCamera);
+	~BodyDashBehavior() = default;
 
 	// 処理実行
 	void Execute(BasePlayerParts* parts) override;
@@ -35,12 +35,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// Execute処理に入った瞬間の回転角、lerpの初期値にする
-	std::optional<Quaternion> startRotation_;
+	Vector3 move_; // 移動量
 
 	// parameter
-	// 回転角
-	Vector3 rotationAngle_;
-	// 目標回転角
-	std::unique_ptr<SimpleAnimation<Vector3>> rotationLerpValue_;
+	// ダッシュ速度
+	float speed_;
+	// ダッシュ補間
+	std::unique_ptr<SimpleAnimation<float>> speedLerpValue_;
 };

@@ -1,5 +1,5 @@
-#include "PlayerBodyParryBehavior.h"
+#include "BodyWaitBehavior.h"
 
 //============================================================================
-//	PlayerBodyParryBehavior classMethods
+//	BodyWaitBehavior classMethods
 //============================================================================

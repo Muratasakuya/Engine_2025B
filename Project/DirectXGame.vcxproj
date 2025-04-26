@@ -391,54 +391,46 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Base\IPlayerBehavior.cpp" />
-    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashAttackBehavior.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashBehavior.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyFirstAttackBehavior.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyParryBehavior.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodySecondAttackBehavior.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyThirdAttackBehavior.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\BodyDashAttackBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\BodyDashBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\BodyFirstAttackBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\BodyParryBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\BodySecondAttackBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\BodyThirdAttackBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\BodyWaitBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\Body\BodyWalkBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandDashAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandDashBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandFirstAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandParryBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandSecondAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandThirdAttackBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandWaitBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandWalkBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordDashAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordDashBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordFirstAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordParryBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordSecondAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordThirdAttackBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordWaitBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordWalkBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandDashAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandDashBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandFirstAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandParryBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandSecondAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandThirdAttackBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandWaitBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandWalkBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordDashAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordDashBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordFirstAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordSecondAttackBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordThirdAttackBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordWaitBehavior.cpp" />
+    <ClCompile Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordWalkBehavior.cpp" />
     <ClCompile Include="Game\Object3D\Player\Behavior\PlayerBehaviorController.cpp">
       <SubType>
       </SubType>
@@ -793,6 +785,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Base\IPlayerBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyDashAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyDashBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyFirstAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyParryBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodySecondAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyThirdAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyWaitBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyWalkBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashAttackBehavior.h">
       <SubType>
       </SubType>
@@ -817,30 +817,46 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyWaitBehavior.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyWalkBehavior.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandDashAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandDashBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandFirstAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandParryBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandSecondAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandThirdAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandWaitBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftHand\LeftHandWalkBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordDashAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordDashBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordFirstAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordParryBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordSecondAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordThirdAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordWaitBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\LeftSword\LeftSwordWalkBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandDashAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandDashBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandFirstAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandParryBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandSecondAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandThirdAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandWaitBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightHand\RightHandWalkBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordDashAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordDashBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordFirstAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordSecondAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordThirdAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordWaitBehavior.h" />
+    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordWalkBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\PlayerBehaviorController.h">
       <SubType>
       </SubType>

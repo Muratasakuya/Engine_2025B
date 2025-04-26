@@ -5,16 +5,16 @@
 //============================================================================
 
 //============================================================================
-//	PlayerBodyThirdAttackBehavior class
+//	BodyThirdAttackBehavior class
 //============================================================================
-class PlayerBodyThirdAttackBehavior {
+class BodyThirdAttackBehavior {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerBodyThirdAttackBehavior() = default;
-	~PlayerBodyThirdAttackBehavior() = default;
+	BodyThirdAttackBehavior() = default;
+	~BodyThirdAttackBehavior() = default;
 
 	//--------- accessor -----------------------------------------------------
 

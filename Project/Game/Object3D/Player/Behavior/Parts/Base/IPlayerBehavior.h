@@ -9,6 +9,7 @@
 
 // c++
 #include <memory>
+#include <optional>
 // front
 class BasePlayerParts;
 class FollowCamera;
@@ -47,6 +48,8 @@ protected:
 	FollowCamera* followCamera_;
 
 	//--------- functions ----------------------------------------------------
+
+	Quaternion CalRotationAxisAngle(const Vector3& rotationAngle);
 
 	void InputKey(Vector2& inputValue);
 };

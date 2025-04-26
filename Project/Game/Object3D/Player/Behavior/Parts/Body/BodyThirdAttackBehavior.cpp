@@ -1,5 +1,5 @@
-#include "PlayerBodyDashAttackBehavior.h"
+#include "BodyThirdAttackBehavior.h"
 
 //============================================================================
-//	PlayerBodyDashAttackBehavior classMethods
+//	BodyThirdAttackBehavior classMethods
 //============================================================================

@@ -7,8 +7,12 @@
 // behaviorの種類
 enum class PlayerBehaviorType {
 
+	// 待ち
+	Wait,
+
 	// 移動
-	Dash,
+	Walk, // 歩き
+	Dash, // ダッシュ
 
 	// 攻撃1段目
 	Attack_1st, // 止まっている状態から攻撃...1段目

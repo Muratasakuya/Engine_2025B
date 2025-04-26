@@ -3,31 +3,21 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Object3D/Player/Behavior/Parts/Base/IPlayerBehavior.h>
 
 //============================================================================
-//	PlayerBodyDashBehavior class
+//	BodyFirstAttackBehavior class
 //============================================================================
-class PlayerBodyDashBehavior :
-	public IPlayerBehavior {
+class BodyFirstAttackBehavior {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerBodyDashBehavior(const Json& data, FollowCamera* followCamera);
-	~PlayerBodyDashBehavior() = default;
+	BodyFirstAttackBehavior() = default;
+	~BodyFirstAttackBehavior() = default;
 
-	// 処理実行
-	void Execute(BasePlayerParts* parts) override;
-	// リセット
-	void Reset();
+	//--------- accessor -----------------------------------------------------
 
-	// imgui
-	void ImGui() override;
-
-	// json
-	void SaveJson(Json& data) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -35,11 +25,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	Vector3 move_; // 移動量
 
-	// parameter
-	// ダッシュ速度
-	float speed_;
-	// ダッシュ補間
-	std::unique_ptr<SimpleAnimation<float>> speedLerpValue_;
+
+	//--------- functions ----------------------------------------------------
+
 };
