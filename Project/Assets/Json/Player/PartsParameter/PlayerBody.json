@@ -11,7 +11,9 @@
             "time_.end": 0.4000000059604645,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
-        }
+        },
+        "amplitude_": 0.05999999865889549,
+        "speed_": 3.200000047683716
     },
     "moveDecay_": 0.9399999976158142,
     "moveVelocity_": {

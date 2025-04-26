@@ -57,6 +57,7 @@ private:
 	std::unique_ptr<PlayerLeftSword> leftSword_;   // 左
 
 	// parameter
+	BasePlayerParts::PartsParameter bodyParam_;
 	BasePlayerParts::PartsParameter rightHandParam_;
 	BasePlayerParts::PartsParameter leftHandParam_;
 	BasePlayerParts::PartsParameter rightSwordParam_;
