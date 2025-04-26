@@ -49,7 +49,9 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// update
+	void MoveWalk();
 	void MoveDash();
+	void CheckWait();
 	void BehaviourRequest();
 
 	// 現在のbehaviourに含まれているか

@@ -8,6 +8,7 @@
 #include <Lib/Adapter/JsonAdapter.h>
 
 // behaviors
+#include <Game/Object3D/Player/Behavior/Parts/Body/BodyWaitBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyDashBehavior.h>
 
 //============================================================================
@@ -16,6 +17,9 @@
 
 void PlayerBody::InitBehaviors() {
 
+	// wait
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
+		std::make_unique<BodyWaitBehavior>(std::nullopt));
 	// dash
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
 		std::make_unique<BodyDashBehavior>(std::nullopt, followCamera_));
@@ -23,8 +27,12 @@ void PlayerBody::InitBehaviors() {
 
 void PlayerBody::InitBehaviors(const Json& data) {
 
+	// wait
+	Json behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
+		std::make_unique<BodyWaitBehavior>(behaviorData));
 	// dash
-	const Json& behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
+	behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
 		std::make_unique<BodyDashBehavior>(behaviorData, followCamera_));
 }
@@ -93,6 +101,11 @@ void PlayerBody::ImGui() {
 		ImGui::DragFloat3("moveVelocity##Walk", &moveVelocity_.x, 0.1f);
 		ImGui::DragFloat("moveDecay##Walk", &moveDecay_, 0.1f, 0.0f, 1.0f);
 		ImGui::DragFloat("rotationLerpRate##Walk", &rotationLerpRate_, 0.1f);
+	}
+
+	if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Wait]->ImGui();
 	}
 
 	if (ImGui::CollapsingHeader("DashBehavior")) {

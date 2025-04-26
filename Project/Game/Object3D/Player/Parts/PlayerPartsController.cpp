@@ -42,6 +42,7 @@ void PlayerPartsController::InitParts(FollowCamera* followCamera) {
 void PlayerPartsController::SetParam() {
 
 	// 値を設定
+	body_->SetParam(bodyParam_);
 	rightHand_->SetParam(rightHandParam_);
 	leftHand_->SetParam(leftHandParam_);
 	rightSword_->SetParam(rightSwordParam_);
@@ -76,6 +77,11 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 
 		ForEachParts([](BasePlayerParts* part) {
 			part->ExecuteBehavior(PlayerBehaviorType::Wait); });
+	} else {
+
+		// 状態をリセットする
+		ForEachParts([](BasePlayerParts* part) {
+			part->ResetBehavior(PlayerBehaviorType::Wait); });
 	}
 	// 歩き
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Walk })) {
@@ -139,6 +145,7 @@ void PlayerPartsController::ImGui() {
 
 		if (ImGui::BeginTabItem("Body")) {
 
+			bodyParam_.ImGui();
 			body_->ImGui();
 			ImGui::EndTabItem();
 		}
@@ -180,12 +187,14 @@ void PlayerPartsController::ImGui() {
 void PlayerPartsController::ApplyJson() {
 
 	// 名前を設定
+	bodyParam_.name = "bodyParam";
 	rightHandParam_.name = "rightHandParam";
 	leftHandParam_.name = "leftHandParam";
 	rightSwordParam_.name = "rightSwordParam";
 	leftSwordParam_.name = "leftSwordParam";
 
 	// 各parameterの値を適応
+	bodyParam_.ApplyJson();
 	rightHandParam_.ApplyJson();
 	leftHandParam_.ApplyJson();
 	rightSwordParam_.ApplyJson();
@@ -195,6 +204,7 @@ void PlayerPartsController::ApplyJson() {
 void PlayerPartsController::SaveJson() {
 
 	// 各parameterの値を保存
+	bodyParam_.SaveJson();
 	rightHandParam_.SaveJson();
 	leftHandParam_.SaveJson();
 	rightSwordParam_.SaveJson();

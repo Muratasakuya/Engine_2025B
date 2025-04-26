@@ -17,11 +17,37 @@ void PlayerBehaviorController::Init() {
 
 void PlayerBehaviorController::Update() {
 
+	// 歩き処理
+	MoveWalk();
 	// ダッシュ処理
 	MoveDash();
+	// 待機モーションチェック
+	CheckWait();
 
 	// behaviourを設定する
 	BehaviourRequest();
+}
+
+void PlayerBehaviorController::MoveWalk() {
+
+	// WASDどれか押していたら
+	bool inputKey =
+		input_->PushKey(DIK_W) ||
+		input_->PushKey(DIK_A) ||
+		input_->PushKey(DIK_S) ||
+		input_->PushKey(DIK_D);
+
+	// 歩きを設定する
+	if (inputKey) {
+
+		moveBehaviour_ = PlayerBehaviorType::Walk;
+	} else {
+		// 入力がなければ削除する
+		if (CheckCurrentBehaviors({ PlayerBehaviorType::Walk })) {
+
+			currentMoveBehaviours_.erase(PlayerBehaviorType::Walk);
+		}
+	}
 }
 
 void PlayerBehaviorController::MoveDash() {
@@ -45,6 +71,28 @@ void PlayerBehaviorController::MoveDash() {
 
 				currentMoveBehaviours_.erase(PlayerBehaviorType::Dash);
 			}
+		}
+	}
+}
+
+void PlayerBehaviorController::CheckWait() {
+
+	// 入力が何もなければ
+	bool inputKey =
+		!input_->PushKey(DIK_W) &&
+		!input_->PushKey(DIK_A) &&
+		!input_->PushKey(DIK_S) &&
+		!input_->PushKey(DIK_D);
+
+	// 待ちモーションを開始させる
+	if (inputKey) {
+
+		moveBehaviour_ = PlayerBehaviorType::Wait;
+	} else {
+		// 入力が何かあれば削除する
+		if (CheckCurrentBehaviors({ PlayerBehaviorType::Wait })) {
+
+			currentMoveBehaviours_.erase(PlayerBehaviorType::Wait);
 		}
 	}
 }
