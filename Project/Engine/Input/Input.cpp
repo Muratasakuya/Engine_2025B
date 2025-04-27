@@ -115,6 +115,18 @@ bool Input::PushMouseCenter() const {
 
 	return mouseButtons_[2];
 }
+bool Input::TriggerMouseLeft() const {
+
+	return !mousePreButtons_[0] && mouseButtons_[0];
+}
+bool Input::TriggerMouseRight() const {
+
+	return !mousePreButtons_[1] && mouseButtons_[1];
+}
+bool Input::TriggerMouseCenter() const {
+
+	return !mousePreButtons_[2] && mouseButtons_[2];
+}
 void Input::SetDeadZone(float deadZone) {
 
 	deadZone_ = deadZone;
@@ -163,6 +175,7 @@ void Input::Init(WinApp* winApp) {
 void Input::Update() {
 
 	mousePrePos_ = mousePos_;
+	mousePreButtons_ = mouseButtons_;
 
 	HRESULT hr;
 

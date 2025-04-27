@@ -28,6 +28,10 @@ public:
 
 	// json
 	void SaveJson(Json& data) override;
+
+	//--------- accessor -----------------------------------------------------
+
+	float GetSpeed() const { return speed_; }
 private:
 	//========================================================================
 	//	private Methods

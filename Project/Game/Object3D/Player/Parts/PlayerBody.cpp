@@ -21,12 +21,13 @@ void PlayerBody::InitBehaviors(const Json& data) {
 	// wait
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
 		std::make_unique<BodyWaitBehavior>(data));
-	// wait
+	// walk
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Walk,
 		std::make_unique<BodyWalkBehavior>(data, followCamera_));
 	// dash
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
-		std::make_unique<BodyDashBehavior>(data, followCamera_));
+		std::make_unique<BodyDashBehavior>(data, followCamera_,
+			GetBehavior<BodyWalkBehavior>(PlayerBehaviorType::Walk)->GetSpeed()));
 }
 
 void PlayerBody::Init(FollowCamera* followCamera) {
