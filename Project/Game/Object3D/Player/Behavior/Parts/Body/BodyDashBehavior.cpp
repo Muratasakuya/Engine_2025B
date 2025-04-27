@@ -41,7 +41,6 @@ void BodyDashBehavior::UpdateDash(BasePlayerParts* parts) {
 	if (!speedLerpValue_->IsStart()) {
 
 		// 補間処理を開始
-		speedLerpValue_->time_.elapsed = 0.0f;
 		speed_ = speedLerpValue_->move_.start;
 		speedLerpValue_->Start();
 	}

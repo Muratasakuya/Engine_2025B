@@ -1,4 +1,31 @@
 {
+    "BehaviorType_Attack_1st": {
+        "MoveStraight": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": -153.9435272216797,
+                "y": 0.43349045515060425,
+                "z": 135.38427734375
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": -137.9435577392578,
+                "y": 0.43349045515060425,
+                "z": 135.35072326660156
+            },
+            "time_.end": 0.7200000286102295,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "moveValue_": 16.0
+    },
     "BehaviorType_Dash": {
         "DashSpeedLerpValue": {
             "loop_.interval": 0.0,
