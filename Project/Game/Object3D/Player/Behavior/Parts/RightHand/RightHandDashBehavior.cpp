@@ -9,15 +9,12 @@
 //  RightHandDashBehavior classMethods
 //============================================================================
 
-RightHandDashBehavior::RightHandDashBehavior(const std::optional<Json>& data) {
+RightHandDashBehavior::RightHandDashBehavior(const Json& data) {
 
 	rotationLerpValue_ = std::make_unique<SimpleAnimation<Vector3>>();
+	if (data.contains(dashBehaviorJsonKey_) && data[dashBehaviorJsonKey_].contains("RotationLerpValue")) {
 
-	if (data.has_value()) {
-
-		const Json& jsonData = data.value();
-		const Json& animationData = jsonData.contains("RotationLerpValue") ? jsonData["RotationLerpValue"] : Json();
-		rotationLerpValue_->FromJson(animationData);
+		rotationLerpValue_->FromJson(data[dashBehaviorJsonKey_]["RotationLerpValue"]);
 	}
 }
 
@@ -55,5 +52,5 @@ void RightHandDashBehavior::ImGui() {
 void RightHandDashBehavior::SaveJson(Json& data) {
 
 	// 値の保存
-	rotationLerpValue_->ToJson(data["RotationLerpValue"]);
+	rotationLerpValue_->ToJson(data[dashBehaviorJsonKey_]["RotationLerpValue"]);
 }

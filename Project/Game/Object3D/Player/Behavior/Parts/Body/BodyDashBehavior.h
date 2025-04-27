@@ -15,7 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	BodyDashBehavior(const std::optional<Json>& data, FollowCamera* followCamera);
+	BodyDashBehavior(const Json& data, FollowCamera* followCamera);
 	~BodyDashBehavior() = default;
 
 	// 処理実行
@@ -42,4 +42,11 @@ private:
 	float speed_;
 	// ダッシュ補間
 	std::unique_ptr<SimpleAnimation<float>> speedLerpValue_;
+	// 回転補間割合
+	float rotationLerpRate_;
+
+	//--------- functions ----------------------------------------------------
+
+	void UpdateDash(BasePlayerParts* parts);
+	void RotateToDirection(BasePlayerParts* parts);
 };

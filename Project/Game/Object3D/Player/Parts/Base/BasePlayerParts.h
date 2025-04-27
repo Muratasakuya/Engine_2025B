@@ -26,10 +26,11 @@ public:
 	// 各parts共通項目
 	struct PartsParameter {
 
-		// jsonのpath、この後にname + .jsonが入る
-		const std::string baseFilePath = "Player/PartsParameter/";
 		std::string name;          // 名前
-		Vector3 offsetTranslation; //座標オフセット、これを動かす
+		Vector3 offsetTranslation; // 座標オフセット、これを動かす
+		Vector3 initRotationAngle; // 初期回転角
+
+		BasePlayerParts* owner;
 
 		// imgui
 		const float itemWidth = 224.0f;
@@ -47,7 +48,8 @@ public:
 	BasePlayerParts() = default;
 	virtual ~BasePlayerParts() = default;
 
-	void Init(const std::string& modelName);
+	void Init(const std::string& modelName,
+		const std::optional<std::string>& objectName = std::nullopt);
 
 	// behavior
 	void RegisterBehavior(PlayerBehaviorType type, std::unique_ptr<IPlayerBehavior> behavior);
@@ -58,8 +60,6 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const Transform3DComponent& parent);
-
-	void SetParam(const PartsParameter& param);
 
 	// transform
 	void SetScale(const Vector3& scale) { transform_->scale = scale; }
@@ -76,6 +76,10 @@ protected:
 
 	Input* input_;
 
+	// jsonのpath、この後にname + .jsonが入る
+	const std::string baseInitJsonFilePath_ = "Player/PartsParameter/Init/";
+	const std::string baseBehaviorJsonFilePath_ = "Player/PartsParameter/Behavior/";
+
 	// components
 	Transform3DComponent* transform_;
 	MaterialComponent* material_;
@@ -87,6 +91,11 @@ protected:
 	PartsParameter parameter_;
 
 	//--------- functions ----------------------------------------------------
+
+	// init
+	void SetParam();
+
+	Quaternion CalRotationAxisAngle(const Vector3& rotationAngle);
 
 	void InputKey(Vector2& inputValue);
 };

@@ -46,6 +46,9 @@ private:
 	std::optional<PlayerBehaviorType> moveBehaviour_;              // 依頼移動behaviour
 	std::unordered_set<PlayerBehaviorType> currentMoveBehaviours_; // 現在の移動behaviour
 
+	// editor
+	bool isAcceptedMode_; // behaviourを設定できないようにする
+
 	//--------- functions ----------------------------------------------------
 
 	// update
