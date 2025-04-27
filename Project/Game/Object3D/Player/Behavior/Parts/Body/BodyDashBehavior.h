@@ -42,4 +42,11 @@ private:
 	float speed_;
 	// ダッシュ補間
 	std::unique_ptr<SimpleAnimation<float>> speedLerpValue_;
+	// 回転補間割合
+	float rotationLerpRate_;
+
+	//--------- functions ----------------------------------------------------
+
+	void UpdateDash(BasePlayerParts* parts);
+	void RotateToDirection(BasePlayerParts* parts);
 };

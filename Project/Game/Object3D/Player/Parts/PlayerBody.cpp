@@ -9,6 +9,7 @@
 
 // behaviors
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyWaitBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/Body/BodyWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyDashBehavior.h>
 
 //============================================================================
@@ -20,6 +21,9 @@ void PlayerBody::InitBehaviors(const Json& data) {
 	// wait
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
 		std::make_unique<BodyWaitBehavior>(data));
+	// wait
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Walk,
+		std::make_unique<BodyWalkBehavior>(data, followCamera_));
 	// dash
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
 		std::make_unique<BodyDashBehavior>(data, followCamera_));
@@ -36,66 +40,20 @@ void PlayerBody::Init(FollowCamera* followCamera) {
 	ApplyJson();
 }
 
-void PlayerBody::UpdateWalk() {
-
-	Vector2 inputValue{};
-	// inputの値を取得
-	InputKey(inputValue);
-	inputValue = Vector2::Normalize(inputValue);
-	if (std::fabs(inputValue.x) > FLT_EPSILON || std::fabs(inputValue.y) > FLT_EPSILON) {
-
-		// 入力がある場合のみ速度を計算する
-		Vector3 inputDirection(inputValue.x, 0.0f, inputValue.y);
-		inputDirection = Vector3::Normalize(inputDirection);
-
-		Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(followCamera_->GetTransform().rotation);
-		Vector3 rotatedDirection = Vector3::TransferNormal(inputDirection, rotateMatrix);
-		rotatedDirection = Vector3::Normalize(rotatedDirection);
-
-		move_ = rotatedDirection * moveVelocity_;
-	} else {
-
-		// 入力がなければどんどん減速させる
-		move_ *= moveDecay_;
-		// 一定の速度以下で止まる
-		if (move_.Length() < 0.001f) {
-			move_.Init();
-		}
-	}
-
-	// 移動量を加算
-	transform_->translation.x += move_.x;
-	transform_->translation.z += move_.z;
-}
-
-void PlayerBody::RotateToDirection() {
-
-	Vector3 direction = Vector3(move_.x, 0.0f, move_.z).Normalize();
-
-	if (direction.Length() <= 0.0f) {
-		return;
-	}
-
-	Quaternion targetRotation = Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f));
-	transform_->rotation = Quaternion::Slerp(transform_->rotation, targetRotation, rotationLerpRate_);
-}
-
 void PlayerBody::ImGui() {
 
 	ImGui::PushItemWidth(parameter_.itemWidth);
 
 	parameter_.ImGui();
 
-	if (ImGui::CollapsingHeader("Walk")) {
-
-		ImGui::DragFloat3("moveVelocity##Walk", &moveVelocity_.x, 0.1f);
-		ImGui::DragFloat("moveDecay##Walk", &moveDecay_, 0.1f, 0.0f, 1.0f);
-		ImGui::DragFloat("rotationLerpRate##Walk", &rotationLerpRate_, 0.1f);
-	}
-
 	if (ImGui::CollapsingHeader("WaitBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("Walk")) {
+
+		behaviors_[PlayerBehaviorType::Walk]->ImGui();
 	}
 
 	if (ImGui::CollapsingHeader("DashBehavior")) {
@@ -113,10 +71,6 @@ void PlayerBody::ApplyJson() {
 		return;
 	}
 
-	moveVelocity_ = JsonAdapter::ToObject<Vector3>(data["Test"]["moveVelocity_"]);
-	moveDecay_ = JsonAdapter::GetValue<float>(data["Test"], "moveDecay_");
-	rotationLerpRate_ = JsonAdapter::GetValue<float>(data["Test"], "rotationLerpRate_");
-
 	// behaviors初期化
 	InitBehaviors(data);
 }
@@ -126,11 +80,6 @@ void PlayerBody::SaveJson() {
 	parameter_.SaveJson();
 
 	Json data;
-
-	data["Test"]["moveVelocity_"] = JsonAdapter::FromObject<Vector3>(moveVelocity_);
-	data["Test"]["moveDecay_"] = moveDecay_;
-	data["Test"]["rotationLerpRate_"] = rotationLerpRate_;
-
 	for (const auto& behaviors : std::views::values(behaviors_)) {
 
 		behaviors->SaveJson(data);
