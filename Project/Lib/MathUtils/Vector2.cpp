@@ -102,3 +102,16 @@ Vector2 Vector2::AnyInit(float value) {
 
 	return Vector2(value, value);
 }
+
+float Vector2::Length(const Vector2& v) {
+	return std::sqrtf(v.x * v.x + v.y * v.y);
+}
+
+Vector2 Vector2::Normalize(const Vector2& v) {
+
+	float length = Vector2::Length(v);
+	if (length == 0.0f) {
+		return Vector2(0.0f, 0.0f);
+	}
+	return Vector2(v.x / length, v.y / length);
+}

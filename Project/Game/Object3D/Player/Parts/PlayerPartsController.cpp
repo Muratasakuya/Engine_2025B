@@ -39,16 +39,6 @@ void PlayerPartsController::InitParts(FollowCamera* followCamera) {
 	leftSword_->SetParent(leftHand_->GetTransform());
 }
 
-void PlayerPartsController::SetParam() {
-
-	// 値を設定
-	body_->SetParam(bodyParam_);
-	rightHand_->SetParam(rightHandParam_);
-	leftHand_->SetParam(leftHandParam_);
-	rightSword_->SetParam(rightSwordParam_);
-	leftSword_->SetParam(leftSwordParam_);
-}
-
 void PlayerPartsController::Init(FollowCamera* followCamera) {
 
 	// 各partsの初期化
@@ -56,9 +46,6 @@ void PlayerPartsController::Init(FollowCamera* followCamera) {
 
 	// json適応
 	ApplyJson();
-
-	// 各partsに値を設定
-	SetParam();
 }
 
 void PlayerPartsController::Update(const std::unordered_set<PlayerBehaviorType>& behaviors) {
@@ -69,69 +56,41 @@ void PlayerPartsController::Update(const std::unordered_set<PlayerBehaviorType>&
 
 void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehaviorType>& behaviors) {
 
-	// 歩き処理
-	body_->UpdateWalk();
+	struct BehaviorInfo {
 
-	// 待ち
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Wait })) {
+		PlayerBehaviorType type;
+		bool needReset;
+	};
+	// 更新対象一覧
+	const std::vector<BehaviorInfo> behaviorList = {
 
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Wait); });
-	} else {
+		{ PlayerBehaviorType::Wait, true },
+		{ PlayerBehaviorType::Walk, true },
+		{ PlayerBehaviorType::Dash, true },
+		{ PlayerBehaviorType::Attack_1st, false },
+		{ PlayerBehaviorType::DashAttack, false },
+		{ PlayerBehaviorType::Attack_2nd, false },
+		{ PlayerBehaviorType::Attack_3rd, false },
+		{ PlayerBehaviorType::Parry, false },
+	};
 
-		// 状態をリセットする
-		ForEachParts([](BasePlayerParts* part) {
-			part->ResetBehavior(PlayerBehaviorType::Wait); });
+	for (const auto& behaviorInfo : behaviorList) {
+
+		// 有効なbehaviorを更新
+		if (CheckCurrentBehaviors(behaviors, { behaviorInfo.type })) {
+
+			ForEachParts([&](BasePlayerParts* part) {
+				part->ExecuteBehavior(behaviorInfo.type);
+				});
+		}
+		// リセットが必要なら行う
+		else if (behaviorInfo.needReset) {
+
+			ForEachParts([&](BasePlayerParts* part) {
+				part->ResetBehavior(behaviorInfo.type);
+				});
+		}
 	}
-	// 歩き
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Walk })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Walk); });
-	}
-	// ダッシュ
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Dash })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Dash); });
-	} else {
-
-		// 状態をリセットする
-		ForEachParts([](BasePlayerParts* part) {
-			part->ResetBehavior(PlayerBehaviorType::Dash); });
-	}
-	// 止まっている状態から攻撃...1段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_1st })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Attack_1st); });
-	}
-	// ダッシュ攻撃...1段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::DashAttack })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::DashAttack); });
-	}
-	// 攻撃2段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_2nd })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Attack_2nd); });
-	}
-	// 攻撃3段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_3rd })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Attack_3rd); });
-	}
-	// 攻撃受け流し
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Parry })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Parry); });
-	}
-	// 体の向きを移動に合わせる
-	body_->RotateToDirection();
 }
 
 void PlayerPartsController::ImGui() {
@@ -145,70 +104,42 @@ void PlayerPartsController::ImGui() {
 
 		if (ImGui::BeginTabItem("Body")) {
 
-			bodyParam_.ImGui();
 			body_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("RightHand")) {
 
-			rightHandParam_.ImGui();
 			rightHand_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("LeftHand")) {
 
-			leftHandParam_.ImGui();
 			leftHand_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("RightSword")) {
 
-			rightSwordParam_.ImGui();
 			rightSword_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("LeftSword")) {
 
-			leftSwordParam_.ImGui();
 			leftSword_->ImGui();
 			ImGui::EndTabItem();
 		}
-
-		SetParam();
 
 		ImGui::EndTabBar();
 	}
 }
 
 void PlayerPartsController::ApplyJson() {
-
-	// 名前を設定
-	bodyParam_.name = "bodyParam";
-	rightHandParam_.name = "rightHandParam";
-	leftHandParam_.name = "leftHandParam";
-	rightSwordParam_.name = "rightSwordParam";
-	leftSwordParam_.name = "leftSwordParam";
-
-	// 各parameterの値を適応
-	bodyParam_.ApplyJson();
-	rightHandParam_.ApplyJson();
-	leftHandParam_.ApplyJson();
-	rightSwordParam_.ApplyJson();
-	leftSwordParam_.ApplyJson();
 }
 
 void PlayerPartsController::SaveJson() {
-
-	// 各parameterの値を保存
-	bodyParam_.SaveJson();
-	rightHandParam_.SaveJson();
-	leftHandParam_.SaveJson();
-	rightSwordParam_.SaveJson();
-	leftSwordParam_.SaveJson();
 
 	// 各クラスごと
 	body_->SaveJson();

@@ -57,4 +57,8 @@ public:
 	Vector2 Normalize() const;
 
 	static Vector2 AnyInit(float value);
+
+	static float Length(const Vector2& v);
+
+	static Vector2 Normalize(const Vector2& v);
 };

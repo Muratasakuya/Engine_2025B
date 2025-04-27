@@ -10,12 +10,12 @@
 //	BodyWaitBehavior classMethods
 //============================================================================
 
-BodyWaitBehavior::BodyWaitBehavior(const std::optional<Json>& data) {
+BodyWaitBehavior::BodyWaitBehavior(const Json& data) {
 
-	if (data.has_value()) {
+	if (data.contains(waitBehaviorJsonKey_)) {
 
-		speed_ = JsonAdapter::GetValue<float>(data.value(), "speed_");
-		amplitude_ = JsonAdapter::GetValue<float>(data.value(), "amplitude_");
+		speed_ = JsonAdapter::GetValue<float>(data[waitBehaviorJsonKey_], "speed_");
+		amplitude_ = JsonAdapter::GetValue<float>(data[waitBehaviorJsonKey_], "amplitude_");
 	}
 }
 
@@ -23,6 +23,7 @@ void BodyWaitBehavior::Execute(BasePlayerParts* parts) {
 
 	if (!baseTranslate_.has_value()) {
 
+		// 初期座標を取得する
 		baseTranslate_ = parts->GetTransform().translation;
 	}
 
@@ -56,6 +57,6 @@ void BodyWaitBehavior::ImGui() {
 void BodyWaitBehavior::SaveJson(Json& data) {
 
 	// 値の保存
-	data["speed_"] = speed_;
-	data["amplitude_"] = amplitude_;
+	data[waitBehaviorJsonKey_]["speed_"] = speed_;
+	data[waitBehaviorJsonKey_]["amplitude_"] = amplitude_;
 }

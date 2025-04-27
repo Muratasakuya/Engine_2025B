@@ -10,22 +10,28 @@
 //	BodyDashBehavior classMethods
 //============================================================================
 
-BodyDashBehavior::BodyDashBehavior(const std::optional<Json>& data, FollowCamera* followCamera) {
+BodyDashBehavior::BodyDashBehavior(const Json& data, FollowCamera* followCamera) {
 
 	followCamera_ = nullptr;
 	followCamera_ = followCamera;
 
 	speedLerpValue_ = std::make_unique<SimpleAnimation<float>>();
+	if (data.contains(dashBehaviorJsonKey_) && data[dashBehaviorJsonKey_].contains("DashSpeedLerpValue")) {
 
-	if (data.has_value()) {
-
-		const Json& jsonData = data.value();
-		const Json& animationData = jsonData.contains("DashSpeedLerpValue") ? jsonData["DashSpeedLerpValue"] : Json();
-		speedLerpValue_->FromJson(animationData);
+		speedLerpValue_->FromJson(data[dashBehaviorJsonKey_]["DashSpeedLerpValue"]);
+		rotationLerpRate_ = JsonAdapter::GetValue<float>(data[dashBehaviorJsonKey_], "rotationLerpRate_");
 	}
 }
 
 void BodyDashBehavior::Execute(BasePlayerParts* parts) {
+
+	// ダッシュ更新
+	UpdateDash(parts);
+	// 回転、向いている方向を計算
+	RotateToDirection(parts);
+}
+
+void BodyDashBehavior::UpdateDash(BasePlayerParts* parts) {
 
 	// 補間処理はダッシュ中のみ
 	if (!speedLerpValue_->IsStart()) {
@@ -41,6 +47,7 @@ void BodyDashBehavior::Execute(BasePlayerParts* parts) {
 	Vector2 inputValue{};
 	// inputの値を取得
 	IPlayerBehavior::InputKey(inputValue);
+	inputValue = Vector2::Normalize(inputValue);
 	if (std::fabs(inputValue.x) > FLT_EPSILON || std::fabs(inputValue.y) > FLT_EPSILON) {
 
 		// 入力がある場合のみ速度を計算する
@@ -61,6 +68,21 @@ void BodyDashBehavior::Execute(BasePlayerParts* parts) {
 	parts->SetTranslate(translation);
 }
 
+void BodyDashBehavior::RotateToDirection(BasePlayerParts* parts) {
+
+	Vector3 direction = Vector3(move_.x, 0.0f, move_.z).Normalize();
+
+	if (direction.Length() <= 0.0f) {
+		return;
+	}
+
+	// 向きを計算
+	Quaternion targetRotation = Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f));
+	Quaternion rotation = parts->GetTransform().rotation;
+	rotation = Quaternion::Slerp(rotation, targetRotation, rotationLerpRate_);
+	parts->SetRotate(rotation);
+}
+
 void BodyDashBehavior::Reset() {
 
 	// 初期化する
@@ -69,11 +91,21 @@ void BodyDashBehavior::Reset() {
 
 void BodyDashBehavior::ImGui() {
 
+	ImGui::Text(std::format("moveX: {}", move_.x).c_str());
+	ImGui::Text(std::format("moveZ: {}", move_.z).c_str());
+
+	ImGui::PushItemWidth(itemWidth_);
+
+	ImGui::DragFloat("rotationLerpRate##BodyDashBehavior", &rotationLerpRate_, 0.01f);
+
+	ImGui::PopItemWidth();
+
 	speedLerpValue_->ImGui("PlayerBodyDashBehavior_speedLerpValue_");
 }
 
 void BodyDashBehavior::SaveJson(Json& data) {
 
 	// 値の保存
-	speedLerpValue_->ToJson(data["DashSpeedLerpValue"]);
+	speedLerpValue_->ToJson(data[dashBehaviorJsonKey_]["DashSpeedLerpValue"]);
+	data[dashBehaviorJsonKey_]["rotationLerpRate_"] = rotationLerpRate_;
 }

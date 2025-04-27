@@ -47,6 +47,16 @@ protected:
 
 	FollowCamera* followCamera_;
 
+	// behaviorごとのjsonのkey
+	const std::string waitBehaviorJsonKey_ = "BehaviorType_Wait";
+	const std::string walkBehaviorJsonKey_ = "BehaviorType_Walk";
+	const std::string dashBehaviorJsonKey_ = "BehaviorType_Dash";
+	const std::string attack1stBehaviorJsonKey_ = "BehaviorType_Attack_1st";
+	const std::string dashAttackBehaviorJsonKey_ = "BehaviorType_DashAttack";
+	const std::string attack2ndBehaviorJsonKey_ = "BehaviorType_Attack_2nd";
+	const std::string attack3rdBehaviorJsonKey_ = "BehaviorType_Attack_3rd";
+	const std::string parryBehaviorJsonKey_ = "BehaviorType_Parry";
+
 	//--------- functions ----------------------------------------------------
 
 	Quaternion CalRotationAxisAngle(const Vector3& rotationAngle);

@@ -31,14 +31,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// parameter
-	Vector3 initRotationAngle_; // 初期化時の回転角
-
 	//--------- functions ----------------------------------------------------
 
 	// json
 	void ApplyJson();
-
-	// init
-	void InitParam();
 };
