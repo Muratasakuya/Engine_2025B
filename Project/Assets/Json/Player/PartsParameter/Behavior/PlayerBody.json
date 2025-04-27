@@ -5,25 +5,22 @@
             "loop_.isLoop": false,
             "loop_.maxCount": 0,
             "move_.easingType": 0,
-            "move_.end": 0.699999988079071,
+            "move_.end": 0.4000000059604645,
             "move_.moveValue": 0.0,
             "move_.start": 0.0,
             "time_.end": 0.20000000298023224,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
-        }
+        },
+        "rotationLerpRate_": 0.18000000715255737
     },
     "BehaviorType_Wait": {
         "amplitude_": 0.03999999910593033,
         "speed_": 3.200000047683716
     },
-    "Test": {
-        "moveDecay_": 0.8799999952316284,
-        "moveVelocity_": {
-            "x": 0.4000000059604645,
-            "y": 0.0,
-            "z": 0.4000000059604645
-        },
-        "rotationLerpRate_": 0.20000000298023224
+    "BehaviorType_Walk": {
+        "moveDecay_": 0.07999999821186066,
+        "rotationLerpRate_": 0.18000000715255737,
+        "speed_": 0.3199999928474426
     }
 }

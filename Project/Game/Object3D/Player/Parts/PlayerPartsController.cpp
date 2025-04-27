@@ -56,9 +56,6 @@ void PlayerPartsController::Update(const std::unordered_set<PlayerBehaviorType>&
 
 void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehaviorType>& behaviors) {
 
-	// 歩き処理
-	body_->UpdateWalk();
-
 	// 待ち
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Wait })) {
 
@@ -75,6 +72,11 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 
 		ForEachParts([](BasePlayerParts* part) {
 			part->ExecuteBehavior(PlayerBehaviorType::Walk); });
+	} else {
+
+		// 状態をリセットする
+		ForEachParts([](BasePlayerParts* part) {
+			part->ResetBehavior(PlayerBehaviorType::Walk); });
 	}
 	// ダッシュ
 	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Dash })) {
@@ -117,8 +119,6 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 		ForEachParts([](BasePlayerParts* part) {
 			part->ExecuteBehavior(PlayerBehaviorType::Parry); });
 	}
-	// 体の向きを移動に合わせる
-	body_->RotateToDirection();
 }
 
 void PlayerPartsController::ImGui() {
