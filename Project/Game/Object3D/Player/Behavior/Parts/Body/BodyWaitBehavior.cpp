@@ -23,6 +23,7 @@ void BodyWaitBehavior::Execute(BasePlayerParts* parts) {
 
 	if (!baseTranslate_.has_value()) {
 
+		// 初期座標を取得する
 		baseTranslate_ = parts->GetTransform().translation;
 	}
 
