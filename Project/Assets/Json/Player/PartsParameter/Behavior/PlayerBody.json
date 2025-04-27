@@ -5,10 +5,10 @@
             "loop_.isLoop": false,
             "loop_.maxCount": 0,
             "move_.easingType": 0,
-            "move_.end": 0.4000000059604645,
+            "move_.end": 0.5,
             "move_.moveValue": 0.0,
-            "move_.start": 0.0,
-            "time_.end": 0.20000000298023224,
+            "move_.start": 0.3199999928474426,
+            "time_.end": 0.23999999463558197,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         },

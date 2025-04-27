@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Input/Input.h>
+#include <Game/Time/GameTimer.h>
 
 //============================================================================
 //	PlayerBehaviorController classMethods
@@ -15,6 +16,9 @@ void PlayerBehaviorController::Init() {
 	input_ = Input::GetInstance();
 
 	isAcceptedMode_ = false;
+
+	// json適応
+	ApplyJson();
 }
 
 void PlayerBehaviorController::Update() {
@@ -24,15 +28,37 @@ void PlayerBehaviorController::Update() {
 		return;
 	}
 
-	// 歩き処理
-	MoveWalk();
-	// ダッシュ処理
-	MoveDash();
+	// 移動更新処理
+	UpdateMove();
+	// 攻撃更新処理
+	UpdateAttack();
+
 	// 待機モーションチェック
 	CheckWait();
 
 	// behaviourを設定する
 	BehaviourRequest();
+}
+
+void PlayerBehaviorController::UpdateMove() {
+
+	// 攻撃中はここの操作はできないようにしておく
+	bool isAttack = false;
+	isAttack |= limits_[PlayerBehaviorType::Attack_1st].isUpdating_;
+
+	if (!isAttack) {
+
+		// 歩き処理
+		MoveWalk();
+		// ダッシュ処理
+		MoveDash();
+	}
+}
+
+void PlayerBehaviorController::UpdateAttack() {
+
+	// 1段階目攻撃処理
+	FirstAttack();
 }
 
 void PlayerBehaviorController::MoveWalk() {
@@ -50,7 +76,7 @@ void PlayerBehaviorController::MoveWalk() {
 		moveBehaviour_ = PlayerBehaviorType::Walk;
 	} else {
 		// 入力がなければ削除する
-		if (CheckCurrentBehaviors({ PlayerBehaviorType::Walk })) {
+		if (CheckCurrentBehaviors({ PlayerBehaviorType::Walk }, MatchType::All)) {
 
 			currentMoveBehaviours_.erase(PlayerBehaviorType::Walk);
 		}
@@ -72,9 +98,11 @@ void PlayerBehaviorController::MoveDash() {
 		if (input_->PushMouseRight()) {
 
 			moveBehaviour_ = PlayerBehaviorType::Dash;
+			// ダッシュになったら歩き操作は消す
+			currentMoveBehaviours_.erase(PlayerBehaviorType::Walk);
 		} else {
 			// ダッシュ中に右クリックを離したらダッシュを止める
-			if (CheckCurrentBehaviors({ PlayerBehaviorType::Dash })) {
+			if (CheckCurrentBehaviors({ PlayerBehaviorType::Dash }, MatchType::All)) {
 
 				currentMoveBehaviours_.erase(PlayerBehaviorType::Dash);
 			}
@@ -82,9 +110,43 @@ void PlayerBehaviorController::MoveDash() {
 	}
 }
 
+void PlayerBehaviorController::FirstAttack() {
+
+	// 1段目の攻撃を設定するを設定する
+	// 1段目攻撃中は受け付けない
+	if (!limits_[PlayerBehaviorType::Attack_1st].isUpdating_) {
+		// 待機か、歩き中
+		if (CheckCurrentBehaviors({
+			PlayerBehaviorType::Wait,
+			PlayerBehaviorType::Walk }, MatchType::Any)) {
+			// 左クリックで 1段目の攻撃
+			if (input_->TriggerKey(DIK_SPACE)) {
+
+				moveBehaviour_ = PlayerBehaviorType::Attack_1st;
+
+				// 現在有効な操作をすべて削除する
+				currentMoveBehaviours_.clear();
+			}
+		}
+	}
+
+	// 設定されているとき
+	if (CheckCurrentBehaviors({ PlayerBehaviorType::Attack_1st }, MatchType::All)) {
+
+		// 経過時間を進める
+		limits_[PlayerBehaviorType::Attack_1st].UpdateElapseTime();
+		// 最大時間になったらリセットし、攻撃を止める
+		if (limits_[PlayerBehaviorType::Attack_1st].isReached) {
+
+			limits_[PlayerBehaviorType::Attack_1st].Reset();
+			currentMoveBehaviours_.erase(PlayerBehaviorType::Attack_1st);
+		}
+	}
+}
+
 void PlayerBehaviorController::CheckWait() {
 
-	// 入力が何もなければ
+	// 入力が何もないか、moveBehaviour_に何も値が入っていないか
 	bool inputKey =
 		!input_->PushKey(DIK_W) &&
 		!input_->PushKey(DIK_A) &&
@@ -92,12 +154,12 @@ void PlayerBehaviorController::CheckWait() {
 		!input_->PushKey(DIK_D);
 
 	// 待ちモーションを開始させる
-	if (inputKey) {
+	if (inputKey && !moveBehaviour_.has_value()) {
 
 		moveBehaviour_ = PlayerBehaviorType::Wait;
 	} else {
-		// 入力が何かあれば削除する
-		if (CheckCurrentBehaviors({ PlayerBehaviorType::Wait })) {
+		// 何か操作があれば削除する
+		if (CheckCurrentBehaviors({ PlayerBehaviorType::Wait }, MatchType::All)) {
 
 			currentMoveBehaviours_.erase(PlayerBehaviorType::Wait);
 		}
@@ -110,7 +172,7 @@ void PlayerBehaviorController::BehaviourRequest() {
 	if (moveBehaviour_.has_value()) {
 
 		// 同じ値はセットできないようにする
-		if (!CheckCurrentBehaviors({ *moveBehaviour_ })) {
+		if (!CheckCurrentBehaviors({ *moveBehaviour_ }, MatchType::All)) {
 
 			currentMoveBehaviours_.insert(*moveBehaviour_);
 		}
@@ -131,49 +193,118 @@ void PlayerBehaviorController::ImGui() {
 		isAcceptedMode_ = !isAcceptedMode_;
 	}
 
+	// 値を保存
+	if (ImGui::Button("Save Json", ImVec2(itemWidth_, 32.0f))) {
+
+		SaveJson();
+	}
+
 	// 止まっている状態から攻撃...1段目
-	if (ImGui::Button("Attack_1st", ImVec2(itemWidth_, 32.0f))) {
+	if (ImGui::CollapsingHeader("Attack_1st")) {
 
-		moveBehaviour_ = PlayerBehaviorType::Attack_1st;
-	}
+		if (ImGui::Button("Execute##Attack_1st", ImVec2(itemWidth_, 32.0f))) {
 
-	// ダッシュ攻撃...1段目
-	if (ImGui::Button("DashAttack", ImVec2(itemWidth_, 32.0f))) {
-
-		moveBehaviour_ = PlayerBehaviorType::DashAttack;
-	}
-
-	// 攻撃2段目
-	if (ImGui::Button("Attack_2nd", ImVec2(itemWidth_, 32.0f))) {
-
-		moveBehaviour_ = PlayerBehaviorType::Attack_2nd;
-	}
-
-	// 攻撃3段目
-	if (ImGui::Button("Attack_3rd", ImVec2(itemWidth_, 32.0f))) {
-
-		moveBehaviour_ = PlayerBehaviorType::Attack_3rd;
-	}
-
-	// 攻撃受け流し
-	if (ImGui::Button("Parry", ImVec2(itemWidth_, 32.0f))) {
-
-		moveBehaviour_ = PlayerBehaviorType::Parry;
+			moveBehaviour_ = PlayerBehaviorType::Attack_1st;
+		}
+		limits_[PlayerBehaviorType::Attack_1st].ImGui();
 	}
 }
 
 bool PlayerBehaviorController::CheckCurrentBehaviors(
-	const std::initializer_list<PlayerBehaviorType> behaviours) {
+	const std::initializer_list<PlayerBehaviorType> behaviours, MatchType matchType) {
 
-	for (auto state : behaviours) {
-		if (currentMoveBehaviours_.find(state) == currentMoveBehaviours_.end()) {
-			return false;
+	// 全部一致
+	if (matchType == MatchType::All) {
+		for (auto state : behaviours) {
+			if (currentMoveBehaviours_.find(state) == currentMoveBehaviours_.end()) {
+
+				// 1つもない場合
+				return false;
+			}
 		}
+		// 全部あった場合
+		return true;
 	}
-	return true;
+	// どれか一致
+	else if (matchType == MatchType::Any) {
+		for (auto state : behaviours) {
+			if (currentMoveBehaviours_.find(state) != currentMoveBehaviours_.end()) {
+
+				// 1つが一致したとき
+				return true;
+			}
+		}
+		// 1つもない場合
+		return false;
+	}
+	return false;
 }
 
 const std::unordered_set<PlayerBehaviorType>& PlayerBehaviorController::GetCurrentBehaviours() const {
 
 	return currentMoveBehaviours_;
+}
+
+void PlayerBehaviorController::LimitTime::UpdateElapseTime() {
+
+	elapsed += GameTimer::GetDeltaTime();
+
+	// 経過時間チェック
+	if (elapsed > limit) {
+
+		// 時間を過ぎた
+		isReached = true;
+	} else {
+
+		isUpdating_ = true;
+	}
+}
+
+void PlayerBehaviorController::LimitTime::Reset() {
+
+	elapsed = 0.0f;
+	isUpdating_ = false;
+	isReached = false;
+}
+
+void PlayerBehaviorController::ApplyJson() {
+
+	Json data;
+	if (!JsonAdapter::LoadCheck("Player/Controller/behaviorController.json", data)) {
+		return;
+	}
+
+	limits_[PlayerBehaviorType::Attack_1st].ApplyJson(data, "Attack_1st");
+}
+
+void PlayerBehaviorController::SaveJson() {
+
+	Json data;
+
+	limits_[PlayerBehaviorType::Attack_1st].SaveJson(data, "Attack_1st");
+
+	JsonAdapter::Save("Player/Controller/behaviorController.json", data);
+}
+
+void PlayerBehaviorController::LimitTime::ImGui() {
+
+	ImGui::PushItemWidth(itemWidth_);
+
+	ImGui::Text(std::format("isUpdating: {}", isUpdating_).c_str());
+
+	ImGui::DragFloat("limit", &limit, 0.01f);
+
+	ImGui::PopItemWidth();
+}
+
+void PlayerBehaviorController::LimitTime::ApplyJson(
+	const Json& data, const std::string& key) {
+
+	limit = JsonAdapter::GetValue<float>(data[key], "limit");
+}
+
+void PlayerBehaviorController::LimitTime::SaveJson(
+	Json& data, const std::string& key) {
+
+	data[key]["limit"] = limit;
 }

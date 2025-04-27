@@ -76,6 +76,10 @@ public:
 	bool PushMouseRight() const;
 	bool PushMouseCenter() const;
 
+	bool TriggerMouseLeft() const;
+	bool TriggerMouseRight() const;
+	bool TriggerMouseCenter() const;
+
 	Vector2 GetMousePos() const;
 	Vector2 GetMousePrePos() const;
 	Vector2 GetMouseMoveValue() const;
@@ -130,10 +134,11 @@ private:
 
 	ComPtr<IDirectInputDevice8> mouse_; // マウスデバイス
 
-	std::array<bool, 3> mouseButtons_;  // マウスボタンの状態
-	Vector2 mousePos_;                  // マウスの座標
-	Vector2 mousePrePos_;               // マウスの前座標
-	float wheelValue_;                  // ホイール移動量
+	std::array<bool, 3> mouseButtons_;    // マウスボタンの状態
+	std::array<bool, 3> mousePreButtons_; // 1フレ前のマウスボタンの状態
+	Vector2 mousePos_;                    // マウスの座標
+	Vector2 mousePrePos_;                 // マウスの前座標
+	float wheelValue_;                    // ホイール移動量
 
 	//--------- functions ----------------------------------------------------
 
