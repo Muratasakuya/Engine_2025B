@@ -39,16 +39,6 @@ void PlayerPartsController::InitParts(FollowCamera* followCamera) {
 	leftSword_->SetParent(leftHand_->GetTransform());
 }
 
-void PlayerPartsController::SetParam() {
-
-	// 値を設定
-	body_->SetParam(bodyParam_);
-	rightHand_->SetParam(rightHandParam_);
-	leftHand_->SetParam(leftHandParam_);
-	rightSword_->SetParam(rightSwordParam_);
-	leftSword_->SetParam(leftSwordParam_);
-}
-
 void PlayerPartsController::Init(FollowCamera* followCamera) {
 
 	// 各partsの初期化
@@ -56,9 +46,6 @@ void PlayerPartsController::Init(FollowCamera* followCamera) {
 
 	// json適応
 	ApplyJson();
-
-	// 各partsに値を設定
-	SetParam();
 }
 
 void PlayerPartsController::Update(const std::unordered_set<PlayerBehaviorType>& behaviors) {
@@ -145,70 +132,42 @@ void PlayerPartsController::ImGui() {
 
 		if (ImGui::BeginTabItem("Body")) {
 
-			bodyParam_.ImGui();
 			body_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("RightHand")) {
 
-			rightHandParam_.ImGui();
 			rightHand_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("LeftHand")) {
 
-			leftHandParam_.ImGui();
 			leftHand_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("RightSword")) {
 
-			rightSwordParam_.ImGui();
 			rightSword_->ImGui();
 			ImGui::EndTabItem();
 		}
 
 		if (ImGui::BeginTabItem("LeftSword")) {
 
-			leftSwordParam_.ImGui();
 			leftSword_->ImGui();
 			ImGui::EndTabItem();
 		}
-
-		SetParam();
 
 		ImGui::EndTabBar();
 	}
 }
 
 void PlayerPartsController::ApplyJson() {
-
-	// 名前を設定
-	bodyParam_.name = "bodyParam";
-	rightHandParam_.name = "rightHandParam";
-	leftHandParam_.name = "leftHandParam";
-	rightSwordParam_.name = "rightSwordParam";
-	leftSwordParam_.name = "leftSwordParam";
-
-	// 各parameterの値を適応
-	bodyParam_.ApplyJson();
-	rightHandParam_.ApplyJson();
-	leftHandParam_.ApplyJson();
-	rightSwordParam_.ApplyJson();
-	leftSwordParam_.ApplyJson();
 }
 
 void PlayerPartsController::SaveJson() {
-
-	// 各parameterの値を保存
-	bodyParam_.SaveJson();
-	rightHandParam_.SaveJson();
-	leftHandParam_.SaveJson();
-	rightSwordParam_.SaveJson();
-	leftSwordParam_.SaveJson();
 
 	// 各クラスごと
 	body_->SaveJson();

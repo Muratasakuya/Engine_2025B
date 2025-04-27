@@ -54,6 +54,5 @@ private:
 	void ApplyJson();
 
 	// init
-	void InitBehaviors();
 	void InitBehaviors(const Json& data);
 };

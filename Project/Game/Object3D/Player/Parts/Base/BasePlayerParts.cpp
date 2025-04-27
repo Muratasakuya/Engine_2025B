@@ -11,7 +11,8 @@
 //	BasePlayerParts classMethods
 //============================================================================
 
-void BasePlayerParts::Init(const std::string& modelName) {
+void BasePlayerParts::Init(const std::string& modelName,
+	const std::optional<std::string>& objectName) {
 
 	input_ = nullptr;
 	input_ = Input::GetInstance();
@@ -19,13 +20,19 @@ void BasePlayerParts::Init(const std::string& modelName) {
 	const std::string groupName = "Player";
 
 	// playerPartsを作成
-	// modelName == objectName
 	uint32_t entityId = GameObjectHelper::CreateObject3D(
-		modelName, modelName, groupName);
+		modelName, objectName.value_or(modelName), groupName);
 
 	// 各componentを取得
 	transform_ = Component::GetComponent<Transform3DComponent>(entityId);
 	material_ = Component::GetComponent<MaterialComponent>(entityId);
+
+	// json適応
+	parameter_.owner = this;
+	parameter_.name = objectName.value_or(modelName) + "Param";
+	parameter_.ApplyJson();
+	// 値を設定
+	SetParam();
 }
 
 void BasePlayerParts::RegisterBehavior(PlayerBehaviorType type,
@@ -54,7 +61,16 @@ void BasePlayerParts::PartsParameter::ImGui() {
 
 	ImGui::PushItemWidth(itemWidth);
 
-	ImGui::DragFloat3(("offsetTranslation##" + name).c_str(), &offsetTranslation.x, 0.01f);
+	bool isChange = false;
+
+	isChange |= ImGui::DragFloat3(("offsetTranslation##" + name).c_str(), &offsetTranslation.x, 0.01f);
+	isChange |= ImGui::DragFloat3(("initRotationAngle##" + name).c_str(), &initRotationAngle.x, 0.01f);
+
+	// 変更があったときのみ更新
+	if (isChange) {
+
+		owner->SetParam();
+	}
 
 	ImGui::PopItemWidth();
 }
@@ -62,11 +78,12 @@ void BasePlayerParts::PartsParameter::ImGui() {
 void BasePlayerParts::PartsParameter::ApplyJson() {
 
 	Json data;
-	if (!JsonAdapter::LoadCheck(baseFilePath + name + ".json", data)) {
+	if (!JsonAdapter::LoadCheck(owner->baseInitJsonFilePath_ + name + ".json", data)) {
 		return;
 	}
 
 	offsetTranslation = JsonAdapter::ToObject<Vector3>(data["offsetTranslation"]);
+	initRotationAngle = JsonAdapter::ToObject<Vector3>(data["initRotationAngle"]);
 }
 
 void BasePlayerParts::PartsParameter::SaveJson() {
@@ -74,8 +91,9 @@ void BasePlayerParts::PartsParameter::SaveJson() {
 	Json data;
 
 	data["offsetTranslation"] = JsonAdapter::FromObject<Vector3>(offsetTranslation);
+	data["initRotationAngle"] = JsonAdapter::FromObject<Vector3>(initRotationAngle);
 
-	JsonAdapter::Save(baseFilePath + name + ".json", data);
+	JsonAdapter::Save(owner->baseInitJsonFilePath_ + name + ".json", data);
 }
 
 void BasePlayerParts::SetParent(const Transform3DComponent& parent) {
@@ -83,15 +101,26 @@ void BasePlayerParts::SetParent(const Transform3DComponent& parent) {
 	transform_->parent = &parent;
 }
 
-void BasePlayerParts::SetParam(const PartsParameter& param) {
-
-	// 必要な値を設定
-	parameter_.offsetTranslation = param.offsetTranslation;
-	transform_->translation = parameter_.offsetTranslation;
-}
-
 const Transform3DComponent& BasePlayerParts::GetTransform() const {
 	return *transform_;
+}
+
+void BasePlayerParts::SetParam() {
+
+	// 必要な値を設定
+	transform_->translation = parameter_.offsetTranslation;
+	transform_->rotation = CalRotationAxisAngle(parameter_.initRotationAngle);
+}
+
+Quaternion BasePlayerParts::CalRotationAxisAngle(const Vector3& rotationAngle) {
+
+	Quaternion rotation = Quaternion::Normalize(Quaternion::
+		MakeRotateAxisAngleQuaternion(Vector3(1.0f, 0.0f, 0.0f), rotationAngle.x) *
+		Quaternion::
+		MakeRotateAxisAngleQuaternion(Vector3(0.0f, 1.0f, 0.0f), rotationAngle.y) *
+		Quaternion::
+		MakeRotateAxisAngleQuaternion(Vector3(0.0f, 0.0f, 1.0f), rotationAngle.z));
+	return  rotation;
 }
 
 void BasePlayerParts::InputKey(Vector2& inputValue) {

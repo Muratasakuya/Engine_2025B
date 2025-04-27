@@ -11,19 +11,11 @@
 //	PlayerRightHand classMethods
 //============================================================================
 
-void PlayerRightHand::InitBehaviors() {
-
-	// dash
-	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
-		std::make_unique<RightHandDashBehavior>(std::nullopt));
-}
-
 void PlayerRightHand::InitBehaviors(const Json& data) {
 
 	// dash
-	const Json& behaviorData = data.contains("PlayerRightHandBehavior") ? data["PlayerRightHandBehavior"] : Json();
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
-		std::make_unique<RightHandDashBehavior>(behaviorData));
+		std::make_unique<RightHandDashBehavior>(data));
 }
 
 void PlayerRightHand::Init() {
@@ -38,6 +30,8 @@ void PlayerRightHand::ImGui() {
 
 	ImGui::PushItemWidth(parameter_.itemWidth);
 
+	parameter_.ImGui();
+
 	if (ImGui::CollapsingHeader("DashBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Dash]->ImGui();
@@ -49,10 +43,7 @@ void PlayerRightHand::ImGui() {
 void PlayerRightHand::ApplyJson() {
 
 	Json data;
-	if (!JsonAdapter::LoadCheck(parameter_.baseFilePath + "PlayerRightHand.json", data)) {
-
-		// behaviors初期化
-		InitBehaviors();
+	if (!JsonAdapter::LoadCheck(baseBehaviorJsonFilePath_ + "playerRightHand.json", data)) {
 		return;
 	}
 
@@ -62,12 +53,13 @@ void PlayerRightHand::ApplyJson() {
 
 void PlayerRightHand::SaveJson() {
 
+	parameter_.SaveJson();
+
 	Json data;
 
 	for (const auto& behaviors : std::views::values(behaviors_)) {
 
-		behaviors->SaveJson(data["PlayerRightHandBehavior"]);
+		behaviors->SaveJson(data);
 	}
-
-	JsonAdapter::Save(parameter_.baseFilePath + "PlayerRightHand.json", data);
+	JsonAdapter::Save(baseBehaviorJsonFilePath_ + "playerRightHand.json", data);
 }

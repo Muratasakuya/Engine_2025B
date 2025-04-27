@@ -15,26 +15,14 @@
 //	PlayerBody classMethods
 //============================================================================
 
-void PlayerBody::InitBehaviors() {
-
-	// wait
-	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
-		std::make_unique<BodyWaitBehavior>(std::nullopt));
-	// dash
-	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
-		std::make_unique<BodyDashBehavior>(std::nullopt, followCamera_));
-}
-
 void PlayerBody::InitBehaviors(const Json& data) {
 
 	// wait
-	Json behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
-		std::make_unique<BodyWaitBehavior>(behaviorData));
+		std::make_unique<BodyWaitBehavior>(data));
 	// dash
-	behaviorData = data.contains("PlayerBodyBehavior") ? data["PlayerBodyBehavior"] : Json();
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
-		std::make_unique<BodyDashBehavior>(behaviorData, followCamera_));
+		std::make_unique<BodyDashBehavior>(data, followCamera_));
 }
 
 void PlayerBody::Init(FollowCamera* followCamera) {
@@ -53,7 +41,7 @@ void PlayerBody::UpdateWalk() {
 	Vector2 inputValue{};
 	// inputの値を取得
 	InputKey(inputValue);
-
+	inputValue = Vector2::Normalize(inputValue);
 	if (std::fabs(inputValue.x) > FLT_EPSILON || std::fabs(inputValue.y) > FLT_EPSILON) {
 
 		// 入力がある場合のみ速度を計算する
@@ -96,6 +84,8 @@ void PlayerBody::ImGui() {
 
 	ImGui::PushItemWidth(parameter_.itemWidth);
 
+	parameter_.ImGui();
+
 	if (ImGui::CollapsingHeader("Walk")) {
 
 		ImGui::DragFloat3("moveVelocity##Walk", &moveVelocity_.x, 0.1f);
@@ -119,16 +109,13 @@ void PlayerBody::ImGui() {
 void PlayerBody::ApplyJson() {
 
 	Json data;
-	if (!JsonAdapter::LoadCheck(parameter_.baseFilePath + "PlayerBody.json", data)) {
-
-		// behaviors初期化
-		InitBehaviors();
+	if (!JsonAdapter::LoadCheck(baseBehaviorJsonFilePath_ + "PlayerBody.json", data)) {
 		return;
 	}
 
-	moveVelocity_ = JsonAdapter::ToObject<Vector3>(data["moveVelocity_"]);
-	moveDecay_ = JsonAdapter::GetValue<float>(data, "moveDecay_");
-	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
+	moveVelocity_ = JsonAdapter::ToObject<Vector3>(data["Test"]["moveVelocity_"]);
+	moveDecay_ = JsonAdapter::GetValue<float>(data["Test"], "moveDecay_");
+	rotationLerpRate_ = JsonAdapter::GetValue<float>(data["Test"], "rotationLerpRate_");
 
 	// behaviors初期化
 	InitBehaviors(data);
@@ -136,16 +123,17 @@ void PlayerBody::ApplyJson() {
 
 void PlayerBody::SaveJson() {
 
+	parameter_.SaveJson();
+
 	Json data;
 
-	data["moveVelocity_"] = JsonAdapter::FromObject<Vector3>(moveVelocity_);
-	data["moveDecay_"] = moveDecay_;
-	data["rotationLerpRate_"] = rotationLerpRate_;
+	data["Test"]["moveVelocity_"] = JsonAdapter::FromObject<Vector3>(moveVelocity_);
+	data["Test"]["moveDecay_"] = moveDecay_;
+	data["Test"]["rotationLerpRate_"] = rotationLerpRate_;
 
 	for (const auto& behaviors : std::views::values(behaviors_)) {
 
-		behaviors->SaveJson(data["PlayerBodyBehavior"]);
+		behaviors->SaveJson(data);
 	}
-
-	JsonAdapter::Save(parameter_.baseFilePath + "PlayerBody.json", data);
+	JsonAdapter::Save(baseBehaviorJsonFilePath_ + "PlayerBody.json", data);
 }

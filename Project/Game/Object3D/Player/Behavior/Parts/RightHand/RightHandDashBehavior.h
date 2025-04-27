@@ -15,7 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	RightHandDashBehavior(const std::optional<Json>& data);
+	RightHandDashBehavior(const Json& data);
 	~RightHandDashBehavior() = default;
 
 	// 処理実行

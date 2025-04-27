@@ -56,13 +56,6 @@ private:
 	std::unique_ptr<PlayerRightSword> rightSword_; // 右
 	std::unique_ptr<PlayerLeftSword> leftSword_;   // 左
 
-	// parameter
-	BasePlayerParts::PartsParameter bodyParam_;
-	BasePlayerParts::PartsParameter rightHandParam_;
-	BasePlayerParts::PartsParameter leftHandParam_;
-	BasePlayerParts::PartsParameter rightSwordParam_;
-	BasePlayerParts::PartsParameter leftSwordParam_;
-
 	//--------- functions ----------------------------------------------------
 
 	// json
@@ -71,7 +64,6 @@ private:
 
 	// init
 	void InitParts(FollowCamera* followCamera);
-	void SetParam();
 
 	// update
 	void UpdateBehavior(const std::unordered_set<PlayerBehaviorType>& behaviors);

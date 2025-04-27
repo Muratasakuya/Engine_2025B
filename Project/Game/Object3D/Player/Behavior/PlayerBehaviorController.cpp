@@ -13,9 +13,16 @@ void PlayerBehaviorController::Init() {
 
 	input_ = nullptr;
 	input_ = Input::GetInstance();
+
+	isAcceptedMode_ = false;
 }
 
 void PlayerBehaviorController::Update() {
+
+	// behaviorの変更不可、設定不可
+	if (isAcceptedMode_) {
+		return;
+	}
 
 	// 歩き処理
 	MoveWalk();
@@ -115,6 +122,14 @@ void PlayerBehaviorController::BehaviourRequest() {
 void PlayerBehaviorController::ImGui() {
 
 	ImGui::SeparatorText("BehaviorSet");
+
+	ImGui::Text(std::format("isAcceptedMode: {}", isAcceptedMode_).c_str());
+
+	// behaviorを更新できないようにする
+	if (ImGui::Button("AcceptedMode", ImVec2(itemWidth_, 32.0f))) {
+
+		isAcceptedMode_ = !isAcceptedMode_;
+	}
 
 	// 止まっている状態から攻撃...1段目
 	if (ImGui::Button("Attack_1st", ImVec2(itemWidth_, 32.0f))) {
