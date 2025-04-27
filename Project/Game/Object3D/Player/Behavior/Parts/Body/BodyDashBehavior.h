@@ -15,7 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	BodyDashBehavior(const std::optional<Json>& data, FollowCamera* followCamera);
+	BodyDashBehavior(const Json& data, FollowCamera* followCamera);
 	~BodyDashBehavior() = default;
 
 	// 処理実行

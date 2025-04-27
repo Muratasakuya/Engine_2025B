@@ -15,7 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	BodyWaitBehavior(const std::optional<Json>& data);
+	BodyWaitBehavior(const Json& data);
 	~BodyWaitBehavior() = default;
 
 	// 処理実行
