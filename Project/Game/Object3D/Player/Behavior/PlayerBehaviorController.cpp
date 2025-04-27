@@ -46,13 +46,14 @@ void PlayerBehaviorController::UpdateMove() {
 	bool isAttack = false;
 	isAttack |= limits_[PlayerBehaviorType::Attack_1st].isUpdating_;
 
-	if (!isAttack) {
-
-		// 歩き処理
-		MoveWalk();
-		// ダッシュ処理
-		MoveDash();
+	if (isAttack) {
+		return;
 	}
+
+	// 歩き処理
+	MoveWalk();
+	// ダッシュ処理
+	MoveDash();
 }
 
 void PlayerBehaviorController::UpdateAttack() {
@@ -124,6 +125,8 @@ void PlayerBehaviorController::FirstAttack() {
 
 				moveBehaviour_ = PlayerBehaviorType::Attack_1st;
 
+				// 更新状態にする
+				limits_[PlayerBehaviorType::Attack_1st].isUpdating_ = true;
 				// 現在有効な操作をすべて削除する
 				currentMoveBehaviours_.clear();
 			}
@@ -145,6 +148,14 @@ void PlayerBehaviorController::FirstAttack() {
 }
 
 void PlayerBehaviorController::CheckWait() {
+
+	// 攻撃中はここの操作はできないようにしておく
+	bool isAttack = false;
+	isAttack |= limits_[PlayerBehaviorType::Attack_1st].isUpdating_;
+
+	if (isAttack) {
+		return;
+	}
 
 	// 入力が何もないか、moveBehaviour_に何も値が入っていないか
 	bool inputKey =
@@ -197,6 +208,32 @@ void PlayerBehaviorController::ImGui() {
 	if (ImGui::Button("Save Json", ImVec2(itemWidth_, 32.0f))) {
 
 		SaveJson();
+	}
+
+	// 現在有効なbehaviorを表示
+	if (!currentMoveBehaviours_.empty()) {
+
+		std::string behaviourText;
+		for (auto behaviour : currentMoveBehaviours_) {
+			switch (behaviour) {
+			case PlayerBehaviorType::Wait:       behaviourText += "Wait, "; break;
+			case PlayerBehaviorType::Walk:       behaviourText += "Walk, "; break;
+			case PlayerBehaviorType::Dash:       behaviourText += "Dash, "; break;
+			case PlayerBehaviorType::Attack_1st: behaviourText += "Attack_1st, "; break;
+			case PlayerBehaviorType::DashAttack: behaviourText += "DashAttack, "; break;
+			case PlayerBehaviorType::Attack_2nd: behaviourText += "Attack_2nd, "; break;
+			case PlayerBehaviorType::Attack_3rd: behaviourText += "Attack_3rd, "; break;
+			case PlayerBehaviorType::Parry:      behaviourText += "Parry, "; break;
+			}
+		}
+
+		if (!behaviourText.empty()) {
+
+			behaviourText.pop_back();
+			behaviourText.pop_back();
+		}
+
+		ImGui::Text("%s", std::format("Current Behaviors: {}", behaviourText).c_str());
 	}
 
 	// 止まっている状態から攻撃...1段目
@@ -254,9 +291,6 @@ void PlayerBehaviorController::LimitTime::UpdateElapseTime() {
 
 		// 時間を過ぎた
 		isReached = true;
-	} else {
-
-		isUpdating_ = true;
 	}
 }
 
