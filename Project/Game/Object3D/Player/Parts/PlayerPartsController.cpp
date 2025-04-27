@@ -56,68 +56,40 @@ void PlayerPartsController::Update(const std::unordered_set<PlayerBehaviorType>&
 
 void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehaviorType>& behaviors) {
 
-	// 待ち
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Wait })) {
+	struct BehaviorInfo {
 
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Wait); });
-	} else {
+		PlayerBehaviorType type;
+		bool needReset;
+	};
+	// 更新対象一覧
+	const std::vector<BehaviorInfo> behaviorList = {
 
-		// 状態をリセットする
-		ForEachParts([](BasePlayerParts* part) {
-			part->ResetBehavior(PlayerBehaviorType::Wait); });
-	}
-	// 歩き
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Walk })) {
+		{ PlayerBehaviorType::Wait, true },
+		{ PlayerBehaviorType::Walk, true },
+		{ PlayerBehaviorType::Dash, true },
+		{ PlayerBehaviorType::Attack_1st, false },
+		{ PlayerBehaviorType::DashAttack, false },
+		{ PlayerBehaviorType::Attack_2nd, false },
+		{ PlayerBehaviorType::Attack_3rd, false },
+		{ PlayerBehaviorType::Parry, false },
+	};
 
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Walk); });
-	} else {
+	for (const auto& behaviorInfo : behaviorList) {
 
-		// 状態をリセットする
-		ForEachParts([](BasePlayerParts* part) {
-			part->ResetBehavior(PlayerBehaviorType::Walk); });
-	}
-	// ダッシュ
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Dash })) {
+		// 有効なbehaviorを更新
+		if (CheckCurrentBehaviors(behaviors, { behaviorInfo.type })) {
 
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Dash); });
-	} else {
+			ForEachParts([&](BasePlayerParts* part) {
+				part->ExecuteBehavior(behaviorInfo.type);
+				});
+		}
+		// リセットが必要なら行う
+		else if (behaviorInfo.needReset) {
 
-		// 状態をリセットする
-		ForEachParts([](BasePlayerParts* part) {
-			part->ResetBehavior(PlayerBehaviorType::Dash); });
-	}
-	// 止まっている状態から攻撃...1段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_1st })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Attack_1st); });
-	}
-	// ダッシュ攻撃...1段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::DashAttack })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::DashAttack); });
-	}
-	// 攻撃2段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_2nd })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Attack_2nd); });
-	}
-	// 攻撃3段目
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Attack_3rd })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Attack_3rd); });
-	}
-	// 攻撃受け流し
-	if (CheckCurrentBehaviors(behaviors, { PlayerBehaviorType::Parry })) {
-
-		ForEachParts([](BasePlayerParts* part) {
-			part->ExecuteBehavior(PlayerBehaviorType::Parry); });
+			ForEachParts([&](BasePlayerParts* part) {
+				part->ResetBehavior(behaviorInfo.type);
+				});
+		}
 	}
 }
 
