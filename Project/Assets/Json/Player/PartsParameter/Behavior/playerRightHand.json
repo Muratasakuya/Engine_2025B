@@ -4,11 +4,11 @@
             "loop_.interval": 0.0,
             "loop_.isLoop": false,
             "loop_.maxCount": 0,
-            "move_.easingType": 0,
+            "move_.easingType": 14,
             "move_.end": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.8999999761581421
+                "x": 0.27000001072883606,
+                "y": -2.700000047683716,
+                "z": 0.2800000011920929
             },
             "move_.moveValue": {
                 "x": 0.0,
@@ -20,7 +20,7 @@
                 "y": 0.0,
                 "z": 0.0
             },
-            "time_.end": 0.3400000035762787,
+            "time_.end": 0.20000000298023224,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         },
@@ -28,11 +28,11 @@
             "loop_.interval": 0.0,
             "loop_.isLoop": false,
             "loop_.maxCount": 0,
-            "move_.easingType": 0,
+            "move_.easingType": 18,
             "move_.end": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": -0.44999998807907104
+                "x": 0.550000011920929,
+                "y": -0.2800000011920929,
+                "z": 0.07999999821186066
             },
             "move_.moveValue": {
                 "x": 0.0,
@@ -40,11 +40,11 @@
                 "z": 0.0
             },
             "move_.start": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.8999999761581421
+                "x": 0.27000001072883606,
+                "y": -2.700000047683716,
+                "z": 0.2800000011920929
             },
-            "time_.end": 0.3400000035762787,
+            "time_.end": 0.20000000298023224,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         }
@@ -66,9 +66,9 @@
                 "z": 0.0
             },
             "move_.start": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": 0.018327534198760986,
+                "y": -0.010088329203426838,
+                "z": -7.51883490011096e-05
             },
             "time_.end": 0.0,
             "time_.movedValueInterval": 0.0,
@@ -76,9 +76,9 @@
         }
     },
     "BehaviorType_Wait": {
-        "rotationLerpRate_": 0.019999999552965164
+        "rotationLerpRate_": 0.18000000715255737
     },
     "BehaviorType_Walk": {
-        "rotationLerpRate_": 0.019999999552965164
+        "rotationLerpRate_": 0.18000000715255737
     }
 }
