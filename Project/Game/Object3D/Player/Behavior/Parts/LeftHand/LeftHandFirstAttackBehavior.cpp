@@ -43,8 +43,8 @@ void LeftHandFirstAttackBehavior::UpdateBackLeftRotation(BasePlayerParts* parts)
 	backLeftRotation_->LerpValue(rotationAngle_);
 	// 回転を計算
 	Quaternion deltaRotation = IPlayerBehavior::CalRotationAxisAngle(rotationAngle_);
-	Quaternion localRotation = Quaternion::Normalize(startRotation_ * deltaRotation);
-	parts->SetRotate(localRotation);
+	Quaternion rotation = Quaternion::Normalize(startRotation_ * deltaRotation);
+	parts->SetRotate(rotation);
 }
 
 void LeftHandFirstAttackBehavior::UpdateForwardSlash(BasePlayerParts* parts) {
@@ -62,8 +62,8 @@ void LeftHandFirstAttackBehavior::UpdateForwardSlash(BasePlayerParts* parts) {
 		forwardSlash_->LerpValue(rotationAngle_);
 		// 回転を計算
 		Quaternion deltaRotation = IPlayerBehavior::CalRotationAxisAngle(rotationAngle_);
-		Quaternion localRotation = Quaternion::Normalize(startRotation_ * deltaRotation);
-		parts->SetRotate(localRotation);
+		Quaternion rotation = Quaternion::Normalize(startRotation_ * deltaRotation);
+		parts->SetRotate(rotation);
 	}
 }
 
