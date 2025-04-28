@@ -10,7 +10,8 @@
 //	BodyDashBehavior classMethods
 //============================================================================
 
-BodyDashBehavior::BodyDashBehavior(const Json& data, FollowCamera* followCamera) {
+BodyDashBehavior::BodyDashBehavior(const Json& data,
+	FollowCamera* followCamera, float startSpeed) {
 
 	followCamera_ = nullptr;
 	followCamera_ = followCamera;
@@ -21,6 +22,9 @@ BodyDashBehavior::BodyDashBehavior(const Json& data, FollowCamera* followCamera)
 		speedLerpValue_->FromJson(data[dashBehaviorJsonKey_]["DashSpeedLerpValue"]);
 		rotationLerpRate_ = JsonAdapter::GetValue<float>(data[dashBehaviorJsonKey_], "rotationLerpRate_");
 	}
+
+	// 初期速度を設定する
+	speedLerpValue_->move_.start = startSpeed;
 }
 
 void BodyDashBehavior::Execute(BasePlayerParts* parts) {
@@ -37,7 +41,6 @@ void BodyDashBehavior::UpdateDash(BasePlayerParts* parts) {
 	if (!speedLerpValue_->IsStart()) {
 
 		// 補間処理を開始
-		speedLerpValue_->time_.elapsed = 0.0f;
 		speed_ = speedLerpValue_->move_.start;
 		speedLerpValue_->Start();
 	}

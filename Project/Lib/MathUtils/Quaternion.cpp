@@ -71,6 +71,11 @@ void Quaternion::Init() {
 	this->w = 1.0f;
 }
 
+Quaternion Quaternion::Normalize() {
+
+	return Normalize(*this);
+}
+
 Quaternion Quaternion::EulerToQuaternion(const Vector3& euler) {
 
 	// オイラー角（ピッチ、ヨー、ロール）をラジアンに変換

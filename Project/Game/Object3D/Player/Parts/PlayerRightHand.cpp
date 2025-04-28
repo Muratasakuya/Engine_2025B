@@ -5,7 +5,10 @@
 //============================================================================
 
 // behaviors
+#include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandWaitBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandDashBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandFirstAttackBehavior.h>
 
 //============================================================================
 //	PlayerRightHand classMethods
@@ -13,9 +16,18 @@
 
 void PlayerRightHand::InitBehaviors(const Json& data) {
 
+	// wait
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
+		std::make_unique<RightHandWaitBehavior>(data));
+	// walk
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Walk,
+		std::make_unique<RightHandWalkBehavior>(data));
 	// dash
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
 		std::make_unique<RightHandDashBehavior>(data));
+	// attack_1st
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
+		std::make_unique<RightHandFirstAttackBehavior>(data));
 }
 
 void PlayerRightHand::Init() {
@@ -32,9 +44,24 @@ void PlayerRightHand::ImGui() {
 
 	parameter_.ImGui();
 
+	if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("WalkBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Walk]->ImGui();
+	}
+
 	if (ImGui::CollapsingHeader("DashBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Dash]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
 	}
 
 	ImGui::PopItemWidth();

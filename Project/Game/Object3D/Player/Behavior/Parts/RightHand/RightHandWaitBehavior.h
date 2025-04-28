@@ -1,7 +1,7 @@
 #pragma once
 
 //============================================================================
-//  include
+//	include
 //============================================================================
 #include <Game/Object3D/Player/Behavior/Parts/Base/IPlayerBehavior.h>
 
@@ -15,7 +15,7 @@ public:
 	//  public Methods
 	//========================================================================
 
-	RightHandWaitBehavior(const std::optional<Json>& data,const Vector3& initRotationAngle);
+	RightHandWaitBehavior(const Json& data);
 	~RightHandWaitBehavior() = default;
 
 	// 処理実行
@@ -35,10 +35,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// Execute処理に入った瞬間の回転角、lerpの初期値にする
-	std::optional<Quaternion> startRotation_;
+	// 親の回転角
+	Quaternion parentRotation_;
 
 	// parameter
-	// 目標回転角、初期化時の値を終わりに入れる
-	std::unique_ptr<SimpleAnimation<Vector3>> rotationLerpValue_;
+	// 回転補間割合
+	float rotationLerpRate_;
 };
