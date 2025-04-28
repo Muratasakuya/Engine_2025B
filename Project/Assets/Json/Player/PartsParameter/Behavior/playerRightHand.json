@@ -1,4 +1,54 @@
 {
+    "BehaviorType_Attack_1st": {
+        "BackLeftRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 0,
+            "move_.end": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.8999999761581421
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "time_.end": 0.3400000035762787,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "ForwardSlash": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 0,
+            "move_.end": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "time_.end": 0.3400000035762787,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        }
+    },
     "BehaviorType_Dash": {
         "RotationLerpValue": {
             "loop_.interval": 0.0,

@@ -6,6 +6,7 @@
 
 // behaviors
 #include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandDashBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandFirstAttackBehavior.h>
 
 //============================================================================
 //	PlayerLeftHand classMethods
@@ -16,6 +17,9 @@ void PlayerLeftHand::InitBehaviors(const Json& data) {
 	// dash
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
 		std::make_unique<LeftHandDashBehavior>(data));
+	// attack_1st
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
+		std::make_unique<LeftHandFirstAttackBehavior>(data));
 }
 
 void PlayerLeftHand::Init() {
@@ -35,6 +39,11 @@ void PlayerLeftHand::ImGui() {
 	if (ImGui::CollapsingHeader("DashBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Dash]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
 	}
 
 	ImGui::PopItemWidth();

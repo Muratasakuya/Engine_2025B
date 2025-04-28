@@ -5,9 +5,6 @@
 //============================================================================
 #include <Game/Object3D/Player/Behavior/Parts/Base/IPlayerBehavior.h>
 
-// 動かし方
-// 左後ろに回転(下にかがみながら) -> 正面に向かせる(右重心にできるといい)
-
 //============================================================================
 //	BodyFirstAttackBehavior class
 //============================================================================
@@ -45,9 +42,10 @@ private:
 	std::unique_ptr<SimpleAnimation<Vector3>> moveStraight_;
 	// 回転角
 	Vector3 rotationAngle_;
+	// 開始時の回転角
+	std::optional<Quaternion> startRotation_;
 	// 左後ろに回転(下にかがみながら)
 	std::unique_ptr<SimpleAnimation<Vector3>> backLeftRotation_;
-	std::optional<Quaternion> startRotation_;
 	// 正面に向かせる(右重心にできるといい)
 	std::unique_ptr<SimpleAnimation<Vector3>> forwardRightShift_;
 
