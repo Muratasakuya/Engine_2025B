@@ -5,6 +5,8 @@
 //============================================================================
 
 // behaviors
+#include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandWaitBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandDashBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandFirstAttackBehavior.h>
 
@@ -14,6 +16,12 @@
 
 void PlayerRightHand::InitBehaviors(const Json& data) {
 
+	// wait
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
+		std::make_unique<RightHandWaitBehavior>(data));
+	// walk
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Walk,
+		std::make_unique<RightHandWalkBehavior>(data));
 	// dash
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Dash,
 		std::make_unique<RightHandDashBehavior>(data));
@@ -35,6 +43,16 @@ void PlayerRightHand::ImGui() {
 	ImGui::PushItemWidth(parameter_.itemWidth);
 
 	parameter_.ImGui();
+
+	if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("WalkBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Walk]->ImGui();
+	}
 
 	if (ImGui::CollapsingHeader("DashBehavior")) {
 

@@ -18,15 +18,9 @@ LeftHandFirstAttackBehavior::LeftHandFirstAttackBehavior(const Json& data) {
 		backLeftRotation_->FromJson(data[attack1stBehaviorJsonKey_]["BackLeftRotation"]);
 		forwardSlash_->FromJson(data[attack1stBehaviorJsonKey_]["ForwardSlash"]);
 	}
-
-	// 相対角度はすべて0.0f
-	backLeftRotation_->move_.start = Vector3::AnyInit(0.0f);
-	forwardSlash_->move_.start = Vector3::AnyInit(0.0f);
 }
 
-void LeftHandFirstAttackBehavior::Execute(BasePlayerParts* parts) {
-
-	parentRotation_ = parts->GetTransform().parent->rotation;
+void LeftHandFirstAttackBehavior::Execute([[maybe_unused]] BasePlayerParts* parts) {
 
 	// 左後ろに回転
 	UpdateBackLeftRotation(parts);
@@ -50,8 +44,7 @@ void LeftHandFirstAttackBehavior::UpdateBackLeftRotation(BasePlayerParts* parts)
 	// 回転を計算
 	Quaternion deltaRotation = IPlayerBehavior::CalRotationAxisAngle(rotationAngle_);
 	Quaternion localRotation = Quaternion::Normalize(startRotation_ * deltaRotation);
-	Quaternion worldRotation = Quaternion::Normalize(parentRotation_ * localRotation);
-	parts->SetRotate(worldRotation);
+	parts->SetRotate(localRotation);
 }
 
 void LeftHandFirstAttackBehavior::UpdateForwardSlash(BasePlayerParts* parts) {
@@ -70,8 +63,7 @@ void LeftHandFirstAttackBehavior::UpdateForwardSlash(BasePlayerParts* parts) {
 		// 回転を計算
 		Quaternion deltaRotation = IPlayerBehavior::CalRotationAxisAngle(rotationAngle_);
 		Quaternion localRotation = Quaternion::Normalize(startRotation_ * deltaRotation);
-		Quaternion worldRotation = Quaternion::Normalize(parentRotation_ * localRotation);
-		parts->SetRotate(worldRotation);
+		parts->SetRotate(localRotation);
 	}
 }
 
