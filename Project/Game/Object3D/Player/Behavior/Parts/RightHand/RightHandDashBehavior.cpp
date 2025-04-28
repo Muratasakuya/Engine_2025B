@@ -25,10 +25,9 @@ void RightHandDashBehavior::Execute(BasePlayerParts* parts) {
 		// lerpの初期値を設定
 		startRotation_ = parts->GetTransform().rotation;
 
-		// 方針
 		// startRotation_を取得、この値をMakeAxis関数で動かした値まで遷移させたものをpartsに設定する
-		rotationLerpValue_->Start();
 		rotationLerpValue_->move_.start = Quaternion::ToEulerAngles(*startRotation_);
+		rotationLerpValue_->Start();
 	}
 
 	// 値を補間

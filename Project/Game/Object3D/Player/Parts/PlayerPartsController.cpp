@@ -67,7 +67,7 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 		{ PlayerBehaviorType::Wait, true },
 		{ PlayerBehaviorType::Walk, true },
 		{ PlayerBehaviorType::Dash, true },
-		{ PlayerBehaviorType::Attack_1st, false },
+		{ PlayerBehaviorType::Attack_1st, true },
 		{ PlayerBehaviorType::DashAttack, false },
 		{ PlayerBehaviorType::Attack_2nd, false },
 		{ PlayerBehaviorType::Attack_3rd, false },

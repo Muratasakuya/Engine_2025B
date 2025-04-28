@@ -67,6 +67,9 @@ public:
 	void SetTranslate(const Vector3& translate) { transform_->translation = translate; }
 
 	const Transform3DComponent& GetTransform() const;
+
+	template <typename T>
+	T* GetBehavior(PlayerBehaviorType type) const;
 protected:
 	//========================================================================
 	//	protected Methods
@@ -99,3 +102,18 @@ protected:
 
 	void InputKey(Vector2& inputValue);
 };
+
+//============================================================================
+//	BasePlayerParts templateMethods
+//============================================================================
+
+template<typename T>
+inline T* BasePlayerParts::GetBehavior(PlayerBehaviorType type) const {
+
+	auto it = behaviors_.find(type);
+	if (it != behaviors_.end()) {
+
+		return static_cast<T*>(it->second.get());
+	}
+	return nullptr;
+}

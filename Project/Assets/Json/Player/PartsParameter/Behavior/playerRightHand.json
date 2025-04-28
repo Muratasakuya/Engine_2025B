@@ -1,4 +1,54 @@
 {
+    "BehaviorType_Attack_1st": {
+        "BackLeftRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 16,
+            "move_.end": {
+                "x": 0.75,
+                "y": -3.0899999141693115,
+                "z": 0.49000000953674316
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "time_.end": 0.20000000298023224,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "ForwardSlash": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 18,
+            "move_.end": {
+                "x": -0.11999999731779099,
+                "y": 0.029999999329447746,
+                "z": -0.10000000149011612
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.75,
+                "y": -3.0899999141693115,
+                "z": 0.49000000953674316
+            },
+            "time_.end": 0.07999999821186066,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        }
+    },
     "BehaviorType_Dash": {
         "RotationLerpValue": {
             "loop_.interval": 0.0,
@@ -16,13 +66,19 @@
                 "z": 0.0
             },
             "move_.start": {
-                "x": 0.0,
-                "y": 0.0,
-                "z": 0.0
+                "x": -0.006068063899874687,
+                "y": 0.001180684776045382,
+                "z": -0.005083453841507435
             },
             "time_.end": 0.0,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         }
+    },
+    "BehaviorType_Wait": {
+        "rotationLerpRate_": 0.18000000715255737
+    },
+    "BehaviorType_Walk": {
+        "rotationLerpRate_": 0.18000000715255737
     }
 }
