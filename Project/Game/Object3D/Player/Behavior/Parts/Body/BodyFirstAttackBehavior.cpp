@@ -65,7 +65,7 @@ void BodyFirstAttackBehavior::UpdateMoveStraight(BasePlayerParts* parts) {
 
 void BodyFirstAttackBehavior::UpdateBackLeftRotation(BasePlayerParts* parts) {
 
-	if (!moveStraight_->IsStart()) {
+	if (!backLeftRotation_->IsStart()) {
 
 		// animation開始
 		backLeftRotation_->Start();
