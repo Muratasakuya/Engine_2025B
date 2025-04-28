@@ -56,7 +56,7 @@ void PlayerBody::ImGui() {
 		behaviors_[PlayerBehaviorType::Wait]->ImGui();
 	}
 
-	if (ImGui::CollapsingHeader("Walk")) {
+	if (ImGui::CollapsingHeader("WalkBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Walk]->ImGui();
 	}

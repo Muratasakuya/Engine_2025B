@@ -39,7 +39,6 @@ private:
 	Vector3 rotationAngle_;
 	// 開始時の回転角
 	Quaternion startRotation_;
-	Quaternion parentRotation_;
 	// 左後ろに回転
 	std::unique_ptr<SimpleAnimation<Vector3>> backLeftRotation_;
 	// 左後ろに回転したあと前に斬りかかる

@@ -32,7 +32,7 @@
             "move_.end": {
                 "x": 0.0,
                 "y": 0.0,
-                "z": 0.0
+                "z": -0.44999998807907104
             },
             "move_.moveValue": {
                 "x": 0.0,
@@ -42,7 +42,7 @@
             "move_.start": {
                 "x": 0.0,
                 "y": 0.0,
-                "z": 0.0
+                "z": -0.8999999761581421
             },
             "time_.end": 0.3400000035762787,
             "time_.movedValueInterval": 0.0,
@@ -74,5 +74,11 @@
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         }
+    },
+    "BehaviorType_Wait": {
+        "rotationLerpRate_": 0.019999999552965164
+    },
+    "BehaviorType_Walk": {
+        "rotationLerpRate_": 0.019999999552965164
     }
 }
