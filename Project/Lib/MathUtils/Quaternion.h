@@ -50,6 +50,8 @@ public:
 
 	void Init();
 
+	Quaternion Normalize();
+
 	static Quaternion EulerToQuaternion(const Vector3& euler);
 
 	static Vector3 ToEulerAngles(const Quaternion& quaternion);

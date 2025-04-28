@@ -242,6 +242,11 @@ void PlayerBehaviorController::ImGui() {
 		if (ImGui::Button("Execute##Attack_1st", ImVec2(itemWidth_, 32.0f))) {
 
 			moveBehaviour_ = PlayerBehaviorType::Attack_1st;
+
+			// 更新状態にする
+			limits_[PlayerBehaviorType::Attack_1st].isUpdating_ = true;
+			// 現在有効な操作をすべて削除する
+			currentMoveBehaviours_.clear();
 		}
 		limits_[PlayerBehaviorType::Attack_1st].ImGui();
 	}
