@@ -202,6 +202,7 @@ void PlayerBehaviorController::ImGui() {
 	if (ImGui::Button("AcceptedMode", ImVec2(itemWidth_, 32.0f))) {
 
 		isAcceptedMode_ = !isAcceptedMode_;
+		currentMoveBehaviours_.clear();
 	}
 
 	// 値を保存
