@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 
+// c++
+#include <vector>
 // json
 #include <Externals/nlohmann/json.hpp>
 // using
@@ -61,4 +63,9 @@ public:
 	static float Length(const Vector2& v);
 
 	static Vector2 Normalize(const Vector2& v);
+
+	// catmullRom
+	static Vector2 CatmullRomInterpolation(const Vector2& p0, const Vector2& p1,
+		const Vector2& p2, const Vector2& p3, float t);
+	static Vector2 CatmullRomValue(const std::vector<Vector2>& points, float t);
 };

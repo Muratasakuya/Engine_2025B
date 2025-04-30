@@ -16,13 +16,14 @@
 #include <imgui.h>
 
 //============================================================================
-//	SimpleAnimation class
+//	KeyframeAnimation class
 //============================================================================
-template <typename T>
-class SimpleAnimation {
+template<typename T>
+class KeyframeAnimation {
+
 private:
 	//========================================================================
-	//	private Methods
+	// private Methods
 	//========================================================================
 
 	//--------- structure ----------------------------------------------------
@@ -48,32 +49,28 @@ private:
 		float deltaTime;                 // deltaTime
 		float elapsed;                   // 経過時間
 		float end;                       // 終了時間
-		float movedValueInterval;        // 動かす値の間隔
-		float currentMovedValueInterval; // 現在の動かす値の間隔
 		float currentT;                  // 現在のt値
 	};
 
 	struct Move {
 
-		T start;               // 開始値
-		T end;                 // 終了値
-		T moveValue;           // 動かす値、currentTに沿わずendまで動く
-		EasingType easingType; // イージングの種類
+		T start;                  // 開始値
+		T end;                    // 終了値
+		std::vector<T> keyframes; // キーフレーム、startとendの間
+		EasingType easingType;    // イージングの種類
 	};
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	SimpleAnimation() = default;
-	~SimpleAnimation() = default;
+	KeyframeAnimation();
+	~KeyframeAnimation() = default;
 
 	void ImGui(const std::string& label);
 
 	// 0.0fから1.0fの間で補間された値を取得
 	void LerpValue(T& value);
-	// moveValue分endまで動く値を取得
-	void MoveValue(T& value);
 
 	// 動き出し開始
 	void Start();
@@ -91,10 +88,6 @@ public:
 
 	// 終了したかどうか
 	bool IsFinished() const { return loop_.isEnd; }
-	//--------- firend -------------------------------------------------------
-
-	template <typename U>
-	friend void swap(SimpleAnimation<U>& a, SimpleAnimation<U>& b) noexcept;
 
 	//--------- variables ----------------------------------------------------
 
@@ -108,28 +101,38 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	const float itemSize_ = 224.0f; // imguiのサイズ
+	const float itemSize_ = 224.0f;    // imguiのサイズ
+	const uint32_t arcDivision_ = 256; // アーク長の分割数
+	bool calArcLengths_;               // アーク長でT値を計算するか
+	std::vector<float> arcLengths_;    // splineの間の間隔を均一にする
 
 	//--------- functions ----------------------------------------------------
 
 	void UpdateElapsedTime();
 
 	void UpdateLerpValue(T& value);
-	void UpdateMoveValue(T& value);
 
 	void UpdateLoop(T& value);
 };
 
 //============================================================================
-//	SimpleAnimation templateMethods
+//	KeyframeAnimation templateMethods
 //============================================================================
 
 template<typename T>
-inline void SimpleAnimation<T>::ImGui(const std::string& label) {
+inline KeyframeAnimation<T>::KeyframeAnimation() {
+
+	// start + end + keyframes >= 4になるように最初から2個追加
+	move_.keyframes.resize(2);
+	calArcLengths_ = false;
+}
+
+template<typename T>
+inline void KeyframeAnimation<T>::ImGui(const std::string& label) {
 
 	ImGui::PushItemWidth(itemSize_);
 
-	if (ImGui::BeginTabBar(("SimpleAnimation##" + label).c_str())) {
+	if (ImGui::BeginTabBar(("KeyframeAnimation##" + label).c_str())) {
 
 		// 共通
 		if (ImGui::BeginTabItem(("Loop##" + label).c_str())) {
@@ -137,10 +140,8 @@ inline void SimpleAnimation<T>::ImGui(const std::string& label) {
 			loop_.ImGui(label);
 			ImGui::EndTabItem();
 		}
-		// 補間で動く値の操作
-		if (ImGui::BeginTabItem(("LerpValue##" + label).c_str())) {
-
-			ImGui::SeparatorText("Time");
+		// 時間
+		if (ImGui::BeginTabItem(("Time##" + label).c_str())) {
 
 			// 経過時間
 			ImGui::Text(std::format("elapsed: {}", time_.elapsed).c_str());
@@ -148,8 +149,10 @@ inline void SimpleAnimation<T>::ImGui(const std::string& label) {
 
 			ImGui::Checkbox(("useScaledDeltaTime##Time" + label).c_str(), &time_.useScaledDeltaTime);
 			ImGui::DragFloat(("end##Time" + label).c_str(), &time_.end, 0.01f);
-
-			ImGui::SeparatorText("Move");
+			ImGui::EndTabItem();
+		}
+		// 補間で動く値の操作
+		if (ImGui::BeginTabItem(("Move##" + label).c_str())) {
 
 			if constexpr (std::is_same_v<T, float>) {
 
@@ -174,41 +177,41 @@ inline void SimpleAnimation<T>::ImGui(const std::string& label) {
 			}
 
 			Easing::SelectEasingType(move_.easingType, label);
-			ImGui::EndTabItem();
-		}
-		// 一定値でendまで動く値の操作
-		if (ImGui::BeginTabItem(("MoveValue##" + label).c_str())) {
 
-			ImGui::SeparatorText("Time");
+			ImGui::SeparatorText("Keyframe");
 
-			ImGui::Text(std::format("currentMovedValueInterval: {}", time_.currentMovedValueInterval).c_str());
+			if (ImGui::Button("Add keyframe", ImVec2(itemSize_, 32.0f))) {
 
-			ImGui::Checkbox(("useScaledDeltaTime##Time" + label).c_str(), &time_.useScaledDeltaTime);
-			ImGui::DragFloat(("movedValueInterval##Time" + label).c_str(), &time_.movedValueInterval, 0.001f);
-
-			ImGui::SeparatorText("Move");
-
-			if constexpr (std::is_same_v<T, float>) {
-
-				ImGui::DragFloat(("start##Move" + label).c_str(), &move_.start, 0.01f);
-				ImGui::DragFloat(("end##Move" + label).c_str(), &move_.end, 0.01f);
-			} else if constexpr (std::is_same_v<T, int>) {
-
-				ImGui::DragInt(("end##Move" + label).c_str(), &move_.end, 1);
-				ImGui::DragInt(("moveValue##Move" + label).c_str(), &move_.moveValue, 1);
-			} else if constexpr (std::is_same_v<T, Vector2>) {
-
-				ImGui::DragFloat2(("end##Move" + label).c_str(), &move_.end.x, 0.01f);
-				ImGui::DragFloat2(("moveValue##Move" + label).c_str(), &move_.moveValue.x, 0.01f);
-			} else if constexpr (std::is_same_v<T, Vector3>) {
-
-				ImGui::DragFloat3(("end##Move" + label).c_str(), &move_.end.x, 0.01f);
-				ImGui::DragFloat3(("moveValue##Move" + label).c_str(), &move_.moveValue.x, 0.01f);
-			} else if constexpr (std::is_same_v<T, Color>) {
-
-				ImGui::ColorEdit4(("end##Move" + label).c_str(), &move_.end.a);
-				ImGui::ColorEdit4(("moveValue##Move" + label).c_str(), &move_.moveValue.a);
+				move_.keyframes.push_back(move_.keyframes.back());
 			}
+
+			ImGui::Checkbox("calArcLengths", &calArcLengths_);
+
+			for (uint32_t index = 0; index < move_.keyframes.size();) {
+				if (ImGui::Button("Remove keyframe", ImVec2(itemSize_, 32.0f))) {
+
+					// index番目を削除する
+					move_.keyframes.erase(move_.keyframes.begin() + index);
+					continue;
+				}
+
+				if constexpr (std::is_same_v<T, float>) {
+
+					ImGui::DragFloat(("keyframe" + std::to_string(index) + "##Move" + label).c_str(), &move_.keyframes[index], 0.01f);
+				} else if constexpr (std::is_same_v<T, int>) {
+
+					ImGui::DragInt(("keyframe" + std::to_string(index) + "##Move" + label).c_str(), &move_.keyframes[index], 1);
+				} else if constexpr (std::is_same_v<T, Vector2>) {
+
+					ImGui::DragFloat2(("keyframe" + std::to_string(index) + "##Move" + label).c_str(), &move_.keyframes[index].x, 0.01f);
+				} else if constexpr (std::is_same_v<T, Vector3>) {
+
+					ImGui::DragFloat3(("keyframe" + std::to_string(index) + "##Move" + label).c_str(), &move_.keyframes[index].x, 0.01f);
+				}
+
+				++index;
+			}
+
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();
@@ -218,7 +221,7 @@ inline void SimpleAnimation<T>::ImGui(const std::string& label) {
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::LerpValue(T& value) {
+inline void KeyframeAnimation<T>::LerpValue(T& value) {
 
 	// ループが開始していないときは何も処理をしない
 	if (!loop_.isStart) {
@@ -236,32 +239,25 @@ inline void SimpleAnimation<T>::LerpValue(T& value) {
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::MoveValue(T& value) {
-
-	// ループが開始していないときは何も処理をしない
-	if (!loop_.isStart) {
-		return;
-	}
-
-	// 経過時間を加算、t値を処理する
-	UpdateElapsedTime();
-
-	// 値の加算
-	UpdateMoveValue(value);
-
-	// ループ処理の更新
-	UpdateLoop(value);
-}
-
-template<typename T>
-inline void SimpleAnimation<T>::Start() {
+inline void KeyframeAnimation<T>::Start() {
 
 	loop_.isStart = true;
 	loop_.isEnd = false;
+
+	if (calArcLengths_) {
+
+		std::vector<T> points;
+		points.reserve(move_.keyframes.size() + 2);
+		points.push_back(move_.start);
+		points.insert(points.end(), move_.keyframes.begin(), move_.keyframes.end());
+		points.push_back(move_.end);
+
+		arcLengths_ = Algorithm::ComputeArcLengths<T>(points, arcDivision_);
+	}
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::Reset() {
+inline void KeyframeAnimation<T>::Reset() {
 
 	loop_.isStart = false;
 	loop_.isEnd = false;
@@ -272,7 +268,7 @@ inline void SimpleAnimation<T>::Reset() {
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::UpdateElapsedTime() {
+inline void KeyframeAnimation<T>::UpdateElapsedTime() {
 
 	// ループが終了しているときは何も処理をしない
 	if (loop_.isEnd) {
@@ -294,16 +290,38 @@ inline void SimpleAnimation<T>::UpdateElapsedTime() {
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::UpdateLerpValue(T& value) {
+inline void KeyframeAnimation<T>::UpdateLerpValue(T& value) {
 
 	// ループが終了しているときは何も処理をしない
 	if (loop_.isEnd) {
 		return;
 	}
 
-	// 補間する
-	value = Algorithm::Lerp<T>(move_.start, move_.end,
-		EasedValue(move_.easingType, time_.currentT));
+	// 補間処理
+	 // 補間用の制御点（start + keyframes + end）
+	std::vector<T> points;
+	points.reserve(move_.keyframes.size() + 2);
+	points.push_back(move_.start);
+	points.insert(points.end(), move_.keyframes.begin(), move_.keyframes.end());
+	points.push_back(move_.end);
+
+	// t値
+	float t = time_.currentT;
+
+	// アーク長でT値を再計算
+	if (!arcLengths_.empty()) {
+
+		t = Algorithm::GetReparameterizedT(t, arcLengths_);
+	}
+
+	// 補間処理
+	if constexpr (std::is_same_v<T, float>) {
+
+		value = Algorithm::CatmullRomValue(points, EasedValue(move_.easingType));
+	} else {
+
+		value = Algorithm::CatmullRomValue<T>(points, EasedValue(move_.easingType));
+	}
 
 	// 1ループ終了
 	if (time_.currentT == 1.0f) {
@@ -314,35 +332,7 @@ inline void SimpleAnimation<T>::UpdateLerpValue(T& value) {
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::UpdateMoveValue(T& value) {
-
-	// ループが終了しているときは何も処理をしない
-	if (loop_.isEnd) {
-		return;
-	}
-
-	// 動かすまでのインターバルを加算
-	time_.currentMovedValueInterval += time_.deltaTime;
-	// 動かす値の間隔を超えた時
-	if (time_.currentMovedValueInterval >= time_.movedValueInterval) {
-
-		// 動かす値を加算
-		value += move_.moveValue;
-		// 動かす値の間隔をリセット
-		time_.currentMovedValueInterval = 0.0f;
-	}
-
-	// 1ループ終了
-	if (value >= move_.end) {
-
-		// ループの終了フラグを立てる
-		value = move_.end;
-		loop_.isEnd = true;
-	}
-}
-
-template<typename T>
-inline void SimpleAnimation<T>::UpdateLoop(T& value) {
+inline void KeyframeAnimation<T>::UpdateLoop(T& value) {
 
 	if (!loop_.isLoop || !loop_.isEnd) {
 		return;
@@ -377,7 +367,7 @@ inline void SimpleAnimation<T>::UpdateLoop(T& value) {
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::Loop::ImGui(const std::string& label) {
+inline void KeyframeAnimation<T>::Loop::ImGui(const std::string& label) {
 
 	ImGui::SeparatorText("Loop");
 
@@ -389,16 +379,8 @@ inline void SimpleAnimation<T>::Loop::ImGui(const std::string& label) {
 	ImGui::DragFloat(("interval##Loop" + label).c_str(), &interval, 0.01f, 0.0f, 10.0f);
 }
 
-template<typename U>
-inline void swap(SimpleAnimation<U>& a, SimpleAnimation<U>& b) noexcept {
-
-	std::swap(a.loop_, b.loop_);
-	std::swap(a.time_, b.time_);
-	std::swap(a.move_, b.move_);
-}
-
 template<typename T>
-inline void SimpleAnimation<T>::ToJson(Json& data) {
+inline void KeyframeAnimation<T>::ToJson(Json& data) {
 
 	// loopの値を保存
 	data["loop_.isLoop"] = loop_.isLoop;
@@ -408,7 +390,6 @@ inline void SimpleAnimation<T>::ToJson(Json& data) {
 	// timeの値を保存
 	data["time_.useScaledDeltaTime"] = time_.useScaledDeltaTime;
 	data["time_.end"] = time_.end;
-	data["time_.movedValueInterval"] = time_.movedValueInterval;
 
 	// moveの値を保存
 	if constexpr (std::is_same_v<T, float> || std::is_same_v<T, int>) {
@@ -426,7 +407,7 @@ inline void SimpleAnimation<T>::ToJson(Json& data) {
 }
 
 template<typename T>
-inline void SimpleAnimation<T>::FromJson(const Json& data) {
+inline void KeyframeAnimation<T>::FromJson(const Json& data) {
 
 	// loopの値を適応
 	loop_.isLoop = JsonAdapter::GetValue<bool>(data, "loop_.isLoop");
@@ -436,7 +417,6 @@ inline void SimpleAnimation<T>::FromJson(const Json& data) {
 	// timeの値を適応
 	time_.useScaledDeltaTime = JsonAdapter::GetValue<float>(data, "time_.useScaledDeltaTime");
 	time_.end = JsonAdapter::GetValue<float>(data, "time_.end");
-	time_.movedValueInterval = JsonAdapter::GetValue<float>(data, "time_.movedValueInterval");
 
 	// moveの値を適応
 	if constexpr (std::is_same_v<T, float> || std::is_same_v<T, int>) {
