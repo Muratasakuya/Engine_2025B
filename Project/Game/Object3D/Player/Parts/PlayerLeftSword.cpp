@@ -1,8 +1,30 @@
 #include "PlayerLeftSword.h"
 
 //============================================================================
+//	include
+//============================================================================
+
+// behaviors
+#include <Game/Object3D/Player/Behavior/Parts/LeftSword/LeftSwordWaitBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/LeftSword/LeftSwordWalkBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/LeftSword/LeftSwordFirstAttackBehavior.h>
+
+//============================================================================
 //	PlayerLeftSword classMethods
 //============================================================================
+
+void PlayerLeftSword::InitBehaviors(const Json& data) {
+
+	// wait
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Wait,
+		std::make_unique<LeftSwordWaitBehavior>(data, transform_->rotation));
+	// walk
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Walk,
+		std::make_unique<LeftSwordWalkBehavior>(data, transform_->rotation));
+	// attack_1st
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
+		std::make_unique<LeftSwordFirstAttackBehavior>(data));
+}
 
 void PlayerLeftSword::Init() {
 
@@ -14,13 +36,48 @@ void PlayerLeftSword::Init() {
 
 void PlayerLeftSword::ImGui() {
 
+	ImGui::PushItemWidth(parameter_.itemWidth);
+
 	parameter_.ImGui();
+
+	if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("WalkBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Walk]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+	}
+
+	ImGui::PopItemWidth();
 }
 
 void PlayerLeftSword::ApplyJson() {
+
+	Json data;
+	if (!JsonAdapter::LoadCheck(baseBehaviorJsonFilePath_ + "playerLeftSword.json", data)) {
+		return;
+	}
+
+	// behaviors初期化
+	InitBehaviors(data);
 }
 
 void PlayerLeftSword::SaveJson() {
 
 	parameter_.SaveJson();
+
+	Json data;
+
+	for (const auto& behaviors : std::views::values(behaviors_)) {
+
+		behaviors->SaveJson(data);
+	}
+	JsonAdapter::Save(baseBehaviorJsonFilePath_ + "playerLeftSword.json", data);
 }

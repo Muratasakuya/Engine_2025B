@@ -35,7 +35,6 @@ void RightHandFirstAttackBehavior::UpdateBackLeftRotation(BasePlayerParts* parts
 		// animation開始
 		backLeftRotation_->Start();
 		// 開始時の回転を記録
-		forwardSlash_->move_.start = rotationAngle_;
 		startRotation_ = parts->GetTransform().rotation;
 	}
 

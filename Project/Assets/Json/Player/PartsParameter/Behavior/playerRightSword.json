@@ -1,0 +1,34 @@
+{
+    "BehaviorType_Attack_1st": {
+        "RotationLerpValue": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 1.7100000381469727,
+                "y": 1.159999966621399,
+                "z": 0.10999999940395355
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 1.7000000476837158,
+                "y": 0.0,
+                "z": -0.23999999463558197
+            },
+            "time_.end": 0.5199999809265137,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        }
+    },
+    "BehaviorType_Wait": {
+        "rotationLerpRate_": 0.18000000715255737
+    },
+    "BehaviorType_Walk": {
+        "rotationLerpRate_": 0.18000000715255737
+    }
+}

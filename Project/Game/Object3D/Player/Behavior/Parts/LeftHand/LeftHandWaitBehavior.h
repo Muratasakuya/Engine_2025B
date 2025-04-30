@@ -35,9 +35,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// 親の回転角
-	Quaternion parentRotation_;
-
 	// parameter
 	// 回転補間割合
 	float rotationLerpRate_;
