@@ -97,4 +97,60 @@ namespace Algorithm {
 
 		return start + (end - start) * t;
 	}
+
+	// アーク長
+	template <typename T>
+	inline std::vector<float> ComputeArcLengths(const std::vector<T>& points, uint32_t division) {
+
+		std::vector<float> arcLengths{};
+
+		// 最初の値は0.0fになる
+		arcLengths.emplace_back(0.0f);
+		// 合計
+		float totalLength = 0.0f;
+
+		for (uint32_t index = 0; index < division; ++index) {
+
+			// 現在のt
+			float t0 = static_cast<float>(index) / division;
+			// 次のt
+			float t1 = static_cast<float>(index + 1) / division;
+
+			// それぞれの座標を求める
+			T p1 = CatmullRomValue<T>(points, t0);
+			T p2 = CatmullRomValue<T>(points, t1);
+
+			float segmentLength = 0.0f;
+			if constexpr (std::is_same_v<T, float>) {
+
+				segmentLength = std::sqrtf(p2 - p1);
+			} else {
+
+				segmentLength = T::Length(p2 - p1);
+			}
+
+			totalLength += segmentLength;
+			arcLengths.emplace_back(totalLength);
+		}
+
+		for (auto& length : arcLengths) {
+
+			length /= totalLength;
+		}
+		arcLengths.back() = 1.0f;
+
+		return arcLengths;
+	}
+	float GetReparameterizedT(float t, const std::vector<float>& arcLengths);
+
+	// catmullRom曲線
+	template <typename T>
+	inline T CatmullRomValue(const std::vector<T>& points, float t) {
+
+		return T::CatmullRomValue(points, t);
+	}
+	// float
+	inline float CatmullRomInterpolation(const float& p0, const float& p1,
+		const float& p2, const float& p3, float t);
+	inline float CatmullRomValue(const std::vector<float>& points, float t);
 }
