@@ -35,4 +35,7 @@ private:
 
 	// json
 	void ApplyJson();
+
+	// init
+	void InitBehaviors(const Json& data);
 };
