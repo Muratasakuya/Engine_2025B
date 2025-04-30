@@ -45,11 +45,11 @@ private:
 
 	struct Time {
 
-		bool useScaledDeltaTime;         // スケールされたdeltaTimeを使うかどうか
-		float deltaTime;                 // deltaTime
-		float elapsed;                   // 経過時間
-		float end;                       // 終了時間
-		float currentT;                  // 現在のt値
+		bool useScaledDeltaTime; // スケールされたdeltaTimeを使うかどうか
+		float deltaTime;         // deltaTime
+		float elapsed;           // 経過時間
+		float end;               // 終了時間
+		float currentT;          // 現在のt値
 	};
 
 	struct Move {
@@ -77,6 +77,9 @@ public:
 	// リセット
 	void Reset();
 
+	// アーク長を計算
+	void CalArcLengths();
+
 	// json
 	void ToJson(Json& data);
 	void FromJson(const Json& data);
@@ -103,7 +106,6 @@ private:
 
 	const float itemSize_ = 224.0f;    // imguiのサイズ
 	const uint32_t arcDivision_ = 256; // アーク長の分割数
-	bool calArcLengths_;               // アーク長でT値を計算するか
 	std::vector<float> arcLengths_;    // splineの間の間隔を均一にする
 
 	//--------- functions ----------------------------------------------------
@@ -124,7 +126,6 @@ inline KeyframeAnimation<T>::KeyframeAnimation() {
 
 	// start + end + keyframes >= 4になるように最初から2個追加
 	move_.keyframes.resize(2);
-	calArcLengths_ = false;
 }
 
 template<typename T>
@@ -185,7 +186,10 @@ inline void KeyframeAnimation<T>::ImGui(const std::string& label) {
 				move_.keyframes.push_back(move_.keyframes.back());
 			}
 
-			ImGui::Checkbox("calArcLengths", &calArcLengths_);
+			if (ImGui::Button("CalArcLengths", ImVec2(itemSize_, 32.0f))) {
+
+				CalArcLengths();
+			}
 
 			for (uint32_t index = 0; index < move_.keyframes.size();) {
 				if (ImGui::Button("Remove keyframe", ImVec2(itemSize_, 32.0f))) {
@@ -243,17 +247,6 @@ inline void KeyframeAnimation<T>::Start() {
 
 	loop_.isStart = true;
 	loop_.isEnd = false;
-
-	if (calArcLengths_) {
-
-		std::vector<T> points;
-		points.reserve(move_.keyframes.size() + 2);
-		points.push_back(move_.start);
-		points.insert(points.end(), move_.keyframes.begin(), move_.keyframes.end());
-		points.push_back(move_.end);
-
-		arcLengths_ = Algorithm::ComputeArcLengths<T>(points, arcDivision_);
-	}
 }
 
 template<typename T>
@@ -265,6 +258,18 @@ inline void KeyframeAnimation<T>::Reset() {
 	time_.elapsed = 0.0f;
 	time_.currentT = 0.0f;
 	time_.currentMovedValueInterval = 0.0f;
+}
+
+template<typename T>
+inline void KeyframeAnimation<T>::CalArcLengths() {
+
+	std::vector<T> points;
+	points.reserve(move_.keyframes.size() + 2);
+	points.push_back(move_.start);
+	points.insert(points.end(), move_.keyframes.begin(), move_.keyframes.end());
+	points.push_back(move_.end);
+
+	arcLengths_ = Algorithm::ComputeArcLengths<T>(points, arcDivision_);
 }
 
 template<typename T>
@@ -397,11 +402,29 @@ inline void KeyframeAnimation<T>::ToJson(Json& data) {
 		data["move_.start"] = move_.start;
 		data["move_.end"] = move_.end;
 		data["move_.moveValue"] = move_.moveValue;
+
+		// keyframe
+		if (!move_.keyframes.empty()) {
+			for (uint32_t index = 0; index < move_.keyframes.size(); ++index) {
+
+				data["Keyframes"][std::to_string(index)] =
+					move_.keyframes[index];
+			}
+		}
 	} else {
 
 		data["move_.start"] = JsonAdapter::FromObject<T>(move_.start);
 		data["move_.end"] = JsonAdapter::FromObject<T>(move_.end);
 		data["move_.moveValue"] = JsonAdapter::FromObject<T>(move_.moveValue);
+
+		// keyframe
+		if (!move_.keyframes.empty()) {
+			for (uint32_t index = 0; index < move_.keyframes.size(); ++index) {
+
+				data["Keyframes"][std::to_string(index)] =
+				JsonAdapter::FromObject<T>(move_.keyframes[index]);
+			}
+		}
 	}
 	data["move_.easingType"] = move_.easingType;
 }
@@ -424,11 +447,41 @@ inline void KeyframeAnimation<T>::FromJson(const Json& data) {
 		move_.start = JsonAdapter::GetValue<float>(data, "move_.start");
 		move_.end = JsonAdapter::GetValue<float>(data, "move_.end");
 		move_.moveValue = JsonAdapter::GetValue<float>(data, "move_.moveValue");
+
+		// keyframe
+		move_.keyframes.clear();
+		if (data.contains("Keyframes")) {
+
+			const auto& keyData = data["Keyframes"];
+			for (size_t i = 0; i < keyData.size(); ++i) {
+
+				std::string key = std::to_string(i);
+				if (keyData.contains(key)) {
+
+					move_.keyframes.emplace_back(JsonAdapter::GetValue<float>(keyData, key));
+				}
+			}
+		}
 	} else {
 
 		move_.start = JsonAdapter::ToObject<T>(data["move_.start"]);
 		move_.end = JsonAdapter::ToObject<T>(data["move_.end"]);
 		move_.moveValue = JsonAdapter::ToObject<T>(data["move_.moveValue"]);
+
+		// keyframe
+		move_.keyframes.clear();
+		if (data.contains("Keyframes")) {
+
+			const auto& keyData = data["Keyframes"];
+			for (size_t i = 0; i < keyData.size(); ++i) {
+
+				std::string key = std::to_string(i);
+				if (keyData.contains(key)) {
+
+					move_.keyframes.emplace_back(JsonAdapter::ToObject<T>(keyData[key]));
+				}
+			}
+		}
 	}
 	move_.easingType = JsonAdapter::GetValue<EasingType>(data, "move_.easingType");
 }
