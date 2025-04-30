@@ -90,4 +90,8 @@ public:
 
 	static Vector3 TransferNormal(const Vector3& v, const Matrix4x4& m);
 
+	// catmullRom
+	static Vector3 CatmullRomInterpolation(const Vector3& p0, const Vector3& p1,
+		const Vector3& p2, const Vector3& p3, float t);
+	static Vector3 CatmullRomValue(const std::vector<Vector3>& points, float t);
 };
