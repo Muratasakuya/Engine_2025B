@@ -9,6 +9,7 @@
 #include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandDashBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandFirstAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandSecondAttackBehavior.h>
 
 //============================================================================
 //	PlayerLeftHand classMethods
@@ -28,6 +29,9 @@ void PlayerLeftHand::InitBehaviors(const Json& data) {
 	// attack_1st
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
 		std::make_unique<LeftHandFirstAttackBehavior>(data));
+	// attack_2nd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_2nd,
+		std::make_unique<LeftHandSecondAttackBehavior>(data));
 }
 
 void PlayerLeftHand::Init() {
@@ -62,6 +66,11 @@ void PlayerLeftHand::ImGui() {
 	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("Attack_2ndehavior")) {
+
+		behaviors_[PlayerBehaviorType::Attack_2nd]->ImGui();
 	}
 
 	ImGui::PopItemWidth();
