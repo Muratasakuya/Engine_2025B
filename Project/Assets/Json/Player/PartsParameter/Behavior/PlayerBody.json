@@ -90,7 +90,21 @@
         "rotationLerpRate_": 0.18000000715255737
     },
     "BehaviorType_Wait": {
-        "amplitude_": 0.03999999910593033,
+        "UndoPosY": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": 0.4000000059604645,
+            "move_.moveValue": 0.0,
+            "move_.start": 0.4000000059604645,
+            "time_.end": 0.3400000035762787,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "amplitude_": 0.05999999865889549,
+        "basePosY_": 0.4000000059604645,
+        "rotationLerpRate_": 0.18000000715255737,
         "speed_": 3.200000047683716
     },
     "BehaviorType_Walk": {
