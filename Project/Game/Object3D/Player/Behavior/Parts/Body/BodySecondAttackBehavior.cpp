@@ -56,15 +56,15 @@ void BodySecondAttackBehavior::UpdateFrontLeftStep(BasePlayerParts* parts) {
 
 	if (!moveFrontLeft_.moveAnimation->IsStart()) {
 
+		forwardDirection_ = parts->GetTransform().GetForward();
+		forwardDirection_.y = 0.0f;
+		forwardDirection_ = Vector3::Normalize(forwardDirection_);
+
 		// 向き、座標を計算してanimation開始
 		Start(parts, moveFrontLeft_);
 
 		// 状態を設定
 		currentState_ = State::FrontLeftStep;
-
-		forwardDirection_ = parts->GetTransform().GetForward();
-		forwardDirection_.y = 0.0f;
-		forwardDirection_ = Vector3::Normalize(forwardDirection_);
 	}
 
 	if (moveFrontLeft_.moveAnimation->IsFinished()) {
