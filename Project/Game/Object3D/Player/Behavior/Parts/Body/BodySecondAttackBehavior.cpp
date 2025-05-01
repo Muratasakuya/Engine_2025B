@@ -14,19 +14,26 @@ BodySecondAttackBehavior::BodySecondAttackBehavior(const Json& data) {
 	moveFrontLeft_.moveAnimation = std::make_unique<SimpleAnimation<Vector3>>();
 	moveFrontRight_.moveAnimation = std::make_unique<SimpleAnimation<Vector3>>();
 	moveCenter_.moveAnimation = std::make_unique<SimpleAnimation<Vector3>>();
+
+	frontLeftRotation_ = std::make_unique<SimpleAnimation<Vector3>>();
+	frontRightRotation_ = std::make_unique<SimpleAnimation<Vector3>>();
+	returnCenterRotation_ = std::make_unique<SimpleAnimation<Vector3>>();
 	if (data.contains(attack2ndBehaviorJsonKey_) && data[attack2ndBehaviorJsonKey_].contains("MoveFrontLeft")) {
 
 		moveFrontLeft_.moveValue = JsonAdapter::GetValue<float>(data[attack2ndBehaviorJsonKey_], "moveFrontLeft_moveValue");
 		moveFrontLeft_.direction = JsonAdapter::ToObject<Vector3>(data[attack2ndBehaviorJsonKey_]["moveFrontLeft_direction"]);
 		moveFrontLeft_.moveAnimation->FromJson(data[attack2ndBehaviorJsonKey_]["MoveFrontLeft"]);
+		frontLeftRotation_->FromJson(data[attack2ndBehaviorJsonKey_]["FrontLeftRotation"]);
 
 		moveFrontRight_.moveValue = JsonAdapter::GetValue<float>(data[attack2ndBehaviorJsonKey_], "moveFrontRight_moveValue");
 		moveFrontRight_.direction = JsonAdapter::ToObject<Vector3>(data[attack2ndBehaviorJsonKey_]["moveFrontRight_direction"]);
 		moveFrontRight_.moveAnimation->FromJson(data[attack2ndBehaviorJsonKey_]["MoveFrontRight"]);
+		frontRightRotation_->FromJson(data[attack2ndBehaviorJsonKey_]["FrontRightRotation"]);
 
 		moveCenter_.moveValue = JsonAdapter::GetValue<float>(data[attack2ndBehaviorJsonKey_], "moveCenter_moveValue");
 		moveCenter_.direction = JsonAdapter::ToObject<Vector3>(data[attack2ndBehaviorJsonKey_]["moveCenter_direction"]);
 		moveCenter_.moveAnimation->FromJson(data[attack2ndBehaviorJsonKey_]["MoveCenter"]);
+		returnCenterRotation_->FromJson(data[attack2ndBehaviorJsonKey_]["ReturnCenterRotation"]);
 	}
 }
 
@@ -34,12 +41,15 @@ void BodySecondAttackBehavior::Execute(BasePlayerParts* parts) {
 
 	// 左前に行く
 	UpdateFrontLeftStep(parts);
+	UpdateFrontLeftRotation(parts);
 
 	// 右前に大きく動く
 	UpdateFrontRightStep(parts);
+	UpdateFrontRightRotation(parts);
 
 	// 最後、中心に戻るように左前に行く
 	UpdateReturnCenterStep(parts);
+	UpdateReturnCenterRotation(parts);
 }
 
 void BodySecondAttackBehavior::UpdateFrontLeftStep(BasePlayerParts* parts) {
@@ -115,6 +125,78 @@ void BodySecondAttackBehavior::UpdateReturnCenterStep(BasePlayerParts* parts) {
 	parts->SetTranslate(translation);
 }
 
+void BodySecondAttackBehavior::UpdateFrontLeftRotation(BasePlayerParts* parts) {
+
+	if (!frontLeftRotation_->IsStart()) {
+
+		// animation開始
+		frontLeftRotation_->Start();
+		// 開始時の回転を記録
+		startRotation_ = parts->GetTransform().rotation;
+	}
+
+	if (frontLeftRotation_->IsFinished()) {
+		return;
+	}
+
+	// 値を補間
+	frontLeftRotation_->LerpValue(rotationAngle_);
+	// 回転を計算
+	Quaternion deltaRotation = IPlayerBehavior::CalRotationAxisAngle(rotationAngle_);
+	Quaternion rotation = Quaternion::Normalize(startRotation_ * deltaRotation);
+	parts->SetRotate(rotation);
+}
+
+void BodySecondAttackBehavior::UpdateFrontRightRotation(BasePlayerParts* parts) {
+
+	// 右前に大きく動き終わったら
+	if (frontLeftRotation_->IsFinished()) {
+		if (!frontRightRotation_->IsStart()) {
+
+			// animation開始
+			frontRightRotation_->Start();
+			// 初期値を設定
+			frontRightRotation_->move_.start = rotationAngle_;
+		}
+	}
+
+	if (frontRightRotation_->IsFinished()) {
+		return;
+	}
+
+	// 値を補間
+	frontRightRotation_->LerpValue(rotationAngle_);
+	// 回転を計算
+	Quaternion deltaRotation = IPlayerBehavior::CalRotationAxisAngle(rotationAngle_);
+	Quaternion rotation = Quaternion::Normalize(startRotation_ * deltaRotation);
+	parts->SetRotate(rotation);
+}
+
+void BodySecondAttackBehavior::UpdateReturnCenterRotation(BasePlayerParts* parts) {
+
+	// 左前に行き終わったら
+	if (frontRightRotation_->IsFinished()) {
+		if (!returnCenterRotation_->IsStart()) {
+
+			// animation開始
+			returnCenterRotation_->Start();
+			// 初期値を設定
+			returnCenterRotation_->move_.start = rotationAngle_;
+		}
+	}
+
+	if (returnCenterRotation_->IsFinished()) {
+		return;
+	}
+
+	// 値を補間
+	returnCenterRotation_->LerpValue(rotationAngle_);
+	// 回転を計算
+	Quaternion deltaRotation = IPlayerBehavior::CalRotationAxisAngle(rotationAngle_);
+	Quaternion rotation = Quaternion::Normalize(startRotation_ * deltaRotation);
+	parts->SetRotate(rotation);
+}
+
 void BodySecondAttackBehavior::Start(BasePlayerParts* parts, MoveStructure& moveStructure) {
 
 	// 開始座標設定
@@ -153,6 +235,9 @@ void BodySecondAttackBehavior::Reset() {
 	moveFrontLeft_.moveAnimation->Reset();
 	moveFrontRight_.moveAnimation->Reset();
 	moveCenter_.moveAnimation->Reset();
+	frontLeftRotation_->Reset();
+	frontRightRotation_->Reset();
+	returnCenterRotation_->Reset();
 }
 
 void BodySecondAttackBehavior::ImGui() {
@@ -165,7 +250,14 @@ void BodySecondAttackBehavior::ImGui() {
 
 		ImGui::DragFloat("moveValue##moveFrontLeft_", &moveFrontLeft_.moveValue, 0.01f);
 		ImGui::DragFloat3("direction##moveFrontLeft_", &moveFrontLeft_.direction.x, 0.001f);
+
+		ImGui::SeparatorText("Move");
+
 		moveFrontLeft_.moveAnimation->ImGui("BodySecondAttackBehavior_moveFrontLeft_");
+
+		ImGui::SeparatorText("Rotation");
+
+		frontLeftRotation_->ImGui("BodySecondAttackBehavior_frontLeftRotation_");
 		ImGui::TreePop();
 	}
 
@@ -173,7 +265,14 @@ void BodySecondAttackBehavior::ImGui() {
 
 		ImGui::DragFloat("moveValue##moveFrontRight_", &moveFrontRight_.moveValue, 0.01f);
 		ImGui::DragFloat3("direction##moveFrontRight_", &moveFrontRight_.direction.x, 0.001f);
+
+		ImGui::SeparatorText("Move");
+
 		moveFrontRight_.moveAnimation->ImGui("BodySecondAttackBehavior_moveFrontRight_");
+
+		ImGui::SeparatorText("Rotation");
+
+		frontRightRotation_->ImGui("BodySecondAttackBehavior_frontRightRotation_");
 		ImGui::TreePop();
 	}
 
@@ -181,7 +280,14 @@ void BodySecondAttackBehavior::ImGui() {
 
 		ImGui::DragFloat("moveValue##moveCenter_", &moveCenter_.moveValue, 0.01f);
 		ImGui::DragFloat3("direction##moveCenter_", &moveCenter_.direction.x, 0.001f);
+
+		ImGui::SeparatorText("Move");
+
 		moveCenter_.moveAnimation->ImGui("BodySecondAttackBehavior_moveCenter_");
+
+		ImGui::SeparatorText("Rotation");
+
+		returnCenterRotation_->ImGui("BodySecondAttackBehavior_returnCenterRotation_");
 		ImGui::TreePop();
 	}
 
@@ -194,12 +300,15 @@ void BodySecondAttackBehavior::SaveJson(Json& data) {
 	data[attack2ndBehaviorJsonKey_]["moveFrontLeft_moveValue"] = moveFrontLeft_.moveValue;
 	data[attack2ndBehaviorJsonKey_]["moveFrontLeft_direction"] = JsonAdapter::FromObject<Vector3>(moveFrontLeft_.direction);
 	moveFrontLeft_.moveAnimation->ToJson(data[attack2ndBehaviorJsonKey_]["MoveFrontLeft"]);
+	frontLeftRotation_->ToJson(data[attack2ndBehaviorJsonKey_]["FrontLeftRotation"]);
 
 	data[attack2ndBehaviorJsonKey_]["moveFrontRight_moveValue"] = moveFrontRight_.moveValue;
 	data[attack2ndBehaviorJsonKey_]["moveFrontRight_direction"] = JsonAdapter::FromObject<Vector3>(moveFrontRight_.direction);
 	moveFrontRight_.moveAnimation->ToJson(data[attack2ndBehaviorJsonKey_]["MoveFrontRight"]);
+	frontRightRotation_->ToJson(data[attack2ndBehaviorJsonKey_]["FrontRightRotation"]);
 
 	data[attack2ndBehaviorJsonKey_]["moveCenter_moveValue"] = moveCenter_.moveValue;
 	data[attack2ndBehaviorJsonKey_]["moveCenter_direction"] = JsonAdapter::FromObject<Vector3>(moveCenter_.direction);
 	moveCenter_.moveAnimation->ToJson(data[attack2ndBehaviorJsonKey_]["MoveCenter"]);
+	returnCenterRotation_->ToJson(data[attack2ndBehaviorJsonKey_]["ReturnCenterRotation"]);
 }
