@@ -69,7 +69,7 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 		{ PlayerBehaviorType::Dash, true },
 		{ PlayerBehaviorType::Attack_1st, true },
 		{ PlayerBehaviorType::DashAttack, false },
-		{ PlayerBehaviorType::Attack_2nd, false },
+		{ PlayerBehaviorType::Attack_2nd, true },
 		{ PlayerBehaviorType::Attack_3rd, false },
 		{ PlayerBehaviorType::Parry, false },
 	};
