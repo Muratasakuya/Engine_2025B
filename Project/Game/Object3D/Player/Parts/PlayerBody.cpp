@@ -12,6 +12,7 @@
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyDashBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyFirstAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/Body/BodySecondAttackBehavior.h>
 
 //============================================================================
 //	PlayerBody classMethods
@@ -32,6 +33,9 @@ void PlayerBody::InitBehaviors(const Json& data) {
 	// attack_1st
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
 		std::make_unique<BodyFirstAttackBehavior>(data));
+	// attack_2nd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_2nd,
+		std::make_unique<BodySecondAttackBehavior>(data));
 }
 
 void PlayerBody::Init(FollowCamera* followCamera) {
@@ -69,6 +73,11 @@ void PlayerBody::ImGui() {
 	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("Attack_2ndBehavior")) {
+
+		behaviors_[PlayerBehaviorType::Attack_2nd]->ImGui();
 	}
 
 	ImGui::PopItemWidth();
