@@ -3,30 +3,43 @@
 //============================================================================
 //  include
 //============================================================================
+#include <Game/Object3D/Player/Behavior/Parts/Base/IPlayerBehavior.h>
 
 //============================================================================
 //  LeftHandSecondAttackBehavior class
 //============================================================================
-class LeftHandSecondAttackBehavior {
+class LeftHandSecondAttackBehavior :
+	public IPlayerBehavior {
 public:
-    //========================================================================
-    //  public Methods
-    //========================================================================
+	//========================================================================
+	//  public Methods
+	//========================================================================
 
-    LeftHandSecondAttackBehavior() = default;
-    ~LeftHandSecondAttackBehavior() = default;
+	LeftHandSecondAttackBehavior(const Json& data);
+	~LeftHandSecondAttackBehavior() = default;
 
-    //--------- accessor -----------------------------------------------------
+	// 処理実行
+	void Execute(BasePlayerParts* parts) override;
+	// リセット
+	void Reset();
 
+	// imgui
+	void ImGui() override;
+
+	// json
+	void SaveJson(Json& data) override;
 private:
-    //========================================================================
-    //  private Methods
-    //========================================================================
+	//========================================================================
+	//  private Methods
+	//========================================================================
 
-    //--------- variables ----------------------------------------------------
+	//--------- variables ----------------------------------------------------
 
 
 
-    //--------- functions ----------------------------------------------------
+	//--------- functions ----------------------------------------------------
 
+	void UpdateFrontLeftStep(BasePlayerParts* parts);
+	void UpdateFrontRightStep(BasePlayerParts* parts);
+	void UpdateReturnCenterStep(BasePlayerParts* parts);
 };

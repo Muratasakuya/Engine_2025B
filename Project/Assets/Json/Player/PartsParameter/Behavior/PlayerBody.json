@@ -75,6 +75,54 @@
         "moveValue_": 16.0
     },
     "BehaviorType_Attack_2nd": {
+        "FrontLeftRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 0.20999999344348907,
+                "y": -0.49000000953674316,
+                "z": 0.14000000059604645
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.09000000357627869,
+                "y": 0.1599999964237213,
+                "z": -0.14000000059604645
+            },
+            "time_.end": 0.14000000059604645,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "FrontRightRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 18,
+            "move_.end": {
+                "x": 0.25999999046325684,
+                "y": 0.5400000214576721,
+                "z": -0.1899999976158142
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "time_.end": 0.20000000298023224,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
         "MoveCenter": {
             "loop_.interval": 0.0,
             "loop_.isLoop": false,
@@ -147,6 +195,30 @@
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         },
+        "ReturnCenterRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 0.28999999165534973,
+                "y": -0.8799999952316284,
+                "z": 0.1599999964237213
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "time_.end": 0.1599999964237213,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
         "moveCenter_direction": {
             "x": -0.28696495294570923,
             "y": 0.0,
@@ -189,7 +261,7 @@
             "move_.easingType": 14,
             "move_.end": 0.4000000059604645,
             "move_.moveValue": 0.0,
-            "move_.start": 0.3426721394062042,
+            "move_.start": 0.43630051612854004,
             "time_.end": 0.3400000035762787,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
