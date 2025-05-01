@@ -49,6 +49,80 @@
             "time_.useScaledDeltaTime": false
         }
     },
+    "BehaviorType_Attack_2nd": {
+        "FrontLeftRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 7,
+            "move_.end": {
+                "x": -0.019999999552965164,
+                "y": -1.690000057220459,
+                "z": 0.1599999964237213
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": -0.11999999731779099,
+                "y": 0.23000000417232513,
+                "z": 0.07000000029802322
+            },
+            "time_.end": 0.14000000059604645,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "FrontRightRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 5,
+            "move_.end": {
+                "x": 0.3700000047683716,
+                "y": -0.25,
+                "z": 0.07999999821186066
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": -0.020000003278255463,
+                "y": -1.690000057220459,
+                "z": 0.1599999964237213
+            },
+            "time_.end": 0.3199999928474426,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "ReturnCenterRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 0.0,
+                "y": -1.4199999570846558,
+                "z": 0.0
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.3700000047683716,
+                "y": -0.25,
+                "z": 0.07999999821186066
+            },
+            "time_.end": 0.1599999964237213,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        }
+    },
     "BehaviorType_Dash": {
         "RotationLerpValue": {
             "loop_.interval": 0.0,
@@ -66,9 +140,9 @@
                 "z": 0.0
             },
             "move_.start": {
-                "x": -9.459282591706142e-05,
-                "y": 0.0001985811977647245,
-                "z": 4.739332871395163e-05
+                "x": -1.1792010437415038e-28,
+                "y": -2.743645902407035e-27,
+                "z": 2.818336065655797e-28
             },
             "time_.end": 0.0,
             "time_.movedValueInterval": 0.0,

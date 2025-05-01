@@ -9,6 +9,7 @@
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandDashBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandFirstAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandSecondAttackBehavior.h>
 
 //============================================================================
 //	PlayerRightHand classMethods
@@ -28,6 +29,9 @@ void PlayerRightHand::InitBehaviors(const Json& data) {
 	// attack_1st
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
 		std::make_unique<RightHandFirstAttackBehavior>(data));
+	// attack_2nd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_2nd,
+		std::make_unique<RightHandSecondAttackBehavior>(data));
 }
 
 void PlayerRightHand::Init() {
@@ -62,6 +66,11 @@ void PlayerRightHand::ImGui() {
 	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("Attack_2ndehavior")) {
+
+		behaviors_[PlayerBehaviorType::Attack_2nd]->ImGui();
 	}
 
 	ImGui::PopItemWidth();
