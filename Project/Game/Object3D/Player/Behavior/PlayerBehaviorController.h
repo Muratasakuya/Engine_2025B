@@ -91,6 +91,7 @@ private:
 	void MoveDash();      // ダッシュ
 	void FirstAttack();   // ダッシュ状態以外の状態から攻撃
 	void SecondAttack();  // 1段目の攻撃からの攻撃
+	void ThirdAttack();   // 2段目の攻撃からの攻撃
 	void CheckWait();     // 待機
 
 	// behaviourを設定する
