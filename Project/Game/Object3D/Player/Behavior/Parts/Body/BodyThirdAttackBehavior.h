@@ -51,10 +51,23 @@ private:
 	// 下がった後、数フレーム後に前に行くとき
 	std::unique_ptr<SimpleAnimation<Vector3>> moveFront_;
 
+	// 回転
+	// 回転角
+	Vector3 rotationAngle_;
+	// 開始時の回転角
+	Quaternion startRotation_;
+	// 後ろに下がっていくとき、下がりきったときには1回転させる
+	std::unique_ptr<SimpleAnimation<Vector3>> backRotation_;
+	// 前に行くとき、正面に突進するような感じ
+	std::unique_ptr<SimpleAnimation<Vector3>> frontRotation_;
+
 	//--------- functions ----------------------------------------------------
 
 	void UpdateMoveBack(BasePlayerParts* parts);
+	void UpdateRotationBack(BasePlayerParts* parts);
+
 	void UpdateMoveFront(BasePlayerParts* parts);
+	void UpdateRotationFront(BasePlayerParts* parts);
 
 	void WaitMoveTime();
 };
