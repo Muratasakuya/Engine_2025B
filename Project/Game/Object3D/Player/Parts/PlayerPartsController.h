@@ -56,6 +56,9 @@ private:
 	std::unique_ptr<PlayerRightSword> rightSword_; // 右
 	std::unique_ptr<PlayerLeftSword> leftSword_;   // 左
 
+	// 特殊設定
+	bool uniqueSetting_;
+
 	//--------- functions ----------------------------------------------------
 
 	// json

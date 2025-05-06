@@ -25,6 +25,64 @@
             "time_.useScaledDeltaTime": false
         }
     },
+    "BehaviorType_Attack_3rd": {
+        "MoveForward": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 5,
+            "move_.end": {
+                "x": -12.899946212768555,
+                "y": 11.714953422546387,
+                "z": 4.555325984954834
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": -3.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "time_.end": 0.27000001072883606,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "ReturnHand": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": -3.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": -12.899946212768555,
+                "y": 11.714953422546387,
+                "z": 4.555325984954834
+            },
+            "time_.end": 0.3199999928474426,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "axis_": {
+            "x": 0.683532178401947,
+            "y": 0.7299203872680664,
+            "z": 8.996375866487938e-11
+        },
+        "moveValue_": 16.0,
+        "moveWaitTime_": 0.47999998927116394,
+        "rotateAngle_": -0.6499999761581421
+    },
     "BehaviorType_Wait": {
         "rotationLerpRate_": 0.18000000715255737
     },

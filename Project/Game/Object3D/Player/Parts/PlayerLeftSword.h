@@ -24,6 +24,10 @@ public:
 
 	// json
 	void SaveJson();
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetForwardDirection(const Vector3& direction);
 private:
 	//========================================================================
 	//	private Methods
