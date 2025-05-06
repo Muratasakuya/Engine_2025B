@@ -52,14 +52,21 @@ private:
 	// 向き
 	Vector3 axis_;
 	float rotateAngle_;
+	float basePosY_;
 	// プレイヤーの前方に移動させる
 	std::unique_ptr<SimpleAnimation<Vector3>> moveForward_;
 	// 元の手の場所に戻す
 	std::unique_ptr<SimpleAnimation<Vector3>> returnHand_;
+	// 回転
+	// 初期回転
+	Vector3 initRotationAngle_;
+	// 目標回転へずっと回転させる
+	std::unique_ptr<SimpleAnimation<float>> rotationAngleY_;
 
 	//--------- functions ----------------------------------------------------
 
 	void UpdateMoveForward(BasePlayerParts* parts);
+	void UpdateRotation(BasePlayerParts* parts);
 
 	void UpdateReturnHand(BasePlayerParts* parts);
 

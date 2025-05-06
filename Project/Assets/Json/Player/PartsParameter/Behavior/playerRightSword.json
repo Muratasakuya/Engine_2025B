@@ -32,9 +32,9 @@
             "loop_.maxCount": 0,
             "move_.easingType": 5,
             "move_.end": {
-                "x": 17.625946044921875,
-                "y": 6.337708473205566,
-                "z": 1.3840255737304688
+                "x": 16.107009887695313,
+                "y": 7.0,
+                "z": 3.2364883422851563
             },
             "move_.moveValue": {
                 "x": 0.0,
@@ -66,22 +66,40 @@
                 "z": 0.0
             },
             "move_.start": {
-                "x": 17.625946044921875,
-                "y": 6.337708473205566,
-                "z": 1.3840255737304688
+                "x": 16.107009887695313,
+                "y": 7.0,
+                "z": 3.2364883422851563
             },
             "time_.end": 0.3199999928474426,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         },
+        "RotationAngleY": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": 360.0,
+            "move_.moveValue": 0.0,
+            "move_.start": 0.0,
+            "time_.end": 0.7200000286102295,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
         "axis_": {
-            "x": 0.6153767704963684,
-            "y": 0.7882331013679504,
-            "z": 6.3936671497183665e-24
+            "x": 0.6823758482933044,
+            "y": 0.7285376191139221,
+            "z": 0.059966959059238434
+        },
+        "basePosY_": 7.0,
+        "initRotationAngle_": {
+            "x": 1.5700000524520874,
+            "y": 1.5700000524520874,
+            "z": 0.0
         },
         "moveValue_": 16.0,
         "moveWaitTime_": 0.47999998927116394,
-        "rotateAngle_": -0.6899999976158142
+        "rotateAngle_": -0.8799999952316284
     },
     "BehaviorType_Wait": {
         "rotationLerpRate_": 0.18000000715255737
