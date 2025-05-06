@@ -8,6 +8,7 @@
 #include <Game/Object3D/Player/Behavior/Parts/RightSword/RightSwordWaitBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightSword/RightSwordWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightSword/RightSwordFirstAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/RightSword/RightSwordThirdAttackBehavior.h>
 
 //============================================================================
 //	PlayerRightSword classMethods
@@ -24,6 +25,9 @@ void PlayerRightSword::InitBehaviors(const Json& data) {
 	// attack_1st
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
 		std::make_unique<RightSwordFirstAttackBehavior>(data));
+	// attack_3rd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_3rd,
+		std::make_unique<RightSwordThirdAttackBehavior>(data, parameter_.offsetTranslation));
 }
 
 void PlayerRightSword::Init() {
@@ -40,19 +44,30 @@ void PlayerRightSword::ImGui() {
 
 	parameter_.ImGui();
 
-	if (ImGui::CollapsingHeader("WaitBehavior")) {
+	if (ImGui::TreeNode("Wait_Move")) {
 
-		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+		if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Wait]->ImGui();
+		}
+		if (ImGui::CollapsingHeader("WalkBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Walk]->ImGui();
+		}
+		ImGui::TreePop();
 	}
 
-	if (ImGui::CollapsingHeader("WalkBehavior")) {
+	if (ImGui::TreeNode("Attack")) {
 
-		behaviors_[PlayerBehaviorType::Walk]->ImGui();
-	}
+		if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
 
-	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
+			behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+		}
+		if (ImGui::CollapsingHeader("Attack_3rdBehavior")) {
 
-		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+			behaviors_[PlayerBehaviorType::Attack_3rd]->ImGui();
+		}
+		ImGui::TreePop();
 	}
 
 	ImGui::PopItemWidth();
@@ -80,4 +95,10 @@ void PlayerRightSword::SaveJson() {
 		behaviors->SaveJson(data);
 	}
 	JsonAdapter::Save(baseBehaviorJsonFilePath_ + "playerRightSword.json", data);
+}
+
+void PlayerRightSword::SetForwardDirection(const Vector3& direction) {
+
+	BasePlayerParts::GetBehavior<RightSwordThirdAttackBehavior>
+		(PlayerBehaviorType::Attack_3rd)->SetForwardDirection(direction);
 }

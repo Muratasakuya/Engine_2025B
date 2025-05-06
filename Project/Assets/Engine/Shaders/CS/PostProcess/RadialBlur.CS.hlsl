@@ -33,16 +33,16 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float2 uv = (float2(pixelPos) + 0.5f) / float2(width, height);
 
 	// 放射ブラー方向
-	float2 direction = uv - gBlur.center;
+	float2 direction = normalize(uv - gBlur.center);
+	float distance = length(uv - gBlur.center);
 
 	// ブラー適用
 	float3 outputColor = float3(0.0f, 0.0f, 0.0f);
 
 	for (int i = 0; i < gBlur.numSamples; ++i) {
 		
-		float2 sampleUV = uv + direction * gBlur.width * float(i);
-		sampleUV = clamp(sampleUV, float2(0.0f, 0.0f), float2(0.9f, 0.9f));
-
+		float2 sampleUV = uv + direction * gBlur.width * distance * float(i);
+		sampleUV = clamp(sampleUV, float2(0.001f, 0.001f), float2(0.999f, 0.999f));
 		outputColor += gTexture.SampleLevel(gSampler, sampleUV, 0).rgb;
 	}
 

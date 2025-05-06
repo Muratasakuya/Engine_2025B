@@ -24,8 +24,6 @@ void RightSwordFirstAttackBehavior::Execute([[maybe_unused]] BasePlayerParts* pa
 
 		// animation開始
 		rotationLerpValue_->Start();
-		// 開始時の回転を記録
-		startRotation_ = parts->GetTransform().rotation;
 	}
 
 	if (rotationLerpValue_->IsFinished()) {

@@ -35,8 +35,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// 開始時の回転角
-	Quaternion startRotation_;
 	// 剣の向きを振る方向に合わせる
 	std::unique_ptr<SimpleAnimation<Vector3>> rotationLerpValue_;
 };
