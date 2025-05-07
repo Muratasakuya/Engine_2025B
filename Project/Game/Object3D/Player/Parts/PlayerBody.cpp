@@ -59,6 +59,13 @@ void PlayerBody::ImGui() {
 
 	parameter_.ImGui();
 
+	if (ImGui::CollapsingHeader("Attack_3rd_EditCatmullRom")) {
+
+		BasePlayerParts::GetBehavior<BodyThirdAttackBehavior>
+			(PlayerBehaviorType::Attack_3rd)->EditCatmullRom(
+				transform_->translation, transform_->GetForward());
+	}
+
 	if (ImGui::TreeNode("Wait_Move")) {
 
 		if (ImGui::CollapsingHeader("WaitBehavior")) {
@@ -120,4 +127,11 @@ void PlayerBody::SaveJson() {
 		behaviors->SaveJson(data);
 	}
 	JsonAdapter::Save(baseBehaviorJsonFilePath_ + "PlayerBody.json", data);
+}
+
+void PlayerBody::SetBackwardDirection() {
+
+	Vector3 direction = transform_->GetBack();
+	BasePlayerParts::GetBehavior<BodyThirdAttackBehavior>
+		(PlayerBehaviorType::Attack_3rd)->SetBackwardDirection(direction);
 }

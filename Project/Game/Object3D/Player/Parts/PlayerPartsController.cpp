@@ -77,7 +77,7 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 	for (const auto& behaviorInfo : behaviorList) {
 
 		// 特殊設定
-		// 1段目の攻撃時にその時点の体の角度を剣に渡す
+		// 1段目の攻撃時にその時点の体の角度を渡す
 		if (!uniqueSetting_) {
 			if (CheckCurrentBehaviors(behaviors,
 				{ PlayerBehaviorType::Attack_1st })) {
@@ -85,6 +85,7 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
  				Vector3 forwardDirection = body_->GetTransform().GetForward();
 				leftSword_->SetForwardDirection(forwardDirection);
 				rightSword_->SetForwardDirection(forwardDirection);
+				body_->SetBackwardDirection();
 				uniqueSetting_ = true;
 			}
 		}

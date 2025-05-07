@@ -28,6 +28,14 @@ public:
 
 	// json
 	void SaveJson(Json& data) override;
+
+	// catmullRom、座標操作
+	void EditCatmullRom(const Vector3& translation,
+		const Vector3& direction);
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetBackwardDirection(const Vector3& direction);
 private:
 	//========================================================================
 	//	private Methods
@@ -37,8 +45,10 @@ private:
 
 	// 最初の後方ベクトル
 	Vector3 backwardDirection_;
+	// 最初の前方ベクトル
+	Vector3 forwardDirection_;
 
-	// parameter
+	// -------- 前半攻撃処理 --------//
 	// 移動
 	// 進む量
 	float moveValue_;
@@ -61,13 +71,28 @@ private:
 	// 前に行くとき、正面に突進するような感じ
 	std::unique_ptr<SimpleAnimation<Vector3>> frontRotation_;
 
+	// -------- 後半攻撃処理 --------//
+	// 移動
+	// catmullRom曲線移動に使うkeyframe
+	// 後方ベクトル方向を常に向くようにする
+	std::vector<Vector3> moveKeyframes_;
+	std::unique_ptr<SimpleAnimation<Vector3>> moveKeyframeAnimation_;
+
 	//--------- functions ----------------------------------------------------
 
-	void UpdateMoveBack(BasePlayerParts* parts);
-	void UpdateRotationBack(BasePlayerParts* parts);
+	// init
+	void InitCatmullRom();
+	void SaveCatmullRom();
 
-	void UpdateMoveFront(BasePlayerParts* parts);
-	void UpdateRotationFront(BasePlayerParts* parts);
+	// -------- 前半攻撃処理 --------//
+	void FirstHalhUpdateMoveBack(BasePlayerParts* parts);
+	void FirstHalhUpdateRotationBack(BasePlayerParts* parts);
 
-	void WaitMoveTime();
+	void FirstHalhUpdateMoveFront(BasePlayerParts* parts);
+	void FirstHalhUpdateRotationFront(BasePlayerParts* parts);
+
+	void FirstHalhWaitMoveTime();
+
+	// -------- 後半攻撃処理 --------//
+	void SecondHalfUpdateMoveCatmullRom(BasePlayerParts* parts);
 };

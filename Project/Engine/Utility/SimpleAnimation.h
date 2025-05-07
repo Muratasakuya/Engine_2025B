@@ -72,6 +72,8 @@ public:
 
 	// 0.0fから1.0fの間で補間された値を取得
 	void LerpValue(T& value);
+	// 0.0fから1.0fの間でkeyframeの補間された値を取得
+	void LerpKeyframeValue(T& value);
 	// moveValue分endまで動く値を取得
 	void MoveValue(T& value);
 
@@ -101,6 +103,8 @@ public:
 	Loop loop_; // ループの情報
 	Time time_; // タイマーの情報
 	Move move_; // 動かす値の情報
+
+	std::vector<T> keyframes_; // 外部から設定する
 private:
 	//========================================================================
 	//	private Methods
@@ -115,6 +119,7 @@ private:
 	void UpdateElapsedTime();
 
 	void UpdateLerpValue(T& value);
+	void UpdateLerpKeyframeValue(T& value);
 	void UpdateMoveValue(T& value);
 
 	void UpdateLoop(T& value);
@@ -236,6 +241,27 @@ inline void SimpleAnimation<T>::LerpValue(T& value) {
 }
 
 template<typename T>
+inline void SimpleAnimation<T>::LerpKeyframeValue(T& value) {
+
+	// keyframeが何もなければエラー
+	ASSERT(!keyframes_.empty(), "keyframes is empty");
+
+	// ループが開始していないときは何も処理をしない
+	if (!loop_.isStart) {
+		return;
+	}
+
+	// 経過時間を加算、t値を処理する
+	UpdateElapsedTime();
+
+	// 値の補間
+	UpdateLerpKeyframeValue(value);
+
+	// ループ処理の更新
+	UpdateLoop(value);
+}
+
+template<typename T>
 inline void SimpleAnimation<T>::MoveValue(T& value) {
 
 	// ループが開始していないときは何も処理をしない
@@ -304,6 +330,28 @@ inline void SimpleAnimation<T>::UpdateLerpValue(T& value) {
 	// 補間する
 	value = Algorithm::Lerp<T>(move_.start, move_.end,
 		EasedValue(move_.easingType, time_.currentT));
+
+	// 1ループ終了
+	if (time_.currentT == 1.0f) {
+
+		// ループの終了フラグを立てる
+		loop_.isEnd = true;
+	}
+}
+
+template<typename T>
+inline void SimpleAnimation<T>::UpdateLerpKeyframeValue(T& value) {
+
+	// ループが終了しているときは何も処理をしない
+	if (loop_.isEnd) {
+		return;
+	}
+
+	// とりあえずVector3のみ実装
+	if constexpr (std::is_same_v<T, Vector3>) {
+
+		value = Vector3::CatmullRomValue(keyframes_, EasedValue(move_.easingType, time_.currentT));
+	}
 
 	// 1ループ終了
 	if (time_.currentT == 1.0f) {

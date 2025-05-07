@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Utility/SimpleAnimation.h>
+#include <Engine/Utility/KeyframeAnimation.h>
 #include <Game/Object3D/Player/Behavior/PlayerBehaviorType.h>
 #include <Lib/Adapter/JsonAdapter.h>
 

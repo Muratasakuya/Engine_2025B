@@ -73,7 +73,7 @@ float Algorithm::CatmullRomValue(const std::vector<float>& points, float t) {
 	// 区間番号
 	size_t index = static_cast<size_t>(t / areaWidth);
 	// 区間番号が上限を超えないための計算
-	index;// ここが分からない
+	index = (std::min)(index, division - 1);
 
 	// 4点分のインデックス
 	size_t index0 = index - 1;

@@ -54,9 +54,7 @@ private:
 
 	struct Move {
 
-		T start;                  // 開始値
-		T end;                    // 終了値
-		std::vector<T> keyframes; // キーフレーム、startとendの間
+		std::vector<T> keyframes; // キーフレーム
 		EasingType easingType;    // イージングの種類
 	};
 public:
@@ -124,8 +122,8 @@ private:
 template<typename T>
 inline KeyframeAnimation<T>::KeyframeAnimation() {
 
-	// start + end + keyframes >= 4になるように最初から2個追加
-	move_.keyframes.resize(2);
+	// keyframes >= 4になるように最初から4個追加
+	move_.keyframes.resize(4);
 }
 
 template<typename T>
@@ -154,28 +152,6 @@ inline void KeyframeAnimation<T>::ImGui(const std::string& label) {
 		}
 		// 補間で動く値の操作
 		if (ImGui::BeginTabItem(("Move##" + label).c_str())) {
-
-			if constexpr (std::is_same_v<T, float>) {
-
-				ImGui::DragFloat(("start##Move" + label).c_str(), &move_.start, 0.01f);
-				ImGui::DragFloat(("end##Move" + label).c_str(), &move_.end, 0.01f);
-			} else if constexpr (std::is_same_v<T, int>) {
-
-				ImGui::DragInt(("start##Move" + label).c_str(), &move_.start, 1);
-				ImGui::DragInt(("end##Move" + label).c_str(), &move_.end, 1);
-			} else if constexpr (std::is_same_v<T, Vector2>) {
-
-				ImGui::DragFloat2(("start##Move" + label).c_str(), &move_.start.x, 0.01f);
-				ImGui::DragFloat2(("end##Move" + label).c_str(), &move_.end.x, 0.01f);
-			} else if constexpr (std::is_same_v<T, Vector3>) {
-
-				ImGui::DragFloat3(("start##Move" + label).c_str(), &move_.start.x, 0.01f);
-				ImGui::DragFloat3(("end##Move" + label).c_str(), &move_.end.x, 0.01f);
-			} else if constexpr (std::is_same_v<T, Color>) {
-
-				ImGui::ColorEdit4(("start##Move" + label).c_str(), &move_.start.a);
-				ImGui::ColorEdit4(("end##Move" + label).c_str(), &move_.end.a);
-			}
 
 			Easing::SelectEasingType(move_.easingType, label);
 
@@ -257,19 +233,12 @@ inline void KeyframeAnimation<T>::Reset() {
 	loop_.currentCount = 0;
 	time_.elapsed = 0.0f;
 	time_.currentT = 0.0f;
-	time_.currentMovedValueInterval = 0.0f;
 }
 
 template<typename T>
 inline void KeyframeAnimation<T>::CalArcLengths() {
 
-	std::vector<T> points;
-	points.reserve(move_.keyframes.size() + 2);
-	points.push_back(move_.start);
-	points.insert(points.end(), move_.keyframes.begin(), move_.keyframes.end());
-	points.push_back(move_.end);
-
-	arcLengths_ = Algorithm::ComputeArcLengths<T>(points, arcDivision_);
+	arcLengths_ = Algorithm::ComputeArcLengths<T>(move_.keyframes, arcDivision_);
 }
 
 template<typename T>
@@ -302,14 +271,6 @@ inline void KeyframeAnimation<T>::UpdateLerpValue(T& value) {
 		return;
 	}
 
-	// 補間処理
-	 // 補間用の制御点（start + keyframes + end）
-	std::vector<T> points;
-	points.reserve(move_.keyframes.size() + 2);
-	points.push_back(move_.start);
-	points.insert(points.end(), move_.keyframes.begin(), move_.keyframes.end());
-	points.push_back(move_.end);
-
 	// t値
 	float t = time_.currentT;
 
@@ -322,10 +283,10 @@ inline void KeyframeAnimation<T>::UpdateLerpValue(T& value) {
 	// 補間処理
 	if constexpr (std::is_same_v<T, float>) {
 
-		value = Algorithm::CatmullRomValue(points, EasedValue(move_.easingType));
+		value = Algorithm::CatmullRomValue(move_.keyframes, EasedValue(move_.easingType));
 	} else {
 
-		value = Algorithm::CatmullRomValue<T>(points, EasedValue(move_.easingType));
+		value = Algorithm::CatmullRomValue<T>(move_.keyframes, EasedValue(move_.easingType));
 	}
 
 	// 1ループ終了
@@ -399,10 +360,6 @@ inline void KeyframeAnimation<T>::ToJson(Json& data) {
 	// moveの値を保存
 	if constexpr (std::is_same_v<T, float> || std::is_same_v<T, int>) {
 
-		data["move_.start"] = move_.start;
-		data["move_.end"] = move_.end;
-		data["move_.moveValue"] = move_.moveValue;
-
 		// keyframe
 		if (!move_.keyframes.empty()) {
 			for (uint32_t index = 0; index < move_.keyframes.size(); ++index) {
@@ -412,10 +369,6 @@ inline void KeyframeAnimation<T>::ToJson(Json& data) {
 			}
 		}
 	} else {
-
-		data["move_.start"] = JsonAdapter::FromObject<T>(move_.start);
-		data["move_.end"] = JsonAdapter::FromObject<T>(move_.end);
-		data["move_.moveValue"] = JsonAdapter::FromObject<T>(move_.moveValue);
 
 		// keyframe
 		if (!move_.keyframes.empty()) {
@@ -444,14 +397,10 @@ inline void KeyframeAnimation<T>::FromJson(const Json& data) {
 	// moveの値を適応
 	if constexpr (std::is_same_v<T, float> || std::is_same_v<T, int>) {
 
-		move_.start = JsonAdapter::GetValue<float>(data, "move_.start");
-		move_.end = JsonAdapter::GetValue<float>(data, "move_.end");
-		move_.moveValue = JsonAdapter::GetValue<float>(data, "move_.moveValue");
-
 		// keyframe
-		move_.keyframes.clear();
 		if (data.contains("Keyframes")) {
 
+			move_.keyframes.clear();
 			const auto& keyData = data["Keyframes"];
 			for (size_t i = 0; i < keyData.size(); ++i) {
 
@@ -464,14 +413,10 @@ inline void KeyframeAnimation<T>::FromJson(const Json& data) {
 		}
 	} else {
 
-		move_.start = JsonAdapter::ToObject<T>(data["move_.start"]);
-		move_.end = JsonAdapter::ToObject<T>(data["move_.end"]);
-		move_.moveValue = JsonAdapter::ToObject<T>(data["move_.moveValue"]);
-
 		// keyframe
-		move_.keyframes.clear();
 		if (data.contains("Keyframes")) {
 
+			move_.keyframes.clear();
 			const auto& keyData = data["Keyframes"];
 			for (size_t i = 0; i < keyData.size(); ++i) {
 
