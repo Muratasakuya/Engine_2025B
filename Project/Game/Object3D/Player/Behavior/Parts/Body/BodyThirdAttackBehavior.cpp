@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Renderer/LineRenderer.h>
 #include <Game/Camera/FollowCamera.h>
 #include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
 
@@ -21,6 +22,8 @@ BodyThirdAttackBehavior::BodyThirdAttackBehavior(
 
 	backRotation_ = std::make_unique<SimpleAnimation<Vector3>>();
 	frontRotation_ = std::make_unique<SimpleAnimation<Vector3>>();
+
+	moveKeyframeAnimation_ = std::make_unique<SimpleAnimation<Vector3>>();
 	if (data.contains(attack3rdBehaviorJsonKey_) && data[attack3rdBehaviorJsonKey_].contains("MoveBack")) {
 
 		moveBack_->FromJson(data[attack3rdBehaviorJsonKey_]["MoveBack"]);
@@ -28,32 +31,42 @@ BodyThirdAttackBehavior::BodyThirdAttackBehavior(
 		backRotation_->FromJson(data[attack3rdBehaviorJsonKey_]["BackRotation"]);
 		frontRotation_->FromJson(data[attack3rdBehaviorJsonKey_]["FrontRotation"]);
 
+		moveKeyframeAnimation_->FromJson(data[attack3rdBehaviorJsonKey_]["MoveKeyframeAnimation"]);
+
 		moveWaitTime_ = JsonAdapter::GetValue<float>(data[attack3rdBehaviorJsonKey_], "moveWaitTime_");
 		moveValue_ = JsonAdapter::GetValue<float>(data[attack3rdBehaviorJsonKey_], "moveValue_");
 	}
+
+	// keyframeの初期化
+	InitCatmullRom();
 }
 
 void BodyThirdAttackBehavior::Execute(BasePlayerParts* parts) {
 
-	// 後ろに引く
-	UpdateMoveBack(parts);
-	UpdateRotationBack(parts);
+	// 前半攻撃処理
+	{
+		// 後ろに引く
+		FirstHalhUpdateMoveBack(parts);
+		FirstHalhUpdateRotationBack(parts);
 
-	// 時間経過を待つ
-	WaitMoveTime();
+		// 時間経過を待つ
+		FirstHalhWaitMoveTime();
 
-	// 前に行く
-	UpdateMoveFront(parts);
-	UpdateRotationFront(parts);
+		// 前に行く
+		FirstHalhUpdateMoveFront(parts);
+		FirstHalhUpdateRotationFront(parts);
+	}
+
+	// 後半攻撃処理
+	{
+		// catmullRom曲線上を移動するようにする
+		SecondHalfUpdateMoveCatmullRom(parts);
+	}
 }
 
-void BodyThirdAttackBehavior::UpdateMoveBack(BasePlayerParts* parts) {
+void BodyThirdAttackBehavior::FirstHalhUpdateMoveBack(BasePlayerParts* parts) {
 
 	if (!moveBack_->IsStart()) {
-
-		backwardDirection_ = followCamera_->GetTransform().GetBack();
-		backwardDirection_.y = 0.0f;
-		backwardDirection_ = Vector3::Normalize(backwardDirection_);
 
 		// 開始地点と終了地点を設定
 		moveBack_->move_.start = parts->GetTransform().translation;
@@ -74,7 +87,7 @@ void BodyThirdAttackBehavior::UpdateMoveBack(BasePlayerParts* parts) {
 	parts->SetTranslate(translation);
 }
 
-void BodyThirdAttackBehavior::UpdateRotationBack(BasePlayerParts* parts) {
+void BodyThirdAttackBehavior::FirstHalhUpdateRotationBack(BasePlayerParts* parts) {
 
 	if (!backRotation_->IsStart()) {
 
@@ -96,7 +109,7 @@ void BodyThirdAttackBehavior::UpdateRotationBack(BasePlayerParts* parts) {
 	parts->SetRotate(rotation);
 }
 
-void BodyThirdAttackBehavior::UpdateMoveFront(BasePlayerParts* parts) {
+void BodyThirdAttackBehavior::FirstHalhUpdateMoveFront(BasePlayerParts* parts) {
 
 	// 時間経過しきったら
 	if (enableMoveFront_) {
@@ -121,7 +134,7 @@ void BodyThirdAttackBehavior::UpdateMoveFront(BasePlayerParts* parts) {
 	parts->SetTranslate(translation);
 }
 
-void BodyThirdAttackBehavior::UpdateRotationFront(BasePlayerParts* parts) {
+void BodyThirdAttackBehavior::FirstHalhUpdateRotationFront(BasePlayerParts* parts) {
 
 	// 時間経過しきったら
 	if (enableMoveFront_) {
@@ -146,7 +159,7 @@ void BodyThirdAttackBehavior::UpdateRotationFront(BasePlayerParts* parts) {
 	parts->SetRotate(rotation);
 }
 
-void BodyThirdAttackBehavior::WaitMoveTime() {
+void BodyThirdAttackBehavior::FirstHalhWaitMoveTime() {
 
 	// 後ろに下がりきったら
 	if (moveBack_->IsFinished() && !enableMoveFront_) {
@@ -161,6 +174,43 @@ void BodyThirdAttackBehavior::WaitMoveTime() {
 	}
 }
 
+void BodyThirdAttackBehavior::SecondHalfUpdateMoveCatmullRom(BasePlayerParts* parts) {
+
+	// 前に突進し終わったら
+	if (moveFront_->IsFinished()) {
+		if (!moveKeyframeAnimation_->IsStart()) {
+
+			// keyframeをanimationに設定する
+			// 前方ベクトルをもとに回転を計算
+			Quaternion rotation = Quaternion::LookRotation(forwardDirection_, Vector3(0.0f, 1.0f, 0.0f));
+			Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(rotation);
+
+			Vector3 translation = parts->GetTransform().translation;
+			moveKeyframeAnimation_->keyframes_.clear();
+			for (uint32_t index = 0; index < moveKeyframes_.size(); ++index) {
+
+				Vector3 keyframe = translation + Vector3::Transform(moveKeyframes_[index], rotateMatrix);
+				moveKeyframeAnimation_->keyframes_.emplace_back(keyframe);
+			}
+
+			// animation開始
+			moveKeyframeAnimation_->Start();
+		}
+	} else {
+		return;
+	}
+
+	if (moveKeyframeAnimation_->IsFinished()) {
+		return;
+	}
+
+	// 値を補完
+	Vector3 currentKeyframe{};
+	moveKeyframeAnimation_->LerpKeyframeValue(currentKeyframe);
+	// 値を設定
+	parts->SetTranslate(currentKeyframe);
+}
+
 void BodyThirdAttackBehavior::Reset() {
 
 	// 初期化する
@@ -168,6 +218,7 @@ void BodyThirdAttackBehavior::Reset() {
 	moveFront_->Reset();
 	backRotation_->Reset();
 	frontRotation_->Reset();
+	moveKeyframeAnimation_->Reset();
 	moveWaitTimer_ = 0.0f;
 	enableMoveFront_ = false;
 }
@@ -193,6 +244,12 @@ void BodyThirdAttackBehavior::ImGui() {
 		ImGui::TreePop();
 	}
 
+	if (ImGui::TreeNode("KeyframeAnimation")) {
+
+		moveKeyframeAnimation_->ImGui("BodyThirdAttackBehavior_moveKeyframeAnimation_");
+		ImGui::TreePop();
+	}
+
 	ImGui::PopItemWidth();
 }
 
@@ -203,7 +260,120 @@ void BodyThirdAttackBehavior::SaveJson(Json& data) {
 	moveFront_->ToJson(data[attack3rdBehaviorJsonKey_]["MoveFront"]);
 	backRotation_->ToJson(data[attack3rdBehaviorJsonKey_]["BackRotation"]);
 	frontRotation_->ToJson(data[attack3rdBehaviorJsonKey_]["FrontRotation"]);
+	moveKeyframeAnimation_->ToJson(data[attack3rdBehaviorJsonKey_]["MoveKeyframeAnimation"]);
 
 	data[attack3rdBehaviorJsonKey_]["moveValue_"] = moveValue_;
 	data[attack3rdBehaviorJsonKey_]["moveWaitTime_"] = moveWaitTime_;
+}
+
+void BodyThirdAttackBehavior::InitCatmullRom() {
+
+	// 4つ分の制御点を確保
+	moveKeyframes_.resize(4);
+
+	Json data;
+	if (!JsonAdapter::LoadCheck("Player/PartsParameter/Behavior/playerBodyCatmullRom.json", data)) {
+		return;
+	}
+
+	moveKeyframes_.resize(data["CatmullRomKeyframes"].size());
+	for (uint32_t index = 0; index < data["CatmullRomKeyframes"].size(); ++index) {
+
+		std::string key = std::to_string(index);
+		moveKeyframes_[index] = JsonAdapter::ToObject<Vector3>(data["CatmullRomKeyframes"][key]);
+	}
+}
+
+void BodyThirdAttackBehavior::SaveCatmullRom() {
+
+	Json data;
+
+	for (uint32_t index = 0; index < moveKeyframes_.size(); ++index) {
+
+		std::string key = std::to_string(index);
+		data["CatmullRomKeyframes"][key] = JsonAdapter::FromObject<Vector3>(moveKeyframes_[index]);
+	}
+
+	JsonAdapter::Save("Player/PartsParameter/Behavior/playerBodyCatmullRom", data);
+}
+
+void BodyThirdAttackBehavior::EditCatmullRom(
+	const Vector3& translation, const Vector3& direction) {
+
+	// 攻撃の時のcatmulRomを線で描画しつつ、デバッグ表示する
+	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+
+	ImGui::PushItemWidth(itemWidth_);
+
+	// 制御点の保存
+	if (ImGui::Button("Save Keyframe", ImVec2(itemWidth_, 32.0f))) {
+
+		SaveCatmullRom();
+	}
+
+	// 制御点の追加
+	if (ImGui::Button("Add Keyframe", ImVec2(itemWidth_, 32.0f))) {
+
+		// 最後の点の座標で追加する
+		moveKeyframes_.emplace_back(moveKeyframes_.back());
+	}
+
+	// 制御点の操作
+	// +Z方向を正面とし、後方ベクトル方向によって表示、処理するときは変える
+	for (uint32_t index = 0; index < moveKeyframes_.size(); ++index) {
+
+		// 表示する名前
+		std::string label = "keyframe" +
+			std::to_string(index) + "##BodyThirdAttackBehavior";
+
+		ImGui::DragFloat3(label.c_str(), &moveKeyframes_[index].x, 0.1f);
+
+		ImGui::SameLine();
+
+		// 該当している制御点の削除
+		label = "Remove Keyframe" + std::to_string(index) + "##BodyThirdAttackBehavior";
+		if (ImGui::Button(label.c_str(), ImVec2(itemWidth_, 32.0f))) {
+
+			moveKeyframes_.erase(moveKeyframes_.begin() + index);
+		}
+	}
+
+	// keyframeの最初の座標はlocalの原点にする
+	moveKeyframes_.front() = Vector3(0.0f, 0.0f, 0.0f);
+
+	// 回転を計算
+	Quaternion rotation = Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f));
+	Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(rotation);
+
+	// 後方ベクトル方向を向かせて線を繋いで表示
+	for (uint32_t i = 0; i < moveKeyframes_.size() - 1; ++i) {
+
+		// playerの座標を考慮した座標にする
+		Vector3 start = translation + Vector3::Transform(moveKeyframes_[i], rotateMatrix);
+		Vector3 end = translation + Vector3::Transform(moveKeyframes_[i + 1], rotateMatrix);
+
+		lineRenderer->DrawLine3D(start, end, Color::Red());
+	}
+
+	const int division = 8;    // 分割数
+	const float radius = 0.4f; // 半径
+	// 制御点の位置にsphereを描画する
+	for (uint32_t i = 0; i < moveKeyframes_.size(); ++i) {
+
+		Vector3 center = translation + Vector3::Transform(moveKeyframes_[i], rotateMatrix);
+		lineRenderer->DrawSphere(division, radius, center, Color::Red());
+	}
+
+	ImGui::PopItemWidth();
+}
+
+void BodyThirdAttackBehavior::SetBackwardDirection(const Vector3& direction) {
+
+	backwardDirection_ = direction;
+	backwardDirection_.y = 0.0f;
+	backwardDirection_ = backwardDirection_.Normalize();
+
+	// 前方ベクトルはbackの逆
+	forwardDirection_ = Vector3::AnyInit(0.0f);
+	forwardDirection_ -= backwardDirection_;
 }

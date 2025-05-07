@@ -27,6 +27,10 @@ public:
 
 	// json
 	void SaveJson();
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetBackwardDirection();
 private:
 	//========================================================================
 	//	private Methods
