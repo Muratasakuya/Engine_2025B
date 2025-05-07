@@ -33,6 +33,9 @@ void GameScene::Init(
 
 	postProcessSystem_ = postProcessSystem;
 
+	postProcessSystem_->Create({ PostProcess::Bloom });
+	postProcessSystem_->AddProcess(PostProcess::Bloom);
+
 	//========================================================================
 	//	sceneObject
 	//========================================================================

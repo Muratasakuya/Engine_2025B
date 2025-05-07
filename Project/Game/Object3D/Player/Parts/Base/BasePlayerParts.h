@@ -57,6 +57,11 @@ public:
 
 	// リセット
 	void ResetBehavior(PlayerBehaviorType type);
+
+	// material
+	void ImGuiMaterial();
+	void ApplyJson();
+	void SaveJson();
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const Transform3DComponent& parent);
