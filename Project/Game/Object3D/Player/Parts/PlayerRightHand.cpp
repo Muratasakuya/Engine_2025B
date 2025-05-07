@@ -48,6 +48,11 @@ void PlayerRightHand::ImGui() {
 
 	parameter_.ImGui();
 
+	if (ImGui::CollapsingHeader("Material")) {
+
+		BasePlayerParts::ImGuiMaterial();
+	}
+
 	if (ImGui::CollapsingHeader("WaitBehavior")) {
 
 		behaviors_[PlayerBehaviorType::Wait]->ImGui();
@@ -83,6 +88,8 @@ void PlayerRightHand::ApplyJson() {
 		return;
 	}
 
+	BasePlayerParts::ApplyJson();
+
 	// behaviors初期化
 	InitBehaviors(data);
 }
@@ -90,6 +97,8 @@ void PlayerRightHand::ApplyJson() {
 void PlayerRightHand::SaveJson() {
 
 	parameter_.SaveJson();
+
+	BasePlayerParts::SaveJson();
 
 	Json data;
 

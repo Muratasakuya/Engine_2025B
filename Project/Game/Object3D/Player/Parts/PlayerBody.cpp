@@ -59,6 +59,11 @@ void PlayerBody::ImGui() {
 
 	parameter_.ImGui();
 
+	if (ImGui::CollapsingHeader("Material")) {
+
+		BasePlayerParts::ImGuiMaterial();
+	}
+
 	if (ImGui::CollapsingHeader("Attack_3rd_EditCatmullRom")) {
 
 		BasePlayerParts::GetBehavior<BodyThirdAttackBehavior>
@@ -113,6 +118,8 @@ void PlayerBody::ApplyJson() {
 		return;
 	}
 
+	BasePlayerParts::ApplyJson();
+
 	// behaviors初期化
 	InitBehaviors(data);
 }
@@ -120,6 +127,8 @@ void PlayerBody::ApplyJson() {
 void PlayerBody::SaveJson() {
 
 	parameter_.SaveJson();
+
+	BasePlayerParts::SaveJson();
 
 	Json data;
 	for (const auto& behaviors : std::views::values(behaviors_)) {

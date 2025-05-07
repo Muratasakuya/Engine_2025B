@@ -44,6 +44,11 @@ void PlayerLeftSword::ImGui() {
 
 	parameter_.ImGui();
 
+	if (ImGui::CollapsingHeader("Material")) {
+
+		BasePlayerParts::ImGuiMaterial();
+	}
+
 	if (ImGui::TreeNode("Wait_Move")) {
 
 		if (ImGui::CollapsingHeader("WaitBehavior")) {
@@ -80,6 +85,8 @@ void PlayerLeftSword::ApplyJson() {
 		return;
 	}
 
+	BasePlayerParts::ApplyJson();
+
 	// behaviors初期化
 	InitBehaviors(data);
 }
@@ -87,6 +94,8 @@ void PlayerLeftSword::ApplyJson() {
 void PlayerLeftSword::SaveJson() {
 
 	parameter_.SaveJson();
+
+	BasePlayerParts::SaveJson();
 
 	Json data;
 
