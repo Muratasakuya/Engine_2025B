@@ -44,7 +44,9 @@ void PlayerBehaviorController::UpdateMove() {
 
 	// 攻撃中はここの操作はできないようにしておく
 	bool isAttack = false;
-	isAttack |= limits_[PlayerBehaviorType::Attack_1st].isUpdating_;
+	isAttack |= limits_[PlayerBehaviorType::Attack_1st].isUpdating;
+	isAttack |= limits_[PlayerBehaviorType::Attack_2nd].isUpdating;
+	isAttack |= limits_[PlayerBehaviorType::Attack_3rd].isUpdating;
 
 	if (isAttack) {
 		return;
@@ -58,8 +60,12 @@ void PlayerBehaviorController::UpdateMove() {
 
 void PlayerBehaviorController::UpdateAttack() {
 
-	// 1段階目攻撃処理
+	// 1段目攻撃処理
 	FirstAttack();
+	// 2段目攻撃処理
+	SecondAttack();
+	// 3段目攻撃処理
+	ThirdAttack();
 }
 
 void PlayerBehaviorController::MoveWalk() {
@@ -113,20 +119,30 @@ void PlayerBehaviorController::MoveDash() {
 
 void PlayerBehaviorController::FirstAttack() {
 
-	// 1段目の攻撃を設定するを設定する
+	// 他の攻撃中はここの操作はできないようにしておく
+	bool isAttack = false;
+	isAttack |= limits_[PlayerBehaviorType::Attack_2nd].isUpdating;
+	isAttack |= limits_[PlayerBehaviorType::Attack_3rd].isUpdating;
+
+	if (isAttack) {
+		return;
+	}
+
+	// 1段目の攻撃を設定する
 	// 1段目攻撃中は受け付けない
-	if (!limits_[PlayerBehaviorType::Attack_1st].isUpdating_) {
+	if (!limits_[PlayerBehaviorType::Attack_1st].isUpdating) {
 		// 待機か、歩き中
 		if (CheckCurrentBehaviors({
 			PlayerBehaviorType::Wait,
 			PlayerBehaviorType::Walk }, MatchType::Any)) {
-			// 左クリックで 1段目の攻撃
+			// スペースキーで 1段目の攻撃
 			if (input_->TriggerKey(DIK_SPACE)) {
 
 				moveBehaviour_ = PlayerBehaviorType::Attack_1st;
+				limits_[PlayerBehaviorType::Attack_1st].Reset();
 
 				// 更新状態にする
-				limits_[PlayerBehaviorType::Attack_1st].isUpdating_ = true;
+				limits_[PlayerBehaviorType::Attack_1st].isUpdating = true;
 				// 現在有効な操作をすべて削除する
 				currentMoveBehaviours_.clear();
 			}
@@ -141,8 +157,102 @@ void PlayerBehaviorController::FirstAttack() {
 		// 最大時間になったらリセットし、攻撃を止める
 		if (limits_[PlayerBehaviorType::Attack_1st].isReached) {
 
-			limits_[PlayerBehaviorType::Attack_1st].Reset();
+			limits_[PlayerBehaviorType::Attack_1st].isUpdating = false;
 			currentMoveBehaviours_.erase(PlayerBehaviorType::Attack_1st);
+		}
+	}
+}
+
+void PlayerBehaviorController::SecondAttack() {
+
+	// 2段目の攻撃を設定する
+	// 2段目攻撃中は受け付けない
+	if (!limits_[PlayerBehaviorType::Attack_2nd].isUpdating) {
+		// 1段目攻撃中
+		if (CheckCurrentBehaviors({ PlayerBehaviorType::Attack_1st }, MatchType::All)) {
+			// スペースキーを押したら2段目の攻撃を予約する
+			if (input_->TriggerKey(DIK_SPACE)) {
+
+				limits_[PlayerBehaviorType::Attack_2nd].isReserve = true;
+				limits_[PlayerBehaviorType::Attack_2nd].Reset();
+			}
+		}
+	}
+
+	// 設定されているとき
+	if (CheckCurrentBehaviors({ PlayerBehaviorType::Attack_2nd }, MatchType::All)) {
+
+		// 経過時間を進める
+		limits_[PlayerBehaviorType::Attack_2nd].UpdateElapseTime();
+		// 最大時間になったらリセットし、攻撃を止める
+		if (limits_[PlayerBehaviorType::Attack_2nd].isReached) {
+
+			limits_[PlayerBehaviorType::Attack_2nd].isUpdating = false;
+			currentMoveBehaviours_.erase(PlayerBehaviorType::Attack_2nd);
+		}
+	}
+
+	// 1段目の攻撃が完全に終了したら
+	if (limits_[PlayerBehaviorType::Attack_1st].isReached) {
+		// 予約されていれば
+		if (limits_[PlayerBehaviorType::Attack_2nd].isReserve) {
+
+			// 攻撃を開始する
+			moveBehaviour_ = PlayerBehaviorType::Attack_2nd;
+
+			// 更新状態にする
+			limits_[PlayerBehaviorType::Attack_2nd].isUpdating = true;
+			// 予約解除
+			limits_[PlayerBehaviorType::Attack_2nd].isReserve = false;
+			// 現在有効な操作をすべて削除する
+			currentMoveBehaviours_.clear();
+		}
+	}
+}
+
+void PlayerBehaviorController::ThirdAttack() {
+
+	// 3段目の攻撃を設定する
+	// 3段目攻撃中は受け付けない
+	if (!limits_[PlayerBehaviorType::Attack_3rd].isUpdating) {
+		// 1段目攻撃中
+		if (CheckCurrentBehaviors({ PlayerBehaviorType::Attack_2nd }, MatchType::All)) {
+			// スペースキーを押したら3段目の攻撃を予約する
+			if (input_->TriggerKey(DIK_SPACE)) {
+
+				limits_[PlayerBehaviorType::Attack_3rd].isReserve = true;
+				limits_[PlayerBehaviorType::Attack_3rd].Reset();
+			}
+		}
+	}
+
+	// 設定されているとき
+	if (CheckCurrentBehaviors({ PlayerBehaviorType::Attack_3rd }, MatchType::All)) {
+
+		// 経過時間を進める
+		limits_[PlayerBehaviorType::Attack_3rd].UpdateElapseTime();
+		// 最大時間になったらリセットし、攻撃を止める
+		if (limits_[PlayerBehaviorType::Attack_3rd].isReached) {
+
+			limits_[PlayerBehaviorType::Attack_3rd].isUpdating = false;
+			currentMoveBehaviours_.erase(PlayerBehaviorType::Attack_3rd);
+		}
+	}
+
+	// 1段目の攻撃が完全に終了したら
+	if (limits_[PlayerBehaviorType::Attack_2nd].isReached) {
+		// 予約されていれば
+		if (limits_[PlayerBehaviorType::Attack_3rd].isReserve) {
+
+			// 攻撃を開始する
+			moveBehaviour_ = PlayerBehaviorType::Attack_3rd;
+
+			// 更新状態にする
+			limits_[PlayerBehaviorType::Attack_3rd].isUpdating = true;
+			// 予約解除
+			limits_[PlayerBehaviorType::Attack_3rd].isReserve = false;
+			// 現在有効な操作をすべて削除する
+			currentMoveBehaviours_.clear();
 		}
 	}
 }
@@ -151,7 +261,9 @@ void PlayerBehaviorController::CheckWait() {
 
 	// 攻撃中はここの操作はできないようにしておく
 	bool isAttack = false;
-	isAttack |= limits_[PlayerBehaviorType::Attack_1st].isUpdating_;
+	isAttack |= limits_[PlayerBehaviorType::Attack_1st].isUpdating;
+	isAttack |= limits_[PlayerBehaviorType::Attack_2nd].isUpdating;
+	isAttack |= limits_[PlayerBehaviorType::Attack_3rd].isUpdating;
 
 	if (isAttack) {
 		return;
@@ -245,11 +357,41 @@ void PlayerBehaviorController::ImGui() {
 			moveBehaviour_ = PlayerBehaviorType::Attack_1st;
 
 			// 更新状態にする
-			limits_[PlayerBehaviorType::Attack_1st].isUpdating_ = true;
+			limits_[PlayerBehaviorType::Attack_1st].isUpdating = true;
 			// 現在有効な操作をすべて削除する
 			currentMoveBehaviours_.clear();
 		}
-		limits_[PlayerBehaviorType::Attack_1st].ImGui();
+		limits_[PlayerBehaviorType::Attack_1st].ImGui("Attack_1st");
+	}
+
+	// 2段目の攻撃
+	if (ImGui::CollapsingHeader("Attack_2nd")) {
+
+		if (ImGui::Button("Execute##Attack_2nd", ImVec2(itemWidth_, 32.0f))) {
+
+			moveBehaviour_ = PlayerBehaviorType::Attack_2nd;
+
+			// 更新状態にする
+			limits_[PlayerBehaviorType::Attack_2nd].isUpdating = true;
+			// 現在有効な操作をすべて削除する
+			currentMoveBehaviours_.clear();
+		}
+		limits_[PlayerBehaviorType::Attack_2nd].ImGui("Attack_2nd");
+	}
+
+	// 3段目の攻撃
+	if (ImGui::CollapsingHeader("Attack_3rd")) {
+
+		if (ImGui::Button("Execute##Attack_3rd", ImVec2(itemWidth_, 32.0f))) {
+
+			moveBehaviour_ = PlayerBehaviorType::Attack_3rd;
+
+			// 更新状態にする
+			limits_[PlayerBehaviorType::Attack_3rd].isUpdating = true;
+			// 現在有効な操作をすべて削除する
+			currentMoveBehaviours_.clear();
+		}
+		limits_[PlayerBehaviorType::Attack_3rd].ImGui("Attack_3rd");
 	}
 }
 
@@ -303,7 +445,6 @@ void PlayerBehaviorController::LimitTime::UpdateElapseTime() {
 void PlayerBehaviorController::LimitTime::Reset() {
 
 	elapsed = 0.0f;
-	isUpdating_ = false;
 	isReached = false;
 }
 
@@ -315,6 +456,8 @@ void PlayerBehaviorController::ApplyJson() {
 	}
 
 	limits_[PlayerBehaviorType::Attack_1st].ApplyJson(data, "Attack_1st");
+	limits_[PlayerBehaviorType::Attack_2nd].ApplyJson(data, "Attack_2nd");
+	limits_[PlayerBehaviorType::Attack_3rd].ApplyJson(data, "Attack_3rd");
 }
 
 void PlayerBehaviorController::SaveJson() {
@@ -322,23 +465,29 @@ void PlayerBehaviorController::SaveJson() {
 	Json data;
 
 	limits_[PlayerBehaviorType::Attack_1st].SaveJson(data, "Attack_1st");
+	limits_[PlayerBehaviorType::Attack_2nd].SaveJson(data, "Attack_2nd");
+	limits_[PlayerBehaviorType::Attack_3rd].SaveJson(data, "Attack_3rd");
 
 	JsonAdapter::Save("Player/Controller/behaviorController.json", data);
 }
 
-void PlayerBehaviorController::LimitTime::ImGui() {
+void PlayerBehaviorController::LimitTime::ImGui(const std::string& label) {
 
 	ImGui::PushItemWidth(itemWidth_);
 
-	ImGui::Text(std::format("isUpdating: {}", isUpdating_).c_str());
+	ImGui::Text(std::format("isUpdating: {}", isUpdating).c_str());
 
-	ImGui::DragFloat("limit", &limit, 0.01f);
+	ImGui::DragFloat(("limit" + label).c_str(), &limit, 0.01f);
 
 	ImGui::PopItemWidth();
 }
 
 void PlayerBehaviorController::LimitTime::ApplyJson(
 	const Json& data, const std::string& key) {
+
+	if (!data.contains(key)) {
+		return;
+	}
 
 	limit = JsonAdapter::GetValue<float>(data[key], "limit");
 }

@@ -3,21 +3,31 @@
 //============================================================================
 //  include
 //============================================================================
+#include <Game/Object3D/Player/Behavior/Parts/Base/IPlayerBehavior.h>
 
 //============================================================================
 //  RightSwordWalkBehavior class
 //============================================================================
-class RightSwordWalkBehavior {
+class RightSwordWalkBehavior :
+	public IPlayerBehavior {
 public:
 	//========================================================================
 	//  public Methods
 	//========================================================================
 
-	RightSwordWalkBehavior() = default;
+	RightSwordWalkBehavior(const Json& data, const Quaternion& initRotation);
 	~RightSwordWalkBehavior() = default;
 
-	//--------- accessor -----------------------------------------------------
+	// 処理実行
+	void Execute(BasePlayerParts* parts) override;
+	// リセット
+	void Reset();
 
+	// imgui
+	void ImGui() override;
+
+	// json
+	void SaveJson(Json& data) override;
 private:
 	//========================================================================
 	//  private Methods
@@ -25,8 +35,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// 初期化時の回転角
+	Quaternion initRotation_;
 
-
-	//--------- functions ----------------------------------------------------
-
+	// parameter
+	// 回転補間割合
+	float rotationLerpRate_;
 };

@@ -33,7 +33,6 @@ void GameScene::Init(
 
 	postProcessSystem_ = postProcessSystem;
 
-	// bloom処理
 	postProcessSystem_->Create({ PostProcess::Bloom });
 	postProcessSystem_->AddProcess(PostProcess::Bloom);
 

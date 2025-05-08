@@ -3,30 +3,38 @@
 //============================================================================
 //  include
 //============================================================================
+#include <Game/Object3D/Player/Behavior/Parts/Base/IPlayerBehavior.h>
 
 //============================================================================
 //  LeftSwordFirstAttackBehavior class
 //============================================================================
-class LeftSwordFirstAttackBehavior {
+class LeftSwordFirstAttackBehavior :
+	public IPlayerBehavior {
 public:
-    //========================================================================
-    //  public Methods
-    //========================================================================
+	//========================================================================
+	//  public Methods
+	//========================================================================
 
-    LeftSwordFirstAttackBehavior() = default;
-    ~LeftSwordFirstAttackBehavior() = default;
+	LeftSwordFirstAttackBehavior(const Json& data);
+	~LeftSwordFirstAttackBehavior() = default;
 
-    //--------- accessor -----------------------------------------------------
+	// 処理実行
+	void Execute(BasePlayerParts* parts) override;
+	// リセット
+	void Reset();
 
+	// imgui
+	void ImGui() override;
+
+	// json
+	void SaveJson(Json& data) override;
 private:
-    //========================================================================
-    //  private Methods
-    //========================================================================
+	//========================================================================
+	//  private Methods
+	//========================================================================
 
-    //--------- variables ----------------------------------------------------
+	//--------- variables ----------------------------------------------------
 
-
-
-    //--------- functions ----------------------------------------------------
-
+	// 剣の向きを振る方向に合わせる
+	std::unique_ptr<SimpleAnimation<Vector3>> rotationLerpValue_;
 };

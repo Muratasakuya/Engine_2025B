@@ -30,9 +30,9 @@ Vector3& Vector3::operator+=(const Vector3& v) {
 	return *this;
 }
 Vector3& Vector3::operator-=(const Vector3& v) {
-	x += v.x;
-	y += v.y;
-	z += v.z;
+	x -= v.x;
+	y -= v.y;
+	z -= v.z;
 	return *this;
 }
 
@@ -262,7 +262,7 @@ Vector3 Vector3::CatmullRomValue(const std::vector<Vector3>& points, float t) {
 	// 区間番号
 	size_t index = static_cast<size_t>(t / areaWidth);
 	// 区間番号が上限を超えないための計算
-	index;// ここが分からない
+	index = (std::min)(index, division - 1);
 
 	// 4点分のインデックス
 	size_t index0 = index - 1;

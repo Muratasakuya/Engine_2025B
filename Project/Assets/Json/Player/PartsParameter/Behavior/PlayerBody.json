@@ -6,8 +6,8 @@
             "loop_.maxCount": 0,
             "move_.easingType": 14,
             "move_.end": {
-                "x": -0.10000000149011612,
-                "y": -2.200000047683716,
+                "x": -0.019999999552965164,
+                "y": -2.299999952316284,
                 "z": -0.12999999523162842
             },
             "move_.moveValue": {
@@ -20,7 +20,7 @@
                 "y": 0.0,
                 "z": 0.0
             },
-            "time_.end": 0.14000000059604645,
+            "time_.end": 0.1599999964237213,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         },
@@ -30,9 +30,9 @@
             "loop_.maxCount": 0,
             "move_.easingType": 18,
             "move_.end": {
-                "x": 0.10999999940395355,
-                "y": 0.14000000059604645,
-                "z": -0.07000000029802322
+                "x": 0.09000000357627869,
+                "y": 0.1599999964237213,
+                "z": -0.14000000059604645
             },
             "move_.moveValue": {
                 "x": 0.0,
@@ -54,9 +54,9 @@
             "loop_.maxCount": 0,
             "move_.easingType": 18,
             "move_.end": {
-                "x": 15.122124671936035,
-                "y": 1.0771064758300781,
-                "z": 177.88052368164063
+                "x": 94.0672836303711,
+                "y": 0.45643070340156555,
+                "z": 73.36534881591797
             },
             "move_.moveValue": {
                 "x": 0.0,
@@ -64,15 +64,320 @@
                 "z": 0.0
             },
             "move_.start": {
-                "x": 14.815783500671387,
-                "y": 1.0771064758300781,
-                "z": 161.88345336914063
+                "x": 84.11499786376953,
+                "y": 0.45643070340156555,
+                "z": 60.83729553222656
             },
             "time_.end": 0.20000000298023224,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false
         },
         "moveValue_": 16.0
+    },
+    "BehaviorType_Attack_2nd": {
+        "FrontLeftRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 0.20999999344348907,
+                "y": -0.49000000953674316,
+                "z": 0.14000000059604645
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.09000000357627869,
+                "y": 0.1599999964237213,
+                "z": -0.14000000059604645
+            },
+            "time_.end": 0.14000000059604645,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "FrontRightRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 18,
+            "move_.end": {
+                "x": 0.25999999046325684,
+                "y": 0.5400000214576721,
+                "z": -0.1899999976158142
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.20999999344348907,
+                "y": -0.4899999797344208,
+                "z": 0.14000000059604645
+            },
+            "time_.end": 0.3199999928474426,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "MoveCenter": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 140.34791564941406,
+                "y": 0.45643070340156555,
+                "z": 99.73066711425781
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 130.04977416992188,
+                "y": 0.45643070340156555,
+                "z": 82.58574676513672
+            },
+            "time_.end": 0.1599999964237213,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "MoveFrontLeft": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 7,
+            "move_.end": {
+                "x": 98.31602478027344,
+                "y": 0.45643070340156555,
+                "z": 86.70507049560547
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 94.0672836303711,
+                "y": 0.45643070340156555,
+                "z": 73.36534881591797
+            },
+            "time_.end": 0.14000000059604645,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "MoveFrontRight": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 18,
+            "move_.end": {
+                "x": 130.04977416992188,
+                "y": 0.45643070340156555,
+                "z": 82.58574676513672
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 98.31602478027344,
+                "y": 0.45643070340156555,
+                "z": 86.70507049560547
+            },
+            "time_.end": 0.3199999928474426,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "ReturnCenterRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 0.28999999165534973,
+                "y": -0.8799999952316284,
+                "z": 0.1599999964237213
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.25999999046325684,
+                "y": 0.5399999618530273,
+                "z": -0.18999998271465302
+            },
+            "time_.end": 0.1599999964237213,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "moveCenter_direction": {
+            "x": -0.28696495294570923,
+            "y": 0.0,
+            "z": 0.9579411149024963
+        },
+        "moveCenter_moveValue": 20.0,
+        "moveFrontLeft_direction": {
+            "x": -0.5000110268592834,
+            "y": 0.0,
+            "z": 0.866019070148468
+        },
+        "moveFrontLeft_moveValue": 14.0,
+        "moveFrontRight_direction": {
+            "x": 0.7629908323287964,
+            "y": 0.0,
+            "z": 0.6464093923568726
+        },
+        "moveFrontRight_moveValue": 32.0
+    },
+    "BehaviorType_Attack_3rd": {
+        "BackRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 5,
+            "move_.end": {
+                "x": 0.14000000059604645,
+                "y": 6.789999961853027,
+                "z": -0.09000000357627869
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.28999999165534973,
+                "y": -0.8799999952316284,
+                "z": 0.1599999964237213
+            },
+            "time_.end": 0.27000001072883606,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "FrontRotation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": -0.14000000059604645,
+                "y": 7.019999980926514,
+                "z": 0.09000000357627869
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.14000000059604645,
+                "y": 6.789999961853027,
+                "z": -0.09000000357627869
+            },
+            "time_.end": 0.3199999928474426,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "MoveBack": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 5,
+            "move_.end": {
+                "x": 116.69190979003906,
+                "y": 0.45643070340156555,
+                "z": 78.18087005615234
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 140.34791564941406,
+                "y": 0.45643070340156555,
+                "z": 99.73066711425781
+            },
+            "time_.end": 0.27000001072883606,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "MoveFront": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": {
+                "x": 140.34791564941406,
+                "y": 0.45643070340156555,
+                "z": 99.73066711425781
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 116.69190979003906,
+                "y": 0.45643070340156555,
+                "z": 78.18087005615234
+            },
+            "time_.end": 0.3199999928474426,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "MoveKeyframeAnimation": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 6,
+            "move_.end": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.moveValue": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "move_.start": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "time_.end": 0.41999998688697815,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "RotationAngleZ": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": 9.34000015258789,
+            "move_.moveValue": 0.0,
+            "move_.start": 0.0,
+            "time_.end": 0.41999998688697815,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "initRotationAngle_": {
+            "x": 0.0,
+            "y": -1.5700000524520874,
+            "z": 0.0
+        },
+        "moveValue_": 32.0,
+        "moveWaitTime_": 0.47999998927116394
     },
     "BehaviorType_Dash": {
         "DashSpeedLerpValue": {
@@ -90,7 +395,21 @@
         "rotationLerpRate_": 0.18000000715255737
     },
     "BehaviorType_Wait": {
-        "amplitude_": 0.03999999910593033,
+        "UndoPosY": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": 0.4000000059604645,
+            "move_.moveValue": 0.0,
+            "move_.start": 0.4000000059604645,
+            "time_.end": 0.3400000035762787,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": false
+        },
+        "amplitude_": 0.05999999865889549,
+        "basePosY_": 0.4000000059604645,
+        "rotationLerpRate_": 0.18000000715255737,
         "speed_": 3.200000047683716
     },
     "BehaviorType_Walk": {

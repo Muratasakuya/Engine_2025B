@@ -9,6 +9,8 @@
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandDashBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandFirstAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandSecondAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/RightHand/RightHandThirdAttackBehavior.h>
 
 //============================================================================
 //	PlayerRightHand classMethods
@@ -28,6 +30,12 @@ void PlayerRightHand::InitBehaviors(const Json& data) {
 	// attack_1st
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
 		std::make_unique<RightHandFirstAttackBehavior>(data));
+	// attack_2nd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_2nd,
+		std::make_unique<RightHandSecondAttackBehavior>(data));
+	// attack_3rd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_3rd,
+		std::make_unique<RightHandThirdAttackBehavior>(data));
 }
 
 void PlayerRightHand::Init() {
@@ -44,24 +52,47 @@ void PlayerRightHand::ImGui() {
 
 	parameter_.ImGui();
 
-	if (ImGui::CollapsingHeader("WaitBehavior")) {
+	if (ImGui::CollapsingHeader("Material")) {
 
-		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+		BasePlayerParts::ImGuiMaterial();
 	}
 
-	if (ImGui::CollapsingHeader("WalkBehavior")) {
+	if (ImGui::TreeNode("Wait_Move")) {
 
-		behaviors_[PlayerBehaviorType::Walk]->ImGui();
+		if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Wait]->ImGui();
+		}
+
+		if (ImGui::CollapsingHeader("WalkBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Walk]->ImGui();
+		}
+
+		if (ImGui::CollapsingHeader("DashBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Dash]->ImGui();
+		}
+		ImGui::TreePop();
 	}
 
-	if (ImGui::CollapsingHeader("DashBehavior")) {
+	if (ImGui::TreeNode("Attack")) {
 
-		behaviors_[PlayerBehaviorType::Dash]->ImGui();
-	}
+		if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
 
-	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
+			behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+		}
 
-		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+		if (ImGui::CollapsingHeader("Attack_2ndBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Attack_2nd]->ImGui();
+		}
+
+		if (ImGui::CollapsingHeader("Attack_3rdBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Attack_3rd]->ImGui();
+		}
+		ImGui::TreePop();
 	}
 
 	ImGui::PopItemWidth();
@@ -74,6 +105,8 @@ void PlayerRightHand::ApplyJson() {
 		return;
 	}
 
+	BasePlayerParts::ApplyJson();
+
 	// behaviors初期化
 	InitBehaviors(data);
 }
@@ -81,6 +114,8 @@ void PlayerRightHand::ApplyJson() {
 void PlayerRightHand::SaveJson() {
 
 	parameter_.SaveJson();
+
+	BasePlayerParts::SaveJson();
 
 	Json data;
 

@@ -66,8 +66,8 @@ void RadialBlurForGPU::ImGui() {
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragFloat2("center##RadialBlur", &center.x, 0.01f);
-	ImGui::DragInt("scale##RadialBlur", &numSamples);
-	ImGui::DragFloat("power##RadialBlur", &width, 0.01f);
+	ImGui::DragInt("numSamples##RadialBlur", &numSamples);
+	ImGui::DragFloat("width##RadialBlur", &width, 0.001f);
 	ImGui::PopItemWidth();
 }
 
