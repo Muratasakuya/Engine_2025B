@@ -77,6 +77,11 @@ private:
 	// 後方ベクトル方向を常に向くようにする
 	std::vector<Vector3> moveKeyframes_;
 	std::unique_ptr<SimpleAnimation<Vector3>> moveKeyframeAnimation_;
+	// 回転
+	// 初期回転
+	Vector3 initRotationAngle_;
+	// 目標回転へずっと回転させる
+	std::unique_ptr<SimpleAnimation<float>> rotationAngleZ_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -95,4 +100,5 @@ private:
 
 	// -------- 後半攻撃処理 --------//
 	void SecondHalfUpdateMoveCatmullRom(BasePlayerParts* parts);
+	void SecondHalfUpdateRotation(BasePlayerParts* parts);
 };

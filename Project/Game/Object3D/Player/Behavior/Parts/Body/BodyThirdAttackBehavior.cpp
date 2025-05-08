@@ -24,6 +24,7 @@ BodyThirdAttackBehavior::BodyThirdAttackBehavior(
 	frontRotation_ = std::make_unique<SimpleAnimation<Vector3>>();
 
 	moveKeyframeAnimation_ = std::make_unique<SimpleAnimation<Vector3>>();
+	rotationAngleZ_ = std::make_unique<SimpleAnimation<float>>();
 	if (data.contains(attack3rdBehaviorJsonKey_) && data[attack3rdBehaviorJsonKey_].contains("MoveBack")) {
 
 		moveBack_->FromJson(data[attack3rdBehaviorJsonKey_]["MoveBack"]);
@@ -32,9 +33,12 @@ BodyThirdAttackBehavior::BodyThirdAttackBehavior(
 		frontRotation_->FromJson(data[attack3rdBehaviorJsonKey_]["FrontRotation"]);
 
 		moveKeyframeAnimation_->FromJson(data[attack3rdBehaviorJsonKey_]["MoveKeyframeAnimation"]);
+		rotationAngleZ_->FromJson(data[attack3rdBehaviorJsonKey_]["RotationAngleZ"]);
 
 		moveWaitTime_ = JsonAdapter::GetValue<float>(data[attack3rdBehaviorJsonKey_], "moveWaitTime_");
 		moveValue_ = JsonAdapter::GetValue<float>(data[attack3rdBehaviorJsonKey_], "moveValue_");
+
+		initRotationAngle_ = JsonAdapter::ToObject<Vector3>(data[attack3rdBehaviorJsonKey_]["initRotationAngle_"]);
 	}
 
 	// keyframeの初期化
@@ -61,6 +65,8 @@ void BodyThirdAttackBehavior::Execute(BasePlayerParts* parts) {
 	{
 		// catmullRom曲線上を移動するようにする
 		SecondHalfUpdateMoveCatmullRom(parts);
+		// 横を向きながらぐるぐる回転する
+		SecondHalfUpdateRotation(parts);
 	}
 }
 
@@ -211,6 +217,37 @@ void BodyThirdAttackBehavior::SecondHalfUpdateMoveCatmullRom(BasePlayerParts* pa
 	parts->SetTranslate(currentKeyframe);
 }
 
+void BodyThirdAttackBehavior::SecondHalfUpdateRotation(BasePlayerParts* parts) {
+
+	if (moveFront_->IsFinished()) {
+		if (!rotationAngleZ_->IsStart()) {
+
+			// 初期回転を設定する
+			Quaternion initRotation = IPlayerBehavior::CalRotationAxisAngle(initRotationAngle_);
+			// 現在の向きも考慮して計算する
+			Quaternion rotation = parts->GetTransform().rotation;
+			initRotation = Quaternion::Multiply(rotation, initRotation);
+			parts->SetRotate(initRotation);
+
+			rotationAngleZ_->Start();
+		}
+	} else {
+		return;
+	}
+
+	if (rotationAngleZ_->IsFinished()) {
+		return;
+	}
+
+	// Z軸回転させる
+	float rotationAngleZ = 0.0f;
+	rotationAngleZ_->LerpValue(rotationAngleZ);
+	Quaternion rotation = parts->GetTransform().rotation;
+	Quaternion newRotation = Quaternion::MakeRotateAxisAngleQuaternion(Vector3(0.0f, 0.0f, 1.0f), rotationAngleZ);
+	newRotation = Quaternion::Multiply(rotation, newRotation);
+	parts->SetRotate(newRotation);
+}
+
 void BodyThirdAttackBehavior::Reset() {
 
 	// 初期化する
@@ -219,6 +256,7 @@ void BodyThirdAttackBehavior::Reset() {
 	backRotation_->Reset();
 	frontRotation_->Reset();
 	moveKeyframeAnimation_->Reset();
+	rotationAngleZ_->Reset();
 	moveWaitTimer_ = 0.0f;
 	enableMoveFront_ = false;
 }
@@ -229,6 +267,7 @@ void BodyThirdAttackBehavior::ImGui() {
 
 	ImGui::DragFloat("moveWaitTime", &moveWaitTime_, 0.01f);
 	ImGui::DragFloat("moveValue", &moveValue_, 0.01f);
+	ImGui::DragFloat3("initRotationAngle##BodyThirdAttackBehavior", &initRotationAngle_.x, 0.01f);
 
 	if (ImGui::TreeNode("MoveBack")) {
 
@@ -250,6 +289,12 @@ void BodyThirdAttackBehavior::ImGui() {
 		ImGui::TreePop();
 	}
 
+	if (ImGui::TreeNode("RotationAngleZ")) {
+
+		rotationAngleZ_->ImGui("BodyThirdAttackBehavior_rotationAngleZ_");
+		ImGui::TreePop();
+	}
+
 	ImGui::PopItemWidth();
 }
 
@@ -261,9 +306,11 @@ void BodyThirdAttackBehavior::SaveJson(Json& data) {
 	backRotation_->ToJson(data[attack3rdBehaviorJsonKey_]["BackRotation"]);
 	frontRotation_->ToJson(data[attack3rdBehaviorJsonKey_]["FrontRotation"]);
 	moveKeyframeAnimation_->ToJson(data[attack3rdBehaviorJsonKey_]["MoveKeyframeAnimation"]);
+	rotationAngleZ_->ToJson(data[attack3rdBehaviorJsonKey_]["RotationAngleZ"]);
 
 	data[attack3rdBehaviorJsonKey_]["moveValue_"] = moveValue_;
 	data[attack3rdBehaviorJsonKey_]["moveWaitTime_"] = moveWaitTime_;
+	data[attack3rdBehaviorJsonKey_]["initRotationAngle_"] = JsonAdapter::FromObject<Vector3>(initRotationAngle_);
 }
 
 void BodyThirdAttackBehavior::InitCatmullRom() {
