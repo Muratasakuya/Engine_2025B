@@ -92,10 +92,10 @@ public:
 
 	//--------- properties ---------------------------------------------------
 
-	float scale;
-	float power;
+	float scale = 1.0f;
+	float power = 1.0f;
 	float padding[2];
-	Vector3 color;
+	Vector3 color = Vector3::AnyInit(1.0f);
 };
 
 class RadialBlurForGPU {
@@ -111,9 +111,9 @@ public:
 
 	//--------- properties ---------------------------------------------------
 
-	Vector2 center;
-	int numSamples;
-	float width;
+	Vector2 center = Vector2::AnyInit(0.5f);
+	int numSamples = 8;
+	float width = 0.01f;
 };
 
 class HorizonBlurForGPU {

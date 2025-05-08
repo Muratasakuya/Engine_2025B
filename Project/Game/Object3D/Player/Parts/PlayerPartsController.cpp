@@ -69,12 +69,26 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 		{ PlayerBehaviorType::Dash, true },
 		{ PlayerBehaviorType::Attack_1st, true },
 		{ PlayerBehaviorType::DashAttack, false },
-		{ PlayerBehaviorType::Attack_2nd, false },
-		{ PlayerBehaviorType::Attack_3rd, false },
+		{ PlayerBehaviorType::Attack_2nd, true },
+		{ PlayerBehaviorType::Attack_3rd, true },
 		{ PlayerBehaviorType::Parry, false },
 	};
 
 	for (const auto& behaviorInfo : behaviorList) {
+
+		// 特殊設定
+		// 1段目の攻撃時にその時点の体の角度を渡す
+		if (!uniqueSetting_) {
+			if (CheckCurrentBehaviors(behaviors,
+				{ PlayerBehaviorType::Attack_1st })) {
+
+ 				Vector3 forwardDirection = body_->GetTransform().GetForward();
+				leftSword_->SetForwardDirection(forwardDirection);
+				rightSword_->SetForwardDirection(forwardDirection);
+				body_->SetBackwardDirection();
+				uniqueSetting_ = true;
+			}
+		}
 
 		// 有効なbehaviorを更新
 		if (CheckCurrentBehaviors(behaviors, { behaviorInfo.type })) {
@@ -89,6 +103,9 @@ void PlayerPartsController::UpdateBehavior(const std::unordered_set<PlayerBehavi
 			ForEachParts([&](BasePlayerParts* part) {
 				part->ResetBehavior(behaviorInfo.type);
 				});
+
+			// 特殊設定解除
+			uniqueSetting_ = false;
 		}
 	}
 }

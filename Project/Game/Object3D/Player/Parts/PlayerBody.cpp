@@ -12,6 +12,8 @@
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyWalkBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyDashBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/Body/BodyFirstAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/Body/BodySecondAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/Body/BodyThirdAttackBehavior.h>
 
 //============================================================================
 //	PlayerBody classMethods
@@ -32,6 +34,12 @@ void PlayerBody::InitBehaviors(const Json& data) {
 	// attack_1st
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_1st,
 		std::make_unique<BodyFirstAttackBehavior>(data));
+	// attack_2nd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_2nd,
+		std::make_unique<BodySecondAttackBehavior>(data));
+	// attack_3rd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_3rd,
+		std::make_unique<BodyThirdAttackBehavior>(data, followCamera_));
 }
 
 void PlayerBody::Init(FollowCamera* followCamera) {
@@ -51,24 +59,53 @@ void PlayerBody::ImGui() {
 
 	parameter_.ImGui();
 
-	if (ImGui::CollapsingHeader("WaitBehavior")) {
+	if (ImGui::CollapsingHeader("Material")) {
 
-		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+		BasePlayerParts::ImGuiMaterial();
 	}
 
-	if (ImGui::CollapsingHeader("WalkBehavior")) {
+	if (ImGui::CollapsingHeader("Attack_3rd_EditCatmullRom")) {
 
-		behaviors_[PlayerBehaviorType::Walk]->ImGui();
+		BasePlayerParts::GetBehavior<BodyThirdAttackBehavior>
+			(PlayerBehaviorType::Attack_3rd)->EditCatmullRom(
+				transform_->translation, transform_->GetForward());
 	}
 
-	if (ImGui::CollapsingHeader("DashBehavior")) {
+	if (ImGui::TreeNode("Wait_Move")) {
 
-		behaviors_[PlayerBehaviorType::Dash]->ImGui();
+		if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Wait]->ImGui();
+		}
+
+		if (ImGui::CollapsingHeader("WalkBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Walk]->ImGui();
+		}
+
+		if (ImGui::CollapsingHeader("DashBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Dash]->ImGui();
+		}
+		ImGui::TreePop();
 	}
 
-	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
+	if (ImGui::TreeNode("Attack")) {
 
-		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+		if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+		}
+
+		if (ImGui::CollapsingHeader("Attack_2ndBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Attack_2nd]->ImGui();
+		}
+		if (ImGui::CollapsingHeader("Attack_3rdBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Attack_3rd]->ImGui();
+		}
+		ImGui::TreePop();
 	}
 
 	ImGui::PopItemWidth();
@@ -81,6 +118,8 @@ void PlayerBody::ApplyJson() {
 		return;
 	}
 
+	BasePlayerParts::ApplyJson();
+
 	// behaviors初期化
 	InitBehaviors(data);
 }
@@ -89,10 +128,19 @@ void PlayerBody::SaveJson() {
 
 	parameter_.SaveJson();
 
+	BasePlayerParts::SaveJson();
+
 	Json data;
 	for (const auto& behaviors : std::views::values(behaviors_)) {
 
 		behaviors->SaveJson(data);
 	}
 	JsonAdapter::Save(baseBehaviorJsonFilePath_ + "PlayerBody.json", data);
+}
+
+void PlayerBody::SetBackwardDirection() {
+
+	Vector3 direction = transform_->GetBack();
+	BasePlayerParts::GetBehavior<BodyThirdAttackBehavior>
+		(PlayerBehaviorType::Attack_3rd)->SetBackwardDirection(direction);
 }

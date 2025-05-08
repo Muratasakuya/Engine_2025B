@@ -57,6 +57,32 @@ void BasePlayerParts::ResetBehavior(PlayerBehaviorType type) {
 	}
 }
 
+void BasePlayerParts::ImGuiMaterial() {
+
+	material_->ImGui(parameter_.itemWidth);
+}
+
+void BasePlayerParts::ApplyJson() {
+
+	Json data;
+	if (!JsonAdapter::LoadCheck(parameter_.owner->baseInitJsonFilePath_ +
+		parameter_.name + "Material.json", data)) {
+		return;
+	}
+
+	material_->FromJson(data["Material"]);
+}
+
+void BasePlayerParts::SaveJson() {
+
+	Json data;
+
+	material_->ToJson(data["Material"]);
+
+	JsonAdapter::Save(parameter_.owner->baseInitJsonFilePath_ +
+		parameter_.name + "Material.json", data);
+}
+
 void BasePlayerParts::PartsParameter::ImGui() {
 
 	ImGui::PushItemWidth(itemWidth);
