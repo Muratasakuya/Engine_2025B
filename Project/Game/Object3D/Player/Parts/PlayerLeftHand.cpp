@@ -10,6 +10,7 @@
 #include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandDashBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandFirstAttackBehavior.h>
 #include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandSecondAttackBehavior.h>
+#include <Game/Object3D/Player/Behavior/Parts/LeftHand/LeftHandThirdAttackBehavior.h>
 
 //============================================================================
 //	PlayerLeftHand classMethods
@@ -32,6 +33,9 @@ void PlayerLeftHand::InitBehaviors(const Json& data) {
 	// attack_2nd
 	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_2nd,
 		std::make_unique<LeftHandSecondAttackBehavior>(data));
+	// attack_3rd
+	BasePlayerParts::RegisterBehavior(PlayerBehaviorType::Attack_3rd,
+		std::make_unique<LeftHandThirdAttackBehavior>(data));
 }
 
 void PlayerLeftHand::Init() {
@@ -53,29 +57,42 @@ void PlayerLeftHand::ImGui() {
 		BasePlayerParts::ImGuiMaterial();
 	}
 
-	if (ImGui::CollapsingHeader("WaitBehavior")) {
+	if (ImGui::TreeNode("Wait_Move")) {
 
-		behaviors_[PlayerBehaviorType::Wait]->ImGui();
+		if (ImGui::CollapsingHeader("WaitBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Wait]->ImGui();
+		}
+
+		if (ImGui::CollapsingHeader("WalkBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Walk]->ImGui();
+		}
+
+		if (ImGui::CollapsingHeader("DashBehavior")) {
+
+			behaviors_[PlayerBehaviorType::Dash]->ImGui();
+		}
+		ImGui::TreePop();
 	}
 
-	if (ImGui::CollapsingHeader("WalkBehavior")) {
+	if (ImGui::TreeNode("Attack")) {
 
-		behaviors_[PlayerBehaviorType::Walk]->ImGui();
-	}
+		if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
 
-	if (ImGui::CollapsingHeader("DashBehavior")) {
+			behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
+		}
 
-		behaviors_[PlayerBehaviorType::Dash]->ImGui();
-	}
+		if (ImGui::CollapsingHeader("Attack_2ndBehavior")) {
 
-	if (ImGui::CollapsingHeader("Attack_1stBehavior")) {
+			behaviors_[PlayerBehaviorType::Attack_2nd]->ImGui();
+		}
 
-		behaviors_[PlayerBehaviorType::Attack_1st]->ImGui();
-	}
+		if (ImGui::CollapsingHeader("Attack_3rdBehavior")) {
 
-	if (ImGui::CollapsingHeader("Attack_2ndehavior")) {
-
-		behaviors_[PlayerBehaviorType::Attack_2nd]->ImGui();
+			behaviors_[PlayerBehaviorType::Attack_3rd]->ImGui();
+		}
+		ImGui::TreePop();
 	}
 
 	ImGui::PopItemWidth();

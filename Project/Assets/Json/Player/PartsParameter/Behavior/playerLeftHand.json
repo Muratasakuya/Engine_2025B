@@ -123,6 +123,14 @@
             "time_.useScaledDeltaTime": false
         }
     },
+    "BehaviorType_Attack_3rd": {
+        "initRotationAngle_": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "moveWaitTime_": 0.800000011920929
+    },
     "BehaviorType_Dash": {
         "RotationLerpValue": {
             "loop_.interval": 0.0,
@@ -140,9 +148,9 @@
                 "z": 0.0
             },
             "move_.start": {
-                "x": 1.2880939245224,
-                "y": 1.3108662366867065,
-                "z": 1.1914783716201782
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
             },
             "time_.end": 0.0,
             "time_.movedValueInterval": 0.0,
