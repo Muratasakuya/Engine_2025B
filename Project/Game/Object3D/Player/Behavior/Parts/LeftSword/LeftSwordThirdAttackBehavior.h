@@ -62,6 +62,9 @@ private:
 	Vector3 initRotationAngle_;
 	// 目標回転へずっと回転させる
 	std::unique_ptr<SimpleAnimation<float>> rotationAngleY_;
+	// ずっと回転させた後、剣の位置を横になるようにする
+	Vector3 horizontalRotationAngle_;
+	bool setRotation_; // 値を設定したか
 
 	//--------- functions ----------------------------------------------------
 
@@ -69,6 +72,8 @@ private:
 	void UpdateRotation(BasePlayerParts* parts);
 
 	void UpdateReturnHand(BasePlayerParts* parts);
+
+	void SetStartRotation(BasePlayerParts* parts);
 
 	void WaitMoveTime();
 };

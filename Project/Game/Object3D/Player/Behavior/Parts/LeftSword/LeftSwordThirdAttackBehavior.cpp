@@ -26,6 +26,7 @@ LeftSwordThirdAttackBehavior::LeftSwordThirdAttackBehavior(
 		rotateAngle_ = JsonAdapter::GetValue<float>(data[attack3rdBehaviorJsonKey_], "rotateAngle_");
 		axis_ = JsonAdapter::ToObject<Vector3>(data[attack3rdBehaviorJsonKey_]["axis_"]);
 		initRotationAngle_ = JsonAdapter::ToObject<Vector3>(data[attack3rdBehaviorJsonKey_]["initRotationAngle_"]);
+		horizontalRotationAngle_ = JsonAdapter::ToObject<Vector3>(data[attack3rdBehaviorJsonKey_]["horizontalRotationAngle_"]);
 	}
 
 	// 戻ってくる座標を設定する
@@ -45,6 +46,9 @@ void LeftSwordThirdAttackBehavior::Execute(BasePlayerParts* parts) {
 
 	// 回転処理
 	UpdateRotation(parts);
+
+	// 体が回転している際の回転を設定する
+	SetStartRotation(parts);
 }
 
 void LeftSwordThirdAttackBehavior::UpdateMoveForward(BasePlayerParts* parts) {
@@ -98,6 +102,10 @@ void LeftSwordThirdAttackBehavior::UpdateRotation(BasePlayerParts* parts) {
 		rotationAngleY_->Start();
 	}
 
+	if (rotationAngleY_->IsFinished()) {
+		return;
+	}
+
 	// Y軸回転させる
 	float rotationAngleY = 0.0f;
 	rotationAngleY_->LerpValue(rotationAngleY);
@@ -130,6 +138,25 @@ void LeftSwordThirdAttackBehavior::UpdateReturnHand(BasePlayerParts* parts) {
 	parts->SetTranslate(translation);
 }
 
+void LeftSwordThirdAttackBehavior::SetStartRotation(BasePlayerParts* parts) {
+
+	// 時間経過が終わったら
+	if (rotationAngleY_->IsFinished()) {
+		if (!setRotation_) {
+
+			// 値を設定
+ 			Quaternion rotation = IPlayerBehavior::CalRotationAxisAngle(horizontalRotationAngle_);
+			rotation = Quaternion::Normalize(rotation);
+			parts->SetRotate(rotation);
+
+			// 設定完了
+			setRotation_ = true;
+		}
+	} else {
+		return;
+	}
+}
+
 void LeftSwordThirdAttackBehavior::WaitMoveTime() {
 
 	// 最初のanimationが終わったら
@@ -153,6 +180,7 @@ void LeftSwordThirdAttackBehavior::Reset() {
 	rotationAngleY_->Reset();
 	moveWaitTimer_ = 0.0f;
 	enableMoveFront_ = false;
+	setRotation_ = false;
 }
 
 void LeftSwordThirdAttackBehavior::ImGui() {
@@ -171,6 +199,7 @@ void LeftSwordThirdAttackBehavior::ImGui() {
 		axis_ = axis_.Normalize();
 	}
 	ImGui::DragFloat3("initRotationAngle##LeftSwordThirdAttackBehavior", &initRotationAngle_.x, 0.01f);
+	ImGui::DragFloat3("horizontalRotationAngle##LeftSwordThirdAttackBehavior", &horizontalRotationAngle_.x, 0.01f);
 
 	if (ImGui::TreeNode("MoveForward")) {
 
@@ -205,6 +234,7 @@ void LeftSwordThirdAttackBehavior::SaveJson(Json& data) {
 	data[attack3rdBehaviorJsonKey_]["rotateAngle_"] = rotateAngle_;
 	data[attack3rdBehaviorJsonKey_]["axis_"] = JsonAdapter::FromObject<Vector3>(axis_);
 	data[attack3rdBehaviorJsonKey_]["initRotationAngle_"] = JsonAdapter::FromObject<Vector3>(initRotationAngle_);
+	data[attack3rdBehaviorJsonKey_]["horizontalRotationAngle_"] = JsonAdapter::FromObject<Vector3>(horizontalRotationAngle_);
 }
 
 void LeftSwordThirdAttackBehavior::SetForwardDirection(const Vector3& direction) {

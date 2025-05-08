@@ -402,7 +402,7 @@
             "move_.easingType": 14,
             "move_.end": 0.4000000059604645,
             "move_.moveValue": 0.0,
-            "move_.start": 0.4285224676132202,
+            "move_.start": 0.4000000059604645,
             "time_.end": 0.3400000035762787,
             "time_.movedValueInterval": 0.0,
             "time_.useScaledDeltaTime": false

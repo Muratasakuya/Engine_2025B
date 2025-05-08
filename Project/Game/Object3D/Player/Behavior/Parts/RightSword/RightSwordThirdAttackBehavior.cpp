@@ -26,6 +26,7 @@ RightSwordThirdAttackBehavior::RightSwordThirdAttackBehavior(
 		rotateAngle_ = JsonAdapter::GetValue<float>(data[attack3rdBehaviorJsonKey_], "rotateAngle_");
 		axis_ = JsonAdapter::ToObject<Vector3>(data[attack3rdBehaviorJsonKey_]["axis_"]);
 		initRotationAngle_ = JsonAdapter::ToObject<Vector3>(data[attack3rdBehaviorJsonKey_]["initRotationAngle_"]);
+		horizontalRotationAngle_ = JsonAdapter::ToObject<Vector3>(data[attack3rdBehaviorJsonKey_]["horizontalRotationAngle_"]);
 	}
 
 	// 戻ってくる座標を設定する
@@ -45,6 +46,9 @@ void RightSwordThirdAttackBehavior::Execute(BasePlayerParts* parts) {
 
 	// 回転処理
 	UpdateRotation(parts);
+
+	// 体が回転している際の回転を設定する
+	SetStartRotation(parts);
 }
 
 void RightSwordThirdAttackBehavior::UpdateMoveForward(BasePlayerParts* parts) {
@@ -130,6 +134,25 @@ void RightSwordThirdAttackBehavior::UpdateReturnHand(BasePlayerParts* parts) {
 	parts->SetTranslate(translation);
 }
 
+void RightSwordThirdAttackBehavior::SetStartRotation(BasePlayerParts* parts) {
+
+	// 時間経過が終わったら
+	if (rotationAngleY_->IsFinished()) {
+		if (!setRotation_) {
+
+			// 値を設定
+			Quaternion rotation = IPlayerBehavior::CalRotationAxisAngle(horizontalRotationAngle_);
+			rotation = Quaternion::Normalize(rotation);
+			parts->SetRotate(rotation);
+
+			// 設定完了
+			setRotation_ = true;
+		}
+	} else {
+		return;
+	}
+}
+
 void RightSwordThirdAttackBehavior::WaitMoveTime() {
 
 	// 最初のanimationが終わったら
@@ -153,7 +176,7 @@ void RightSwordThirdAttackBehavior::Reset() {
 	rotationAngleY_->Reset();
 	moveWaitTimer_ = 0.0f;
 	enableMoveFront_ = false;
-	rotationStart_ = false;
+	setRotation_ = false;
 }
 
 void RightSwordThirdAttackBehavior::ImGui() {
@@ -172,6 +195,7 @@ void RightSwordThirdAttackBehavior::ImGui() {
 		axis_ = axis_.Normalize();
 	}
 	ImGui::DragFloat3("initRotationAngle##RightSwordThirdAttackBehavior", &initRotationAngle_.x, 0.01f);
+	ImGui::DragFloat3("horizontalRotationAngle##RightSwordThirdAttackBehavior", &horizontalRotationAngle_.x, 0.01f);
 
 	if (ImGui::TreeNode("MoveForward")) {
 
@@ -206,6 +230,7 @@ void RightSwordThirdAttackBehavior::SaveJson(Json& data) {
 	data[attack3rdBehaviorJsonKey_]["rotateAngle_"] = rotateAngle_;
 	data[attack3rdBehaviorJsonKey_]["axis_"] = JsonAdapter::FromObject<Vector3>(axis_);
 	data[attack3rdBehaviorJsonKey_]["initRotationAngle_"] = JsonAdapter::FromObject<Vector3>(initRotationAngle_);
+	data[attack3rdBehaviorJsonKey_]["horizontalRotationAngle_"] = JsonAdapter::FromObject<Vector3>(horizontalRotationAngle_);
 }
 
 void RightSwordThirdAttackBehavior::SetForwardDirection(const Vector3& direction) {
