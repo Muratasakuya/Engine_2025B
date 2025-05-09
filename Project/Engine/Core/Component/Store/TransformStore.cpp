@@ -16,13 +16,16 @@
 // 3D
 //============================================================================
 
-void Transform3DStore::AddComponent(uint32_t entityId, [[maybe_unused]] std::any args) {
+void Transform3DStore::AddComponent(uint32_t entityId, std::any args) {
 
 	size_t index = components_.size();
+
+	std::string modelName = std::get<0>(std::any_cast<std::tuple<std::string>>(args));
 
 	// component追加
 	components_.push_back(std::make_unique<Transform3DComponent>());
 	components_.back()->Init();
+	components_.back()->SetInstancingName(modelName);
 	components_.back()->UpdateMatrix();
 
 	// index設定

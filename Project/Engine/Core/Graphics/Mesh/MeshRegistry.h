@@ -25,7 +25,6 @@ public:
 
 	void Init(ID3D12Device* device, Asset* asset);
 
-	// meshの登録
 	void RegisterMesh(const std::string& modelName);
 
 	//--------- accessor -----------------------------------------------------

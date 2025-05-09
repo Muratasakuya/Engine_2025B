@@ -39,7 +39,7 @@ private:
 	Asset* asset_;
 
 	std::unordered_map<std::string, AnimationData> animationData_;
-	std::unordered_map<std::string, std::optional<Skeleton>> skeleton_;
+	std::unordered_map<std::string, Skeleton> skeleton_;
 	std::unordered_map<std::string, SkinCluster> skinCluster_;
 
 	std::string currentAnimationName_; // 現在のAnimationの名前

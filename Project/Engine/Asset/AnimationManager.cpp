@@ -121,7 +121,7 @@ void AnimationManager::SkeletonUpdate(const std::string& animationName) {
 	for (auto& joint : skeletons_[animationName].joints) {
 
 		joint.localMatrix =
-			Matrix4x4::MakeAxisAffineMatrix(joint.transform.scale, joint.transform.rotate, joint.transform.translate);
+			Matrix4x4::MakeAxisAffineMatrix(joint.transform.scale, joint.transform.rotation, joint.transform.translation);
 		// 親がいれば親の行列を掛ける
 		if (joint.parent) {
 
@@ -144,8 +144,8 @@ void AnimationManager::ApplyAnimation(const std::string& animationName, float an
 			it != animations_[animationName].nodeAnimations.end()) {
 
 			const auto& rootNodeAnimation = (*it).second;
-			joint.transform.translate = Vector3::CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-			joint.transform.rotate = Quaternion::CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
+			joint.transform.translation = Vector3::CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
+			joint.transform.rotation = Quaternion::CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
 			joint.transform.scale = Vector3::CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
 		}
 	}
@@ -225,8 +225,8 @@ void AnimationManager::BlendAnimation(const std::string& oldAnimName, float oldA
 		Quaternion rotBlend = Quaternion::Slerp(rotOld, rotNext, alpha);
 		Vector3 sclBlend = Vector3::Lerp(sclOld, sclNext, alpha);
 
-		jointOld.transform.translate = posBlend;
-		jointOld.transform.rotate = rotBlend;
+		jointOld.transform.translation = posBlend;
+		jointOld.transform.rotation = rotBlend;
 		jointOld.transform.scale = sclBlend;
 	}
 }

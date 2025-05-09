@@ -28,7 +28,7 @@ public:
 	void Load(const std::string& modelName);
 
 	void Make(const std::string& modelName,
-		const std::vector<ModelVertexData>& vertexData,
+		const std::vector<MeshVertex>& vertexData,
 		const std::vector<uint32_t>& indexData);
 	void Export(const ResourceMesh& modelData, const std::string& filePath);
 

@@ -71,6 +71,7 @@ private:
 	// 3D
 	std::unique_ptr<Transform3DStore> transform3DStore_;
 	std::unique_ptr<MaterialStore> materialStore_;
+	std::unique_ptr<AnimationStore> animationStore_;
 
 	// effect
 	std::unique_ptr<EffectTransformStore> effectTransformStore_;

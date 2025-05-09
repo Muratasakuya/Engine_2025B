@@ -21,7 +21,7 @@ void IOVertexBuffer::Init(UINT vertexNum, ID3D12Resource* vertexResource,
 	srvDesc.Buffer.FirstElement = 0;
 	srvDesc.Buffer.Flags = D3D12_BUFFER_SRV_FLAG_NONE;
 	srvDesc.Buffer.NumElements = vertexNum;
-	srvDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(ModelVertexData));
+	srvDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(MeshVertex));
 	// SRV作成
 	srvDescriptor->CreateSRV(inputVertex_.srvIndex, vertexResource, srvDesc);
 	inputVertex_.srvHandle.second = srvDescriptor->GetGPUHandle(inputVertex_.srvIndex);
@@ -36,7 +36,7 @@ void IOVertexBuffer::Init(UINT vertexNum, ID3D12Resource* vertexResource,
 	uavDesc.Buffer.CounterOffsetInBytes = 0;
 	uavDesc.Buffer.Flags = D3D12_BUFFER_UAV_FLAG_NONE;
 	uavDesc.Buffer.NumElements = vertexNum;
-	uavDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(ModelVertexData));
+	uavDesc.Buffer.StructureByteStride = static_cast<UINT>(sizeof(MeshVertex));
 	// UAV作成
 	srvDescriptor->CreateUAV(outputVertex_.uavIndex, this->GetResource(), uavDesc);
 	outputVertex_.uavHandle.second = srvDescriptor->GetGPUHandle(outputVertex_.uavIndex);

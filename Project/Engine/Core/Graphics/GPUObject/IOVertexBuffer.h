@@ -10,7 +10,7 @@
 //	IOVertexBuffer class
 //============================================================================
 class IOVertexBuffer :
-	public DxConstBuffer<ModelVertexData> {
+	public DxConstBuffer<MeshVertex> {
 public:
 	//========================================================================
 	//	public Methods
@@ -33,6 +33,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	InputModelVertex inputVertex_;
-	OutputModelVertex outputVertex_;
+	InputMeshVertex inputVertex_;
+	OutputMeshVertex outputVertex_;
 };

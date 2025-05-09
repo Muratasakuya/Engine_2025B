@@ -37,5 +37,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<AnimationComponent> components_;
+	std::vector<std::unique_ptr<AnimationComponent>> components_;
 };

@@ -29,7 +29,7 @@ void Asset::LoadAnimation(const std::string& animationName, const std::string& m
 }
 
 void Asset::MakeModel(const std::string& modelName,
-	const std::vector<ModelVertexData>& vertexData,
+	const std::vector<MeshVertex>& vertexData,
 	const std::vector<uint32_t>& indexData) {
 	modelLoader_->Make(modelName, vertexData, indexData);
 }

@@ -84,11 +84,11 @@ uint32_t ComponentManager::CreateObject3D(
 	uint32_t id = entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName, groupName);
 
 	// object3Dに必要なcomponentを追加
-	AddComponent<Transform3DComponent>(id);
-
-	auto transform = GetComponent<Transform3DComponent>(id);
-	transform->SetInstancingName(modelName);
+	AddComponent<Transform3DComponent>(id, modelName);
 	AddComponent<MaterialComponent>(id, asset_->GetModelData(modelName), asset_);
+	if (animationName.has_value()) {
+		AddComponent<AnimationComponent>(id, animationName, asset_);
+	}
 	// buffer作成
 	gpuObjectSystem_->CreateMesh(modelName);
 

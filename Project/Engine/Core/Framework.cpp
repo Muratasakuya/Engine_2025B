@@ -124,6 +124,9 @@ void Framework::InitComponent() {
 	// material
 	materialStore_ = std::make_unique<MaterialStore>();
 	ComponentManager::GetInstance()->RegisterComponentStore(materialStore_.get());
+	// animation
+	animationStore_ = std::make_unique<AnimationStore>();
+	ComponentManager::GetInstance()->RegisterComponentStore(animationStore_.get());
 
 	// effect
 	// transform
