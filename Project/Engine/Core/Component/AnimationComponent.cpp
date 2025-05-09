@@ -17,7 +17,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 
 	animationData_[animationName] = asset_->GetAnimationData(animationName);
 	skeleton_[animationName] = asset_->GetSkeletonData(animationName);
-	skeleton_[animationName].value().name = animationName;
+	skeleton_[animationName].name = animationName;
 	skinCluster_[animationName] = asset_->GetSkinClusterData(animationName);
 
 	transitionDuration_ = 0.4f;
@@ -50,12 +50,9 @@ void AnimationComponent::Update() {
 			animationProgress_ = currentAnimationTimer_ / animationData_[currentAnimationName_].duration;
 		}
 
-		if (skeleton_[currentAnimationName_]) {
-
-			asset_->ApplyAnimation(skeleton_[currentAnimationName_].value().name, currentAnimationTimer_);
-			asset_->SkeletonUpdate(skeleton_[currentAnimationName_].value().name);
-			asset_->SkinClusterUpdate(skeleton_[currentAnimationName_].value().name);
-		}
+		asset_->ApplyAnimation(skeleton_[currentAnimationName_].name, currentAnimationTimer_);
+		asset_->SkeletonUpdate(skeleton_[currentAnimationName_].name);
+		asset_->SkinClusterUpdate(skeleton_[currentAnimationName_].name);
 	}
 	//========================================================================
 	// 遷移中のAnimation再生
@@ -71,10 +68,10 @@ void AnimationComponent::Update() {
 		}
 
 		// AnimationをBlendして更新する
-		asset_->BlendAnimation(skeleton_[oldAnimationName_].value().name, oldAnimationTimer_,
-			skeleton_[nextAnimationName_].value().name, nextAnimationTimer_, alpha);
-		asset_->SkeletonUpdate(skeleton_[oldAnimationName_].value().name);
-		asset_->SkinClusterUpdate(skeleton_[oldAnimationName_].value().name);
+		asset_->BlendAnimation(skeleton_[oldAnimationName_].name, oldAnimationTimer_,
+			skeleton_[nextAnimationName_].name, nextAnimationTimer_, alpha);
+		asset_->SkeletonUpdate(skeleton_[oldAnimationName_].name);
+		asset_->SkinClusterUpdate(skeleton_[oldAnimationName_].name);
 
 		// 遷移終了
 		if (alpha >= 1.0f) {

@@ -29,7 +29,7 @@ public:
 	void LoadAnimation(const std::string& animationName, const std::string& modelName);
 
 	void MakeModel(const std::string& modelName,
-		const std::vector<ModelVertexData>& vertexData,
+		const std::vector<MeshVertex>& vertexData,
 		const std::vector<uint32_t>& indexData);
 	void Export(const ResourceMesh& modelData, const std::string& filePath);
 

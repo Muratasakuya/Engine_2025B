@@ -22,7 +22,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const DxConstBuffer<ModelVertexData>& GetVertexBuffer(uint32_t meshIndex) const { return vertices_[meshIndex]; }
+	const DxConstBuffer<MeshVertex>& GetVertexBuffer(uint32_t meshIndex) const { return vertices_[meshIndex]; }
 	const DxConstBuffer<uint32_t>& GetIndexBuffer(uint32_t meshIndex) const { return indices_[meshIndex]; }
 
 	UINT GetVertexCount(uint32_t meshIndex) const { return vertexCounts_[meshIndex]; }
@@ -34,7 +34,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<DxConstBuffer<ModelVertexData>> vertices_;
+	std::vector<DxConstBuffer<MeshVertex>> vertices_;
 
 	std::vector<DxConstBuffer<uint32_t>> indices_;
 

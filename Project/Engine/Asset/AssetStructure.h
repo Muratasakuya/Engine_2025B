@@ -3,11 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Lib/MathUtils/Vector2.h>
-#include <Lib/MathUtils/Vector3.h>
-#include <Lib/MathUtils/Vector4.h>
-#include <Lib/MathUtils/Matrix4x4.h>
-#include <Lib/MathUtils/Quaternion.h>
+#include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
 #include <Engine/Core/Graphics/Lib/ComPtr.h>
 
 // assimp
@@ -27,14 +24,8 @@
 #include <map>
 
 //============================================================================
-//	Asset structures
+//	Sprite
 //============================================================================
-struct ModelVertexData {
-
-	Vector4 pos;
-	Vector2 texcoord;
-	Vector3 normal;
-};
 
 struct SpriteVertexData {
 
@@ -42,29 +33,13 @@ struct SpriteVertexData {
 	Vector2 texcoord;
 };
 
-struct InputModelVertex {
-
-	std::vector<ModelVertexData> data;
-	uint32_t srvIndex;
-	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> srvHandle;
-};
-struct OutputModelVertex {
-
-	std::vector<ModelVertexData> data;
-	uint32_t uavIndex;
-	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> uavHandle;
-};
-
-struct ModelTransform {
-
-	Vector3 scale;
-	Quaternion rotate;
-	Vector3 translate;
-};
+//============================================================================
+//	Model
+//============================================================================
 
 struct MeshModelData {
 
-	std::vector<ModelVertexData> vertices;
+	std::vector<MeshVertex> vertices;
 	std::vector<uint32_t> indices;
 	std::optional<std::string> textureName;
 	std::optional<std::string> normalMapTexture;
@@ -72,31 +47,10 @@ struct MeshModelData {
 
 struct Node {
 
-	ModelTransform transform;
+	Transform3DComponent transform;
 	Matrix4x4 localMatrix;
 	std::string name;
 	std::vector<Node> children;
-};
-
-struct VertexWeightData {
-
-	float weight;
-	uint32_t vertexIndex;
-};
-
-struct JointWeightData {
-
-	Matrix4x4 inverseBindPoseMatrix;
-	std::vector<VertexWeightData> vertexWeights;
-};
-
-struct ModelData {
-
-	std::vector<MeshModelData> meshes;
-	std::map<std::string, JointWeightData> skinClusterData;
-	Node rootNode;
-
-	std::string fullPath;
 };
 
 template <typename tValue>
@@ -120,14 +74,52 @@ struct NodeAnimation {
 	AnimationCurve<Vector3> translate;
 };
 
+//============================================================================
+//	SkinnedMesh
+//============================================================================
+
+struct InputMeshVertex {
+
+	std::vector<MeshVertex> data;
+	uint32_t srvIndex;
+	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> srvHandle;
+};
+struct OutputMeshVertex {
+
+	std::vector<MeshVertex> data;
+	uint32_t uavIndex;
+	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> uavHandle;
+};
+
+struct VertexWeightData {
+
+	float weight;
+	uint32_t vertexIndex;
+};
+
+struct JointWeightData {
+
+	Matrix4x4 inverseBindPoseMatrix;
+	std::vector<VertexWeightData> vertexWeights;
+};
+
+struct ModelData {
+
+	std::vector<MeshModelData> meshes;
+	std::map<std::string, JointWeightData> skinClusterData;
+	Node rootNode;
+
+	std::string fullPath;
+};
+
 struct AnimationData {
 
-	float duration;                                                // アニメーション全体の尺
+	float duration;                                      // アニメーション全体の尺
 	std::map<std::string, NodeAnimation> nodeAnimations; // NodeAnimationの集合、Node名で引けるようにしておく
 };
 struct Joint {
 
-	ModelTransform transform;
+	Transform3DComponent transform;
 	Matrix4x4 localMatrix;
 	Matrix4x4 skeletonSpaceMatrix;   // skeletonSpaceでの変換行列
 	std::string name;
@@ -143,7 +135,7 @@ struct Skeleton {
 	std::string name;
 };
 
-// サイダイ4Jointの影響を受ける
+// 最大4Jointの影響を受ける
 const uint32_t kNumMaxInfluence = 4;
 struct VertexInfluence {
 

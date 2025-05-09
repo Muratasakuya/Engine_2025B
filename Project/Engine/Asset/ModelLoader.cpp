@@ -51,7 +51,7 @@ void ModelLoader::Load(const std::string& modelName) {
 }
 
 void ModelLoader::Make(const std::string& modelName,
-	const std::vector<ModelVertexData>& vertexData,
+	const std::vector<MeshVertex>& vertexData,
 	const std::vector<uint32_t>& indexData) {
 
 	ModelData modelData{};
@@ -292,11 +292,11 @@ Node ModelLoader::ReadNode(aiNode* node) {
 	node->mTransformation.Decompose(scale, rotate, translate);
 	result.transform.scale = { scale.x,scale.y ,scale.z };
 	// X軸を反転、さらに回転方向が逆なので軸を反転させる
-	result.transform.rotate = { rotate.x,-rotate.y ,-rotate.z,rotate.w };
+	result.transform.rotation = { rotate.x,-rotate.y ,-rotate.z,rotate.w };
 	// X軸を反転
-	result.transform.translate = { -translate.x,translate.y ,translate.z };
+	result.transform.translation = { -translate.x,translate.y ,translate.z };
 	result.localMatrix =
-		Matrix4x4::MakeAxisAffineMatrix(result.transform.scale, result.transform.rotate, result.transform.translate);
+		Matrix4x4::MakeAxisAffineMatrix(result.transform.scale, result.transform.rotation, result.transform.translation);
 
 	// Node名を格納
 	result.name = node->mName.C_Str();

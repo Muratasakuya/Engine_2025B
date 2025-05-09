@@ -6,6 +6,7 @@
 #include <Engine/Core/Graphics/GPUObject/InstancedMeshBuffer.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Mesh/MeshRegistry.h>
+#include <Engine/Core/Component/AnimationComponent.h>
 #include <Engine/Core/Component/PrimitiveMeshComponent.h>
 #include <Engine/Core/Component/SpriteComponent.h>
 
