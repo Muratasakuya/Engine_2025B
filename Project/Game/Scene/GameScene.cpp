@@ -94,4 +94,45 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadModel("sirialHitEffectPlane");
 	asset->LoadModel("effectDefaultPlane");
 	asset->LoadModel("sirialLightningEffectPlane");
+
+	// debugAnimation
+	asset->LoadModel("walk");
+	asset->LoadAnimation("walk", "walk");
+
+	const uint32_t kNumObject = 16;
+	const float offset = 2.0f;
+	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
+
+	for (uint32_t index = 0; index < kNumObject; ++index) {
+
+		debugAnimationContoroller_.push_back(false);
+		debugId_.push_back(GameObjectHelper::CreateObject3D(
+			"walk", "walk", "Human", "walk"));
+		auto transform = Component::GetComponent<Transform3DComponent>(debugId_[index]);
+
+		auto animation = Component::GetComponent<AnimationComponent>(debugId_[index]);
+		animation->SetAnimationData("walk");
+
+		uint32_t x = index % gridSize;
+		uint32_t z = index / gridSize;
+
+		transform->translation.x = x * offset;
+		transform->translation.z = z * offset;
+	}
+}
+
+void GameScene::ImGui() {
+
+	for (uint32_t i = 0; i < debugId_.size(); ++i) {
+
+		bool debugAnim = debugAnimationContoroller_[i];
+		if (ImGui::Checkbox(("playAnimation" + std::to_string(i)).c_str(),
+			&debugAnim)) {
+
+			debugAnimationContoroller_[i] = debugAnim;
+
+			auto animation = Component::GetComponent<AnimationComponent>(debugId_[i]);
+			animation->SetPlayAnimation("walk", debugAnim);
+		}
+	}
 }

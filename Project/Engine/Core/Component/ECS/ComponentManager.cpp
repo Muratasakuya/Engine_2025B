@@ -78,8 +78,6 @@ uint32_t ComponentManager::CreateObject3D(
 	const std::string& modelName, const std::string& objectName,
 	const std::optional<std::string>& groupName, const std::optional<std::string>& animationName) {
 
-	animationName;
-
 	// entityID発行
 	uint32_t id = entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName, groupName);
 

@@ -128,77 +128,83 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const ModelData& m
 	}
 }
 
-void MeshletBuilder::Optimize(ResourceMesh& destinationMesh) {
+void MeshletBuilder::Optimize([[maybe_unused]] ResourceMesh& destinationMesh) {
 
-	// meshの数分
-	for (uint32_t meshIndex = 0; meshIndex < destinationMesh.meshCount_; ++meshIndex) {
+	// 最適化処理はSkinnedMeshだとバグってしまう
 
-		std::vector<uint32_t> remap(destinationMesh.indices[meshIndex].size());
+	//// meshの数分
+	//destinationMesh.remapTables.resize(destinationMesh.meshCount_);
+	//for (uint32_t meshIndex = 0; meshIndex < destinationMesh.meshCount_; ++meshIndex) {
 
-		// 重複データを削除するための再マッピング用インデックスを生成
-		auto vertexCount = meshopt_generateVertexRemap(
+	//	std::vector<uint32_t> remap(destinationMesh.indices[meshIndex].size());
 
-			remap.data(),
-			destinationMesh.indices[meshIndex].data(),
-			destinationMesh.indices[meshIndex].size(),
-			destinationMesh.vertices[meshIndex].data(),
-			destinationMesh.vertices[meshIndex].size(),
-			sizeof(MeshVertex));
+	//	// 重複データを削除するための再マッピング用インデックスを生成
+	//	auto vertexCount = meshopt_generateVertexRemap(
 
-		std::vector<MeshVertex> vertices(vertexCount);
-		std::vector<uint32_t> indices(destinationMesh.indices[meshIndex].size());
+	//		remap.data(),
+	//		destinationMesh.indices[meshIndex].data(),
+	//		destinationMesh.indices[meshIndex].size(),
+	//		destinationMesh.vertices[meshIndex].data(),
+	//		destinationMesh.vertices[meshIndex].size(),
+	//		sizeof(MeshVertex));
 
-		// 頂点インデックスを再マッピング
-		meshopt_remapIndexBuffer(
+	//	std::vector<MeshVertex> vertices(vertexCount);
+	//	std::vector<uint32_t> indices(destinationMesh.indices[meshIndex].size());
 
-			indices.data(),
-			destinationMesh.indices[meshIndex].data(),
-			destinationMesh.indices[meshIndex].size(),
-			remap.data());
+	//	// 頂点インデックスを再マッピング
+	//	meshopt_remapIndexBuffer(
 
-		// 頂点データを再マッピング
-		meshopt_remapVertexBuffer(
+	//		indices.data(),
+	//		destinationMesh.indices[meshIndex].data(),
+	//		destinationMesh.indices[meshIndex].size(),
+	//		remap.data());
 
-			vertices.data(),
-			destinationMesh.vertices[meshIndex].data(),
-			destinationMesh.vertices[meshIndex].size(),
-			sizeof(MeshVertex),
-			remap.data());
+	//	// 頂点データを再マッピング
+	//	meshopt_remapVertexBuffer(
 
-		// 不要になったメモリを解放
-		remap.clear();
-		remap.shrink_to_fit();
+	//		vertices.data(),
+	//		destinationMesh.vertices[meshIndex].data(),
+	//		destinationMesh.vertices[meshIndex].size(),
+	//		sizeof(MeshVertex),
+	//		remap.data());
 
-		// 最適化したサイズにメモリ量を減らす
-		destinationMesh.indices[meshIndex].resize(indices.size());
-		destinationMesh.vertices[meshIndex].resize(vertices.size());
+	//	// remapデータを保存
+	//	destinationMesh.remapTables[meshIndex] = remap;
 
-		// 頂点キャッシュ最適化
-		meshopt_optimizeVertexCache(
+	//	// 不要になったメモリを解放
+	//	remap.clear();
+	//	remap.shrink_to_fit();
 
-			destinationMesh.indices[meshIndex].data(),
-			indices.data(),
-			indices.size(),
-			vertexCount);
+	//	// 最適化したサイズにメモリ量を減らす
+	//	destinationMesh.indices[meshIndex].resize(indices.size());
+	//	destinationMesh.vertices[meshIndex].resize(vertices.size());
 
-		// 不要になったメモリを解放
-		indices.clear();
-		indices.shrink_to_fit();
+	//	// 頂点キャッシュ最適化
+	//	meshopt_optimizeVertexCache(
 
-		// 頂点フェッチ最適化
-		meshopt_optimizeVertexFetch(
+	//		destinationMesh.indices[meshIndex].data(),
+	//		indices.data(),
+	//		indices.size(),
+	//		vertexCount);
 
-			destinationMesh.vertices[meshIndex].data(),
-			destinationMesh.indices[meshIndex].data(),
-			destinationMesh.indices[meshIndex].size(),
-			vertices.data(),
-			vertices.size(),
-			sizeof(MeshVertex));
+	//	// 不要になったメモリを解放
+	//	indices.clear();
+	//	indices.shrink_to_fit();
 
-		// 不要になったメモリを解放
-		vertices.clear();
-		vertices.shrink_to_fit();
-	}
+	//	// 頂点フェッチ最適化
+	//	meshopt_optimizeVertexFetch(
+
+	//		destinationMesh.vertices[meshIndex].data(),
+	//		destinationMesh.indices[meshIndex].data(),
+	//		destinationMesh.indices[meshIndex].size(),
+	//		vertices.data(),
+	//		vertices.size(),
+	//		sizeof(MeshVertex));
+
+	//	// 不要になったメモリを解放
+	//	vertices.clear();
+	//	vertices.shrink_to_fit();
+	//}
 }
 
 void MeshletBuilder::CreateMeshlet(ResourceMesh& destinationMesh) {

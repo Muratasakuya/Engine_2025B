@@ -31,6 +31,10 @@ public:
 
 	// meshlet数
 	uint32_t GetMeshletCount(uint32_t meshIndex) const { return meshletCounts_[meshIndex]; }
+	uint32_t GetVertexCount(uint32_t meshIndex) const { return vertexCounts_[meshIndex]; }
+
+	// 頂点のremapデータ
+	const std::vector<uint32_t>& GetRemapData(uint32_t meshIndex) { return remapTables_[meshIndex]; }
 
 	const DxConstBuffer<MeshInstanceData>& GetMeshInstanceData(uint32_t meshIndex) const { return meshInstanceData_[meshIndex]; }
 
@@ -51,6 +55,11 @@ protected:
 
 	// meshlet数
 	std::vector<uint32_t> meshletCounts_;
+	// 頂点数
+	std::vector<uint32_t> vertexCounts_;
+
+	// 頂点のremapデータ
+	std::vector<std::vector<uint32_t>> remapTables_;
 
 	// buffers
 	std::vector<DxConstBuffer<MeshInstanceData>> meshInstanceData_;

@@ -151,7 +151,6 @@ struct SkinningInformation {
 
 	uint32_t numVertices;
 	uint32_t numBones;
-	uint32_t instanceID;
 };
 struct SkinCluster {
 

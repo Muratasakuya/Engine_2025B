@@ -75,3 +75,8 @@ bool DxUtils::CanAllocateIndex(uint32_t useIndex, uint32_t kMaxCount) {
 	// FALSE: ASSERT
 	return useIndex < kMaxCount;
 }
+
+UINT DxUtils::RoundUp(UINT round, UINT thread) {
+
+	return (round + thread - 1) / thread;
+}
