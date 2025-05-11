@@ -68,6 +68,8 @@ struct ResourceMesh {
 	std::vector<std::vector<uint32_t>> uniqueVertexIndices;
 	std::vector<std::vector<ResourcePrimitiveIndex>> primitiveIndices;
 
+	std::vector<std::vector<uint32_t>> remapTables;
+
 	// operator
 	ResourceMesh& operator=(const ResourceMesh& other) {
 		if (this != &other) {

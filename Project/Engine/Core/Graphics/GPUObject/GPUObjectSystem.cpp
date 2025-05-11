@@ -40,7 +40,7 @@ void GPUObjectSystem::CreateStaticMesh(const std::string& modelName) {
 void GPUObjectSystem::CreateSkinnedMesh(const std::string& modelName) {
 
 	// 最大instance数
-	const uint32_t kMaxInstanceNum = 512;
+	const uint32_t kMaxInstanceNum = 32;
 
 	// meshの作成、登録
 	meshRegistry_->RegisterMesh(modelName, true, kMaxInstanceNum);

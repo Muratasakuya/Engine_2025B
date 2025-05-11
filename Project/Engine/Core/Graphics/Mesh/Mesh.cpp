@@ -18,6 +18,10 @@ void IMesh::Init(ID3D12Device* device, const ResourceMesh& resource,
 
 		// meshlet数
 		meshletCounts_.push_back(static_cast<uint32_t>(resource.meshlets[meshIndex].size()));
+		// 頂点数
+		vertexCounts_.push_back(static_cast<UINT>(resource.vertices[meshIndex].size()));
+		// remapデータ
+		//remapTables_.push_back(resource.remapTables[meshIndex]);
 
 		// buffer転送
 		TransferBuffer(meshIndex, resource, isSkinned);

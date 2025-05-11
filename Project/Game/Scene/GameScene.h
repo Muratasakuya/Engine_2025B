@@ -20,19 +20,21 @@
 //	GameScene class
 //============================================================================
 class GameScene :
-	public IScene {
+	public IScene, public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	GameScene() = default;
+	GameScene() :IGameEditor("GameScene") {};
 	~GameScene() = default;
 
 	void Init(Asset* asset, CameraManager* cameraManager,
 		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
 
 	void Update(SceneManager* sceneManager) override;
+
+	void ImGui() override;
 private:
 	//========================================================================
 	//	private Methods
@@ -50,6 +52,10 @@ private:
 
 	// objects
 	std::unique_ptr<Player> player_;
+
+	// debug
+	std::vector<uint32_t> debugId_;
+	std::vector<bool> debugAnimationContoroller_;
 
 	//--------- functions ----------------------------------------------------
 

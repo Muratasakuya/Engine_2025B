@@ -6,7 +6,11 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/DxCommand.h>
+#include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Lib/MathUtils/Algorithm.h>
+
+// meshoptimizer
+#include <meshoptimizer.h>
 
 //============================================================================
 //	InstancedMeshBuffer classMethods
@@ -59,6 +63,9 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 	const size_t meshNum = meshGroup.meshNum;
 	meshGroup.wells.resize(meshNum);
 	meshGroup.influences.resize(meshNum);
+	meshGroup.skinningInformations.resize(meshNum);
+	// componentの数もここで決める
+	meshGroup.wellUploadData.resize(meshNum);
 
 	//　bone、骨の数
 	const Skeleton skeleton = asset_->GetSkeletonData(name);
@@ -68,8 +75,7 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 	for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
 		// 頂点数
-		const uint32_t vertexSize = static_cast<uint32_t>(
-			asset_->GetModelData(name).meshes[meshIndex].vertices.size());
+		const uint32_t vertexSize = meshGroup.skinnedMesh->GetVertexCount(meshIndex);
 		meshGroup.vertexSizes.emplace_back(vertexSize);
 
 		// information
@@ -108,14 +114,17 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 
 						currentInfluence.weights[index] = vertexWeight.weight;
 						currentInfluence.jointIndices[index] = (*it).second;
-
 						break;
 					}
 				}
 			}
 		}
+
 		// これ以上更新する予定がないので転送
 		meshGroup.influences[meshIndex].TransferVectorData(influence);
+		meshGroups_[name].skinningInformations[meshIndex].TransferData({
+			.numVertices = meshGroups_[name].vertexSizes[meshIndex],
+			.numBones = meshGroups_[name].boneSize });
 	}
 }
 
@@ -161,12 +170,6 @@ void InstancedMeshBuffer::SetUploadData(const std::string& name,
 				meshGroups_[name].wellUploadData[meshIndex].end(),
 				wellData.begin(),
 				wellData.end());
-
-			// cBufferはの時点で転送する
-			meshGroups_[name].skinningInformations[meshIndex].TransferData({
-				.numVertices = meshGroups_[name].vertexSizes[meshIndex],
-				.numBones = meshGroups_[name].boneSize,
-				.instanceID = meshGroups_[name].numInstance });
 		}
 	}
 
@@ -187,8 +190,6 @@ void InstancedMeshBuffer::Update(DxCommand* dxCommand) {
 		return;
 	}
 
-	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
-
 	for (auto& [name, meshGroup] : meshGroups_) {
 		// instance数が0なら処理をしない
 		if (meshGroup.numInstance == 0) {
@@ -202,24 +203,27 @@ void InstancedMeshBuffer::Update(DxCommand* dxCommand) {
 			meshGroup.materials[meshIndex].TransferVectorData(meshGroup.materialUploadData[meshIndex]);
 
 			// skinnedMeshなら設定する
-			if (meshGroup.isSkinned) {
+			if (meshGroups_[name].isSkinned) {
 
-				meshGroup.wells[meshIndex].TransferVectorData(meshGroup.wellUploadData[meshIndex]);
+				meshGroups_[name].wells[meshIndex].TransferVectorData(meshGroups_[name].wellUploadData[meshIndex]);
 
-				SkinnedMesh* skinnedMesh = static_cast<SkinnedMesh*>(meshGroup.skinnedMesh);
+				ID3D12GraphicsCommandList* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+				SkinnedMesh* skinnedMesh = static_cast<SkinnedMesh*>(meshGroups_[name].skinnedMesh);
 
 				// dispach処理
 				commandList->SetComputeRootShaderResourceView(0,
-					meshGroup.wells[meshIndex].GetResource()->GetGPUVirtualAddress());
+					meshGroups_[name].wells[meshIndex].GetResource()->GetGPUVirtualAddress());
 				commandList->SetComputeRootShaderResourceView(1,
 					skinnedMesh->GetInputVertexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
 				commandList->SetComputeRootShaderResourceView(2,
-					meshGroup.influences[meshIndex].GetResource()->GetGPUVirtualAddress());
-				commandList->SetComputeRootShaderResourceView(3,
+					meshGroups_[name].influences[meshIndex].GetResource()->GetGPUVirtualAddress());
+				commandList->SetComputeRootUnorderedAccessView(3,
 					skinnedMesh->GetOutputVertexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
 				commandList->SetComputeRootConstantBufferView(4,
 					meshGroups_[name].skinningInformations[meshIndex].GetResource()->GetGPUVirtualAddress());
-				commandList->Dispatch(static_cast<UINT>(meshGroup.vertexSizes[meshIndex] + 1023) / 1024, 1, 1);
+				commandList->Dispatch(
+					DxUtils::RoundUp(meshGroups_[name].vertexSizes[meshIndex], 1024),
+					meshGroups_[name].numInstance, 1);
 			}
 		}
 	}

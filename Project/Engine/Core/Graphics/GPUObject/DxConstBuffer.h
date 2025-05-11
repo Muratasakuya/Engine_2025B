@@ -91,10 +91,6 @@ template<typename T>
 inline void DxConstBuffer<T>::CreateUavStructuredBuffer(ID3D12Device* device, UINT instanceCount) {
 
 	DxUtils::CreateUavBufferResource(device, resource_, sizeof(T) * instanceCount);
-
-	// マッピング
-	HRESULT hr = resource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData_));
-	assert(SUCCEEDED(hr));
 }
 
 template<typename T>

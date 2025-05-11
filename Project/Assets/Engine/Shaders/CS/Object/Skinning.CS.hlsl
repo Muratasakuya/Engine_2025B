@@ -7,7 +7,6 @@ cbuffer SkinningInformation : register(b0) {
 	
 	uint numVertices;
 	uint numBones;
-	uint instanceID;
 };
 
 //============================================================================
@@ -94,15 +93,16 @@ float3 TransformDirection(float3 v, VertexInfluence influence, uint boneOffset) 
 //	Main
 //============================================================================
 [numthreads(1024, 1, 1)]
-void main(uint3 DTid : SV_DispatchThreadID) {
+void main(uint3 DTid : SV_DispatchThreadID, uint3 GTid : SV_GroupID) {
 	
 	// 頂点インデックス
 	uint vertexIndex = DTid.x;
+	uint instanceID = GTid.y;
 	// 範囲外回避 (バッファオーバーラン)
-	if (vertexIndex > numVertices) {
+	if (vertexIndex >= numVertices) {
 		return;
 	}
-		
+
 	Vertex input = gInputVertices[vertexIndex];
 	VertexInfluence influence = gInfluences[vertexIndex];
 	

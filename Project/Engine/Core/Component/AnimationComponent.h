@@ -28,6 +28,7 @@ public:
 
 	void SetAnimationData(const std::string& animationName);
 
+	// animation再生
 	void SetPlayAnimation(const std::string& animationName, bool roopAnimation);
 
 	bool IsTransition() const { return inTransition_; }
