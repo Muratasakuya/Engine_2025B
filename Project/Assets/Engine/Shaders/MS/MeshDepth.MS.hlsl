@@ -25,6 +25,8 @@ struct MSInput {
 cbuffer InstanceData : register(b0) {
 	
 	uint meshletCount;
+	uint numVertices;
+	int isSkinned;
 };
 
 cbuffer ShadowLight : register(b1) {
@@ -111,6 +113,11 @@ out indices uint3 polys[126] // 出力三角形インデックス
 	if (groupThreadId < meshlet.vertexCount) {
 		
 		uint index = gIndices[meshlet.vertexOffset + groupThreadId];
+		// skinnedMeshだったらindexをインスタンスインデックス * 頂点分足す
+		if (isSkinned == 1) {
+			
+			index += instanceIndex * numVertices;
+		}
 		MSInput input = gVertices[index];
 		MSOutput output = (MSOutput) 0;
 		

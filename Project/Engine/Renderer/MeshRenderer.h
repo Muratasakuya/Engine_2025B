@@ -29,10 +29,10 @@ public:
 		DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
 
 	void RenderingZPass(GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
+		class DxCommand* dxCommand);
 
 	void Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
+		class DxCommand* dxCommand);
 private:
 	//========================================================================
 	//	private Methods

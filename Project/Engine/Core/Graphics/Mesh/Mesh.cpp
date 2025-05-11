@@ -1,35 +1,36 @@
 #include "Mesh.h"
 
 //============================================================================
-//	Mesh classMethods
+//	IMesh classMethods
 //============================================================================
 
-void Mesh::Init(ID3D12Device* device, const ResourceMesh& resource) {
+void IMesh::Init(ID3D12Device* device, const ResourceMesh& resource,
+	bool isSkinned, uint32_t numInstance) {
+
+	isSkinned_ = isSkinned;
 
 	// meshの数分
 	for (uint32_t meshIndex = 0; meshIndex < resource.meshCount_; ++meshIndex) {
 
 		// buffer生成
 		CreateBuffer(device, meshIndex, resource);
+		CreateVertexBuffer(device, meshIndex, resource, numInstance);
 
 		// meshlet数
 		meshletCounts_.push_back(static_cast<uint32_t>(resource.meshlets[meshIndex].size()));
-	
+
 		// buffer転送
-		TransferBuffer(meshIndex, resource);
+		TransferBuffer(meshIndex, resource, isSkinned);
+		TransferVertexBuffer(meshIndex, resource);
 	}
 }
 
-void Mesh::CreateBuffer(ID3D12Device* device, uint32_t meshIndex,
+void IMesh::CreateBuffer(ID3D12Device* device, uint32_t meshIndex,
 	const ResourceMesh& resource) {
 
-	// meshlet数
-	meshletCountsBuffer_.push_back({});
-	meshletCountsBuffer_[meshIndex].CreateConstBuffer(device);
-	// 頂点
-	const UINT vertexCount = static_cast<UINT>(resource.vertices[meshIndex].size());
-	vertices_.push_back({});
-	vertices_[meshIndex].CreateStructuredBuffer(device, vertexCount);
+	// meshInstance情報
+	meshInstanceData_.push_back({});
+	meshInstanceData_[meshIndex].CreateConstBuffer(device);
 	// インデックス
 	const UINT uniqueVertexIndexCount = static_cast<UINT>(resource.uniqueVertexIndices[meshIndex].size());
 	uniqueVertexIndices_.push_back({});
@@ -44,16 +45,58 @@ void Mesh::CreateBuffer(ID3D12Device* device, uint32_t meshIndex,
 	meshlets_[meshIndex].CreateStructuredBuffer(device, meshletCount);
 }
 
-void Mesh::TransferBuffer(uint32_t meshIndex,const ResourceMesh& resource) {
+void IMesh::TransferBuffer(uint32_t meshIndex, const ResourceMesh& resource, bool isSkinned) {
 
-	// meshlet数
-	meshletCountsBuffer_[meshIndex].TransferData(meshletCounts_[meshIndex]);
-	// 頂点
-	vertices_[meshIndex].TransferVectorData(resource.vertices[meshIndex]);
+	// meshInstance情報
+	meshInstanceData_[meshIndex].TransferData({
+		.meshletCount = meshletCounts_[meshIndex],
+		.numVertices = static_cast<UINT>(resource.vertices[meshIndex].size()),
+		.isSkinned = static_cast<int32_t>(isSkinned) });
 	// インデックス
 	uniqueVertexIndices_[meshIndex].TransferVectorData(resource.uniqueVertexIndices[meshIndex]);
 	// プリミティブ
 	primitiveIndices_[meshIndex].TransferVectorData(resource.primitiveIndices[meshIndex]);
 	// meshlet
 	meshlets_[meshIndex].TransferVectorData(resource.meshlets[meshIndex]);
+}
+
+//============================================================================
+//	StaticMesh classMethods
+//============================================================================
+
+void StaticMesh::CreateVertexBuffer(ID3D12Device* device, uint32_t meshIndex,
+	const ResourceMesh& resource, [[maybe_unused]] uint32_t numInstance) {
+
+	// 頂点
+	const UINT vertexCount = static_cast<UINT>(resource.vertices[meshIndex].size());
+	vertices_.push_back({});
+	vertices_[meshIndex].CreateStructuredBuffer(device, vertexCount);
+}
+
+void StaticMesh::TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh& resource) {
+
+	// 頂点
+	vertices_[meshIndex].TransferVectorData(resource.vertices[meshIndex]);
+}
+
+//============================================================================
+//	SkinnedMesh classMethods
+//============================================================================
+
+void SkinnedMesh::CreateVertexBuffer(ID3D12Device* device, uint32_t meshIndex,
+	const ResourceMesh& resource, uint32_t numInstance) {
+
+	// 入力頂点
+	const UINT vertexCount = static_cast<UINT>(resource.vertices[meshIndex].size());
+	inputVertices_.push_back({});
+	inputVertices_[meshIndex].CreateStructuredBuffer(device, vertexCount);
+	// 出力頂点
+	outputVertices_.push_back({});
+	outputVertices_[meshIndex].CreateUavStructuredBuffer(device, vertexCount * numInstance);
+}
+
+void SkinnedMesh::TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh& resource) {
+
+	// 入力頂点
+	inputVertices_[meshIndex].TransferVectorData(resource.vertices[meshIndex]);
 }

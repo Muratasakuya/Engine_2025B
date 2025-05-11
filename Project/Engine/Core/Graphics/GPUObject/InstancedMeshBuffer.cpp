@@ -3,17 +3,22 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
+#include <Engine/Core/Graphics/DxCommand.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	InstancedMeshBuffer classMethods
 //============================================================================
 
-void InstancedMeshBuffer::SetDevice(ID3D12Device* device) {
+void InstancedMeshBuffer::Init(ID3D12Device* device, Asset* asset) {
 
 	device_ = nullptr;
 	device_ = device;
+
+	asset_ = nullptr;
+	asset_ = asset;
 }
 
 void InstancedMeshBuffer::CreateBuffers(const std::string& name) {
@@ -36,9 +41,85 @@ void InstancedMeshBuffer::CreateBuffers(const std::string& name) {
 		// buffer作成
 		meshGroup.materials[meshIndex].CreateStructuredBuffer(device_, meshGroup.maxInstance);
 	}
+
+	// skinnedMeshなら専用bufferを作成する
+	if (!meshGroup.isSkinned) {
+		return;
+	}
+
+	// well、influence
+	CreateSkinnedMeshBuffers(name);
 }
 
-void InstancedMeshBuffer::Create(Mesh* mesh,
+void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
+
+	auto& meshGroup = meshGroups_[name];
+
+	// meshの数だけ作成する
+	const size_t meshNum = meshGroup.meshNum;
+	meshGroup.wells.resize(meshNum);
+	meshGroup.influences.resize(meshNum);
+
+	//　bone、骨の数
+	const Skeleton skeleton = asset_->GetSkeletonData(name);
+	const uint32_t boneSize = static_cast<uint32_t>(skeleton.joints.size());
+	meshGroup.boneSize = boneSize;
+
+	for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
+
+		// 頂点数
+		const uint32_t vertexSize = static_cast<uint32_t>(
+			asset_->GetModelData(name).meshes[meshIndex].vertices.size());
+		meshGroup.vertexSizes.emplace_back(vertexSize);
+
+		// information
+		meshGroup.skinningInformations[meshIndex].CreateConstBuffer(device_);
+
+		// well
+		// buffer作成
+		meshGroup.wells[meshIndex].CreateStructuredBuffer(device_, meshGroup.maxInstance * boneSize);
+
+		// influence
+		// buffer作成
+		meshGroup.influences[meshIndex].CreateStructuredBuffer(device_, vertexSize);
+		// 0埋めしてweightを0にしておく
+		std::vector<VertexInfluence> influence(vertexSize);
+		std::generate(influence.begin(), influence.end(), []() {
+			return VertexInfluence{};
+			});
+
+		// ModelDataを解析してInfluenceを埋める
+		for (const auto& jointWeight : asset_->GetModelData(name).skinClusterData) {
+
+			// jointWeight.firstはjoint名なので、skeletonに対象となるjointが含まれているか判断
+			auto it = skeleton.jointMap.find(jointWeight.first);
+			// 存在しないjoint名だったら次に進める
+			if (it == skeleton.jointMap.end()) {
+				continue;
+			}
+
+			for (const auto& vertexWeight : jointWeight.second.vertexWeights) {
+
+				// 該当のvertexIndexのinfluence情報を参照しておく
+				auto& currentInfluence = influence[vertexWeight.vertexIndex];
+				for (uint32_t index = 0; index < kNumMaxInfluence; ++index) {
+					// 0.0fが空いている状態
+					if (currentInfluence.weights[index] == 0.0f) {
+
+						currentInfluence.weights[index] = vertexWeight.weight;
+						currentInfluence.jointIndices[index] = (*it).second;
+
+						break;
+					}
+				}
+			}
+		}
+		// これ以上更新する予定がないので転送
+		meshGroup.influences[meshIndex].TransferVectorData(influence);
+	}
+}
+
+void InstancedMeshBuffer::Create(IMesh* mesh,
 	const std::string& name, uint32_t numInstance) {
 
 	// すでにある場合は作成しない
@@ -50,19 +131,43 @@ void InstancedMeshBuffer::Create(Mesh* mesh,
 	meshGroups_[name].maxInstance = numInstance;
 	// 描画を行うrenderingDataの設定
 	meshGroups_[name].meshNum = mesh->GetMeshCount();
+	// staticかskinnedか判定
+	meshGroups_[name].isSkinned = mesh->IsSkinned();
+	if (meshGroups_[name].isSkinned) {
+
+		meshGroups_[name].skinnedMesh = mesh;
+	}
 
 	// bufferの作成
 	CreateBuffers(name);
 }
 
 void InstancedMeshBuffer::SetUploadData(const std::string& name,
-	const TransformationMatrix& matrix, const std::vector<MaterialComponent>& materials) {
+	const TransformationMatrix& matrix, const std::vector<MaterialComponent>& materials,
+	const AnimationComponent& animation) {
 
 	meshGroups_[name].matrixUploadData.emplace_back(matrix);
 
 	for (uint32_t meshIndex = 0; meshIndex < meshGroups_[name].materialUploadData.size(); ++meshIndex) {
 
 		meshGroups_[name].materialUploadData[meshIndex].emplace_back(materials[meshIndex].material);
+
+		// skinnedMeshなら設定する
+		if (meshGroups_[name].isSkinned) {
+
+			const auto& wellData = animation.GetWellForGPU();
+			// 連結させて追加
+			meshGroups_[name].wellUploadData[meshIndex].insert(
+				meshGroups_[name].wellUploadData[meshIndex].end(),
+				wellData.begin(),
+				wellData.end());
+
+			// cBufferはの時点で転送する
+			meshGroups_[name].skinningInformations[meshIndex].TransferData({
+				.numVertices = meshGroups_[name].vertexSizes[meshIndex],
+				.numBones = meshGroups_[name].boneSize,
+				.instanceID = meshGroups_[name].numInstance });
+		}
 	}
 
 	// instance数インクリメント
@@ -75,12 +180,14 @@ void InstancedMeshBuffer::SetUploadData(const std::string& name,
 	}
 }
 
-void InstancedMeshBuffer::Update() {
+void InstancedMeshBuffer::Update(DxCommand* dxCommand) {
 
 	// 何もなければ処理をしない
 	if (meshGroups_.empty()) {
 		return;
 	}
+
+	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
 
 	for (auto& [name, meshGroup] : meshGroups_) {
 		// instance数が0なら処理をしない
@@ -93,6 +200,27 @@ void InstancedMeshBuffer::Update() {
 		for (uint32_t meshIndex = 0; meshIndex < meshGroup.meshNum; ++meshIndex) {
 
 			meshGroup.materials[meshIndex].TransferVectorData(meshGroup.materialUploadData[meshIndex]);
+
+			// skinnedMeshなら設定する
+			if (meshGroup.isSkinned) {
+
+				meshGroup.wells[meshIndex].TransferVectorData(meshGroup.wellUploadData[meshIndex]);
+
+				SkinnedMesh* skinnedMesh = static_cast<SkinnedMesh*>(meshGroup.skinnedMesh);
+
+				// dispach処理
+				commandList->SetComputeRootShaderResourceView(0,
+					meshGroup.wells[meshIndex].GetResource()->GetGPUVirtualAddress());
+				commandList->SetComputeRootShaderResourceView(1,
+					skinnedMesh->GetInputVertexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
+				commandList->SetComputeRootShaderResourceView(2,
+					meshGroup.influences[meshIndex].GetResource()->GetGPUVirtualAddress());
+				commandList->SetComputeRootShaderResourceView(3,
+					skinnedMesh->GetOutputVertexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
+				commandList->SetComputeRootConstantBufferView(4,
+					meshGroups_[name].skinningInformations[meshIndex].GetResource()->GetGPUVirtualAddress());
+				commandList->Dispatch(static_cast<UINT>(meshGroup.vertexSizes[meshIndex] + 1023) / 1024, 1, 1);
+			}
 		}
 	}
 }
@@ -113,6 +241,12 @@ void InstancedMeshBuffer::Reset() {
 			if (meshGroup.materialUploadData[meshIndex].size() != 0) {
 
 				meshGroup.materialUploadData[meshIndex].clear();
+			}
+
+			// skinnedMeshの場合のみ
+			if (meshGroup.isSkinned) {
+
+				meshGroup.wellUploadData[meshIndex].clear();
 			}
 		}
 		meshGroup.numInstance = 0;

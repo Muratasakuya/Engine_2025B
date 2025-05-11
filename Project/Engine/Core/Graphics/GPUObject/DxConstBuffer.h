@@ -29,6 +29,7 @@ public:
 	// 初期化
 	void CreateConstBuffer(ID3D12Device* device);
 	void CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount);
+	void CreateUavStructuredBuffer(ID3D12Device* device, UINT instanceCount);
 
 	void CreateVertexBuffer(ID3D12Device* device, UINT vertexCount);
 	void CreateUavVertexBuffer(ID3D12Device* device, UINT vertexCount);
@@ -80,6 +81,16 @@ template<typename T>
 inline void DxConstBuffer<T>::CreateStructuredBuffer(ID3D12Device* device, UINT instanceCount) {
 
 	DxUtils::CreateBufferResource(device, resource_, sizeof(T) * instanceCount);
+
+	// マッピング
+	HRESULT hr = resource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData_));
+	assert(SUCCEEDED(hr));
+}
+
+template<typename T>
+inline void DxConstBuffer<T>::CreateUavStructuredBuffer(ID3D12Device* device, UINT instanceCount) {
+
+	DxUtils::CreateUavBufferResource(device, resource_, sizeof(T) * instanceCount);
 
 	// マッピング
 	HRESULT hr = resource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData_));

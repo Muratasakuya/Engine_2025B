@@ -32,7 +32,10 @@ void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
 }
 
 void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
-	ID3D12GraphicsCommandList6* commandList) {
+	DxCommand* dxCommand) {
+
+	// commandList取得
+	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
 
 	// 描画情報取得
 	const auto& meshes = gpuObjectSystem->GetMeshes();
@@ -59,6 +62,14 @@ void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
 
 		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
 
+			// skinnedMeshなら頂点を描画使用できるようにする
+			if (mesh->IsSkinned()) {
+
+				dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+			}
+
 			// 描画処理
 			commandContext.DispatchMesh(commandList,
 				instancingBuffers[name].numInstance, meshIndex, mesh.get());
@@ -67,7 +78,10 @@ void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
 }
 
 void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
-	ID3D12GraphicsCommandList6* commandList) {
+	DxCommand* dxCommand) {
+
+	// commandList取得
+	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
 
 	// 描画情報取得
 	const auto& meshes = gpuObjectSystem->GetMeshes();
@@ -107,6 +121,27 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 			// 描画処理
 			commandContext.DispatchMesh(commandList,
 				instancingBuffers[name].numInstance, meshIndex, mesh.get());
+
+#ifdef _DEBUG
+			if (debugEnable) {
+
+				// skinnedMeshなら頂点を書き込み状態に戻す
+				if (mesh->IsSkinned()) {
+
+					dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+						D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+				}
+			}
+#else
+			// skinnedMeshなら頂点を書き込み状態に戻す
+			if (mesh->IsSkinned()) {
+
+				dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
+					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+			}
+#endif
 		}
 	}
 }

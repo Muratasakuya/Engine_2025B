@@ -25,13 +25,14 @@ public:
 
 	void Init(ID3D12Device* device, Asset* asset);
 
-	void RegisterMesh(const std::string& modelName);
+	void RegisterMesh(const std::string& modelName,
+		bool isSkinned, uint32_t numInstance);
 
 	//--------- accessor -----------------------------------------------------
 
 	// meshの取得
-	Mesh* GetMesh(const std::string& name) const { return meshes_.at(name).get(); }
-	const std::unordered_map<std::string, std::unique_ptr<Mesh>>& GetMeshes() const { return meshes_; }
+	IMesh* GetMesh(const std::string& name) const { return meshes_.at(name).get(); }
+	const std::unordered_map<std::string, std::unique_ptr<IMesh>>& GetMeshes() const { return meshes_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -42,7 +43,7 @@ private:
 	ID3D12Device* device_;
 	Asset* asset_;
 
-	std::unordered_map<std::string, std::unique_ptr<Mesh>> meshes_;
+	std::unordered_map<std::string, std::unique_ptr<IMesh>> meshes_;
 
 	//--------- functions ----------------------------------------------------
 
