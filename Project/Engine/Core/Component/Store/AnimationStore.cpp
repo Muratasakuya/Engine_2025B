@@ -22,8 +22,7 @@ void AnimationStore::AddComponent(uint32_t entityId, std::any args) {
 	// component追加
 	components_.push_back(std::make_unique<AnimationComponent>());
 	components_.back()->Init(*animationName, asset);
-	components_.back()->SetPlayAnimation(*animationName, true);
-	
+
 	// index設定
 	SetEntityIndex(entityId, index);
 }
@@ -57,6 +56,10 @@ void AnimationStore::Update() {
 }
 
 AnimationComponent* AnimationStore::GetComponent(uint32_t entityId) {
+
+	if (!Algorithm::Find(entityToIndex_, entityId)) {
+		return nullptr;
+	}
 
 	size_t index = entityToIndex_[entityId];
 	return components_[index].get();

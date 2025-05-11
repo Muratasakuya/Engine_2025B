@@ -58,7 +58,13 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device, SRVDescript
 
 				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 				rootParam.Descriptor.ShaderRegister = param["ShaderRegister"];
-			}if (type == "SRV") {
+			}
+			if (type == "UAV") {
+
+				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+				rootParam.Descriptor.ShaderRegister = param["ShaderRegister"];
+			}
+			if (type == "SRV") {
 
 				rootParam.ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
 				rootParam.Descriptor.ShaderRegister = param["ShaderRegister"];

@@ -150,19 +150,14 @@ struct WellForGPU {
 struct SkinningInformation {
 
 	uint32_t numVertices;
+	uint32_t numBones;
+	uint32_t instanceID;
 };
 struct SkinCluster {
 
 	std::vector<Matrix4x4> inverseBindPoseMatrices;
-
-	ComPtr<ID3D12Resource> influenceResource;
-	D3D12_VERTEX_BUFFER_VIEW influenceBufferView;
-	std::span<VertexInfluence> mappedInfluence;
-	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> influenceSrvHandle;
-
-	ComPtr<ID3D12Resource> paletteResource;
-	std::span<WellForGPU> mappedPalette;
-	std::pair<D3D12_CPU_DESCRIPTOR_HANDLE, D3D12_GPU_DESCRIPTOR_HANDLE> paletteSrvHandle;
+	// インスタンシングに送るデータ
+	std::vector<WellForGPU> mappedPalette;
 };
 struct AnimationBlendState {
 

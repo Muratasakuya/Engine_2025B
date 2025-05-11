@@ -103,6 +103,7 @@ private:
 
 	std::unique_ptr<PostProcessSystem> postProcessSystem_;
 
+	std::unique_ptr<PipelineState> skinningPipeline_;
 	std::unique_ptr<MeshRenderer> meshRenderer_;
 	std::unique_ptr<EffectRenderer> effectRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;

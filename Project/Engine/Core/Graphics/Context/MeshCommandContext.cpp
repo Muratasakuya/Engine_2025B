@@ -15,16 +15,24 @@
 //============================================================================
 
 void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
-	UINT instanceCount, uint32_t meshIndex, Mesh* mesh) {
+	UINT instanceCount, uint32_t meshIndex, IMesh* mesh) {
 
 	// 処理するinstanceがない場合は早期リターン
 	if (instanceCount == 0) {
 		return;
 	}
 
-	// buffers
-	commandList->SetGraphicsRootShaderResourceView(0,
-		mesh->GetVertexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
+	// 頂点bufferはskinnedMeshかそうじゃないかで処理を変更する
+	if (mesh->IsSkinned()) {
+
+		commandList->SetGraphicsRootShaderResourceView(0,
+			static_cast<SkinnedMesh*>(mesh)->GetOutputVertexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
+	} else {
+
+		commandList->SetGraphicsRootShaderResourceView(0,
+			static_cast<StaticMesh*>(mesh)->GetVertexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
+	}
+	// その他のbufferを設定
 	commandList->SetGraphicsRootShaderResourceView(1,
 		mesh->GetUniqueVertexIndexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootShaderResourceView(2,
@@ -32,7 +40,7 @@ void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 	commandList->SetGraphicsRootShaderResourceView(3,
 		mesh->GetPrimitiveIndexBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
 	commandList->SetGraphicsRootConstantBufferView(5,
-		mesh->GetMeshletCountBuffer(meshIndex).GetResource()->GetGPUVirtualAddress());
+		mesh->GetMeshInstanceData(meshIndex).GetResource()->GetGPUVirtualAddress());
 
 	// threadGroupCountXの最大値
 	const UINT maxThreadGroupCount = 65535;

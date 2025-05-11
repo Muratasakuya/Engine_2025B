@@ -175,6 +175,11 @@ void GraphicsCore::InitRenderer(Asset* asset) {
 	gpuObjectSystem_ = std::make_unique<GPUObjectSystem>();
 	gpuObjectSystem_->Init(dxDevice_->Get(), asset);
 
+	// skinning用pipeline作成
+	skinningPipeline_ = std::make_unique<PipelineState>();
+	skinningPipeline_->Create("skinning.json",
+		dxDevice_->Get(), srvDescriptor_.get(), dxShaderComplier_.get());
+
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();
 	meshRenderer_->Init(dxDevice_->Get(), shadowMap_.get(), dxShaderComplier_.get(), srvDescriptor_.get());
@@ -224,7 +229,13 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 
 	// bufferの更新
 	spriteRenderer_->Update(cameraManager);
-	gpuObjectSystem_->Update(cameraManager, lightManager);
+
+	// skinning用のCSpipelineを設定
+	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
+	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
+	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
+	gpuObjectSystem_->Update(cameraManager,
+		lightManager, dxCommand_.get());
 
 	// zPass
 	RenderZPass();
@@ -265,7 +276,7 @@ void GraphicsCore::RenderZPass() {
 
 	// Z値描画
 	meshRenderer_->RenderingZPass(gpuObjectSystem_.get(),
-		dxCommand_->GetCommandList(CommandListType::Graphics));
+		dxCommand_.get());
 
 	// Write -> PixelShader
 	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
@@ -356,7 +367,7 @@ void GraphicsCore::Renderers(bool debugEnable) {
 
 	// 通常描画処理
 	meshRenderer_->Rendering(debugEnable, gpuObjectSystem_.get(),
-		dxCommand_->GetCommandList(CommandListType::Graphics));
+		dxCommand_.get());
 
 	// effect描画
 	effectRenderer_->Rendering(debugEnable, gpuObjectSystem_.get(),

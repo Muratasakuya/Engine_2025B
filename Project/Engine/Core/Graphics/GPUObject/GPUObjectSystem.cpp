@@ -17,20 +17,33 @@ void GPUObjectSystem::Init(ID3D12Device* device, Asset* asset) {
 	meshRegistry_->Init(device, asset);
 
 	instancedMeshBuffer_ = std::make_unique<InstancedMeshBuffer>();
-	instancedMeshBuffer_->SetDevice(device);
+	instancedMeshBuffer_->Init(device, asset);
 
 	// sceneBuffer作成
 	sceneConstBuffer_ = std::make_unique<SceneConstBuffer>();
 	sceneConstBuffer_->Create(device);
 }
 
-void GPUObjectSystem::CreateMesh(const std::string& modelName) {
-
-	// meshの作成、登録
-	meshRegistry_->RegisterMesh(modelName);
+void GPUObjectSystem::CreateStaticMesh(const std::string& modelName) {
 
 	// 最大instance数
-	const uint32_t kMaxInstanceNum = 0xffff;
+	const uint32_t kMaxInstanceNum = 1024;
+
+	// meshの作成、登録
+	meshRegistry_->RegisterMesh(modelName, false, 0);
+
+	// instancingデータ作成
+	instancedMeshBuffer_->Create(meshRegistry_->GetMeshes().at(modelName).get(),
+		modelName, kMaxInstanceNum);
+}
+
+void GPUObjectSystem::CreateSkinnedMesh(const std::string& modelName) {
+
+	// 最大instance数
+	const uint32_t kMaxInstanceNum = 512;
+
+	// meshの作成、登録
+	meshRegistry_->RegisterMesh(modelName, true, kMaxInstanceNum);
 
 	// instancingデータ作成
 	instancedMeshBuffer_->Create(meshRegistry_->GetMeshes().at(modelName).get(),
@@ -147,20 +160,20 @@ void GPUObjectSystem::SwapToPopbackEffect(uint32_t entityId) {
 }
 
 void GPUObjectSystem::Update(CameraManager* cameraManager,
-	LightManager* lightManager) {
+	LightManager* lightManager, DxCommand* dxCommand) {
 
 	// buffer更新
 	// scene
 	sceneConstBuffer_->Update(cameraManager, lightManager);
 	// 3D
-	UpdateObject3D();
+	UpdateObject3D(dxCommand);
 	// effect
 	UpdateEffect();
 	// 2D
 	UpdateObject2D();
 }
 
-void GPUObjectSystem::UpdateObject3D() {
+void GPUObjectSystem::UpdateObject3D(DxCommand* dxCommand) {
 
 	auto componentManager = ComponentManager::GetInstance();
 
@@ -182,13 +195,14 @@ void GPUObjectSystem::UpdateObject3D() {
 		}
 
 		const Transform3DComponent* transform = componentManager->GetComponent<Transform3DComponent>(id);
+		const AnimationComponent* animation = componentManager->GetComponent<AnimationComponent>(id);
 
 		// bufferに送るデータをセット
 		instancedMeshBuffer_->SetUploadData(transform->GetInstancingName(),
-			transform->matrix, materials);
+			transform->matrix, materials, *animation);
 	}
 
-	instancedMeshBuffer_->Update();
+	instancedMeshBuffer_->Update(dxCommand);
 }
 
 void GPUObjectSystem::UpdateEffect() {

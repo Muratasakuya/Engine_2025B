@@ -20,7 +20,8 @@ void MeshRegistry::Init(ID3D12Device* device, Asset* asset) {
 	asset_ = asset;
 }
 
-void MeshRegistry::RegisterMesh(const std::string& modelName) {
+void MeshRegistry::RegisterMesh(const std::string& modelName,
+	bool isSkinned, uint32_t numInstance) {
 
 	// 作成済みの場合生成しない
 	if (Algorithm::Find(meshes_, modelName)) {
@@ -31,8 +32,15 @@ void MeshRegistry::RegisterMesh(const std::string& modelName) {
 	const ResourceMesh resourceMesh = CreateMeshlet(modelName);
 
 	// meshの生成
-	meshes_[modelName] = std::make_unique<Mesh>();
-	meshes_[modelName]->Init(device_, resourceMesh);
+	if (isSkinned) {
+
+		meshes_[modelName] = std::make_unique<SkinnedMesh>();
+	} else {
+
+		meshes_[modelName] = std::make_unique<StaticMesh>();
+	}
+	meshes_[modelName]->Init(device_, resourceMesh,
+		isSkinned, numInstance);
 }
 
 ResourceMesh MeshRegistry::CreateMeshlet(const std::string& modelName) {

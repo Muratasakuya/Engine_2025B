@@ -13,6 +13,13 @@
 //	MeshletStructures
 //============================================================================
 
+struct MeshInstanceData {
+
+	uint32_t meshletCount;
+	uint32_t numVertices;
+	int32_t isSkinned;
+};
+
 // mesh頂点情報
 struct MeshVertex {
 

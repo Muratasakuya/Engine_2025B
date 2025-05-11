@@ -47,11 +47,13 @@ public:
 	void Init(ID3D12Device* device, Asset* asset);
 
 	void Update(class CameraManager* cameraManager,
-		class LightManager* lightManager);
+		class LightManager* lightManager,
+		class DxCommand* dxCommand);
 
 	//--------- object3D -----------------------------------------------------
 
-	void CreateMesh(const std::string& modelName);
+	void CreateStaticMesh(const std::string& modelName);
+	void CreateSkinnedMesh(const std::string& modelName);
 
 	//---------- effect ------------------------------------------------------
 
@@ -76,8 +78,8 @@ public:
 	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return instancedMeshBuffer_->GetInstancingData(); }
 
 	// meshの取得
-	Mesh* GetMesh(const std::string& name) const { return meshRegistry_->GetMesh(name); }
-	const std::unordered_map<std::string, std::unique_ptr<Mesh>>& GetMeshes() const { return meshRegistry_->GetMeshes(); }
+	IMesh* GetMesh(const std::string& name) const { return meshRegistry_->GetMesh(name); }
+	const std::unordered_map<std::string, std::unique_ptr<IMesh>>& GetMeshes() const { return meshRegistry_->GetMeshes(); }
 
 	// effect
 	const std::vector<EffectForGPU>& GetEffectBuffers() const { return effectBuffers_; }
@@ -123,7 +125,7 @@ private:
 
 	// bufferの更新処理
 	// 3D
-	void UpdateObject3D();
+	void UpdateObject3D(class DxCommand* dxCommand);
 	// effect
 	void UpdateEffect();
 	// 2D
