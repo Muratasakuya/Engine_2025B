@@ -106,6 +106,11 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 
 			for (const auto& vertexWeight : jointWeight.second.vertexWeights) {
 
+				// 範囲外アクセス防止
+				if (vertexWeight.vertexIndex >= influence.size()) {
+					continue;
+				}
+
 				// 該当のvertexIndexのinfluence情報を参照しておく
 				auto& currentInfluence = influence[vertexWeight.vertexIndex];
 				for (uint32_t index = 0; index < kNumMaxInfluence; ++index) {

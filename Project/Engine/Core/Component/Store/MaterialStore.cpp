@@ -42,6 +42,16 @@ void MaterialStore::AddComponent(uint32_t entityId, std::any args) {
 				asset->GetTextureGPUIndex(modelData.meshes[meshIndex].normalMapTexture.value());
 			components_.back()[meshIndex]->material.enableNormalMap = true;
 		}
+
+		// baseColorがあれば色を設定する
+		if (modelData.meshes[meshIndex].baseColor.has_value()) {
+
+			components_.back()[meshIndex]->material.color = modelData.meshes[meshIndex].baseColor.value();
+			components_.back()[meshIndex]->material.emissionColor = Vector3(
+				modelData.meshes[meshIndex].baseColor.value().r,
+				modelData.meshes[meshIndex].baseColor.value().g,
+				modelData.meshes[meshIndex].baseColor.value().b);
+		}
 	}
 
 	// index設定
@@ -90,13 +100,13 @@ MaterialComponent* MaterialStore::GetComponent(uint32_t entityId) {
 std::vector<MaterialComponent*> MaterialStore::GetComponentList(uint32_t entityId) {
 
 	size_t index = entityToIndex_[entityId];
-	
+
 	// 各ptrをgetして渡す
 	std::vector<MaterialComponent*> materials(components_[index].size());
 	for (uint32_t meshIndex = 0; meshIndex < materials.size(); ++meshIndex) {
 		materials[meshIndex] = components_[index][meshIndex].get();
 	}
-	
+
 	return materials;
 }
 

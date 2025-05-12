@@ -43,6 +43,7 @@ struct MeshModelData {
 	std::vector<uint32_t> indices;
 	std::optional<std::string> textureName;
 	std::optional<std::string> normalMapTexture;
+	std::optional<Color> baseColor;
 };
 
 struct Node {

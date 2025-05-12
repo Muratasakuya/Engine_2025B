@@ -175,8 +175,6 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 
 		// 法線がないMeshは今回は非対応
 		assert(mesh->HasNormals());
-		// TexcoordがないMeshは今回は非対応
-		assert(mesh->HasTextureCoords(0));
 
 		MeshModelData meshModelData;
 		// 最初に頂点数分のメモリを確保しておく
@@ -187,7 +185,13 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 
 			aiVector3D pos = mesh->mVertices[vertexIndex];
 			aiVector3D normal = mesh->mNormals[vertexIndex];
-			aiVector3D texcoord = mesh->mTextureCoords[0][vertexIndex];
+			aiVector3D texcoord{};
+
+			// texcoordがある場合のみ設定
+			if (mesh->HasTextureCoords(0)) {
+
+				texcoord = mesh->mTextureCoords[0][vertexIndex];
+			}
 
 			// 座標系の変換
 			meshModelData.vertices[vertexIndex].pos = { -pos.x,pos.y,pos.z,1.0f };
@@ -254,6 +258,7 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 			aiString normalMapName;
 
 			if (material->GetTexture(aiTextureType_NORMALS, 0, &normalMapName) != AI_SUCCESS) {
+
 				material->GetTexture(aiTextureType_HEIGHT, 0, &normalMapName);
 			}
 
@@ -264,6 +269,12 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 			meshModelData.normalMapTexture = normalIdentifier;
 
 			textureManager_->Load(meshModelData.normalMapTexture.value());
+		}
+		// BaseColor
+		aiColor4D baseColor;
+		if (AI_SUCCESS == material->Get(AI_MATKEY_COLOR_DIFFUSE, baseColor)) {
+
+			meshModelData.baseColor = { baseColor.r, baseColor.g, baseColor.b, baseColor.a };
 		}
 
 		modelData.meshes.push_back(meshModelData);

@@ -59,10 +59,22 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const aiScene* sce
 		for (uint32_t i = 0; i < sourceMesh->mNumVertices; ++i) {
 
 			aiVector3D* pos = &(sourceMesh->mVertices[i]);
-			aiVector3D* texcoord = &(sourceMesh->mTextureCoords[0][i]);
 			aiVector3D* normal = &(sourceMesh->mNormals[i]);
-			aiVector3D* tangent = &(sourceMesh->mTangents[i]);
-			aiVector3D* biNormal = &(sourceMesh->mBitangents[i]);
+
+			aiVector3D* texcoord = &zeroVector;
+			aiVector3D* tangent = &zeroVector;
+			aiVector3D* biNormal = &zeroVector;
+			// texcoordがある場合のみ設定
+			if (sourceMesh->HasTextureCoords(0)) {
+
+				texcoord = &sourceMesh->mTextureCoords[0][i];
+			}
+			// tangent、biNormalがある場合のみ設定
+			if (sourceMesh->HasTangentsAndBitangents()) {
+
+				tangent = &(sourceMesh->mTangents[i]);
+				biNormal = &(sourceMesh->mBitangents[i]);
+			}
 
 			// 頂点情報を格納
 			destinationMesh.vertices[meshIndex][i] = MeshVertex(
