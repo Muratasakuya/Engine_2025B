@@ -11,6 +11,7 @@ EngineInformation:     load texture: effectCircle
 EngineInformation:     load texture: sirialHitEffect
 EngineInformation:     load texture: sirialLightning_0
 EngineInformation:     load texture: sirialLightning_1
+EngineInformation:     load texture: rostock_laage_airport_4k
 EngineInformation:     load texture: stageField
 EngineInformation:     load texture: stageFieldNormalMap
 EngineInformation:     load model: stageField

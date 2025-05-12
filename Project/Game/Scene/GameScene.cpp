@@ -87,6 +87,9 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadTexture("sirialLightning_0");
 	asset->LoadTexture("sirialLightning_1");
 
+	// cubeMap、.dds
+	asset->LoadTexture("rostock_laage_airport_4k");
+
 	// environment
 	asset->LoadModel("stageField");
 

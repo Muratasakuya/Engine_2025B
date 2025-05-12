@@ -44,7 +44,9 @@ void TextureManager::Load(const std::string& textureName) {
 			entry.path().stem().string() == textureName) {
 
 			std::string extension = entry.path().extension().string();
-			if (extension == ".png" || extension == ".jpg") {
+			if (extension == ".png" ||
+				extension == ".jpg" ||
+				extension == ".dds") {
 
 				filePath = entry.path();
 				found = true;
@@ -71,12 +73,25 @@ void TextureManager::Load(const std::string& textureName) {
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
 	srvDesc.Format = texture.metadata.format;
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = static_cast<UINT>(texture.metadata.mipLevels);
+	// cubeMap用かチェックして分岐
+	if (texture.metadata.IsCubemap()) {
+
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+		srvDesc.TextureCube.MostDetailedMip = 0;
+		srvDesc.TextureCube.MipLevels = UINT_MAX;
+		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	} else {
+
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srvDesc.Texture2D.MipLevels = static_cast<UINT>(texture.metadata.mipLevels);
+	}
+
+	// srv作成
 	srvDescriptor_->CreateSRV(texture.srvIndex, texture.resource.Get(), srvDesc);
 	texture.gpuHandle = srvDescriptor_->GetGPUHandle(texture.srvIndex);
 
 	std::wstring resourceName = std::wstring(identifier.begin(), identifier.end());
+	// debug用にGPUResourceにtextureの名前を設定する
 	texture.resource->SetName(resourceName.c_str());
 
 	isCacheValid_ = false;
@@ -89,15 +104,35 @@ DirectX::ScratchImage TextureManager::GenerateMipMaps(const std::string& filePat
 	// テクスチャファイルを呼んでプログラムを扱えるようにする
 	DirectX::ScratchImage image{};
 	std::wstring filePathW = ConvertString(filePath);
-	HRESULT hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB | DirectX::WIC_FLAGS_DEFAULT_SRGB, nullptr, image);
-	assert(SUCCEEDED(hr));
 
-	// ミップマップの作成 → 元画像よりも小さなテクスチャ群
+	HRESULT hr = S_OK;
+	// dds拡張子かどうかで分岐させる
+	if (filePathW.ends_with(L".dds")) {
+
+		hr = DirectX::LoadFromDDSFile(filePathW.c_str(), DirectX::DDS_FLAGS_NONE, nullptr, image);
+		assert(SUCCEEDED(hr));
+	} else {
+
+		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB | DirectX::WIC_FLAGS_DEFAULT_SRGB, nullptr, image);
+		assert(SUCCEEDED(hr));
+
+		
+	}
+
 	DirectX::ScratchImage mipImages{};
-	hr = DirectX::GenerateMipMaps(
-		image.GetImages(), image.GetImageCount(), image.GetMetadata(),
-		DirectX::TEX_FILTER_SRGB, 0, mipImages);
-	assert(SUCCEEDED(hr));
+	// 圧縮フォーマットかどうかチェックして分岐させる
+	if (DirectX::IsCompressed(image.GetMetadata().format)) {
+
+		// 圧縮フォーマットだったらそのまま使用する
+		mipImages = std::move(image);
+	} else {
+
+		// ミップマップの作成 → 元画像よりも小さなテクスチャ群
+		hr = DirectX::GenerateMipMaps(
+			image.GetImages(), image.GetImageCount(), image.GetMetadata(),
+			DirectX::TEX_FILTER_SRGB, 4, mipImages);
+		assert(SUCCEEDED(hr));
+	}
 
 	// ミップマップ付きのデータを返す
 	return mipImages;
