@@ -99,7 +99,7 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadModel("walk");
 	asset->LoadAnimation("walk", "walk");
 
-	const uint32_t kNumObject = 16;
+	const uint32_t kNumObject = 4;
 	const float offset = 2.0f;
 	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
 
