@@ -4,7 +4,26 @@
 //	Skybox classMethods
 //============================================================================
 
-void Skybox::CreateVertexBuffer(ID3D12Device* device) {
+Skybox* Skybox::instance_ = nullptr;
+
+Skybox* Skybox::GetInstance() {
+
+	if (instance_ == nullptr) {
+		instance_ = new Skybox();
+	}
+	return instance_;
+}
+
+void Skybox::Finalize() {
+
+	if (instance_ != nullptr) {
+
+		delete instance_;
+		instance_ = nullptr;
+	}
+}
+
+void Skybox::CreateVertexBuffer() {
 
 	// 頂点データ設定
 	std::vector<Vector4> vertices = {
@@ -62,19 +81,84 @@ void Skybox::CreateVertexBuffer(ID3D12Device* device) {
 		12, 14, 13, 13, 14, 15,
 
 		// 前面
-		16, 18, 17, 17, 18, 19,
+		16, 17, 18, 18, 17, 19,
 
 		// 背面
-		20, 22, 21, 21, 22, 23
+		20, 21, 22, 22, 21, 23
 	};
 
 	// buffer作成
-	vertexBuffer_.CreateVertexBuffer(device,
+	vertexBuffer_.CreateVertexBuffer(device_,
 		static_cast<UINT>(vertices.size()));
-	indexBuffer_.CreateIndexBuffer(device,
+	indexBuffer_.CreateIndexBuffer(device_,
 		static_cast<UINT>(indices.size()));
+	// index数設定
+	indexCount_ = static_cast<UINT>(indices.size());
 
 	// これ以上頂点の位置は変わらないのでbuffer転送
 	vertexBuffer_.TransferVectorData(vertices);
 	indexBuffer_.TransferVectorData(indices);
+}
+
+void Skybox::CreateCBuffer(uint32_t textureIndex) {
+
+	// cBufferに渡す値の初期化
+	transform_.Init();
+	// 初期化値で320.0fにスケーリング
+	const float scale = 320.0f;
+	transform_.scale = Vector3::AnyInit(scale);
+	// Y座標は64.0f
+	transform_.translation.y = 64.0f;
+	transform_.UpdateMatrix();
+
+	material_.color = Color::White();
+	material_.textureIndex = textureIndex;
+
+	// buffer作成
+	matrixBuffer_.CreateConstBuffer(device_);
+	materialBuffer_.CreateConstBuffer(device_);
+
+	// 1度bufferを転送する
+	matrixBuffer_.TransferData(transform_.matrix.world);
+	materialBuffer_.TransferData(material_);
+}
+
+void Skybox::Create(uint32_t textureIndex) {
+
+	// 頂点buffer作成
+	CreateVertexBuffer();
+
+	// cBuffer作成
+	CreateCBuffer(textureIndex);
+
+	isCreated_ = true;
+}
+
+void Skybox::Update() {
+
+	if (!isCreated_) {
+		return;
+	}
+
+	// 行列更新
+	transform_.UpdateMatrix();
+
+	// buffer転送
+	matrixBuffer_.TransferData(transform_.matrix.world);
+	materialBuffer_.TransferData(material_);
+}
+
+void Skybox::ImGui() {
+
+	if (!isCreated_) {
+		return;
+	}
+
+	ImGui::SeparatorText("Transform");
+
+	transform_.ImGui(itemWidth_);
+
+	ImGui::SeparatorText("Color");
+
+	ImGui::ColorEdit4("color", &material_.color.r);
 }

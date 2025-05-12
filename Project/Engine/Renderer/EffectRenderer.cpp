@@ -98,7 +98,7 @@ void EffectRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSyste
 		commandList->SetPipelineState(meshShaderPipeline_->GetGraphicsPipeline(blendMode));
 
 		// 共通のbuffer設定
-		gpuObjectSystem->GetSceneBuffer()->SetViewProCommand(debugEnable, commandList);
+		gpuObjectSystem->GetSceneBuffer()->SetViewProCommand(debugEnable, commandList, 5);
 		// allTexture
 		commandList->SetGraphicsRootDescriptorTable(6,
 			srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());

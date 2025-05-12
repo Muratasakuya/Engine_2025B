@@ -9,6 +9,7 @@
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
 #include <Engine/Scene/Camera/CameraManager.h>
+#include <Engine/Core/Graphics/Skybox/Skybox.h>
 
 //============================================================================
 //	MeshRenderer classMethods
@@ -29,6 +30,12 @@ void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
 
 	meshShaderZPassPipeline_ = std::make_unique<PipelineState>();
 	meshShaderZPassPipeline_->Create("MeshDepth.json", device, srvDescriptor, shaderCompiler);
+
+	// skybox用pipeline作成
+	skyboxPipeline_ = std::make_unique<PipelineState>();
+	skyboxPipeline_->Create("Skybox.json", device, srvDescriptor, shaderCompiler);
+	// skyboxにdeviceを設定
+	Skybox::GetInstance()->SetDevice(device);
 }
 
 void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
@@ -144,4 +151,33 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 #endif
 		}
 	}
+
+	// 作成されていなかったら早期リターン
+	Skybox* skybox = Skybox::GetInstance();
+	if (!skybox->IsCreated()) {
+		return;
+	}
+
+	// skybox描画
+	// pipeline設定
+	commandList->SetGraphicsRootSignature(skyboxPipeline_->GetRootSignature());
+	commandList->SetPipelineState(skyboxPipeline_->GetGraphicsPipeline());
+
+	// buffer設定
+	// vertex
+	commandList->IASetVertexBuffers(0, 1, &skybox->GetVertexBuffer().GetVertexBuffer());
+	commandList->IASetIndexBuffer(&skybox->GetIndexBuffer().GetIndexBuffer());
+	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	// matrix
+	commandList->SetGraphicsRootConstantBufferView(0, skybox->GetMatrixBuffer().GetResource()->GetGPUVirtualAddress());
+	// viewPro
+	gpuObjectSystem->GetSceneBuffer()->SetViewProCommand(debugEnable, commandList, 1);
+	// texture
+	commandList->SetGraphicsRootDescriptorTable(2,
+		srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+	// material
+	commandList->SetGraphicsRootConstantBufferView(3, skybox->GetMaterialBuffer().GetResource()->GetGPUVirtualAddress());
+
+	// 描画
+	commandList->DrawIndexedInstanced(skybox->GetIndexCount(), 1, 0, 0, 0);
 }

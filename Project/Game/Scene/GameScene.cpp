@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Component/ComponentHelper.h>
+#include <Engine/Core/Graphics/Skybox/Skybox.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
@@ -33,9 +34,6 @@ void GameScene::Init(
 
 	postProcessSystem_ = postProcessSystem;
 
-	postProcessSystem_->Create({ PostProcess::Bloom });
-	postProcessSystem_->AddProcess(PostProcess::Bloom);
-
 	//========================================================================
 	//	sceneObject
 	//========================================================================
@@ -56,14 +54,17 @@ void GameScene::Init(
 	//	initObject
 	//========================================================================
 
-	object3DEditor_ = std::make_unique<Object3DEditor>();
-	object3DEditor_->Init(asset);
+	//object3DEditor_ = std::make_unique<Object3DEditor>();
+	//object3DEditor_->Init(asset);
 
 	player_ = std::make_unique<Player>();
 	player_->Init(followCamera_.get());
 
 	// 追従先を設定する: player
 	followCamera_->SetTarget(player_->GetTransform());
+
+	// skybox
+	Skybox::GetInstance()->Create(asset->GetTextureGPUIndex("docklands_01_2k"));
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -71,6 +72,9 @@ void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	followCamera_->Update();
 
 	player_->Update();
+
+	// grid描画
+	LineRenderer::GetInstance()->DrawGrid(32, 128.0f, Color::White());
 }
 
 void GameScene::Load(Asset* asset) {
@@ -88,7 +92,7 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadTexture("sirialLightning_1");
 
 	// cubeMap、.dds
-	asset->LoadTexture("rostock_laage_airport_4k");
+	asset->LoadTexture("docklands_01_2k");
 
 	// environment
 	asset->LoadModel("stageField");

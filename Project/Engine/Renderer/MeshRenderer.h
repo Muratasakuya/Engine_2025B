@@ -45,4 +45,6 @@ private:
 
 	std::unique_ptr<PipelineState> meshShaderPipeline_;
 	std::unique_ptr<PipelineState> meshShaderZPassPipeline_;
+
+	std::unique_ptr<PipelineState> skyboxPipeline_;
 };

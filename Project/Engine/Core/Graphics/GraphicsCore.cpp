@@ -8,6 +8,7 @@
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
+#include <Engine/Core/Graphics/Skybox/Skybox.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -177,7 +178,7 @@ void GraphicsCore::InitRenderer(Asset* asset) {
 
 	// skinning用pipeline作成
 	skinningPipeline_ = std::make_unique<PipelineState>();
-	skinningPipeline_->Create("skinning.json",
+	skinningPipeline_->Create("Skinning.json",
 		dxDevice_->Get(), srvDescriptor_.get(), dxShaderComplier_.get());
 
 	// mesh描画初期化
@@ -218,6 +219,8 @@ void GraphicsCore::Finalize(HWND hwnd) {
 	meshRenderer_.reset();
 	effectRenderer_.reset();
 	spriteRenderer_.reset();
+
+	Skybox::GetInstance()->Finalize();
 }
 
 //============================================================================
@@ -236,6 +239,9 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
 	gpuObjectSystem_->Update(cameraManager,
 		lightManager, dxCommand_.get());
+
+	// skybox更新
+	Skybox::GetInstance()->Update();
 
 	// zPass
 	RenderZPass();

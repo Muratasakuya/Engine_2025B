@@ -115,8 +115,6 @@ DirectX::ScratchImage TextureManager::GenerateMipMaps(const std::string& filePat
 
 		hr = DirectX::LoadFromWICFile(filePathW.c_str(), DirectX::WIC_FLAGS_FORCE_SRGB | DirectX::WIC_FLAGS_DEFAULT_SRGB, nullptr, image);
 		assert(SUCCEEDED(hr));
-
-		
 	}
 
 	DirectX::ScratchImage mipImages{};

@@ -684,10 +684,13 @@
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\CopyTexture.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.VS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />
     <None Include="Assets\Engine\Shaders\MS\StandardMSFunction.hlsli" />
     <None Include="Assets\Engine\Shaders\MS\EffectMSFunction.hlsli" />
+    <None Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.hlsli" />
   </ItemGroup>
 </Project>
