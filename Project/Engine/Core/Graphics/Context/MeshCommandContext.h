@@ -25,7 +25,7 @@ public:
 
 	// instancing
 	void DispatchMesh(ID3D12GraphicsCommandList6* commandList,
-		UINT instanceCount, uint32_t meshIndex, class Mesh* mesh);
+		UINT instanceCount, uint32_t meshIndex, class IMesh* mesh);
 	// instancing処理なし
 	void DispatchMesh(ID3D12GraphicsCommandList6* commandList, class PrimitiveMesh* mesh);
 };

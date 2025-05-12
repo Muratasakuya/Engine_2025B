@@ -13,6 +13,13 @@
 //	MeshletStructures
 //============================================================================
 
+struct MeshInstanceData {
+
+	uint32_t meshletCount;
+	uint32_t numVertices;
+	int32_t isSkinned;
+};
+
 // mesh頂点情報
 struct MeshVertex {
 
@@ -60,6 +67,8 @@ struct ResourceMesh {
 	std::vector<std::vector<ResourceMeshlet>> meshlets;
 	std::vector<std::vector<uint32_t>> uniqueVertexIndices;
 	std::vector<std::vector<ResourcePrimitiveIndex>> primitiveIndices;
+
+	std::vector<std::vector<uint32_t>> remapTables;
 
 	// operator
 	ResourceMesh& operator=(const ResourceMesh& other) {

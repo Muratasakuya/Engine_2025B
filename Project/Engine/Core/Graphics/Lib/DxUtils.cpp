@@ -43,7 +43,40 @@ void DxUtils::CreateBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>&
 	assert(SUCCEEDED(hr));
 }
 
+void DxUtils::CreateUavBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, size_t sizeInBytes) {
+
+	HRESULT hr;
+
+	// 頂点リソース用のヒープの設定
+	D3D12_HEAP_PROPERTIES uploadHeapProperties{};
+	uploadHeapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+	// 頂点リソースの設定
+	D3D12_RESOURCE_DESC vertexResourceDesc{};
+	// バッファリソース。テクスチャの場合はまた別の設定をする
+	vertexResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+	// リソースのサイズ
+	vertexResourceDesc.Width = sizeInBytes;
+	// バッファの場合はこれらは1にする決まり
+	vertexResourceDesc.Height = 1;
+	vertexResourceDesc.DepthOrArraySize = 1;
+	vertexResourceDesc.MipLevels = 1;
+	vertexResourceDesc.SampleDesc.Count = 1;
+	// バッファの場合はこれにする決まり
+	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+	vertexResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+	// 実際に頂点リソースを作る
+	hr = device->CreateCommittedResource(
+		&uploadHeapProperties, D3D12_HEAP_FLAG_NONE, &vertexResourceDesc,
+		D3D12_RESOURCE_STATE_COMMON, nullptr, IID_PPV_ARGS(&resource));
+	assert(SUCCEEDED(hr));
+}
+
 bool DxUtils::CanAllocateIndex(uint32_t useIndex, uint32_t kMaxCount) {
 	// FALSE: ASSERT
 	return useIndex < kMaxCount;
+}
+
+UINT DxUtils::RoundUp(UINT round, UINT thread) {
+
+	return (round + thread - 1) / thread;
 }

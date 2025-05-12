@@ -52,14 +52,13 @@ public:
 
 	const SkinCluster& GetSkinClusterData(const std::string& animationName) const;
 
-	void SkeletonUpdate(const std::string& animationName);
-	void ApplyAnimation(const std::string& animationName, float animationTime);
-	void SkinClusterUpdate(const std::string& animationName);
+	void ApplyAnimation(Skeleton& skeleton, const AnimationData& animationData, float animationTime);
+	void SkeletonUpdate(Skeleton& skeleton);
+	void SkinClusterUpdate(SkinCluster& skinCluster, const Skeleton& skeleton);
 
-	void BlendAnimation(
-		const std::string& oldAnimName, float oldAnimTime,
-		const std::string& nextAnimName, float nextAnimTime,
-		float alpha);
+	void BlendAnimation(Skeleton& skeleton,
+		const AnimationData& oldAnimationData, float oldAnimTime,
+		const AnimationData& nextAnimationData, float nextAnimTime, float alpha);
 private:
 	//========================================================================
 	//	private Methods

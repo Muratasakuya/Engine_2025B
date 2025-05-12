@@ -3,11 +3,16 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/AssetStructure.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Core/Component/TransformComponent.h>
 #include <Engine/Core/Component/MaterialComponent.h>
+#include <Engine/Core/Component/AnimationComponent.h>
 #include <Engine/Core/Component/Base/IComponent.h>
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
+
+// front
+class Asset;
 
 //============================================================================
 //	structure
@@ -19,13 +24,26 @@ struct MeshInstancingData {
 	uint32_t maxInstance;
 	uint32_t numInstance;
 
+	// staticかskinnedかのフラグ
+	bool isSkinned;
+
 	// buffer更新用のデータ
 	std::vector<TransformationMatrix> matrixUploadData;
 	std::vector<std::vector<Material>> materialUploadData;
+	// skinnedMeshのbuffer更新用のデータ
+	std::vector<std::vector<WellForGPU>> wellUploadData;
 
 	// buffer
 	DxConstBuffer<TransformationMatrix> matrix;
 	std::vector<DxConstBuffer<Material>> materials;
+	// skinnedMesh専用buffer
+	std::vector<DxConstBuffer<WellForGPU>> wells;
+	std::vector<DxConstBuffer<VertexInfluence>> influences;
+	std::vector<DxConstBuffer<SkinningInformation>> skinningInformations;
+	// mesh情報
+	IMesh* skinnedMesh;
+	std::vector<UINT> vertexSizes;
+	UINT boneSize;
 
 	// meshの数
 	size_t meshNum;
@@ -43,18 +61,19 @@ public:
 	InstancedMeshBuffer() = default;
 	~InstancedMeshBuffer() = default;
 
-	void Create(class Mesh* mesh, const std::string& name, uint32_t numInstance);
+	void Init(ID3D12Device* device, Asset* asset);
 
-	void Update();
+	void Create(class IMesh* mesh, const std::string& name, uint32_t numInstance);
+
+	void Update(class DxCommand* dxCommand);
 
 	void Reset();
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetDevice(ID3D12Device* device);
-
 	void SetUploadData(const std::string& name, const TransformationMatrix& matrix,
-		const std::vector<MaterialComponent>& materials);
+		const std::vector<MaterialComponent>& materials,
+		const AnimationComponent& animation);
 
 	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return meshGroups_; }
 private:
@@ -65,10 +84,12 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	ID3D12Device* device_;
+	Asset* asset_;
 
 	std::unordered_map<std::string, MeshInstancingData> meshGroups_;
 
 	//--------- functions ----------------------------------------------------
 
 	void CreateBuffers(const std::string& name);
+	void CreateSkinnedMeshBuffers(const std::string& name);
 };

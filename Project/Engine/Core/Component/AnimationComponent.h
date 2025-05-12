@@ -26,9 +26,14 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetAnimationData(const std::string& animationName);
+
+	// animation再生
 	void SetPlayAnimation(const std::string& animationName, bool roopAnimation);
 
 	bool IsTransition() const { return inTransition_; }
+
+	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
 private:
 	//========================================================================
 	//	private Methods
@@ -38,9 +43,10 @@ private:
 
 	Asset* asset_;
 
+	// animationDataはstringで名前ごとに保存して使うようにする
 	std::unordered_map<std::string, AnimationData> animationData_;
-	std::unordered_map<std::string, Skeleton> skeleton_;
-	std::unordered_map<std::string, SkinCluster> skinCluster_;
+	Skeleton skeleton_;
+	SkinCluster skinCluster_;
 
 	std::string currentAnimationName_; // 現在のAnimationの名前
 	float currentAnimationTimer_;      // 現在のAnimation経過時間

@@ -31,14 +31,13 @@ public:
 
 	void Load(const std::string& animationName, const std::string& modelName);
 
-	void SkeletonUpdate(const std::string& animationName);
-	void ApplyAnimation(const std::string& animationName, float animationTime);
-	void SkinClusterUpdate(const std::string& animationName);
+	void ApplyAnimation(Skeleton& skeleton, const AnimationData& animationData, float animationTime);
+	void SkeletonUpdate(Skeleton& skeleton);
+	void SkinClusterUpdate(SkinCluster& skinCluster, const Skeleton& skeleton);
 
-	void BlendAnimation(
-		const std::string& oldAnimName, float oldAnimTime,
-		const std::string& nextAnimName, float nextAnimTime,
-		float alpha);
+	void BlendAnimation(Skeleton& skeleton,
+		const AnimationData& oldAnimationData, float oldAnimTime,
+		const AnimationData& nextAnimationData, float nextAnimTime, float alpha);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -68,7 +67,7 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
-	Skeleton CreateSkeleton(const Node& rootNode, const std::string& animationName);
+	Skeleton CreateSkeleton(const Node& rootNode);
 	int32_t CreateJoint(const Node& node, const std::optional<int32_t> parent, std::vector<Joint>& joints);
 	SkinCluster CreateSkinCluster(const std::string& modelName, const std::string& animationName);
 };

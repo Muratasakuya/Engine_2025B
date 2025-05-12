@@ -78,8 +78,6 @@ uint32_t ComponentManager::CreateObject3D(
 	const std::string& modelName, const std::string& objectName,
 	const std::optional<std::string>& groupName, const std::optional<std::string>& animationName) {
 
-	animationName;
-
 	// entityID発行
 	uint32_t id = entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)]->CreateEntity(objectName, groupName);
 
@@ -87,10 +85,16 @@ uint32_t ComponentManager::CreateObject3D(
 	AddComponent<Transform3DComponent>(id, modelName);
 	AddComponent<MaterialComponent>(id, asset_->GetModelData(modelName), asset_);
 	if (animationName.has_value()) {
+
 		AddComponent<AnimationComponent>(id, animationName, asset_);
+
+		// buffer作成
+		gpuObjectSystem_->CreateSkinnedMesh(modelName);
+	} else {
+
+		// buffer作成
+		gpuObjectSystem_->CreateStaticMesh(modelName);
 	}
-	// buffer作成
-	gpuObjectSystem_->CreateMesh(modelName);
 
 	return id;
 }
@@ -135,6 +139,7 @@ void ComponentManager::RemoveObject3D(uint32_t entityId) {
 	// object3Dで使用していたcomponentの削除
 	RemoveComponent<Transform3DComponent>(entityId);
 	RemoveComponent<MaterialComponent>(entityId);
+	RemoveComponent<AnimationComponent>(entityId);
 }
 
 void ComponentManager::RemoveEffect(uint32_t entityId) {

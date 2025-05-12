@@ -74,19 +74,21 @@ const SkinCluster& Asset::GetSkinClusterData(const std::string& animationName) c
 	return animationManager_->GetSkinClusterData(animationName);
 }
 
-void Asset::SkeletonUpdate(const std::string& animationName) {
-	animationManager_->SkeletonUpdate(animationName);
+void Asset::ApplyAnimation(Skeleton& skeleton, const AnimationData& animationData, float animationTime) {
+	animationManager_->ApplyAnimation(skeleton, animationData, animationTime);
 }
 
-void Asset::ApplyAnimation(const std::string& animationName, float animationTime) {
-	animationManager_->ApplyAnimation(animationName, animationTime);
+void Asset::SkeletonUpdate(Skeleton& skeleton) {
+	animationManager_->SkeletonUpdate(skeleton);
 }
 
-void Asset::SkinClusterUpdate(const std::string& animationName) {
-	animationManager_->SkinClusterUpdate(animationName);
+void Asset::SkinClusterUpdate(SkinCluster& skinCluster, const Skeleton& skeleton) {
+	animationManager_->SkinClusterUpdate(skinCluster, skeleton);
 }
 
-void Asset::BlendAnimation(const std::string& oldAnimName, float oldAnimTime,
-	const std::string& nextAnimName, float nextAnimTime, float alpha) {
-	animationManager_->BlendAnimation(oldAnimName, oldAnimTime, nextAnimName, nextAnimTime, alpha);
+void Asset::BlendAnimation(Skeleton& skeleton,
+	const AnimationData& oldAnimationData, float oldAnimTime,
+	const AnimationData& nextAnimationData, float nextAnimTime, float alpha) {
+	animationManager_->BlendAnimation(skeleton, oldAnimationData,
+		oldAnimTime, nextAnimationData, nextAnimTime, alpha);
 }
