@@ -94,6 +94,7 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 	const auto& meshes = gpuObjectSystem->GetMeshes();
 	auto instancingBuffers = gpuObjectSystem->GetInstancingData();
 	MeshCommandContext commandContext{};
+	Skybox* skybox = Skybox::GetInstance();
 
 	if (meshes.empty()) {
 		return;
@@ -112,6 +113,14 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 	// shadowMap
 	commandList->SetGraphicsRootDescriptorTable(10,
 		shadowMap_->GetGPUHandle());
+
+	// skyboxがあるときのみ、とりあえず今は
+	if (skybox->IsCreated()) {
+
+		// environmentTexture
+		commandList->SetGraphicsRootDescriptorTable(11,
+			srvDescriptor_->GetGPUHandle(skybox->GetTextureIndex()));
+	}
 
 	for (const auto& [name, mesh] : meshes) {
 
@@ -153,7 +162,6 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 	}
 
 	// 作成されていなかったら早期リターン
-	Skybox* skybox = Skybox::GetInstance();
 	if (!skybox->IsCreated()) {
 		return;
 	}

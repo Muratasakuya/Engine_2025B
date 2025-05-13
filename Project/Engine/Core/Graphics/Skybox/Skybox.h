@@ -45,6 +45,7 @@ public:
 
 	bool IsCreated() const { return isCreated_; }
 	uint32_t GetIndexCount() const { return indexCount_; }
+	uint32_t GetTextureIndex() const { return material_.textureIndex; }
 
 	// buffers
 	const DxConstBuffer<Vector4>& GetVertexBuffer() const { return vertexBuffer_; }

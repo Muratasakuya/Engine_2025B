@@ -68,6 +68,8 @@ void Material::Init() {
 	enableLighting = true;
 	enableHalfLambert = true;
 	enableBlinnPhongReflection = false;
+	enableImageBasedLighting = false;
+	environmentCoefficient = 0.25f;
 	shadowRate = 0.25f;
 	phongRefShininess = 1.0f;
 	specularColor = Vector3(1.0f, 1.0f, 1.0f);

@@ -37,6 +37,8 @@ struct Material {
 	int32_t enableLighting;
 	int32_t enableHalfLambert;
 	int32_t enableBlinnPhongReflection;
+	int32_t enableImageBasedLighting;
+	float environmentCoefficient;
 	float shadowRate;
 	float phongRefShininess;
 	Vector3 specularColor;

@@ -73,6 +73,12 @@ void MaterialComponent::ImGui(float itemSize) {
 		ImGui::DragFloat("phongRefShininess", &material.phongRefShininess, 0.01f);
 	}
 
+	ImGui::SliderInt("enableImageBasedLighting", &material.enableImageBasedLighting, 0, 1);
+	if (material.enableImageBasedLighting) {
+
+		ImGui::DragFloat("environmentCoefficient", &material.environmentCoefficient, 0.001f, 0.0f, 4.0f);
+	}
+
 	ImGui::DragFloat("shadowRate", &material.shadowRate, 0.01f, 0.0f, 8.0f);
 	ImGui::PopItemWidth();
 }

@@ -17,6 +17,8 @@ struct Material {
 	int enableLighting;
 	int enableHalfLambert;
 	int enableBlinnPhongReflection;
+	int enableImageBasedLighting;
+	float environmentCoefficient;
 	float shadowRate;
 	float shininess;
 	float3 specularColor;
@@ -49,6 +51,7 @@ StructuredBuffer<Material> gMaterials : register(t0);
 
 Texture2D<float4> gTextures[] : register(t1, space0);
 Texture2D<float3> gShadowTexture : register(t2, space1);
+TextureCube<float4> gEnvironmentTexture : register(t3, space2);
 
 SamplerState gSampler : register(s0);
 SamplerComparisonState gShadowSampler : register(s1);
@@ -114,6 +117,15 @@ float3 CalculateBlinnPhongLighting(uint id, float3 normal, float3 diffuseColor, 
 
 	result += diffusePL + specularPL + diffuseSL + specularSL;
 	return result;
+}
+
+float3 CalculateImageBasedLighting(uint id, float3 normal, float environmentCoefficient, MSOutput input) {
+	
+	float3 cameraToPos = normalize(input.worldPosition - worldPosition);
+	float3 reflectedVector = reflect(cameraToPos, normalize(normal));
+	float4 environmentColor = gEnvironmentTexture.Sample(gSampler, reflectedVector);
+
+	return environmentColor.rgb * environmentCoefficient;
 }
 
 float3 ApplyShadow(uint id, float3 normal, float3 color, MSOutput input) {

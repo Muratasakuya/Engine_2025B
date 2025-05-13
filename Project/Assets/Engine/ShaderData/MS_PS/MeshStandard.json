@@ -19,8 +19,9 @@
         { "RootIndex": 8, "Type": "SRV", "Visibility": "PIXEL", "ShaderRegister": 0 },
         { "RootIndex": 9, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 1, "NumDescriptors": "srvCount","RegisterSpace": 0 } },
         { "RootIndex": 10, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 2, "NumDescriptors": "0","RegisterSpace": 1 } },
-        { "RootIndex": 11, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 0 },
-        { "RootIndex": 12, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 1 }
+        { "RootIndex": 11, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 3, "NumDescriptors": "0","RegisterSpace": 2 } },
+        { "RootIndex": 12, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 0 },
+        { "RootIndex": 13, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 1 }
     ],
     "StaticSampler": [
         { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER", "ShaderRegister": 0 },
