@@ -89,10 +89,7 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 		// buffer作成
 		meshGroup.influences[meshIndex].CreateStructuredBuffer(device_, vertexSize);
 		// 0埋めしてweightを0にしておく
-		std::vector<VertexInfluence> influence(vertexSize);
-		std::generate(influence.begin(), influence.end(), []() {
-			return VertexInfluence{};
-			});
+		std::vector<VertexInfluence> influence(vertexSize, {});
 
 		// ModelDataを解析してInfluenceを埋める
 		for (const auto& jointWeight : asset_->GetModelData(name).skinClusterData) {
@@ -104,7 +101,14 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 				continue;
 			}
 
+			// ジョイントのインデックス
+			const uint32_t jointIndex = it->second;
 			for (const auto& vertexWeight : jointWeight.second.vertexWeights) {
+
+				// 対応しているmeshのみ処理する
+				if (vertexWeight.meshIndex != meshIndex) {
+					continue;
+				}
 
 				// 範囲外アクセス防止
 				if (vertexWeight.vertexIndex >= influence.size()) {
@@ -118,7 +122,7 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 					if (currentInfluence.weights[index] == 0.0f) {
 
 						currentInfluence.weights[index] = vertexWeight.weight;
-						currentInfluence.jointIndices[index] = (*it).second;
+						currentInfluence.jointIndices[index] = jointIndex;
 						break;
 					}
 				}

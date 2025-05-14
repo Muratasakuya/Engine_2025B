@@ -217,8 +217,7 @@ void EffectMaterialComponent::FromJson(const Json& data) {
 
 void swap(EffectMaterialComponent& a, EffectMaterialComponent& b) noexcept {
 
-	using std::swap;
-	swap(a.material, b.material);
-	swap(a.uvTransform, b.uvTransform);
-	swap(a.prevUVTransform_, b.prevUVTransform_);
+	std::swap(a.material, b.material);
+	std::swap(a.uvTransform, b.uvTransform);
+	std::swap(a.prevUVTransform_, b.prevUVTransform_);
 }

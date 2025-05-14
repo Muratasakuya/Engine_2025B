@@ -18,5 +18,5 @@ EngineInformation:     load model: stageField
 EngineInformation:     load model: sirialHitEffectPlane
 EngineInformation:     load model: effectDefaultPlane
 EngineInformation:     load model: sirialLightningEffectPlane
-EngineInformation:     load model: walk
-EngineInformation:     load animation: walk
+EngineInformation:     load model: BrainStem
+EngineInformation:     load animation: BrainStem

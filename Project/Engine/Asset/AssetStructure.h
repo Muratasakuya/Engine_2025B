@@ -95,6 +95,7 @@ struct OutputMeshVertex {
 struct VertexWeightData {
 
 	float weight;
+	uint32_t meshIndex;
 	uint32_t vertexIndex;
 };
 

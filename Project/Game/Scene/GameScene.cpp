@@ -103,22 +103,22 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadModel("sirialLightningEffectPlane");
 
 	// debugAnimation
-	asset->LoadModel("walk");
-	asset->LoadAnimation("walk", "walk");
+	asset->LoadModel("BrainStem");
+	asset->LoadAnimation("BrainStem", "BrainStem");
 
-	const uint32_t kNumObject = 4;
-	const float offset = 2.0f;
+	const uint32_t kNumObject = 8;
+	const float offset = 4.0f;
 	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
 
 	for (uint32_t index = 0; index < kNumObject; ++index) {
 
 		debugAnimationContoroller_.push_back(false);
 		debugId_.push_back(GameObjectHelper::CreateObject3D(
-			"walk", "walk", "Human", "walk"));
+			"BrainStem", "BrainStem", "Human", "BrainStem"));
 		auto transform = Component::GetComponent<Transform3DComponent>(debugId_[index]);
 
 		auto animation = Component::GetComponent<AnimationComponent>(debugId_[index]);
-		animation->SetAnimationData("walk");
+		animation->SetAnimationData("BrainStem");
 
 		uint32_t x = index % gridSize;
 		uint32_t z = index / gridSize;
@@ -139,7 +139,7 @@ void GameScene::ImGui() {
 			debugAnimationContoroller_[i] = debugAnim;
 
 			auto animation = Component::GetComponent<AnimationComponent>(debugId_[i]);
-			animation->SetPlayAnimation("walk", debugAnim);
+			animation->SetPlayAnimation("BrainStem", debugAnim);
 		}
 	}
 }
