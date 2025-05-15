@@ -40,8 +40,9 @@ void AssetEditor::BuildDirectoryTree() {
 			const std::string filename = p.filename().string();
 
 			// Engineフォルダは完全に無視
-			if (entry.is_directory() && filename == "Engine")
+			if (entry.is_directory() && filename == "Engine") {
 				continue;
+			}
 
 			// 子ノード生成
 			auto child = std::make_unique<DirectoryNode>();

@@ -85,6 +85,20 @@ void DebugCamera::ImGui() {
 
 void DebugCamera::Move() {
 
+	ImGui::Begin("Debug", nullptr,
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoMove);
+
+	bool isActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
+
+	ImGui::End();
+
+	// ウィンドウを触っていない時は操作不可
+	if (!isActive) {
+		return;
+	}
+
 	float deltaX = Input::GetInstance()->GetMouseMoveValue().x;
 	float deltaY = Input::GetInstance()->GetMouseMoveValue().y;
 
