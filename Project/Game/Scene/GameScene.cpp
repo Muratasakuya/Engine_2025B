@@ -54,8 +54,8 @@ void GameScene::Init(
 	//	initObject
 	//========================================================================
 
-	//object3DEditor_ = std::make_unique<Object3DEditor>();
-	//object3DEditor_->Init(asset);
+	/*object3DEditor_ = std::make_unique<Object3DEditor>();
+	object3DEditor_->Init(asset);*/
 
 	player_ = std::make_unique<Player>();
 	player_->Init(followCamera_.get());
@@ -106,8 +106,9 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadModel("BrainStem");
 	asset->LoadAnimation("BrainStem", "BrainStem");
 
-	const uint32_t kNumObject = 8;
+	const uint32_t kNumObject = 4;
 	const float offset = 4.0f;
+	const float scale = 2.0f;
 	const uint32_t gridSize = static_cast<uint32_t>(std::sqrt(kNumObject));
 
 	for (uint32_t index = 0; index < kNumObject; ++index) {
@@ -125,6 +126,8 @@ void GameScene::Load(Asset* asset) {
 
 		transform->translation.x = x * offset;
 		transform->translation.z = z * offset;
+
+		transform->scale = Vector3::AnyInit(scale);
 	}
 }
 

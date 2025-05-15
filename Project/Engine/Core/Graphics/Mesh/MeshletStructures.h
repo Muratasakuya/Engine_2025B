@@ -68,7 +68,7 @@ struct ResourceMesh {
 	std::vector<std::vector<uint32_t>> uniqueVertexIndices;
 	std::vector<std::vector<ResourcePrimitiveIndex>> primitiveIndices;
 
-	std::vector<std::vector<uint32_t>> remapTables;
+	bool isSkinned;
 
 	// operator
 	ResourceMesh& operator=(const ResourceMesh& other) {

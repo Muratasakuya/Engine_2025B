@@ -39,7 +39,10 @@ public:
 
 	const DirectX::TexMetadata& GetMetaData(const std::string textureName) const;
 
+	std::vector<std::string> GetTextureHierarchies() const;
 	const std::vector<std::string>& GetTextureKeys() const;
+
+	bool SearchTexture(const std::string& textureName);
 
 	// model
 	const ModelData& GetModelData(const std::string& modelName) const;

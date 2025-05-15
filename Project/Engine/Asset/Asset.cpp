@@ -50,8 +50,16 @@ const DirectX::TexMetadata& Asset::GetMetaData(const std::string textureName) co
 	return textureManager_->GetMetaData(textureName);
 }
 
+std::vector<std::string> Asset::GetTextureHierarchies() const {
+	return textureManager_->GetTextureHierarchies();
+}
+
 const std::vector<std::string>& Asset::GetTextureKeys() const {
 	return textureManager_->GetTextureKeys();
+}
+
+bool Asset::SearchTexture(const std::string& textureName) {
+	return textureManager_->Search(textureName);
 }
 
 const ModelData& Asset::GetModelData(const std::string& modelName) const {

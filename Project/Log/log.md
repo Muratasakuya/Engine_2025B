@@ -20,3 +20,7 @@ EngineInformation:     load model: effectDefaultPlane
 EngineInformation:     load model: sirialLightningEffectPlane
 EngineInformation:     load model: BrainStem
 EngineInformation:     load animation: BrainStem
+EngineInformation:     load texture: folder
+EngineInformation:     load texture: texture
+EngineInformation:     load texture: model
+EngineInformation:     load texture: file
