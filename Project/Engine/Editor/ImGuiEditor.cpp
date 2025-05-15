@@ -179,6 +179,8 @@ void ImGuiEditor::Inspector() {
 
 void ImGuiEditor::Asset() {
 
+	AssetEditor::GetInstance()->EditLayout();
+
 	ImGui::Begin("Asset", nullptr, windowFlag_);
 
 	AssetEditor::GetInstance()->ImGui();

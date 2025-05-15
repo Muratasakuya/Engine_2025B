@@ -86,12 +86,13 @@ private:
 	ImVec2 overlayPos_;
 
 	// parameter
-	float folderSize_;         // 各階層のfolderの画像サイズ
-	float folderSpacing_;      // 各folder間の幅、縦横同じ
-	float folderNameSpancing_; // folderと名前の間
-	float charScale_;          // 文字のサイズスケール
-	float chidNameOffset_;     // 文字の左側オフセット
-	Vector2 folderOffset_;     // 左上のオフセット
+	float folderSize_;          // 各階層のfolderの画像サイズ
+	float folderSpacing_;       // 各folder間の幅、縦横同じ
+	float folderNameSpancing_;  // folderと名前の間
+	float charScale_;           // 文字のサイズスケール
+	float chidNameOffset_;      // 文字の左側オフセット
+	Vector2 folderOffset_;      // 左上のオフセット
+	Vector2 loadOverlayOffset_; // loadのオフセット
 
 	//--------- functions ----------------------------------------------------
 

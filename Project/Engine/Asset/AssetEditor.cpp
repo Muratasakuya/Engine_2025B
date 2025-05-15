@@ -120,6 +120,7 @@ void AssetEditor::EditLayout() {
 	ImGui::DragFloat("charScale_", &charScale_, 0.01f);
 	ImGui::DragFloat("chidNameOffset", &chidNameOffset_, 0.01f);
 	ImGui::DragFloat2("folderOffset", &folderOffset_.x, 1.0f);
+	ImGui::DragFloat2("loadOverlayOffset", &loadOverlayOffset_.x, 1.0f);
 
 	ImGui::End();
 }
@@ -214,11 +215,17 @@ void AssetEditor::DrawFolderGrid() {
 			basePos.x + folderOffset_.x,
 			basePos.y + folderOffset_.y));
 
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.0f, 0.0f, 0.0f));
+		ImGui::PushStyleColor(ImGuiCol_ButtonHovered,
+			ImVec4(1.0f, 1.0f, 1.0f, 0.16f));
+
 		// icon表示
 		const bool clicked = ImGui::ImageButton(
 			child->name.c_str(),
 			ImTextureID(GetIconForEntry(*child).ptr),
 			ImVec2(folderSize_, folderSize_));
+
+		ImGui::PopStyleColor(2);
 
 		// 右クリックで「ロード候補」に登録
 		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
@@ -226,8 +233,8 @@ void AssetEditor::DrawFolderGrid() {
 			const std::string stem = child->path.stem().string();
 			overlayPos_ = ImGui::GetItemRectMax(); // アイテム右上
 			// 少し右上にずらす
-			overlayPos_.x += 8.0f;
-			overlayPos_.y -= 8.0f;
+			overlayPos_.x += loadOverlayOffset_.x;
+			overlayPos_.y += loadOverlayOffset_.y;
 			if (IsTextureFile(child->path) && !asset_->SearchTexture(stem)) {
 
 				pendingPath_ = child->path;
@@ -292,6 +299,9 @@ void AssetEditor::DrawLoadOverlay() {
 		return;
 	}
 
+	// 文字サイズを設定
+	ImGui::SetWindowFontScale(charScale_);
+
 	const char* title =
 		(pendingType_ == PendingType::Texture) ? "Load texture" :
 		(pendingType_ == PendingType::Model) ? "Load model" : "Load";
@@ -320,6 +330,9 @@ void AssetEditor::DrawLoadOverlay() {
 		showLoadButton_ = false;
 		pendingType_ = PendingType::None;
 	}
+
+	// 元に戻す
+	ImGui::SetWindowFontScale(1.0f);
 
 	ImGui::End();
 }
@@ -394,6 +407,7 @@ void AssetEditor::ApplyJson() {
 	charScale_ = JsonAdapter::GetValue<float>(data, "charScale_");
 	chidNameOffset_ = JsonAdapter::GetValue<float>(data, "chidNameOffset_");
 	folderOffset_ = JsonAdapter::ToObject<Vector2>(data["folderOffset_"]);
+	loadOverlayOffset_ = JsonAdapter::ToObject<Vector2>(data["loadOverlayOffset_"]);
 }
 
 void AssetEditor::SaveJson() {
@@ -406,6 +420,7 @@ void AssetEditor::SaveJson() {
 	data["charScale_"] = charScale_;
 	data["chidNameOffset_"] = chidNameOffset_;
 	data["folderOffset_"] = JsonAdapter::FromObject<Vector2>(folderOffset_);
+	data["loadOverlayOffset_"] = JsonAdapter::FromObject<Vector2>(loadOverlayOffset_);
 
 	JsonAdapter::Save(baseJsonPath_ + "editorParameter.json", data);
 }
