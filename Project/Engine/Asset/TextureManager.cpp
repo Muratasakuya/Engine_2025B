@@ -8,6 +8,7 @@
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Asset/Filesystem.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	TextureManager classMethods
@@ -59,6 +60,11 @@ void TextureManager::Load(const std::string& textureName) {
 	std::string identifier = filePath.stem().string();
 	TextureData& texture = textures_[identifier];
 
+	// 階層を保存
+	std::filesystem::path relative = std::filesystem::relative(filePath, baseDirectoryPath_);
+	relative.replace_extension();
+	texture.hierarchy = relative.generic_string();
+
 	DirectX::ScratchImage mipImages = GenerateMipMaps(filePath.string());
 	texture.metadata = mipImages.GetMetadata();
 	CreateTextureResource(device_, texture.resource, texture.metadata);
@@ -97,6 +103,11 @@ void TextureManager::Load(const std::string& textureName) {
 	isCacheValid_ = false;
 
 	Logger::Log("load texture: " + identifier);
+}
+
+bool TextureManager::Search(const std::string& textureName) {
+
+	return Algorithm::Find(textures_, textureName);
 }
 
 DirectX::ScratchImage TextureManager::GenerateMipMaps(const std::string& filePath) {
@@ -258,6 +269,16 @@ const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string textur
 	}
 	TextureData textureData = it->second;
 	return it->second.metadata;
+}
+
+std::vector<std::string> TextureManager::GetTextureHierarchies() const {
+
+	std::vector<std::string> keys;
+	for (const auto& [id, tex] : textures_) {
+
+		keys.push_back(tex.hierarchy);
+	}
+	return keys;
 }
 
 const std::vector<std::string>& TextureManager::GetTextureKeys() const {

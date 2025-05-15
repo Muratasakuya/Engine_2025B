@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Input/Input.h>
+#include <Engine/Asset/AssetEditor.h>
 #include <Engine/Core/Component/ECS/ComponentManager.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Renderer/LineRenderer.h>
@@ -94,6 +95,9 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	// 最初からfullScreen設定
 	fullscreenEnable_ = true;
 	winApp_->SetFullscreen(fullscreenEnable_);
+
+	// assetのeditor初期化
+	AssetEditor::GetInstance()->Init(asset_.get());
 }
 
 void Framework::InitDirectX(uint32_t width, uint32_t height) {

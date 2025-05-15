@@ -32,6 +32,8 @@ public:
 
 	void Load(const std::string& textureName);
 
+	bool Search(const std::string& textureName);
+
 	//--------- accessor -----------------------------------------------------
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;
@@ -40,6 +42,7 @@ public:
 
 	const DirectX::TexMetadata& GetMetaData(const std::string textureName) const;
 
+	std::vector<std::string> GetTextureHierarchies() const;
 	const std::vector<std::string>& GetTextureKeys() const;
 private:
 	//========================================================================
@@ -54,6 +57,7 @@ private:
 		D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle;
 		DirectX::TexMetadata metadata;
 		uint32_t srvIndex;
+		std::string hierarchy;
 	};
 
 	//--------- variables ----------------------------------------------------

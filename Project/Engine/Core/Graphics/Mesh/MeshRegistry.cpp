@@ -61,7 +61,8 @@ ResourceMesh MeshRegistry::CreateMeshlet(const std::string& modelName) {
 		aiProcess_SortByPType);
 
 	// 頂点、meshlet生成
-	ResourceMesh resourceMesh = meshletBuilder.ParseMesh(scene);
+	ResourceMesh resourceMesh{};
+	resourceMesh = meshletBuilder.ParseMesh(scene, !modelData.skinClusterData.empty());
 
 	return resourceMesh;
 }

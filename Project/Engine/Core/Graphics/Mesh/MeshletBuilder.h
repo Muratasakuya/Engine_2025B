@@ -25,7 +25,7 @@ public:
 	MeshletBuilder() = default;
 	~MeshletBuilder() = default;
 
-	ResourceMesh ParseMesh(const aiScene* scene);
+	ResourceMesh ParseMesh(const aiScene* scene, bool isSkinned);
 	ResourceMesh ParseMesh(const ModelData& modelData);
 
 private:

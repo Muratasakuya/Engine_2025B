@@ -4,10 +4,11 @@
 //	MeshletBuilder classMethods
 //============================================================================
 
-ResourceMesh MeshletBuilder::ParseMesh(const aiScene* scene) {
+ResourceMesh MeshletBuilder::ParseMesh(const aiScene* scene, bool isSkinned) {
 
 	// 出力
 	ResourceMesh destinationMesh{};
+	destinationMesh.isSkinned = isSkinned;
 
 	// 頂点情報の設定
 	SetVertex(destinationMesh, scene);
@@ -142,81 +143,81 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const ModelData& m
 
 void MeshletBuilder::Optimize([[maybe_unused]] ResourceMesh& destinationMesh) {
 
-	// 最適化処理はSkinnedMeshだとバグってしまう
+	// skinnedMeshの場合、頂点情報が変わってバグってしまうため
+	// 今は最適化処理をスキップ、対応できたらする
+	if (destinationMesh.isSkinned) {
+		return;
+	}
 
-	//// meshの数分
-	//destinationMesh.remapTables.resize(destinationMesh.meshCount_);
-	//for (uint32_t meshIndex = 0; meshIndex < destinationMesh.meshCount_; ++meshIndex) {
+	// meshの数分
+	for (uint32_t meshIndex = 0; meshIndex < destinationMesh.meshCount_; ++meshIndex) {
 
-	//	std::vector<uint32_t> remap(destinationMesh.indices[meshIndex].size());
+		std::vector<uint32_t> remap(destinationMesh.indices[meshIndex].size());
 
-	//	// 重複データを削除するための再マッピング用インデックスを生成
-	//	auto vertexCount = meshopt_generateVertexRemap(
+		// 重複データを削除するための再マッピング用インデックスを生成
+		auto vertexCount = meshopt_generateVertexRemap(
 
-	//		remap.data(),
-	//		destinationMesh.indices[meshIndex].data(),
-	//		destinationMesh.indices[meshIndex].size(),
-	//		destinationMesh.vertices[meshIndex].data(),
-	//		destinationMesh.vertices[meshIndex].size(),
-	//		sizeof(MeshVertex));
+			remap.data(),
+			destinationMesh.indices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].size(),
+			destinationMesh.vertices[meshIndex].data(),
+			destinationMesh.vertices[meshIndex].size(),
+			sizeof(MeshVertex));
 
-	//	std::vector<MeshVertex> vertices(vertexCount);
-	//	std::vector<uint32_t> indices(destinationMesh.indices[meshIndex].size());
+		std::vector<MeshVertex> vertices(vertexCount);
+		std::vector<uint32_t> indices(destinationMesh.indices[meshIndex].size());
 
-	//	// 頂点インデックスを再マッピング
-	//	meshopt_remapIndexBuffer(
+		// 頂点インデックスを再マッピング
+		meshopt_remapIndexBuffer(
 
-	//		indices.data(),
-	//		destinationMesh.indices[meshIndex].data(),
-	//		destinationMesh.indices[meshIndex].size(),
-	//		remap.data());
+			indices.data(),
+			destinationMesh.indices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].size(),
+			remap.data());
 
-	//	// 頂点データを再マッピング
-	//	meshopt_remapVertexBuffer(
+		// 頂点データを再マッピング
+		meshopt_remapVertexBuffer(
 
-	//		vertices.data(),
-	//		destinationMesh.vertices[meshIndex].data(),
-	//		destinationMesh.vertices[meshIndex].size(),
-	//		sizeof(MeshVertex),
-	//		remap.data());
+			vertices.data(),
+			destinationMesh.vertices[meshIndex].data(),
+			destinationMesh.vertices[meshIndex].size(),
+			sizeof(MeshVertex),
+			remap.data());
 
-	//	// remapデータを保存
-	//	destinationMesh.remapTables[meshIndex] = remap;
+		// 不要になったメモリを解放
+		remap.clear();
+		remap.shrink_to_fit();
 
-	//	// 不要になったメモリを解放
-	//	remap.clear();
-	//	remap.shrink_to_fit();
+		// 最適化したサイズにメモリ量を減らす
+		destinationMesh.indices[meshIndex].resize(indices.size());
+		destinationMesh.vertices[meshIndex].resize(vertices.size());
 
-	//	// 最適化したサイズにメモリ量を減らす
-	//	destinationMesh.indices[meshIndex].resize(indices.size());
-	//	destinationMesh.vertices[meshIndex].resize(vertices.size());
+		// 頂点キャッシュ最適化
+		meshopt_optimizeVertexCache(
 
-	//	// 頂点キャッシュ最適化
-	//	meshopt_optimizeVertexCache(
+			destinationMesh.indices[meshIndex].data(),
+			indices.data(),
+			indices.size(),
+			vertexCount);
 
-	//		destinationMesh.indices[meshIndex].data(),
-	//		indices.data(),
-	//		indices.size(),
-	//		vertexCount);
+		// 不要になったメモリを解放
+		indices.clear();
+		indices.shrink_to_fit();
 
-	//	// 不要になったメモリを解放
-	//	indices.clear();
-	//	indices.shrink_to_fit();
+		// 頂点フェッチ最適化
+		meshopt_optimizeVertexFetch(
 
-	//	// 頂点フェッチ最適化
-	//	meshopt_optimizeVertexFetch(
+			destinationMesh.vertices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].data(),
+			destinationMesh.indices[meshIndex].size(),
+			vertices.data(),
+			vertices.size(),
+			sizeof(MeshVertex));
 
-	//		destinationMesh.vertices[meshIndex].data(),
-	//		destinationMesh.indices[meshIndex].data(),
-	//		destinationMesh.indices[meshIndex].size(),
-	//		vertices.data(),
-	//		vertices.size(),
-	//		sizeof(MeshVertex));
-
-	//	// 不要になったメモリを解放
-	//	vertices.clear();
-	//	vertices.shrink_to_fit();
-	//}
+		// 不要になったメモリを解放
+		vertices.clear();
+		vertices.shrink_to_fit();
+	}
 }
 
 void MeshletBuilder::CreateMeshlet(ResourceMesh& destinationMesh) {

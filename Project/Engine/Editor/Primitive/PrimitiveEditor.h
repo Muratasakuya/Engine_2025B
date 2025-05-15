@@ -46,7 +46,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// json
-	const std::string baseJsonPath_ = "primitiveEditor/";
+	const std::string baseJsonPath_ = "PrimitiveEditor/";
 	InputTextValue inputExportObjText_;
 
 	Asset* asset_;

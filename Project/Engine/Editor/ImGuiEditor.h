@@ -44,7 +44,15 @@ private:
 	// imgui表示フラグ
 	bool displayEnable_;
 
+	// parameter
+	bool editMode_;
+	ImVec2 gameViewSize_;
+	ImVec2 debugViewSize_;
+
 	//--------- functions ----------------------------------------------------
+
+	// layoutEditor
+	void EditLayout();
 
 	// renderTextureの描画
 	void MainWindow();
@@ -57,4 +65,7 @@ private:
 
 	// inspector
 	void Inspector();
+
+	// asset
+	void Asset();
 };
