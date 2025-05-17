@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/MathUtils/Algorithm.h>
 
 // components
 #include <Engine/Core/ECS/Components/TransformComponent.h>
@@ -69,6 +70,9 @@ void EntityManager::DebugImGui() {
 
 		// 型名を取るなら RTTI 等を使う、ここではインデックスで表示
 		std::string label = std::string(typeid(*pools_[id]).name()) + " [" + std::to_string(id) + "]";
+		label = Algorithm::RemoveSubstring(label, "class");
+		label = Algorithm::RemoveSubstring(label, "struct");
+		label = Algorithm::RemoveSubstring(label, "ComponentPool");
 		pools_[id]->Debug(label.c_str());
 	}
 	ImGui::End();

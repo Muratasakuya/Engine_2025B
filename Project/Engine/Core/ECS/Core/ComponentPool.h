@@ -144,7 +144,7 @@ inline void ComponentPool<T, kMultiple>::Debug(const char* label) {
 
 	// メモリアドレス一覧
 	if (ImGui::TreeNode("DisplayMemory")) {
-		ImGui::Text("Idx   Address");
+		ImGui::Text("Index   Address");
 		ImGui::Separator();
 		uintptr_t prevAddr = 0;
 
