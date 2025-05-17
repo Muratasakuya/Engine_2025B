@@ -50,6 +50,8 @@ public:
 	void Render(class CameraManager* cameraManager,
 		class LightManager* lightManager);
 
+	void DebugUpdate();
+
 	//--------- accessor -----------------------------------------------------
 
 	ID3D12Device8* GetDevice() const { return dxDevice_->Get(); }

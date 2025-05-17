@@ -6,6 +6,7 @@
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Component/ComponentHelper.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
+#include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
@@ -65,6 +66,13 @@ void GameScene::Init(
 
 	// skybox
 	Skybox::GetInstance()->Create(asset->GetTextureGPUIndex("docklands_01_2k"));
+
+	uint32_t id = ECSManager::GetInstance()->CreateObject3D("BrainStem", "BrainStem", "Human", "BrainStem");
+	auto* animation = ECSManager::GetInstance()->GetComponent<AnimationComponent>(id);
+	animation->SetAnimationData("BrainStem");
+	animation->SetPlayAnimation("BrainStem", true);
+
+	ECSManager::GetInstance()->CreateObject3D("sphere", "sphere", "Sphere");
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -78,6 +86,9 @@ void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 }
 
 void GameScene::Load(Asset* asset) {
+
+	// debug
+	asset->LoadModel("sphere");
 
 	// player
 	asset->LoadModel("playerBody");

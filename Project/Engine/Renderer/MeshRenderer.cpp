@@ -8,6 +8,8 @@
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
+#include <Engine/Core/ECS/Core/ECSManager.h>
+#include <Engine/Core/ECS/System/Systems/InstancedMeshSystem.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
 
@@ -45,9 +47,11 @@ void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
 
 	// 描画情報取得
-	const auto& meshes = gpuObjectSystem->GetMeshes();
-	auto instancingBuffers = gpuObjectSystem->GetInstancingData();
+	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
 	MeshCommandContext commandContext{};
+
+	const auto& meshes = ecsSystem->GetMeshes();
+	auto instancingBuffers = ecsSystem->GetInstancingData();
 
 	if (meshes.empty()) {
 		return;
@@ -91,10 +95,12 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
 
 	// 描画情報取得
-	const auto& meshes = gpuObjectSystem->GetMeshes();
-	auto instancingBuffers = gpuObjectSystem->GetInstancingData();
+	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
 	MeshCommandContext commandContext{};
 	Skybox* skybox = Skybox::GetInstance();
+
+	const auto& meshes = ecsSystem->GetMeshes();
+	auto instancingBuffers = ecsSystem->GetInstancingData();
 
 	if (meshes.empty()) {
 		return;

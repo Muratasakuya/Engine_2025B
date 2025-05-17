@@ -7,6 +7,7 @@
 #include <Engine/Input/Input.h>
 #include <Engine/Asset/AssetEditor.h>
 #include <Engine/Core/Component/ECS/ComponentManager.h>
+#include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Game/Time/GameTimer.h>
@@ -121,6 +122,9 @@ void Framework::InitComponent() {
 	ComponentManager::GetInstance()->Init(
 		graphicsCore_->GetDevice(), asset_.get(), graphicsCore_->GetGPUObjectSystem());
 
+	ECSManager::GetInstance()->Init(graphicsCore_->GetDevice(),
+		asset_.get(), graphicsCore_->GetDxCommand());
+
 	// 3D
 	// transform
 	transform3DStore_ = std::make_unique<Transform3DStore>();
@@ -175,6 +179,9 @@ void Framework::Update() {
 	// entityBuffer更新
 	ComponentManager::GetInstance()->Update();
 
+	graphicsCore_->DebugUpdate();
+	ECSManager::GetInstance()->Update();
+
 	GameTimer::EndUpdateCount();
 }
 void Framework::UpdateScene() {
@@ -225,6 +232,7 @@ void Framework::Finalize() {
 	asset_.reset();
 
 	ComponentManager::GetInstance()->Finalize();
+	ECSManager::GetInstance()->Finalize();
 
 	// ComFinalize
 	CoUninitialize();

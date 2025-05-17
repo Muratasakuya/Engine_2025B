@@ -259,6 +259,14 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	EndRenderFrame();
 }
 
+void GraphicsCore::DebugUpdate() {
+
+	// skinning用のCSpipelineを設定
+	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
+	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
+	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
+}
+
 //============================================================================
 //	Begin
 //============================================================================

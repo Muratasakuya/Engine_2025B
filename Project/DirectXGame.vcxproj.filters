@@ -500,6 +500,27 @@
     <ClCompile Include="Engine\Asset\AssetEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\Core\EntityManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Manager\SystemManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Systems\TransformSystem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Systems\MaterialSystem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\Core\ECSManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Systems\AnimationSystem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Systems\InstancedMeshSystem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -683,6 +704,15 @@
     <ClInclude Include="Engine\Utility\KeyframeAnimation.h" />
     <ClInclude Include="Engine\Core\Graphics\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Asset\AssetEditor.h" />
+    <ClInclude Include="Engine\Core\ECS\Core\ComponentPool.h" />
+    <ClInclude Include="Engine\Core\ECS\Core\EntityManager.h" />
+    <ClInclude Include="Engine\Core\ECS\System\Base\ISystem.h" />
+    <ClInclude Include="Engine\Core\ECS\System\Manager\SystemManager.h" />
+    <ClInclude Include="Engine\Core\ECS\System\Systems\TransformSystem.h" />
+    <ClInclude Include="Engine\Core\ECS\System\Systems\MaterialSystem.h" />
+    <ClInclude Include="Engine\Core\ECS\Core\ECSManager.h" />
+    <ClInclude Include="Engine\Core\ECS\System\Systems\AnimationSystem.h" />
+    <ClInclude Include="Engine\Core\ECS\System\Systems\InstancedMeshSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
