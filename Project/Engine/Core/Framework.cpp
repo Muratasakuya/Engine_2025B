@@ -6,7 +6,6 @@
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Input/Input.h>
 #include <Engine/Asset/AssetEditor.h>
-#include <Engine/Core/Component/ECS/ComponentManager.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Renderer/LineRenderer.h>
@@ -89,10 +88,6 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
 		graphicsCore_->GetSRVDescriptor(), graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
 
-	// editor初期化
-	primitiveEditor_ = std::make_unique<PrimitiveEditor>();
-	primitiveEditor_->Init(asset_.get());
-
 	// 最初からfullScreen設定
 	fullscreenEnable_ = true;
 	winApp_->SetFullscreen(fullscreenEnable_);
@@ -111,53 +106,12 @@ void Framework::InitDirectX(uint32_t width, uint32_t height) {
 	asset_ = std::make_unique<Asset>();
 	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
 		graphicsCore_->GetSRVDescriptor());
-
-	// renderer初期化
-	graphicsCore_->InitRenderer(asset_.get());
 }
 
 void Framework::InitComponent() {
 
-	// component初期化、CS用のCommandList
-	ComponentManager::GetInstance()->Init(
-		graphicsCore_->GetDevice(), asset_.get(), graphicsCore_->GetGPUObjectSystem());
-
 	ECSManager::GetInstance()->Init(graphicsCore_->GetDevice(),
 		asset_.get(), graphicsCore_->GetDxCommand());
-
-	// 3D
-	// transform
-	transform3DStore_ = std::make_unique<Transform3DStore>();
-	ComponentManager::GetInstance()->RegisterComponentStore(transform3DStore_.get());
-	// material
-	materialStore_ = std::make_unique<MaterialStore>();
-	ComponentManager::GetInstance()->RegisterComponentStore(materialStore_.get());
-	// animation
-	animationStore_ = std::make_unique<AnimationStore>();
-	ComponentManager::GetInstance()->RegisterComponentStore(animationStore_.get());
-
-	// effect
-	// transform
-	effectTransformStore_ = std::make_unique<EffectTransformStore>();
-	effectTransformStore_->Init(cameraManager_.get());
-	ComponentManager::GetInstance()->RegisterComponentStore(effectTransformStore_.get());
-	// material
-	effectMaterialStore_ = std::make_unique<EffectMaterialStore>();
-	ComponentManager::GetInstance()->RegisterComponentStore(effectMaterialStore_.get());
-	// transform
-	primitiveMeshStore_ = std::make_unique<PrimitiveMeshStore>();
-	ComponentManager::GetInstance()->RegisterComponentStore(primitiveMeshStore_.get());
-
-	// 2D
-	// transform
-	transform2DStore_ = std::make_unique<Transform2DStore>();
-	ComponentManager::GetInstance()->RegisterComponentStore(transform2DStore_.get());
-	// material
-	spriteMaterialStore_ = std::make_unique<SpriteMaterialStore>();
-	ComponentManager::GetInstance()->RegisterComponentStore(spriteMaterialStore_.get());
-	// sprite
-	spriteStore_ = std::make_unique<SpriteStore>();
-	ComponentManager::GetInstance()->RegisterComponentStore(spriteStore_.get());
 }
 
 void Framework::Update() {
@@ -176,8 +130,6 @@ void Framework::Update() {
 #endif // _DEBUG
 	// scene更新
 	UpdateScene();
-	// entityBuffer更新
-	ComponentManager::GetInstance()->Update();
 
 	graphicsCore_->DebugUpdate();
 	ECSManager::GetInstance()->Update();
@@ -223,16 +175,12 @@ void Framework::Finalize() {
 	graphicsCore_->Finalize(winApp_->GetHwnd());
 	Input::GetInstance()->Finalize();
 	LineRenderer::GetInstance()->Finalize();
+	ECSManager::GetInstance()->Finalize();
 
 	sceneManager_.reset();
-	primitiveMeshStore_.reset();
-	spriteStore_.reset();
-	graphicsCore_.reset();
 	winApp_.reset();
 	asset_.reset();
-
-	ComponentManager::GetInstance()->Finalize();
-	ECSManager::GetInstance()->Finalize();
+	graphicsCore_.reset();
 
 	// ComFinalize
 	CoUninitialize();

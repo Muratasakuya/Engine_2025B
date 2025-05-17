@@ -8,8 +8,6 @@
 #include <Game/Object3D/Player/Parts/PlayerPartsController.h>
 // behavior
 #include <Game/Object3D/Player/Behavior/PlayerBehaviorController.h>
-// effect
-#include <Game/Object3D/Player/Effect/PlayerEffectController.h>
 
 //============================================================================
 //	Player class
@@ -42,7 +40,4 @@ private:
 
 	// behavior
 	std::unique_ptr<PlayerBehaviorController> behaviorController_;
-
-	// effect
-	std::unique_ptr<PlayerEffectController> effectController_;
 };

@@ -7,9 +7,9 @@
 #include <Engine/Editor/ImGuiInspector.h>
 
 // components
-#include <Engine/Core/Component/TransformComponent.h>
-#include <Engine/Core/Component/MaterialComponent.h>
-#include <Engine/Core/Component/AnimationComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Core/ECS/Components/MaterialComponent.h>
+#include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Core/ECS/Components/TagComponent.h>
 // systems
 #include <Engine/Core/ECS/System/Systems/TransformSystem.h>
@@ -62,6 +62,8 @@ void ECSManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxCommand) 
 void ECSManager::Update() {
 
 	systemManager_->Update(*entityManager_.get());
+
+	entityManager_->DebugImGui();
 }
 
 uint32_t ECSManager::CreateObject3D(const std::string& modelName,

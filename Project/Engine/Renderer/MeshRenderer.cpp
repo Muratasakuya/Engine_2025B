@@ -3,15 +3,17 @@
 //============================================================================
 //	include
 //============================================================================
+// Graphics
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
+#include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
-#include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
+#include <Engine/Core/Graphics/Skybox/Skybox.h>
+
+// ECS
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Core/ECS/System/Systems/InstancedMeshSystem.h>
-#include <Engine/Scene/Camera/CameraManager.h>
-#include <Engine/Core/Graphics/Skybox/Skybox.h>
 
 //============================================================================
 //	MeshRenderer classMethods
@@ -40,8 +42,7 @@ void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
 	Skybox::GetInstance()->SetDevice(device);
 }
 
-void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
-	DxCommand* dxCommand) {
+void MeshRenderer::RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// commandList取得
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
@@ -63,7 +64,7 @@ void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
 	commandList->SetPipelineState(meshShaderZPassPipeline_->GetGraphicsPipeline());
 
 	// lightViewProjection
-	gpuObjectSystem->GetSceneBuffer()->SetZPassCommands(commandList);
+	sceneBuffer->SetZPassCommands(commandList);
 
 	for (const auto& [name, mesh] : meshes) {
 
@@ -88,8 +89,7 @@ void MeshRenderer::RenderingZPass(GPUObjectSystem* gpuObjectSystem,
 	}
 }
 
-void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
-	DxCommand* dxCommand) {
+void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// commandList取得
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
@@ -112,7 +112,7 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 	commandList->SetPipelineState(meshShaderPipeline_->GetGraphicsPipeline());
 
 	// 共通のbuffer設定
-	gpuObjectSystem->GetSceneBuffer()->SetMainPassCommands(debugEnable, commandList);
+	sceneBuffer->SetMainPassCommands(debugEnable, commandList);
 	// allTexture
 	commandList->SetGraphicsRootDescriptorTable(9,
 		srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
@@ -185,7 +185,7 @@ void MeshRenderer::Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
 	// matrix
 	commandList->SetGraphicsRootConstantBufferView(0, skybox->GetMatrixBuffer().GetResource()->GetGPUVirtualAddress());
 	// viewPro
-	gpuObjectSystem->GetSceneBuffer()->SetViewProCommand(debugEnable, commandList, 1);
+	sceneBuffer->SetViewProCommand(debugEnable, commandList, 1);
 	// texture
 	commandList->SetGraphicsRootDescriptorTable(2,
 		srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());

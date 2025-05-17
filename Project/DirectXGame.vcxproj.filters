@@ -23,7 +23,7 @@
     <ClCompile Include="Engine\Asset\TextureManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\TransformComponent.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\TransformComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\GPUObject\InputAssembler.cpp">
@@ -167,18 +167,6 @@
     <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\ECS\ComponentManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\ECS\EntityRegistry.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\TransformStore.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\MaterialStore.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Editor\ImGuiInspector.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -191,25 +179,13 @@
     <ClCompile Include="Engine\Collision\CollisionManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Template\TemplateObject3D.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Lib\MathUtils\Algorithm.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Renderer\SpriteRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Base\IComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\GPUObject\GPUObjectSystem.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\AnimationComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\AnimationStore.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\AnimationComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Context\MeshCommandContext.cpp">
@@ -218,16 +194,10 @@
     <ClCompile Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\SpriteComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\SpriteStore.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\SpriteComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Scene\Camera\Camera2D.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\ComponentHelper.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\Base\IGameEditor.cpp">
@@ -281,10 +251,7 @@
     <ClCompile Include="Game\Algorithm\StateTimer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Editor\Object\Object3DEditor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\MaterialComponent.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\MaterialComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.cpp">
@@ -299,28 +266,10 @@
     <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Editor\Primitive\PrimitiveEditor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Editor\Primitive\PrimitiveRegistry.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\PrimitiveMeshComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\PrimitiveMeshStore.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Renderer\EffectRenderer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshData.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshTool.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\PrimitiveMeshComponent.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utility\UVHelper.cpp">
@@ -354,15 +303,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Camera\FollowCamera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Effect\PlayerEffectController.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Effect\PlayerLightningHitEffect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Base\BasePrimitiveEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Parts\PlayerLeftSword.cpp">
@@ -531,7 +471,7 @@
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelLoader.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
-    <ClInclude Include="Engine\Core\Component\TransformComponent.h" />
+    <ClInclude Include="Engine\Core\ECS\Components\TransformComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InputAssembler.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.h" />
@@ -584,27 +524,17 @@
     <ClInclude Include="Engine\Scene\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Renderer\LineRenderer.h" />
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
-    <ClInclude Include="Engine\Core\Component\ECS\ComponentManager.h" />
-    <ClInclude Include="Engine\Core\Component\ECS\EntityRegistry.h" />
-    <ClInclude Include="Engine\Core\Component\Store\TransformStore.h" />
-    <ClInclude Include="Engine\Core\Component\Store\MaterialStore.h" />
     <ClInclude Include="Engine\Editor\ImGuiInspector.h" />
     <ClInclude Include="Engine\Collision\CollisionBody.h" />
     <ClInclude Include="Engine\Collision\CollisionManager.h" />
     <ClInclude Include="Engine\Collision\CollisionGeometry.h" />
-    <ClInclude Include="Game\Object3D\Template\TemplateObject3D.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h" />
     <ClInclude Include="Engine\Renderer\SpriteRenderer.h" />
-    <ClInclude Include="Engine\Core\Component\Base\IComponent.h" />
-    <ClInclude Include="Engine\Core\Graphics\GPUObject\GPUObjectSystem.h" />
-    <ClInclude Include="Engine\Core\Component\AnimationComponent.h" />
-    <ClInclude Include="Engine\Core\Component\Store\AnimationStore.h" />
+    <ClInclude Include="Engine\Core\ECS\Components\AnimationComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\Context\MeshCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h" />
-    <ClInclude Include="Engine\Core\Component\SpriteComponent.h" />
-    <ClInclude Include="Engine\Core\Component\Store\SpriteStore.h" />
+    <ClInclude Include="Engine\Core\ECS\Components\SpriteComponent.h" />
     <ClInclude Include="Engine\Scene\Camera\Camera2D.h" />
-    <ClInclude Include="Engine\Core\Component\ComponentHelper.h" />
     <ClInclude Include="Engine\Editor\Base\IGameEditor.h" />
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ComputePostProcessor.h" />
@@ -625,19 +555,12 @@
     <ClInclude Include="Game\Scene\Methods\SceneTransition.h" />
     <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h" />
     <ClInclude Include="Game\Algorithm\StateTimer.h" />
-    <ClInclude Include="Engine\Editor\Object\Object3DEditor.h" />
-    <ClInclude Include="Engine\Core\Component\MaterialComponent.h" />
+    <ClInclude Include="Engine\Core\ECS\Components\MaterialComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.h" />
     <ClInclude Include="Engine\Scene\Light\LightManager.h" />
-    <ClInclude Include="Engine\Editor\Primitive\PrimitiveEditor.h" />
-    <ClInclude Include="Engine\Editor\Primitive\PrimitiveRegistry.h" />
     <ClInclude Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.h" />
-    <ClInclude Include="Engine\Core\Component\PrimitiveMeshComponent.h" />
-    <ClInclude Include="Engine\Core\Component\Store\PrimitiveMeshStore.h" />
-    <ClInclude Include="Engine\Renderer\EffectRenderer.h" />
-    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshData.h" />
-    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshTool.h" />
+    <ClInclude Include="Engine\Core\ECS\Components\PrimitiveMeshComponent.h" />
     <ClInclude Include="Engine\Utility\UVHelper.h" />
     <ClInclude Include="Engine\Utility\SimpleAnimation.h" />
     <ClInclude Include="Game\Object3D\Player\Player.h" />
@@ -650,9 +573,6 @@
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerRightSword.h" />
     <ClInclude Include="Game\Camera\FollowCamera.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\PlayerBehaviorType.h" />
-    <ClInclude Include="Game\Object3D\Player\Effect\PlayerEffectController.h" />
-    <ClInclude Include="Game\Object3D\Player\Effect\PlayerLightningHitEffect.h" />
-    <ClInclude Include="Game\Object3D\Base\BasePrimitiveEffect.h" />
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerLeftSword.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\IPlayerBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashBehavior.h" />

@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Core/Component/SpriteComponent.h>
+#include <Engine/Core/ECS/Components/SpriteComponent.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Lib/MathUtils/Matrix4x4.h>
 
@@ -28,11 +28,6 @@ public:
 		class DxShaderCompiler* shaderCompiler);
 
 	void Update(class CameraManager* cameraManager);
-
-	void RenderIrrelevant(class GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
-	void RenderApply(SpriteLayer layer, class GPUObjectSystem* gpuObjectSystem,
-		ID3D12GraphicsCommandList6* commandList);
 private:
 	//========================================================================
 	//	private Methods

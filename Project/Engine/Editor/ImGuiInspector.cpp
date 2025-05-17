@@ -9,9 +9,9 @@
 #include <Lib/MathUtils/Algorithm.h>
 
 // components
-#include <Engine/Core/Component/TransformComponent.h>
-#include <Engine/Core/Component/MaterialComponent.h>
-#include <Engine/Core/Component/AnimationComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Core/ECS/Components/MaterialComponent.h>
+#include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Core/ECS/Components/TagComponent.h>
 
 // imgui

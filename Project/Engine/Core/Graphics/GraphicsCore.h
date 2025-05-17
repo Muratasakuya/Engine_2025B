@@ -14,12 +14,11 @@
 #include <Engine/Core/Graphics/Descriptors/RTVDescriptor.h>
 #include <Engine/Core/Graphics/Descriptors/DSVDescriptor.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
-#include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
 #include <Engine/External/ImGuiManager.h>
+#include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 
 // renderer
 #include <Engine/Renderer/MeshRenderer.h>
-#include <Engine/Renderer/EffectRenderer.h>
 #include <Engine/Renderer/SpriteRenderer.h>
 
 // c++
@@ -38,8 +37,6 @@ public:
 	~GraphicsCore() = default;
 
 	void Init(uint32_t width, uint32_t height, class WinApp* winApp);
-
-	void InitRenderer(class Asset* asset);
 
 	void Finalize(HWND hwnd);
 
@@ -61,8 +58,6 @@ public:
 	SRVDescriptor* GetSRVDescriptor() const { return srvDescriptor_.get(); }
 
 	DxShaderCompiler* GetDxShaderCompiler() const { return dxShaderComplier_.get(); }
-
-	GPUObjectSystem* GetGPUObjectSystem() const { return gpuObjectSystem_.get(); }
 
 	PostProcessSystem* GetPostProcessSystem() const { return postProcessSystem_.get(); }
 
@@ -107,7 +102,6 @@ private:
 
 	std::unique_ptr<PipelineState> skinningPipeline_;
 	std::unique_ptr<MeshRenderer> meshRenderer_;
-	std::unique_ptr<EffectRenderer> effectRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;
 
 	std::unique_ptr<RTVDescriptor> rtvDescriptor_;
@@ -116,7 +110,7 @@ private:
 
 	std::unique_ptr<ImGuiManager> imguiManager_;
 
-	std::unique_ptr<GPUObjectSystem> gpuObjectSystem_;
+	std::unique_ptr<SceneConstBuffer> sceneBuffer_;
 
 	//--------- functions ----------------------------------------------------
 

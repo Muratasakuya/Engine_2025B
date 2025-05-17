@@ -5,10 +5,9 @@
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Engine/Core/Component/TransformComponent.h>
-#include <Engine/Core/Component/MaterialComponent.h>
-#include <Engine/Core/Component/AnimationComponent.h>
-#include <Engine/Core/Component/Base/IComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Core/ECS/Components/MaterialComponent.h>
+#include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
 
 // front

@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/ECS/Core/EntityManager.h>
-#include <Engine/Core/Component/AnimationComponent.h>
+#include <Engine/Core/ECS/Components/AnimationComponent.h>
 
 //============================================================================
 //	AnimationSystem classMethods

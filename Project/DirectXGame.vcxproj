@@ -138,11 +138,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Engine\Asset\ModelLoader.cpp" />
     <ClCompile Include="Engine\Asset\TextureManager.cpp" />
-    <ClCompile Include="Engine\Core\Component\AnimationComponent.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Base\IComponent.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\AnimationComponent.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -150,11 +146,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\PrimitiveMeshComponent.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\AnimationStore.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\PrimitiveMeshComponent.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -162,31 +154,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\ECS\ComponentManager.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\MaterialComponent.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Component\ECS\EntityRegistry.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\PrimitiveMeshStore.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\SpriteStore.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\MaterialComponent.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\SpriteComponent.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\ComponentHelper.cpp">
+    <ClCompile Include="Engine\Core\ECS\Components\SpriteComponent.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -294,26 +266,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Editor\Primitive\PrimitiveEditor.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshData.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Editor\Primitive\PrimitiveMeshTool.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Editor\Primitive\PrimitiveRegistry.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Renderer\EffectRenderer.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Engine\Scene\Light\LightManager.cpp">
       <SubType>
       </SubType>
@@ -338,19 +290,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\GPUObject\GPUObjectSystem.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\TransformStore.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\Store\MaterialStore.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Component\TransformComponent.cpp" />
+    <ClCompile Include="Engine\Core\ECS\Components\TransformComponent.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GPUObject\InputAssembler.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.cpp" />
     <ClCompile Include="Engine\Core\Debug\Assert.cpp" />
@@ -422,15 +362,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
     <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp" />
     <ClCompile Include="Engine\Scene\Camera\CameraManager.cpp" />
-    <ClCompile Include="Engine\Editor\Object\Object3DEditor.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Game\Object2D\SceneTransition\FadeTransition.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Base\BasePrimitiveEffect.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -479,14 +411,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Effect\PlayerEffectController.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Player\Effect\PlayerLightningHitEffect.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Parts\Base\BasePlayerParts.cpp">
       <SubType>
       </SubType>
@@ -516,10 +440,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Object3D\Player\Player.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Game\Object3D\Template\TemplateObject3D.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -561,11 +481,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelLoader.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
-    <ClInclude Include="Engine\Core\Component\AnimationComponent.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Base\IComponent.h">
+    <ClInclude Include="Engine\Core\ECS\Components\AnimationComponent.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -573,11 +489,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\PrimitiveMeshComponent.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Store\AnimationStore.h">
+    <ClInclude Include="Engine\Core\ECS\Components\PrimitiveMeshComponent.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -585,31 +497,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\ECS\ComponentManager.h">
+    <ClInclude Include="Engine\Core\ECS\Components\MaterialComponent.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\Component\ECS\EntityRegistry.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Store\PrimitiveMeshStore.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Store\SpriteStore.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\MaterialComponent.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\SpriteComponent.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\ComponentHelper.h">
+    <ClInclude Include="Engine\Core\ECS\Components\SpriteComponent.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -734,26 +626,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Editor\Primitive\PrimitiveEditor.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshData.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Editor\Primitive\PrimitiveMeshTool.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Editor\Primitive\PrimitiveRegistry.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Renderer\EffectRenderer.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Engine\Scene\Light\LightManager.h">
       <SubType>
       </SubType>
@@ -774,23 +646,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Editor\Object\Object3DEditor.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\GPUObject\GPUObjectSystem.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Store\TransformStore.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\Store\MaterialStore.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Component\TransformComponent.h" />
+    <ClInclude Include="Engine\Core\ECS\Components\TransformComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InputAssembler.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.h" />
@@ -870,10 +726,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Object3D\Base\BasePrimitiveEffect.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -962,14 +814,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Effect\PlayerEffectController.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Effect\PlayerLightningHitEffect.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Game\Object3D\Player\Parts\Base\BasePlayerParts.h" />
     <ClInclude Include="Game\Object3D\Player\Parts\PlayerBody.h">
       <SubType>
@@ -996,10 +840,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Object3D\Player\Player.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Object3D\Template\TemplateObject3D.h">
       <SubType>
       </SubType>
     </ClInclude>

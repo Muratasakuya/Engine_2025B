@@ -10,9 +10,6 @@
 #include <Game/Camera/GameCamera.h>
 #include <Game/Camera/FollowCamera.h>
 
-// editor
-#include <Engine/Editor/Object/Object3DEditor.h>
-
 // object
 #include <Game/Object3D/Player/Player.h>
 
@@ -41,9 +38,6 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
-
-	// editor
-	std::unique_ptr<Object3DEditor> object3DEditor_;
 
 	// camera
 	std::unique_ptr<FollowCamera> followCamera_;

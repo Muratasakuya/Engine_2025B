@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
 #include <Engine/Core/ECS/System/Base/ISystem.h>
-#include <Engine/Core/Component/MaterialComponent.h>
+#include <Engine/Core/ECS/Components/MaterialComponent.h>
 
 //============================================================================
 //	MaterialSystem class

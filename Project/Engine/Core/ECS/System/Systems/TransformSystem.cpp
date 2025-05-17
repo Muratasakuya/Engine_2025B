@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/ECS/Core/EntityManager.h>
-#include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
 
 //============================================================================
 //	TransformSystem classMethods

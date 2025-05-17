@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
-#include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 
 // c++

@@ -34,6 +34,9 @@ public:
 
 	std::vector<uint32_t> View(const Archetype& mask) const;
 
+	// debug
+	void DebugImGui();
+
 	//--------- accessor -----------------------------------------------------
 
 	template<class T>
@@ -51,12 +54,20 @@ private:
 	std::unordered_map<uint32_t, Archetype> entityToArch_;
 	std::unordered_map<Archetype, std::vector<uint32_t>> archToEntities_;
 
-	std::vector<std::shared_ptr<void>> pools_;
+	std::vector<std::shared_ptr<IComponentPool>> pools_;
 
 	uint32_t next_ = 1;
 	std::vector<uint32_t> alive_;
 
-	static inline size_t typeCounter_ = 0;
+	inline static std::atomic_size_t typeCounter_ = 0;
+
+	//--------- structure ----------------------------------------------------
+
+	template<class T>
+	struct TypeIDHolder {
+
+		inline static const size_t value = ++typeCounter_;
+	};
 
 	//--------- functions ----------------------------------------------------
 
@@ -73,11 +84,9 @@ inline ComponentPool<T, Flag>& EntityManager::GetPool() {
 	if (id >= pools_.size()) {
 		pools_.resize(id + 1);
 	}
-
 	if (!pools_[id]) {
 		pools_[id] = std::make_shared<ComponentPool<T, Flag>>();
 	}
-
 	return *static_cast<ComponentPool<T, Flag>*>(pools_[id].get());
 }
 
@@ -107,6 +116,5 @@ inline typename ComponentPool<T, Flag>::Storage* EntityManager::GetComponent(uin
 template<class T>
 inline size_t EntityManager::GetTypeID() {
 
-	static size_t id = ++typeCounter_;
-	return id;
+	return TypeIDHolder<T>::value;
 }

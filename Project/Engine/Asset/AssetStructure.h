@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
 #include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
 #include <Engine/Core/Graphics/Lib/ComPtr.h>
 

@@ -5,9 +5,9 @@
 //============================================================================
 
 // components
-#include <Engine/Core/Component/TransformComponent.h>
-#include <Engine/Core/Component/MaterialComponent.h>
-#include <Engine/Core/Component/AnimationComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Core/ECS/Components/MaterialComponent.h>
+#include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Core/ECS/Components/TagComponent.h>
 
 //============================================================================
@@ -21,14 +21,29 @@ uint32_t EntityManager::Create() {
 
 void EntityManager::Destroy(uint32_t entity) {
 
-	// componentは各poolが持っているためarchetypeをクリア
+	Archetype arch = entityToArch_[entity];
+
+	// bitが立っている全タイプのpoolからRemove
+	for (size_t typeId = 0; typeId < kMaxComponentTypes; ++typeId) {
+		if (!arch.test(typeId) || typeId >= pools_.size()) {
+			continue;
+		}
+		if (pools_[typeId]) {
+
+			pools_[typeId]->Remove(entity);
+		}
+	}
+
+	// archetypeテーブルから除去
 	if (auto it = entityToArch_.find(entity); it != entityToArch_.end()) {
 
 		archToEntities_[it->second].erase(
-			std::remove(archToEntities_[it->second].begin(), archToEntities_[it->second].end(), entity),
+			std::remove(archToEntities_[it->second].begin(),
+				archToEntities_[it->second].end(), entity),
 			archToEntities_[it->second].end());
 		entityToArch_.erase(it);
 	}
+	// 再利用キューへ
 	alive_.push_back(entity);
 }
 
@@ -42,6 +57,21 @@ std::vector<uint32_t> EntityManager::View(const Archetype& mask) const {
 		}
 	}
 	return result;
+}
+
+void EntityManager::DebugImGui() {
+
+	if (!ImGui::Begin("Pool Debug")) { ImGui::End(); return; }
+
+	// 登録済みプールを列挙
+	for (size_t id = 0; id < pools_.size(); ++id) {
+		if (!pools_[id]) continue;  // 未生成
+
+		// 型名を取るなら RTTI 等を使う、ここではインデックスで表示
+		std::string label = std::string(typeid(*pools_[id]).name()) + " [" + std::to_string(id) + "]";
+		pools_[id]->Debug(label.c_str());
+	}
+	ImGui::End();
 }
 
 template<class T>
