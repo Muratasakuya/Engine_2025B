@@ -97,13 +97,10 @@ void GameScene::Init(
 	// skybox
 	Skybox::GetInstance()->Create(asset->GetTextureGPUIndex("docklands_01_2k"));
 
-	for (uint32_t i = 0; i < 16; ++i) {
-
-		uint32_t id = ECSManager::GetInstance()->CreateObject3D("BrainStem", "BrainStem", "Human", "BrainStem");
-		auto* animation = ECSManager::GetInstance()->GetComponent<AnimationComponent>(id);
-		animation->SetAnimationData("BrainStem");
-		animation->SetPlayAnimation("BrainStem", true);
-	}
+	uint32_t id = ECSManager::GetInstance()->CreateObject3D("BrainStem", "BrainStem", "Human", "BrainStem");
+	auto* animation = ECSManager::GetInstance()->GetComponent<AnimationComponent>(id);
+	animation->SetAnimationData("BrainStem");
+	animation->SetPlayAnimation("BrainStem", true);
 
 	ECSManager::GetInstance()->CreateObject3D("sphere", "sphere", "Sphere");
 }
