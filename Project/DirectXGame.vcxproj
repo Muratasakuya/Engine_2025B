@@ -214,6 +214,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Systems\TagSystem.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\ECS\System\Systems\TransformSystem.cpp">
       <SubType>
       </SubType>
@@ -609,6 +613,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\ECS\Components\TagComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\ECS\Core\ComponentPool.h" />
     <ClInclude Include="Engine\Core\ECS\Core\ECSManager.h">
       <SubType>
@@ -635,6 +643,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\ECS\System\Systems\MaterialSystem.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ECS\System\Systems\TagSystem.h">
       <SubType>
       </SubType>
     </ClInclude>

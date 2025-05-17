@@ -4,16 +4,19 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
+#include <Engine/Editor/ImGuiInspector.h>
 
 // components
 #include <Engine/Core/Component/TransformComponent.h>
 #include <Engine/Core/Component/MaterialComponent.h>
 #include <Engine/Core/Component/AnimationComponent.h>
+#include <Engine/Core/ECS/Components/TagComponent.h>
 // systems
 #include <Engine/Core/ECS/System/Systems/TransformSystem.h>
 #include <Engine/Core/ECS/System/Systems/MaterialSystem.h>
 #include <Engine/Core/ECS/System/Systems/AnimationSystem.h>
 #include <Engine/Core/ECS/System/Systems/InstancedMeshSystem.h>
+#include <Engine/Core/ECS/System/Systems/TagSystem.h>
 
 //============================================================================
 //	ECSManager classMethods
@@ -50,9 +53,10 @@ void ECSManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxCommand) 
 	systemManager_->AddSystem<Transform3DSystem>();
 	systemManager_->AddSystem<MaterialSystem>();
 	systemManager_->AddSystem<AnimationSystem>();
-
-	// 必ず最後におこなう
+	systemManager_->AddSystem<TagSystem>();
 	systemManager_->AddSystem<InstancedMeshSystem>(device, asset, dxCommand);
+
+	ImGuiInspector::GetInstance()->Init();
 }
 
 void ECSManager::Update() {
@@ -71,36 +75,16 @@ uint32_t ECSManager::CreateObject3D(const std::string& modelName,
 	auto* materialsPtr = entityManager_->AddComponent<MaterialComponent, true>(entity);
 
 	// 各componentを初期化
+	// transform
 	transform->Init();
+	// instancingのデータ名を設定
 	transform->SetInstancingName(modelName);
 
+	// material
 	const ModelData& modelData = asset_->GetModelData(modelName);
 	auto& materials = *materialsPtr;
-	materials.resize(modelData.meshes.size());
-	for (uint32_t meshIndex = 0; meshIndex < modelData.meshes.size(); ++meshIndex) {
-
-		materials[meshIndex].Init();
-		materials[meshIndex].material.textureIndex =
-			asset_->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
-
-		// normalMap用のTextureがあれば設定する
-		if (modelData.meshes[meshIndex].normalMapTexture.has_value()) {
-
-			materials[meshIndex].material.normalMapTextureIndex =
-				asset_->GetTextureGPUIndex(modelData.meshes[meshIndex].normalMapTexture.value());
-			materials[meshIndex].material.enableNormalMap = true;
-		}
-
-		// baseColorがあれば色を設定する
-		if (modelData.meshes[meshIndex].baseColor.has_value()) {
-
-			materials[meshIndex].material.color = modelData.meshes[meshIndex].baseColor.value();
-			materials[meshIndex].material.emissionColor = Vector3(
-				modelData.meshes[meshIndex].baseColor.value().r,
-				modelData.meshes[meshIndex].baseColor.value().g,
-				modelData.meshes[meshIndex].baseColor.value().b);
-		}
-	}
+	systemManager_->GetSystem<MaterialSystem>()->Init(
+		materials, modelData, asset_);
 
 	if (animationName.has_value()) {
 
@@ -129,6 +113,12 @@ uint32_t ECSManager::BuildEmptyEntity(
 	[[maybe_unused]] const std::string& name,
 	[[maybe_unused]] const std::string& groupName) {
 
+	// entity作成
 	uint32_t entity = entityManager_->Create();
+	// tag設定
+	auto* tag = entityManager_->AddComponent<TagComponent>(entity);
+	tag->name = systemManager_->GetSystem<TagSystem>()->CheckName(name);
+	tag->groupName = groupName;
+
 	return entity;
 }

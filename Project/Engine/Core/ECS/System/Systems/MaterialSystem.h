@@ -3,8 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/AssetStructure.h>
 #include <Engine/Core/ECS/System/Base/ISystem.h>
-
+#include <Engine/Core/Component/MaterialComponent.h>
 
 //============================================================================
 //	MaterialSystem class
@@ -18,6 +19,9 @@ public:
 
 	MaterialSystem() = default;
 	~MaterialSystem() = default;
+
+	void Init(std::vector<MaterialComponent>& materials,
+		const ModelData& modelData, class Asset* asset);
 
 	Archetype Signature() const override;
 

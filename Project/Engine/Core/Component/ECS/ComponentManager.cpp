@@ -6,7 +6,6 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Graphics/GPUObject/GPUObjectSystem.h>
-#include <Engine/Editor/ImGuiInspector.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
@@ -57,12 +56,6 @@ void ComponentManager::Init(ID3D12Device* device, Asset* asset, GPUObjectSystem*
 
 		entityRegistries_[type] = std::make_unique<EntityRegistry>();
 	}
-
-	// inspectorへentityManagerをセット
-	ImGuiInspector::GetInstance()->SetEntityManager(
-		entityRegistries_[static_cast<uint32_t>(ComponentType::Object3D)].get(),
-		entityRegistries_[static_cast<uint32_t>(ComponentType::Effect)].get(),
-		entityRegistries_[static_cast<uint32_t>(ComponentType::Object2D)].get());
 }
 
 void ComponentManager::Update() {
