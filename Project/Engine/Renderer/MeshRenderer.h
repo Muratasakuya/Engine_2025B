@@ -10,8 +10,9 @@
 #include <ranges>
 // front
 class SRVDescriptor;
+class DxCommand;
 class ShadowMap;
-class GPUObjectSystem;
+class SceneConstBuffer;
 
 //============================================================================
 //	MeshRenderer class
@@ -28,11 +29,9 @@ public:
 	void Init(ID3D12Device8* device, ShadowMap* shadowMap,
 		DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
 
-	void RenderingZPass(GPUObjectSystem* gpuObjectSystem,
-		class DxCommand* dxCommand);
+	void RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 
-	void Rendering(bool debugEnable, GPUObjectSystem* gpuObjectSystem,
-		class DxCommand* dxCommand);
+	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 private:
 	//========================================================================
 	//	private Methods

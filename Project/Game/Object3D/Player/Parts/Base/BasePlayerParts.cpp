@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/ComponentHelper.h>
 #include <Engine/Input/Input.h>
+#include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
@@ -20,12 +20,12 @@ void BasePlayerParts::Init(const std::string& modelName,
 	const std::string groupName = "Player";
 
 	// playerPartsを作成
-	uint32_t entityId = GameObjectHelper::CreateObject3D(
+	uint32_t entityId = ECSManager::GetInstance()->CreateObject3D(
 		modelName, objectName.value_or(modelName), groupName);
 
 	// 各componentを取得
-	transform_ = Component::GetComponent<Transform3DComponent>(entityId);
-	material_ = Component::GetComponent<MaterialComponent>(entityId);
+	transform_ = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(entityId);
+	material_ = &ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(entityId)->front();
 
 	// json適応
 	parameter_.owner = this;

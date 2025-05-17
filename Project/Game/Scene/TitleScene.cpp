@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
-#include <Engine/Core/Component/ComponentHelper.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
 #include <Engine/Asset/Asset.h>
@@ -14,11 +13,6 @@
 //============================================================================
 //	TitleScene classMethods
 //============================================================================
-
-TitleScene::~TitleScene() {
-
-	GameObjectHelper::RemoveObject2D(titleNameId_);
-}
 
 void TitleScene::Init(
 	[[maybe_unused]] Asset* asset,
@@ -49,23 +43,9 @@ void TitleScene::Init(
 	//	initObject
 	//========================================================================
 
-	// titleの名前を中心に表示
-	titleNameId_ = GameObjectHelper::CreateObject2D("titleName", "titleName");
-	Transform2DComponent* titleNameTransform = Component::GetComponent<Transform2DComponent>(titleNameId_);
-	titleNameTransform->SetCenterPos();
-
-	// scene遷移用
-	fadeTransition_ = std::make_unique<FadeTransition>();
-	fadeTransition_->Init();
 }
 
 void TitleScene::Update([[maybe_unused]] SceneManager* sceneManager) {
-
-	// スペースキーでGameSceneに遷移する
-	if (Input::GetInstance()->TriggerKey(DIK_SPACE)) {
-
-		sceneManager->SetNextScene(Scene::Game, std::move(fadeTransition_));
-	}
 
 	gameCamera_->Update();
 }

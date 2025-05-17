@@ -13,16 +13,6 @@
 #include <Engine/Scene/Light/LightManager.h>
 #include <Game/Scene/Manager/SceneManager.h>
 
-// stores
-#include <Engine/Core/Component/Store/TransformStore.h>
-#include <Engine/Core/Component/Store/MaterialStore.h>
-#include <Engine/Core/Component/Store/PrimitiveMeshStore.h>
-#include <Engine/Core/Component/Store/AnimationStore.h>
-#include <Engine/Core/Component/Store/SpriteStore.h>
-
-// editor
-#include <Engine/Editor/Primitive/PrimitiveEditor.h>
-
 // directX
 #include <dxgidebug.h>
 #include <dxgi1_6.h>
@@ -62,26 +52,6 @@ private:
 
 	std::unique_ptr<CameraManager> cameraManager_;
 	std::unique_ptr<LightManager> lightManager_;
-
-	// editor
-	std::unique_ptr<PrimitiveEditor> primitiveEditor_;
-
-	// componentStores
-
-	// 3D
-	std::unique_ptr<Transform3DStore> transform3DStore_;
-	std::unique_ptr<MaterialStore> materialStore_;
-	std::unique_ptr<AnimationStore> animationStore_;
-
-	// effect
-	std::unique_ptr<EffectTransformStore> effectTransformStore_;
-	std::unique_ptr<EffectMaterialStore> effectMaterialStore_;
-	std::unique_ptr<PrimitiveMeshStore> primitiveMeshStore_;
-
-	// 2D
-	std::unique_ptr<Transform2DStore> transform2DStore_;
-	std::unique_ptr<SpriteMaterialStore> spriteMaterialStore_;
-	std::unique_ptr<SpriteStore> spriteStore_;
 
 	//--------- functions ----------------------------------------------------
 

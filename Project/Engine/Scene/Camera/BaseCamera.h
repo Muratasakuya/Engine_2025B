@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
 
 // imgui
 #include <imgui.h>

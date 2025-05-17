@@ -20,7 +20,7 @@ public:
 	//========================================================================
 
 	TitleScene() = default;
-	~TitleScene();
+	~TitleScene() = default;
 
 	void Init(Asset* asset, CameraManager* cameraManager,
 		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
@@ -34,8 +34,6 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	std::unique_ptr<GameCamera> gameCamera_;
-
-	std::unique_ptr<FadeTransition> fadeTransition_;
 
 	uint32_t titleNameId_;
 };

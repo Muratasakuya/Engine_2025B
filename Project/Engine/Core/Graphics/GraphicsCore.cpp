@@ -84,8 +84,8 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 	windowWidth_ = width;
 	windowHeight_ = height;
 
-	shadowMapWidth_ = 4096;
-	shadowMapHeight_ = 4096;
+	shadowMapWidth_ = 8192;
+	shadowMapHeight_ = 8192;
 
 	windowClearColor_ = Color(0.016f, 0.016f, 0.08f, 1.0f);
 
@@ -168,13 +168,6 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 	postProcessSystem_ = std::make_unique<PostProcessSystem>();
 	postProcessSystem_->Init(device, dxShaderComplier_.get(),
 		srvDescriptor_.get(), width, height);
-}
-
-void GraphicsCore::InitRenderer(Asset* asset) {
-
-	// rendererManager
-	gpuObjectSystem_ = std::make_unique<GPUObjectSystem>();
-	gpuObjectSystem_->Init(dxDevice_->Get(), asset);
 
 	// skinning用pipeline作成
 	skinningPipeline_ = std::make_unique<PipelineState>();
@@ -185,13 +178,13 @@ void GraphicsCore::InitRenderer(Asset* asset) {
 	meshRenderer_ = std::make_unique<MeshRenderer>();
 	meshRenderer_->Init(dxDevice_->Get(), shadowMap_.get(), dxShaderComplier_.get(), srvDescriptor_.get());
 
-	// effect描画初期化
-	effectRenderer_ = std::make_unique<EffectRenderer>();
-	effectRenderer_->Init(dxDevice_->Get(), dxShaderComplier_.get(), srvDescriptor_.get());
-
 	// sprite描画初期化
 	spriteRenderer_ = std::make_unique<SpriteRenderer>();
 	spriteRenderer_->Init(dxDevice_->Get(), srvDescriptor_.get(), dxShaderComplier_.get());
+
+	// sceneBuffer作成
+	sceneBuffer_ = std::make_unique<SceneConstBuffer>();
+	sceneBuffer_->Create(device);
 }
 
 void GraphicsCore::Finalize(HWND hwnd) {
@@ -217,7 +210,6 @@ void GraphicsCore::Finalize(HWND hwnd) {
 	shadowMap_.reset();
 	postProcessSystem_.reset();
 	meshRenderer_.reset();
-	effectRenderer_.reset();
 	spriteRenderer_.reset();
 
 	Skybox::GetInstance()->Finalize();
@@ -231,14 +223,13 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	LightManager* lightManager) {
 
 	// bufferの更新
+	sceneBuffer_->Update(cameraManager, lightManager);
 	spriteRenderer_->Update(cameraManager);
 
 	// skinning用のCSpipelineを設定
 	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
 	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
 	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
-	gpuObjectSystem_->Update(cameraManager,
-		lightManager, dxCommand_.get());
 
 	// skybox更新
 	Skybox::GetInstance()->Update();
@@ -257,6 +248,14 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 
 	// commandの実行
 	EndRenderFrame();
+}
+
+void GraphicsCore::DebugUpdate() {
+
+	// skinning用のCSpipelineを設定
+	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
+	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
+	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
 }
 
 //============================================================================
@@ -281,8 +280,7 @@ void GraphicsCore::RenderZPass() {
 	dxCommand_->SetViewportAndScissor(shadowMapWidth_, shadowMapHeight_);
 
 	// Z値描画
-	meshRenderer_->RenderingZPass(gpuObjectSystem_.get(),
-		dxCommand_.get());
+	meshRenderer_->RenderingZPass(sceneBuffer_.get(), dxCommand_.get());
 
 	// Write -> PixelShader
 	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
@@ -357,32 +355,24 @@ void GraphicsCore::RenderFrameBuffer() {
 	postProcessSystem_->RenderFrameBuffer(dxCommand_.get());
 
 	// sprite描画、postPrecessを適用しない
-	spriteRenderer_->RenderIrrelevant(gpuObjectSystem_.get(),
-		dxCommand_->GetCommandList(CommandListType::Graphics));
+	//spriteRenderer_->RenderIrrelevant(dxCommand_->GetCommandList(CommandListType::Graphics));
 }
 
 void GraphicsCore::Renderers(bool debugEnable) {
 
 	// sprite描画、postPrecess適用
 	// model描画前
-	spriteRenderer_->RenderApply(SpriteLayer::PreModel, gpuObjectSystem_.get(),
-		dxCommand_->GetCommandList(CommandListType::Graphics));
+	//spriteRenderer_->RenderApply(SpriteLayer::PreModel, dxCommand_->GetCommandList(CommandListType::Graphics));
 
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	// 通常描画処理
-	meshRenderer_->Rendering(debugEnable, gpuObjectSystem_.get(),
-		dxCommand_.get());
-
-	// effect描画
-	effectRenderer_->Rendering(debugEnable, gpuObjectSystem_.get(),
-		dxCommand_->GetCommandList(CommandListType::Graphics));
+	meshRenderer_->Rendering(debugEnable, sceneBuffer_.get(), dxCommand_.get());
 
 	// sprite描画、postPrecess適用
 	// model描画後
-	spriteRenderer_->RenderApply(SpriteLayer::PostModel, gpuObjectSystem_.get(),
-		dxCommand_->GetCommandList(CommandListType::Graphics));
+	//spriteRenderer_->RenderApply(SpriteLayer::PostModel, dxCommand_->GetCommandList(CommandListType::Graphics));
 }
 
 //============================================================================

@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Engine/Core/Component/TransformComponent.h>
+#include <Engine/Core/ECS/Components/TransformComponent.h>
 #include <Engine/Editor/Base/IGameEditor.h>
 #include <Lib/MathUtils/MathUtils.h>
 
