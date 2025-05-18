@@ -6,6 +6,7 @@
 #include <Engine/Core/Debug/Assert.h>
 
 // c++
+#include <cstdint>
 #include <memory>
 #include <vector>
 #include <bitset>
@@ -56,6 +57,7 @@ public:
 	std::unordered_map<uint32_t, size_t> entityToIndex_;
 	// index -> entity
 	std::vector<uint32_t> indexToEntity_;
+	std::vector<size_t> freeList_;
 
 	// componentData
 	// kMultiple = true: std::vector<T>
@@ -97,19 +99,27 @@ inline void ComponentPool<T, kMultiple>::Add(uint32_t entity, Args && ...args) {
 	auto it = entityToIndex_.find(entity);
 	if (it != entityToIndex_.end()) {
 
-		size_t idx = it->second;
-		data_[idx] = Storage{ std::forward<Args>(args)... };
+		data_[it->second] = Storage{ std::forward<Args>(args)... };
 		return;
 	}
 
-	// capacityを超えたら
-	ASSERT(data_.size() < data_.capacity(), "componentPool capacity exceeded");
+	size_t index;
+	if (!freeList_.empty()) {
 
-	const size_t newIndex = data_.size();
-	entityToIndex_[entity] = newIndex;
-	indexToEntity_.push_back(entity);
+		// 空いているindexを取得し再利用する
+		index = freeList_.back();
+		freeList_.pop_back();
+		data_[index] = Storage{ std::forward<Args>(args)... };
+		indexToEntity_[index] = entity;
+	} else {
 
-	data_.emplace_back(Storage{ std::forward<Args>(args)... });
+		// capacityを超えたら
+		ASSERT(data_.size() < data_.capacity(), "componentPool capacity exceeded");
+		index = data_.size();
+		data_.emplace_back(Storage{ std::forward<Args>(args)... });
+		indexToEntity_.push_back(entity);
+	}
+	entityToIndex_[entity] = index;
 }
 
 template<class T, bool kMultiple>
@@ -209,15 +219,10 @@ inline void ComponentPool<T, kMultiple>::RemoveImpl(uint32_t entity) {
 	}
 
 	size_t index = it->second;
-	size_t last = data_.size() - 1;
-	if (index != last) {
+	data_[index] = Storage{};
+	indexToEntity_[index] = 0xffffffff;
 
-		std::swap(data_[index], data_[last]);
-		uint32_t moved = indexToEntity_[last];
-		entityToIndex_[moved] = index;
-		indexToEntity_[index] = moved;
-	}
-	data_.pop_back();
-	indexToEntity_.pop_back();
+	// 空き番地を記録
 	entityToIndex_.erase(it);
+	freeList_.push_back(index);
 }

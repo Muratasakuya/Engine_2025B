@@ -34,7 +34,7 @@ void InstancedMeshSystem::CreateStaticMesh(const std::string& modelName) {
 void InstancedMeshSystem::CreateSkinnedMesh(const std::string& modelName) {
 
 	// 最大instance数
-	const uint32_t kMaxInstanceNum = 32;
+	const uint32_t kMaxInstanceNum = 64;
 
 	// meshの作成、登録
 	meshRegistry_->RegisterMesh(modelName, true, kMaxInstanceNum);

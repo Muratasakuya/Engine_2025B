@@ -31,14 +31,6 @@ public:
 
 	void Load(const std::string& animationName, const std::string& modelName);
 
-	void ApplyAnimation(Skeleton& skeleton, const AnimationData& animationData, float animationTime);
-	void SkeletonUpdate(Skeleton& skeleton);
-	void SkinClusterUpdate(SkinCluster& skinCluster, const Skeleton& skeleton);
-
-	void BlendAnimation(Skeleton& skeleton,
-		const AnimationData& oldAnimationData, float oldAnimTime,
-		const AnimationData& nextAnimationData, float nextAnimTime, float alpha);
-
 	//--------- accessor -----------------------------------------------------
 
 	const AnimationData& GetAnimationData(const std::string& animationName) const;

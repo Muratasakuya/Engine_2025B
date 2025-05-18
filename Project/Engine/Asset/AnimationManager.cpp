@@ -117,121 +117,6 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 	skinClusters_[animationName] = CreateSkinCluster(modelName, animationName);
 }
 
-void AnimationManager::ApplyAnimation(Skeleton& skeleton,
-	const AnimationData& animationData, float animationTime) {
-
-	for (auto& joint : skeleton.joints) {
-
-		// 対象のJointのAnimationがあれば、値の適応を行う
-		if (auto it = animationData.nodeAnimations.find(joint.name);
-			it != animationData.nodeAnimations.end()) {
-
-			const auto& rootNodeAnimation = (*it).second;
-			joint.transform.translation = Vector3::CalculateValue(rootNodeAnimation.translate.keyframes, animationTime);
-			joint.transform.rotation = Quaternion::CalculateValue(rootNodeAnimation.rotate.keyframes, animationTime);
-			joint.transform.scale = Vector3::CalculateValue(rootNodeAnimation.scale.keyframes, animationTime);
-		}
-	}
-}
-
-void AnimationManager::SkeletonUpdate(Skeleton& skeleton) {
-
-	// 全てのJointを更新、親が若いので通常ループで処理可能
-	for (auto& joint : skeleton.joints) {
-
-		joint.localMatrix =
-			Matrix4x4::MakeAxisAffineMatrix(joint.transform.scale, joint.transform.rotation, joint.transform.translation);
-		// 親がいれば親の行列を掛ける
-		if (joint.parent) {
-
-			joint.skeletonSpaceMatrix = joint.localMatrix * skeleton.joints[*joint.parent].skeletonSpaceMatrix;
-		}
-		// 親がいないのでlocalMatrixとSkeletonSpaceMatrixは一致する
-		else {
-
-			joint.skeletonSpaceMatrix = joint.localMatrix;
-		}
-	}
-}
-
-void AnimationManager::SkinClusterUpdate(SkinCluster& skinCluster, const Skeleton& skeleton) {
-
-	for (size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex) {
-
-		assert(jointIndex < skinCluster.inverseBindPoseMatrices.size());
-
-		skinCluster.mappedPalette[jointIndex].skeletonSpaceMatrix =
-			skinCluster.inverseBindPoseMatrices[jointIndex] *
-			skeleton.joints[jointIndex].skeletonSpaceMatrix;
-		skinCluster.mappedPalette[jointIndex].skeletonSpaceInverseTransposeMatrix =
-			Matrix4x4::Transpose(Matrix4x4::Inverse(skinCluster.mappedPalette[jointIndex].skeletonSpaceMatrix));
-	}
-}
-
-void AnimationManager::BlendAnimation(Skeleton& skeleton,
-	const AnimationData& oldAnimationData, float oldAnimTime,
-	const AnimationData& nextAnimationData, float nextAnimTime, float alpha) {
-
-	// すべてのJointを対象
-	for (size_t jointIndex = 0; jointIndex < skeleton.joints.size(); ++jointIndex) {
-
-		auto& jointOld = skeleton.joints[jointIndex];
-
-		const std::string& nodeName = jointOld.name;
-
-		// old の transform
-		Vector3 posOld = Vector3(0.0f, 0.0f, 0.0f);
-		Quaternion rotOld = Quaternion::IdentityQuaternion();
-		Vector3 sclOld = Vector3(1.0f, 1.0f, 1.0f);
-		if (auto itOld = oldAnimationData.nodeAnimations.find(nodeName); itOld != oldAnimationData.nodeAnimations.end()) {
-
-			const auto& rootNodeAnimation = itOld->second;
-			if (!rootNodeAnimation.translate.keyframes.empty()) {
-
-				posOld = Vector3::CalculateValue(rootNodeAnimation.translate.keyframes, oldAnimTime);
-			}
-			if (!rootNodeAnimation.rotate.keyframes.empty()) {
-
-				rotOld = Quaternion::CalculateValue(rootNodeAnimation.rotate.keyframes, oldAnimTime);
-			}
-			if (!rootNodeAnimation.scale.keyframes.empty()) {
-
-				sclOld = Vector3::CalculateValue(rootNodeAnimation.scale.keyframes, oldAnimTime);
-			}
-		}
-
-		// next の transform
-		Vector3 posNext = Vector3(0.0f, 0.0f, 0.0f);
-		Quaternion rotNext = Quaternion::IdentityQuaternion();
-		Vector3 sclNext = Vector3(1.0f, 1.0f, 1.0f);
-		if (auto itNext = nextAnimationData.nodeAnimations.find(nodeName); itNext != nextAnimationData.nodeAnimations.end()) {
-			const auto& rootNodeAnimation = itNext->second;
-
-			if (!rootNodeAnimation.translate.keyframes.empty()) {
-
-				posNext = Vector3::CalculateValue(rootNodeAnimation.translate.keyframes, nextAnimTime);
-			}
-			if (!rootNodeAnimation.rotate.keyframes.empty()) {
-
-				rotNext = Quaternion::CalculateValue(rootNodeAnimation.rotate.keyframes, nextAnimTime);
-			}
-			if (!rootNodeAnimation.scale.keyframes.empty()) {
-
-				sclNext = Vector3::CalculateValue(rootNodeAnimation.scale.keyframes, nextAnimTime);
-			}
-		}
-
-		// αブレンド
-		Vector3 posBlend = Vector3::Lerp(posOld, posNext, alpha);
-		Quaternion rotBlend = Quaternion::Slerp(rotOld, rotNext, alpha);
-		Vector3 sclBlend = Vector3::Lerp(sclOld, sclNext, alpha);
-
-		jointOld.transform.translation = posBlend;
-		jointOld.transform.rotation = rotBlend;
-		jointOld.transform.scale = sclBlend;
-	}
-}
-
 Skeleton AnimationManager::CreateSkeleton(const Node& rootNode) {
 
 	Skeleton skeleton;
@@ -242,9 +127,6 @@ Skeleton AnimationManager::CreateSkeleton(const Node& rootNode) {
 
 		skeleton.jointMap.emplace(joint.name, joint.index);
 	}
-
-	// スケルトンの更新
-	SkeletonUpdate(skeleton);
 
 	return skeleton;
 }

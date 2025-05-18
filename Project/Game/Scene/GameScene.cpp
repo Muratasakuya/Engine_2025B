@@ -18,35 +18,17 @@
 
 void GameScene::Load(Asset* asset) {
 
-	// debug
-	asset->LoadModel("sphere");
-
 	// player
 	asset->LoadModel("playerBody");
 	asset->LoadModel("playerLeftHand");
 	asset->LoadModel("playerRightHand");
 	asset->LoadModel("playerSword");
 
-	// effect
-	asset->LoadTexture("effectCircle");
-	asset->LoadTexture("sirialHitEffect");
-	asset->LoadTexture("sirialLightning_0");
-	asset->LoadTexture("sirialLightning_1");
-
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
 
 	// environment
 	asset->LoadModel("stageField");
-
-	// primitive
-	asset->LoadModel("sirialHitEffectPlane");
-	asset->LoadModel("effectDefaultPlane");
-	asset->LoadModel("sirialLightningEffectPlane");
-
-	// debugAnimation
-	asset->LoadModel("BrainStem");
-	asset->LoadAnimation("BrainStem", "BrainStem");
 }
 
 void GameScene::Init(
@@ -96,13 +78,6 @@ void GameScene::Init(
 
 	// skybox
 	Skybox::GetInstance()->Create(asset->GetTextureGPUIndex("docklands_01_2k"));
-
-	uint32_t id = ECSManager::GetInstance()->CreateObject3D("BrainStem", "BrainStem", "Human", "BrainStem");
-	auto* animation = ECSManager::GetInstance()->GetComponent<AnimationComponent>(id);
-	animation->SetAnimationData("BrainStem");
-	animation->SetPlayAnimation("BrainStem", true);
-
-	ECSManager::GetInstance()->CreateObject3D("sphere", "sphere", "Sphere");
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

@@ -9,6 +9,9 @@
 // c++
 #include <memory>
 #include <array>
+// front
+class SRVDescriptor;
+class DxShaderCompiler;
 
 //============================================================================
 //	PostProcessPipeline class
@@ -22,7 +25,9 @@ public:
 	PostProcessPipeline() = default;
 	~PostProcessPipeline() = default;
 
-	void Init(ID3D12Device8* device, class SRVDescriptor* srvDescriptor, class DxShaderCompiler* shaderCompiler);
+	void Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler);
+
+	void Create(PostProcessType type);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -33,6 +38,13 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	ID3D12Device8* device_;
+	SRVDescriptor* srvDescriptor_;
+	DxShaderCompiler* shaderCompiler_;
+
+	// pipelineごとのfileの名前
+	std::vector<std::string> fileNames_;
 
 	std::array<std::unique_ptr<PipelineState>, kPostProcessCount> pipelines_;
 };

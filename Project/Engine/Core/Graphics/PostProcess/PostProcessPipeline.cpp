@@ -12,8 +12,15 @@
 void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 	DxShaderCompiler* shaderCompiler) {
 
+	device_ = nullptr;
+	device_ = device;
+	srvDescriptor_ = nullptr;
+	srvDescriptor_ = srvDescriptor;
+	shaderCompiler_ = nullptr;
+	shaderCompiler_ = shaderCompiler;
+
 	// shaderDataFileName
-	std::vector<std::string> fileNames = {
+	fileNames_ = {
 		"HorizontalBlur.json",
 		"VerticalBlur.json",
 		"RadialBlur.json",
@@ -33,8 +40,14 @@ void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescript
 	for (const uint32_t& type : Algorithm::GetEnumArray(PostProcessType::Count)) {
 
 		pipelines_[type] = std::make_unique<PipelineState>();
-		pipelines_[type]->Create(fileNames[type], device, srvDescriptor, shaderCompiler);
 	}
+}
+
+void PostProcessPipeline::Create(PostProcessType type) {
+
+	// pipelineの作成
+	pipelines_[static_cast<uint32_t>(type)]->Create(fileNames_[static_cast<uint32_t>(type)],
+		device_, srvDescriptor_, shaderCompiler_);
 }
 
 void PostProcessPipeline::SetPipeline(ID3D12GraphicsCommandList* commandList, PostProcessType type) {

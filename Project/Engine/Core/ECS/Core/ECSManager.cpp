@@ -51,17 +51,22 @@ void ECSManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxCommand) 
 
 	// system登録
 	systemManager_->AddSystem<Transform3DSystem>();
-	systemManager_->AddSystem<MaterialSystem>();
 	systemManager_->AddSystem<AnimationSystem>();
+	systemManager_->AddSystem<MaterialSystem>();
 	systemManager_->AddSystem<TagSystem>();
 	systemManager_->AddSystem<InstancedMeshSystem>(device, asset, dxCommand);
 
 	ImGuiInspector::GetInstance()->Init();
 }
 
-void ECSManager::Update() {
+void ECSManager::UpdateComponent() {
 
-	systemManager_->Update(*entityManager_.get());
+	systemManager_->UpdateComponent(*entityManager_.get());
+}
+
+void ECSManager::UpdateBuffer() {
+
+	systemManager_->UpdateBuffer(*entityManager_.get());
 }
 
 uint32_t ECSManager::CreateObject3D(const std::string& modelName,

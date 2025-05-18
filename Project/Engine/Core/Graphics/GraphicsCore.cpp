@@ -79,13 +79,49 @@ void GraphicsCore::InitDXDevice() {
 #endif
 }
 
+void GraphicsCore::InitRenderTexture() {
+
+	ID3D12Device8* device = dxDevice_->Get();
+
+	// renderTexture作成
+	renderTexture_ = std::make_unique<RenderTexture>();
+	renderTexture_->Create(windowWidth_, windowHeight_, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
+		device, rtvDescriptor_.get(), srvDescriptor_.get());
+
+	// gui用texture作成
+#ifdef _DEBUG
+	guiRenderTexture_ = std::make_unique<GuiRenderTexture>();
+	guiRenderTexture_->Create(windowWidth_, windowHeight_, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+		device, srvDescriptor_.get());
+#endif // _DEBUG
+
+	// debugSceneRenderTexture作成
+#ifdef _DEBUG
+	copyTexturePipeline_ = std::make_unique<PipelineState>();
+	copyTexturePipeline_->Create("CopySceneTexture.json",
+		device, srvDescriptor_.get(), dxShaderComplier_.get());
+
+	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
+	debugSceneRenderTexture_->Create(windowWidth_, windowHeight_, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
+		device, rtvDescriptor_.get(), srvDescriptor_.get());
+
+	copyTextureProcessor_ = std::make_unique<ComputePostProcessor>();
+	copyTextureProcessor_->Init(device, srvDescriptor_.get(), windowWidth_, windowHeight_);
+#endif // _DEBUG
+
+	// shadowMap作成
+	shadowMap_ = std::make_unique<ShadowMap>();
+	shadowMap_->Create(shadowMapWidth_, shadowMapHeight_,
+		dsvDescriptor_.get(), srvDescriptor_.get());
+}
+
 void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 
 	windowWidth_ = width;
 	windowHeight_ = height;
 
-	shadowMapWidth_ = 8192;
-	shadowMapHeight_ = 8192;
+	shadowMapWidth_ = 128;
+	shadowMapHeight_ = 128;
 
 	windowClearColor_ = Color(0.016f, 0.016f, 0.08f, 1.0f);
 
@@ -102,14 +138,14 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 	dxCommand_ = std::make_unique<DxCommand>();
 	dxCommand_->Create(device);
 
+	// DXC初期化
+	dxShaderComplier_ = std::make_unique<DxShaderCompiler>();
+	dxShaderComplier_->Init();
+
 	// RTV初期化
 	rtvDescriptor_ = std::make_unique<RTVDescriptor>();
 	rtvDescriptor_->Init(device, DescriptorType(
 		D3D12_DESCRIPTOR_HEAP_TYPE_RTV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE));
-
-	// DXC初期化
-	dxShaderComplier_ = std::make_unique<DxShaderCompiler>();
-	dxShaderComplier_->Init();
 
 	// 画面設定
 	dxSwapChain_ = std::make_unique<DxSwapChain>();
@@ -133,36 +169,8 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 		dxSwapChain_->GetDesc().BufferCount, device, srvDescriptor_.get());
 #endif // _DEBUG
 
-	// renderTexture作成
-	renderTexture_ = std::make_unique<RenderTexture>();
-	renderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
-		device, rtvDescriptor_.get(), srvDescriptor_.get());
-
-	// gui用texture作成
-#ifdef _DEBUG
-	guiRenderTexture_ = std::make_unique<GuiRenderTexture>();
-	guiRenderTexture_->Create(width, height, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-		device, srvDescriptor_.get());
-#endif // _DEBUG
-
-	// debugSceneRenderTexture作成
-#ifdef _DEBUG
-	copyTexturePipeline_ = std::make_unique<PipelineState>();
-	copyTexturePipeline_->Create("CopySceneTexture.json",
-		device, srvDescriptor_.get(), dxShaderComplier_.get());
-
-	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
-	debugSceneRenderTexture_->Create(width, height, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
-		device, rtvDescriptor_.get(), srvDescriptor_.get());
-
-	copyTextureProcessor_ = std::make_unique<ComputePostProcessor>();
-	copyTextureProcessor_->Init(device, srvDescriptor_.get(), width, height);
-#endif // _DEBUG
-
-	// shadowMap作成
-	shadowMap_ = std::make_unique<ShadowMap>();
-	shadowMap_->Create(shadowMapWidth_, shadowMapHeight_,
-		dsvDescriptor_.get(), srvDescriptor_.get());
+	// renderTexture初期化
+	InitRenderTexture();
 
 	// postProcessSystem初期化
 	postProcessSystem_ = std::make_unique<PostProcessSystem>();
@@ -235,6 +243,10 @@ void GraphicsCore::BeginFrame() {
 
 void GraphicsCore::Render(CameraManager* cameraManager,
 	LightManager* lightManager) {
+
+	// 描画開始時点でComputeCommandは全て実行させる
+	// ComputeCommandを非同期で実行
+	dxCommand_->StartComputeCommands();
 
 	// bufferの更新
 	sceneBuffer_->Update(cameraManager, lightManager);
@@ -408,9 +420,6 @@ void GraphicsCore::EndRenderFrame() {
 
 	// CSへの書き込み状態へ遷移
 	postProcessSystem_->ToWrite(dxCommand_.get());
-
-	// ComputeCommandを非同期で実行
-	dxCommand_->StartComputeCommands();
 
 	// Command実行
 	dxCommand_->ExecuteCommands(dxSwapChain_->Get());

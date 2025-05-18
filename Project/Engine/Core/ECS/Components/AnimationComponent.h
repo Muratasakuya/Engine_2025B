@@ -5,6 +5,10 @@
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
 
+// c++
+#include <execution>
+#include <ranges> 
+
 // front
 class Asset;
 
@@ -45,6 +49,8 @@ private:
 
 	// animationDataはstringで名前ごとに保存して使うようにする
 	std::unordered_map<std::string, AnimationData> animationData_;
+	// 使用するjointをstd::stringで名前ごとに記録
+	std::unordered_map<std::string, std::vector<const NodeAnimation*>> jointAnimationTracks_;
 	Skeleton skeleton_;
 	SkinCluster skinCluster_;
 
@@ -67,4 +73,16 @@ private:
 
 	// Animationの経過率
 	float animationProgress_;
+
+	//--------- variables ----------------------------------------------------
+
+	// joint更新
+	void ApplyAnimation();
+	void UpdateSkeleton();
+	void UpdateSkinCluster();
+
+	// blend処理
+	void BlendAnimation(Skeleton& skeleton,
+		const AnimationData& oldAnimationData, float oldAnimTime,
+		const AnimationData& nextAnimationData, float nextAnimTime, float alpha);
 };

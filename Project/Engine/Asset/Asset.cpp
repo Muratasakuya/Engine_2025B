@@ -81,22 +81,3 @@ const Skeleton& Asset::GetSkeletonData(const std::string& animationName) const {
 const SkinCluster& Asset::GetSkinClusterData(const std::string& animationName) const {
 	return animationManager_->GetSkinClusterData(animationName);
 }
-
-void Asset::ApplyAnimation(Skeleton& skeleton, const AnimationData& animationData, float animationTime) {
-	animationManager_->ApplyAnimation(skeleton, animationData, animationTime);
-}
-
-void Asset::SkeletonUpdate(Skeleton& skeleton) {
-	animationManager_->SkeletonUpdate(skeleton);
-}
-
-void Asset::SkinClusterUpdate(SkinCluster& skinCluster, const Skeleton& skeleton) {
-	animationManager_->SkinClusterUpdate(skinCluster, skeleton);
-}
-
-void Asset::BlendAnimation(Skeleton& skeleton,
-	const AnimationData& oldAnimationData, float oldAnimTime,
-	const AnimationData& nextAnimationData, float nextAnimTime, float alpha) {
-	animationManager_->BlendAnimation(skeleton, oldAnimationData,
-		oldAnimTime, nextAnimationData, nextAnimTime, alpha);
-}

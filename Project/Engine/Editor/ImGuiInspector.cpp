@@ -136,11 +136,12 @@ void ImGuiInspector::EditObject3D() {
 			ImGui::EndTabItem();
 		}
 
-		if (individualUI_.count(*selected3D_) &&
-			ImGui::BeginTabItem("Individual")) {
+		if (selected3D_.has_value()) {
+			if (ImGui::BeginTabItem("Individual")) {
 
-			individualUI_.at(*selected3D_)();
-			ImGui::EndTabItem();
+				individualUI_.at(*selected3D_)();
+				ImGui::EndTabItem();
+			}
 		}
 		ImGui::EndTabBar();
 	}

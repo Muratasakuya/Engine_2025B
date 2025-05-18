@@ -57,46 +57,17 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	winApp_ = std::make_unique<WinApp>();
 	winApp_->Create(width, height, title);
 
-	// scene
+	//------------------------------------------------------------------------
+	// scene初期化
+
 	// camera
 	cameraManager_ = std::make_unique<CameraManager>();
 	cameraManager_->Init();
 	// light
 	lightManager_ = std::make_unique<LightManager>();
 
-	// directXSystem初期化
-	InitDirectX(width, height);
-
-	// component機能初期化
-	InitComponent();
-
-	// imgui機能初期化
-#ifdef _DEBUG
-	imguiEditor_ = std::make_unique<ImGuiEditor>();
-	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
-		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
-		graphicsCore_->GetShadowMapGPUHandle());
-#endif // _DEBUG
-
-	// scene管理クラス初期化
-	sceneManager_ = std::make_unique<SceneManager>(
-		Scene::Game, asset_.get(), cameraManager_.get(),
-		lightManager_.get(), graphicsCore_->GetPostProcessSystem());
-
-	Input::GetInstance()->Init(winApp_.get());
-	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
-		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
-		graphicsCore_->GetSRVDescriptor(), graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
-
-	// 最初からfullScreen設定
-	fullscreenEnable_ = true;
-	winApp_->SetFullscreen(fullscreenEnable_);
-
-	// assetのeditor初期化
-	AssetEditor::GetInstance()->Init(asset_.get());
-}
-
-void Framework::InitDirectX(uint32_t width, uint32_t height) {
+	//------------------------------------------------------------------------
+	// directX初期化
 
 	// directX初期化
 	graphicsCore_ = std::make_unique<GraphicsCore>();
@@ -106,12 +77,42 @@ void Framework::InitDirectX(uint32_t width, uint32_t height) {
 	asset_ = std::make_unique<Asset>();
 	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
 		graphicsCore_->GetSRVDescriptor());
-}
 
-void Framework::InitComponent() {
+	// 最初からfullScreen設定
+	fullscreenEnable_ = true;
+	winApp_->SetFullscreen(fullscreenEnable_);
+
+	//------------------------------------------------------------------------
+	// component機能初期化
 
 	ECSManager::GetInstance()->Init(graphicsCore_->GetDevice(),
 		asset_.get(), graphicsCore_->GetDxCommand());
+
+	//------------------------------------------------------------------------
+	// scene管理クラス初期化
+
+	sceneManager_ = std::make_unique<SceneManager>(
+		Scene::Game, asset_.get(), cameraManager_.get(),
+		lightManager_.get(), graphicsCore_->GetPostProcessSystem());
+
+	//------------------------------------------------------------------------
+	// module初期化
+
+	Input::GetInstance()->Init(winApp_.get());
+	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
+		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
+		graphicsCore_->GetSRVDescriptor(), graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
+	AssetEditor::GetInstance()->Init(asset_.get());
+
+	//------------------------------------------------------------------------
+	// imgui機能初期化
+
+#ifdef _DEBUG
+	imguiEditor_ = std::make_unique<ImGuiEditor>();
+	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
+		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
+		graphicsCore_->GetShadowMapGPUHandle());
+#endif // _DEBUG
 }
 
 void Framework::Update() {
@@ -131,9 +132,6 @@ void Framework::Update() {
 	// scene更新
 	UpdateScene();
 
-	graphicsCore_->DebugUpdate();
-	ECSManager::GetInstance()->Update();
-
 	GameTimer::EndUpdateCount();
 }
 void Framework::UpdateScene() {
@@ -145,10 +143,14 @@ void Framework::UpdateScene() {
 	GameTimer::Update();
 	Input::GetInstance()->Update();
 
+	// scene更新
 	sceneManager_->Update();
 	cameraManager_->Update();
 	lightManager_->Update();
 
+	// component更新
+	ECSManager::GetInstance()->UpdateComponent();
+	// collision更新
 	CollisionManager::GetInstance()->Update();
 }
 
@@ -159,6 +161,10 @@ void Framework::Draw() {
 	//========================================================================
 
 	GameTimer::BeginDrawCount();
+
+	graphicsCore_->DebugUpdate();
+	// GPUBuffer転送
+	ECSManager::GetInstance()->UpdateBuffer();
 
 	// 描画処理
 	graphicsCore_->Render(cameraManager_.get(), lightManager_.get());

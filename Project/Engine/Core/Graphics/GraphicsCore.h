@@ -115,6 +115,7 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	void InitDXDevice();
+	void InitRenderTexture();
 
 	// shadowMapへの描画処理
 	void RenderZPass();

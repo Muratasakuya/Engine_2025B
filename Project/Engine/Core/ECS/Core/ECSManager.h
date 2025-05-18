@@ -29,7 +29,8 @@ public:
 
 	void Init(ID3D12Device* device, Asset* asset, DxCommand* dxCommand);
 
-	void Update();
+	void UpdateComponent();
+	void UpdateBuffer();
 
 	// entity追加
 	// helper

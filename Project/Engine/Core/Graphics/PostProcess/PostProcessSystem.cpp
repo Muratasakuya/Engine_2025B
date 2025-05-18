@@ -90,9 +90,13 @@ void PostProcessSystem::Create(const std::vector<PostProcess>& processes) {
 			processors_[process] = std::make_unique<ComputePostProcessor>();
 			processors_[process]->Init(device_, srvDescriptor_, width_, height_);
 
+			// buffer作成
 			PostProcessType type = GetPostProcessType(process);
 			CreateCBuffer(type);
 		}
+
+		// pipeline作成
+		pipeline_->Create(GetPostProcessType(process));
 	}
 }
 

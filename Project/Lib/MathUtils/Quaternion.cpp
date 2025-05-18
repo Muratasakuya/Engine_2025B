@@ -263,9 +263,6 @@ float Quaternion::Dot(const Quaternion& q0, const Quaternion& q1) {
 
 Quaternion Quaternion::CalculateValue(const std::vector<Keyframe<Quaternion>>& keyframes, float time) {
 
-	// キーがないものは返す値が分からないのでアウト
-	ASSERT(!keyframes.empty(), "quaternion animation keyframes is empty");
-
 	// キーが1つか、時刻がキーフレーム前なら最初の値とする
 	if (keyframes.size() == 1 || time <= keyframes[0].time) {
 

@@ -7,6 +7,7 @@
 
 // c++
 #include <unordered_map>
+#include <algorithm>
 #include <ranges>
 
 //============================================================================
@@ -24,7 +25,9 @@ public:
 	template<class T, class... Args>
 	void AddSystem(Args&&... args);
 
-	void Update(EntityManager& entityManager);
+	void UpdateComponent(EntityManager& entityManager);
+
+	void UpdateBuffer(EntityManager& entityManager);
 
 	//--------- accessor -----------------------------------------------------
 

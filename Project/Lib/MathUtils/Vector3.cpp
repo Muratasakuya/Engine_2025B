@@ -155,9 +155,6 @@ Vector3 Vector3::Normalize(const Vector3& v) {
 
 Vector3 Vector3::CalculateValue(const std::vector<Keyframe<Vector3>>& keyframes, float time) {
 
-	// キーがないものは返す値が分からないのでアウト
-	ASSERT(!keyframes.empty(), "quaternion animation keyframes is empty");
-
 	// キーが1つか、時刻がキーフレーム前なら最初の値とする
 	if (keyframes.size() == 1 || time <= keyframes[0].time) {
 
