@@ -216,7 +216,7 @@ void InstancedMeshBuffer::Update(DxCommand* dxCommand) {
 
 				meshGroups_[name].wells[meshIndex].TransferVectorData(meshGroups_[name].wellUploadData[meshIndex]);
 
-				ID3D12GraphicsCommandList* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+				ID3D12GraphicsCommandList* commandList = dxCommand->GetCommandList(CommandListType::Compute);
 				SkinnedMesh* skinnedMesh = static_cast<SkinnedMesh*>(meshGroups_[name].skinnedMesh);
 
 				// dispach処理

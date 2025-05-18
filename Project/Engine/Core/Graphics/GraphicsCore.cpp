@@ -216,6 +216,20 @@ void GraphicsCore::Finalize(HWND hwnd) {
 }
 
 //============================================================================
+//	Begin
+//============================================================================
+
+void GraphicsCore::BeginFrame() {
+
+#ifdef _DEBUG
+	imguiManager_->Begin();
+#endif
+
+	// srvDescriptorHeap設定
+	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
+}
+
+//============================================================================
 //	Rendering Pass
 //============================================================================
 
@@ -225,11 +239,6 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	// bufferの更新
 	sceneBuffer_->Update(cameraManager, lightManager);
 	spriteRenderer_->Update(cameraManager);
-
-	// skinning用のCSpipelineを設定
-	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
-	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
-	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
 
 	// skybox更新
 	Skybox::GetInstance()->Update();
@@ -253,20 +262,9 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 void GraphicsCore::DebugUpdate() {
 
 	// skinning用のCSpipelineを設定
-	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
+	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Compute);
 	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
 	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
-}
-
-//============================================================================
-//	Begin
-//============================================================================
-
-void GraphicsCore::BeginRenderFrame() {
-
-#ifdef _DEBUG
-	imguiManager_->Begin();
-#endif
 }
 
 //============================================================================
@@ -288,9 +286,6 @@ void GraphicsCore::RenderZPass() {
 }
 
 void GraphicsCore::RenderOffscreenTexture() {
-
-	// srvDescriptorHeap設定
-	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
 
 	dxCommand_->SetRenderTargets(renderTexture_->GetRenderTarget(),
 		dsvDescriptor_->GetFrameCPUHandle());

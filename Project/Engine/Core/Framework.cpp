@@ -123,7 +123,7 @@ void Framework::Update() {
 	GameTimer::BeginUpdateCount();
 
 	// 描画前処理
-	graphicsCore_->BeginRenderFrame();
+	graphicsCore_->BeginFrame();
 	// imgui表示更新
 #ifdef _DEBUG
 	imguiEditor_->Display();

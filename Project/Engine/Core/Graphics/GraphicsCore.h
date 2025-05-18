@@ -42,7 +42,7 @@ public:
 
 	//--------- rendering ----------------------------------------------------
 
-	void BeginRenderFrame();
+	void BeginFrame();
 
 	void Render(class CameraManager* cameraManager,
 		class LightManager* lightManager);

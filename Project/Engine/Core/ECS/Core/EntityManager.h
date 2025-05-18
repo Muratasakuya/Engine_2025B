@@ -4,17 +4,19 @@
 //	include
 //============================================================================
 #include <Engine/Core/ECS/Core/ComponentPool.h>
+#include <Engine/Editor/Base/IGameEditor.h>
 
 //============================================================================
 //	EntityManager class
 //============================================================================
-class EntityManager {
+class EntityManager :
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	EntityManager() = default;
+	EntityManager() :IGameEditor("EntityManager") {};
 	~EntityManager() = default;
 
 	// entity作成
@@ -34,8 +36,7 @@ public:
 
 	std::vector<uint32_t> View(const Archetype& mask) const;
 
-	// debug
-	void DebugImGui();
+	void ImGui() override;
 
 	//--------- accessor -----------------------------------------------------
 

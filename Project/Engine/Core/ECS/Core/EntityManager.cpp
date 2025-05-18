@@ -60,9 +60,7 @@ std::vector<uint32_t> EntityManager::View(const Archetype& mask) const {
 	return result;
 }
 
-void EntityManager::DebugImGui() {
-
-	if (!ImGui::Begin("Pool Debug")) { ImGui::End(); return; }
+void EntityManager::ImGui() {
 
 	// 登録済みプールを列挙
 	for (size_t id = 0; id < pools_.size(); ++id) {
@@ -75,7 +73,6 @@ void EntityManager::DebugImGui() {
 		label = Algorithm::RemoveSubstring(label, "ComponentPool");
 		pools_[id]->Debug(label.c_str());
 	}
-	ImGui::End();
 }
 
 template<class T>
