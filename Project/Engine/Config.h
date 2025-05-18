@@ -30,7 +30,7 @@ namespace  Config {
 
 	// clearColor
 	const constexpr float kWindowClearColor[] = {0.016f, 0.016f, 0.08f, 1.0f};
-	// shadowMap...値が大きい方度精度が上がる
+	// shadowMap...値が大きい方が精度が上がる
 	const constexpr uint32_t kShadowMapSize = 128;
 
 	// swapChainFormat
