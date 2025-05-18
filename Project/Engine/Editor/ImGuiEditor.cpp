@@ -186,4 +186,21 @@ void ImGuiEditor::Asset() {
 	AssetEditor::GetInstance()->ImGui();
 
 	ImGui::End();
+
+	ImGui::Begin("Receiver");
+
+	ImVec2 dropSize(128.0f, 128.0f);
+	ImGui::Button("Drop here", dropSize);
+
+	// ドロップ処理
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
+
+			auto* data = static_cast<const AssetEditor::DragPayload*>(p->Data);
+			ImGui::Text("Dropped: %s", data->name);
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::End();
 }

@@ -62,6 +62,10 @@ bool Asset::SearchTexture(const std::string& textureName) {
 	return textureManager_->Search(textureName);
 }
 
+bool Asset::SearchModel(const std::string& modelName) {
+	return modelLoader_->Search(modelName);
+}
+
 const ModelData& Asset::GetModelData(const std::string& modelName) const {
 	return modelLoader_->GetModelData(modelName);
 }

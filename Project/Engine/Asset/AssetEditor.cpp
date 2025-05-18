@@ -224,20 +224,44 @@ void AssetEditor::DrawFolderGrid() {
 
 		ImGui::PopStyleColor(2);
 
+		const bool isJson = IsJsonFile(child->path);
+		const bool isTex = IsTextureFile(child->path);
+		const bool isModel = IsModelFile(child->path);
+
+		const std::string stem = child->path.stem().string();
+		const bool texLoaded = isTex && asset_->SearchTexture(stem);
+		const bool modelLoaded = isModel && asset_->SearchModel(stem);
+
+		// ドラッグ出来るか判定
+		bool canDrag = (isJson) || (texLoaded) || (modelLoaded);
+
+		if (canDrag && ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceAllowNullID |
+			ImGuiDragDropFlags_SourceAutoExpirePayload)) {
+
+			static DragPayload payload;
+			payload.type = texLoaded ? PendingType::Texture : modelLoaded ? PendingType::Model : PendingType::None;
+			const std::string name = child->isDirectory ? child->name : child->path.stem().string();
+			strncpy_s(payload.name, name.c_str(), _TRUNCATE);
+			ImGui::SetDragDropPayload(kDragPayloadId, &payload, sizeof(payload));
+
+			// preView表示
+			ImGui::Image(ImTextureID(GetIconForEntry(*child).ptr), ImVec2(folderSize_, folderSize_));
+			ImGui::EndDragDropSource();
+		}
+
 		// 右クリックで「ロード候補」に登録
 		if (ImGui::IsItemHovered() && ImGui::IsMouseClicked(ImGuiMouseButton_Right)) {
 
-			const std::string stem = child->path.stem().string();
 			overlayPos_ = ImGui::GetItemRectMax(); // アイテム右上
 			// 少し右上にずらす
 			overlayPos_.x += loadOverlayOffset_.x;
 			overlayPos_.y += loadOverlayOffset_.y;
-			if (IsTextureFile(child->path) && !asset_->SearchTexture(stem)) {
+			if (IsTextureFile(child->path) && !texLoaded) {
 
 				pendingPath_ = child->path;
 				pendingType_ = PendingType::Texture;
 				showLoadButton_ = true;
-			} else if (IsModelFile(child->path) /* && !asset_->SearchModel(stem) */) {
+			} else if (IsModelFile(child->path) && !modelLoaded) {
 
 				pendingPath_ = child->path;
 				pendingType_ = PendingType::Model;

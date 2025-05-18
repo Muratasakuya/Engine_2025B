@@ -32,6 +32,8 @@ public:
 		const std::vector<uint32_t>& indexData);
 	void Export(const ResourceMesh& modelData, const std::string& filePath);
 
+	bool Search(const std::string& modelName);
+
 	//--------- accessor -----------------------------------------------------
 
 	const ModelData& GetModelData(const std::string& modelName) const;

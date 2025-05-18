@@ -43,6 +43,7 @@ public:
 	const std::vector<std::string>& GetTextureKeys() const;
 
 	bool SearchTexture(const std::string& textureName);
+	bool SearchModel(const std::string& modelName);
 
 	// model
 	const ModelData& GetModelData(const std::string& modelName) const;
