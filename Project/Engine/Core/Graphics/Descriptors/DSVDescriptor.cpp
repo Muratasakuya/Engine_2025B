@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Engine/Core/Debug/Assert.h>
+#include <Engine/Config.h>
 
 //============================================================================
 //	DSVDescriptor classMethods
@@ -45,10 +46,10 @@ void DSVDescriptor::CreateDepthResource(ComPtr<ID3D12Resource>& resource,
 	assert(SUCCEEDED(hr));
 }
 
-void DSVDescriptor::InitFrameBufferDSV(uint32_t width, uint32_t height) {
+void DSVDescriptor::InitFrameBufferDSV() {
 
 	// frameBuffer
-	CreateDSV(width, height, dsvCPUHandle_, resource_,
+	CreateDSV(Config::kWindowWidth, Config::kWindowHeight, dsvCPUHandle_, resource_,
 		DXGI_FORMAT_D24_UNORM_S8_UINT, DXGI_FORMAT_D24_UNORM_S8_UINT);
 }
 

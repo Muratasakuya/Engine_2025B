@@ -7,6 +7,7 @@
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Asset/Asset.h>
+#include <Engine/Config.h>
 
 //============================================================================
 //	PostProcessSystem classMethods
@@ -47,11 +48,11 @@ void PostProcessSystem::InputProcessTexture(
 	}
 }
 
-void PostProcessSystem::Init(ID3D12Device8* device, DxShaderCompiler* shaderComplier,
-	SRVDescriptor* srvDescriptor, uint32_t width, uint32_t height) {
+void PostProcessSystem::Init(ID3D12Device8* device,
+	DxShaderCompiler* shaderComplier, SRVDescriptor* srvDescriptor) {
 
-	width_ = width;
-	height_ = height;
+	width_ = Config::kWindowWidth;
+	height_ = Config::kWindowHeight;
 
 	device_ = nullptr;
 	device_ = device;

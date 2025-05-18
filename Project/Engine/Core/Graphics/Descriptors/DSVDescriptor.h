@@ -18,7 +18,7 @@ public:
 	DSVDescriptor() :BaseDescriptor(4) {};
 	~DSVDescriptor() = default;
 
-	void InitFrameBufferDSV(uint32_t width, uint32_t height);
+	void InitFrameBufferDSV();
 
 	void CreateDSV(uint32_t width, uint32_t height,
 		D3D12_CPU_DESCRIPTOR_HANDLE& handle, ComPtr<ID3D12Resource>& resource,

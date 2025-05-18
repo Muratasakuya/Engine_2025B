@@ -28,8 +28,8 @@ public:
 	DxSwapChain() = default;
 	~DxSwapChain() = default;
 
-	void Create(uint32_t width, uint32_t height, Color clearColor, class WinApp* winApp,
-		IDXGIFactory7* factory, ID3D12CommandQueue* queue, RTVDescriptor* rtvDescriptor);
+	void Create(class WinApp* winApp, IDXGIFactory7* factory,
+		ID3D12CommandQueue* queue, RTVDescriptor* rtvDescriptor);
 
 	//--------- accessor -----------------------------------------------------
 

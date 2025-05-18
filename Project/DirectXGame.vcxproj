@@ -481,6 +481,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelLoader.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
+    <ClInclude Include="Engine\Config.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\ECS\Components\AnimationComponent.h">
       <SubType>
       </SubType>

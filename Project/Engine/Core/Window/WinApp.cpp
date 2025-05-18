@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Debug/Logger.h>
+#include <Engine/Config.h>
 
 // imgui
 #include "imgui.h"
@@ -18,20 +19,13 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
 //	WinApp classMethods
 //============================================================================
 
-uint32_t WinApp::windowWidth_ = 0;
-uint32_t WinApp::windowHeight_ = 0;
-
-void WinApp::Create(uint32_t width, uint32_t height, const wchar_t* title) {
-
-	CheckAspectRatio(width, height);
-	windowWidth_ = width;
-	windowHeight_ = height;
+void WinApp::Create() {
 
 	RegisterWindowClass();
 
 	RECT wrc = {};
-	wrc.right = width;
-	wrc.bottom = height;
+	wrc.right = Config::kWindowWidth;
+	wrc.bottom = Config::kWindowHeight;
 
 	windowStyle_ = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 
@@ -39,7 +33,7 @@ void WinApp::Create(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	hwnd_ = CreateWindow(
 		L"WindowClass",
-		title,
+		Config::kWindowTitle,
 		windowStyle_,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
@@ -54,7 +48,7 @@ void WinApp::Create(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	// 1920*1080にした時のウィンドウの座標
 	// ずれないように補正
-	if (width == 1920 && height == 1080) {
+	if (wrc.right == 1920 && wrc.bottom == 1080) {
 
 		SetWindowPos(hwnd_, nullptr, -8, -2, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 	}
@@ -151,10 +145,4 @@ void WinApp::RegisterWindowClass() {
 
 	// ウィンドウクラスを登録する
 	RegisterClass(&wc);
-}
-
-void WinApp::CheckAspectRatio(uint32_t width, uint32_t height) {
-	if (width * 9 != height * 16) {
-		ASSERT(FALSE, "Error: Aspect ratio must be 16:9");
-	}
 }

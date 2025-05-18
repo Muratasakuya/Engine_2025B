@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Window/WinApp.h>
+#include <Engine/Config.h>
 
 //============================================================================
 //	GameCamera classMethods
@@ -26,8 +26,7 @@ void GameCamera::Init() {
 	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
 
 	// アスペクト比
-	float aspectRatio = static_cast<float>(WinApp::GetWindowWidth()) /
-		static_cast<float>(WinApp::GetWindowHeight());
+	float aspectRatio = Config::kWindowWidthf / Config::kWindowHeightf;
 	projectionMatrix_ =
 		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio, nearClip_, farClip_);
 
@@ -41,8 +40,7 @@ void GameCamera::Update() {
 	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
 
 	// アスペクト比
-	float aspectRatio = static_cast<float>(WinApp::GetWindowWidth()) /
-		static_cast<float>(WinApp::GetWindowHeight());
+	float aspectRatio = Config::kWindowWidthf / Config::kWindowHeightf;
 	projectionMatrix_ =
 		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio, nearClip_, farClip_);
 

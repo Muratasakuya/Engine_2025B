@@ -9,6 +9,7 @@
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
+#include <Engine/Config.h>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
@@ -85,45 +86,43 @@ void GraphicsCore::InitRenderTexture() {
 
 	// renderTexture作成
 	renderTexture_ = std::make_unique<RenderTexture>();
-	renderTexture_->Create(windowWidth_, windowHeight_, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
-		device, rtvDescriptor_.get(), srvDescriptor_.get());
+	renderTexture_->Create(
+		Config::kWindowWidth, Config::kWindowHeight,
+		Color(Config::kWindowClearColor[0], Config::kWindowClearColor[1],
+			Config::kWindowClearColor[2], Config::kWindowClearColor[3]),
+		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
 
 	// gui用texture作成
 #ifdef _DEBUG
 	guiRenderTexture_ = std::make_unique<GuiRenderTexture>();
-	guiRenderTexture_->Create(windowWidth_, windowHeight_, DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+	guiRenderTexture_->Create(Config::kWindowWidth, Config::kWindowHeight, Config::kSwapChainRTVFormat,
 		device, srvDescriptor_.get());
 #endif // _DEBUG
 
 	// debugSceneRenderTexture作成
 #ifdef _DEBUG
+	// pipeline
 	copyTexturePipeline_ = std::make_unique<PipelineState>();
 	copyTexturePipeline_->Create("CopySceneTexture.json",
 		device, srvDescriptor_.get(), dxShaderComplier_.get());
-
+	// renderTexture
 	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
-	debugSceneRenderTexture_->Create(windowWidth_, windowHeight_, windowClearColor_, DXGI_FORMAT_R32G32B32A32_FLOAT,
-		device, rtvDescriptor_.get(), srvDescriptor_.get());
-
+	debugSceneRenderTexture_->Create(Config::kWindowWidth, Config::kWindowHeight,
+		Color(Config::kWindowClearColor[0], Config::kWindowClearColor[1],
+			Config::kWindowClearColor[2], Config::kWindowClearColor[3]),
+		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
+	// alpha1.0fに戻す用のCS処理
 	copyTextureProcessor_ = std::make_unique<ComputePostProcessor>();
-	copyTextureProcessor_->Init(device, srvDescriptor_.get(), windowWidth_, windowHeight_);
+	copyTextureProcessor_->Init(device, srvDescriptor_.get(), Config::kWindowWidth, Config::kWindowHeight);
 #endif // _DEBUG
 
 	// shadowMap作成
 	shadowMap_ = std::make_unique<ShadowMap>();
-	shadowMap_->Create(shadowMapWidth_, shadowMapHeight_,
+	shadowMap_->Create(Config::kShadowMapSize, Config::kShadowMapSize,
 		dsvDescriptor_.get(), srvDescriptor_.get());
 }
 
-void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
-
-	windowWidth_ = width;
-	windowHeight_ = height;
-
-	shadowMapWidth_ = 128;
-	shadowMapHeight_ = 128;
-
-	windowClearColor_ = Color(0.016f, 0.016f, 0.08f, 1.0f);
+void GraphicsCore::Init(WinApp* winApp) {
 
 	//============================================================================
 	//	init: directX
@@ -149,14 +148,13 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 
 	// 画面設定
 	dxSwapChain_ = std::make_unique<DxSwapChain>();
-	dxSwapChain_->Create(width, height, windowClearColor_, winApp,
-		dxDevice_->GetDxgiFactory(), dxCommand_->GetQueue(), rtvDescriptor_.get());
+	dxSwapChain_->Create(winApp, dxDevice_->GetDxgiFactory(), dxCommand_->GetQueue(), rtvDescriptor_.get());
 
 	// DSV初期化
 	dsvDescriptor_ = std::make_unique<DSVDescriptor>();
 	dsvDescriptor_->Init(device, DescriptorType(
 		D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE));
-	dsvDescriptor_->InitFrameBufferDSV(width, height);
+	dsvDescriptor_->InitFrameBufferDSV();
 
 	// SRV初期化
 	srvDescriptor_ = std::make_unique<SRVDescriptor>();
@@ -174,8 +172,7 @@ void GraphicsCore::Init(uint32_t width, uint32_t height, WinApp* winApp) {
 
 	// postProcessSystem初期化
 	postProcessSystem_ = std::make_unique<PostProcessSystem>();
-	postProcessSystem_->Init(device, dxShaderComplier_.get(),
-		srvDescriptor_.get(), width, height);
+	postProcessSystem_->Init(device, dxShaderComplier_.get(), srvDescriptor_.get());
 
 	// skinning用pipeline作成
 	skinningPipeline_ = std::make_unique<PipelineState>();
@@ -287,7 +284,7 @@ void GraphicsCore::RenderZPass() {
 
 	dxCommand_->SetRenderTargets(std::nullopt, shadowMap_->GetCPUHandle());
 	dxCommand_->ClearDepthStencilView(shadowMap_->GetCPUHandle());
-	dxCommand_->SetViewportAndScissor(shadowMapWidth_, shadowMapHeight_);
+	dxCommand_->SetViewportAndScissor(Config::kShadowMapSize, Config::kShadowMapSize);
 
 	// Z値描画
 	meshRenderer_->RenderingZPass(sceneBuffer_.get(), dxCommand_.get());
@@ -302,7 +299,7 @@ void GraphicsCore::RenderOffscreenTexture() {
 	dxCommand_->SetRenderTargets(renderTexture_->GetRenderTarget(),
 		dsvDescriptor_->GetFrameCPUHandle());
 	dxCommand_->ClearDepthStencilView(dsvDescriptor_->GetFrameCPUHandle());
-	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
+	dxCommand_->SetViewportAndScissor(Config::kWindowWidth, Config::kWindowHeight);
 
 	// 描画処理
 	Renderers(false);
@@ -320,7 +317,7 @@ void GraphicsCore::RenderDebugSceneRenderTexture() {
 	dxCommand_->SetRenderTargets(debugSceneRenderTexture_->GetRenderTarget(),
 		dsvDescriptor_->GetFrameCPUHandle());
 	dxCommand_->ClearDepthStencilView(dsvDescriptor_->GetFrameCPUHandle());
-	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
+	dxCommand_->SetViewportAndScissor(Config::kWindowWidth, Config::kWindowHeight);
 
 	// 描画処理
 	Renderers(true);
@@ -356,7 +353,7 @@ void GraphicsCore::RenderFrameBuffer() {
 		D3D12_RESOURCE_STATE_PRESENT, D3D12_RESOURCE_STATE_RENDER_TARGET);
 	dxCommand_->SetRenderTargets(dxSwapChain_->GetRenderTarget(),
 		dsvDescriptor_->GetFrameCPUHandle());
-	dxCommand_->SetViewportAndScissor(windowWidth_, windowHeight_);
+	dxCommand_->SetViewportAndScissor(Config::kWindowWidth, Config::kWindowHeight);
 
 	// frameBufferへ結果を描画
 	postProcessSystem_->RenderFrameBuffer(dxCommand_.get());

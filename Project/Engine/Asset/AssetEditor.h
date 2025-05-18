@@ -106,7 +106,6 @@ private:
 	// update
 	void DrawHeader();
 	void DrawFolderGrid();
-	void DrawBackButton();
 	void DrawLoadOverlay();
 
 	// helper

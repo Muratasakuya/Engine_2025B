@@ -94,8 +94,12 @@ void ImGuiManager::Init(HWND hwnd, UINT bufferCount, ID3D12Device* device, SRVDe
 	style.Colors[ImGuiCol_Button] = ImVec4(0.16f, 0.16f, 0.16f, 1.0f);
 	style.Colors[ImGuiCol_ButtonHovered] = ImVec4(0.24f, 0.24f, 0.24f, 1.0f);
 	style.Colors[ImGuiCol_ButtonActive] = ImVec4(0.12f, 0.12f, 0.12f, 1.0f);
-	// 初手変になるのを防ぐため
-	style.Colors[ImGuiCol_ScrollbarGrab].w = 0.0f;
+
+	// スクロールバー
+	style.Colors[ImGuiCol_ScrollbarBg] = ImVec4(0.12f, 0.12f, 0.12f, 1.0f);
+	style.Colors[ImGuiCol_ScrollbarGrab] = ImVec4(0.32f, 0.32f, 0.32f, 1.0f);
+	style.Colors[ImGuiCol_ScrollbarGrabHovered] = ImVec4(0.48f, 0.48f, 0.48f, 1.0f);
+	style.Colors[ImGuiCol_ScrollbarGrabActive] = ImVec4(0.48f, 0.48f, 0.48f, 1.0f);
 
 	// 角の丸み
 	style.FrameRounding = 2;

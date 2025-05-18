@@ -30,7 +30,7 @@ public:
 	~PostProcessSystem() = default;
 
 	void Init(ID3D12Device8* device, class DxShaderCompiler* shaderComplier,
-		SRVDescriptor* srvDescriptor, uint32_t width, uint32_t height);
+		SRVDescriptor* srvDescriptor);
 
 	// postProcess作成
 	void Create(const std::vector<PostProcess>& processes);

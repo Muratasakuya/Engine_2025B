@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Window/WinApp.h>
 #include <Engine/Input/Input.h>
+#include <Engine/Config.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
@@ -14,8 +14,7 @@
 void FollowCamera::InitParam() {
 
 	// アスペクト比
-	aspectRatio_ = static_cast<float>(WinApp::GetWindowWidth()) /
-		static_cast<float>(WinApp::GetWindowHeight());
+	aspectRatio_ = Config::kWindowWidthf / Config::kWindowHeightf;
 
 	// transformを一回初期化
 	transform_.Init();
@@ -43,6 +42,20 @@ void FollowCamera::Update() {
 }
 
 void FollowCamera::Move() {
+
+	ImGui::Begin("Game", nullptr,
+		ImGuiWindowFlags_NoResize |
+		ImGuiWindowFlags_AlwaysAutoResize |
+		ImGuiWindowFlags_NoMove);
+
+	bool isActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
+
+	ImGui::End();
+
+	// ウィンドウを触っていない時は操作不可
+	if (!isActive) {
+		return;
+	}
 
 	Vector3 rotate{};
 	rotate.Init();

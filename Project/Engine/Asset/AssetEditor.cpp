@@ -151,7 +151,7 @@ void AssetEditor::ImGui() {
 void AssetEditor::DrawHeader() {
 
 	//　root表示
-	if (ImGui::Button("Root")) {
+	if (ImGui::Button("Project/...")) {
 
 		current_ = root_.get();
 		navStack_.clear();
@@ -178,9 +178,6 @@ void AssetEditor::DrawHeader() {
 	// 現在ディレクトリ名
 	ImGui::SameLine(); ImGui::TextUnformatted(">");
 	ImGui::SameLine(); ImGui::TextUnformatted(current_->name.c_str());
-
-	// 元の階層に戻る
-	DrawBackButton();
 }
 
 void AssetEditor::DrawFolderGrid() {
@@ -271,16 +268,6 @@ void AssetEditor::DrawFolderGrid() {
 	}
 
 	ImGui::Columns(1);
-}
-
-void AssetEditor::DrawBackButton() {
-
-	ImGui::SameLine(ImGui::GetWindowContentRegionMax().x - 80.0f);
-	if (ImGui::Button("Back") && !navStack_.empty()) {
-
-		current_ = navStack_.back();
-		navStack_.pop_back();
-	}
 }
 
 void AssetEditor::DrawLoadOverlay() {

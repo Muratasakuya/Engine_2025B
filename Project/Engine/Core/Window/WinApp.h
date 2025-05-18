@@ -21,7 +21,7 @@ public:
 	WinApp() = default;
 	~WinApp() = default;
 
-	void Create(uint32_t width, uint32_t height, const wchar_t* title);
+	void Create();
 
 	bool ProcessMessage();
 
@@ -30,18 +30,12 @@ public:
 	void SetFullscreen(bool fullscreen);
 
 	HWND GetHwnd() const { return hwnd_; }
-
-	static uint32_t GetWindowWidth() { return windowWidth_; }
-	static uint32_t GetWindowHeight() { return windowHeight_; }
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
-
-	static uint32_t windowWidth_;
-	static uint32_t windowHeight_;
 
 	HWND hwnd_;
 
@@ -55,6 +49,4 @@ private:
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);
 
 	void RegisterWindowClass();
-
-	void CheckAspectRatio(uint32_t width, uint32_t height);
 };

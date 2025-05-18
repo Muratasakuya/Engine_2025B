@@ -28,7 +28,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	Framework(uint32_t width, uint32_t height, const wchar_t* title);
+	Framework();
 	~Framework() = default;
 
 	void Run();

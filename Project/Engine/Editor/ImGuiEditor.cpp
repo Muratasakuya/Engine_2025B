@@ -104,14 +104,14 @@ void ImGuiEditor::MainWindow() {
 	// 表示する画像サイズ
 	const ImVec2 imageSize(1216.0f, 684.0f);
 
+	ImGui::Begin("Scene", nullptr, windowFlag_);
+
+	ImGui::Image(ImTextureID(debugSceneRenderTextureGPUHandle_.ptr), debugViewSize_);
+	ImGui::End();
+
 	ImGui::Begin("Game", nullptr, windowFlag_);
 
 	ImGui::Image(ImTextureID(renderTextureGPUHandle_.ptr), gameViewSize_);
-	ImGui::End();
-
-	ImGui::Begin("Debug", nullptr, windowFlag_);
-
-	ImGui::Image(ImTextureID(debugSceneRenderTextureGPUHandle_.ptr), debugViewSize_);
 	ImGui::End();
 }
 

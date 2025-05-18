@@ -1,0 +1,40 @@
+#pragma once
+
+//============================================================================
+//	include
+//============================================================================
+#include <Lib/MathUtils/Vector4.h>
+
+// directX
+#include <d3d12.h>
+// c++
+#include <cstdint>
+
+//============================================================================
+//	Config namespace
+//============================================================================
+namespace  Config {
+
+	// windowTitle
+	const constexpr wchar_t* kWindowTitle = L"Engine";
+	// fullscreen
+	const constexpr bool kFullscreenEnable = true;
+
+	// windowSize
+	// uint
+	const constexpr uint32_t kWindowWidth = 1920;
+	const constexpr uint32_t kWindowHeight = 1080;
+	// float
+	const constexpr float kWindowWidthf = static_cast<float>(kWindowWidth);
+	const constexpr float kWindowHeightf = static_cast<float>(kWindowHeight);
+
+	// clearColor
+	const constexpr float kWindowClearColor[] = {0.016f, 0.016f, 0.08f, 1.0f};
+	// shadowMap...値が大きい方度精度が上がる
+	const constexpr uint32_t kShadowMapSize = 128;
+
+	// swapChainFormat
+	const constexpr DXGI_FORMAT kSwapChainRTVFormat = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+	// renderTargetFormat
+	const constexpr DXGI_FORMAT kRenderTextureRTVFormat = DXGI_FORMAT_R32G32B32A32_FLOAT;
+};

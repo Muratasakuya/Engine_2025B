@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Core/Window/WinApp.h>
+#include <Engine/Config.h>
 #include <Engine/Renderer/LineRenderer.h>
 
 // imgui
@@ -83,8 +83,7 @@ void CameraManager::RenderCameraFrame() {
 	float fovY = gameCamera_.value()->GetFovY();
 	float n = gameCamera_.value()->GetNearClip();
 	float f = gameCamera_.value()->GetFarClip();
-	float aspect = static_cast<float>(WinApp::GetWindowWidth()) /
-		static_cast<float>(WinApp::GetWindowHeight());
+	float aspect = Config::kWindowWidthf / Config::kWindowHeightf;
 
 	// カメラ空間でのコーナー計算
 	float halfFovY = fovY * 0.5f;

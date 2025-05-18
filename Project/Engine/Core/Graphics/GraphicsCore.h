@@ -36,7 +36,7 @@ public:
 	GraphicsCore() = default;
 	~GraphicsCore() = default;
 
-	void Init(uint32_t width, uint32_t height, class WinApp* winApp);
+	void Init(class WinApp* winApp);
 
 	void Finalize(HWND hwnd);
 
@@ -68,16 +68,6 @@ private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
-
-	//--------- variables ----------------------------------------------------
-
-	uint32_t windowWidth_;
-	uint32_t windowHeight_;
-
-	uint32_t shadowMapWidth_;
-	uint32_t shadowMapHeight_;
-
-	Color windowClearColor_;
 
 	//--------- directX ----------//
 

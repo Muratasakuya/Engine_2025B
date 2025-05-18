@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Window/WinApp.h>
+#include <Engine/Config.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
@@ -249,6 +249,6 @@ void Transform2DComponent::ImGui(float itemSize) {
 
 void Transform2DComponent::SetCenterPos() {
 
-	translation.x = static_cast<float>(WinApp::GetWindowWidth()) / 2.0f;
-	translation.y = static_cast<float>(WinApp::GetWindowHeight()) / 2.0f;
+	translation.x = Config::kWindowWidthf / 2.0f;
+	translation.y = Config::kWindowHeightf / 2.0f;
 }

@@ -638,6 +638,7 @@
     <ClInclude Include="Engine\Core\ECS\System\Systems\InstancedMeshSystem.h" />
     <ClInclude Include="Engine\Core\ECS\Components\TagComponent.h" />
     <ClInclude Include="Engine\Core\ECS\System\Systems\TagSystem.h" />
+    <ClInclude Include="Engine\Config.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

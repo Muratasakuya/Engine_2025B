@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Window/WinApp.h>
+#include <Engine/Config.h>
 #include <Engine/Input/Input.h>
 
 //============================================================================
@@ -30,8 +30,7 @@ void DebugCamera::Init() {
 	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
 
 	// アスペクト比
-	float aspectRatio = static_cast<float>(WinApp::GetWindowWidth()) /
-		static_cast<float>(WinApp::GetWindowHeight());
+	float aspectRatio = Config::kWindowWidthf / Config::kWindowHeightf;
 	projectionMatrix_ =
 		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio, nearClip_, farClip_);
 
@@ -54,8 +53,7 @@ void DebugCamera::Update() {
 	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
 
 	// アスペクト比
-	float aspectRatio = static_cast<float>(WinApp::GetWindowWidth()) /
-		static_cast<float>(WinApp::GetWindowHeight());
+	float aspectRatio = Config::kWindowWidthf / Config::kWindowHeightf;
 	projectionMatrix_ =
 		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio, nearClip_, farClip_);
 
@@ -84,7 +82,7 @@ void DebugCamera::ImGui() {
 
 void DebugCamera::Move() {
 
-	ImGui::Begin("Debug", nullptr,
+	ImGui::Begin("Scene", nullptr,
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_AlwaysAutoResize |
 		ImGuiWindowFlags_NoMove);

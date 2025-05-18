@@ -9,6 +9,7 @@
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Config.h>
 #include <Game/Time/GameTimer.h>
 
 //============================================================================
@@ -38,7 +39,7 @@ void Framework::Run() {
 	Finalize();
 }
 
-Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
+Framework::Framework() {
 
 	CoInitializeEx(nullptr, COINIT_MULTITHREADED);
 
@@ -53,9 +54,11 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 	//	init
 	//========================================================================
 
+	fullscreenEnable_ = Config::kFullscreenEnable;
+
 	// window作成
 	winApp_ = std::make_unique<WinApp>();
-	winApp_->Create(width, height, title);
+	winApp_->Create();
 
 	//------------------------------------------------------------------------
 	// scene初期化
@@ -71,15 +74,14 @@ Framework::Framework(uint32_t width, uint32_t height, const wchar_t* title) {
 
 	// directX初期化
 	graphicsCore_ = std::make_unique<GraphicsCore>();
-	graphicsCore_->Init(width, height, winApp_.get());
+	graphicsCore_->Init(winApp_.get());
 
 	// asset機能初期化
 	asset_ = std::make_unique<Asset>();
 	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
 		graphicsCore_->GetSRVDescriptor());
 
-	// 最初からfullScreen設定
-	fullscreenEnable_ = true;
+	// fullScreen設定
 	winApp_->SetFullscreen(fullscreenEnable_);
 
 	//------------------------------------------------------------------------
