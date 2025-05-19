@@ -66,7 +66,7 @@ void IMesh::TransferBuffer(uint32_t meshIndex, const ResourceMesh<MeshVertex>& r
 //============================================================================
 
 void StaticMesh::CreateVertexBuffer(ID3D12Device* device, uint32_t meshIndex,
-	const ResourceMesh<MeshVertex>& resource, [[maybe_unused]] uint32_t numInstance) {
+	[[maybe_unused]] const ResourceMesh<MeshVertex>& resource, [[maybe_unused]] uint32_t numInstance) {
 
 	// 頂点
 	vertices_.push_back({});
@@ -84,7 +84,7 @@ void StaticMesh::TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh<Mes
 //============================================================================
 
 void SkinnedMesh::CreateVertexBuffer(ID3D12Device* device, uint32_t meshIndex,
-	const ResourceMesh<MeshVertex>& resource, uint32_t numInstance) {
+	[[maybe_unused]] const ResourceMesh<MeshVertex>& resource, uint32_t numInstance) {
 
 	// 入力頂点
 	inputVertices_.push_back({});
@@ -106,10 +106,10 @@ void SkinnedMesh::TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh<Me
 
 void EffectMesh::Init(ID3D12Device* device, const ResourceMesh<EffectMesh>& resource) {
 
-	// meshlet数
-	meshletCount_ = static_cast<uint32_t>(resource.meshlets.front().size());
 	// 頂点数
 	vertexCount_ = static_cast<UINT>(resource.vertices.front().size());
+	// meshlet数
+	meshletCount_ = static_cast<uint32_t>(resource.meshlets.front().size());
 
 	// buffer生成
 	CreateBuffer(device, resource);

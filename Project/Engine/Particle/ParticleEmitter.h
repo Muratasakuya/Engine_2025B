@@ -20,6 +20,7 @@
 // このparameterはeditorで操作可能にする
 // parameterの値でparticleをcreaterクラスで作成、
 // 作成されたparticleをupdaterクラスで更新
+// 更新処理にも種類がある、ここからは学校行きながら考える
 // 更新処理はsystemに渡して行う
 // emitterはparticleを所持するだけのクラスにする
 // systemはemittersを所持するクラスにする
