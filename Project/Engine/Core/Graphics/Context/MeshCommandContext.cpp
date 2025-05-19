@@ -8,7 +8,6 @@
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
-#include <Engine/Core/Graphics/Mesh/PrimitiveMesh.h>
 
 //============================================================================
 //	MeshCommandContext classMethods
@@ -73,30 +72,4 @@ void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 	else {
 		commandList->DispatchMesh(totalThreadGroupCountX, 1, 1);
 	}
-}
-
-void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList, PrimitiveMesh* mesh) {
-
-	// buffers
-	commandList->SetGraphicsRootShaderResourceView(0,
-		mesh->GetVertexBuffer().GetResource()->GetGPUVirtualAddress());
-	commandList->SetGraphicsRootShaderResourceView(1,
-		mesh->GetUniqueVertexIndexBuffer().GetResource()->GetGPUVirtualAddress());
-	commandList->SetGraphicsRootShaderResourceView(2,
-		mesh->GetMeshletBuffer().GetResource()->GetGPUVirtualAddress());
-	commandList->SetGraphicsRootShaderResourceView(3,
-		mesh->GetPrimitiveIndexBuffer().GetResource()->GetGPUVirtualAddress());
-
-	// threadGroup数
-	UINT threadGroupCountX = mesh->GetMeshletCount() ;
-
-	// threadGroupCountXの最大値
-	const UINT maxThreadGroupCount = 65535;
-	if (threadGroupCountX > maxThreadGroupCount) {
-
-		ASSERT(FALSE, "threadGroupCountX > maxThreadGroupCount");
-	}
-
-	// 実行
-	commandList->DispatchMesh(threadGroupCountX, 1, 1);
 }

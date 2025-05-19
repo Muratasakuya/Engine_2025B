@@ -4,7 +4,7 @@
 //	UVHelper classMethods
 //============================================================================
 
-std::vector<Vector2> UVHelper::ApplyFrameTexcoord(const ResourceMesh& resourceMesh, int serialCount) {
+std::vector<Vector2> UVHelper::ApplyFrameTexcoord(const ResourceMesh<MeshVertex>& resourceMesh, int serialCount) {
 
 	// 設定するtexture座標
 	std::vector<Vector2> texcoords{};

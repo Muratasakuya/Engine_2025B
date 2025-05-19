@@ -68,7 +68,7 @@ void ModelLoader::Make(const std::string& modelName,
 	models_[modelName] = modelData;
 }
 
-void ModelLoader::Export(const ResourceMesh& modelData, const std::string& filePath) {
+void ModelLoader::Export(const ResourceMesh<MeshVertex>& modelData, const std::string& filePath) {
 
 	// filePath
 	const std::string fullPath = "./Assets/Models/" + filePath;

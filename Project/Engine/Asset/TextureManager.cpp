@@ -37,7 +37,7 @@ void TextureManager::Load(const std::string& textureName) {
 		return;
 	}
 
-	// model検索
+	// texture検索
 	std::filesystem::path filePath;
 	bool found = false;
 	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {

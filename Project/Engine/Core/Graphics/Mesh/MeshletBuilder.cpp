@@ -4,10 +4,10 @@
 //	MeshletBuilder classMethods
 //============================================================================
 
-ResourceMesh MeshletBuilder::ParseMesh(const aiScene* scene, bool isSkinned) {
+ResourceMesh<MeshVertex> MeshletBuilder::ParseMesh(const aiScene* scene, bool isSkinned) {
 
 	// 出力
-	ResourceMesh destinationMesh{};
+	ResourceMesh<MeshVertex> destinationMesh{};
 	destinationMesh.isSkinned = isSkinned;
 
 	// 頂点情報の設定
@@ -22,10 +22,10 @@ ResourceMesh MeshletBuilder::ParseMesh(const aiScene* scene, bool isSkinned) {
 	return destinationMesh;
 }
 
-ResourceMesh MeshletBuilder::ParseMesh(const ModelData& modelData) {
+ResourceMesh<MeshVertex> MeshletBuilder::ParseMesh(const ModelData& modelData) {
 
 	// 出力
-	ResourceMesh destinationMesh{};
+	ResourceMesh<MeshVertex> destinationMesh{};
 
 	// 頂点情報の設定
 	SetVertex(destinationMesh, modelData);
@@ -39,7 +39,7 @@ ResourceMesh MeshletBuilder::ParseMesh(const ModelData& modelData) {
 	return destinationMesh;
 }
 
-void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const aiScene* scene) {
+void MeshletBuilder::SetVertex(ResourceMesh<MeshVertex>& destinationMesh, const aiScene* scene) {
 
 	// meshの数
 	destinationMesh.meshCount_ = scene->mNumMeshes;
@@ -102,7 +102,7 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const aiScene* sce
 	}
 }
 
-void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const ModelData& modelData) {
+void MeshletBuilder::SetVertex(ResourceMesh<MeshVertex>& destinationMesh, const ModelData& modelData) {
 
 	// meshの数
 	destinationMesh.meshCount_ = static_cast<uint32_t>(modelData.meshes.size());
@@ -141,7 +141,7 @@ void MeshletBuilder::SetVertex(ResourceMesh& destinationMesh, const ModelData& m
 	}
 }
 
-void MeshletBuilder::Optimize([[maybe_unused]] ResourceMesh& destinationMesh) {
+void MeshletBuilder::Optimize(ResourceMesh<MeshVertex>& destinationMesh) {
 
 	// skinnedMeshの場合、頂点情報が変わってバグってしまうため
 	// 今は最適化処理をスキップ、対応できたらする
@@ -220,7 +220,7 @@ void MeshletBuilder::Optimize([[maybe_unused]] ResourceMesh& destinationMesh) {
 	}
 }
 
-void MeshletBuilder::CreateMeshlet(ResourceMesh& destinationMesh) {
+void MeshletBuilder::CreateMeshlet(ResourceMesh<MeshVertex>& destinationMesh) {
 
 	// 頂点、プリミティブ数の最大数
 	const size_t kMaxVertices = 64;

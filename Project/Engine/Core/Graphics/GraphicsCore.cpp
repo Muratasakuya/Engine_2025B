@@ -282,6 +282,9 @@ void GraphicsCore::DebugUpdate() {
 
 void GraphicsCore::RenderZPass() {
 
+	// srvDescriptorHeap設定
+	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
+
 	dxCommand_->SetRenderTargets(std::nullopt, shadowMap_->GetCPUHandle());
 	dxCommand_->ClearDepthStencilView(shadowMap_->GetCPUHandle());
 	dxCommand_->SetViewportAndScissor(Config::kShadowMapSize, Config::kShadowMapSize);

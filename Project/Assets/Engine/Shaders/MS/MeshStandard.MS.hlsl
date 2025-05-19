@@ -71,9 +71,9 @@ StructuredBuffer<TransformationMatrix> gTransforms : register(t4);
 // 10bit * 3
 uint3 UnpackPrimitiveIndex(uint packedIndex) {
 	
-	 // 下位10bit、1つ目の頂点インデックス
-	 // 中間10bit、2つ目の頂点インデックス
-	 // 上位10bit、3つ目の頂点インデックス
+	// 下位10bit、1つ目の頂点インデックス
+	// 中間10bit、2つ目の頂点インデックス
+	// 上位10bit、3つ目の頂点インデックス
 	
 	return uint3(
 	packedIndex & 0x3FF,

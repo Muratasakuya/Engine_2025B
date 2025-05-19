@@ -266,12 +266,6 @@
     <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\PrimitiveMeshComponent.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Utility\UVHelper.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -464,6 +458,21 @@
     <ClCompile Include="Engine\Core\ECS\System\Systems\TagSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Particle\ParticleSystem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Renderer\ParticleRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\ParticleLoader.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\ParticleEditor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\ParticleEmitter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -559,8 +568,6 @@
     <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.h" />
     <ClInclude Include="Engine\Scene\Light\LightManager.h" />
-    <ClInclude Include="Engine\Core\Graphics\Mesh\PrimitiveMesh.h" />
-    <ClInclude Include="Engine\Core\ECS\Components\PrimitiveMeshComponent.h" />
     <ClInclude Include="Engine\Utility\UVHelper.h" />
     <ClInclude Include="Engine\Utility\SimpleAnimation.h" />
     <ClInclude Include="Game\Object3D\Player\Player.h" />
@@ -639,6 +646,12 @@
     <ClInclude Include="Engine\Core\ECS\Components\TagComponent.h" />
     <ClInclude Include="Engine\Core\ECS\System\Systems\TagSystem.h" />
     <ClInclude Include="Engine\Config.h" />
+    <ClInclude Include="Engine\Particle\ParticleSystem.h" />
+    <ClInclude Include="Engine\Renderer\ParticleRenderer.h" />
+    <ClInclude Include="Engine\Particle\ParticleLoader.h" />
+    <ClInclude Include="Engine\Particle\ParticleStructures.h" />
+    <ClInclude Include="Engine\Particle\ParticleEditor.h" />
+    <ClInclude Include="Engine\Particle\ParticleEmitter.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

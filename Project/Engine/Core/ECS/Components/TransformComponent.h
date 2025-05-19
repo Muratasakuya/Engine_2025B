@@ -105,49 +105,6 @@ private:
 };
 
 //============================================================================
-//	EffectTransform class
-//============================================================================
-class EffectTransformComponent :
-	public BaseTransform {
-public:
-	//========================================================================
-	//	public Methods
-	//========================================================================
-
-	EffectTransformComponent() = default;
-	~EffectTransformComponent() = default;
-
-	void Init();
-
-	void UpdateMatrix(const Matrix4x4& billboardMatrix);
-
-	void ImGui(float itemSize);
-	//--------- accessor -----------------------------------------------------
-
-	bool IsDirty() const { return isDirty_; }
-
-	//--------- variables ----------------------------------------------------
-
-	// billboardMatrixを使用するか
-	bool useBillboardMatrix_;
-private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
-
-	//--------- variables ----------------------------------------------------
-
-	Vector3 eulerRotate_;
-
-	Vector3 prevScale;
-	Quaternion prevRotation;
-	Vector3 prevTranslation;
-
-	// 変更があったかどうかのフラグ
-	bool isDirty_;
-};
-
-//============================================================================
 //	Transform3DComponent class
 //============================================================================
 class Transform2DComponent {

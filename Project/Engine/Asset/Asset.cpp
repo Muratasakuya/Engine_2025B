@@ -34,7 +34,7 @@ void Asset::MakeModel(const std::string& modelName,
 	modelLoader_->Make(modelName, vertexData, indexData);
 }
 
-void Asset::Export(const ResourceMesh& modelData, const std::string& filePath) {
+void Asset::Export(const ResourceMesh<MeshVertex>& modelData, const std::string& filePath) {
 	modelLoader_->Export(modelData, filePath);
 }
 

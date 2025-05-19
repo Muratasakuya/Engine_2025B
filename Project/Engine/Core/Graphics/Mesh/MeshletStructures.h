@@ -19,6 +19,11 @@ struct MeshInstanceData {
 	uint32_t numVertices;
 	int32_t isSkinned;
 };
+struct EffectMeshInstanceData {
+
+	uint32_t meshletCount;
+	uint32_t numVertices;
+};
 
 // mesh頂点情報
 struct MeshVertex {
@@ -29,6 +34,12 @@ struct MeshVertex {
 	Color color;
 	Vector3 tangent;
 	Vector3 bitangent;
+};
+struct EffectMeshVertex {
+
+	Vector4 pos;
+	Vector2 texcoord;
+	Color color;
 };
 
 // meshlet情報の格納
@@ -56,12 +67,13 @@ struct ResourcePrimitiveIndex {
 };
 
 // 上記のデータを格納
+template<typename T>
 struct ResourceMesh {
 
 	// mesh数
 	size_t meshCount_;
 
-	std::vector<std::vector<MeshVertex>> vertices;
+	std::vector<std::vector<T>> vertices;
 	std::vector<std::vector<uint32_t>> indices;
 
 	std::vector<std::vector<ResourceMeshlet>> meshlets;

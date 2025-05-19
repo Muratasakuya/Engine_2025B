@@ -4,26 +4,29 @@
 //	include
 //============================================================================
 
-// directX
-#include <d3d12.h>
-// c++
-#include <cstdint>
-// front
-class DxCommand;
-
 //============================================================================
-//	MeshCommand class
+//	ParticleLoader class
 //============================================================================
-class MeshCommandContext {
+class ParticleLoader {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	MeshCommandContext() = default;
-	~MeshCommandContext() = default;
+	ParticleLoader() = default;
+	~ParticleLoader() = default;
 
-	// instancing
-	void DispatchMesh(ID3D12GraphicsCommandList6* commandList,
-		UINT instanceCount, uint32_t meshIndex, class IMesh* mesh);
+	//--------- accessor -----------------------------------------------------
+
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+
+
+	//--------- functions ----------------------------------------------------
+
 };

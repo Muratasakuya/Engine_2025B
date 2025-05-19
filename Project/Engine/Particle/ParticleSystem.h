@@ -3,36 +3,28 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Mesh/Mesh.h>
 
-// c++
-#include <string>
-#include <unordered_map>
 // front
-class Asset;
+class CameraManager;
 
 //============================================================================
-//	MeshRegistry class
+//	ParticleSystem class
 //============================================================================
-class MeshRegistry {
+class ParticleSystem {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	MeshRegistry() = default;
-	~MeshRegistry() = default;
+	void Init(CameraManager* cameraManager);
 
-	void Init(ID3D12Device* device, Asset* asset);
-
-	void RegisterMesh(const std::string& modelName,
-		bool isSkinned, uint32_t numInstance);
+	void Update();
 
 	//--------- accessor -----------------------------------------------------
 
-	// meshの取得
-	IMesh* GetMesh(const std::string& name) const { return meshes_.at(name).get(); }
-	const std::unordered_map<std::string, std::unique_ptr<IMesh>>& GetMeshes() const { return meshes_; }
+	// singleton
+	static ParticleSystem* GetInstance();
+	static void Finalize();
 private:
 	//========================================================================
 	//	private Methods
@@ -40,13 +32,14 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	ID3D12Device* device_;
-	Asset* asset_;
+	static ParticleSystem* instance_;
 
-	std::unordered_map<std::string, std::unique_ptr<IMesh>> meshes_;
+	CameraManager* cameraManager_;
 
 	//--------- functions ----------------------------------------------------
 
-	// meshletの作成
-	ResourceMesh<MeshVertex> CreateMeshlet(const std::string& modelName);
+	ParticleSystem() = default;
+	~ParticleSystem() = default;
+	ParticleSystem(const ParticleSystem&) = delete;
+	ParticleSystem& operator=(const ParticleSystem&) = delete;
 };

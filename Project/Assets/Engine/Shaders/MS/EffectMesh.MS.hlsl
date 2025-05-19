@@ -14,18 +14,16 @@ struct MSInput {
 	float2 texcoord;
 	float3 normal;
 	float4 color;
-	float3 tangent;
-	float3 biNormal;
 };
 
 //============================================================================
 //	CBuffer
 //============================================================================
 
-cbuffer TransformationMatrix : register(b0) {
+cbuffer InstanceData : register(b0) {
 	
-	float4x4 world;
-	float4x4 worldInverseTranspose;
+	uint meshletCount;
+	uint numVertices;
 };
 
 cbuffer CameraData : register(b1) {
@@ -36,6 +34,11 @@ cbuffer CameraData : register(b1) {
 //============================================================================
 //	StructuredBuffer
 //============================================================================
+
+struct TransformationMatrix {
+	
+	float4x4 world;
+};
 
 struct Meshlet {
 	
@@ -50,6 +53,7 @@ StructuredBuffer<MSInput> gVertices : register(t0);
 StructuredBuffer<uint> gIndices : register(t1);
 StructuredBuffer<Meshlet> gMeshlets : register(t2);
 StructuredBuffer<uint> gPrimitives : register(t3);
+StructuredBuffer<TransformationMatrix> gTransforms : register(t4);
 
 //============================================================================
 //	Function
@@ -58,9 +62,9 @@ StructuredBuffer<uint> gPrimitives : register(t3);
 // 10bit * 3
 uint3 UnpackPrimitiveIndex(uint packedIndex) {
 	
-	 // 下位10bit、1つ目の頂点インデックス
-	 // 中間10bit、2つ目の頂点インデックス
-	 // 上位10bit、3つ目の頂点インデックス
+	// 下位10bit、1つ目の頂点インデックス
+	// 中間10bit、2つ目の頂点インデックス
+	// 上位10bit、3つ目の頂点インデックス
 	
 	return uint3(
 	packedIndex & 0x3FF,
@@ -79,9 +83,17 @@ uint groupId : SV_GroupID, // グループID
 out vertices MSOutput verts[64], // 出力頂点
 out indices uint3 polys[126] // 出力三角形インデックス
 ) {
-		
+	
+	// DispatchMesh での1次元グループID
+	uint groupIdx = groupId.x;
+	uint meshletIndex = groupIdx % meshletCount;
+	uint instanceIndex = groupIdx / meshletCount;
+	
 	// 現在のグループに対応するmeshletを取得
-	Meshlet meshlet = gMeshlets[groupId];
+	Meshlet meshlet = gMeshlets[meshletIndex];
+	
+	// インスタンスのワールド行列を取得
+	float4x4 world = gTransforms[instanceIndex].world;
 	
 	// メッシュシェーダーの出力数、頂点数、プリミティブ数を設定
 	SetMeshOutputCounts(meshlet.vertexCount, meshlet.primitiveCount);
@@ -97,8 +109,13 @@ out indices uint3 polys[126] // 出力三角形インデックス
 	if (groupThreadId < meshlet.vertexCount) {
 		
 		uint index = gIndices[meshlet.vertexOffset + groupThreadId];
+		// instanceごとに別々のmeshでも描画出来るようにする
+		index += instanceIndex * numVertices;
 		MSInput input = gVertices[index];
 		MSOutput output = (MSOutput) 0;
+		
+		// instanceIdを取得
+		output.instanceID = instanceIndex;
 		
 		// スクリーン座標に変換
 		float4x4 wvp = mul(world, viewProjection);
@@ -107,11 +124,6 @@ out indices uint3 polys[126] // 出力三角形インデックス
 		// テクスチャ座標
 		output.texcoord = input.texcoord;
 		
-		// 法線
-		output.normal = normalize(mul(input.normal, (float3x3) worldInverseTranspose));
-		
-		// meshletの色
-		output.meshletColor = meshlet.color;
 		// 頂点の色
 		output.vertexColor = input.color;
 
