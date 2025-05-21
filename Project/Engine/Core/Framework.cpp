@@ -9,6 +9,7 @@
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Config.h>
 #include <Game/Time/GameTimer.h>
 
@@ -85,6 +86,11 @@ Framework::Framework() {
 	winApp_->SetFullscreen(fullscreenEnable_);
 
 	//------------------------------------------------------------------------
+	// particle機能初期化
+
+	ParticleSystem::GetInstance()->Init(asset_.get(), cameraManager_.get());
+
+	//------------------------------------------------------------------------
 	// component機能初期化
 
 	ECSManager::GetInstance()->Init(graphicsCore_->GetDevice(),
@@ -102,7 +108,7 @@ Framework::Framework() {
 
 	Input::GetInstance()->Init(winApp_.get());
 	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
-		graphicsCore_->GetDxCommand()->GetCommandList(CommandListType::Graphics),
+		graphicsCore_->GetDxCommand()->GetCommandList(),
 		graphicsCore_->GetSRVDescriptor(), graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
 	AssetEditor::GetInstance()->Init(asset_.get());
 
@@ -152,6 +158,8 @@ void Framework::UpdateScene() {
 
 	// component更新
 	ECSManager::GetInstance()->UpdateComponent();
+	// particle更新
+	ParticleSystem::GetInstance()->Update();
 	// collision更新
 	CollisionManager::GetInstance()->Update();
 }
@@ -183,6 +191,7 @@ void Framework::Finalize() {
 	graphicsCore_->Finalize(winApp_->GetHwnd());
 	Input::GetInstance()->Finalize();
 	LineRenderer::GetInstance()->Finalize();
+	ParticleSystem::GetInstance()->Finalize();
 	ECSManager::GetInstance()->Finalize();
 
 	sceneManager_.reset();

@@ -23,7 +23,7 @@ void BaseTransform::Init() {
 	rotation.Init();
 	translation.Init();
 
-	eulerRotate_.Init();
+	eulerRotate.Init();
 	prevScale = Vector3::AnyInit(1.0f);
 }
 
@@ -62,14 +62,14 @@ void BaseTransform::ImGui(float itemSize) {
 		rotation.Init();
 		translation.Init();
 
-		eulerRotate_.Init();
+		eulerRotate.Init();
 	}
 	ImGui::Text(std::format("isDirty: {}", isDirty_).c_str());
 
 	ImGui::DragFloat3("translation", &translation.x, 0.01f);
-	if (ImGui::DragFloat3("rotation", &eulerRotate_.x, 0.01f)) {
+	if (ImGui::DragFloat3("rotation", &eulerRotate.x, 0.01f)) {
 
-		rotation = Quaternion::EulerToQuaternion(eulerRotate_);
+		rotation = Quaternion::EulerToQuaternion(eulerRotate);
 	}
 	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
 		rotation.x, rotation.y, rotation.z, rotation.w);
@@ -123,59 +123,6 @@ Vector3 BaseTransform::GetUp() const {
 
 Vector3 BaseTransform::GetDown() const {
 	return Vector3(-GetUp().x, -GetUp().y, -GetUp().z);
-}
-
-//============================================================================
-// Effect
-//============================================================================
-
-void EffectTransformComponent::Init() {
-
-	BaseTransform::Init();
-	useBillboardMatrix_ = false;
-}
-
-void EffectTransformComponent::UpdateMatrix(const Matrix4x4& billboardMatrix) {
-
-	// 値に変更がなければ更新しない
-	bool selfUnchanged =
-		(scale == prevScale &&
-			rotation == prevRotation &&
-			translation == prevTranslation);
-
-	// 親と自分の値が変わっていなければ更新しない
-	// useBillboardMatrixがtrueならずっと更新する
-	if (selfUnchanged &&
-		(!parent || !parent->IsDirty()) &&
-		!useBillboardMatrix_) {
-
-		isDirty_ = false;
-		return;
-	}
-	// どちらかに変更があれば更新
-	isDirty_ = true;
-
-	// 行列を更新
-	std::optional<Matrix4x4> billboard = std::nullopt;
-	// billboardMatrixを使用
-	if (useBillboardMatrix_) {
-
-		billboard = billboardMatrix;
-	}
-	matrix.Update(parent, scale, rotation, translation, billboard);
-
-	// 値を保存
-	prevScale = scale;
-	prevRotation = rotation;
-	prevTranslation = translation;
-}
-
-void EffectTransformComponent::ImGui(float itemSize) {
-
-	BaseTransform::ImGui(itemSize);
-
-	// billboardMatrix使用フラグ
-	ImGui::Checkbox("useBillboardMatrix", &useBillboardMatrix_);
 }
 
 //============================================================================

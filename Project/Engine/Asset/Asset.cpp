@@ -34,7 +34,7 @@ void Asset::MakeModel(const std::string& modelName,
 	modelLoader_->Make(modelName, vertexData, indexData);
 }
 
-void Asset::Export(const ResourceMesh& modelData, const std::string& filePath) {
+void Asset::Export(const ResourceMesh<MeshVertex>& modelData, const std::string& filePath) {
 	modelLoader_->Export(modelData, filePath);
 }
 
@@ -60,6 +60,10 @@ const std::vector<std::string>& Asset::GetTextureKeys() const {
 
 bool Asset::SearchTexture(const std::string& textureName) {
 	return textureManager_->Search(textureName);
+}
+
+bool Asset::SearchModel(const std::string& modelName) {
+	return modelLoader_->Search(modelName);
 }
 
 const ModelData& Asset::GetModelData(const std::string& modelName) const {

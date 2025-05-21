@@ -7,6 +7,7 @@
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Asset/TextureManager.h>
 #include <Engine/Asset/Filesystem.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	ModelLoader classMethods
@@ -67,7 +68,7 @@ void ModelLoader::Make(const std::string& modelName,
 	models_[modelName] = modelData;
 }
 
-void ModelLoader::Export(const ResourceMesh& modelData, const std::string& filePath) {
+void ModelLoader::Export(const ResourceMesh<MeshVertex>& modelData, const std::string& filePath) {
 
 	// filePath
 	const std::string fullPath = "./Assets/Models/" + filePath;
@@ -120,6 +121,11 @@ void ModelLoader::Export(const ResourceMesh& modelData, const std::string& fileP
 
 	// 書き込み完了
 	file.close();
+}
+
+bool ModelLoader::Search(const std::string& modelName) {
+
+	return Algorithm::Find(models_, modelName);
 }
 
 const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {

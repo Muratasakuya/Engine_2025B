@@ -19,7 +19,7 @@ public:
 	IMesh() = default;
 	virtual ~IMesh() = default;
 
-	void Init(ID3D12Device* device, const ResourceMesh& resource,
+	void Init(ID3D12Device* device, const ResourceMesh<MeshVertex>& resource,
 		bool isSkinned, uint32_t numInstance);
 
 	//--------- accessor -----------------------------------------------------
@@ -32,9 +32,6 @@ public:
 	// meshlet数
 	uint32_t GetMeshletCount(uint32_t meshIndex) const { return meshletCounts_[meshIndex]; }
 	uint32_t GetVertexCount(uint32_t meshIndex) const { return vertexCounts_[meshIndex]; }
-
-	// 頂点のremapデータ
-	const std::vector<uint32_t>& GetRemapData(uint32_t meshIndex) { return remapTables_[meshIndex]; }
 
 	const DxConstBuffer<MeshInstanceData>& GetMeshInstanceData(uint32_t meshIndex) const { return meshInstanceData_[meshIndex]; }
 
@@ -58,9 +55,6 @@ protected:
 	// 頂点数
 	std::vector<uint32_t> vertexCounts_;
 
-	// 頂点のremapデータ
-	std::vector<std::vector<uint32_t>> remapTables_;
-
 	// buffers
 	std::vector<DxConstBuffer<MeshInstanceData>> meshInstanceData_;
 	std::vector<DxConstBuffer<uint32_t>> uniqueVertexIndices_;
@@ -70,13 +64,13 @@ protected:
 	//--------- functions ----------------------------------------------------
 
 	void CreateBuffer(ID3D12Device* device, uint32_t meshIndex,
-		const ResourceMesh& resource);
-	void TransferBuffer(uint32_t meshIndex, const ResourceMesh& resource,
+		const ResourceMesh<MeshVertex>& resource);
+	void TransferBuffer(uint32_t meshIndex, const ResourceMesh<MeshVertex>& resource,
 		bool isSkinned);
 
 	virtual void CreateVertexBuffer(ID3D12Device* device, uint32_t meshIndex,
-		const ResourceMesh& resource, uint32_t numInstance) = 0;
-	virtual void TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh& resource) = 0;
+		const ResourceMesh<MeshVertex>& resource, uint32_t numInstance) = 0;
+	virtual void TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh<MeshVertex>& resource) = 0;
 };
 
 //============================================================================
@@ -108,8 +102,8 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	void CreateVertexBuffer(ID3D12Device* device, uint32_t meshIndex,
-		const ResourceMesh& resource, uint32_t numInstance) override;
-	void TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh& resource) override;
+		const ResourceMesh<MeshVertex>& resource, uint32_t numInstance) override;
+	void TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh<MeshVertex>& resource) override;
 };
 
 //============================================================================
@@ -143,6 +137,60 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	void CreateVertexBuffer(ID3D12Device* device, uint32_t meshIndex,
-		const ResourceMesh& resource, uint32_t numInstance) override;
-	void TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh& resource) override;
+		const ResourceMesh<MeshVertex>& resource, uint32_t numInstance) override;
+	void TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh<MeshVertex>& resource) override;
+};
+
+//============================================================================
+//	EffectMesh class
+//============================================================================
+class EffectMesh {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	EffectMesh() = default;
+	~EffectMesh() = default;
+
+	void Init(ID3D12Device* device, const ResourceMesh<EffectMesh>& resource);
+
+	//--------- accessor -----------------------------------------------------
+
+	// meshlet数
+	uint32_t GetMeshletCount() const { return meshletCount_; }
+	uint32_t GetVertexCount() const { return vertexCount_; }
+
+	const DxConstBuffer<EffectMesh>& GetVertexBuffer() const { return vertices_; }
+
+	const DxConstBuffer<EffectMeshInstanceData>& GetMeshInstanceData() const { return meshInstanceData_; }
+
+	const DxConstBuffer<uint32_t>& GetUniqueVertexIndexBuffer() const { return uniqueVertexIndices_; }
+
+	const DxConstBuffer<ResourcePrimitiveIndex>& GetPrimitiveIndexBuffer() const { return primitiveIndices_; }
+
+	const DxConstBuffer<ResourceMeshlet>& GetMeshletBuffer() const { return meshlets_; }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	// meshlet数
+	uint32_t meshletCount_;
+	// 頂点数
+	uint32_t vertexCount_;
+
+	// buffers
+	DxConstBuffer<EffectMesh> vertices_;
+	DxConstBuffer<EffectMeshInstanceData> meshInstanceData_;
+	DxConstBuffer<uint32_t> uniqueVertexIndices_;
+	DxConstBuffer<ResourcePrimitiveIndex> primitiveIndices_;
+	DxConstBuffer<ResourceMeshlet> meshlets_;
+
+	//--------- functions ----------------------------------------------------
+
+	void CreateBuffer(ID3D12Device* device, const ResourceMesh<EffectMesh>& resource);
+	void TransferBuffer(const ResourceMesh<EffectMesh>& resource);
 };

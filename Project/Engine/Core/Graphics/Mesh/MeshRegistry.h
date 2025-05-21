@@ -48,5 +48,5 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// meshletの作成
-	ResourceMesh CreateMeshlet(const std::string& modelName);
+	ResourceMesh<MeshVertex> CreateMeshlet(const std::string& modelName);
 };

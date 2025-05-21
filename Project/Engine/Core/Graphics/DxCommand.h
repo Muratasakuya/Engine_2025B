@@ -14,23 +14,9 @@
 #include <vector>
 #include <array>
 #include <optional>
-#include <unordered_map>
 #include <chrono>
 #include <thread>
 #include <future>
-
-//============================================================================
-//	enum class
-//============================================================================
-
-// commandListの種類
-enum class CommandListType {
-
-	Compute,
-	Graphics,
-
-	Count
-};
 
 //============================================================================
 //	DxCommand class
@@ -46,7 +32,6 @@ public:
 
 	void Create(ID3D12Device* device);
 
-	void StartComputeCommands();
 	void ExecuteCommands(IDXGISwapChain4* swapChain);
 
 	void WaitForGPU();
@@ -63,8 +48,7 @@ public:
 	void SetViewportAndScissor(uint32_t width, uint32_t height);
 
 	void TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
-		D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter,
-		CommandListType type = CommandListType::Graphics);
+		D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter);
 
 	void CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,
 		ID3D12Resource* srcResource, D3D12_RESOURCE_STATES srcState);
@@ -73,7 +57,7 @@ public:
 
 	ID3D12CommandQueue* GetQueue() const { return commandQueue_.Get(); }
 
-	ID3D12GraphicsCommandList6* GetCommandList(CommandListType type) const;
+	ID3D12GraphicsCommandList6* GetCommandList() const { return commandList_.Get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -81,10 +65,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> commandListTypes_;
-
-	std::unordered_map<CommandListType, ComPtr<ID3D12GraphicsCommandList6>> commandLists_;
-	std::unordered_map<CommandListType, ComPtr<ID3D12CommandAllocator>> commandAllocators_;
+	ComPtr<ID3D12GraphicsCommandList6> commandList_;
+	ComPtr<ID3D12CommandAllocator> commandAllocator_;
 
 	ComPtr<ID3D12CommandQueue> commandQueue_;
 
@@ -92,15 +74,10 @@ private:
 	uint64_t fenceValue_;
 	HANDLE fenceEvent_;
 
-	std::future<void> computeDoneFuture_;
-
 	std::chrono::steady_clock::time_point reference_;
 
 	//--------- functions ----------------------------------------------------
 
-	constexpr std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> CreateCommandTypes();
-
-	void ExecuteComputeCommands();
 	void ExecuteGraphicsCommands(IDXGISwapChain4* swapChain);
 
 	void FenceEvent();

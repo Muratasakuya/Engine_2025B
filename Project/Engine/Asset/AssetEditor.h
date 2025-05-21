@@ -28,6 +28,29 @@ public:
 	//	public Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	enum class PendingType {
+
+		None,
+		Texture,
+		Model
+	};
+
+	struct DragPayload {
+
+		PendingType type; // タイプ
+		char name[260];   // 名前
+	};
+
+	//--------- variables ----------------------------------------------------
+
+	static constexpr const char* kDragPayloadId = "ASSET_PATH";
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
 	AssetEditor() = default;
 	~AssetEditor() = default;
 
@@ -51,16 +74,10 @@ private:
 	struct DirectoryNode {
 
 		std::string name;                                     // フォルダ名
-		std::filesystem::path path;                           // 相対
+		std::filesystem::path path;                           // 相対パス
 		std::vector<std::unique_ptr<DirectoryNode>> children; // サブフォルダ
 		bool opened;                                          // UIの開閉フラグ
 		bool isDirectory;
-	};
-
-	enum class PendingType {
-		None,
-		Texture,
-		Model
 	};
 
 	//--------- variables ----------------------------------------------------

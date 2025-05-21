@@ -196,7 +196,7 @@ float EasedValue(EasingType easingType, float t) {
 	}
 }
 
-void Easing::SelectEasingType(EasingType& easingType, const std::string& lebel) {
+void Easing::SelectEasingType(EasingType& easingType, const std::string& lebel, float itemWidth) {
 
 	const char* easingOptions[] = {
 			"EaseInSine", "EaseInQuad", "EaseInCubic", "EaseInQuart", "EaseInQuint", "EaseInExpo", "EaseInCirc", "EaseInBack", "EaseInBounce",
@@ -219,6 +219,7 @@ void Easing::SelectEasingType(EasingType& easingType, const std::string& lebel) 
 	if (ImGui::BeginCombo(("EasingType##" + lebel).c_str(), easingOptions[easingIndex])) {
 
 		// EaseIn
+		ImGui::PushItemWidth(itemWidth);
 		if (ImGui::BeginCombo("EaseIn", "")) {
 			for (int i = 0; i < IM_ARRAYSIZE(easeInOptions); i++) {
 				const bool isSelected = (easingIndex == i);
@@ -259,6 +260,7 @@ void Easing::SelectEasingType(EasingType& easingType, const std::string& lebel) 
 			}
 			ImGui::EndCombo();
 		}
+		ImGui::PopItemWidth();
 
 		ImGui::EndCombo();
 	}

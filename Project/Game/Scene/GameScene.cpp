@@ -18,14 +18,17 @@
 
 void GameScene::Load(Asset* asset) {
 
+	// particle
+	asset->LoadTexture("circle");
+	asset->LoadTexture("noise");
+	// cubeMap、.dds
+	asset->LoadTexture("docklands_01_2k");
+
 	// player
 	asset->LoadModel("playerBody");
 	asset->LoadModel("playerLeftHand");
 	asset->LoadModel("playerRightHand");
 	asset->LoadModel("playerSword");
-
-	// cubeMap、.dds
-	asset->LoadTexture("docklands_01_2k");
 
 	// environment
 	asset->LoadModel("stageField");

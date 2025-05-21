@@ -36,8 +36,8 @@ void ImGuiEditor::Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle
 	displayEnable_ = true;
 	editMode_ = false;
 
-	gameViewSize_ = ImVec2(1088.0f, 612.0f);
-	debugViewSize_ = ImVec2(1088.0f, 612.0f);
+	gameViewSize_ = ImVec2(832.0f, 486.0f);
+	debugViewSize_ = ImVec2(832.0f, 486.0f);
 }
 
 void ImGuiEditor::Display() {
@@ -100,9 +100,6 @@ void ImGuiEditor::EditLayout() {
 }
 
 void ImGuiEditor::MainWindow() {
-
-	// 表示する画像サイズ
-	const ImVec2 imageSize(1216.0f, 684.0f);
 
 	ImGui::Begin("Scene", nullptr, windowFlag_);
 

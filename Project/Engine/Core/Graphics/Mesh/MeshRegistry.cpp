@@ -43,7 +43,7 @@ void MeshRegistry::RegisterMesh(const std::string& modelName,
 		isSkinned, numInstance);
 }
 
-ResourceMesh MeshRegistry::CreateMeshlet(const std::string& modelName) {
+ResourceMesh<MeshVertex> MeshRegistry::CreateMeshlet(const std::string& modelName) {
 
 	MeshletBuilder meshletBuilder{};
 
@@ -61,7 +61,7 @@ ResourceMesh MeshRegistry::CreateMeshlet(const std::string& modelName) {
 		aiProcess_SortByPType);
 
 	// 頂点、meshlet生成
-	ResourceMesh resourceMesh{};
+	ResourceMesh<MeshVertex> resourceMesh{};
 	resourceMesh = meshletBuilder.ParseMesh(scene, !modelData.skinClusterData.empty());
 
 	return resourceMesh;

@@ -9,6 +9,7 @@
 #include <d3d12.h>
 // c++
 #include <cstdint>
+#include <string>
 #include <array>
 
 //============================================================================
@@ -46,3 +47,9 @@ static constexpr uint32_t blendModeNum = static_cast<uint32_t>(BlendMode::BlendC
 static constexpr
 std::array<BlendMode, static_cast<size_t>(BlendMode::BlendCount)>
 blendModeTypes = CreateBlendModeTypes();
+
+namespace Blend {
+
+	// imgui選択
+	void SelectBlendMode(BlendMode& blendMode, const std::string& label = "label");
+}

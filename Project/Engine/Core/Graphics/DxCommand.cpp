@@ -9,14 +9,6 @@
 //	DxCommand classMethods
 //============================================================================
 
-constexpr std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> DxCommand::CreateCommandTypes() {
-	std::array<CommandListType, static_cast<size_t>(CommandListType::Count)> types = {};
-	for (uint32_t i = 0; i < static_cast<uint32_t>(CommandListType::Count); ++i) {
-		types[i] = static_cast<CommandListType>(i);
-	}
-	return types;
-}
-
 void DxCommand::UpdateFixFPS() {
 
 	// フレームレートピッタリの時間
@@ -54,8 +46,6 @@ void DxCommand::Create(ID3D12Device* device) {
 	fenceEvent_ = CreateEvent(NULL, FALSE, FALSE, NULL);
 	assert(fenceEvent_ != nullptr);
 
-	commandListTypes_ = CreateCommandTypes();
-
 	reference_ = std::chrono::steady_clock::now();
 
 	commandQueue_ = nullptr;
@@ -63,39 +53,23 @@ void DxCommand::Create(ID3D12Device* device) {
 	hr = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
 	assert(SUCCEEDED(hr));
 
-	commandLists_.reserve(commandListTypes_.size());
-	commandAllocators_.reserve(commandListTypes_.size());
-	for (const auto& type : commandListTypes_) {
-
-		commandAllocators_[type] = nullptr;
-		hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocators_[type]));
-		assert(SUCCEEDED(hr));
-
-		commandLists_[type] = nullptr;
-		hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocators_[type].Get(), nullptr, IID_PPV_ARGS(&commandLists_[type]));
-		assert(SUCCEEDED(hr));
-	}
-}
-
-void DxCommand::ExecuteComputeCommands() {
-
-	HRESULT hr = S_OK;
-	// ComputeCommand
-	hr = commandLists_[CommandListType::Compute]->Close();
+	commandAllocator_ = nullptr;
+	hr = device->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&commandAllocator_));
 	assert(SUCCEEDED(hr));
 
-	ID3D12CommandList* commandLists[] = { commandLists_[CommandListType::Compute].Get() };
-	commandQueue_->ExecuteCommandLists(1, commandLists);
+	commandList_ = nullptr;
+	hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator_.Get(), nullptr, IID_PPV_ARGS(&commandList_));
+	assert(SUCCEEDED(hr));
 }
 
 void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
 
 	HRESULT hr = S_OK;
 	// GraphicsCommand
-	hr = commandLists_[CommandListType::Graphics]->Close();
+	hr = commandList_->Close();
 	assert(SUCCEEDED(hr));
 
-	ID3D12CommandList* commandLists[] = { commandLists_[CommandListType::Graphics].Get() };
+	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
 	// GPUとOSに画面の交換を行うように通知する
@@ -117,26 +91,7 @@ void DxCommand::FenceEvent() {
 	}
 }
 
-void DxCommand::StartComputeCommands() {
-
-	std::promise<void> computeDonePromise;
-	computeDoneFuture_ = computeDonePromise.get_future();
-
-	std::thread computeThread([this, promise = std::move(computeDonePromise)]() mutable {
-
-		this->ExecuteComputeCommands();
-		// Compute の完了を通知
-		promise.set_value();
-		});
-
-	// 非同期で実行
-	computeThread.detach();
-}
-
 void DxCommand::ExecuteCommands(IDXGISwapChain4* swapChain) {
-
-	// ComputeCommandの完了を待つ
-	computeDoneFuture_.wait();
 
 	// Computeの完了を待つ
 	FenceEvent();
@@ -150,23 +105,20 @@ void DxCommand::ExecuteCommands(IDXGISwapChain4* swapChain) {
 	UpdateFixFPS();
 
 	// コマンドリストのリセット
-	for (const auto& type : commandListTypes_) {
-
-		HRESULT hr = commandAllocators_[type]->Reset();
-		assert(SUCCEEDED(hr));
-		hr = commandLists_[type]->Reset(commandAllocators_[type].Get(), nullptr);
-		assert(SUCCEEDED(hr));
-	}
+	HRESULT hr = commandAllocator_->Reset();
+	assert(SUCCEEDED(hr));
+	hr = commandList_->Reset(commandAllocator_.Get(), nullptr);
+	assert(SUCCEEDED(hr));
 }
 
 void DxCommand::WaitForGPU() {
 
 	// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseする
-	HRESULT hr = commandLists_[CommandListType::Graphics]->Close();
+	HRESULT hr = commandList_->Close();
 	assert(SUCCEEDED(hr));
 
 	// GPUにコマンドリストの実行を行わせる
-	ID3D12CommandList* commandLists[] = { commandLists_[CommandListType::Graphics].Get() };
+	ID3D12CommandList* commandLists[] = { commandList_.Get() };
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
 	// Feneceの値を更新
@@ -181,9 +133,9 @@ void DxCommand::WaitForGPU() {
 		WaitForSingleObject(fenceEvent_, INFINITE);
 	}
 
-	hr = commandAllocators_[CommandListType::Graphics]->Reset();
+	hr = commandAllocator_->Reset();
 	assert(SUCCEEDED(hr));
-	hr = commandLists_[CommandListType::Graphics]->Reset(commandAllocators_[CommandListType::Graphics].Get(), nullptr);
+	hr = commandList_->Reset(commandAllocator_.Get(), nullptr);
 	assert(SUCCEEDED(hr));
 }
 
@@ -192,20 +144,13 @@ void DxCommand::Finalize(HWND hwnd) {
 	CloseWindow(hwnd);
 }
 
-ID3D12GraphicsCommandList6* DxCommand::GetCommandList(CommandListType type) const {
-	return commandLists_.at(type).Get();
-}
-
 //============================================================================
 //	GraphicsCommand
 //============================================================================
 
 void DxCommand::SetDescriptorHeaps(const std::vector<ID3D12DescriptorHeap*>& descriptorHeaps) {
 
-	commandLists_[CommandListType::Compute]->SetDescriptorHeaps(
-		static_cast<UINT>(descriptorHeaps.size()), descriptorHeaps.data());
-
-	commandLists_[CommandListType::Graphics]->SetDescriptorHeaps(
+	commandList_->SetDescriptorHeaps(
 		static_cast<UINT>(descriptorHeaps.size()), descriptorHeaps.data());
 }
 
@@ -215,17 +160,16 @@ void DxCommand::SetRenderTargets(const std::optional<RenderTarget>& renderTarget
 	// renderTargetが設定されているとき
 	if (renderTarget.has_value()) {
 
-		commandLists_[CommandListType::Graphics]->OMSetRenderTargets(1,
+		commandList_->OMSetRenderTargets(1,
 			&renderTarget.value().rtvHandle, FALSE, dsvHandle.has_value() ? &dsvHandle.value() : nullptr);
 		float clearColor[] =
 		{ renderTarget.value().clearColor.r, renderTarget.value().clearColor.g,
 			renderTarget.value().clearColor.b, renderTarget.value().clearColor.a };
-		commandLists_[CommandListType::Graphics]->ClearRenderTargetView(renderTarget.value().rtvHandle, clearColor, 0, nullptr);
+		commandList_->ClearRenderTargetView(renderTarget.value().rtvHandle, clearColor, 0, nullptr);
 	} else {
 		if (dsvHandle.has_value()) {
 
-			commandLists_[CommandListType::Graphics]->OMSetRenderTargets(0,
-				nullptr, FALSE, &dsvHandle.value());
+			commandList_->OMSetRenderTargets(0, nullptr, FALSE, &dsvHandle.value());
 		} else {
 
 			ASSERT(FALSE, "unSetting ShadowMap");
@@ -235,7 +179,7 @@ void DxCommand::SetRenderTargets(const std::optional<RenderTarget>& renderTarget
 
 void DxCommand::ClearDepthStencilView(const D3D12_CPU_DESCRIPTOR_HANDLE& dsvHandle) {
 
-	commandLists_[CommandListType::Graphics]->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
 void DxCommand::SetViewportAndScissor(uint32_t width, uint32_t height) {
@@ -245,15 +189,14 @@ void DxCommand::SetViewportAndScissor(uint32_t width, uint32_t height) {
 
 	viewport =
 		D3D12_VIEWPORT(0.0f, 0.0f, FLOAT(width), FLOAT(height), 0.0f, 1.0f);
-	commandLists_[CommandListType::Graphics]->RSSetViewports(1, &viewport);
+	commandList_->RSSetViewports(1, &viewport);
 
 	scissorRect = D3D12_RECT(0, 0, width, height);
-	commandLists_[CommandListType::Graphics]->RSSetScissorRects(1, &scissorRect);
+	commandList_->RSSetScissorRects(1, &scissorRect);
 }
 
 void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
-	D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter,
-	CommandListType type) {
+	D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter) {
 
 	std::vector<D3D12_RESOURCE_BARRIER> barriers;
 	// メモリ確保
@@ -274,8 +217,7 @@ void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources
 		barriers.push_back(barrier);
 	}
 
-	commandLists_[type]->ResourceBarrier(
-		static_cast<UINT>(barriers.size()), barriers.data());
+	commandList_->ResourceBarrier(static_cast<UINT>(barriers.size()), barriers.data());
 }
 
 void DxCommand::CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,
@@ -285,7 +227,7 @@ void DxCommand::CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES d
 	TransitionBarriers({ srcResource }, srcState, D3D12_RESOURCE_STATE_COPY_SOURCE);
 	TransitionBarriers({ dstResource }, dstState, D3D12_RESOURCE_STATE_COPY_DEST);
 
-	commandLists_[CommandListType::Graphics]->CopyResource(dstResource, srcResource);
+	commandList_->CopyResource(dstResource, srcResource);
 
 	// 元の状態に戻す
 	TransitionBarriers({ srcResource }, D3D12_RESOURCE_STATE_COPY_SOURCE, srcState);

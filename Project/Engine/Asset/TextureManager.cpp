@@ -37,7 +37,7 @@ void TextureManager::Load(const std::string& textureName) {
 		return;
 	}
 
-	// model検索
+	// texture検索
 	std::filesystem::path filePath;
 	bool found = false;
 	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
@@ -182,7 +182,7 @@ void TextureManager::CreateTextureResource(ID3D12Device* device, ComPtr<ID3D12Re
 void TextureManager::UploadTextureData(ID3D12Resource* texture, ComPtr<ID3D12Resource>& resource, const DirectX::ScratchImage& mipImages) {
 
 	std::vector<D3D12_SUBRESOURCE_DATA> subresources;
-	ID3D12GraphicsCommandList* commandlist = dxCommand_->GetCommandList(CommandListType::Graphics);
+	ID3D12GraphicsCommandList* commandlist = dxCommand_->GetCommandList();
 
 	DirectX::PrepareUpload(device_, mipImages.GetImages(), mipImages.GetImageCount(), mipImages.GetMetadata(), subresources);
 	uint64_t intermediateSize = GetRequiredIntermediateSize(texture, 0, static_cast<UINT>(subresources.size()));

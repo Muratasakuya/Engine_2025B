@@ -30,7 +30,9 @@ public:
 	void Make(const std::string& modelName,
 		const std::vector<MeshVertex>& vertexData,
 		const std::vector<uint32_t>& indexData);
-	void Export(const ResourceMesh& modelData, const std::string& filePath);
+	void Export(const ResourceMesh<MeshVertex>& modelData, const std::string& filePath);
+
+	bool Search(const std::string& modelName);
 
 	//--------- accessor -----------------------------------------------------
 

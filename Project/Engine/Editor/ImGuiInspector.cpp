@@ -138,8 +138,10 @@ void ImGuiInspector::EditObject3D() {
 
 		if (selected3D_.has_value()) {
 			if (ImGui::BeginTabItem("Individual")) {
+				if (!individualUI_.empty()) {
 
-				individualUI_.at(*selected3D_)();
+					individualUI_.at(*selected3D_)();
+				}
 				ImGui::EndTabItem();
 			}
 		}

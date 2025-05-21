@@ -19,5 +19,5 @@ namespace UVHelper {
 	// entityId...    texcoordを設定するentityのId
 	// serialCount... 連番画像の連番数
 	// 返り値...       x=1.0fまでのoffset
-	std::vector<Vector2> ApplyFrameTexcoord(const ResourceMesh& resourceMesh, int serialCount);
+	std::vector<Vector2> ApplyFrameTexcoord(const ResourceMesh<MeshVertex>& resourceMesh, int serialCount);
 }

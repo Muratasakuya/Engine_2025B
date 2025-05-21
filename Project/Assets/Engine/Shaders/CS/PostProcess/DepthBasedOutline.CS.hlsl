@@ -64,6 +64,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	// 3x3 畳み込み処理
 	for (int x = 0; x < 3; ++x) {
 		for (int y = 0; y < 3; ++y) {
+			
 			int2 offset = kIndex3x3[x][y];
 
 			// ピクセル座標を計算 (範囲外処理)
