@@ -110,7 +110,7 @@ void PostProcessSystem::Execute(RenderTexture* inputTexture, DxCommand* dxComman
 		return;
 	}
 
-	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+	auto commandList = dxCommand->GetCommandList();
 	PostProcessCommandContext commandContext{};
 	// 入力画像のGPUHandle取得
 	D3D12_GPU_DESCRIPTOR_HANDLE inputGPUHandle = inputTexture->GetGPUHandle();
@@ -182,7 +182,7 @@ void PostProcessSystem::Execute(RenderTexture* inputTexture, DxCommand* dxComman
 
 void PostProcessSystem::RenderFrameBuffer(DxCommand* dxCommand) {
 
-	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+	auto commandList = dxCommand->GetCommandList();
 
 	// frameBufferへの描画
 	commandList->SetGraphicsRootSignature(offscreenPipeline_->GetRootSignature());

@@ -206,6 +206,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Lib\DxStructures.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Mesh\Mesh.cpp">
       <SubType>
       </SubType>
@@ -267,7 +271,23 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleLoader.cpp" />
+    <ClCompile Include="Engine\Particle\ParticleParameter.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\ParticleEmitterHandler.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleSystem.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Structures\EmitterStructures.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Structures\ParticleValue.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -470,6 +490,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Time\GameTimer.cpp" />
     <ClCompile Include="Lib\Adapter\Easing.cpp" />
     <ClCompile Include="Lib\Adapter\JsonAdapter.cpp" />
+    <ClCompile Include="Lib\Adapter\RandomGenerator.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Lib\MathUtils\Algorithm.cpp">
       <SubType>
       </SubType>
@@ -640,11 +664,23 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Particle\ParticleLoader.h" />
-    <ClInclude Include="Engine\Particle\ParticleStructures.h">
+    <ClInclude Include="Engine\Particle\ParticleParameter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Particle\ParticleEmitterHandler.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Particle\Structures\EmitterStructures.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Particle\ParticleSystem.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Particle\Structures\ParticleValue.h">
       <SubType>
       </SubType>
     </ClInclude>

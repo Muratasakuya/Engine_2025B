@@ -63,7 +63,7 @@ void BloomProcessor::Execute(
 	horizontalBlurBuffer_->Update();
 	verticalBlurBuffer_->Update();
 
-	auto commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+	auto commandList = dxCommand->GetCommandList();
 	PostProcessCommandContext commandContext{};
 
 	// 輝度抽出を行う

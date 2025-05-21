@@ -3,23 +3,30 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Editor/Base/IGameEditor.h>
+#include <Engine/Particle/ParticleEmitter.h>
+#include <Engine/Particle/ParticleEmitterHandler.h>
 
+// c++
+#include <unordered_map>
 // front
 class CameraManager;
 
 //============================================================================
 //	ParticleSystem class
 //============================================================================
-class ParticleSystem {
+class ParticleSystem :
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	void Init(CameraManager* cameraManager);
+	void Init(Asset* asset,CameraManager* cameraManager);
 
 	void Update();
 
+	void ImGui() override;
 	//--------- accessor -----------------------------------------------------
 
 	// singleton
@@ -34,11 +41,20 @@ private:
 
 	static ParticleSystem* instance_;
 
+	Asset* asset_;
 	CameraManager* cameraManager_;
+
+	// handler、editorによる追加、選択、削除
+	std::unique_ptr<ParticleEmitterHandler> emitterHandler_;
+
+	// emitters
+	std::unordered_map<std::string, std::unique_ptr<ParticleEmitter>> emitters_;
 
 	//--------- functions ----------------------------------------------------
 
-	ParticleSystem() = default;
+	void CreateEmitter();
+
+	ParticleSystem() : IGameEditor("ParticleSystem") {}
 	~ParticleSystem() = default;
 	ParticleSystem(const ParticleSystem&) = delete;
 	ParticleSystem& operator=(const ParticleSystem&) = delete;

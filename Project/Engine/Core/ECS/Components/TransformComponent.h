@@ -59,14 +59,14 @@ public:
 	TransformationMatrix matrix;
 
 	const BaseTransform* parent = nullptr;
+
+	Vector3 eulerRotate;
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
-
-	Vector3 eulerRotate_;
 
 	Vector3 prevScale;
 	Quaternion prevRotation;

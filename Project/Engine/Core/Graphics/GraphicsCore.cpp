@@ -241,10 +241,6 @@ void GraphicsCore::BeginFrame() {
 void GraphicsCore::Render(CameraManager* cameraManager,
 	LightManager* lightManager) {
 
-	// 描画開始時点でComputeCommandは全て実行させる
-	// ComputeCommandを非同期で実行
-	dxCommand_->StartComputeCommands();
-
 	// bufferの更新
 	sceneBuffer_->Update(cameraManager, lightManager);
 	spriteRenderer_->Update(cameraManager);
@@ -271,7 +267,7 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 void GraphicsCore::DebugUpdate() {
 
 	// skinning用のCSpipelineを設定
-	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Compute);
+	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList();
 	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
 	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
 }
@@ -329,7 +325,7 @@ void GraphicsCore::RenderDebugSceneRenderTexture() {
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
-	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList(CommandListType::Graphics);
+	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList();
 
 	// α値を調整するためにCSで計算を行う
 	commandList->SetComputeRootSignature(copyTexturePipeline_->GetRootSignature());
@@ -362,14 +358,14 @@ void GraphicsCore::RenderFrameBuffer() {
 	postProcessSystem_->RenderFrameBuffer(dxCommand_.get());
 
 	// sprite描画、postPrecessを適用しない
-	//spriteRenderer_->RenderIrrelevant(dxCommand_->GetCommandList(CommandListType::Graphics));
+	//spriteRenderer_->RenderIrrelevant(dxCommand_->GetCommandList());
 }
 
 void GraphicsCore::Renderers(bool debugEnable) {
 
 	// sprite描画、postPrecess適用
 	// model描画前
-	//spriteRenderer_->RenderApply(SpriteLayer::PreModel, dxCommand_->GetCommandList(CommandListType::Graphics));
+	//spriteRenderer_->RenderApply(SpriteLayer::PreModel, dxCommand_->GetCommandList());
 
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
@@ -379,7 +375,7 @@ void GraphicsCore::Renderers(bool debugEnable) {
 
 	// sprite描画、postPrecess適用
 	// model描画後
-	//spriteRenderer_->RenderApply(SpriteLayer::PostModel, dxCommand_->GetCommandList(CommandListType::Graphics));
+	//spriteRenderer_->RenderApply(SpriteLayer::PostModel, dxCommand_->GetCommandList());
 }
 
 //============================================================================
@@ -397,7 +393,7 @@ void GraphicsCore::EndRenderFrame() {
 
 	// imgui描画
 	imguiManager_->End();
-	imguiManager_->Draw(dxCommand_->GetCommandList(CommandListType::Graphics));
+	imguiManager_->Draw(dxCommand_->GetCommandList());
 
 	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },

@@ -23,7 +23,7 @@ void DebugCamera::Init() {
 	eulerRotation_ = Vector3(0.26f, 0.0f, 0.0f);
 	transform_.scale = Vector3::AnyInit(1.0f);
 	transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
-	transform_.translation = Vector3(0.0f, 4.8f, -16.0f);
+	transform_.translation = Vector3(0.0f, 22.0f, -80.0f);
 
 	// 行列更新
 	transform_.UpdateMatrix();

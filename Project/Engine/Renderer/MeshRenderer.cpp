@@ -45,7 +45,7 @@ void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
 void MeshRenderer::RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// commandList取得
-	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
 	// 描画情報取得
 	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
@@ -92,7 +92,7 @@ void MeshRenderer::RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCo
 void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// commandList取得
-	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList(CommandListType::Graphics);
+	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
 	// 描画情報取得
 	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();

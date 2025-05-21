@@ -23,7 +23,7 @@ void BaseTransform::Init() {
 	rotation.Init();
 	translation.Init();
 
-	eulerRotate_.Init();
+	eulerRotate.Init();
 	prevScale = Vector3::AnyInit(1.0f);
 }
 
@@ -62,14 +62,14 @@ void BaseTransform::ImGui(float itemSize) {
 		rotation.Init();
 		translation.Init();
 
-		eulerRotate_.Init();
+		eulerRotate.Init();
 	}
 	ImGui::Text(std::format("isDirty: {}", isDirty_).c_str());
 
 	ImGui::DragFloat3("translation", &translation.x, 0.01f);
-	if (ImGui::DragFloat3("rotation", &eulerRotate_.x, 0.01f)) {
+	if (ImGui::DragFloat3("rotation", &eulerRotate.x, 0.01f)) {
 
-		rotation = Quaternion::EulerToQuaternion(eulerRotate_);
+		rotation = Quaternion::EulerToQuaternion(eulerRotate);
 	}
 	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
 		rotation.x, rotation.y, rotation.z, rotation.w);
