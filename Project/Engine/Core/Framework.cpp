@@ -88,7 +88,8 @@ Framework::Framework() {
 	//------------------------------------------------------------------------
 	// particle機能初期化
 
-	ParticleSystem::GetInstance()->Init(asset_.get(), cameraManager_.get());
+	ParticleSystem::GetInstance()->Init(asset_.get(),
+		graphicsCore_->GetDevice(), cameraManager_.get());
 
 	//------------------------------------------------------------------------
 	// component機能初期化

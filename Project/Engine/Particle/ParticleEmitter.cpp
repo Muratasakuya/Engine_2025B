@@ -3,15 +3,22 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
+#include <Engine/Core/Graphics/Mesh/MeshletBuilder.h>
+#include <Engine/Renderer/LineRenderer.h>
 
 //============================================================================
 //	ParticleEmitter classMethods
 //============================================================================
 
-void ParticleEmitter::Init(const std::string& name, Asset* asset) {
+void ParticleEmitter::Init(const std::string& name,
+	Asset* asset, ID3D12Device* device) {
 
 	asset_ = nullptr;
 	asset_ = asset;
+
+	device_ = nullptr;
+	device_ = device;
 
 	// 名前を設定
 	name_ = name;
@@ -26,6 +33,17 @@ void ParticleEmitter::Init(const std::string& name, Asset* asset) {
 	dropSize_ = ImVec2(208.0f, 30.0f);
 }
 
+void ParticleEmitter::Update() {
+
+	// 所持しているparticleのemitterの描画
+	if (particleGroups_.empty()) {
+		return;
+	}
+
+	// 各particleのemitterを描画
+	DrawParticleEmitters();
+}
+
 void ParticleEmitter::EditLayout() {
 
 	ImGui::Begin("ParticleEmitter_EditLayout");
@@ -36,6 +54,84 @@ void ParticleEmitter::EditLayout() {
 	ImGui::DragFloat2("dropSize", &dropSize_.x, 0.5f);
 
 	ImGui::End();
+}
+
+void ParticleEmitter::CreateParticle() {
+
+	// particle追加
+	particleGroups_.emplace_back();
+	ParticleGroup& group = particleGroups_.back();
+
+	// parameterを初期化
+	group.parameter.Init(addParticleNameInputText_.name, addModelName_, asset_);
+
+	// 最大instance数
+	const uint32_t kMaxInstanceNum = 1024;
+
+	// buffer作成
+	// matrix
+	group.worldMatrixBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum);
+	// material
+	group.materialBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum);
+
+	// 頂点、meshlet生成
+	const ResourceMesh resourceMesh = CreateMeshlet(addModelName_);
+	// mesh作成
+	group.mesh = std::make_unique<EffectMesh>();
+	group.mesh->Init(device_, resourceMesh);
+
+	// particleデータの作成
+}
+
+ResourceMesh<EffectMeshVertex> ParticleEmitter::CreateMeshlet(const std::string& modelName) {
+
+	ModelData modelData = asset_->GetModelData(modelName);
+
+	// 頂点、meshlet生成
+	MeshletBuilder meshletBuilder{};
+	ResourceMesh<EffectMeshVertex> resourceMesh = meshletBuilder.ParseEffectMesh(modelData);
+
+	return resourceMesh;
+}
+
+void ParticleEmitter::DrawParticleEmitters() {
+
+	// 各particleのemitterを形状ごとに描画する
+	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+	const Color& emitterColor = Color::Red();
+	for (const auto& group : particleGroups_) {
+		switch (group.parameter.emitterShape) {
+		case EmitterShapeType::Sphere: {
+
+			const uint32_t kDivision = 6;
+			EmitterSphere emitterSphere = group.parameter.emitterSphere;
+			lineRenderer->DrawSphere(kDivision, emitterSphere.radius, emitterSphere.center, emitterColor);
+			break;
+		}
+		case EmitterShapeType::Hemisphere: {
+
+			const uint32_t kDivision = 8;
+			EmitterHemisphere emitterHemisphere = group.parameter.emitterHemisphere;
+			lineRenderer->DrawHemisphere(kDivision, emitterHemisphere.radius,
+				emitterHemisphere.center, emitterHemisphere.eulerRotate, emitterColor);
+			break;
+		}
+		case EmitterShapeType::Box: {
+
+			EmitterBox emitterBox = group.parameter.emitterBox;
+			lineRenderer->DrawOBB(emitterBox.center, emitterBox.size, emitterBox.eulerRotate, emitterColor);
+			break;
+		}
+		case EmitterShapeType::Cone: {
+
+			const uint32_t kDivision = 12;
+			EmitterCone emitterCone = group.parameter.emitterCone;
+			lineRenderer->DrawCone(kDivision, emitterCone.baseRadius, emitterCone.topRadius,
+				emitterCone.height, emitterCone.center, emitterCone.eulerRotate, emitterColor);
+			break;
+		}
+		}
+	}
 }
 
 void ParticleEmitter::ImGui() {
@@ -123,14 +219,11 @@ void ParticleEmitter::AddParticle() {
 		if (!addParticleNameInputText_.name.empty() &&
 			!addModelName_.empty()) {
 
-			// particle追加
-			particleGroups_.emplace_back();
-
-			// parameterを初期化
-			particleGroups_.back().parameter.Init(
-				addParticleNameInputText_.name,
-				addModelName_, asset_);
+			// particle作成
+			CreateParticle();
+			// 入力リセット
 			addParticleNameInputText_.Reset();
+			addModelName_.clear();
 		}
 	}
 
@@ -144,17 +237,14 @@ void ParticleEmitter::SelectParticle() {
 		return;
 	}
 
-	int selectIndex = 0;
 	for (int i = 0; i < static_cast<int>(particleGroups_.size()); ++i) {
-
-		const bool selected = (selectIndex == i);
+		const bool selected = (currentSelectIndex_.has_value() && currentSelectIndex_.value() == i);
 		if (ImGui::Selectable(particleGroups_[i].parameter.GetParticleName().c_str(), selected)) {
 
-			// indexで名前を選択し設定
-			selectIndex = i;
 			currentSelectIndex_ = i;
 		}
 		if (selected) {
+
 			ImGui::SetItemDefaultFocus();
 		}
 	}

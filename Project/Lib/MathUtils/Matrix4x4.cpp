@@ -439,3 +439,21 @@ Matrix4x4 Matrix4x4::MakeAxisAffineMatrix(const Vector3& scale, const Quaternion
 
 	return matrix;
 }
+
+Vector3 Matrix4x4::TransformPoint(const Vector3& point) const {
+
+	// 4次元ベクトル (x, y, z, w) を作成
+	float x = point.x * m[0][0] + point.y * m[0][1] + point.z * m[0][2] + m[0][3];
+	float y = point.x * m[1][0] + point.y * m[1][1] + point.z * m[1][2] + m[1][3];
+	float z = point.x * m[2][0] + point.y * m[2][1] + point.z * m[2][2] + m[2][3];
+	float w = point.x * m[3][0] + point.y * m[3][1] + point.z * m[3][2] + m[3][3];
+
+	// wで正規化して3D座標を返す
+	if (w != 0.0f) {
+		x /= w;
+		y /= w;
+		z /= w;
+	}
+
+	return Vector3(x, y, z);
+}

@@ -42,31 +42,31 @@ void EmitterShape::EditEmitterShape(const EmitterShapeType& emitterShape,
 	switch (emitterShape) {
 	case EmitterShapeType::Sphere: {
 
-		ImGui::DragFloat("radius", &sphere.radius, 0.1f);
-		ImGui::DragFloat3("center", &sphere.center.x, 0.1f);
+		ImGui::DragFloat("radius", &sphere.radius, 0.01f);
+		ImGui::DragFloat3("center", &sphere.center.x, 0.01f);
 		break;
 	}
 	case EmitterShapeType::Hemisphere: {
 
-		ImGui::DragFloat("radius", &hemisphere.radius, 0.1f);
-		ImGui::DragFloat3("center", &hemisphere.center.x, 0.1f);
-		ImGui::DragFloat3("eulerRotate", &hemisphere.eulerRotate.x, 0.1f);
+		ImGui::DragFloat("radius", &hemisphere.radius, 0.01f);
+		ImGui::DragFloat3("center", &hemisphere.center.x, 0.01f);
+		ImGui::DragFloat3("eulerRotate", &hemisphere.eulerRotate.x, 0.001f);
 		break;
 	}
 	case EmitterShapeType::Box: {
 
-		ImGui::DragFloat3("center", &box.center.x, 0.1f);
-		ImGui::DragFloat3("size", &box.size.x, 0.1f);
-		ImGui::DragFloat3("eulerRotate", &box.eulerRotate.x, 0.1f);
+		ImGui::DragFloat3("center", &box.center.x, 0.01f);
+		ImGui::DragFloat3("size", &box.size.x, 0.01f);
+		ImGui::DragFloat3("eulerRotate", &box.eulerRotate.x, 0.001f);
 		break;
 	}
 	case EmitterShapeType::Cone: {
 
-		ImGui::DragFloat("baseRadius", &cone.baseRadius, 0.1f);
-		ImGui::DragFloat("topRadius", &cone.topRadius, 0.1f);
-		ImGui::DragFloat("height", &cone.height, 0.1f);
-		ImGui::DragFloat3("center", &cone.center.x, 0.1f);
-		ImGui::DragFloat3("eulerRotate", &cone.eulerRotate.x, 0.1f);
+		ImGui::DragFloat("baseRadius", &cone.baseRadius, 0.01f);
+		ImGui::DragFloat("topRadius", &cone.topRadius, 0.01f);
+		ImGui::DragFloat("height", &cone.height, 0.01f);
+		ImGui::DragFloat3("center", &cone.center.x, 0.01f);
+		ImGui::DragFloat3("eulerRotate", &cone.eulerRotate.x, 0.001f);
 		break;
 	}
 	}

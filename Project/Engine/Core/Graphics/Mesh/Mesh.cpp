@@ -104,7 +104,7 @@ void SkinnedMesh::TransferVertexBuffer(uint32_t meshIndex, const ResourceMesh<Me
 //	EffectMesh classMethods
 //============================================================================
 
-void EffectMesh::Init(ID3D12Device* device, const ResourceMesh<EffectMesh>& resource) {
+void EffectMesh::Init(ID3D12Device* device, const ResourceMesh<EffectMeshVertex>& resource) {
 
 	// 頂点数
 	vertexCount_ = static_cast<UINT>(resource.vertices.front().size());
@@ -117,7 +117,7 @@ void EffectMesh::Init(ID3D12Device* device, const ResourceMesh<EffectMesh>& reso
 	TransferBuffer(resource);
 }
 
-void EffectMesh::CreateBuffer(ID3D12Device* device, const ResourceMesh<EffectMesh>& resource) {
+void EffectMesh::CreateBuffer(ID3D12Device* device, const ResourceMesh<EffectMeshVertex>& resource) {
 
 	// meshInstance情報
 	meshInstanceData_.CreateConstBuffer(device);
@@ -133,7 +133,7 @@ void EffectMesh::CreateBuffer(ID3D12Device* device, const ResourceMesh<EffectMes
 	meshlets_.CreateStructuredBuffer(device, meshletCount_);
 }
 
-void EffectMesh::TransferBuffer(const ResourceMesh<EffectMesh>& resource) {
+void EffectMesh::TransferBuffer(const ResourceMesh<EffectMeshVertex>& resource) {
 
 	// meshInstance情報
 	meshInstanceData_.TransferData({

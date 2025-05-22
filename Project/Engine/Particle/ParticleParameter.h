@@ -91,7 +91,6 @@ public:
 	bool reflectGround;   // 地面に反射するか
 	bool useNoiseTexture; // noiseTextureを使うか
 	bool useVertexColor;  // 頂点色を使うか
-
 	//--------- accessor -----------------------------------------------------
 
 	const std::string& GetParticleName() const { return name_; }

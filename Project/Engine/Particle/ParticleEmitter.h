@@ -34,7 +34,7 @@
 // parameterとは別でemitterがそれぞれのparticleをどのように制御するかのcontrollerクラスも作成する
 // parameterの値でparticleをcreaterクラスで作成、
 // 作成されたparticleをupdaterクラスで更新
-// 更新処理にも種類がある、ここからは学校行きながら考える
+// 更新処理にも種類がある
 // 更新処理はsystemに渡して行う
 // emitterはparticleを所持するだけのクラスにする
 // systemはemittersを所持するクラスにする
@@ -106,7 +106,9 @@ public:
 	ParticleEmitter() = default;
 	~ParticleEmitter() = default;
 
-	void Init(const std::string& name, Asset* asset);
+	void Init(const std::string& name, Asset* asset, ID3D12Device* device);
+
+	void Update();
 
 	void ImGui();
 	//--------- accessor -----------------------------------------------------
@@ -130,6 +132,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	Asset* asset_;
+	ID3D12Device* device_;
 
 	// emitterの情報
 	// 名前
@@ -155,6 +158,14 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	void EditLayout();
+
+	// 作成処理
+	void CreateParticle();
+	// meshletの作成
+	ResourceMesh<EffectMeshVertex> CreateMeshlet(const std::string& modelName);
+
+	// emitter描画処理
+	void DrawParticleEmitters();
 
 	// 追加処理
 	void AddParticle();

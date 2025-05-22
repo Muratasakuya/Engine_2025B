@@ -153,7 +153,7 @@ public:
 	EffectMesh() = default;
 	~EffectMesh() = default;
 
-	void Init(ID3D12Device* device, const ResourceMesh<EffectMesh>& resource);
+	void Init(ID3D12Device* device, const ResourceMesh<EffectMeshVertex>& resource);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -161,7 +161,7 @@ public:
 	uint32_t GetMeshletCount() const { return meshletCount_; }
 	uint32_t GetVertexCount() const { return vertexCount_; }
 
-	const DxConstBuffer<EffectMesh>& GetVertexBuffer() const { return vertices_; }
+	const DxConstBuffer<EffectMeshVertex>& GetVertexBuffer() const { return vertices_; }
 
 	const DxConstBuffer<EffectMeshInstanceData>& GetMeshInstanceData() const { return meshInstanceData_; }
 
@@ -183,7 +183,7 @@ private:
 	uint32_t vertexCount_;
 
 	// buffers
-	DxConstBuffer<EffectMesh> vertices_;
+	DxConstBuffer<EffectMeshVertex> vertices_;
 	DxConstBuffer<EffectMeshInstanceData> meshInstanceData_;
 	DxConstBuffer<uint32_t> uniqueVertexIndices_;
 	DxConstBuffer<ResourcePrimitiveIndex> primitiveIndices_;
@@ -191,6 +191,6 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
-	void CreateBuffer(ID3D12Device* device, const ResourceMesh<EffectMesh>& resource);
-	void TransferBuffer(const ResourceMesh<EffectMesh>& resource);
+	void CreateBuffer(ID3D12Device* device, const ResourceMesh<EffectMeshVertex>& resource);
+	void TransferBuffer(const ResourceMesh<EffectMeshVertex>& resource);
 };

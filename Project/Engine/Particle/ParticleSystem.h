@@ -22,7 +22,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	void Init(Asset* asset,CameraManager* cameraManager);
+	void Init(Asset* asset, ID3D12Device* device, CameraManager* cameraManager);
 
 	void Update();
 
@@ -42,6 +42,7 @@ private:
 	static ParticleSystem* instance_;
 
 	Asset* asset_;
+	ID3D12Device* device_;
 	CameraManager* cameraManager_;
 
 	// handler、editorによる追加、選択、削除
@@ -53,6 +54,8 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	void CreateEmitter();
+
+	void UpdateEmitter();
 
 	ParticleSystem() : IGameEditor("ParticleSystem") {}
 	~ParticleSystem() = default;

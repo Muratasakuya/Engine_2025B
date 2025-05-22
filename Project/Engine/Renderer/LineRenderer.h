@@ -36,7 +36,15 @@ public:
 
 	void DrawSphere(int division, float radius, const Vector3& centerPos, const Color& color);
 
+	void DrawHemisphere(int division, float radius, const Vector3& centerPos,
+		const Vector3& eulerRotate, const Color& color);
+
 	void DrawOBB(const CollisionShape::OBB& obb, const Color& color);
+	void DrawOBB(const Vector3& centerPos, const Vector3& size,
+		const Vector3& eulerRotate, const Color& color);
+
+	void DrawCone(int division, float baseRadius, float topRadius, float height,
+		const Vector3& centerPos, const Vector3& eulerRotate, const Color& color);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -65,7 +73,7 @@ private:
 	CameraManager* cameraManager_;
 
 	// 線分の最大数
-	static constexpr const uint32_t kMaxLineCount_ = 8096;
+	static constexpr const uint32_t kMaxLineCount_ = 8196;
 	// 線分の頂点数
 	static constexpr const uint32_t kVertexCountLine_ = 2;
 

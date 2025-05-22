@@ -23,10 +23,13 @@ void ParticleSystem::Finalize() {
 	}
 }
 
-void ParticleSystem::Init(Asset* asset, CameraManager* cameraManager) {
+void ParticleSystem::Init(Asset* asset, ID3D12Device* device, CameraManager* cameraManager) {
 
 	asset_ = nullptr;
 	asset_ = asset;
+
+	device_ = nullptr;
+	device_ = device;
 
 	cameraManager_ = nullptr;
 	cameraManager_ = cameraManager;
@@ -39,6 +42,9 @@ void ParticleSystem::Update() {
 
 	// emitterの作成
 	CreateEmitter();
+
+	// 各emitterの更新処理
+	UpdateEmitter();
 }
 
 void ParticleSystem::CreateEmitter() {
@@ -52,10 +58,23 @@ void ParticleSystem::CreateEmitter() {
 
 		// emitterを作成
 		emitters_[emitterName] = std::make_unique<ParticleEmitter>();
-		emitters_[emitterName]->Init(emitterName, asset_);
+		emitters_[emitterName]->Init(emitterName, asset_, device_);
 
 		// 追加し終わったのでフラグを元に戻す
 		emitterHandler_->ClearNotification();
+	}
+}
+
+void ParticleSystem::UpdateEmitter() {
+
+	if (emitters_.empty()) {
+		return;
+	}
+
+	// 各emitterの更新
+	for (const auto& emitter : std::views::values(emitters_)) {
+
+		emitter->Update();
 	}
 }
 
