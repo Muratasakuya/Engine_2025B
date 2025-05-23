@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 
 //============================================================================
 //	ParticleRenderer class
@@ -16,6 +17,9 @@ public:
 	ParticleRenderer() = default;
 	~ParticleRenderer() = default;
 
+	void Init(ID3D12Device8* device, class SRVDescriptor* srvDescriptor,
+		class DxShaderCompiler* shaderCompiler);
+
 	//--------- accessor -----------------------------------------------------
 
 private:
@@ -25,7 +29,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	std::unique_ptr<PipelineState> pipeline_;
 
 	//--------- functions ----------------------------------------------------
 

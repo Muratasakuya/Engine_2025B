@@ -311,7 +311,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Renderer\ParticleRenderer.cpp">
+    <ClCompile Include="Engine\Particle\Updater\ParticleUpdater.cpp" />
+    <ClCompile Include="Engine\Particle\ParticleRenderer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -712,6 +713,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Particle\ParticleUpdater.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Particle\Structures\EmitterStructures.h">
       <SubType>
       </SubType>
@@ -724,7 +729,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Renderer\ParticleRenderer.h">
+    <ClInclude Include="Engine\Particle\Updater\ParticleUpdater.h" />
+    <ClInclude Include="Engine\Particle\ParticleRenderer.h">
       <SubType>
       </SubType>
     </ClInclude>

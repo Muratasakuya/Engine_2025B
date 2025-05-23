@@ -39,7 +39,7 @@ public:
 	const Matrix4x4& GetViewMatrix() const { return viewMatrix_; }
 	const Matrix4x4& GetProjectionMatrix() const { return projectionMatrix_; }
 	const Matrix4x4& GetViewProjectionMatrix() const { return viewProjectionMatrix_; }
-	const Matrix4x4& GetBillboardMatrixMatrix() const { return billboardMatrix_; }
+	const Matrix4x4& GetBillboardMatrix() const { return billboardMatrix_; }
 protected:
 	//========================================================================
 	//	protected Methods

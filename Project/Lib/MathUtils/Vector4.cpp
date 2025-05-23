@@ -94,6 +94,15 @@ Color Color::Blue(float alpha) {
 	return Color(0.0f, 0.0f, 1.0f, alpha);
 }
 
+Color Color::Lerp(const Color& color0, const Color& color1, float t) {
+
+	float clampedT = std::clamp(t, 0.0f, 1.0f);
+	return Color(std::lerp(color0.r, color1.r, clampedT),
+		std::lerp(color0.g, color1.g, clampedT),
+		std::lerp(color0.b, color1.b, clampedT),
+		std::lerp(color0.a, color1.a, clampedT));
+}
+
 Json Color::ToJson() const {
 
 	return Json{ {"r", r}, {"g", g}, {"b", b}, {"a", a} };

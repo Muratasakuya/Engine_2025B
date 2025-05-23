@@ -1,6 +1,11 @@
 #include "ParticleSystem.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Engine/Scene/Camera/CameraManager.h>
+
+//============================================================================
 //	ParticleSystem classMethods
 //============================================================================
 
@@ -72,9 +77,10 @@ void ParticleSystem::UpdateEmitter() {
 	}
 
 	// 各emitterの更新
+	Matrix4x4 billboardMatrix = cameraManager_->GetCamera()->GetBillboardMatrix();
 	for (const auto& emitter : std::views::values(emitters_)) {
 
-		emitter->Update();
+		emitter->Update(billboardMatrix);
 	}
 }
 

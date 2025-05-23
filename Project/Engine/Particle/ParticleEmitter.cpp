@@ -7,6 +7,7 @@
 #include <Engine/Core/Graphics/Mesh/MeshletBuilder.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Particle/Creators/ParticleCreator.h>
+#include <Engine/Particle/Updater/ParticleUpdater.h>
 
 //============================================================================
 //	ParticleEmitter classMethods
@@ -34,7 +35,7 @@ void ParticleEmitter::Init(const std::string& name,
 	dropSize_ = ImVec2(208.0f, 30.0f);
 }
 
-void ParticleEmitter::Update() {
+void ParticleEmitter::Update(const Matrix4x4& billboardMatrix) {
 
 	// 所持しているparticleのemitterの描画
 	if (particleGroups_.empty()) {
@@ -43,6 +44,9 @@ void ParticleEmitter::Update() {
 
 	// 各particleのemitterを描画
 	DrawParticleEmitters();
+
+	// 各particleを更新する
+	UpdateParticles(billboardMatrix);
 }
 
 void ParticleEmitter::EditLayout() {
@@ -133,6 +137,46 @@ void ParticleEmitter::DrawParticleEmitters() {
 			break;
 		}
 		}
+	}
+}
+
+void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
+
+	// 所持しているparticleをすべて更新する
+	for (auto& group : particleGroups_) {
+
+		auto& particles = group.particles;
+		// bufferデータ
+		std::vector<EffectMaterial> materials(particles.size());
+		std::vector<Matrix4x4> matrices(particles.size());
+		// 各particleの更新
+		for (auto it = particles.begin(); it != particles.end();) {
+
+			// 寿命が無くなったparticleは削除する
+			if (it->parameter.lifeTime.value < it->currentTime) {
+				it = particles.erase(it);
+				continue;
+			}
+
+			// particleを更新する
+			ParticleUpdater::Update(*it, group.parameter, billboardMatrix);
+
+			// bufferに渡すデータを更新
+			int index = static_cast<uint32_t>(std::distance(particles.begin(), it));
+			// material
+			materials[index] = it->material;
+			// matrix
+			matrices[index] = it->transform.matrix.world;
+
+			// イテレータをインクリメント
+			++it;
+		}
+
+		// instance数を更新
+		group.numInstance = static_cast<uint32_t>(particles.size());
+		// bufferを更新
+		group.materialBuffer.TransferVectorData(materials);
+		group.worldMatrixBuffer.TransferVectorData(matrices);
 	}
 }
 

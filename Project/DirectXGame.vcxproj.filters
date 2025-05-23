@@ -461,7 +461,7 @@
     <ClCompile Include="Engine\Particle\ParticleSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Renderer\ParticleRenderer.cpp">
+    <ClCompile Include="Engine\Particle\ParticleRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleLoader.cpp">
@@ -504,6 +504,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Particle\Creators\ConeEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Updater\ParticleUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -680,7 +683,7 @@
     <ClInclude Include="Engine\Core\ECS\System\Systems\TagSystem.h" />
     <ClInclude Include="Engine\Config.h" />
     <ClInclude Include="Engine\Particle\ParticleSystem.h" />
-    <ClInclude Include="Engine\Renderer\ParticleRenderer.h" />
+    <ClInclude Include="Engine\Particle\ParticleRenderer.h" />
     <ClInclude Include="Engine\Particle\ParticleLoader.h" />
     <ClInclude Include="Engine\Particle\Structures\EmitterStructures.h" />
     <ClInclude Include="Engine\Particle\ParticleEditor.h" />
@@ -693,6 +696,8 @@
     <ClInclude Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.h" />
     <ClInclude Include="Engine\Particle\Creators\BoxEmitterParticleCreator.h" />
     <ClInclude Include="Engine\Particle\Creators\ConeEmitterParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\ParticleUpdater.h" />
+    <ClInclude Include="Engine\Particle\Updater\ParticleUpdater.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

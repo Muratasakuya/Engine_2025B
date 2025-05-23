@@ -69,7 +69,6 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 
 	// 時間
 	particle.currentTime = 0.0f;
-	particle.easedLifeT = 0.0f;
 	particle.easedProgressT = 0.0f;
 
 	//============================================================================
