@@ -90,7 +90,7 @@ void ParticleUpdater::UpdateMatrix(ParticleData& particle,
 
 	// STの行列計算
 	Matrix4x4 scaleMatrix = Matrix4x4::MakeScaleMatrix(particle.transform.scale);
-	Matrix4x4 translateMatrix = Matrix4x4::MakeScaleMatrix(particle.transform.translation);
+	Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(particle.transform.translation);
 
 	// worldMatrixの更新処理、billboardTypeで分岐
 	// 全軸
@@ -118,12 +118,17 @@ void ParticleUpdater::UpdateMatrix(ParticleData& particle,
 
 void ParticleUpdater::UpdateMaterial(ParticleData& particle, const ParticleParameter& parameter) {
 
+	// texture情報を渡す
+	particle.material.textureIndex = parameter.textureIndex;
+	particle.material.noiseTextureIndex = parameter.noiseTextureIndex;
+
 	// 色をtargetに向けて補間
 	particle.material.color = Color::Lerp(
 		particle.parameter.startColor.value,
 		particle.parameter.targetColor.value, particle.easedProgressT);
 	// 頂点色を使用する場合targetに向けて補間
 	// 設計ミスったので後回し...
+	particle.parameter.useVertexColor = parameter.useVertexColor;
 
 	// 発光
 	// 強度、targetに向けて補間

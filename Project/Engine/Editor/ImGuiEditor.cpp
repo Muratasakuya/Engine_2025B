@@ -82,10 +82,10 @@ void ImGuiEditor::Display() {
 
 void ImGuiEditor::EditLayout() {
 
-	if (Input::GetInstance()->TriggerKey(DIK_1)) {
+	//if (Input::GetInstance()->TriggerKey(DIK_1)) {
 
-		editMode_ = !editMode_;
-	}
+	//	editMode_ = !editMode_;
+	//}
 
 	if (!editMode_) {
 		return;

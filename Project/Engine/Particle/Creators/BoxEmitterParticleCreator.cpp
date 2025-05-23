@@ -23,5 +23,5 @@ void BoxEmitterParticleCreator::Create(ParticleData& particle, const ParticlePar
 
 	// 向いている方向(+Z)方向に飛ばす
 	Vector3 forward = Vector3::Normalize(Vector3::TransferNormal(Vector3(0.0f, 0.0f, 1.0f), rotateMatrix));
-	particle.velocity = forward * particle.parameter.moveSpeed.GetValue();
+	particle.velocity = forward * particle.parameter.moveSpeed.value;
 }

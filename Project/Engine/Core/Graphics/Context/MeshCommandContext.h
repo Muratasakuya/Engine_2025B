@@ -26,4 +26,6 @@ public:
 	// instancing
 	void DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 		UINT instanceCount, uint32_t meshIndex, class IMesh* mesh);
+	void DispatchMesh(ID3D12GraphicsCommandList6* commandList,
+		UINT instanceCount, class EffectMesh* mesh);
 };

@@ -32,7 +32,7 @@ void HemisphereEmitterParticleCreator::Create(ParticleData& particle,
 	// 回転を考慮して設定
 	Vector3 rotatedDirection = rotateMatrix.TransformPoint(direction);
 	// 初期位置を設定
-	particle.transform.translation = parameter.emitterSphere.center + direction * parameter.emitterSphere.radius;
+	particle.transform.translation = parameter.emitterHemisphere.center + direction * parameter.emitterHemisphere.radius;
 	// 速度方向を設定
-	particle.velocity = rotatedDirection * particle.parameter.moveSpeed.GetValue();
+	particle.velocity = rotatedDirection * particle.parameter.moveSpeed.value;
 }

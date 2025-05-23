@@ -45,6 +45,9 @@ struct EffectMaterial {
 
 	// uv
 	Matrix4x4 uvTransform;
+
+	void Init();
+	void SetMaterial(const EffectMaterial& material);
 };
 
 // 各particleの情報
@@ -104,6 +107,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const BaseTransform& parent) { transform_.parent = &parent; }
+
+	const std::vector<ParticleGroup>& GetParticleGroup() const { return particleGroups_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -124,6 +129,9 @@ private:
 	Asset* asset_;
 	ID3D12Device* device_;
 
+	// 最大インスタンス数
+	const uint32_t kMaxInstanceNum_ = 1024;
+
 	// emitterの情報
 	// 名前
 	std::string name_;
@@ -133,6 +141,9 @@ private:
 
 	// 所持しているparticle
 	std::vector<ParticleGroup> particleGroups_;
+
+	std::vector<EffectMaterial> transferMaterials_;
+	std::vector<Matrix4x4> transferMatrices_;
 
 	// particle追加入力処理
 	InputTextValue addParticleNameInputText_;
@@ -156,6 +167,8 @@ private:
 
 	// emitter描画処理
 	void DrawParticleEmitters();
+	// emit処理
+	void UpdateFrequencyEmit(ParticleGroup& group);
 	// 各particleを更新
 	void UpdateParticles(const Matrix4x4& billboardMatrix);
 

@@ -8,6 +8,7 @@
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Particle/Creators/ParticleCreator.h>
 #include <Engine/Particle/Updater/ParticleUpdater.h>
+#include <Game/Time/GameTimer.h>
 
 //============================================================================
 //	ParticleEmitter classMethods
@@ -66,24 +67,20 @@ void ParticleEmitter::CreateParticle() {
 	// particle追加
 	particleGroups_.emplace_back();
 	ParticleGroup& group = particleGroups_.back();
-
-	// parameterを初期化
+		// parameterを初期化
 	group.parameter.Init(addParticleNameInputText_.name, addModelName_, asset_);
-
-	// 最大instance数
-	const uint32_t kMaxInstanceNum = 1024;
 
 	// buffer作成
 	// matrix
-	group.worldMatrixBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum);
+	group.worldMatrixBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum_);
 	// material
-	group.materialBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum);
+	group.materialBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum_);
 
 	// 頂点、meshlet生成
 	const ResourceMesh resourceMesh = CreateMeshlet(addModelName_);
 	// mesh作成
 	group.mesh = std::make_unique<EffectMesh>();
-	group.mesh->Init(device_, resourceMesh);
+	group.mesh->Init(device_, resourceMesh, kMaxInstanceNum_);
 
 	// particleデータの作成
 	ParticleCreator::Create(group.particles, group.parameter);
@@ -140,16 +137,49 @@ void ParticleEmitter::DrawParticleEmitters() {
 	}
 }
 
+void ParticleEmitter::UpdateFrequencyEmit(ParticleGroup& group) {
+
+	// emitCountが0の時は処理しない
+	if (group.parameter.emitCount.GetValue() == 0) {
+		return;
+	}
+
+	float deltaTime = 0.0f;
+	if (group.parameter.useScaledTime) {
+		deltaTime = GameTimer::GetScaledDeltaTime();
+	} else {
+		deltaTime = GameTimer::GetDeltaTime();
+	}
+	// 経過時間を加算
+	group.parameter.frequencyTime += deltaTime;
+	// 経過時間が発射時間を超えたら
+	if (group.parameter.frequency <= group.parameter.frequencyTime) {
+
+		// 時間を元に戻す
+		group.parameter.frequencyTime -= group.parameter.frequency;
+
+		// 最大インスタンス数以下の時のみ
+		if (group.numInstance < kMaxInstanceNum_) {
+			// particleを作成
+			ParticleCreator::Create(group.particles, group.parameter);
+		}
+	}
+}
+
 void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
 
 	// 所持しているparticleをすべて更新する
 	for (auto& group : particleGroups_) {
 
+		// emit処理
+		UpdateFrequencyEmit(group);
+
 		auto& particles = group.particles;
 		// bufferデータ
-		std::vector<EffectMaterial> materials(particles.size());
-		std::vector<Matrix4x4> matrices(particles.size());
+		transferMaterials_.resize(particles.size());
+		transferMatrices_.resize(particles.size());
 		// 各particleの更新
+		uint32_t index = 0;
 		for (auto it = particles.begin(); it != particles.end();) {
 
 			// 寿命が無くなったparticleは削除する
@@ -162,21 +192,21 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
 			ParticleUpdater::Update(*it, group.parameter, billboardMatrix);
 
 			// bufferに渡すデータを更新
-			int index = static_cast<uint32_t>(std::distance(particles.begin(), it));
-			// material
-			materials[index] = it->material;
 			// matrix
-			matrices[index] = it->transform.matrix.world;
+			transferMatrices_[index] = it->transform.matrix.world;
+			// material
+			transferMaterials_[index].SetMaterial(it->material);
 
 			// イテレータをインクリメント
 			++it;
+			++index;
 		}
 
 		// instance数を更新
 		group.numInstance = static_cast<uint32_t>(particles.size());
 		// bufferを更新
-		group.materialBuffer.TransferVectorData(materials);
-		group.worldMatrixBuffer.TransferVectorData(matrices);
+		group.materialBuffer.TransferVectorData(transferMaterials_);
+		group.worldMatrixBuffer.TransferVectorData(transferMatrices_);
 	}
 }
 
@@ -312,4 +342,30 @@ void ParticleEmitter::InputTextValue::Reset() {
 	// 入力をリセット
 	nameBuffer[0] = '\0';
 	name.clear();
+}
+
+void EffectMaterial::Init() {
+
+	color = Color::White();
+	useNoiseTexture = false;
+	useVertexColor = false;
+	textureAlphaReference = 0.5f;
+	noiseTextureAlphaReference = 0.0f;
+	emissiveIntensity = 0.0f;
+	emissionColor = Vector3::AnyInit(1.0f);
+	uvTransform = Matrix4x4::MakeIdentity4x4();
+}
+
+void EffectMaterial::SetMaterial(const EffectMaterial& material) {
+
+	color = material.color;
+	textureIndex = material.textureIndex;
+	noiseTextureIndex = material.noiseTextureIndex;
+	useNoiseTexture = material.useNoiseTexture;
+	useVertexColor = material.useVertexColor;
+	textureAlphaReference = material.textureAlphaReference;
+	noiseTextureAlphaReference = material.noiseTextureAlphaReference;
+	emissiveIntensity = material.emissiveIntensity;
+	emissionColor = material.emissionColor;
+	uvTransform = material.uvTransform;
 }

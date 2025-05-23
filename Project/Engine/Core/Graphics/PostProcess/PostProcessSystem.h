@@ -58,6 +58,8 @@ public:
 
 	template <typename T>
 	void SetParameter(const T& parameter, PostProcess process);
+
+	PostProcessPipeline* GetPipeline() const { return pipeline_.get(); }
 private:
 	//========================================================================
 	//	private Methods

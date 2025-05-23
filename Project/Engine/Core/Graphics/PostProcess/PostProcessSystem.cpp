@@ -86,6 +86,13 @@ void PostProcessSystem::Create(const std::vector<PostProcess>& processes) {
 
 			bloom_ = std::make_unique<BloomProcessor>();
 			bloom_->Init(device_, srvDescriptor_, width_, height_);
+
+			// pipeline作成
+			// bloomに必要なpipelineを作成する
+			pipeline_->Create(PostProcessType::BloomLuminanceExtract);
+			pipeline_->Create(PostProcessType::HorizontalBlur);
+			pipeline_->Create(PostProcessType::VerticalBlur);
+			pipeline_->Create(PostProcessType::BloomCombine);
 		} else {
 
 			processors_[process] = std::make_unique<ComputePostProcessor>();
@@ -94,10 +101,10 @@ void PostProcessSystem::Create(const std::vector<PostProcess>& processes) {
 			// buffer作成
 			PostProcessType type = GetPostProcessType(process);
 			CreateCBuffer(type);
-		}
 
-		// pipeline作成
-		pipeline_->Create(GetPostProcessType(process));
+			// pipeline作成
+			pipeline_->Create(GetPostProcessType(process));
+		}
 	}
 }
 
@@ -371,9 +378,9 @@ PostProcessType PostProcessSystem::GetPostProcessType(PostProcess process) const
 	case PostProcess::RadialBlur: return PostProcessType::RadialBlur;
 	case PostProcess::Dissolve: return PostProcessType::Dissolve;
 	case PostProcess::Random: return PostProcessType::Random;
-	default:
-
-		assert(false);
-		return PostProcessType::BloomCombine;
 	}
+
+	// とりあえず別の値を返す、ここは通らないはず
+	assert(false);
+	return PostProcessType::Random;
 }

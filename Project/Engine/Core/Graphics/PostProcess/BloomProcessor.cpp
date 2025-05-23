@@ -44,13 +44,13 @@ void BloomProcessor::Init(ID3D12Device* device, SRVDescriptor* srvDescriptor,
 	luminanceExtractBuffer_->SetParameter(&luminance, sizeof(LuminanceExtractForGPU));
 
 	HorizonBlurForGPU horizontalBlur{};
-	horizontalBlur.radius = 8;   // 半径
-	horizontalBlur.sigma = 8.0f; // ブラー強度
+	horizontalBlur.radius = 8;    // 半径
+	horizontalBlur.sigma = 16.0f; // ブラー強度
 	horizontalBlurBuffer_->SetParameter(&horizontalBlur, sizeof(HorizonBlurForGPU));
 
 	VerticalBlurForGPU verticalBlur{};
-	verticalBlur.radius = 8;   // 半径
-	verticalBlur.sigma = 8.0f; // ブラー強度
+	verticalBlur.radius = 8;    // 半径
+	verticalBlur.sigma = 16.0f; // ブラー強度
 	verticalBlurBuffer_->SetParameter(&verticalBlur, sizeof(VerticalBlurForGPU));
 }
 

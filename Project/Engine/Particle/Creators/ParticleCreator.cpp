@@ -29,6 +29,7 @@ void ParticleCreator::Create(std::list<ParticleData>& particles,
 		// 各関数に渡して作成する
 		// 参照渡しで値を入れていく
 		ParticleData particle{};
+		particle.material.Init();
 
 		// 共通の値を設定
 		SetCommonData(particle, parameter);
@@ -75,7 +76,6 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 	//	初期化値設定: ランダム値
 
 	// 発生
-	particle.parameter.frequency.value = parameter.frequency.GetValue();
 	particle.parameter.lifeTime.value = parameter.lifeTime.GetValue();
 	// 移動
 	particle.parameter.moveSpeed.value = parameter.moveSpeed.GetValue();

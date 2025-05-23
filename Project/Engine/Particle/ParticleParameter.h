@@ -51,7 +51,7 @@ public:
 
 	// parameter
 	ParticleValue<uint32_t> emitCount; // 1度に発生させる数
-	ParticleValue<float> frequency;    // ~秒置き、発生頻度
+	float frequency;                   // ~秒置き、発生頻度
 	float frequencyTime;               // 発生頻度用の現在の時刻
 
 	ParticleValue<float> lifeTime;  // 寿命

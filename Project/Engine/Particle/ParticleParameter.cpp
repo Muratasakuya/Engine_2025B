@@ -37,7 +37,7 @@ void ParticleParameter::Init(std::string name,
 	easingType = EasingType::EaseInSine;
 
 	emitCount = ParticleValue<uint32_t>::SetValue(1);
-	frequency = ParticleValue<float>::SetValue(0.08f);
+	frequency = 1.0f;
 
 	lifeTime = ParticleValue<float>::SetValue(1.6f);
 	moveSpeed = ParticleValue<float>::SetValue(1.0f);
@@ -139,7 +139,7 @@ void ParticleParameter::EditEmit() {
 	ImGui::Separator();
 	emitCount.EditDragValue("emitCount");
 	ImGui::Separator();
-	frequency.EditDragValue("frequency");
+	ImGui::DragFloat("frequency", &frequency, 0.01f);
 	ImGui::Separator();
 	// 寿命
 	lifeTime.EditDragValue("lifeTime");

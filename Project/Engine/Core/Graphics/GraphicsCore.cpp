@@ -9,6 +9,7 @@
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Config.h>
 
 #pragma comment(lib,"d3d12.lib")
@@ -111,9 +112,9 @@ void GraphicsCore::InitRenderTexture() {
 		Color(Config::kWindowClearColor[0], Config::kWindowClearColor[1],
 			Config::kWindowClearColor[2], Config::kWindowClearColor[3]),
 		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
-	// alpha1.0fに戻す用のCS処理
-	copyTextureProcessor_ = std::make_unique<ComputePostProcessor>();
-	copyTextureProcessor_->Init(device, srvDescriptor_.get(), Config::kWindowWidth, Config::kWindowHeight);
+	// debugScene用のbloom処理
+	debugSceneBloomProcessor_ = std::make_unique<BloomProcessor>();
+	debugSceneBloomProcessor_->Init(device, srvDescriptor_.get(), Config::kWindowWidth, Config::kWindowHeight);
 #endif // _DEBUG
 
 	// shadowMap作成
@@ -325,24 +326,9 @@ void GraphicsCore::RenderDebugSceneRenderTexture() {
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
-	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList();
-
-	// α値を調整するためにCSで計算を行う
-	commandList->SetComputeRootSignature(copyTexturePipeline_->GetRootSignature());
-	commandList->SetPipelineState(copyTexturePipeline_->GetComputePipeline());
-
-	commandList->SetComputeRootDescriptorTable(0, copyTextureProcessor_->GetUAVGPUHandle());
-	commandList->SetComputeRootDescriptorTable(1, debugSceneRenderTexture_->GetGPUHandle());
-
-	UINT threadGroupCountX = static_cast<UINT>(copyTextureProcessor_->GetTextureSize().x + 7) / 8;
-	UINT threadGroupCountY = static_cast<UINT>(copyTextureProcessor_->GetTextureSize().y + 7) / 8;
-
-	// 実行処理
-	commandList->Dispatch(threadGroupCountX, threadGroupCountY, 1);
-
-	// UnorderedAccess -> PixelShader
-	dxCommand_->TransitionBarriers({ copyTextureProcessor_->GetOutputTextureResource() },
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	// bloom処理を行う
+	debugSceneBloomProcessor_->Execute(dxCommand_.get(),
+		postProcessSystem_->GetPipeline(), debugSceneRenderTexture_->GetGPUHandle());
 }
 
 void GraphicsCore::RenderFrameBuffer() {
@@ -373,6 +359,10 @@ void GraphicsCore::Renderers(bool debugEnable) {
 	// 通常描画処理
 	meshRenderer_->Rendering(debugEnable, sceneBuffer_.get(), dxCommand_.get());
 
+	// particle描画
+	ParticleSystem::GetInstance()->Rendering(debugEnable,
+		sceneBuffer_.get(), dxCommand_->GetCommandList());
+
 	// sprite描画、postPrecess適用
 	// model描画後
 	//spriteRenderer_->RenderApply(SpriteLayer::PostModel, dxCommand_->GetCommandList());
@@ -399,9 +389,7 @@ void GraphicsCore::EndRenderFrame() {
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	// PixelShader -> UnorderedAccess
-	dxCommand_->TransitionBarriers({ copyTextureProcessor_->GetOutputTextureResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+	debugSceneBloomProcessor_->ToWrite(dxCommand_.get());
 #endif // _DEBUG
 
 	// PixelShader -> Write

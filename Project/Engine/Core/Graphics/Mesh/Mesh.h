@@ -153,7 +153,7 @@ public:
 	EffectMesh() = default;
 	~EffectMesh() = default;
 
-	void Init(ID3D12Device* device, const ResourceMesh<EffectMeshVertex>& resource);
+	void Init(ID3D12Device* device, const ResourceMesh<EffectMeshVertex>& resource, uint32_t numInstance);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -191,6 +191,6 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
-	void CreateBuffer(ID3D12Device* device, const ResourceMesh<EffectMeshVertex>& resource);
+	void CreateBuffer(ID3D12Device* device, const ResourceMesh<EffectMeshVertex>& resource, uint32_t numInstance);
 	void TransferBuffer(const ResourceMesh<EffectMeshVertex>& resource);
 };

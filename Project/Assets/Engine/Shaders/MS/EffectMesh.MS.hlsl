@@ -1,6 +1,6 @@
 //============================================================================
 //	include
-//============================================================================
+//====================================================s========================
 
 #include "EffectMesh.hlsli"
 
@@ -12,7 +12,6 @@ struct MSInput {
 	
 	float4 position;
 	float2 texcoord;
-	float3 normal;
 	float4 color;
 };
 
@@ -109,8 +108,6 @@ out indices uint3 polys[126] // 出力三角形インデックス
 	if (groupThreadId < meshlet.vertexCount) {
 		
 		uint index = gIndices[meshlet.vertexOffset + groupThreadId];
-		// instanceごとに別々のmeshでも描画出来るようにする
-		index += instanceIndex * numVertices;
 		MSInput input = gVertices[index];
 		MSOutput output = (MSOutput) 0;
 		

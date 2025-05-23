@@ -37,5 +37,5 @@ void ConeEmitterParticleCreator::Create(ParticleData& particle,
 	// 初期位置を設定
 	particle.transform.translation = rotatedBasePoint;
 	// 速度方向を設定
-	particle.velocity = direction * particle.parameter.moveSpeed.GetValue();
+	particle.velocity = direction * particle.parameter.moveSpeed.value;
 }
