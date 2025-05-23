@@ -6,6 +6,7 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/Mesh/MeshletBuilder.h>
 #include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Particle/Creators/ParticleCreator.h>
 
 //============================================================================
 //	ParticleEmitter classMethods
@@ -81,6 +82,7 @@ void ParticleEmitter::CreateParticle() {
 	group.mesh->Init(device_, resourceMesh);
 
 	// particleデータの作成
+	ParticleCreator::Create(group.particles, group.parameter);
 }
 
 ResourceMesh<EffectMeshVertex> ParticleEmitter::CreateMeshlet(const std::string& modelName) {

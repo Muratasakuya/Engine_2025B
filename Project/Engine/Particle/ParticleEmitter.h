@@ -72,9 +72,22 @@ struct EffectMaterial {
 // 各particleの情報
 struct ParticleData {
 
+	// 動かす元の値
+	// groupのparameterから値を取得してくる
+	ParticleParameter parameter;
+
+	// timer(T)
+	float currentTime;    // 現在の経過時間
+	float easedLifeT;     // currentTのeasing計算後の寿命値1.0f -> 0.0f
+	float easedProgressT; // currentTのeasing計算後の値0.0f -> 1.0f
+
+	// 移動方向(速度)
+	Vector3 velocity;      // 設定速度、groupのparameterから値を取得してくる
+	Vector3 easedVelocity; // easedProgressTを掛けた後の値
+
 	// bufferに渡すデータ
 	EffectMaterial material; // material
-	Matrix4x4 worldMatrix;   // matrix
+	BaseTransform transform; // transform(matrix)
 };
 
 // particleの集まり

@@ -51,8 +51,10 @@ void ParticleParameter::Init(std::string name,
 	startColor = ParticleValue<Color>::SetValue(Color::White(1.0f));
 	targetColor = ParticleValue<Color>::SetValue(Color::White(0.0f));
 
-	emissiveIntensity = ParticleValue<float>::SetValue(0.0f);
-	emissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
+	startEmissiveIntensity = ParticleValue<float>::SetValue(0.0f);
+	targetEmissiveIntensity = ParticleValue<float>::SetValue(0.0f);
+	startEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
+	targetEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
 
 	isLoop = true;
 	useScaledTime = false;
@@ -183,8 +185,10 @@ void ParticleParameter::EditMaterial() {
 	targetVertexColor.EditColor("targetVertexColor");
 	ImGui::Separator();
 	// 発光
-	emissiveIntensity.EditDragValue("emissiveIntensity");
-	emissionColor.EditColor("emissionColor");
+	startEmissiveIntensity.EditDragValue("startEmissiveIntensity");
+	targetEmissiveIntensity.EditDragValue("targetEmissiveIntensity");
+	startEmissionColor.EditColor("startEmissionColor");
+	targetEmissionColor.EditColor("targetEmissionColor");
 	ImGui::Separator();
 
 	// alphaReference

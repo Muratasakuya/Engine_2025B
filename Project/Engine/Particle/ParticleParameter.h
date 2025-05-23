@@ -69,8 +69,10 @@ public:
 	ParticleValue<Color> startVertexColor;  // 開始頂点色
 	ParticleValue<Color> targetVertexColor; // 目標頂点色
 
-	ParticleValue<float> emissiveIntensity; // 発光強度
-	ParticleValue<Vector3> emissionColor;   // 発光色
+	ParticleValue<float> startEmissiveIntensity;  // 開始発光強度
+	ParticleValue<float> targetEmissiveIntensity; // 目標発光強度
+	ParticleValue<Vector3> startEmissionColor;   // 開始発光色
+	ParticleValue<Vector3> targetEmissionColor; // 目標発光色
 
 	ParticleValue<float> startTextureAlphaReference;  // 貼るtexture、開始alphaReference
 	ParticleValue<float> targetTextureAlphaReference; // 貼るtexture、目標alphaReference

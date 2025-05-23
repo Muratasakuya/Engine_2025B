@@ -491,6 +491,21 @@
     <ClCompile Include="Engine\Particle\Structures\EmitterStructures.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\ParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\SphereEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\BoxEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\ConeEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -673,6 +688,11 @@
     <ClInclude Include="Engine\Particle\ParticleParameter.h" />
     <ClInclude Include="Engine\Particle\Structures\ParticleValue.h" />
     <ClInclude Include="Engine\Particle\ParticleEmitterHandler.h" />
+    <ClInclude Include="Engine\Particle\Creators\ParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\Creators\SphereEmitterParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\Creators\BoxEmitterParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\Creators\ConeEmitterParticleCreator.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

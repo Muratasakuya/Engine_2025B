@@ -71,6 +71,8 @@ public:
 
 	// 定数とランダム値に同じ値を設定
 	static ParticleValue<T> SetValue(T value);
+	// 定数かランダムの値を取得
+	T GetValue() const;
 
 	// 分けて処理
 	void EditDragValue(const std::string& label);
@@ -84,6 +86,8 @@ public:
 	ParticleConstantValue<T> constant;  // 定数
 	ParticleRandomRangeValue<T> random; // ランダム
 
+	// 使用する値
+	T value;
 private:
 	//========================================================================
 	//	private Methods
@@ -106,6 +110,22 @@ inline ParticleValue<T> ParticleValue<T>::SetValue(T value) {
 	particleValue.random.min = value;
 	particleValue.random.max = value;
 	return particleValue;
+}
+
+template<typename T>
+inline T ParticleValue<T>::GetValue() const {
+
+	if (valueType == ParticleValueType::Constant) {
+
+		// 定数値を返す
+		return constant.value;
+	} else if (valueType == ParticleValueType::Random) {
+
+		// ランダム値を返す
+		return random.GetRandomValue();
+	}
+	// ここを通ることはほぼありえないけど定数値を返しておく
+	return constant.value;
 }
 
 template<typename T>
