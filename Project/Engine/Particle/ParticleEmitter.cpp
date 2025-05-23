@@ -101,7 +101,7 @@ void ParticleEmitter::DrawParticleEmitters() {
 
 	// 各particleのemitterを形状ごとに描画する
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
-	const Color& emitterColor = Color::Red();
+	const Color& emitterColor = Color::Red(0.6f);
 	for (const auto& group : particleGroups_) {
 		switch (group.parameter.emitterShape) {
 		case EmitterShapeType::Sphere: {

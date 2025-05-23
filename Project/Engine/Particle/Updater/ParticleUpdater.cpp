@@ -128,7 +128,7 @@ void ParticleUpdater::UpdateMaterial(ParticleData& particle, const ParticleParam
 		particle.parameter.targetColor.value, particle.easedProgressT);
 	// 頂点色を使用する場合targetに向けて補間
 	// 設計ミスったので後回し...
-	particle.parameter.useVertexColor = parameter.useVertexColor;
+	particle.material.useVertexColor = parameter.useVertexColor;
 
 	// 発光
 	// 強度、targetに向けて補間
@@ -146,7 +146,8 @@ void ParticleUpdater::UpdateMaterial(ParticleData& particle, const ParticleParam
 		particle.parameter.startTextureAlphaReference.value,
 		particle.parameter.targetTextureAlphaReference.value, particle.easedProgressT);
 	// noiseTextureを使用する場合のみ処理を行う
-	if (parameter.useNoiseTexture) {
+	particle.material.useNoiseTexture = parameter.useNoiseTexture;
+	if (particle.material.useNoiseTexture) {
 
 		particle.material.noiseTextureAlphaReference = std::lerp(
 			particle.parameter.startNoiseTextureAlphaReference.value,

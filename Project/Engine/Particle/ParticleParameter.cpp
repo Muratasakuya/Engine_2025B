@@ -39,8 +39,8 @@ void ParticleParameter::Init(std::string name,
 	emitCount = ParticleValue<uint32_t>::SetValue(1);
 	frequency = 1.0f;
 
-	lifeTime = ParticleValue<float>::SetValue(1.6f);
-	moveSpeed = ParticleValue<float>::SetValue(1.0f);
+	lifeTime = ParticleValue<float>::SetValue(0.8f);
+	moveSpeed = ParticleValue<float>::SetValue(0.0f);
 
 	startScale = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
 	targetScale = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
@@ -49,7 +49,7 @@ void ParticleParameter::Init(std::string name,
 	targetRotationMultiplier = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
 
 	startColor = ParticleValue<Color>::SetValue(Color::White(1.0f));
-	targetColor = ParticleValue<Color>::SetValue(Color::White(0.0f));
+	targetColor = ParticleValue<Color>::SetValue(Color::White(1.0f));
 
 	startEmissiveIntensity = ParticleValue<float>::SetValue(0.0f);
 	targetEmissiveIntensity = ParticleValue<float>::SetValue(0.0f);
