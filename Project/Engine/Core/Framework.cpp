@@ -31,8 +31,7 @@ void Framework::Run() {
 			winApp_->SetFullscreen(fullscreenEnable_);
 		}
 
-		if (winApp_->ProcessMessage() ||
-			Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+		if (winApp_->ProcessMessage()) {
 			break;
 		}
 	}
