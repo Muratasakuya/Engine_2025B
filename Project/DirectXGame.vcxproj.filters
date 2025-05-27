@@ -215,9 +215,6 @@
     <ClCompile Include="Engine\Core\Graphics\Context\PostProcessCommandContext.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\BloomProcessor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -583,7 +580,6 @@
     <ClInclude Include="Engine\Core\Graphics\Context\PostProcessCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessSystem.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessType.h" />
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\BloomProcessor.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessPipeline.h" />
@@ -701,6 +697,7 @@
     <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\CopyTexture.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.VS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Bloom.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />

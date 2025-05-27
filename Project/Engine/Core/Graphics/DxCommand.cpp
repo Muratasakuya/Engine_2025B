@@ -46,8 +46,6 @@ void DxCommand::Create(ID3D12Device* device) {
 	fenceEvent_ = CreateEvent(NULL, FALSE, FALSE, NULL);
 	assert(fenceEvent_ != nullptr);
 
-	reference_ = std::chrono::steady_clock::now();
-
 	commandQueue_ = nullptr;
 	D3D12_COMMAND_QUEUE_DESC commandQueueDesc{};
 	hr = device->CreateCommandQueue(&commandQueueDesc, IID_PPV_ARGS(&commandQueue_));
@@ -60,6 +58,8 @@ void DxCommand::Create(ID3D12Device* device) {
 	commandList_ = nullptr;
 	hr = device->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE_DIRECT, commandAllocator_.Get(), nullptr, IID_PPV_ARGS(&commandList_));
 	assert(SUCCEEDED(hr));
+
+	reference_ = std::chrono::steady_clock::now();
 }
 
 void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
@@ -92,9 +92,6 @@ void DxCommand::FenceEvent() {
 }
 
 void DxCommand::ExecuteCommands(IDXGISwapChain4* swapChain) {
-
-	// Computeの完了を待つ
-	FenceEvent();
 
 	// GraphicsCommand を実行
 	ExecuteGraphicsCommands(swapChain);

@@ -102,19 +102,12 @@ void GraphicsCore::InitRenderTexture() {
 
 	// debugSceneRenderTexture作成
 #ifdef _DEBUG
-	// pipeline
-	copyTexturePipeline_ = std::make_unique<PipelineState>();
-	copyTexturePipeline_->Create("CopySceneTexture.json",
-		device, srvDescriptor_.get(), dxShaderComplier_.get());
 	// renderTexture
 	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
 	debugSceneRenderTexture_->Create(Config::kWindowWidth, Config::kWindowHeight,
 		Color(Config::kWindowClearColor[0], Config::kWindowClearColor[1],
 			Config::kWindowClearColor[2], Config::kWindowClearColor[3]),
 		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
-	// debugScene用のbloom処理
-	debugSceneBloomProcessor_ = std::make_unique<BloomProcessor>();
-	debugSceneBloomProcessor_->Init(device, srvDescriptor_.get(), Config::kWindowWidth, Config::kWindowHeight);
 #endif // _DEBUG
 
 	// shadowMap作成
@@ -324,11 +317,11 @@ void GraphicsCore::RenderDebugSceneRenderTexture() {
 
 	// RenderTarget -> ComputeShader
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 	// bloom処理を行う
-	debugSceneBloomProcessor_->Execute(dxCommand_.get(),
-		postProcessSystem_->GetPipeline(), debugSceneRenderTexture_->GetGPUHandle());
+	/*debugSceneBloomProcessor_->Execute(dxCommand_.get(),
+		postProcessSystem_->GetPipeline(), debugSceneRenderTexture_->GetGPUHandle());*/
 }
 
 void GraphicsCore::RenderFrameBuffer() {
@@ -387,9 +380,9 @@ void GraphicsCore::EndRenderFrame() {
 
 	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 
-	debugSceneBloomProcessor_->ToWrite(dxCommand_.get());
+	//debugSceneBloomProcessor_->ToWrite(dxCommand_.get());
 #endif // _DEBUG
 
 	// PixelShader -> Write

@@ -2,7 +2,7 @@
     "ShaderPass":[
         {
             "Type": "Compute",
-            "ComputeShader": "BloomLuminanceExtract.CS.hlsl"
+            "ComputeShader": "Bloom.CS.hlsl"
         }
     ],
     "RootParameter": [

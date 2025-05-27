@@ -67,7 +67,7 @@ void ParticleEmitter::CreateParticle() {
 	// particle追加
 	particleGroups_.emplace_back();
 	ParticleGroup& group = particleGroups_.back();
-		// parameterを初期化
+	// parameterを初期化
 	group.parameter.Init(addParticleNameInputText_.name, addModelName_, asset_);
 
 	// buffer作成
@@ -81,6 +81,10 @@ void ParticleEmitter::CreateParticle() {
 	// mesh作成
 	group.mesh = std::make_unique<EffectMesh>();
 	group.mesh->Init(device_, resourceMesh, kMaxInstanceNum_);
+
+	// transferData
+	group.transferMaterials.resize(kMaxInstanceNum_);
+	group.transferMatrices.resize(kMaxInstanceNum_);
 
 	// particleデータの作成
 	ParticleCreator::Create(group.particles, group.parameter);
@@ -171,13 +175,12 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
 	// 所持しているparticleをすべて更新する
 	for (auto& group : particleGroups_) {
 
+#ifdef _DEBUG
 		// emit処理
 		UpdateFrequencyEmit(group);
+#endif // _DEBUG
 
 		auto& particles = group.particles;
-		// bufferデータ
-		transferMaterials_.resize(particles.size());
-		transferMatrices_.resize(particles.size());
 		// 各particleの更新
 		uint32_t index = 0;
 		for (auto it = particles.begin(); it != particles.end();) {
@@ -193,9 +196,9 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
 
 			// bufferに渡すデータを更新
 			// matrix
-			transferMatrices_[index] = it->transform.matrix.world;
+			group.transferMatrices[index] = it->transform.matrix.world;
 			// material
-			transferMaterials_[index].SetMaterial(it->material);
+			group.transferMaterials[index].SetMaterial(it->material);
 
 			// イテレータをインクリメント
 			++it;
@@ -203,10 +206,10 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
 		}
 
 		// instance数を更新
-		group.numInstance = static_cast<uint32_t>(particles.size());
+		group.numInstance = static_cast<uint32_t>(group.particles.size());
 		// bufferを更新
-		group.materialBuffer.TransferVectorData(transferMaterials_);
-		group.worldMatrixBuffer.TransferVectorData(transferMatrices_);
+		group.materialBuffer.TransferVectorData(group.transferMaterials, group.numInstance);
+		group.worldMatrixBuffer.TransferVectorData(group.transferMatrices, group.numInstance);
 	}
 }
 
@@ -334,6 +337,9 @@ void ParticleEmitter::EditParticle() {
 	}
 
 	// parameter操作
+	ImGui::Text("numInstance: %d / %d",
+		particleGroups_[currentSelectIndex_.value()].numInstance, kMaxInstanceNum_);
+	ImGui::Text("particleSize: %d", particleGroups_[currentSelectIndex_.value()].particles.size());
 	particleGroups_[currentSelectIndex_.value()].parameter.ImGui();
 }
 

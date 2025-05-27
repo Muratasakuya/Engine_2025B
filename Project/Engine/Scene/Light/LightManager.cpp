@@ -33,11 +33,10 @@ void LightManager::Update() {
 
 	// pointLight、spotLightのデバッグ表示
 #ifdef _DEBUG
-
 	// point
-	DisplayPointLight();
+	//DisplayPointLight();
 	// spot
-	DisplaySpotLight();
+	//DisplaySpotLight();
 #endif // _DEBUG
 }
 

@@ -38,6 +38,7 @@ public:
 	// 転送
 	void TransferData(const T& data);
 	void TransferVectorData(const std::vector<T>& data);
+	void TransferVectorData(const std::vector<T>& data, size_t count);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -173,6 +174,15 @@ inline void DxConstBuffer<T>::TransferVectorData(const std::vector<T>& data) {
 	if (mappedData_) {
 
 		std::memcpy(mappedData_, data.data(), sizeof(T) * data.size());
+	}
+}
+
+template<typename T>
+inline void DxConstBuffer<T>::TransferVectorData(const std::vector<T>& data, size_t count) {
+
+	if (mappedData_) {
+
+		std::memcpy(mappedData_, data.data(), sizeof(T) * count);
 	}
 }
 

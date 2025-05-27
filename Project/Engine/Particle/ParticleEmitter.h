@@ -81,6 +81,10 @@ struct ParticleGroup {
 	// instance数
 	uint32_t numInstance;
 
+	// transter
+	std::vector<EffectMaterial> transferMaterials;
+	std::vector<Matrix4x4> transferMatrices;
+
 	// particleを構築するparameter
 	ParticleParameter parameter;
 	// particle情報
@@ -141,9 +145,6 @@ private:
 
 	// 所持しているparticle
 	std::vector<ParticleGroup> particleGroups_;
-
-	std::vector<EffectMaterial> transferMaterials_;
-	std::vector<Matrix4x4> transferMatrices_;
 
 	// particle追加入力処理
 	InputTextValue addParticleNameInputText_;

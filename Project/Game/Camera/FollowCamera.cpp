@@ -43,6 +43,8 @@ void FollowCamera::Update() {
 
 void FollowCamera::Move() {
 
+#ifdef _DEBUG
+
 	ImGui::Begin("Game", nullptr,
 		ImGuiWindowFlags_NoResize |
 		ImGuiWindowFlags_AlwaysAutoResize |
@@ -56,6 +58,7 @@ void FollowCamera::Move() {
 	if (!isActive) {
 		return;
 	}
+#endif
 
 	Vector3 rotate{};
 	rotate.Init();

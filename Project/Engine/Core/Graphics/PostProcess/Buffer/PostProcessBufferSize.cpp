@@ -13,8 +13,19 @@
 
 namespace {
 
-	inline static constexpr const float itemWidth_ = 192.0f;
+	inline static constexpr const float itemWidth_ = 224.0f;
 }// namespace
+
+void BloomForGPU::ImGui() {
+
+	ImGui::SeparatorText("Bloom");
+
+	ImGui::PushItemWidth(itemWidth_);
+	ImGui::DragFloat("threshold##BloomForGPU", &threshold, 0.01f);
+	ImGui::DragInt("radius##BloomForGPU", &radius, 1, 0, 8);
+	ImGui::DragFloat("sigma##BloomForGPU", &sigma, 0.01f);
+	ImGui::PopItemWidth();
+}
 
 void DissolveForGPU::ImGui() {
 
