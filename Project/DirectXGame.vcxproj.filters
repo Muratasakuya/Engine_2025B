@@ -461,9 +461,6 @@
     <ClCompile Include="Engine\Particle\ParticleLoader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleEditor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleEmitter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -678,7 +675,6 @@
     <ClInclude Include="Engine\Particle\ParticleSystem.h" />
     <ClInclude Include="Engine\Particle\ParticleLoader.h" />
     <ClInclude Include="Engine\Particle\Structures\EmitterStructures.h" />
-    <ClInclude Include="Engine\Particle\ParticleEditor.h" />
     <ClInclude Include="Engine\Particle\ParticleEmitter.h" />
     <ClInclude Include="Engine\Particle\ParticleParameter.h" />
     <ClInclude Include="Engine\Particle\Structures\ParticleValue.h" />

@@ -118,6 +118,12 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	void ImageButtonWithLabel(
+		const char* id,           // ImGuiで重複しないID
+		const std::string& label, // 表示したいテクスチャ名
+		ImTextureID textureId,    // GPU ハンドル
+		const ImVec2& size);      // 画像サイズ
+
 	// 描画関係の値操作
 	void EditRender();
 	// 生成処理の値操作

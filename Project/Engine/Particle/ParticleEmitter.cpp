@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
+#include <Engine/Asset/AssetEditor.h>
 #include <Engine/Core/Graphics/Mesh/MeshletBuilder.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Particle/Creators/ParticleCreator.h>

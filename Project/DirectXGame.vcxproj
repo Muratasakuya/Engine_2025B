@@ -333,10 +333,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleEditor.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleEmitter.cpp">
       <SubType>
       </SubType>
@@ -736,10 +732,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Particle\Creators\SphereEmitterParticleCreator.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\ParticleEditor.h">
       <SubType>
       </SubType>
     </ClInclude>

@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Engine/Particle/ParticleParameter.h>
-#include <Engine/Asset/AssetEditor.h>
 
 // emitter
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
