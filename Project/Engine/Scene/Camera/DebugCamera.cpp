@@ -58,6 +58,9 @@ void DebugCamera::Update() {
 		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio, nearClip_, farClip_);
 
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
+
+	// billboardMatrixを計算
+	BaseCamera::CalBillboardMatrix();
 }
 
 void DebugCamera::ImGui() {
@@ -108,8 +111,8 @@ void DebugCamera::Move() {
 		eulerRotation_.y += deltaX * rotateSpeed;
 	}
 
-	// 中クリック + Shift
-	if (Input::GetInstance()->PushMouseCenter() && Input::GetInstance()->PushKey(DIK_LSHIFT)) {
+	// 中クリック
+	if (Input::GetInstance()->PushMouseCenter()) {
 
 		Vector3 right = { panSpeed_ * deltaX, 0.0f, 0.0f };
 		Vector3 up = { 0.0f, -panSpeed_ * deltaY, 0.0f };

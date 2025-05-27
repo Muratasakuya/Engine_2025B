@@ -76,4 +76,5 @@ public:
 	static Color Green(float alpha = 1.0f);
 	static Color Blue(float alpha = 1.0f);
 
+	static Color Lerp(const Color& color0, const Color& color1, float t);
 };

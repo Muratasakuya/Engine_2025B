@@ -31,8 +31,7 @@ void Framework::Run() {
 			winApp_->SetFullscreen(fullscreenEnable_);
 		}
 
-		if (winApp_->ProcessMessage() ||
-			Input::GetInstance()->TriggerKey(DIK_ESCAPE)) {
+		if (winApp_->ProcessMessage()) {
 			break;
 		}
 	}
@@ -88,7 +87,9 @@ Framework::Framework() {
 	//------------------------------------------------------------------------
 	// particle機能初期化
 
-	ParticleSystem::GetInstance()->Init(asset_.get(), cameraManager_.get());
+	ParticleSystem::GetInstance()->Init(asset_.get(),
+		graphicsCore_->GetDevice(), graphicsCore_->GetSRVDescriptor(),
+		graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
 
 	//------------------------------------------------------------------------
 	// component機能初期化
@@ -129,6 +130,7 @@ void Framework::Update() {
 	//	update
 	//========================================================================
 
+	GameTimer::BeginFrameCount();
 	GameTimer::BeginUpdateCount();
 
 	// 描画前処理
@@ -184,6 +186,7 @@ void Framework::Draw() {
 	LineRenderer::GetInstance()->ResetLine();
 
 	GameTimer::EndDrawCount();
+	GameTimer::EndFrameCount();
 }
 
 void Framework::Finalize() {

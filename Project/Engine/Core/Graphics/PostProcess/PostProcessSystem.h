@@ -4,8 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/PostProcessType.h>
-#include <Engine/Core/Graphics/PostProcess/BloomProcessor.h>
 #include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBuffer.h>
+#include <Engine/Core/Graphics/PostProcess/ComputePostProcessor.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessPipeline.h>
 #include <Engine/Editor/Base/IGameEditor.h>
 #include <Lib/MathUtils/Algorithm.h>
@@ -33,10 +33,11 @@ public:
 		SRVDescriptor* srvDescriptor);
 
 	// postProcess作成
-	void Create(const std::vector<PostProcess>& processes);
+	void Create(const std::vector<PostProcessType>& processes);
 
 	// postProcess実行
 	void Execute(class RenderTexture* inputTexture, class DxCommand* dxCommand);
+	void ExecuteDebugScene(class RenderTexture* inputTexture, class DxCommand* dxCommand);
 
 	// 最終的なtextureをframeBufferに描画する
 	void RenderFrameBuffer(class DxCommand* dxCommand);
@@ -47,17 +48,21 @@ public:
 	void ToWrite(class DxCommand* dxCommand);
 
 	// processの追加、削除
-	void AddProcess(PostProcess process);
-	void RemoveProcess(PostProcess process);
+	void AddProcess(PostProcessType process);
+	void RemoveProcess(PostProcessType process);
 	void ClearProcess();
 
 	// postProcessに使うtextureの設定
-	void InputProcessTexture(const std::string& textureName, PostProcess process, class Asset* asset);
+	void InputProcessTexture(const std::string& textureName, PostProcessType process, class Asset* asset);
 
 	//--------- accessor -----------------------------------------------------
 
 	template <typename T>
-	void SetParameter(const T& parameter, PostProcess process);
+	void SetParameter(const T& parameter, PostProcessType process);
+
+	PostProcessPipeline* GetPipeline() const { return pipeline_.get(); }
+
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneGPUHandle() const { return debugSceneBloomProcessor_->GetSRVGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -76,14 +81,14 @@ private:
 	std::unique_ptr<PostProcessPipeline> pipeline_;
 	std::unique_ptr<PipelineState> offscreenPipeline_;
 
-	std::vector<PostProcess> initProcesses_;   // 初期化済み
-	std::vector<PostProcess> activeProcesses_; // 適用するプロセス
-	bool bloomEnable_; // bloom処理を最後に行わせるためのフラグ
+	std::vector<PostProcessType> initProcesses_;   // 初期化済み
+	std::vector<PostProcessType> activeProcesses_; // 適用するプロセス
 
-	// ブルーム処理、処理が長いのでブルーム用のクラスで処理を行う
-	// ブルームは最後の実行する
-	std::unique_ptr<BloomProcessor> bloom_;
-	std::unordered_map<PostProcess, std::unique_ptr<ComputePostProcessor>> processors_;
+	// postProcess処理を行うmap
+	std::unordered_map<PostProcessType, std::unique_ptr<ComputePostProcessor>> processors_;
+
+	// debugScene用、bloomのみ
+	std::unique_ptr<ComputePostProcessor> debugSceneBloomProcessor_;
 
 	// buffers
 	std::unordered_map<PostProcessType, std::unique_ptr<IPostProcessBuffer>> buffers_;
@@ -95,8 +100,6 @@ private:
 
 	void CreateCBuffer(PostProcessType type);
 	void ExecuteCBuffer(ID3D12GraphicsCommandList* commandList, PostProcessType type);
-
-	PostProcessType GetPostProcessType(PostProcess process) const;
 };
 
 //============================================================================
@@ -104,12 +107,10 @@ private:
 //============================================================================
 
 template<typename T>
-inline void PostProcessSystem::SetParameter(const T& parameter, PostProcess process) {
+inline void PostProcessSystem::SetParameter(const T& parameter, PostProcessType process) {
 
-	PostProcessType type = GetPostProcessType(process);
+	if (Algorithm::Find(buffers_, process, true)) {
 
-	if (Algorithm::Find(buffers_, type, true)) {
-
-		buffers_[type]->SetParameter((void*)&parameter, sizeof(T));
+		buffers_[process]->SetParameter((void*)&parameter, sizeof(T));
 	}
 }

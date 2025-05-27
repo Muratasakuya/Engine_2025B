@@ -14,26 +14,6 @@
 // postProcessの種類
 enum class PostProcessType {
 
-	HorizontalBlur,
-	VerticalBlur,
-	RadialBlur,
-	GaussianFilter,
-	BoxFilter,
-	Dissolve,
-	Random,
-	Vignette,
-	Grayscale,
-	SepiaTone,
-	BloomLuminanceExtract,
-	BloomCombine,
-	LuminanceBasedOutline,
-	DepthBasedOutline,
-
-	Count
-};
-// userが使う種類
-enum class PostProcess {
-
 	Bloom,
 	HorizontalBlur,
 	VerticalBlur,

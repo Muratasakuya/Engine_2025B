@@ -83,7 +83,7 @@ struct ResourceMesh {
 	bool isSkinned;
 
 	// operator
-	ResourceMesh& operator=(const ResourceMesh& other) {
+	ResourceMesh<T>& operator=(const ResourceMesh<T>& other) {
 		if (this != &other) {
 			meshCount_ = other.meshCount_;
 			vertices = other.vertices;

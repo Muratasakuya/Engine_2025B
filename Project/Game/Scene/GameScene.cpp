@@ -24,6 +24,12 @@ void GameScene::Load(Asset* asset) {
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
 
+	// particle
+	asset->LoadModel("billboardPlane");
+
+	// debug
+	asset->LoadModel("multiMaterial");
+
 	// player
 	asset->LoadModel("playerBody");
 	asset->LoadModel("playerLeftHand");
@@ -52,6 +58,9 @@ void GameScene::Init(
 	//========================================================================
 
 	postProcessSystem_ = postProcessSystem;
+	postProcessSystem_->Create({ PostProcessType::Bloom });
+
+	postProcessSystem_->AddProcess(PostProcessType::Bloom);
 
 	//========================================================================
 	//	sceneObject

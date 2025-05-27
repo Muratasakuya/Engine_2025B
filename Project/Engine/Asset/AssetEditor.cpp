@@ -29,7 +29,19 @@ void AssetEditor::Finalize() {
 	}
 }
 
-void AssetEditor::BuildDirectoryTree() {
+void AssetEditor::BuildDirectoryTree(bool runTime) {
+
+	if (runTime) {
+
+		// 初期化して再生成
+		root_.reset();
+		navStack_.clear();
+		root_ = std::make_unique<DirectoryNode>();
+		root_->name = "Assets";
+		root_->path = std::filesystem::path("./Assets");
+		root_->opened = true;
+		root_->isDirectory = true;
+	}
 
 	std::function<void(DirectoryNode&)> recurse = [&](DirectoryNode& node) {
 
@@ -71,6 +83,9 @@ void AssetEditor::BuildDirectoryTree() {
 		};
 
 	recurse(*root_);
+
+	// 最初の設定
+	current_ = root_.get();
 }
 
 void AssetEditor::Init(Asset* asset) {
@@ -96,10 +111,7 @@ void AssetEditor::Init(Asset* asset) {
 	root_->opened = true;
 	root_->isDirectory = true;
 
-	BuildDirectoryTree();
-
-	// 最初の設定
-	current_ = root_.get();
+	BuildDirectoryTree(false);
 
 	// json適応
 	ApplyJson();
@@ -178,6 +190,17 @@ void AssetEditor::DrawHeader() {
 	// 現在ディレクトリ名
 	ImGui::SameLine(); ImGui::TextUnformatted(">");
 	ImGui::SameLine(); ImGui::TextUnformatted(current_->name.c_str());
+
+	const char* label = "ReBuild";
+	const float btn_w = ImGui::CalcTextSize(label).x // 文字幅
+		+ ImGui::GetStyle().FramePadding.x * 2.0f;   // 枠の左右パディング
+
+	float x = ImGui::GetWindowContentRegionMax().x - btn_w - 4.0f;
+	ImGui::SameLine(x);
+	if (ImGui::Button(label, { btn_w,0.0f })) {
+
+		BuildDirectoryTree(true);
+	}
 }
 
 void AssetEditor::DrawFolderGrid() {

@@ -26,13 +26,13 @@ enum class EmitterShapeType {
 // 球
 struct EmitterSphere {
 
-	float radius = 1.0f;
+	float radius = 0.2f;
 	Vector3 center = Vector3::AnyInit(0.0f);
 };
 // 半球
 struct EmitterHemisphere {
 
-	float radius = 1.0f;
+	float radius = 0.2f;
 	Vector3 center = Vector3::AnyInit(0.0f);
 	Vector3 eulerRotate = Vector3::AnyInit(0.0f);
 };
@@ -46,9 +46,9 @@ struct EmitterBox {
 // コーン状
 struct EmitterCone {
 
-	float baseRadius = 1.0f;
-	float topRadius = 1.6f;
-	float height = 1.6f;
+	float baseRadius = 0.4f;
+	float topRadius = 0.8f;
+	float height = 1.0f;
 	Vector3 center = Vector3::AnyInit(0.0f);
 	Vector3 eulerRotate = Vector3::AnyInit(0.0f);
 };

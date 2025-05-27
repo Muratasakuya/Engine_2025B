@@ -112,8 +112,8 @@ void LineRenderer::DrawGrid(int division, float gridSize, const Color& color) {
 
 void LineRenderer::DrawSphere(int division, float radius, const Vector3& centerPos, const Color& color) {
 
-	const float kLatEvery = pi / division;        //* 緯度
-	const float kLonEvery = 2.0f * pi / division; //* 経度
+	const float kLatEvery = pi / division;        // 緯度
+	const float kLonEvery = 2.0f * pi / division; // 経度
 
 	auto calculatePoint = [&](float lat, float lon) -> Vector3 {
 		return {
@@ -139,9 +139,44 @@ void LineRenderer::DrawSphere(int division, float radius, const Vector3& centerP
 	}
 }
 
+void LineRenderer::DrawHemisphere(int division, float radius, const Vector3& centerPos,
+	const Vector3& eulerRotate, const Color& color) {
+
+	const float kLatEvery = std::numbers::pi_v<float> / (2 * division);  // 緯度（半球用）
+	const float kLonEvery = 2.0f * std::numbers::pi_v<float> / division; // 経度
+
+	auto calculatePoint = [&](float lat, float lon) -> Vector3 {
+		return {
+			radius * std::cos(lat) * std::cos(lon),
+			radius * std::sin(lat),
+			radius * std::cos(lat) * std::sin(lon)
+		};
+		};
+
+	Matrix4x4 rotationMatrix = Matrix4x4::MakeRotateMatrix(eulerRotate);
+
+	for (int latIndex = 0; latIndex < division; ++latIndex) {
+		float lat = 0.0f + kLatEvery * latIndex;
+		for (int lonIndex = 0; lonIndex < division; ++lonIndex) {
+			float lon = lonIndex * kLonEvery;
+
+			Vector3 pointA = calculatePoint(lat, lon);
+			Vector3 pointB = calculatePoint(lat + kLatEvery, lon);
+			Vector3 pointC = calculatePoint(lat, lon + kLonEvery);
+
+			pointA = rotationMatrix.TransformPoint(pointA) + centerPos;
+			pointB = rotationMatrix.TransformPoint(pointB) + centerPos;
+			pointC = rotationMatrix.TransformPoint(pointC) + centerPos;
+
+			DrawLine3D(pointA, pointB, color);
+			DrawLine3D(pointA, pointC, color);
+		}
+	}
+}
+
 void LineRenderer::DrawOBB(const CollisionShape::OBB& obb, const Color& color) {
 
-	const uint32_t vertexNum = 8;
+	const int vertexNum = 8;
 
 	Matrix4x4 rotateMatrix = Quaternion::MakeRotateMatrix(obb.rotate);
 
@@ -175,5 +210,79 @@ void LineRenderer::DrawOBB(const CollisionShape::OBB& obb, const Color& color) {
 		int end = edges[i][1];
 
 		DrawLine3D(vertices[start], vertices[end], color);
+	}
+}
+
+void LineRenderer::DrawOBB(const Vector3& centerPos, const Vector3& size,
+	const Vector3& eulerRotate, const Color& color) {
+
+	const uint32_t vertexNum = 8;
+
+	Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(eulerRotate);
+
+	Vector3 vertices[vertexNum];
+	Vector3 halfSizeX = Vector3::Transform(Vector3(1.0f, 0.0f, 0.0f), rotateMatrix) * size.x;
+	Vector3 halfSizeY = Vector3::Transform(Vector3(0.0f, 1.0f, 0.0f), rotateMatrix) * size.y;
+	Vector3 halfSizeZ = Vector3::Transform(Vector3(0.0f, 0.0f, 1.0f), rotateMatrix) * size.z;
+
+	Vector3 offsets[vertexNum] = {
+		{-1, -1, -1}, {-1,  1, -1}, {1, -1, -1}, {1,  1, -1},
+		{-1, -1,  1}, {-1,  1,  1}, {1, -1,  1}, {1,  1,  1}
+	};
+
+	for (int i = 0; i < vertexNum; ++i) {
+
+		Vector3 localVertex = offsets[i].x * halfSizeX +
+			offsets[i].y * halfSizeY +
+			offsets[i].z * halfSizeZ;
+		vertices[i] = centerPos + localVertex;
+	}
+
+	int edges[12][2] = {
+		{0, 1}, {1, 3}, {3, 2}, {2, 0},
+		{4, 5}, {5, 7}, {7, 6}, {6, 4},
+		{0, 4}, {1, 5}, {2, 6}, {3, 7}
+	};
+
+	for (int i = 0; i < 12; ++i) {
+
+		int start = edges[i][0];
+		int end = edges[i][1];
+
+		DrawLine3D(vertices[start], vertices[end], color);
+	}
+}
+
+void LineRenderer::DrawCone(int division, float baseRadius, float topRadius, float height,
+	const Vector3& centerPos, const Vector3& eulerRotate, const Color& color) {
+
+	const float kAngleStep = 2.0f * std::numbers::pi_v<float> / division;
+
+	std::vector<Vector3> baseCircle;
+	std::vector<Vector3> topCircle;
+
+	// 基底円と上面円の計算
+	for (int i = 0; i <= division; ++i) {
+
+		float angle = i * kAngleStep;
+		baseCircle.emplace_back(baseRadius * std::cos(angle), 0.0f, baseRadius * std::sin(angle));
+		topCircle.emplace_back(topRadius * std::cos(angle), height, topRadius * std::sin(angle));
+	}
+
+	Matrix4x4 rotationMatrix = Matrix4x4::MakeRotateMatrix(eulerRotate);
+
+	for (int i = 0; i < division; ++i) {
+		// 円周上の点を回転＆平行移動
+		Vector3 baseA = rotationMatrix.TransformPoint(baseCircle[i]) + centerPos;
+		Vector3 baseB = rotationMatrix.TransformPoint(baseCircle[i + 1]) + centerPos;
+		Vector3 topA = rotationMatrix.TransformPoint(topCircle[i]) + centerPos;
+		Vector3 topB = rotationMatrix.TransformPoint(topCircle[i + 1]) + centerPos;
+
+		// 円の描画
+		DrawLine3D(baseA, baseB, color);
+		DrawLine3D(topA, topB, color);
+
+		// 側面の描画
+		DrawLine3D(baseA, topA, color);
 	}
 }

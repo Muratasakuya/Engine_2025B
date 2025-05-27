@@ -50,16 +50,14 @@ SamplerState gSampler : register(s0);
 //	functions
 //============================================================================
 
-float4 GetTextureColor(uint id, MSOutput input) {
+float4 GetTextureColor(uint id, MSOutput input, float4 transformUV) {
 	
-	// uv
-	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterials[id].uvTransform);
 	// texture
-	float4 diffuseColor = gTextures[gMaterials[id].textureIndex].Sample(gSampler, transformUV.xy);
-	return diffuseColor;
+	float4 textureColor = gTextures[gMaterials[id].textureIndex].Sample(gSampler, transformUV.xy);
+	return textureColor;
 }
 
-uint IsNoiseTextureDiscard(uint id, MSOutput input) {
+uint IsNoiseTextureDiscard(uint id, MSOutput input, float4 transformUV) {
 	
 	// discard == false
 	if (gMaterials[id].useNoiseTexture == 0) {
@@ -67,10 +65,10 @@ uint IsNoiseTextureDiscard(uint id, MSOutput input) {
 	}
 	
 	// getNoiseTextureAlpha
-	float noiseAlpha = gTextures[gMaterials[id].noiseTextureIndex].Sample(gSampler, input.texcoord).a;
+	float4 noiseTexture = gTextures[gMaterials[id].noiseTextureIndex].Sample(gSampler, transformUV.xy);
 	
 	// discardCheck
-	if (noiseAlpha < gMaterials[id].noiseTextureAlphaReference) {
+	if (noiseTexture.r < gMaterials[id].noiseTextureAlphaReference) {
 		
 		// discard == true
 		return 1;

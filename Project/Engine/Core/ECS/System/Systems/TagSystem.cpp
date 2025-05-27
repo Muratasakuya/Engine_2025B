@@ -20,6 +20,13 @@ Archetype TagSystem::Signature() const {
 
 void TagSystem::Update(EntityManager& entityManager) {
 
+	const auto& entities = entityManager.View(Signature());
+	// 変更があった場合のみ処理
+	if (entities.size() == prevEntityCount_) {
+		return;
+	}
+
+	prevEntityCount_ = entities.size();
 	groups_.clear();
 	idToTag_.clear();
 

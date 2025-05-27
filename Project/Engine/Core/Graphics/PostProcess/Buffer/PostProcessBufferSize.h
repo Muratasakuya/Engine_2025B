@@ -31,6 +31,24 @@ public:
 	float padding3;
 };
 
+class BloomForGPU {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	BloomForGPU() = default;
+	~BloomForGPU() = default;
+
+	void ImGui();
+
+	//--------- properties ---------------------------------------------------
+
+	float threshold = 1.0f;
+	int radius = 3;
+	float sigma = 32.0f;
+};
+
 class GaussianFilterForGPU {
 public:
 	//========================================================================

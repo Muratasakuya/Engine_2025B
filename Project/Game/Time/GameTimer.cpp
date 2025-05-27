@@ -13,9 +13,11 @@
 //============================================================================
 
 std::chrono::steady_clock::time_point GameTimer::lastFrameTime_ = std::chrono::steady_clock::now();
+GameTimer::Measurement GameTimer::allMeasure_ = {};
 GameTimer::Measurement GameTimer::updateMeasure_ = {};
 GameTimer::Measurement GameTimer::drawMeasure_ = {};
 
+std::vector<float> GameTimer::allTimes_ = {};
 std::vector<float> GameTimer::updateTimes_ = {};
 std::vector<float> GameTimer::drawTimes_ = {};
 
@@ -58,12 +60,26 @@ void GameTimer::Update() {
 void GameTimer::ImGui() {
 
 	ImGui::SeparatorText("Performance");
-	ImGui::Text("frameRate:       %.1f  fps", ImGui::GetIO().Framerate); //* フレームレート情報
-	ImGui::Text("deltaTime:       %.3f s", deltaTime_);                  //* ΔTime
-	ImGui::Text("scaledDeltaTime: %.3f s", GetScaledDeltaTime());        //* ScaledΔTime
+	ImGui::Text("frameRate:       %.2f fps", ImGui::GetIO().Framerate); //* フレームレート情報
+	ImGui::Text("deltaTime:       %.2f s", deltaTime_);                  //* ΔTime
+	ImGui::Text("scaledDeltaTime: %.2f s", GetScaledDeltaTime());        //* ScaledΔTime
 
-	ImGui::Text("updateTime:      %.2f  ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間
+	ImGui::Text("frameTime:       %.2f ms", GetSmoothedFrameTime());   // ループにかかった時間
+	ImGui::Text("updateTime:      %.2f ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間
 	ImGui::Text("drawTime:        %.2f ms", GetSmoothedDrawTime());    // 描画処理にかかった時間
+}
+
+void GameTimer::BeginFrameCount() {
+
+	allMeasure_.start = std::chrono::high_resolution_clock::now();
+}
+
+void GameTimer::EndFrameCount() {
+
+	allMeasure_.end = std::chrono::high_resolution_clock::now();
+	allMeasure_.resultSeconds = allMeasure_.end - allMeasure_.start;
+
+	AddMeasurement(allTimes_, allMeasure_.resultSeconds.count());
 }
 
 void GameTimer::BeginUpdateCount() {
@@ -107,6 +123,11 @@ float GameTimer::GetSmoothedTime(const std::vector<float>& buffer) {
 	if (buffer.empty()) return 0.0f;
 	float sum = std::accumulate(buffer.begin(), buffer.end(), 0.0f);
 	return sum / buffer.size();
+}
+
+float GameTimer::GetSmoothedFrameTime() {
+
+	return GetSmoothedTime(allTimes_);
 }
 
 float GameTimer::GetSmoothedUpdateTime() {

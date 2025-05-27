@@ -21,6 +21,7 @@ void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescript
 
 	// shaderDataFileName
 	fileNames_ = {
+		"Bloom.json",
 		"HorizontalBlur.json",
 		"VerticalBlur.json",
 		"RadialBlur.json",
@@ -31,8 +32,6 @@ void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescript
 		"Vignette.json",
 		"Grayscale.json",
 		"SepiaTone.json",
-		"BloomLuminanceExtract.json",
-		"BloomCombine.json",
 		"LuminanceBasedOutline.json",
 		"DepthBasedOutline.json",
 	};

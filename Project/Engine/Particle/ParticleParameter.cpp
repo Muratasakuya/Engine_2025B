@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
+#include <Engine/Asset/AssetEditor.h>
 
 // imgui
 #include <imgui.h>
@@ -37,10 +38,10 @@ void ParticleParameter::Init(std::string name,
 	easingType = EasingType::EaseInSine;
 
 	emitCount = ParticleValue<uint32_t>::SetValue(1);
-	frequency = ParticleValue<float>::SetValue(0.08f);
+	frequency = 1.0f;
 
-	lifeTime = ParticleValue<float>::SetValue(1.6f);
-	moveSpeed = ParticleValue<float>::SetValue(1.0f);
+	lifeTime = ParticleValue<float>::SetValue(0.8f);
+	moveSpeed = ParticleValue<float>::SetValue(0.0f);
 
 	startScale = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
 	targetScale = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
@@ -49,10 +50,12 @@ void ParticleParameter::Init(std::string name,
 	targetRotationMultiplier = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
 
 	startColor = ParticleValue<Color>::SetValue(Color::White(1.0f));
-	targetColor = ParticleValue<Color>::SetValue(Color::White(0.0f));
+	targetColor = ParticleValue<Color>::SetValue(Color::White(1.0f));
 
-	emissiveIntensity = ParticleValue<float>::SetValue(0.0f);
-	emissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
+	startEmissiveIntensity = ParticleValue<float>::SetValue(0.0f);
+	targetEmissiveIntensity = ParticleValue<float>::SetValue(0.0f);
+	startEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
+	targetEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
 
 	isLoop = true;
 	useScaledTime = false;
@@ -107,17 +110,82 @@ void ParticleParameter::ImGui() {
 	ImGui::PopItemWidth();
 }
 
+void ParticleParameter::ImageButtonWithLabel(const char* id,
+	const std::string& label, ImTextureID textureId, const ImVec2& size) {
+
+	ImGui::PushID(id);
+	ImGui::BeginGroup();
+
+	// テキストサイズ計算
+	ImVec2 textSize = ImGui::CalcTextSize(label.c_str());
+
+	// 現在の位置取得
+	ImVec2 pos = ImGui::GetCursorScreenPos();
+
+	// 上にテキストの高さ分スペースを確保
+	float labelSpacing = 2.0f;
+	ImGui::Dummy(ImVec2(size.x, textSize.y + labelSpacing));
+
+	// 画像ボタンの描画
+	ImGui::SetCursorScreenPos(ImVec2(pos.x, pos.y + textSize.y + labelSpacing));
+	ImGui::ImageButton(label.c_str(), textureId, size);
+
+	// テキストをボタンの上に中央揃えで描画
+	ImVec2 textPos = ImVec2(
+		pos.x + (size.x - textSize.x) * 0.5f,
+		pos.y);
+	ImGui::GetWindowDrawList()->AddText(
+		textPos,
+		ImGui::GetColorU32(ImGuiCol_Text),
+		label.c_str());
+
+	ImGui::EndGroup();
+	ImGui::PopID();
+}
+
 void ParticleParameter::EditRender() {
+
+	// 表示サイズ
+	const float imageSize = 88.0f;
 
 	// 使用しているtextureの名前を表示
 	// 貼るtexture
-	ImGui::Text(("textureName:  " + textureName_).c_str());
-	ImGui::Text("textureIndex: %d", textureIndex);
+	ImageButtonWithLabel("texture", textureName_, (ImTextureID)asset_->GetGPUHandle(textureName_).ptr, { imageSize, imageSize });
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
+
+			auto* payloadTextureData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
+			// texture以外は受け付けない
+			if (payloadTextureData->type == AssetEditor::PendingType::Texture) {
+
+				// textureを設定
+				textureName_ = payloadTextureData->name;
+				// indexを設定
+				textureIndex = asset_->GetTextureGPUIndex(textureName_);
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
+
+	ImGui::SameLine();
 
 	// noiseTexture
-	ImGui::Text(("noiseTextureName:  " + noiseTextureName_).c_str());
-	ImGui::Text("noiseTextureIndex: %d", noiseTextureIndex);
-	ImGui::Separator();
+	ImageButtonWithLabel("noiseTexture", noiseTextureName_, (ImTextureID)asset_->GetGPUHandle(noiseTextureName_).ptr, { imageSize, imageSize });
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
+
+			auto* payloadTextureData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
+			// texture以外は受け付けない
+			if (payloadTextureData->type == AssetEditor::PendingType::Texture) {
+
+				// textureを設定
+				noiseTextureName_ = payloadTextureData->name;
+				// indexを設定
+				noiseTextureIndex = asset_->GetTextureGPUIndex(noiseTextureName_);
+			}
+		}
+		ImGui::EndDragDropTarget();
+	}
 
 	// blendModeの選択
 	Blend::SelectBlendMode(blendMode);
@@ -137,7 +205,7 @@ void ParticleParameter::EditEmit() {
 	ImGui::Separator();
 	emitCount.EditDragValue("emitCount");
 	ImGui::Separator();
-	frequency.EditDragValue("frequency");
+	ImGui::DragFloat("frequency", &frequency, 0.01f);
 	ImGui::Separator();
 	// 寿命
 	lifeTime.EditDragValue("lifeTime");
@@ -183,8 +251,10 @@ void ParticleParameter::EditMaterial() {
 	targetVertexColor.EditColor("targetVertexColor");
 	ImGui::Separator();
 	// 発光
-	emissiveIntensity.EditDragValue("emissiveIntensity");
-	emissionColor.EditColor("emissionColor");
+	startEmissiveIntensity.EditDragValue("startEmissiveIntensity");
+	targetEmissiveIntensity.EditDragValue("targetEmissiveIntensity");
+	startEmissionColor.EditColor("startEmissionColor");
+	targetEmissionColor.EditColor("targetEmissionColor");
 	ImGui::Separator();
 
 	// alphaReference

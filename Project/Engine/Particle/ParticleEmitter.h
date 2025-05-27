@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Engine/Particle/ParticleParameter.h>
-#include <Engine/Asset/AssetEditor.h>
 
 // emitter
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
@@ -16,28 +15,6 @@
 // c++
 #include <cstdint>
 #include <list>
-
-// 設計図
-// emitterが複数のparticleを所持する
-// emitterはtransformを持つ
-// emitterは存在しているemitterを親に設定できるようにする
-// 各particleに必要な情報
-// mesh...       各particleにつき1つ持たせる
-// texture...    particle内で別々のtextureを持たせられる、とりあえず同じでいい
-// material...   PSの構造体と同じものを持たせる -> structuredBuffer
-// transform...  euler角のtransformを持たせる -> structuredBuffer
-// numInstance...各particleごとのinstance数、これをinstance数としてmeshに渡して描画する
-// 上記がbufferに必要なデータ、各particleデータごとに必要
-// 上記のbufferの値を決めるのがparameter
-// parameterは各particleにつき1つ持たせる
-// このparameterはeditorで操作可能にする
-// parameterとは別でemitterがそれぞれのparticleをどのように制御するかのcontrollerクラスも作成する
-// parameterの値でparticleをcreaterクラスで作成、
-// 作成されたparticleをupdaterクラスで更新
-// 更新処理にも種類がある、ここからは学校行きながら考える
-// 更新処理はsystemに渡して行う
-// emitterはparticleを所持するだけのクラスにする
-// systemはemittersを所持するクラスにする
 
 //============================================================================
 //	structures
@@ -67,14 +44,29 @@ struct EffectMaterial {
 
 	// uv
 	Matrix4x4 uvTransform;
+
+	void Init();
+	void SetMaterial(const EffectMaterial& material);
 };
 
 // 各particleの情報
 struct ParticleData {
 
+	// 動かす元の値
+	// groupのparameterから値を取得してくる
+	ParticleParameter parameter;
+
+	// timer(T)
+	float currentTime;    // 現在の経過時間
+	float easedProgressT; // currentTのeasing計算後の値0.0f -> 1.0f
+
+	// 移動方向(速度)
+	Vector3 velocity;      // 設定速度、groupのparameterから値を取得してくる
+	Vector3 easedVelocity; // easedProgressTを掛けた後の値
+
 	// bufferに渡すデータ
 	EffectMaterial material; // material
-	Matrix4x4 worldMatrix;   // matrix
+	BaseTransform transform; // transform(matrix)
 };
 
 // particleの集まり
@@ -87,6 +79,10 @@ struct ParticleGroup {
 	DxConstBuffer<Matrix4x4> worldMatrixBuffer;   // matrix
 	// instance数
 	uint32_t numInstance;
+
+	// transter
+	std::vector<EffectMaterial> transferMaterials;
+	std::vector<Matrix4x4> transferMatrices;
 
 	// particleを構築するparameter
 	ParticleParameter parameter;
@@ -106,12 +102,16 @@ public:
 	ParticleEmitter() = default;
 	~ParticleEmitter() = default;
 
-	void Init(const std::string& name, Asset* asset);
+	void Init(const std::string& name, Asset* asset, ID3D12Device* device);
+
+	void Update(const Matrix4x4& billboardMatrix);
 
 	void ImGui();
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const BaseTransform& parent) { transform_.parent = &parent; }
+
+	const std::vector<ParticleGroup>& GetParticleGroup() const { return particleGroups_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -130,6 +130,10 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	Asset* asset_;
+	ID3D12Device* device_;
+
+	// 最大インスタンス数
+	const uint32_t kMaxInstanceNum_ = 1024;
 
 	// emitterの情報
 	// 名前
@@ -155,6 +159,18 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	void EditLayout();
+
+	// 作成処理
+	void CreateParticle();
+	// meshletの作成
+	ResourceMesh<EffectMeshVertex> CreateMeshlet(const std::string& modelName);
+
+	// emitter描画処理
+	void DrawParticleEmitters();
+	// emit処理
+	void UpdateFrequencyEmit(ParticleGroup& group);
+	// 各particleを更新
+	void UpdateParticles(const Matrix4x4& billboardMatrix);
 
 	// 追加処理
 	void AddParticle();

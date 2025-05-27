@@ -38,7 +38,7 @@ void Assert::ReleaseAssert(
 	[[maybe_unused]] bool condition,
 	[[maybe_unused]] const std::string& message,
 	[[maybe_unused]] const char* function) {
-#ifndef _DEBUG
+#ifdef _DEBUG
 	if (!condition) {
 
 		std::ostringstream oss;

@@ -24,14 +24,17 @@ PSOutput main(MSOutput input) {
 	uint id = input.instanceID;
 	Material material = gMaterials[id];
 	
+	// uv
+	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), material.uvTransform);
+	
 	// noiceTexture‚É‚æ‚épixelŠü‹p”»’è
-	uint noiseTextureDiscardEnable = IsNoiseTextureDiscard(id, input);
+	uint noiseTextureDiscardEnable = IsNoiseTextureDiscard(id, input, transformUV);
 	if (noiseTextureDiscardEnable == 1) {
 		discard;
 	}
 	
 	// textureColor‚Ìæ“¾Aalpha’l‚ÌpixelŠü‹p”»’è
-	float4 textureColor = GetTextureColor(id, input);
+	float4 textureColor = GetTextureColor(id, input, transformUV);
 	if (textureColor.a < material.textureAlphaReference) {
 		discard;
 	}

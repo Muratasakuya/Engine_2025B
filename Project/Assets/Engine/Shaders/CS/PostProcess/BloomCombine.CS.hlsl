@@ -15,4 +15,6 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 
 	// ‰ÁZ‡¬
 	gOutputTexture[DTid.xy] = original + bloom;
+	// ƒ¿’l‚ğ1.0f‚ÉŒÅ’è‚·‚é
+	gOutputTexture[DTid.xy].a = 1.0f;
 }

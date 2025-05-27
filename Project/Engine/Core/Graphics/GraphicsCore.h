@@ -62,7 +62,7 @@ public:
 	PostProcessSystem* GetPostProcessSystem() const { return postProcessSystem_.get(); }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneRenderTextureGPUHandle() const { return copyTextureProcessor_->GetSRVGPUHandle(); }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetDebugSceneRenderTextureGPUHandle() const { return postProcessSystem_->GetDebugSceneGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }
 private:
 	//========================================================================
@@ -82,9 +82,7 @@ private:
 	std::unique_ptr<RenderTexture> renderTexture_;
 	std::unique_ptr<GuiRenderTexture> guiRenderTexture_;
 
-	std::unique_ptr<PipelineState> copyTexturePipeline_;
 	std::unique_ptr<RenderTexture> debugSceneRenderTexture_;
-	std::unique_ptr<ComputePostProcessor> copyTextureProcessor_;
 
 	std::unique_ptr<ShadowMap> shadowMap_;
 

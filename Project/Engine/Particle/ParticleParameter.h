@@ -51,7 +51,7 @@ public:
 
 	// parameter
 	ParticleValue<uint32_t> emitCount; // 1度に発生させる数
-	ParticleValue<float> frequency;    // ~秒置き、発生頻度
+	float frequency;                   // ~秒置き、発生頻度
 	float frequencyTime;               // 発生頻度用の現在の時刻
 
 	ParticleValue<float> lifeTime;  // 寿命
@@ -69,8 +69,10 @@ public:
 	ParticleValue<Color> startVertexColor;  // 開始頂点色
 	ParticleValue<Color> targetVertexColor; // 目標頂点色
 
-	ParticleValue<float> emissiveIntensity; // 発光強度
-	ParticleValue<Vector3> emissionColor;   // 発光色
+	ParticleValue<float> startEmissiveIntensity;  // 開始発光強度
+	ParticleValue<float> targetEmissiveIntensity; // 目標発光強度
+	ParticleValue<Vector3> startEmissionColor;   // 開始発光色
+	ParticleValue<Vector3> targetEmissionColor; // 目標発光色
 
 	ParticleValue<float> startTextureAlphaReference;  // 貼るtexture、開始alphaReference
 	ParticleValue<float> targetTextureAlphaReference; // 貼るtexture、目標alphaReference
@@ -91,7 +93,6 @@ public:
 	bool reflectGround;   // 地面に反射するか
 	bool useNoiseTexture; // noiseTextureを使うか
 	bool useVertexColor;  // 頂点色を使うか
-
 	//--------- accessor -----------------------------------------------------
 
 	const std::string& GetParticleName() const { return name_; }
@@ -116,6 +117,12 @@ private:
 	std::string noiseTextureName_;
 
 	//--------- functions ----------------------------------------------------
+
+	void ImageButtonWithLabel(
+		const char* id,           // ImGuiで重複しないID
+		const std::string& label, // 表示したいテクスチャ名
+		ImTextureID textureId,    // GPU ハンドル
+		const ImVec2& size);      // 画像サイズ
 
 	// 描画関係の値操作
 	void EditRender();

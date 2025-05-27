@@ -215,9 +215,6 @@
     <ClCompile Include="Engine\Core\Graphics\Context\PostProcessCommandContext.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\PostProcess\BloomProcessor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -461,13 +458,7 @@
     <ClCompile Include="Engine\Particle\ParticleSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Renderer\ParticleRenderer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleLoader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleEmitter.cpp">
@@ -489,6 +480,24 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Particle\Structures\EmitterStructures.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\ParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\SphereEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\BoxEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Creators\ConeEmitterParticleCreator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Particle\Updater\ParticleUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -568,7 +577,6 @@
     <ClInclude Include="Engine\Core\Graphics\Context\PostProcessCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessSystem.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessType.h" />
-    <ClInclude Include="Engine\Core\Graphics\PostProcess\BloomProcessor.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\Buffer\PostProcessBufferSize.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessPipeline.h" />
@@ -665,14 +673,19 @@
     <ClInclude Include="Engine\Core\ECS\System\Systems\TagSystem.h" />
     <ClInclude Include="Engine\Config.h" />
     <ClInclude Include="Engine\Particle\ParticleSystem.h" />
-    <ClInclude Include="Engine\Renderer\ParticleRenderer.h" />
     <ClInclude Include="Engine\Particle\ParticleLoader.h" />
     <ClInclude Include="Engine\Particle\Structures\EmitterStructures.h" />
-    <ClInclude Include="Engine\Particle\ParticleEditor.h" />
     <ClInclude Include="Engine\Particle\ParticleEmitter.h" />
     <ClInclude Include="Engine\Particle\ParticleParameter.h" />
     <ClInclude Include="Engine\Particle\Structures\ParticleValue.h" />
     <ClInclude Include="Engine\Particle\ParticleEmitterHandler.h" />
+    <ClInclude Include="Engine\Particle\Creators\ParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\Creators\SphereEmitterParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\Creators\BoxEmitterParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\Creators\ConeEmitterParticleCreator.h" />
+    <ClInclude Include="Engine\Particle\ParticleUpdater.h" />
+    <ClInclude Include="Engine\Particle\Updater\ParticleUpdater.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
@@ -680,6 +693,7 @@
     <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\CopyTexture.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.VS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Bloom.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />

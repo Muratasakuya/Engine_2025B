@@ -5,6 +5,10 @@ EngineInformation:     12.2
 EngineInformation:     load texture: circle
 EngineInformation:     load texture: noise
 EngineInformation:     load texture: docklands_01_2k
+EngineInformation:     load model: billboardPlane
+EngineInformation:     load texture: uvChecker
+EngineInformation:     load texture: monsterBall
+EngineInformation:     load model: multiMaterial
 EngineInformation:     load texture: white
 EngineInformation:     load model: playerBody
 EngineInformation:     load model: playerLeftHand
@@ -17,4 +21,4 @@ EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture
 EngineInformation:     load texture: model
 EngineInformation:     load texture: file
-EngineInformation:     load model: arrow
+EngineInformation:     load model: slashEffect

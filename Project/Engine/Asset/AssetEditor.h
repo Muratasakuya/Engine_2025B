@@ -118,7 +118,7 @@ private:
 	void SaveJson();
 
 	// init
-	void BuildDirectoryTree();
+	void BuildDirectoryTree(bool runTime);
 
 	// update
 	void DrawHeader();

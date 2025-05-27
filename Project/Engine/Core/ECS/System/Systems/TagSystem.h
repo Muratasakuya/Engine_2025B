@@ -44,6 +44,9 @@ private:
 	std::unordered_map<std::string, std::vector<uint32_t>> groups_;
 	std::unordered_map<uint32_t, const TagComponent*> idToTag_;
 
+	// entity数のキャッシュ
+	size_t prevEntityCount_;
+
 	// 名前の累計カウント
 	std::unordered_map<std::string, int> nameCounts_;
 
