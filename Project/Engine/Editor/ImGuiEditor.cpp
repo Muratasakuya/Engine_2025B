@@ -114,7 +114,7 @@ void ImGuiEditor::MainWindow() {
 
 void ImGuiEditor::Console() {
 
-	ImGui::Begin("Console", nullptr, windowFlag_);
+	ImGui::Begin("Console");
 
 	GameTimer::ImGui();
 

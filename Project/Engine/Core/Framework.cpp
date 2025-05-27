@@ -130,6 +130,7 @@ void Framework::Update() {
 	//	update
 	//========================================================================
 
+	GameTimer::BeginFrameCount();
 	GameTimer::BeginUpdateCount();
 
 	// 描画前処理
@@ -185,6 +186,7 @@ void Framework::Draw() {
 	LineRenderer::GetInstance()->ResetLine();
 
 	GameTimer::EndDrawCount();
+	GameTimer::EndFrameCount();
 }
 
 void Framework::Finalize() {

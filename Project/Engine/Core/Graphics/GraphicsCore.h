@@ -62,7 +62,7 @@ public:
 	PostProcessSystem* GetPostProcessSystem() const { return postProcessSystem_.get(); }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetDebugSceneRenderTextureGPUHandle() const { return debugSceneRenderTexture_->GetGPUHandle(); }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetDebugSceneRenderTextureGPUHandle() const { return postProcessSystem_->GetDebugSceneGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }
 private:
 	//========================================================================

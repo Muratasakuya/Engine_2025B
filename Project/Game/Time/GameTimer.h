@@ -26,6 +26,9 @@ public:
 
 	static void ImGui();
 
+	static void BeginFrameCount();
+	static void EndFrameCount();
+
 	static void BeginUpdateCount();
 	static void EndUpdateCount();
 
@@ -60,6 +63,7 @@ private:
 
 	static std::chrono::steady_clock::time_point lastFrameTime_;
 
+	static Measurement allMeasure_;
 	static Measurement updateMeasure_;
 	static Measurement drawMeasure_;
 
@@ -77,6 +81,7 @@ private:
 	// 直近30フレームの平均を取得
 	static constexpr size_t kSmoothingSample_ = 8;
 
+	static std::vector<float> allTimes_;
 	static std::vector<float> updateTimes_;
 	static std::vector<float> drawTimes_;
 
@@ -85,6 +90,7 @@ private:
 	static void AddMeasurement(std::vector<float>& buffer, float value);
 
 	static float GetSmoothedTime(const std::vector<float>& buffer);
+	static float GetSmoothedFrameTime();
 	static float GetSmoothedUpdateTime();
 	static float GetSmoothedDrawTime();
 };

@@ -37,6 +37,7 @@ public:
 
 	// postProcess実行
 	void Execute(class RenderTexture* inputTexture, class DxCommand* dxCommand);
+	void ExecuteDebugScene(class RenderTexture* inputTexture, class DxCommand* dxCommand);
 
 	// 最終的なtextureをframeBufferに描画する
 	void RenderFrameBuffer(class DxCommand* dxCommand);
@@ -60,6 +61,8 @@ public:
 	void SetParameter(const T& parameter, PostProcessType process);
 
 	PostProcessPipeline* GetPipeline() const { return pipeline_.get(); }
+
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneGPUHandle() const { return debugSceneBloomProcessor_->GetSRVGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -83,6 +86,9 @@ private:
 
 	// postProcess処理を行うmap
 	std::unordered_map<PostProcessType, std::unique_ptr<ComputePostProcessor>> processors_;
+
+	// debugScene用、bloomのみ
+	std::unique_ptr<ComputePostProcessor> debugSceneBloomProcessor_;
 
 	// buffers
 	std::unordered_map<PostProcessType, std::unique_ptr<IPostProcessBuffer>> buffers_;

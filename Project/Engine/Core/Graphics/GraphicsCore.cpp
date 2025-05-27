@@ -317,11 +317,10 @@ void GraphicsCore::RenderDebugSceneRenderTexture() {
 
 	// RenderTarget -> ComputeShader
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 
 	// bloom処理を行う
-	/*debugSceneBloomProcessor_->Execute(dxCommand_.get(),
-		postProcessSystem_->GetPipeline(), debugSceneRenderTexture_->GetGPUHandle());*/
+	postProcessSystem_->ExecuteDebugScene(debugSceneRenderTexture_.get(), dxCommand_.get());
 }
 
 void GraphicsCore::RenderFrameBuffer() {
@@ -380,9 +379,7 @@ void GraphicsCore::EndRenderFrame() {
 
 	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
-
-	//debugSceneBloomProcessor_->ToWrite(dxCommand_.get());
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 #endif // _DEBUG
 
 	// PixelShader -> Write
