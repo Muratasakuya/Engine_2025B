@@ -134,6 +134,33 @@ void ParticleUpdater::UpdateMatrix(ParticleData& particle,
 	case ParticleBillboardType::YAxis: {
 
 		// Y軸
+		Quaternion billboardRot = Quaternion::FromRotationMatrix(billboardMatrix);
+		// 回転行列取得
+		Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(particle.transform.eulerRotate);
+
+		Vector3 xAxis = Vector3::TransferNormal(Vector3(1.0f, 0.0f, 0.0f), rotateMatrix);
+		Vector3 zAxis = Vector3::TransferNormal(Vector3(0.0f, 0.0f, 1.0f), rotateMatrix);
+
+		// XZだけの回転行列作成
+		Vector3 newZ = Vector3::Normalize(zAxis);
+		Vector3 newX = Vector3::Normalize(xAxis);
+		Vector3 newY = Vector3::Normalize(Vector3::Cross(newZ, newX));
+		newX = Vector3::Normalize(Vector3::Cross(newY, newZ));
+
+		// XZの回転行列からquaternionを取得
+		Matrix4x4 xzRotMatrix = {
+			newX.x, newX.y, newX.z, 0.0f,
+			newY.x, newY.y, newY.z, 0.0f,
+			newZ.x, newZ.y, newZ.z, 0.0f,
+			0.0f,   0.0f,   0.0f,   1.0f };
+		Quaternion xzRotation = Quaternion::FromRotationMatrix(xzRotMatrix);
+
+		// Y軸はbillboard、XZはrotation
+		Quaternion finalRotation = Quaternion::Multiply(Quaternion::Conjugate(billboardRot), xzRotation);
+		finalRotation = Quaternion::Normalize(finalRotation);
+
+		Matrix4x4 finalRotateMatrix = Quaternion::MakeRotateMatrix(finalRotation);
+		particle.transform.matrix.world = scaleMatrix * finalRotateMatrix * translateMatrix;
 		break;
 	}
 	}
