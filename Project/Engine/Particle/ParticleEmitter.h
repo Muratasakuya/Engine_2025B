@@ -117,6 +117,12 @@ public:
 
 	void SetParent(const BaseTransform& parent) { transform_.parent = &parent; }
 
+	// 各emitterへのsetter
+	// 座標
+	void SetTranslate(const Vector3& translate);
+	// 回転
+	void SetRotate(const Quaternion& rotate);
+
 	const std::vector<ParticleGroup>& GetParticleGroup() const { return particleGroups_; }
 private:
 	//========================================================================
