@@ -42,6 +42,12 @@ struct EffectMaterial {
 	float emissiveIntensity; // 発光強度
 	Vector3 emissionColor;   // 発光色
 
+	// noiseDiscard
+	float edgeSize;  // edgeのサイズ
+	Color edgeColor; // edgeの色
+	float edgeEmissiveIntensity; // edgeの発光強度
+	Vector3 edgeEmissionColor;   // edgeの発光色
+
 	// uv
 	Matrix4x4 uvTransform;
 
@@ -57,8 +63,8 @@ struct ParticleData {
 	ParticleParameter parameter;
 
 	// timer(T)
-	float currentTime;    // 現在の経過時間
-	float easedProgressT; // currentTのeasing計算後の値0.0f -> 1.0f
+	float currentTime; // 現在の経過時間
+	float progress;    // currentTの値0.0f -> 1.0f
 
 	// 移動方向(速度)
 	Vector3 velocity;      // 設定速度、groupのparameterから値を取得してくる

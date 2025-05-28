@@ -23,12 +23,14 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadTexture("circle");
 	asset->LoadTexture("redCircle");
 	asset->LoadTexture("white");
+	asset->LoadTexture("monsterBall");
 	asset->LoadTexture("noise");
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
 
 	// particle
 	asset->LoadModel("cube");
+	asset->LoadModel("axis");
 	asset->LoadModel("billboardPlane");
 
 	// player

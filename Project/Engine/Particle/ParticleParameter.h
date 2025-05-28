@@ -52,39 +52,61 @@ public:
 	// billboardの種類
 	ParticleBillboardType billboardType;
 
-	// easingの種類
-	EasingType easingType;
-
 	// parameter
 	ParticleValue<uint32_t> emitCount; // 1度に発生させる数
 	float frequency;                   // ~秒置き、発生頻度
 	float frequencyTime;               // 発生頻度用の現在の時刻
+	ParticleValue<float> lifeTime;     // 寿命
 
-	ParticleValue<float> lifeTime;  // 寿命
+	EasingType moveEasingType;      // 移動に使うイージング
 	ParticleValue<float> moveSpeed; // 移動速度
 
+	EasingType scaleEasingType;         // スケールに使うイージング
 	ParticleValue<Vector3> startScale;  // 開始スケール
 	ParticleValue<Vector3> targetScale; // 目標スケール
 
+	EasingType rotationEasingType;                   // 回転に使うイージング
 	ParticleValue<Vector3> startRotationMultiplier;  // 開始回転倍率
 	ParticleValue<Vector3> targetRotationMultiplier; // 目標回転倍率
 
+	EasingType colorEasingType;       // 色に使うイージング
 	ParticleValue<Color> startColor;  // 開始色
 	ParticleValue<Color> targetColor; // 目標色
 
-	ParticleValue<Color> startVertexColor;  // 開始頂点色
-	ParticleValue<Color> targetVertexColor; // 目標頂点色
-
+	EasingType emissionEasingType;                // 発光に使うイージング
 	ParticleValue<float> startEmissiveIntensity;  // 開始発光強度
 	ParticleValue<float> targetEmissiveIntensity; // 目標発光強度
-	ParticleValue<Vector3> startEmissionColor;   // 開始発光色
-	ParticleValue<Vector3> targetEmissionColor; // 目標発光色
+	ParticleValue<Vector3> startEmissionColor;    // 開始発光色
+	ParticleValue<Vector3> targetEmissionColor;   // 目標発光色
 
+	EasingType alphaReferenceEasingType;              // alphaDiscardに使うイージング
 	ParticleValue<float> startTextureAlphaReference;  // 貼るtexture、開始alphaReference
 	ParticleValue<float> targetTextureAlphaReference; // 貼るtexture、目標alphaReference
 
 	ParticleValue<float> startNoiseTextureAlphaReference;  // noiseTexture、開始alphaReference
 	ParticleValue<float> targetNoiseTextureAlphaReference; // noiseTexture、目標alphaReference
+
+	EasingType edgeEasingType;            // エッジに使うイージング
+	ParticleValue<float> startEdgeSize;   // 開始エッジサイズ
+	ParticleValue<float> targetEdgeSize;  // 目標エッジサイズ
+	ParticleValue<Color> startEdgeColor;  // 開始エッジ色
+	ParticleValue<Color> targetEdgeColor; // 開始エッジ色
+
+	EasingType edgeEmissionEasingType;                // エッジ発光に使うイージング
+	ParticleValue<float> startEdgeEmissiveIntensity;  // 開始エッジ発光強度
+	ParticleValue<float> targetEdgeEmissiveIntensity; // 目標エッジ発光強度
+	ParticleValue<Vector3> startEdgeEmissionColor;    // 開始エッジ発光色
+	ParticleValue<Vector3> targetEdgeEmissionColor;   // 目標エッジ発光色
+
+	EasingType uvScaleEasingType;               // UVスケールに使うイージング
+	ParticleValue<Vector3> startUVScale;        // 開始UVスケール
+	ParticleValue<Vector3> targetUVScale;       // 目標UVスケール
+	EasingType uvRotationZEasingType;           // UVZ回転に使うイージング
+	ParticleValue<float> startUVRotationZ;      // 開始UVZ回転
+	ParticleValue<float> targetUVRotationZ;     // 目標UVZ回転
+	EasingType uvTranslationEasingType;         // UVスクロールに使うイージング
+	ParticleValue<Vector3> startUVTranslation;  // 開始UV座標
+	ParticleValue<Vector3> targetUVTranslation; // 目標UV座標
 
 	Vector3 reflectFace;                     // 反射する面
 	ParticleValue<float> restitution;        // 反射率.1.0fで減衰しない
@@ -95,15 +117,14 @@ public:
 	uint32_t textureIndex;      // 貼るtexture
 	uint32_t noiseTextureIndex; // noiseTexture
 
-	// uv coming soon...
-
 	// flags
 	bool isLoop;          // ループするか
 	bool useScaledTime;   // スケール時間を使用するか
 	bool moveToDirection; // 進行方向に移動するか
 	bool reflectGround;   // 地面に反射するか
 	bool useNoiseTexture; // noiseTextureを使うか
-	bool useVertexColor;  // 頂点色を使うか
+	bool useUVTransform;  // uvTransform値を使うか
+
 	//--------- accessor -----------------------------------------------------
 
 	const std::string& GetParticleName() const { return name_; }

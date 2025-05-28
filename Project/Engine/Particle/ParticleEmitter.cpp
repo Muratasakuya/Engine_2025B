@@ -702,6 +702,10 @@ void EffectMaterial::Init() {
 	noiseTextureAlphaReference = 0.0f;
 	emissiveIntensity = 0.0f;
 	emissionColor = Vector3::AnyInit(1.0f);
+	edgeSize = 0.8f;
+	edgeColor = Color::White();
+	edgeEmissiveIntensity = 0.0f;
+	edgeEmissionColor = Vector3::AnyInit(1.0f);
 	uvTransform = Matrix4x4::MakeIdentity4x4();
 }
 
@@ -716,5 +720,9 @@ void EffectMaterial::SetMaterial(const EffectMaterial& material) {
 	noiseTextureAlphaReference = material.noiseTextureAlphaReference;
 	emissiveIntensity = material.emissiveIntensity;
 	emissionColor = material.emissionColor;
+	edgeSize = material.edgeSize;
+	edgeColor = material.edgeColor;
+	edgeEmissiveIntensity = material.edgeEmissiveIntensity;
+	edgeEmissionColor = material.edgeEmissionColor;
 	uvTransform = material.uvTransform;
 }

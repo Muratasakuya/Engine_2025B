@@ -29,6 +29,12 @@ struct Material {
 	float emissiveIntensity;
 	float3 emissionColor;
 	
+	// noise
+	float edgeSize;
+	float4 edgeColor;
+	float edgeEmissiveIntensity;
+	float3 edgeEmissionColor;
+	
 	// uv
 	float4x4 uvTransform;
 };
@@ -57,22 +63,33 @@ float4 GetTextureColor(uint id, MSOutput input, float4 transformUV) {
 	return textureColor;
 }
 
-uint IsNoiseTextureDiscard(uint id, MSOutput input, float4 transformUV) {
+bool ApplyNoiseDiscardAndEdge(uint id, float4 transformUV, out float4 outColor) {
 	
-	// discard == false
-	if (gMaterials[id].useNoiseTexture == 0) {
-		return 0;
-	}
+	Material material = gMaterials[id];
 	
-	// getNoiseTextureAlpha
-	float4 noiseTexture = gTextures[gMaterials[id].noiseTextureIndex].Sample(gSampler, transformUV.xy);
+	float alphaNoise = gTextures[material.noiseTextureIndex].Sample(gSampler, transformUV.xy).r;
 	
-	// discardCheck
-	if (noiseTexture.r < gMaterials[id].noiseTextureAlphaReference) {
+	float dist = alphaNoise - material.noiseTextureAlphaReference;
+	bool shouldDiscard = dist < 0.0f;
+	
+	float grad = fwidth(alphaNoise);
+	float band = grad * material.edgeSize;
+	
+	float edgeMask = smoothstep(-band, -band * 0.4f, dist) * (1.0f - smoothstep(band * 0.4f, band, dist));
+	
+	// this edge
+	if (edgeMask > 0.0f) {
 		
-		// discard == true
-		return 1;
+		outColor = material.edgeColor;
+		return true;
 	}
+	
+	// discard == true
+	if (shouldDiscard) {
+		
+		discard;
+	}
+	
 	// discard == false
-	return 0;
+	return false;
 }

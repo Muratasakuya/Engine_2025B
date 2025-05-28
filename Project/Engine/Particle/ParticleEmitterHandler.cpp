@@ -114,7 +114,7 @@ void ParticleEmitterHandler::LoadEmitter() {
 
 					// typeがemitterじゃなければ作成できない
 					if (data.contains("FileType")) {
-						if (data["FileType"] == "Emitter") {
+						if (data["FileType"] == "ParticleEmitter") {
 
 							// Emitterなので作成する
 							// fileの名前をemitterの名前とし、systemへ通知する
