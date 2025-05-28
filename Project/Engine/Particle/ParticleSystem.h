@@ -47,6 +47,12 @@ public:
 	// 一定間隔で発生
 	void FrequencyEmit(const std::string& emitterName);
 
+	// 各emitterへのsetter、発生させた後に設定する
+	// 座標
+	void SetTranslate(const std::string& emitterName, const Vector3& translate);
+	// 回転
+	void SetRotate(const std::string& emitterName, const Quaternion& rotate);
+
 	//--------- accessor -----------------------------------------------------
 
 	// singleton

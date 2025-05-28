@@ -264,6 +264,59 @@ void ParticleEmitter::UpdateFrequencyEmit() {
 	}
 }
 
+void ParticleEmitter::SetTranslate(const Vector3& translate) {
+
+	// emitterの形状別で回転を設定
+	for (auto& particleGroup : particleGroups_) {
+		switch (particleGroup.parameter.emitterShape) {
+		case EmitterShapeType::Sphere: {
+
+			particleGroup.parameter.emitterSphere.center = translate;
+			break;
+		}
+		case EmitterShapeType::Hemisphere: {
+
+			particleGroup.parameter.emitterHemisphere.center = translate;
+			break;
+		}
+		case EmitterShapeType::Box: {
+
+			particleGroup.parameter.emitterBox.center = translate;
+			break;
+		}
+		case EmitterShapeType::Cone: {
+
+			particleGroup.parameter.emitterCone.center = translate;
+			break;
+		}
+		}
+	}
+}
+
+void ParticleEmitter::SetRotate(const Quaternion& rotate) {
+
+	// emitterの形状別で回転を設定
+	for (auto& particleGroup : particleGroups_) {
+		switch (particleGroup.parameter.emitterShape) {
+		case EmitterShapeType::Hemisphere: {
+
+			particleGroup.parameter.emitterHemisphere.rotation = rotate;
+			break;
+		}
+		case EmitterShapeType::Box: {
+
+			particleGroup.parameter.emitterBox.rotation = rotate;
+			break;
+		}
+		case EmitterShapeType::Cone: {
+
+			particleGroup.parameter.emitterCone.rotation = rotate;
+			break;
+		}
+		}
+	}
+}
+
 void ParticleEmitter::UpdateFrequencyEmit(ParticleGroup& group) {
 
 	// emitCountが0の時は処理しない

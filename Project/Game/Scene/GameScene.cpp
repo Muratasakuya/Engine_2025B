@@ -110,10 +110,6 @@ void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	followCamera_->Update();
 
 	player_->Update();
-
-	// test
-	ParticleSystem::GetInstance()->FrequencyEmit("TestEmitter");
-	ParticleSystem::GetInstance()->UpdateEmitter("TestEmitter");
 }
 
 void GameScene::ImGui() {

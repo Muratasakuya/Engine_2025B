@@ -82,16 +82,22 @@ void EmitterShape::Aplly(const Json& data, EmitterSphere& sphere,
 	hemisphere.radius = data["Hemisphere"]["radius"];
 	hemisphere.center = JsonAdapter::ToObject<Vector3>(data["Hemisphere"]["center"]);
 	hemisphere.eulerRotate = JsonAdapter::ToObject<Vector3>(data["Hemisphere"]["eulerRotate"]);
+	// 回転をquaternionに直す
+	hemisphere.rotation = Quaternion::EulerToQuaternion(hemisphere.eulerRotate);
 
 	box.size = JsonAdapter::ToObject<Vector3>(data["Box"]["size"]);
 	box.center = JsonAdapter::ToObject<Vector3>(data["Box"]["center"]);
 	box.eulerRotate = JsonAdapter::ToObject<Vector3>(data["Box"]["eulerRotate"]);
+	// 回転をquaternionに直す
+	box.rotation = Quaternion::EulerToQuaternion(hemisphere.eulerRotate);
 
 	cone.baseRadius = data["Cone"]["baseRadius"];
 	cone.topRadius = data["Cone"]["topRadius"];
 	cone.height = data["Cone"]["height"];
 	cone.center = JsonAdapter::ToObject<Vector3>(data["Cone"]["center"]);
 	cone.eulerRotate = JsonAdapter::ToObject<Vector3>(data["Cone"]["eulerRotate"]);
+	// 回転をquaternionに直す
+	cone.rotation = Quaternion::EulerToQuaternion(hemisphere.eulerRotate);
 }
 
 void EmitterShape::Save(Json& data, const  EmitterSphere& sphere,

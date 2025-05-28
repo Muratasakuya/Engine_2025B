@@ -102,6 +102,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	const std::string& GetParticleName() const { return name_; }
+
+	bool IsUseGame() const { return useGame_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -112,6 +114,9 @@ private:
 	const float itemWidth_ = 200.0f;
 
 	Asset* asset_;
+
+	// game内で使うかどうか
+	bool useGame_;
 
 	// particleの名前
 	std::string name_;

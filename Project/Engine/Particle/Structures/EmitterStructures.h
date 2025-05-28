@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Lib/MathUtils/Vector3.h>
+#include <Lib/MathUtils/Quaternion.h>
 
 //c++
 #include <string>
@@ -35,6 +36,7 @@ struct EmitterHemisphere {
 	float radius = 0.2f;
 	Vector3 center = Vector3::AnyInit(0.0f);
 	Vector3 eulerRotate = Vector3::AnyInit(0.0f);
+	Quaternion rotation = Quaternion::IdentityQuaternion();
 };
 // 箱(OBB)
 struct EmitterBox {
@@ -42,6 +44,7 @@ struct EmitterBox {
 	Vector3 center = Vector3::AnyInit(0.0f);
 	Vector3 size = Vector3::AnyInit(1.0f);
 	Vector3 eulerRotate = Vector3::AnyInit(0.0f);
+	Quaternion rotation = Quaternion::IdentityQuaternion();
 };
 // コーン状
 struct EmitterCone {
@@ -51,6 +54,7 @@ struct EmitterCone {
 	float height = 1.0f;
 	Vector3 center = Vector3::AnyInit(0.0f);
 	Vector3 eulerRotate = Vector3::AnyInit(0.0f);
+	Quaternion rotation = Quaternion::IdentityQuaternion();
 };
 namespace EmitterShape {
 

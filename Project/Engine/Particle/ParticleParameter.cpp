@@ -20,6 +20,9 @@ void ParticleParameter::Init(std::string name,
 	asset_ = nullptr;
 	asset_ = asset;
 
+	// editor内で使用
+	useGame_ = false;
+
 	// 名前を設定
 	name_ = name;
 	// modelを設定、途中変更不可
@@ -68,6 +71,9 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 
 	asset_ = nullptr;
 	asset_ = asset;
+
+	// game内で使用
+	useGame_ = true;
 
 	//============================================================================
 	//	private値

@@ -114,17 +114,34 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 
 Matrix4x4 ParticleCreator::CalRotateMatrix(const ParticleParameter& parameter) {
 
-	// 回転行列を計算
+	// game内で使うか使わないかで回転を分岐
 	Matrix4x4 result = Matrix4x4::MakeIdentity4x4();
-	if (parameter.emitterShape == EmitterShapeType::Hemisphere) {
+	if (parameter.IsUseGame()) {
 
-		result = Matrix4x4::MakeRotateMatrix(parameter.emitterHemisphere.eulerRotate);
-	} else if (parameter.emitterShape == EmitterShapeType::Box) {
+		// 回転行列を計算
+		if (parameter.emitterShape == EmitterShapeType::Hemisphere) {
 
-		result = Matrix4x4::MakeRotateMatrix(parameter.emitterBox.eulerRotate);
-	} else if (parameter.emitterShape == EmitterShapeType::Cone) {
+			result = Quaternion::MakeRotateMatrix(parameter.emitterHemisphere.rotation);
+		} else if (parameter.emitterShape == EmitterShapeType::Box) {
 
-		result = Matrix4x4::MakeRotateMatrix(parameter.emitterCone.eulerRotate);
+			result = Quaternion::MakeRotateMatrix(parameter.emitterBox.rotation);
+		} else if (parameter.emitterShape == EmitterShapeType::Cone) {
+
+			result = Quaternion::MakeRotateMatrix(parameter.emitterCone.rotation);
+		}
+	} else {
+
+		// 回転行列を計算
+		if (parameter.emitterShape == EmitterShapeType::Hemisphere) {
+
+			result = Matrix4x4::MakeRotateMatrix(parameter.emitterHemisphere.eulerRotate);
+		} else if (parameter.emitterShape == EmitterShapeType::Box) {
+
+			result = Matrix4x4::MakeRotateMatrix(parameter.emitterBox.eulerRotate);
+		} else if (parameter.emitterShape == EmitterShapeType::Cone) {
+
+			result = Matrix4x4::MakeRotateMatrix(parameter.emitterCone.eulerRotate);
+		}
 	}
 
 	return result;

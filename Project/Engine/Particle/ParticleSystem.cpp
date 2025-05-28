@@ -115,6 +115,16 @@ void ParticleSystem::FrequencyEmit(const std::string& emitterName) {
 	gameEmitters_[emitterName]->UpdateFrequencyEmit();
 }
 
+void ParticleSystem::SetTranslate(const std::string& emitterName, const Vector3& translate) {
+
+	gameEmitters_[emitterName]->SetTranslate(translate);
+}
+
+void ParticleSystem::SetRotate(const std::string& emitterName, const Quaternion& rotate) {
+
+	gameEmitters_[emitterName]->SetRotate(rotate);
+}
+
 void ParticleSystem::Update() {
 
 	// emitterの作成
