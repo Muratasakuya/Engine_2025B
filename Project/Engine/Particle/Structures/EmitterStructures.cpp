@@ -73,8 +73,29 @@ void EmitterShape::EditEmitterShape(const EmitterShapeType& emitterShape,
 	}
 }
 
-void EmitterShape::Save(Json& data, EmitterSphere& sphere,
+void EmitterShape::Aplly(const Json& data, EmitterSphere& sphere,
 	EmitterHemisphere& hemisphere, EmitterBox& box, EmitterCone& cone) {
+
+	sphere.radius = data["Sphere"]["radius"];
+	sphere.center = JsonAdapter::ToObject<Vector3>(data["Sphere"]["center"]);
+
+	hemisphere.radius = data["Hemisphere"]["radius"];
+	hemisphere.center = JsonAdapter::ToObject<Vector3>(data["Hemisphere"]["center"]);
+	hemisphere.eulerRotate = JsonAdapter::ToObject<Vector3>(data["Hemisphere"]["eulerRotate"]);
+
+	box.size = JsonAdapter::ToObject<Vector3>(data["Box"]["size"]);
+	box.center = JsonAdapter::ToObject<Vector3>(data["Box"]["center"]);
+	box.eulerRotate = JsonAdapter::ToObject<Vector3>(data["Box"]["eulerRotate"]);
+
+	cone.baseRadius = data["Cone"]["baseRadius"];
+	cone.topRadius = data["Cone"]["topRadius"];
+	cone.height = data["Cone"]["height"];
+	cone.center = JsonAdapter::ToObject<Vector3>(data["Cone"]["center"]);
+	cone.eulerRotate = JsonAdapter::ToObject<Vector3>(data["Cone"]["eulerRotate"]);
+}
+
+void EmitterShape::Save(Json& data, const  EmitterSphere& sphere,
+	const EmitterHemisphere& hemisphere, const  EmitterBox& box, const EmitterCone& cone) {
 
 	data["Sphere"]["radius"] = sphere.radius;
 	data["Sphere"]["center"] = JsonAdapter::FromObject<Vector3>(sphere.center);

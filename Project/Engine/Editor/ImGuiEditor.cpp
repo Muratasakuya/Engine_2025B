@@ -105,12 +105,6 @@ void ImGuiEditor::MainWindow() {
 
 	ImGui::Image(ImTextureID(debugSceneRenderTextureGPUHandle_.ptr), debugViewSize_);
 
-	if (ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
-	{
-		// ダブルクリックされたときの処理
-		ImGui::Text("Left mouse button double clicked!");
-	}
-
 	ImGui::End();
 
 	ImGui::Begin("Game", nullptr, windowFlag_);

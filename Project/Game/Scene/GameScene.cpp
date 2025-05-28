@@ -27,9 +27,6 @@ void GameScene::Load(Asset* asset) {
 	// particle
 	asset->LoadModel("billboardPlane");
 
-	// debug
-	asset->LoadModel("multiMaterial");
-
 	// player
 	asset->LoadModel("playerBody");
 	asset->LoadModel("playerLeftHand");
@@ -90,6 +87,16 @@ void GameScene::Init(
 
 	// skybox
 	Skybox::GetInstance()->Create(asset->GetTextureGPUIndex("docklands_01_2k"));
+
+	// 仮の地面
+	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
+	auto transform = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(id);
+	transform->scale.x = 128.0f;
+	transform->scale.z = 128.0f;
+	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
+	material->front().material.uvTransform = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
+		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
+	material->front().material.shadowRate = 1.0f;
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -97,9 +104,6 @@ void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	followCamera_->Update();
 
 	player_->Update();
-
-	// grid描画
-	LineRenderer::GetInstance()->DrawGrid(32, 128.0f, Color::White());
 }
 
 void GameScene::ImGui() {

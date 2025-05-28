@@ -5,11 +5,13 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Asset/AssetEditor.h>
+#include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Graphics/Mesh/MeshletBuilder.h>
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Particle/Creators/ParticleCreator.h>
 #include <Engine/Particle/Updater/ParticleUpdater.h>
 #include <Game/Time/GameTimer.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
 //	ParticleEmitter classMethods
@@ -31,8 +33,8 @@ void ParticleEmitter::Init(const std::string& name,
 	transform_.Init();
 
 	// layout
-	leftChildSize_ = ImVec2(320.0f, 148.0f);
-	rightChildSize_ = ImVec2(380.0f, 148.0f);
+	leftChildSize_ = ImVec2(320.0f, 182.0f);
+	rightChildSize_ = ImVec2(380.0f, 182.0f);
 	addButtonSize_ = ImVec2(208.0f, 30.0f);
 	dropSize_ = ImVec2(208.0f, 30.0f);
 }
@@ -79,6 +81,34 @@ void ParticleEmitter::CreateParticle() {
 
 	// 頂点、meshlet生成
 	const ResourceMesh resourceMesh = CreateMeshlet(addModelName_);
+	// mesh作成
+	group.mesh = std::make_unique<EffectMesh>();
+	group.mesh->Init(device_, resourceMesh, kMaxInstanceNum_);
+
+	// transferData
+	group.transferMaterials.resize(kMaxInstanceNum_);
+	group.transferMatrices.resize(kMaxInstanceNum_);
+
+	// particleデータの作成
+	ParticleCreator::Create(group.particles, group.parameter);
+}
+
+void ParticleEmitter::CreateParticle(const Json& data) {
+
+	// particle追加
+	particleGroups_.emplace_back();
+	ParticleGroup& group = particleGroups_.back();
+	// parameterを初期化
+	group.parameter.Init(data, asset_);
+
+	// buffer作成
+	// matrix
+	group.worldMatrixBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum_);
+	// material
+	group.materialBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum_);
+
+	// 頂点、meshlet生成
+	const ResourceMesh resourceMesh = CreateMeshlet(data["Private"]["modelName_"]);
 	// mesh作成
 	group.mesh = std::make_unique<EffectMesh>();
 	group.mesh->Init(device_, resourceMesh, kMaxInstanceNum_);
@@ -216,6 +246,8 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
 
 void ParticleEmitter::ImGui() {
 
+	EditLayout();
+
 	// layout
 	ImGui::BeginGroup();
 
@@ -227,6 +259,7 @@ void ParticleEmitter::ImGui() {
 	ImGui::SeparatorText("Add Particle");
 
 	AddParticle();
+	LoadParticle();
 	ImGui::EndChild();
 
 	// 横並びにする
@@ -303,6 +336,40 @@ void ParticleEmitter::AddParticle() {
 			addParticleNameInputText_.Reset();
 			addModelName_.clear();
 		}
+	}
+
+	ImGui::PopID();
+}
+
+void ParticleEmitter::LoadParticle() {
+
+	ImGui::PushID("LoadParticlerRow");
+
+	ImGui::Button("Load", addButtonSize_);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
+
+			auto* payloadJsonData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
+			// .json以外は受け付けない
+			if (payloadJsonData->type == AssetEditor::PendingType::None) {
+
+				// 読み込み処理
+				Json data;
+				std::string loadName = "Particle/" + std::string(payloadJsonData->name) + ".json";
+				if (JsonAdapter::LoadCheck(loadName, data)) {
+
+					// typeがparticleじゃなければ作成できない
+					if (data.contains("FileType")) {
+						if (data["FileType"] == "Particle") {
+
+							// Particleなので作成する
+							CreateParticle(data);
+						}
+					}
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
 	}
 
 	ImGui::PopID();

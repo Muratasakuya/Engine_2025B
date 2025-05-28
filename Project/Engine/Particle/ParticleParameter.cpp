@@ -64,6 +64,88 @@ void ParticleParameter::Init(std::string name,
 	reflectGround = false;
 }
 
+void ParticleParameter::Init(const Json& data, Asset* asset) {
+
+	asset_ = nullptr;
+	asset_ = asset;
+
+	//============================================================================
+	//	private値
+
+	std::string key = "Private";
+
+	name_ = data[key]["name_"];
+	modelName_ = data[key]["modelName_"];
+	textureName_ = data[key]["textureName_"];
+	noiseTextureName_ = data[key]["noiseTextureName_"];
+
+	// textureIndexを設定
+	textureIndex = asset_->GetTextureGPUIndex(textureName_);
+	noiseTextureIndex = asset_->GetTextureGPUIndex(noiseTextureName_);
+
+	//============================================================================
+	//	enum値
+
+	key = "Enum";
+
+	blendMode = data[key]["blendMode"];
+	billboardType = data[key]["billboardType"];
+	easingType = data[key]["easingType"];
+
+	//============================================================================
+	//	flag値
+
+	key = "Flag";
+
+	isLoop = data[key]["isLoop"];
+	useScaledTime = data[key]["useScaledTime"];
+	moveToDirection = data[key]["moveToDirection"];
+	reflectGround = data[key]["reflectGround"];
+	useNoiseTexture = data[key]["useNoiseTexture"];
+	useVertexColor = data[key]["useVertexColor"];
+
+	//============================================================================
+	//	emitter値
+
+	key = "Emitter";
+
+	emitterShape = data[key]["emitterShape"];
+	EmitterShape::Aplly(data[key], emitterSphere, emitterHemisphere,
+		emitterBox, emitterCone);
+
+	//============================================================================
+	//	各parameter値
+
+	key = "Parameter";
+
+	frequency = data[key]["frequency"];
+	lifeTime.ApplyJson(data[key], "emitCount");
+	emitCount.ApplyJson(data[key], "lifeTime");
+	moveSpeed.ApplyJson(data[key], "moveSpeed");
+	// scale
+	startScale.ApplyJson(data[key], "startScale");
+	targetScale.ApplyJson(data[key], "targetScale");
+	// rotate
+	startRotationMultiplier.ApplyJson(data[key], "startRotationMultiplier");
+	targetRotationMultiplier.ApplyJson(data[key], "targetRotationMultiplier");
+	// color
+	startColor.ApplyJson(data[key], "startColor");
+	targetColor.ApplyJson(data[key], "targetColor");
+	// vertex
+	startVertexColor.ApplyJson(data[key], "startVertexColor");
+	targetVertexColor.ApplyJson(data[key], "targetVertexColor");
+	// emission
+	startEmissiveIntensity.ApplyJson(data[key], "startEmissiveIntensity");
+	targetEmissiveIntensity.ApplyJson(data[key], "targetEmissiveIntensity");
+	startEmissionColor.ApplyJson(data[key], "startEmissionColor");
+	targetEmissionColor.ApplyJson(data[key], "targetEmissionColor");
+	// alpha
+	startTextureAlphaReference.ApplyJson(data[key], "startTextureAlphaReference");
+	targetTextureAlphaReference.ApplyJson(data[key], "targetTextureAlphaReference");
+	startNoiseTextureAlphaReference.ApplyJson(data[key], "startNoiseTextureAlphaReference");
+	targetNoiseTextureAlphaReference.ApplyJson(data[key], "targetNoiseTextureAlphaReference");
+}
+
 void ParticleParameter::SaveJson(const std::string& saveName) {
 
 	Json data;
@@ -75,6 +157,8 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 
 	//============================================================================
 	//	private値の保存
+
+	data["FileType"] = "Particle";
 
 	key = "Private";
 

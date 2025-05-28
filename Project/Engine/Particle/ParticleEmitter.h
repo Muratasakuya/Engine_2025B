@@ -166,7 +166,10 @@ private:
 	void EditLayout();
 
 	// 作成処理
+	// editorから
 	void CreateParticle();
+	// jsonから
+	void CreateParticle(const Json& data);
 	// meshletの作成
 	ResourceMesh<EffectMeshVertex> CreateMeshlet(const std::string& modelName);
 
@@ -179,6 +182,8 @@ private:
 
 	// 追加処理
 	void AddParticle();
+	// 読み込み処理
+	void LoadParticle();
 	// 選択処理
 	void SelectParticle();
 	// 値操作

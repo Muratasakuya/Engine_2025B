@@ -6,9 +6,6 @@ EngineInformation:     load texture: circle
 EngineInformation:     load texture: noise
 EngineInformation:     load texture: docklands_01_2k
 EngineInformation:     load model: billboardPlane
-EngineInformation:     load texture: uvChecker
-EngineInformation:     load texture: monsterBall
-EngineInformation:     load model: multiMaterial
 EngineInformation:     load texture: white
 EngineInformation:     load model: playerBody
 EngineInformation:     load model: playerLeftHand

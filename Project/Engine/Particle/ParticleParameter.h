@@ -26,7 +26,10 @@ public:
 	//--------- functions ----------------------------------------------------
 
 	// 初期値設定
+	// editorから
 	void Init(std::string name, const std::string& modelName, Asset* asset);
+	// jsonから
+	void Init(const Json& data, Asset* asset);
 
 	void ImGui();
 
