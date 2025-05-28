@@ -184,6 +184,8 @@ void Framework::Draw() {
 	sceneManager_->SwitchScene();
 	// lineReset
 	LineRenderer::GetInstance()->ResetLine();
+	// particleReset
+	ParticleSystem::GetInstance()->ResetParticleData();
 
 	GameTimer::EndDrawCount();
 	GameTimer::EndFrameCount();

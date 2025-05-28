@@ -105,9 +105,14 @@ public:
 	void Init(const std::string& name, Asset* asset, ID3D12Device* device);
 	void Init(const Json& data, const std::string& name, Asset* asset, ID3D12Device* device);
 
-	void Update(const Matrix4x4& billboardMatrix);
+	void Update(const Matrix4x4& billboardMatrix, bool useGame);
 
 	void ImGui();
+
+	// 発生処理
+	void Emit();
+	// 一定間隔で発生
+	void UpdateFrequencyEmit();
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const BaseTransform& parent) { transform_.parent = &parent; }
@@ -179,11 +184,11 @@ private:
 	ResourceMesh<EffectMeshVertex> CreateMeshlet(const std::string& modelName);
 
 	// emitter描画処理
-	void DrawParticleEmitters();
-	// emit処理
+	void DrawParticleEmitters(bool useGame);
+	// 発生処理
 	void UpdateFrequencyEmit(ParticleGroup& group);
 	// 各particleを更新
-	void UpdateParticles(const Matrix4x4& billboardMatrix);
+	void UpdateParticles(const Matrix4x4& billboardMatrix, bool useGame);
 
 	// 追加処理
 	void AddParticle();

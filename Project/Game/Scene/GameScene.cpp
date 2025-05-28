@@ -11,6 +11,7 @@
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Core/ECS/Components/AnimationComponent.h>
+#include <Engine/Particle/ParticleSystem.h>
 
 //============================================================================
 //	TitleScene classMethods
@@ -20,6 +21,7 @@ void GameScene::Load(Asset* asset) {
 
 	// particle
 	asset->LoadTexture("circle");
+	asset->LoadTexture("white");
 	asset->LoadTexture("noise");
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
@@ -27,6 +29,9 @@ void GameScene::Load(Asset* asset) {
 	// particle
 	asset->LoadModel("cube");
 	asset->LoadModel("billboardPlane");
+
+	// particleSystem
+	ParticleSystem::GetInstance()->LoadEmitter("TestEmitter", "testEmitter");
 
 	// player
 	asset->LoadModel("playerBody");
@@ -105,6 +110,10 @@ void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	followCamera_->Update();
 
 	player_->Update();
+
+	// test
+	ParticleSystem::GetInstance()->FrequencyEmit("TestEmitter");
+	ParticleSystem::GetInstance()->UpdateEmitter("TestEmitter");
 }
 
 void GameScene::ImGui() {

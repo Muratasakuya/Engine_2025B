@@ -82,7 +82,7 @@ void ParticleEmitter::Init(const Json& data, const std::string& name,
 	dropSize_ = ImVec2(208.0f, 30.0f);
 }
 
-void ParticleEmitter::Update(const Matrix4x4& billboardMatrix) {
+void ParticleEmitter::Update(const Matrix4x4& billboardMatrix, bool useGame) {
 
 	// 所持しているparticleのemitterの描画
 	if (particleGroups_.empty()) {
@@ -90,10 +90,10 @@ void ParticleEmitter::Update(const Matrix4x4& billboardMatrix) {
 	}
 
 	// 各particleのemitterを描画
-	DrawParticleEmitters();
+	DrawParticleEmitters(useGame);
 
 	// 各particleを更新する
-	UpdateParticles(billboardMatrix);
+	UpdateParticles(billboardMatrix, useGame);
 }
 
 void ParticleEmitter::EditLayout() {
@@ -175,7 +175,12 @@ ResourceMesh<EffectMeshVertex> ParticleEmitter::CreateMeshlet(const std::string&
 	return resourceMesh;
 }
 
-void ParticleEmitter::DrawParticleEmitters() {
+void ParticleEmitter::DrawParticleEmitters(bool useGame) {
+
+	// gameで使うときはemitterを表示しない
+	if (useGame) {
+		return;
+	}
 
 	// 各particleのemitterを形状ごとに描画する
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
@@ -215,6 +220,50 @@ void ParticleEmitter::DrawParticleEmitters() {
 	}
 }
 
+void ParticleEmitter::Emit() {
+
+	for (auto& particleGroup : particleGroups_) {
+
+		// 最大インスタンス数以下の時のみ
+		if (particleGroup.numInstance < kMaxInstanceNum_) {
+			// particleを作成
+			ParticleCreator::Create(particleGroup.particles, particleGroup.parameter);
+		}
+	}
+}
+
+void ParticleEmitter::UpdateFrequencyEmit() {
+
+	for (auto& particleGroup : particleGroups_) {
+
+		// emitCountが0の時は処理しない
+		if (particleGroup.parameter.emitCount.GetValue() == 0) {
+			return;
+		}
+
+		float deltaTime = 0.0f;
+		if (particleGroup.parameter.useScaledTime) {
+			deltaTime = GameTimer::GetScaledDeltaTime();
+		} else {
+			deltaTime = GameTimer::GetDeltaTime();
+		}
+		// 経過時間を加算
+		particleGroup.parameter.frequencyTime += deltaTime;
+		// 経過時間が発射時間を超えたら
+		if (particleGroup.parameter.frequency <= particleGroup.parameter.frequencyTime) {
+
+			// 時間を元に戻す
+			particleGroup.parameter.frequencyTime -= particleGroup.parameter.frequency;
+
+			// 最大インスタンス数以下の時のみ
+			if (particleGroup.numInstance < kMaxInstanceNum_) {
+				// particleを作成
+				ParticleCreator::Create(particleGroup.particles, particleGroup.parameter);
+			}
+		}
+	}
+}
+
 void ParticleEmitter::UpdateFrequencyEmit(ParticleGroup& group) {
 
 	// emitCountが0の時は処理しない
@@ -244,14 +293,16 @@ void ParticleEmitter::UpdateFrequencyEmit(ParticleGroup& group) {
 	}
 }
 
-void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
+void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix, bool useGame) {
 
 	// 所持しているparticleをすべて更新する
 	for (auto& group : particleGroups_) {
 
 #ifdef _DEBUG
-		// emit処理
-		UpdateFrequencyEmit(group);
+		if (!useGame) {
+			// emit処理
+			UpdateFrequencyEmit(group);
+		}
 #endif // _DEBUG
 
 		auto& particles = group.particles;
