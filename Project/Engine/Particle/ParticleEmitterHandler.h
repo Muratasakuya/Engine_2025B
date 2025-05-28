@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/MathUtils/Vector3.h>
 
 // imgui
 #include <imgui.h>
@@ -31,6 +32,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	bool IsAddEmitter() const { return addEmitter_; }
+	const std::optional<Json>& GetLoadEmitterData() const { return loadEmitterData_; }
 	const std::string& GetAddEmitterName() const { return emitterNames_.back(); }
 
 	const std::optional<std::string>& GetSelectEmitterName() const { return selectEmitterName_; }
@@ -53,6 +55,8 @@ private:
 
 	// 追加通知用
 	bool addEmitter_;
+	// 読み込んで作成するemitterかどうか
+	std::optional<Json> loadEmitterData_;
 
 	// emitter追加入力処理
 	InputTextValue addInputText_;
@@ -74,6 +78,8 @@ private:
 
 	// 追加処理
 	void AddEmitter();
+	// 読み込み処理
+	void LoadEmitter();
 	// 選択処理
 	void SelectEmitter();
 };

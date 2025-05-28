@@ -33,6 +33,20 @@ public:
 	void Rendering(bool debugEnable, class SceneConstBuffer* sceneBuffer, ID3D12GraphicsCommandList6* commandList);
 
 	void ImGui() override;
+
+	void ResetParticleData();
+
+	// Game: user
+	// emitter読み込み処理(初期化、作成)
+	void LoadEmitter(const std::string& emitterName, const std::string& fileName);
+	// 更新処理
+	void UpdateEmitter(const std::string& emitterName);
+
+	// 発生処理
+	void Emit(const std::string& emitterName);
+	// 一定間隔で発生
+	void FrequencyEmit(const std::string& emitterName);
+
 	//--------- accessor -----------------------------------------------------
 
 	// singleton
@@ -72,7 +86,10 @@ private:
 	std::unique_ptr<PipelineState> pipeline_;
 
 	// emitters
-	std::unordered_map<std::string, std::unique_ptr<ParticleEmitter>> emitters_;
+	// editor用
+	std::unordered_map<std::string, std::unique_ptr<ParticleEmitter>> editorEmitters_;
+	// game用
+	std::unordered_map<std::string, std::unique_ptr<ParticleEmitter>> gameEmitters_;
 	// blendMode別で分岐
 	std::unordered_map<BlendMode, std::vector<RenderParticleData>> renderParticleData_;
 

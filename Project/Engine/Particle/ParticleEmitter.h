@@ -103,10 +103,16 @@ public:
 	~ParticleEmitter() = default;
 
 	void Init(const std::string& name, Asset* asset, ID3D12Device* device);
+	void Init(const Json& data, const std::string& name, Asset* asset, ID3D12Device* device);
 
-	void Update(const Matrix4x4& billboardMatrix);
+	void Update(const Matrix4x4& billboardMatrix, bool useGame);
 
 	void ImGui();
+
+	// 発生処理
+	void Emit();
+	// 一定間隔で発生
+	void UpdateFrequencyEmit();
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const BaseTransform& parent) { transform_.parent = &parent; }
@@ -156,26 +162,42 @@ private:
 	ImVec2 leftChildSize_;  // 左側
 	ImVec2 rightChildSize_; // 右側
 
+	// 保存処理
+	InputTextValue emitterSave_;
+	InputTextValue particleSave_;
+	bool showEmitterPopup_ = false;
+	bool showParticlePopup_ = false;
+
 	//--------- functions ----------------------------------------------------
 
 	void EditLayout();
 
+	// 保存処理
+	void SaveEmitter();
+
 	// 作成処理
+	// editorから
 	void CreateParticle();
+	// jsonから
+	void CreateParticle(const Json& data);
 	// meshletの作成
 	ResourceMesh<EffectMeshVertex> CreateMeshlet(const std::string& modelName);
 
 	// emitter描画処理
-	void DrawParticleEmitters();
-	// emit処理
+	void DrawParticleEmitters(bool useGame);
+	// 発生処理
 	void UpdateFrequencyEmit(ParticleGroup& group);
 	// 各particleを更新
-	void UpdateParticles(const Matrix4x4& billboardMatrix);
+	void UpdateParticles(const Matrix4x4& billboardMatrix, bool useGame);
 
 	// 追加処理
 	void AddParticle();
+	// 読み込み処理
+	void LoadParticle();
 	// 選択処理
 	void SelectParticle();
 	// 値操作
 	void EditParticle();
+	// 保存処理
+	void SaveParticle();
 };

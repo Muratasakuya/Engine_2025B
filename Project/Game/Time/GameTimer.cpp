@@ -61,8 +61,8 @@ void GameTimer::ImGui() {
 
 	ImGui::SeparatorText("Performance");
 	ImGui::Text("frameRate:       %.2f fps", ImGui::GetIO().Framerate); //* フレームレート情報
-	ImGui::Text("deltaTime:       %.2f s", deltaTime_);                  //* ΔTime
-	ImGui::Text("scaledDeltaTime: %.2f s", GetScaledDeltaTime());        //* ScaledΔTime
+	ImGui::Text("deltaTime:       %.3f s", deltaTime_);                  //* ΔTime
+	ImGui::Text("scaledDeltaTime: %.3f s", GetScaledDeltaTime());        //* ScaledΔTime
 
 	ImGui::Text("frameTime:       %.2f ms", GetSmoothedFrameTime());   // ループにかかった時間
 	ImGui::Text("updateTime:      %.2f ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間

@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
@@ -55,6 +56,65 @@ void ParticleSystem::Init(Asset* asset, ID3D12Device8* device,
 	pipeline_->Create("EffectMesh.json", device, srvDescriptor, shaderCompiler);
 }
 
+void ParticleSystem::LoadEmitter(const std::string& emitterName, const std::string& fileName) {
+
+	// emitterの読み込み、作成処理
+	gameEmitters_[emitterName] = std::make_unique<ParticleEmitter>();
+
+	// 読み込み処理
+	Json data;
+	std::string loadName = "ParticleEmitter/" + fileName + ".json";
+	if (JsonAdapter::LoadCheck(loadName, data)) {
+
+		// typeがemitterじゃなければ作成できない、ここでの失敗はエラーにする
+		if (data.contains("FileType")) {
+			if (data["FileType"] == "Emitter") {
+
+				// 作成
+				gameEmitters_[emitterName]->Init(data, emitterName, asset_, device_);
+			} else {
+				// エラー
+				ASSERT(FALSE, loadName + "is not ParticleEmitterFile");
+			}
+		}
+	} else {
+		// エラー
+		ASSERT(FALSE, loadName + "filed load");
+	}
+}
+
+void ParticleSystem::UpdateEmitter(const std::string& emitterName) {
+
+	Matrix4x4 billboardMatrix = cameraManager_->GetCamera()->GetBillboardMatrix();
+	auto& emitter = gameEmitters_[emitterName];
+
+	// emitterを更新
+	emitter->Update(billboardMatrix, true);
+
+	// mapに追加
+	for (const auto& particleGroup : emitter->GetParticleGroup()) {
+
+		RenderParticleData data{};
+		// mesh、bufferデータを作成
+		data.mesh = particleGroup.mesh.get();
+		data.materialBuffer = particleGroup.materialBuffer;
+		data.worldMatrixBuffer = particleGroup.worldMatrixBuffer;
+		// インスタンス数を設定
+		data.numInstance = particleGroup.numInstance;
+		renderParticleData_[particleGroup.parameter.blendMode].emplace_back(data);
+	}
+}
+
+void ParticleSystem::Emit(const std::string& emitterName) {
+
+	gameEmitters_[emitterName]->Emit();
+}
+
+void ParticleSystem::FrequencyEmit(const std::string& emitterName) {
+
+	gameEmitters_[emitterName]->UpdateFrequencyEmit();
+}
+
 void ParticleSystem::Update() {
 
 	// emitterの作成
@@ -69,33 +129,57 @@ void ParticleSystem::CreateEmitter() {
 	// handlerから通知を受け取る
 	// 追加通知
 	if (emitterHandler_->IsAddEmitter()) {
+		// loadされたemitterでないとき
+		if (!emitterHandler_->GetLoadEmitterData()) {
 
-		// 名前を取得
-		const std::string& emitterName = emitterHandler_->GetAddEmitterName();
+			// 名前を取得
+			const std::string& emitterName = emitterHandler_->GetAddEmitterName();
 
-		// emitterを作成
-		emitters_[emitterName] = std::make_unique<ParticleEmitter>();
-		emitters_[emitterName]->Init(emitterName, asset_, device_);
+			// emitterを作成
+			editorEmitters_[emitterName] = std::make_unique<ParticleEmitter>();
+			editorEmitters_[emitterName]->Init(emitterName, asset_, device_);
 
-		// 追加し終わったのでフラグを元に戻す
-		emitterHandler_->ClearNotification();
+			// 追加し終わったのでフラグを元に戻す
+			emitterHandler_->ClearNotification();
+		}
+		// loadされたemitterのとき
+		else {
+
+			// 名前を取得
+			const std::string& emitterName = emitterHandler_->GetAddEmitterName();
+
+			// emitterを作成
+			editorEmitters_[emitterName] = std::make_unique<ParticleEmitter>();
+			editorEmitters_[emitterName]->Init(emitterHandler_->GetLoadEmitterData().value(),
+				emitterName, asset_, device_);
+
+			// 追加し終わったのでフラグを元に戻す
+			emitterHandler_->ClearNotification();
+		}
 	}
 }
 
-void ParticleSystem::UpdateEmitter() {
+void ParticleSystem::ResetParticleData() {
 
-	if (emitters_.empty()) {
+	if (editorEmitters_.empty() && gameEmitters_.empty()) {
 		return;
 	}
 
 	// renderDataをクリア
 	renderParticleData_.clear();
+}
+
+void ParticleSystem::UpdateEmitter() {
+
+	if (editorEmitters_.empty()) {
+		return;
+	}
 
 	// 各emitterの更新
 	Matrix4x4 billboardMatrix = cameraManager_->GetDebugCamera()->GetBillboardMatrix();
-	for (const auto& emitter : std::views::values(emitters_)) {
+	for (const auto& emitter : std::views::values(editorEmitters_)) {
 
-		emitter->Update(billboardMatrix);
+		emitter->Update(billboardMatrix, false);
 
 		// mapに追加
 		for (const auto& particleGroup : emitter->GetParticleGroup()) {
@@ -160,6 +244,6 @@ void ParticleSystem::ImGui() {
 	if (selectEmitterName.has_value()) {
 
 		// emittterの操作
-		emitters_[*selectEmitterName]->ImGui();
+		editorEmitters_[*selectEmitterName]->ImGui();
 	}
 }

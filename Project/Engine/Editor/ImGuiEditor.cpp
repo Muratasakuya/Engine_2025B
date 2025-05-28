@@ -104,6 +104,7 @@ void ImGuiEditor::MainWindow() {
 	ImGui::Begin("Scene", nullptr, windowFlag_);
 
 	ImGui::Image(ImTextureID(debugSceneRenderTextureGPUHandle_.ptr), debugViewSize_);
+
 	ImGui::End();
 
 	ImGui::Begin("Game", nullptr, windowFlag_);

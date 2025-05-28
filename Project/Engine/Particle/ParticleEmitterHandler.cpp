@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Input/Input.h>
+#include <Engine/Asset/AssetEditor.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>
@@ -15,8 +17,8 @@
 void ParticleEmitterHandler::Init() {
 
 	// layout
-	leftChildSize_ = ImVec2(320.0f, 118.0f);
-	rightChildSize_ = ImVec2(384.0f, 118.0f);
+	leftChildSize_ = ImVec2(320.0f, 150.0f);
+	rightChildSize_ = ImVec2(384.0f, 150.0f);
 	addButtonSize_ = ImVec2(208.0f, 30.0f);
 }
 
@@ -43,6 +45,7 @@ void ParticleEmitterHandler::ImGui([[maybe_unused]] float itemWidth) {
 	ImGui::SeparatorText("Add Emitter");
 
 	AddEmitter();
+	LoadEmitter();
 	ImGui::EndChild();
 
 	// 横並びにする
@@ -62,6 +65,7 @@ void ParticleEmitterHandler::ClearNotification() {
 
 	// falseにする
 	addEmitter_ = false;
+	loadEmitterData_ = std::nullopt;
 }
 
 void ParticleEmitterHandler::AddEmitter() {
@@ -86,6 +90,45 @@ void ParticleEmitterHandler::AddEmitter() {
 			// systemへ通知する
 			addEmitter_ = true;
 		}
+	}
+
+	ImGui::PopID();
+}
+
+void ParticleEmitterHandler::LoadEmitter() {
+
+	ImGui::PushID("LoadEmitterRow");
+
+	ImGui::Button("Load", addButtonSize_);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
+
+			auto* payloadJsonData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
+			// .json以外は受け付けない
+			if (payloadJsonData->type == AssetEditor::PendingType::None) {
+
+				// 読み込み処理
+				Json data;
+				std::string loadName = "ParticleEmitter/" + std::string(payloadJsonData->name) + ".json";
+				if (JsonAdapter::LoadCheck(loadName, data)) {
+
+					// typeがemitterじゃなければ作成できない
+					if (data.contains("FileType")) {
+						if (data["FileType"] == "Emitter") {
+
+							// Emitterなので作成する
+							// fileの名前をemitterの名前とし、systemへ通知する
+							// emitterの名前追加
+							emitterNames_.emplace_back(payloadJsonData->name);
+							// systemへ通知する
+							addEmitter_ = true;
+							loadEmitterData_ = data;
+						}
+					}
+				}
+			}
+		}
+		ImGui::EndDragDropTarget();
 	}
 
 	ImGui::PopID();

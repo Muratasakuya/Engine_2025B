@@ -1,0 +1,327 @@
+{
+    "Emitter": {
+        "Box": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "eulerRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "size": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            }
+        },
+        "Cone": {
+            "baseRadius": 0.4000000059604645,
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "eulerRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "height": 2.4200000762939453,
+            "topRadius": 0.800000011920929
+        },
+        "Hemisphere": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "eulerRotate": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "radius": 0.20000000298023224
+        },
+        "Sphere": {
+            "center": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "radius": 0.07999999821186066
+        },
+        "emitterShape": 3
+    },
+    "Enum": {
+        "billboardType": 1,
+        "blendMode": 1,
+        "easingType": 0
+    },
+    "FileType": "Particle",
+    "Flag": {
+        "isLoop": true,
+        "moveToDirection": false,
+        "reflectGround": false,
+        "useNoiseTexture": false,
+        "useScaledTime": false,
+        "useVertexColor": false
+    },
+    "Parameter": {
+        "emitCount": {
+            "constant": 0.800000011920929,
+            "randomMax": 0.800000011920929,
+            "randomMin": 0.800000011920929,
+            "valueType": 0
+        },
+        "frequency": 0.09000000357627869,
+        "lifeTime": {
+            "constant": 2,
+            "randomMax": 1,
+            "randomMin": 1,
+            "valueType": 0
+        },
+        "moveSpeed": {
+            "constant": 8.0,
+            "randomMax": 0.0,
+            "randomMin": 0.0,
+            "valueType": 0
+        },
+        "startColor": {
+            "constant": {
+                "a": 1.0,
+                "b": 0.0,
+                "g": 0.0,
+                "r": 1.0
+            },
+            "randomMax": {
+                "a": 1.0,
+                "b": 1.0,
+                "g": 1.0,
+                "r": 1.0
+            },
+            "randomMin": {
+                "a": 1.0,
+                "b": 1.0,
+                "g": 1.0,
+                "r": 1.0
+            },
+            "valueType": 0
+        },
+        "startEmissionColor": {
+            "constant": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "randomMax": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "randomMin": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "valueType": 0
+        },
+        "startEmissiveIntensity": {
+            "constant": 0.0,
+            "randomMax": 0.0,
+            "randomMin": 0.0,
+            "valueType": 0
+        },
+        "startNoiseTextureAlphaReference": {
+            "constant": 0.0,
+            "randomMax": 0.0,
+            "randomMin": 0.0,
+            "valueType": 0
+        },
+        "startRotationMultiplier": {
+            "constant": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "randomMax": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "randomMin": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "valueType": 0
+        },
+        "startScale": {
+            "constant": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "randomMax": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "randomMin": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "valueType": 0
+        },
+        "startTextureAlphaReference": {
+            "constant": 0.0,
+            "randomMax": 0.0,
+            "randomMin": 0.0,
+            "valueType": 0
+        },
+        "startVertexColor": {
+            "constant": {
+                "a": 1.0,
+                "b": 0.0,
+                "g": 0.0,
+                "r": 0.0
+            },
+            "randomMax": {
+                "a": 1.0,
+                "b": 0.0,
+                "g": 0.0,
+                "r": 0.0
+            },
+            "randomMin": {
+                "a": 1.0,
+                "b": 0.0,
+                "g": 0.0,
+                "r": 0.0
+            },
+            "valueType": 0
+        },
+        "targetColor": {
+            "constant": {
+                "a": 0.0,
+                "b": 1.0,
+                "g": 0.0,
+                "r": 1.0
+            },
+            "randomMax": {
+                "a": 1.0,
+                "b": 1.0,
+                "g": 1.0,
+                "r": 1.0
+            },
+            "randomMin": {
+                "a": 1.0,
+                "b": 1.0,
+                "g": 1.0,
+                "r": 1.0
+            },
+            "valueType": 0
+        },
+        "targetEmissionColor": {
+            "constant": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "randomMax": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "randomMin": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "valueType": 0
+        },
+        "targetEmissiveIntensity": {
+            "constant": 0.0,
+            "randomMax": 0.0,
+            "randomMin": 0.0,
+            "valueType": 0
+        },
+        "targetNoiseTextureAlphaReference": {
+            "constant": 0.0,
+            "randomMax": 0.0,
+            "randomMin": 0.0,
+            "valueType": 0
+        },
+        "targetRotationMultiplier": {
+            "constant": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "randomMax": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "randomMin": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "valueType": 0
+        },
+        "targetScale": {
+            "constant": {
+                "x": 2.0,
+                "y": 2.0,
+                "z": 2.0
+            },
+            "randomMax": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "randomMin": {
+                "x": 1.0,
+                "y": 1.0,
+                "z": 1.0
+            },
+            "valueType": 0
+        },
+        "targetTextureAlphaReference": {
+            "constant": 0.0,
+            "randomMax": 0.0,
+            "randomMin": 0.0,
+            "valueType": 0
+        },
+        "targetVertexColor": {
+            "constant": {
+                "a": 1.0,
+                "b": 0.0,
+                "g": 0.0,
+                "r": 0.0
+            },
+            "randomMax": {
+                "a": 1.0,
+                "b": 0.0,
+                "g": 0.0,
+                "r": 0.0
+            },
+            "randomMin": {
+                "a": 1.0,
+                "b": 0.0,
+                "g": 0.0,
+                "r": 0.0
+            },
+            "valueType": 0
+        }
+    },
+    "Private": {
+        "modelName_": "billboardPlane",
+        "name_": "testParticle",
+        "noiseTextureName_": "noise",
+        "textureName_": "circle"
+    }
+}

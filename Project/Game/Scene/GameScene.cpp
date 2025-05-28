@@ -11,6 +11,7 @@
 #include <Engine/Renderer/LineRenderer.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Core/ECS/Components/AnimationComponent.h>
+#include <Engine/Particle/ParticleSystem.h>
 
 //============================================================================
 //	TitleScene classMethods
@@ -20,15 +21,17 @@ void GameScene::Load(Asset* asset) {
 
 	// particle
 	asset->LoadTexture("circle");
+	asset->LoadTexture("white");
 	asset->LoadTexture("noise");
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
 
 	// particle
+	asset->LoadModel("cube");
 	asset->LoadModel("billboardPlane");
 
-	// debug
-	asset->LoadModel("multiMaterial");
+	// particleSystem
+	ParticleSystem::GetInstance()->LoadEmitter("TestEmitter", "testEmitter");
 
 	// player
 	asset->LoadModel("playerBody");
@@ -90,6 +93,16 @@ void GameScene::Init(
 
 	// skybox
 	Skybox::GetInstance()->Create(asset->GetTextureGPUIndex("docklands_01_2k"));
+
+	// 仮の地面
+	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
+	auto transform = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(id);
+	transform->scale.x = 128.0f;
+	transform->scale.z = 128.0f;
+	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
+	material->front().material.uvTransform = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
+		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
+	material->front().material.shadowRate = 1.0f;
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -98,8 +111,9 @@ void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	player_->Update();
 
-	// grid描画
-	LineRenderer::GetInstance()->DrawGrid(32, 128.0f, Color::White());
+	// test
+	ParticleSystem::GetInstance()->FrequencyEmit("TestEmitter");
+	ParticleSystem::GetInstance()->UpdateEmitter("TestEmitter");
 }
 
 void GameScene::ImGui() {
