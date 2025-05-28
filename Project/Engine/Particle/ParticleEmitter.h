@@ -156,6 +156,11 @@ private:
 	ImVec2 leftChildSize_;  // 左側
 	ImVec2 rightChildSize_; // 右側
 
+	// 保存処理
+	static const size_t saveCharSize = 256;
+	char jsonSaveInput_[saveCharSize];
+	bool showPopup_;
+
 	//--------- functions ----------------------------------------------------
 
 	void EditLayout();
@@ -178,4 +183,6 @@ private:
 	void SelectParticle();
 	// 値操作
 	void EditParticle();
+	// 保存処理
+	void SaveParticle();
 };

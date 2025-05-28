@@ -30,6 +30,9 @@ public:
 
 	void ImGui();
 
+	// 保存操作
+	void SaveJson(const std::string& saveName);
+
 	//--------- variables ----------------------------------------------------
 
 	// 描画ブレンドモード

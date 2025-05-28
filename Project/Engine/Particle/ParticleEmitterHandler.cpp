@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Input/Input.h>
+#include <Engine/Asset/AssetEditor.h>
 
 // imgui
 #include <imgui.h>
@@ -15,8 +16,8 @@
 void ParticleEmitterHandler::Init() {
 
 	// layout
-	leftChildSize_ = ImVec2(320.0f, 118.0f);
-	rightChildSize_ = ImVec2(384.0f, 118.0f);
+	leftChildSize_ = ImVec2(320.0f, 150.0f);
+	rightChildSize_ = ImVec2(384.0f, 150.0f);
 	addButtonSize_ = ImVec2(208.0f, 30.0f);
 }
 
@@ -43,6 +44,7 @@ void ParticleEmitterHandler::ImGui([[maybe_unused]] float itemWidth) {
 	ImGui::SeparatorText("Add Emitter");
 
 	AddEmitter();
+	LoadEmitter();
 	ImGui::EndChild();
 
 	// 横並びにする
@@ -86,6 +88,31 @@ void ParticleEmitterHandler::AddEmitter() {
 			// systemへ通知する
 			addEmitter_ = true;
 		}
+	}
+
+	ImGui::PopID();
+}
+
+void ParticleEmitterHandler::LoadEmitter() {
+
+	ImGui::PushID("LoadEmitterRow");
+
+	ImGui::Button("Load", addButtonSize_);
+	if (ImGui::BeginDragDropTarget()) {
+		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
+
+			auto* payloadTextureData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
+			// .json以外は受け付けない
+			if (payloadTextureData->type == AssetEditor::PendingType::None) {
+
+				// fileの名前をemitterの名前とし、systemへ通知する
+				// emitterの名前追加
+				emitterNames_.emplace_back(payloadTextureData->name);
+				// systemへ通知する
+				addEmitter_ = true;
+			}
+		}
+		ImGui::EndDragDropTarget();
 	}
 
 	ImGui::PopID();

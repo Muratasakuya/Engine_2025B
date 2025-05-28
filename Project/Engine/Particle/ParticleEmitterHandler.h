@@ -74,6 +74,8 @@ private:
 
 	// 追加処理
 	void AddEmitter();
+	// 読み込み処理
+	void LoadEmitter();
 	// 選択処理
 	void SelectEmitter();
 };

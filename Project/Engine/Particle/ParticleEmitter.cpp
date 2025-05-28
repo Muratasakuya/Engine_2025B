@@ -216,8 +216,6 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix) {
 
 void ParticleEmitter::ImGui() {
 
-	EditLayout();
-
 	// layout
 	ImGui::BeginGroup();
 
@@ -338,10 +336,59 @@ void ParticleEmitter::EditParticle() {
 	}
 
 	// parameter操作
-	ImGui::Text("numInstance: %d / %d",
+	ImGui::Text("numInstance: %d / %d, ",
 		particleGroups_[currentSelectIndex_.value()].numInstance, kMaxInstanceNum_);
+	ImGui::SameLine();
 	ImGui::Text("particleSize: %d", particleGroups_[currentSelectIndex_.value()].particles.size());
+	// particle保存処理
+	SaveParticle();
+
 	particleGroups_[currentSelectIndex_.value()].parameter.ImGui();
+}
+
+void ParticleEmitter::SaveParticle() {
+
+	if (ImGui::Button("Save Particle", addButtonSize_)) {
+
+		showPopup_ = true;
+	}
+
+	if (showPopup_) {
+
+		ImGui::OpenPopup("Save Particle");
+	}
+
+	if (ImGui::BeginPopupModal("Save Particle", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+
+		ImGui::Text("Json/Particle/%s", jsonSaveInput_);
+		ImGui::InputText("##JsonFilename", jsonSaveInput_, saveCharSize);
+
+		// Save ボタン
+		if (ImGui::Button("Save")) {
+
+			std::string jsonSaveInput = "Particle/" + std::string(jsonSaveInput_);
+			if (!jsonSaveInput.empty()) {
+
+				// ポップアップを閉じる
+				showPopup_ = false;
+				// 保存処理
+				particleGroups_[currentSelectIndex_.value()].parameter.SaveJson(jsonSaveInput);
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::SameLine();
+
+		// Cancel
+		if (ImGui::Button("Cancel")) {
+
+			// ポップアップを閉じる
+			showPopup_ = false;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
 }
 
 void ParticleEmitter::InputTextValue::Reset() {

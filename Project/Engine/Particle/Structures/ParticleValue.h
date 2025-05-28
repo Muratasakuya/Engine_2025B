@@ -6,6 +6,7 @@
 #include <Lib/Adapter/RandomGenerator.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Vector4.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>
@@ -77,6 +78,8 @@ public:
 	// 分けて処理
 	void EditDragValue(const std::string& label);
 	void EditColor(const std::string& label);
+
+	void SaveJson(Json& data, const std::string& name);
 
 	//--------- variables ----------------------------------------------------
 
@@ -240,4 +243,28 @@ inline void ParticleValue<T>::EditColor(const std::string& label) {
 	}
 
 	ImGui::PopID();
+}
+
+template<typename T>
+inline void ParticleValue<T>::SaveJson(Json& data, const std::string& name) {
+
+	data[name]["valueType"] = static_cast<int>(valueType);
+
+	// 分岐処理
+	if constexpr (std::is_same_v<T, uint32_t> || std::is_same_v<T, float>) {
+
+		data[name]["constant"] = constant.value;
+		data[name]["randomMin"] = random.min;
+		data[name]["randomMax"] = random.max;
+	} else if constexpr (std::is_same_v<T, Vector3>) {
+
+		data[name]["constant"] = JsonAdapter::FromObject<Vector3>(constant.value);
+		data[name]["randomMin"] = JsonAdapter::FromObject<Vector3>(random.min);
+		data[name]["randomMax"] = JsonAdapter::FromObject<Vector3>(random.max);
+	} else if constexpr (std::is_same_v<T, Color>) {
+
+		data[name]["constant"] = JsonAdapter::FromObject<Color>(constant.value);
+		data[name]["randomMin"] = JsonAdapter::FromObject<Color>(random.min);
+		data[name]["randomMax"] = JsonAdapter::FromObject<Color>(random.max);
+	}
 }

@@ -61,4 +61,8 @@ namespace EmitterShape {
 	void EditEmitterShape(const EmitterShapeType& emitterShape,
 		EmitterSphere& sphere, EmitterHemisphere& hemisphere,
 		EmitterBox& box, EmitterCone& cone);
+
+	// 保存
+	void Save(Json& data, EmitterSphere& sphere, EmitterHemisphere& hemisphere,
+		EmitterBox& box, EmitterCone& cone);
 }

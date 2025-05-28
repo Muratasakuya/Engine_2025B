@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>
@@ -70,4 +71,25 @@ void EmitterShape::EditEmitterShape(const EmitterShapeType& emitterShape,
 		break;
 	}
 	}
+}
+
+void EmitterShape::Save(Json& data, EmitterSphere& sphere,
+	EmitterHemisphere& hemisphere, EmitterBox& box, EmitterCone& cone) {
+
+	data["Sphere"]["radius"] = sphere.radius;
+	data["Sphere"]["center"] = JsonAdapter::FromObject<Vector3>(sphere.center);
+
+	data["Hemisphere"]["radius"] = hemisphere.radius;
+	data["Hemisphere"]["center"] = JsonAdapter::FromObject<Vector3>(hemisphere.center);
+	data["Hemisphere"]["eulerRotate"] = JsonAdapter::FromObject<Vector3>(hemisphere.eulerRotate);
+
+	data["Box"]["size"] = JsonAdapter::FromObject<Vector3>(box.size);
+	data["Box"]["center"] = JsonAdapter::FromObject<Vector3>(box.center);
+	data["Box"]["eulerRotate"] = JsonAdapter::FromObject<Vector3>(box.eulerRotate);
+
+	data["Cone"]["baseRadius"] = cone.baseRadius;
+	data["Cone"]["topRadius"] = cone.topRadius;
+	data["Cone"]["height"] = cone.height;
+	data["Cone"]["center"] = JsonAdapter::FromObject<Vector3>(cone.center);
+	data["Cone"]["eulerRotate"] = JsonAdapter::FromObject<Vector3>(cone.eulerRotate);
 }

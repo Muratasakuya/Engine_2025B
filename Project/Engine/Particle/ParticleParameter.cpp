@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Asset/AssetEditor.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>
@@ -61,6 +62,90 @@ void ParticleParameter::Init(std::string name,
 	useScaledTime = false;
 	moveToDirection = false;
 	reflectGround = false;
+}
+
+void ParticleParameter::SaveJson(const std::string& saveName) {
+
+	Json data;
+
+	std::string key = "";
+
+	/// メモ
+	// textureIndexは毎回同じじゃないのでここで保存はしない
+
+	//============================================================================
+	//	private値の保存
+
+	key = "Private";
+
+	data[key]["name_"] = name_;
+	data[key]["modelName_"] = modelName_;
+	data[key]["textureName_"] = textureName_;
+	data[key]["noiseTextureName_"] = noiseTextureName_;
+
+	//============================================================================
+	//	enum値の保存
+
+	key = "Enum";
+
+	data[key]["blendMode"] = static_cast<int>(blendMode);
+	data[key]["billboardType"] = static_cast<int>(billboardType);
+	data[key]["easingType"] = static_cast<int>(easingType);
+
+	//============================================================================
+	//	flag値の保存
+
+	key = "Flag";
+
+	data[key]["isLoop"] = isLoop;
+	data[key]["useScaledTime"] = useScaledTime;
+	data[key]["moveToDirection"] = moveToDirection;
+	data[key]["reflectGround"] = reflectGround;
+	data[key]["useNoiseTexture"] = useNoiseTexture;
+	data[key]["useVertexColor"] = useVertexColor;
+
+	//============================================================================
+	//	emitter値の保存
+
+	key = "Emitter";
+
+	data[key]["emitterShape"] = static_cast<int>(emitterShape);
+	EmitterShape::Save(data[key], emitterSphere, emitterHemisphere,
+		emitterBox, emitterCone);
+
+	//============================================================================
+	//	各parameter値の保存
+
+	key = "Parameter";
+
+	data[key]["frequency"] = frequency;
+	lifeTime.SaveJson(data[key], "emitCount");
+	emitCount.SaveJson(data[key], "lifeTime");
+	moveSpeed.SaveJson(data[key], "moveSpeed");
+	// scale
+	startScale.SaveJson(data[key], "startScale");
+	targetScale.SaveJson(data[key], "targetScale");
+	// rotate
+	startRotationMultiplier.SaveJson(data[key], "startRotationMultiplier");
+	targetRotationMultiplier.SaveJson(data[key], "targetRotationMultiplier");
+	// color
+	startColor.SaveJson(data[key], "startColor");
+	targetColor.SaveJson(data[key], "targetColor");
+	// vertex
+	startVertexColor.SaveJson(data[key], "startVertexColor");
+	targetVertexColor.SaveJson(data[key], "targetVertexColor");
+	// emission
+	startEmissiveIntensity.SaveJson(data[key], "startEmissiveIntensity");
+	targetEmissiveIntensity.SaveJson(data[key], "targetEmissiveIntensity");
+	startEmissionColor.SaveJson(data[key], "startEmissionColor");
+	targetEmissionColor.SaveJson(data[key], "targetEmissionColor");
+	// alpha
+	startTextureAlphaReference.SaveJson(data[key], "startTextureAlphaReference");
+	targetTextureAlphaReference.SaveJson(data[key], "targetTextureAlphaReference");
+	startNoiseTextureAlphaReference.SaveJson(data[key], "startNoiseTextureAlphaReference");
+	targetNoiseTextureAlphaReference.SaveJson(data[key], "targetNoiseTextureAlphaReference");
+
+	JsonAdapter::Save(saveName, data);
 }
 
 void ParticleParameter::ImGui() {
