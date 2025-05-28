@@ -21,6 +21,7 @@ void GameScene::Load(Asset* asset) {
 
 	// particle
 	asset->LoadTexture("circle");
+	asset->LoadTexture("redCircle");
 	asset->LoadTexture("white");
 	asset->LoadTexture("noise");
 	// cubeMap、.dds
@@ -29,9 +30,6 @@ void GameScene::Load(Asset* asset) {
 	// particle
 	asset->LoadModel("cube");
 	asset->LoadModel("billboardPlane");
-
-	// particleSystem
-	ParticleSystem::GetInstance()->LoadEmitter("TestEmitter", "testEmitter");
 
 	// player
 	asset->LoadModel("playerBody");

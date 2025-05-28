@@ -110,6 +110,12 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 	// noise
 	particle.parameter.startNoiseTextureAlphaReference.value = parameter.startNoiseTextureAlphaReference.GetValue();
 	particle.parameter.targetNoiseTextureAlphaReference.value = parameter.targetNoiseTextureAlphaReference.GetValue();
+
+	// 物理
+	particle.parameter.reflectFace = parameter.reflectFace;
+	particle.parameter.restitution.value = parameter.restitution.GetValue();
+	particle.parameter.gravityStrength.value = parameter.gravityStrength.GetValue();
+	particle.parameter.gravityDirection.value = parameter.gravityDirection.GetValue();
 }
 
 Matrix4x4 ParticleCreator::CalRotateMatrix(const ParticleParameter& parameter) {

@@ -86,6 +86,11 @@ public:
 	ParticleValue<float> startNoiseTextureAlphaReference;  // noiseTexture、開始alphaReference
 	ParticleValue<float> targetNoiseTextureAlphaReference; // noiseTexture、目標alphaReference
 
+	Vector3 reflectFace;                     // 反射する面
+	ParticleValue<float> restitution;        // 反射率.1.0fで減衰しない
+	ParticleValue<float> gravityStrength;    // 重力の強さ
+	ParticleValue<Vector3> gravityDirection; // 重力のかかる方向
+
 	// texture
 	uint32_t textureIndex;      // 貼るtexture
 	uint32_t noiseTextureIndex; // noiseTexture
@@ -145,4 +150,6 @@ private:
 	void EditMove();
 	// material関係の値操作
 	void EditMaterial();
+	// physics関係の値操作
+	void EditPhysics();
 };

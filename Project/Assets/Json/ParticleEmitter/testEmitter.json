@@ -1,7 +1,0 @@
-{
-    "FileType": "Emitter",
-    "particleNames": {
-        "0": "testParticle.json",
-        "1": "testCubeParticle.json"
-    }
-}

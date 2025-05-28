@@ -61,6 +61,11 @@ void ParticleParameter::Init(std::string name,
 	startEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
 	targetEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
 
+	reflectFace = Vector3(0.0f, 0.0f, 0.0f);
+	restitution = ParticleValue<float>::SetValue(0.0f);
+	gravityStrength = ParticleValue<float>::SetValue(0.0f);
+	gravityDirection = ParticleValue<Vector3>::SetValue(Vector3(0.0f, -1.0f, 0.0f));
+
 	isLoop = true;
 	useScaledTime = false;
 	moveToDirection = false;
@@ -150,6 +155,11 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 	targetTextureAlphaReference.ApplyJson(data[key], "targetTextureAlphaReference");
 	startNoiseTextureAlphaReference.ApplyJson(data[key], "startNoiseTextureAlphaReference");
 	targetNoiseTextureAlphaReference.ApplyJson(data[key], "targetNoiseTextureAlphaReference");
+	// physics
+	reflectFace = JsonAdapter::ToObject<Vector3>(data[key]["reflectFace"]);
+	restitution.ApplyJson(data[key], "restitution");
+	gravityStrength.ApplyJson(data[key], "gravityStrength");
+	gravityDirection.ApplyJson(data[key], "gravityDirection");
 }
 
 void ParticleParameter::SaveJson(const std::string& saveName) {
@@ -234,6 +244,11 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 	targetTextureAlphaReference.SaveJson(data[key], "targetTextureAlphaReference");
 	startNoiseTextureAlphaReference.SaveJson(data[key], "startNoiseTextureAlphaReference");
 	targetNoiseTextureAlphaReference.SaveJson(data[key], "targetNoiseTextureAlphaReference");
+	// physics
+	data[key]["reflectFace"] = JsonAdapter::FromObject<Vector3>(reflectFace);
+	restitution.SaveJson(data[key], "restitution");
+	gravityStrength.SaveJson(data[key], "gravityStrength");
+	gravityDirection.SaveJson(data[key], "gravityDirection");
 
 	JsonAdapter::Save(saveName, data);
 }
@@ -275,6 +290,12 @@ void ParticleParameter::ImGui() {
 		if (ImGui::BeginTabItem("Material")) {
 
 			EditMaterial();
+			ImGui::EndTabItem();
+		}
+		// physics関係の値操作
+		if (ImGui::BeginTabItem("Physics")) {
+
+			EditPhysics();
 			ImGui::EndTabItem();
 		}
 
@@ -439,4 +460,15 @@ void ParticleParameter::EditMaterial() {
 	startNoiseTextureAlphaReference.EditDragValue("startNoiseTextureAlphaReference");
 	targetNoiseTextureAlphaReference.EditDragValue("targetNoiseTextureAlphaReference");
 	ImGui::Separator();
+}
+
+void ParticleParameter::EditPhysics() {
+
+	// flags
+	ImGui::Checkbox("reflectGround", &reflectGround);
+	// 反射
+	ImGui::DragFloat3("reflectFace", &reflectFace.x, 0.01f);
+	restitution.EditDragValue("restitution");
+	gravityStrength.EditDragValue("gravityStrength");
+	gravityDirection.EditDragValue("gravityDirection");
 }

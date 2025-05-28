@@ -79,10 +79,35 @@ void ParticleUpdater::UpdateRotate(float deltaTime, ParticleData& particle, cons
 }
 
 void ParticleUpdater::UpdateTranslate(float deltaTime,
-	ParticleData& particle, [[maybe_unused]] const ParticleParameter& parameter) {
+	ParticleData& particle, const ParticleParameter& parameter) {
 
-	// 座標を加算
-	particle.transform.translation += particle.easedVelocity * deltaTime;
+	// 壁に反射するかどうか
+	if (parameter.reflectGround) {
+
+		Vector3 newPosition = particle.transform.translation + particle.easedVelocity * deltaTime;
+
+		// 衝突判定
+		if (newPosition.y <= particle.parameter.reflectFace.y && particle.velocity.y < 0.0f) {
+
+			// 反射処理
+			particle.velocity = Vector3::Reflect(particle.velocity, Vector3(0.0f, 1.0f, 0.0f)) * particle.parameter.restitution.value;
+
+			// 反射位置よりも進めないように調整
+			newPosition.y = particle.parameter.reflectFace.y;
+		}
+
+		// 更新された位置に適用
+		particle.transform.translation = newPosition;
+	} else {
+
+		// 座標を加算
+		particle.transform.translation += particle.easedVelocity * deltaTime;
+	}
+
+	// 重力の適応
+	Vector3 gravityEffect =
+		particle.parameter.gravityDirection.value * particle.parameter.gravityStrength.value * deltaTime;
+	particle.velocity += gravityEffect;
 }
 
 void ParticleUpdater::UpdateMatrix(ParticleData& particle,
