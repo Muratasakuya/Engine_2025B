@@ -25,6 +25,7 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadTexture("docklands_01_2k");
 
 	// particle
+	asset->LoadModel("cube");
 	asset->LoadModel("billboardPlane");
 
 	// player

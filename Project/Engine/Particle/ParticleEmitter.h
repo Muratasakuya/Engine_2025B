@@ -103,6 +103,7 @@ public:
 	~ParticleEmitter() = default;
 
 	void Init(const std::string& name, Asset* asset, ID3D12Device* device);
+	void Init(const Json& data, const std::string& name, Asset* asset, ID3D12Device* device);
 
 	void Update(const Matrix4x4& billboardMatrix);
 
@@ -157,13 +158,17 @@ private:
 	ImVec2 rightChildSize_; // 右側
 
 	// 保存処理
-	static const size_t saveCharSize = 256;
-	char jsonSaveInput_[saveCharSize];
-	bool showPopup_;
+	InputTextValue emitterSave_;
+	InputTextValue particleSave_;
+	bool showEmitterPopup_ = false;
+	bool showParticlePopup_ = false;
 
 	//--------- functions ----------------------------------------------------
 
 	void EditLayout();
+
+	// 保存処理
+	void SaveEmitter();
 
 	// 作成処理
 	// editorから

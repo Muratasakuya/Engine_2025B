@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Input/Input.h>
 #include <Engine/Asset/AssetEditor.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>
@@ -64,6 +65,7 @@ void ParticleEmitterHandler::ClearNotification() {
 
 	// falseにする
 	addEmitter_ = false;
+	loadEmitterData_ = std::nullopt;
 }
 
 void ParticleEmitterHandler::AddEmitter() {
@@ -101,15 +103,29 @@ void ParticleEmitterHandler::LoadEmitter() {
 	if (ImGui::BeginDragDropTarget()) {
 		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
 
-			auto* payloadTextureData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
+			auto* payloadJsonData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
 			// .json以外は受け付けない
-			if (payloadTextureData->type == AssetEditor::PendingType::None) {
+			if (payloadJsonData->type == AssetEditor::PendingType::None) {
 
-				// fileの名前をemitterの名前とし、systemへ通知する
-				// emitterの名前追加
-				emitterNames_.emplace_back(payloadTextureData->name);
-				// systemへ通知する
-				addEmitter_ = true;
+				// 読み込み処理
+				Json data;
+				std::string loadName = "ParticleEmitter/" + std::string(payloadJsonData->name) + ".json";
+				if (JsonAdapter::LoadCheck(loadName, data)) {
+
+					// typeがemitterじゃなければ作成できない
+					if (data.contains("FileType")) {
+						if (data["FileType"] == "Emitter") {
+
+							// Emitterなので作成する
+							// fileの名前をemitterの名前とし、systemへ通知する
+							// emitterの名前追加
+							emitterNames_.emplace_back(payloadJsonData->name);
+							// systemへ通知する
+							addEmitter_ = true;
+							loadEmitterData_ = data;
+						}
+					}
+				}
 			}
 		}
 		ImGui::EndDragDropTarget();

@@ -69,16 +69,33 @@ void ParticleSystem::CreateEmitter() {
 	// handlerから通知を受け取る
 	// 追加通知
 	if (emitterHandler_->IsAddEmitter()) {
+		// loadされたemitterでないとき
+		if (!emitterHandler_->GetLoadEmitterData()) {
 
-		// 名前を取得
-		const std::string& emitterName = emitterHandler_->GetAddEmitterName();
+			// 名前を取得
+			const std::string& emitterName = emitterHandler_->GetAddEmitterName();
 
-		// emitterを作成
-		emitters_[emitterName] = std::make_unique<ParticleEmitter>();
-		emitters_[emitterName]->Init(emitterName, asset_, device_);
+			// emitterを作成
+			emitters_[emitterName] = std::make_unique<ParticleEmitter>();
+			emitters_[emitterName]->Init(emitterName, asset_, device_);
 
-		// 追加し終わったのでフラグを元に戻す
-		emitterHandler_->ClearNotification();
+			// 追加し終わったのでフラグを元に戻す
+			emitterHandler_->ClearNotification();
+		}
+		// loadされたemitterのとき
+		else {
+
+			// 名前を取得
+			const std::string& emitterName = emitterHandler_->GetAddEmitterName();
+
+			// emitterを作成
+			emitters_[emitterName] = std::make_unique<ParticleEmitter>();
+			emitters_[emitterName]->Init(emitterHandler_->GetLoadEmitterData().value(),
+				emitterName, asset_, device_);
+
+			// 追加し終わったのでフラグを元に戻す
+			emitterHandler_->ClearNotification();
+		}
 	}
 }
 
