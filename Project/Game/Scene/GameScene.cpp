@@ -44,6 +44,146 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadModel("stageField");
 }
 
+void GameScene::CreatePrimitive(Asset* asset) {
+
+	// Ringを作成してexportする
+	{
+		const uint32_t kRingDivide = 32;
+		const float kOuterRadius = 1.0f;
+		const float kInnerRadius = 0.2f;
+		const float radianPerDivide = 2.0f * pi / static_cast<float>(kRingDivide);
+
+		std::vector<MeshVertex> vertices;
+		vertices.reserve(kRingDivide * 4);
+
+		for (uint32_t index = 0; index < kRingDivide; ++index) {
+
+			// 今の角度と次の角度
+			float sin0 = std::sin(index * radianPerDivide);
+			float cos0 = std::cos(index * radianPerDivide);
+			float sin1 = std::sin((index + 1) * radianPerDivide);
+			float cos1 = std::cos((index + 1) * radianPerDivide);
+
+			// UV座標
+			float u0 = static_cast<float>(index) / static_cast<float>(kRingDivide);
+			float u1 = static_cast<float>(index + 1U) / static_cast<float>(kRingDivide);
+
+			// 外周‐先頭
+			vertices.push_back({
+				Vector4(-sin0 * kOuterRadius,  cos0 * kOuterRadius, 0.0f, 1.0f),
+				Vector2(u0, 0.0f),
+				Vector3(0.0f, 0.0f, 1.0f) });
+
+			// 外周‐次点
+			vertices.push_back({
+				Vector4(-sin1 * kOuterRadius,  cos1 * kOuterRadius, 0.0f, 1.0f),
+				Vector2(u1, 0.0f),
+				Vector3(0.0f, 0.0f, 1.0f) });
+
+			// 内周‐先頭
+			vertices.push_back({
+				Vector4(-sin0 * kInnerRadius,  cos0 * kInnerRadius, 0.0f, 1.0f),
+				Vector2(u0, 1.0f),
+				Vector3(0.0f, 0.0f, 1.0f) });
+
+			// 内周‐次点
+			vertices.push_back({
+				Vector4(-sin1 * kInnerRadius,  cos1 * kInnerRadius, 0.0f, 1.0f),
+				Vector2(u1, 1.0f),
+				Vector3(0.0f, 0.0f, 1.0f) });
+		}
+
+		std::vector<uint32_t> indices;
+		indices.reserve(kRingDivide * 6);
+
+		for (uint32_t i = 0; i < kRingDivide; ++i) {
+			uint32_t o = i * 4;
+
+			// 三角形0
+			indices.push_back(o + 0);
+			indices.push_back(o + 1);
+			indices.push_back(o + 3);
+
+			// 三角形1
+			indices.push_back(o + 0);
+			indices.push_back(o + 3);
+			indices.push_back(o + 2);
+		}
+
+		asset->Export(vertices, indices, "OutputPrimitive/primitiveRing.obj");
+		asset->MakeModel("primitiveRing", vertices, indices);
+	}
+
+	// Cylinderを作成してexport する
+	{
+		const uint32_t kCylinderDivide = 32; // 分割数
+		const float    kTopRadius = 1.0f;    // 上面半径
+		const float    kBottomRadius = 1.0f; // 下面半径
+		const float    kHeight = 3.0f;       // 円筒の高さ
+		const float    radianPerDivide = 2.0f * pi / static_cast<float>(kCylinderDivide);
+
+		// 頂点生成
+		std::vector<MeshVertex> vertices;
+		vertices.reserve(kCylinderDivide * 4);
+		for (uint32_t index = 0; index < kCylinderDivide; ++index) {
+
+			// 今の角度と次の角度
+			float sin0 = std::sin(index * radianPerDivide);
+			float cos0 = std::cos(index * radianPerDivide);
+			float sin1 = std::sin((index + 1) * radianPerDivide);
+			float cos1 = std::cos((index + 1) * radianPerDivide);
+
+			// UV 座標
+			float u0 = static_cast<float>(index) / static_cast<float>(kCylinderDivide);
+			float u1 = static_cast<float>(index + 1U) / static_cast<float>(kCylinderDivide);
+
+			// 上面・先頭
+			vertices.push_back({
+				Vector4(-sin0 * kTopRadius,  kHeight, cos0 * kTopRadius, 1.0f), // pos
+				Vector2(u0, 0.0f),                                              // uv (上=0)
+				Vector3(-sin0, 0.0f,  cos0) });                                 // normal
+
+			// 上面・次点
+			vertices.push_back({
+				Vector4(-sin1 * kTopRadius,  kHeight, cos1 * kTopRadius, 1.0f),
+				Vector2(u1, 0.0f),
+				Vector3(-sin1, 0.0f,  cos1) });
+
+			// 下面・先頭
+			vertices.push_back({
+				Vector4(-sin0 * kBottomRadius, 0.0f, cos0 * kBottomRadius, 1.0f),
+				Vector2(u0, 1.0f),
+				Vector3(-sin0, 0.0f,  cos0) });
+
+			// 下面・次点
+			vertices.push_back({
+				Vector4(-sin1 * kBottomRadius, 0.0f, cos1 * kBottomRadius, 1.0f),
+				Vector2(u1, 1.0f),
+				Vector3(-sin1, 0.0f,  cos1) });
+		}
+
+		// インデックス生成
+		std::vector<uint32_t> indices;
+		indices.reserve(kCylinderDivide * 6);
+		for (uint32_t i = 0; i < kCylinderDivide; ++i) {
+			uint32_t o = i * 4;
+
+			// 三角形0
+			indices.push_back(o + 0);
+			indices.push_back(o + 1);
+			indices.push_back(o + 3);
+
+			// 三角形1
+			indices.push_back(o + 0);
+			indices.push_back(o + 3);
+			indices.push_back(o + 2);
+		}
+
+		asset->Export(vertices, indices, "OutputPrimitive/primitiveCylinder.obj");
+		asset->MakeModel("primitiveCylinder", vertices, indices);
+	}
+}
+
 void GameScene::Init(
 	[[maybe_unused]] Asset* asset,
 	[[maybe_unused]] CameraManager* cameraManager,
@@ -56,6 +196,9 @@ void GameScene::Init(
 	//========================================================================
 
 	Load(asset);
+
+	// primitive作成
+	CreatePrimitive(asset);
 
 	//========================================================================
 	//	postProcess
