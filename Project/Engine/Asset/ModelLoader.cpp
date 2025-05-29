@@ -68,23 +68,21 @@ void ModelLoader::Make(const std::string& modelName,
 	models_[modelName] = modelData;
 }
 
-void ModelLoader::Export(const ResourceMesh<MeshVertex>& modelData, const std::string& filePath) {
+void ModelLoader::Export(const std::vector<MeshVertex>& inputVertices,
+	const std::vector<uint32_t>& inputIndices, const std::string& filePath) {
 
 	// filePath
 	const std::string fullPath = "./Assets/Models/" + filePath;
-	std::ofstream file(fullPath);
+	std::ofstream file(fullPath, std::ios::out);
 
 	// 開けないファイルはエラー
 	if (!file.is_open()) {
-		ASSERT(FALSE, fullPath + "is not found");
+		ASSERT(FALSE, fullPath + " is not writable");
 	}
 
-	// index0のみ
-	const uint32_t meshIndex = 0;
-
 	// 頂点
-	std::vector<MeshVertex> vertices = modelData.vertices[meshIndex];
-	std::vector<uint32_t> indices = modelData.indices[meshIndex];
+	std::vector<MeshVertex> vertices = inputVertices;
+	std::vector<uint32_t> indices = inputIndices;
 
 	// 頂点データを書き込む
 	for (auto& vertex : vertices) {

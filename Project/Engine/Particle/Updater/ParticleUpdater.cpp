@@ -42,7 +42,7 @@ void ParticleUpdater::UpdateTime(float& deltaTime, ParticleData& particle, const
 	particle.currentTime += deltaTime;
 
 	// 進行度計算
-	particle.progress = particle.currentTime / particle.parameter.lifeTime.value;
+	particle.progress = std::clamp(particle.currentTime / particle.parameter.lifeTime.value, 0.0f, 1.0f);
 }
 
 void ParticleUpdater::UpdateScale(ParticleData& particle, [[maybe_unused]] const ParticleParameter& parameter) {

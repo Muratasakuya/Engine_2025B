@@ -92,6 +92,8 @@ struct ParticleGroup {
 	// transter
 	std::vector<EffectMaterial> transferMaterials;
 	std::vector<Matrix4x4> transferMatrices;
+	// 前フレームのemitterの座標
+	Vector3 preEmitterPos;
 
 	// particleを構築するparameter
 	ParticleParameter parameter;
@@ -154,7 +156,7 @@ private:
 	ID3D12Device* device_;
 
 	// 最大インスタンス数
-	const uint32_t kMaxInstanceNum_ = 1024;
+	const uint32_t kMaxInstanceNum_ = 2048;
 
 	// emitterの情報
 	// 名前
@@ -202,6 +204,7 @@ private:
 	void DrawParticleEmitters(bool useGame);
 	// 発生処理
 	void UpdateFrequencyEmit(ParticleGroup& group);
+	void UpdateInterpolateEmit(ParticleGroup& group);
 	// 各particleを更新
 	void UpdateParticles(const Matrix4x4& billboardMatrix, bool useGame);
 
@@ -215,4 +218,7 @@ private:
 	void EditParticle();
 	// 保存処理
 	void SaveParticle();
+
+	void SetEmitterPos(ParticleGroup& group, const Vector3& pos);
+	Vector3 GetEmitterPos(const ParticleParameter& parameter) const;
 };

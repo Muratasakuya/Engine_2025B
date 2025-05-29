@@ -115,8 +115,8 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 	particle.parameter.startEdgeColor.value = parameter.startEdgeColor.GetValue();
 	particle.parameter.targetEdgeColor.value = parameter.targetEdgeColor.GetValue();
 	// 発光
-	particle.parameter.startEmissiveIntensity.value = parameter.startEmissiveIntensity.GetValue();
-	particle.parameter.targetEmissiveIntensity.value = parameter.targetEmissiveIntensity.GetValue();
+	particle.parameter.startEdgeEmissiveIntensity.value = parameter.startEdgeEmissiveIntensity.GetValue();
+	particle.parameter.targetEdgeEmissiveIntensity.value = parameter.targetEdgeEmissiveIntensity.GetValue();
 	particle.parameter.startEdgeEmissionColor.value = parameter.startEdgeEmissionColor.GetValue();
 	particle.parameter.targetEdgeEmissionColor.value = parameter.targetEdgeEmissionColor.GetValue();
 

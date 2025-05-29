@@ -222,43 +222,50 @@ void ParticleEmitter::DrawParticleEmitters(bool useGame) {
 
 void ParticleEmitter::Emit() {
 
-	for (auto& particleGroup : particleGroups_) {
+	for (auto& group : particleGroups_) {
 
 		// 最大インスタンス数以下の時のみ
-		if (particleGroup.numInstance < kMaxInstanceNum_) {
+		if (group.numInstance < kMaxInstanceNum_) {
 			// particleを作成
-			ParticleCreator::Create(particleGroup.particles, particleGroup.parameter);
+			ParticleCreator::Create(group.particles, group.parameter);
 		}
 	}
 }
 
 void ParticleEmitter::UpdateFrequencyEmit() {
 
-	for (auto& particleGroup : particleGroups_) {
+	for (auto& group : particleGroups_) {
 
 		// emitCountが0の時は処理しない
-		if (particleGroup.parameter.emitCount.GetValue() == 0) {
+		if (group.parameter.emitCount.GetValue() == 0) {
+			return;
+		}
+
+		// 補間して発生させる
+		if (group.parameter.interpolateEmit) {
+
+			UpdateInterpolateEmit(group);
 			return;
 		}
 
 		float deltaTime = 0.0f;
-		if (particleGroup.parameter.useScaledTime) {
+		if (group.parameter.useScaledTime) {
 			deltaTime = GameTimer::GetScaledDeltaTime();
 		} else {
 			deltaTime = GameTimer::GetDeltaTime();
 		}
 		// 経過時間を加算
-		particleGroup.parameter.frequencyTime += deltaTime;
+		group.parameter.frequencyTime += deltaTime;
 		// 経過時間が発射時間を超えたら
-		if (particleGroup.parameter.frequency <= particleGroup.parameter.frequencyTime) {
+		if (group.parameter.frequency <= group.parameter.frequencyTime) {
 
 			// 時間を元に戻す
-			particleGroup.parameter.frequencyTime -= particleGroup.parameter.frequency;
+			group.parameter.frequencyTime -= group.parameter.frequency;
 
 			// 最大インスタンス数以下の時のみ
-			if (particleGroup.numInstance < kMaxInstanceNum_) {
+			if (group.numInstance < kMaxInstanceNum_) {
 				// particleを作成
-				ParticleCreator::Create(particleGroup.particles, particleGroup.parameter);
+				ParticleCreator::Create(group.particles, group.parameter);
 			}
 		}
 	}
@@ -324,6 +331,13 @@ void ParticleEmitter::UpdateFrequencyEmit(ParticleGroup& group) {
 		return;
 	}
 
+	// 補間して発生させる
+	if (group.parameter.interpolateEmit) {
+
+		UpdateInterpolateEmit(group);
+		return;
+	}
+
 	float deltaTime = 0.0f;
 	if (group.parameter.useScaledTime) {
 		deltaTime = GameTimer::GetScaledDeltaTime();
@@ -344,6 +358,45 @@ void ParticleEmitter::UpdateFrequencyEmit(ParticleGroup& group) {
 			ParticleCreator::Create(group.particles, group.parameter);
 		}
 	}
+}
+
+void ParticleEmitter::UpdateInterpolateEmit(ParticleGroup& group) {
+
+	// 発生間隔
+	const float spacing = 0.08f;
+
+	// 現在位置と差分
+	const Vector3 nowPos = GetEmitterPos(group.parameter);
+	const Vector3 diff = nowPos - group.preEmitterPos;
+	const float length = Vector3::Length(diff);
+
+	// 動いていなければ処理を止める
+	if (length < spacing || length < FLT_EPSILON) {
+		group.preEmitterPos = nowPos;
+		return;
+	}
+
+	// 補間個数と方向を計算
+	const int emitCount = static_cast<int>(length / spacing);
+	const Vector3 direction = diff / length;
+
+	// 等間隔で発生
+	for (int i = 1; i <= emitCount; ++i) {
+
+		// 座標を計算して設定
+		const Vector3 pos = group.preEmitterPos + direction * spacing * static_cast<float>(i);
+		SetEmitterPos(group, pos);
+
+		// 最大数に到達していなければ発生させる
+		if (group.numInstance < kMaxInstanceNum_) {
+
+			ParticleCreator::Create(group.particles, group.parameter);
+		}
+	}
+
+	// 座標を更新、設定
+	SetEmitterPos(group, nowPos);
+	group.preEmitterPos = nowPos;
 }
 
 void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix, bool useGame) {
@@ -684,6 +737,61 @@ void ParticleEmitter::SaveParticle() {
 
 		ImGui::EndPopup();
 	}
+}
+
+void ParticleEmitter::SetEmitterPos(ParticleGroup& group, const Vector3& pos) {
+
+	switch (group.parameter.emitterShape) {
+	case EmitterShapeType::Sphere: {
+
+		group.parameter.emitterSphere.center = pos;
+		break;
+	}
+	case EmitterShapeType::Hemisphere: {
+
+		group.parameter.emitterHemisphere.center = pos;
+		break;
+	}
+	case EmitterShapeType::Box: {
+
+		group.parameter.emitterBox.center = pos;
+		break;
+	}
+	case EmitterShapeType::Cone: {
+
+		group.parameter.emitterCone.center = pos;
+		break;
+	}
+	}
+}
+
+Vector3 ParticleEmitter::GetEmitterPos(const ParticleParameter& parameter) const {
+
+	Vector3 emitterPos{};
+	switch (parameter.emitterShape) {
+	case EmitterShapeType::Sphere: {
+
+		emitterPos = parameter.emitterSphere.center;
+		break;
+	}
+	case EmitterShapeType::Hemisphere: {
+
+		emitterPos = parameter.emitterHemisphere.center;
+		break;
+	}
+	case EmitterShapeType::Box: {
+
+		emitterPos = parameter.emitterBox.center;
+		break;
+	}
+	case EmitterShapeType::Cone: {
+
+		emitterPos = parameter.emitterCone.center;
+		break;
+	}
+	}
+
+	return emitterPos;
 }
 
 void ParticleEmitter::InputTextValue::Reset() {

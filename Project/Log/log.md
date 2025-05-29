@@ -14,8 +14,6 @@ EngineInformation:     load texture: axis
 EngineInformation:     load model: axis
 EngineInformation:     load model: billboardPlane
 EngineInformation:     load model: cylinder
-EngineInformation:     load texture: uvChecker
-EngineInformation:     load model: bunny
 EngineInformation:     load model: playerBody
 EngineInformation:     load model: playerLeftHand
 EngineInformation:     load model: playerRightHand
@@ -27,3 +25,6 @@ EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture
 EngineInformation:     load texture: model
 EngineInformation:     load texture: file
+EngineInformation:     load texture: gradationLine_1
+EngineInformation:     load texture: gradationLine_0
+EngineInformation:     load texture: effectCircle

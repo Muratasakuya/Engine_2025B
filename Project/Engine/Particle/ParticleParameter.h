@@ -122,6 +122,7 @@ public:
 
 	// flags
 	bool isLoop;          // ループするか
+	bool interpolateEmit; // particle間の補間を行うか
 	bool useScaledTime;   // スケール時間を使用するか
 	bool moveToDirection; // 進行方向に移動するか
 	bool reflectGround;   // 地面に反射するか
