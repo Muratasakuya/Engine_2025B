@@ -34,3 +34,27 @@ void Blend::SelectBlendMode(BlendMode& blendMode, const std::string& label) {
 		ImGui::EndCombo();
 	}
 }
+
+void UVAddress::SelectUVAddressMode(UVAddressMode& adressMode, const std::string& label) {
+
+	const char* adressOptions[] = {
+			"WRAP","CLAMP"
+	};
+
+	int adressIndex = static_cast<int>(adressMode);
+	if (ImGui::BeginCombo(("UVAddressMode##" + label).c_str(), adressOptions[adressIndex])) {
+		for (int i = 0; i < IM_ARRAYSIZE(adressOptions); i++) {
+
+			const bool isSelected = (adressIndex == i);
+			if (ImGui::Selectable(adressOptions[i], isSelected)) {
+
+				adressIndex = i;
+				adressMode = static_cast<UVAddressMode>(i);
+			}
+			if (isSelected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+}

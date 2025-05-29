@@ -21,6 +21,11 @@ struct Material {
 	uint useNoiseTexture;
 	uint useVertexColor;
 	
+	// sampler
+	// 0...WRAP
+	// 1...CLAMP
+	uint samplerType;
+	
 	// reference
 	float textureAlphaReference;
 	float noiseTextureAlphaReference;
@@ -50,7 +55,8 @@ StructuredBuffer<Material> gMaterials : register(t0);
 //============================================================================
 
 Texture2D<float4> gTextures[] : register(t1, space0);
-SamplerState gSampler : register(s0);
+SamplerState gWRAPSampler : register(s0);
+SamplerState gCLAMPSampler : register(s1);
 
 //============================================================================
 //	functions
@@ -58,8 +64,17 @@ SamplerState gSampler : register(s0);
 
 float4 GetTextureColor(uint id, MSOutput input, float4 transformUV) {
 	
-	// texture
-	float4 textureColor = gTextures[gMaterials[id].textureIndex].Sample(gSampler, transformUV.xy);
+	float4 textureColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	
+	// textureColor
+	if (gMaterials[id].samplerType == 0) {
+		
+		textureColor = gTextures[gMaterials[id].textureIndex].Sample(gWRAPSampler, transformUV.xy);
+	} else if (gMaterials[id].samplerType == 1) {
+		
+		textureColor = gTextures[gMaterials[id].textureIndex].Sample(gCLAMPSampler, transformUV.xy);
+	}
+	
 	return textureColor;
 }
 
@@ -67,7 +82,7 @@ bool ApplyNoiseDiscardAndEdge(uint id, float4 transformUV, out float4 outColor) 
 	
 	Material material = gMaterials[id];
 	
-	float alphaNoise = gTextures[material.noiseTextureIndex].Sample(gSampler, transformUV.xy).r;
+	float alphaNoise = gTextures[material.noiseTextureIndex].Sample(gWRAPSampler, transformUV.xy).r;
 	
 	float dist = alphaNoise - material.noiseTextureAlphaReference;
 	bool shouldDiscard = dist < 0.0f;

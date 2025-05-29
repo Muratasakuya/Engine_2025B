@@ -29,6 +29,7 @@ PSOutput main(MSOutput input) {
 	
 	// noiceTexture‚É‚æ‚épixelŠü‹pAedge”»’è
 	float4 edgeColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+		
 	if (ApplyNoiseDiscardAndEdge(id, transformUV, edgeColor)) {
 		
 		output.color = edgeColor;

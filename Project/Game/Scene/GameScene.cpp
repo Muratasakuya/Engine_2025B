@@ -19,7 +19,7 @@
 
 void GameScene::Load(Asset* asset) {
 
-	// particle
+	// particleTexture
 	asset->LoadTexture("circle");
 	asset->LoadTexture("redCircle");
 	asset->LoadTexture("white");
@@ -28,10 +28,12 @@ void GameScene::Load(Asset* asset) {
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
 
-	// particle
+	// particleModel
 	asset->LoadModel("cube");
 	asset->LoadModel("axis");
 	asset->LoadModel("billboardPlane");
+	asset->LoadModel("cylinder");
+	asset->LoadModel("bunny");
 
 	// player
 	asset->LoadModel("playerBody");

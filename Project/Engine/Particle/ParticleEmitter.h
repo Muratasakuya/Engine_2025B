@@ -34,6 +34,9 @@ struct EffectMaterial {
 	int32_t useNoiseTexture; // noiseTextureを使うか
 	int32_t useVertexColor;  // 頂点色を使うか
 
+	// sampler
+	int32_t samplerType; // 使用するsamplerの種類
+
 	// alphaReference
 	float textureAlphaReference;      // 貼るtexture
 	float noiseTextureAlphaReference; // noiseTexture

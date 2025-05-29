@@ -716,6 +716,7 @@ void EffectMaterial::SetMaterial(const EffectMaterial& material) {
 	noiseTextureIndex = material.noiseTextureIndex;
 	useNoiseTexture = material.useNoiseTexture;
 	useVertexColor = material.useVertexColor;
+	samplerType = material.samplerType;
 	textureAlphaReference = material.textureAlphaReference;
 	noiseTextureAlphaReference = material.noiseTextureAlphaReference;
 	emissiveIntensity = material.emissiveIntensity;

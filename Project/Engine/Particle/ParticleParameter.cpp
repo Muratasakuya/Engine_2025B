@@ -39,6 +39,7 @@ void ParticleParameter::Init(std::string name,
 	blendMode = BlendMode::kBlendModeAdd;
 	emitterShape = EmitterShapeType::Sphere;
 	billboardType = ParticleBillboardType::All;
+	uvAdressMode = UVAddressMode::WRAP;
 
 	emitCount = ParticleValue<uint32_t>::SetValue(1);
 	frequency = 1.0f;
@@ -118,6 +119,7 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 
 	blendMode = data[key]["blendMode"];
 	billboardType = data[key]["billboardType"];
+	//uvAdressMode = data[key]["uvAdressMode"];
 
 	// easing
 	moveEasingType = data[key]["moveEasingType"];
@@ -232,6 +234,7 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 
 	data[key]["blendMode"] = static_cast<int>(blendMode);
 	data[key]["billboardType"] = static_cast<int>(billboardType);
+	data[key]["uvAdressMode"] = static_cast<int>(uvAdressMode);
 
 	// easing
 	data[key]["moveEasingType"] = static_cast<int>(moveEasingType);
@@ -452,6 +455,8 @@ void ParticleParameter::EditRender() {
 
 	// blendModeの選択
 	Blend::SelectBlendMode(blendMode);
+	// uvAdressModeの選択
+	UVAddress::SelectUVAddressMode(uvAdressMode);
 	// billboardTypeの選択
 	ParticleBillboard::SelectBillboardType(billboardType);
 }

@@ -52,6 +52,9 @@ public:
 	// billboardの種類
 	ParticleBillboardType billboardType;
 
+	// samplerの種類、設定
+	UVAddressMode uvAdressMode;
+
 	// parameter
 	ParticleValue<uint32_t> emitCount; // 1度に発生させる数
 	float frequency;                   // ~秒置き、発生頻度

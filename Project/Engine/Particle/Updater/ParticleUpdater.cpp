@@ -171,6 +171,8 @@ void ParticleUpdater::UpdateMaterial(ParticleData& particle, const ParticleParam
 	// texture情報を渡す
 	particle.material.textureIndex = parameter.textureIndex;
 	particle.material.noiseTextureIndex = parameter.noiseTextureIndex;
+	// sampler情報を渡す
+	particle.material.samplerType = static_cast<int32_t>(parameter.uvAdressMode);
 
 	// 色をtargetに向けて補間
 	particle.material.color = Color::Lerp(
