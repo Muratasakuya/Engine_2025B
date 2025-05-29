@@ -18,7 +18,7 @@ void ParticleUpdater::Update(ParticleData& particle,
 	UpdateTime(deltaTime, particle, parameter);
 
 	// イージング後の速度を計算
-	particle.easedVelocity = particle.velocity * particle.easedProgressT;
+	particle.easedVelocity = particle.velocity * EasedValue(parameter.moveEasingType, particle.progress);
 	// SRTの更新処理
 	UpdateScale(particle, parameter);
 	UpdateRotate(deltaTime, particle, parameter);
@@ -42,9 +42,7 @@ void ParticleUpdater::UpdateTime(float& deltaTime, ParticleData& particle, const
 	particle.currentTime += deltaTime;
 
 	// 進行度計算
-	float progress = particle.currentTime / particle.parameter.lifeTime.value;
-	// イージング値
-	particle.easedProgressT = EasedValue(parameter.easingType, progress);
+	particle.progress = particle.currentTime / particle.parameter.lifeTime.value;
 }
 
 void ParticleUpdater::UpdateScale(ParticleData& particle, [[maybe_unused]] const ParticleParameter& parameter) {
@@ -52,7 +50,7 @@ void ParticleUpdater::UpdateScale(ParticleData& particle, [[maybe_unused]] const
 	// targetに向けて補間する
 	particle.transform.scale = Vector3::Lerp(
 		particle.parameter.startScale.value,
-		particle.parameter.targetScale.value, particle.easedProgressT);
+		particle.parameter.targetScale.value, EasedValue(parameter.scaleEasingType, particle.progress));
 }
 
 void ParticleUpdater::UpdateRotate(float deltaTime, ParticleData& particle, const ParticleParameter& parameter) {
@@ -72,17 +70,42 @@ void ParticleUpdater::UpdateRotate(float deltaTime, ParticleData& particle, cons
 		// 回転量をtargetに向けて補間
 		Vector3 rotationMultiplier = Vector3::Lerp(
 			particle.parameter.startRotationMultiplier.value,
-			particle.parameter.targetRotationMultiplier.value, particle.easedProgressT);
+			particle.parameter.targetRotationMultiplier.value, EasedValue(parameter.rotationEasingType, particle.progress));
 		// 回転量を足す
 		particle.transform.eulerRotate += rotationMultiplier * deltaTime;
 	}
 }
 
 void ParticleUpdater::UpdateTranslate(float deltaTime,
-	ParticleData& particle, [[maybe_unused]] const ParticleParameter& parameter) {
+	ParticleData& particle, const ParticleParameter& parameter) {
 
-	// 座標を加算
-	particle.transform.translation += particle.easedVelocity * deltaTime;
+	// 壁に反射するかどうか
+	if (parameter.reflectGround) {
+
+		Vector3 newPosition = particle.transform.translation + particle.easedVelocity * deltaTime;
+
+		// 衝突判定
+		if (newPosition.y <= particle.parameter.reflectFace.y && particle.velocity.y < 0.0f) {
+
+			// 反射処理
+			particle.velocity = Vector3::Reflect(particle.velocity, Vector3(0.0f, 1.0f, 0.0f)) * particle.parameter.restitution.value;
+
+			// 反射位置よりも進めないように調整
+			newPosition.y = particle.parameter.reflectFace.y;
+		}
+
+		// 更新された位置に適用
+		particle.transform.translation = newPosition;
+	} else {
+
+		// 座標を加算
+		particle.transform.translation += particle.easedVelocity * deltaTime;
+	}
+
+	// 重力の適応
+	Vector3 gravityEffect =
+		particle.parameter.gravityDirection.value * particle.parameter.gravityStrength.value * deltaTime;
+	particle.velocity += gravityEffect;
 }
 
 void ParticleUpdater::UpdateMatrix(ParticleData& particle,
@@ -111,6 +134,33 @@ void ParticleUpdater::UpdateMatrix(ParticleData& particle,
 	case ParticleBillboardType::YAxis: {
 
 		// Y軸
+		Quaternion billboardRot = Quaternion::FromRotationMatrix(billboardMatrix);
+		// 回転行列取得
+		Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(particle.transform.eulerRotate);
+
+		Vector3 xAxis = Vector3::TransferNormal(Vector3(1.0f, 0.0f, 0.0f), rotateMatrix);
+		Vector3 zAxis = Vector3::TransferNormal(Vector3(0.0f, 0.0f, 1.0f), rotateMatrix);
+
+		// XZだけの回転行列作成
+		Vector3 newZ = Vector3::Normalize(zAxis);
+		Vector3 newX = Vector3::Normalize(xAxis);
+		Vector3 newY = Vector3::Normalize(Vector3::Cross(newZ, newX));
+		newX = Vector3::Normalize(Vector3::Cross(newY, newZ));
+
+		// XZの回転行列からquaternionを取得
+		Matrix4x4 xzRotMatrix = {
+			newX.x, newX.y, newX.z, 0.0f,
+			newY.x, newY.y, newY.z, 0.0f,
+			newZ.x, newZ.y, newZ.z, 0.0f,
+			0.0f,   0.0f,   0.0f,   1.0f };
+		Quaternion xzRotation = Quaternion::FromRotationMatrix(xzRotMatrix);
+
+		// Y軸はbillboard、XZはrotation
+		Quaternion finalRotation = Quaternion::Multiply(Quaternion::Conjugate(billboardRot), xzRotation);
+		finalRotation = Quaternion::Normalize(finalRotation);
+
+		Matrix4x4 finalRotateMatrix = Quaternion::MakeRotateMatrix(finalRotation);
+		particle.transform.matrix.world = scaleMatrix * finalRotateMatrix * translateMatrix;
 		break;
 	}
 	}
@@ -121,36 +171,79 @@ void ParticleUpdater::UpdateMaterial(ParticleData& particle, const ParticleParam
 	// texture情報を渡す
 	particle.material.textureIndex = parameter.textureIndex;
 	particle.material.noiseTextureIndex = parameter.noiseTextureIndex;
+	// sampler情報を渡す
+	particle.material.samplerType = static_cast<int32_t>(parameter.uvAdressMode);
 
 	// 色をtargetに向けて補間
 	particle.material.color = Color::Lerp(
 		particle.parameter.startColor.value,
-		particle.parameter.targetColor.value, particle.easedProgressT);
-	// 頂点色を使用する場合targetに向けて補間
-	// 設計ミスったので後回し...
-	particle.material.useVertexColor = parameter.useVertexColor;
+		particle.parameter.targetColor.value, EasedValue(parameter.colorEasingType, particle.progress));
 
 	// 発光
 	// 強度、targetに向けて補間
 	particle.material.emissiveIntensity = std::lerp(
 		particle.parameter.startEmissiveIntensity.value,
-		particle.parameter.targetEmissiveIntensity.value, particle.easedProgressT);
+		particle.parameter.targetEmissiveIntensity.value, EasedValue(parameter.emissionEasingType, particle.progress));
 	// 色、targetに向けて補間
 	particle.material.emissionColor = Vector3::Lerp(
 		particle.parameter.startEmissionColor.value,
-		particle.parameter.targetEmissionColor.value, particle.easedProgressT);
+		particle.parameter.targetEmissionColor.value, EasedValue(parameter.emissionEasingType, particle.progress));
 
 	// alphaReference、targetに向けて補間
 	// texture
 	particle.material.textureAlphaReference = std::lerp(
 		particle.parameter.startTextureAlphaReference.value,
-		particle.parameter.targetTextureAlphaReference.value, particle.easedProgressT);
+		particle.parameter.targetTextureAlphaReference.value,
+		EasedValue(parameter.alphaReferenceEasingType, particle.progress));
 	// noiseTextureを使用する場合のみ処理を行う
 	particle.material.useNoiseTexture = parameter.useNoiseTexture;
 	if (particle.material.useNoiseTexture) {
 
+		// discard値
 		particle.material.noiseTextureAlphaReference = std::lerp(
 			particle.parameter.startNoiseTextureAlphaReference.value,
-			particle.parameter.targetNoiseTextureAlphaReference.value, particle.easedProgressT);
+			particle.parameter.targetNoiseTextureAlphaReference.value,
+			EasedValue(parameter.alphaReferenceEasingType, particle.progress));
+
+		// エッジ処理
+		particle.material.edgeSize = std::lerp(
+			particle.parameter.startEdgeSize.value,
+			particle.parameter.targetEdgeSize.value,
+			EasedValue(parameter.edgeEasingType, particle.progress));
+		particle.material.edgeColor = Color::Lerp(
+			particle.parameter.startEdgeColor.value,
+			particle.parameter.targetEdgeColor.value,
+			EasedValue(parameter.edgeEasingType, particle.progress));
+
+		// エッジ発光
+		particle.material.edgeEmissiveIntensity = std::lerp(
+			particle.parameter.startEmissiveIntensity.value,
+			particle.parameter.targetEmissiveIntensity.value,
+			EasedValue(parameter.edgeEmissionEasingType, particle.progress));
+		particle.material.edgeEmissionColor = Vector3::Lerp(
+			particle.parameter.startEdgeEmissionColor.value,
+			particle.parameter.targetEdgeEmissionColor.value,
+			EasedValue(parameter.edgeEmissionEasingType, particle.progress));
+	}
+
+	// uvTransformを使用する場合のみ処理する
+	if (parameter.useUVTransform) {
+
+		// UVスケール
+		Vector3 uvScale = Vector3::Lerp(
+			particle.parameter.startUVScale.value,
+			particle.parameter.targetUVScale.value, EasedValue(parameter.uvScaleEasingType, particle.progress));
+		// UVZ回転
+		float uvRotationZ = std::lerp(
+			particle.parameter.startUVRotationZ.value,
+			particle.parameter.targetUVRotationZ.value, EasedValue(parameter.uvRotationZEasingType, particle.progress));
+		// UV座標
+		Vector3 uvTranslation = Vector3::Lerp(
+			particle.parameter.startUVTranslation.value,
+			particle.parameter.targetUVTranslation.value, EasedValue(parameter.uvTranslationEasingType, particle.progress));
+
+		// matrix計算
+		particle.material.uvTransform = Matrix4x4::MakeAffineMatrix(
+			uvScale, Vector3(0.0f, 0.0f, uvRotationZ), uvTranslation);
 	}
 }

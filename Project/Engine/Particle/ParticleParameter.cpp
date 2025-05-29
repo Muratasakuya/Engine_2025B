@@ -39,7 +39,7 @@ void ParticleParameter::Init(std::string name,
 	blendMode = BlendMode::kBlendModeAdd;
 	emitterShape = EmitterShapeType::Sphere;
 	billboardType = ParticleBillboardType::All;
-	easingType = EasingType::EaseInSine;
+	uvAdressMode = UVAddressMode::WRAP;
 
 	emitCount = ParticleValue<uint32_t>::SetValue(1);
 	frequency = 1.0f;
@@ -61,10 +61,33 @@ void ParticleParameter::Init(std::string name,
 	startEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
 	targetEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
 
+	startEdgeSize = ParticleValue<float>::SetValue(0.8f);
+	targetEdgeSize = ParticleValue<float>::SetValue(0.8f);
+	startEdgeColor = ParticleValue<Color>::SetValue(Color::White(1.0f));
+	targetEdgeColor = ParticleValue<Color>::SetValue(Color::White(1.0f));
+
+	startEdgeEmissiveIntensity = ParticleValue<float>::SetValue(0.0f);
+	targetEdgeEmissiveIntensity = ParticleValue<float>::SetValue(0.0f);
+	startEdgeEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
+	targetEdgeEmissionColor = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
+
+	startUVScale = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
+	targetUVScale = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
+	startUVRotationZ = ParticleValue<float>::SetValue(0.0f);
+	targetUVRotationZ = ParticleValue<float>::SetValue(0.0f);
+	startUVTranslation = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
+	targetUVTranslation = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
+
+	reflectFace = Vector3(0.0f, 0.0f, 0.0f);
+	restitution = ParticleValue<float>::SetValue(0.0f);
+	gravityStrength = ParticleValue<float>::SetValue(0.0f);
+	gravityDirection = ParticleValue<Vector3>::SetValue(Vector3(0.0f, -1.0f, 0.0f));
+
 	isLoop = true;
 	useScaledTime = false;
 	moveToDirection = false;
 	reflectGround = false;
+	useUVTransform = false;
 }
 
 void ParticleParameter::Init(const Json& data, Asset* asset) {
@@ -96,7 +119,20 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 
 	blendMode = data[key]["blendMode"];
 	billboardType = data[key]["billboardType"];
-	easingType = data[key]["easingType"];
+	//uvAdressMode = data[key]["uvAdressMode"];
+
+	// easing
+	moveEasingType = data[key]["moveEasingType"];
+	scaleEasingType = data[key]["scaleEasingType"];
+	rotationEasingType = data[key]["rotationEasingType"];
+	colorEasingType = data[key]["colorEasingType"];
+	emissionEasingType = data[key]["emissionEasingType"];
+	alphaReferenceEasingType = data[key]["alphaReferenceEasingType"];
+	edgeEasingType = data[key]["edgeEasingType"];
+	edgeEmissionEasingType = data[key]["edgeEmissionEasingType"];
+	uvScaleEasingType = data[key]["uvScaleEasingType"];
+	uvRotationZEasingType = data[key]["uvRotationZEasingType"];
+	uvTranslationEasingType = data[key]["uvTranslationEasingType"];
 
 	//============================================================================
 	//	flag値
@@ -108,7 +144,7 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 	moveToDirection = data[key]["moveToDirection"];
 	reflectGround = data[key]["reflectGround"];
 	useNoiseTexture = data[key]["useNoiseTexture"];
-	useVertexColor = data[key]["useVertexColor"];
+	useUVTransform = data[key]["useUVTransform"];
 
 	//============================================================================
 	//	emitter値
@@ -137,9 +173,6 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 	// color
 	startColor.ApplyJson(data[key], "startColor");
 	targetColor.ApplyJson(data[key], "targetColor");
-	// vertex
-	startVertexColor.ApplyJson(data[key], "startVertexColor");
-	targetVertexColor.ApplyJson(data[key], "targetVertexColor");
 	// emission
 	startEmissiveIntensity.ApplyJson(data[key], "startEmissiveIntensity");
 	targetEmissiveIntensity.ApplyJson(data[key], "targetEmissiveIntensity");
@@ -150,6 +183,27 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 	targetTextureAlphaReference.ApplyJson(data[key], "targetTextureAlphaReference");
 	startNoiseTextureAlphaReference.ApplyJson(data[key], "startNoiseTextureAlphaReference");
 	targetNoiseTextureAlphaReference.ApplyJson(data[key], "targetNoiseTextureAlphaReference");
+	// noiseDiscard
+	startEdgeSize.ApplyJson(data[key], "startEdgeSize");
+	targetEdgeSize.ApplyJson(data[key], "targetEdgeSize");
+	startEdgeColor.ApplyJson(data[key], "startEdgeColor");
+	targetEdgeColor.ApplyJson(data[key], "targetEdgeColor");
+	startEdgeEmissiveIntensity.ApplyJson(data[key], "startEdgeEmissiveIntensity");
+	targetEdgeEmissiveIntensity.ApplyJson(data[key], "targetEdgeEmissiveIntensity");
+	startEdgeEmissionColor.ApplyJson(data[key], "startEdgeEmissionColor");
+	targetEdgeEmissionColor.ApplyJson(data[key], "targetEdgeEmissionColor");
+	// uv
+	startUVScale.ApplyJson(data[key], "startUVScale");
+	targetUVScale.ApplyJson(data[key], "targetUVScale");
+	startUVRotationZ.ApplyJson(data[key], "startUVRotationZ");
+	targetUVRotationZ.ApplyJson(data[key], "targetUVRotationZ");
+	startUVTranslation.ApplyJson(data[key], "startUVTranslation");
+	targetUVTranslation.ApplyJson(data[key], "targetUVTranslation");
+	// physics
+	reflectFace = JsonAdapter::ToObject<Vector3>(data[key]["reflectFace"]);
+	restitution.ApplyJson(data[key], "restitution");
+	gravityStrength.ApplyJson(data[key], "gravityStrength");
+	gravityDirection.ApplyJson(data[key], "gravityDirection");
 }
 
 void ParticleParameter::SaveJson(const std::string& saveName) {
@@ -180,7 +234,20 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 
 	data[key]["blendMode"] = static_cast<int>(blendMode);
 	data[key]["billboardType"] = static_cast<int>(billboardType);
-	data[key]["easingType"] = static_cast<int>(easingType);
+	data[key]["uvAdressMode"] = static_cast<int>(uvAdressMode);
+
+	// easing
+	data[key]["moveEasingType"] = static_cast<int>(moveEasingType);
+	data[key]["scaleEasingType"] = static_cast<int>(scaleEasingType);
+	data[key]["rotationEasingType"] = static_cast<int>(rotationEasingType);
+	data[key]["colorEasingType"] = static_cast<int>(colorEasingType);
+	data[key]["emissionEasingType"] = static_cast<int>(emissionEasingType);
+	data[key]["alphaReferenceEasingType"] = static_cast<int>(alphaReferenceEasingType);
+	data[key]["edgeEasingType"] = static_cast<int>(edgeEasingType);
+	data[key]["edgeEmissionEasingType"] = static_cast<int>(edgeEmissionEasingType);
+	data[key]["uvScaleEasingType"] = static_cast<int>(uvScaleEasingType);
+	data[key]["uvRotationZEasingType"] = static_cast<int>(uvRotationZEasingType);
+	data[key]["uvTranslationEasingType"] = static_cast<int>(uvTranslationEasingType);
 
 	//============================================================================
 	//	flag値の保存
@@ -192,7 +259,7 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 	data[key]["moveToDirection"] = moveToDirection;
 	data[key]["reflectGround"] = reflectGround;
 	data[key]["useNoiseTexture"] = useNoiseTexture;
-	data[key]["useVertexColor"] = useVertexColor;
+	data[key]["useUVTransform"] = useUVTransform;
 
 	//============================================================================
 	//	emitter値の保存
@@ -221,9 +288,6 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 	// color
 	startColor.SaveJson(data[key], "startColor");
 	targetColor.SaveJson(data[key], "targetColor");
-	// vertex
-	startVertexColor.SaveJson(data[key], "startVertexColor");
-	targetVertexColor.SaveJson(data[key], "targetVertexColor");
 	// emission
 	startEmissiveIntensity.SaveJson(data[key], "startEmissiveIntensity");
 	targetEmissiveIntensity.SaveJson(data[key], "targetEmissiveIntensity");
@@ -234,6 +298,27 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 	targetTextureAlphaReference.SaveJson(data[key], "targetTextureAlphaReference");
 	startNoiseTextureAlphaReference.SaveJson(data[key], "startNoiseTextureAlphaReference");
 	targetNoiseTextureAlphaReference.SaveJson(data[key], "targetNoiseTextureAlphaReference");
+	// noiseDiscard
+	startEdgeSize.SaveJson(data[key], "startEdgeSize");
+	targetEdgeSize.SaveJson(data[key], "targetEdgeSize");
+	startEdgeColor.SaveJson(data[key], "startEdgeColor");
+	targetEdgeColor.SaveJson(data[key], "targetEdgeColor");
+	startEdgeEmissiveIntensity.SaveJson(data[key], "startEdgeEmissiveIntensity");
+	targetEdgeEmissiveIntensity.SaveJson(data[key], "targetEdgeEmissiveIntensity");
+	startEdgeEmissionColor.SaveJson(data[key], "startEdgeEmissionColor");
+	targetEdgeEmissionColor.SaveJson(data[key], "targetEdgeEmissionColor");
+	// uv
+	startUVScale.SaveJson(data[key], "startUVScale");
+	targetUVScale.SaveJson(data[key], "targetUVScale");
+	startUVRotationZ.SaveJson(data[key], "startUVRotationZ");
+	targetUVRotationZ.SaveJson(data[key], "targetUVRotationZ");
+	startUVTranslation.SaveJson(data[key], "startUVTranslation");
+	targetUVTranslation.SaveJson(data[key], "targetUVTranslation");
+	// physics
+	data[key]["reflectFace"] = JsonAdapter::FromObject<Vector3>(reflectFace);
+	restitution.SaveJson(data[key], "restitution");
+	gravityStrength.SaveJson(data[key], "gravityStrength");
+	gravityDirection.SaveJson(data[key], "gravityDirection");
 
 	JsonAdapter::Save(saveName, data);
 }
@@ -275,6 +360,12 @@ void ParticleParameter::ImGui() {
 		if (ImGui::BeginTabItem("Material")) {
 
 			EditMaterial();
+			ImGui::EndTabItem();
+		}
+		// physics関係の値操作
+		if (ImGui::BeginTabItem("Physics")) {
+
+			EditPhysics();
 			ImGui::EndTabItem();
 		}
 
@@ -364,6 +455,8 @@ void ParticleParameter::EditRender() {
 
 	// blendModeの選択
 	Blend::SelectBlendMode(blendMode);
+	// uvAdressModeの選択
+	UVAddress::SelectUVAddressMode(uvAdressMode);
 	// billboardTypeの選択
 	ParticleBillboard::SelectBillboardType(billboardType);
 }
@@ -389,11 +482,13 @@ void ParticleParameter::EditEmit() {
 void ParticleParameter::EditTransform() {
 
 	// スケール
+	Easing::SelectEasingType(scaleEasingType, "scaleEasingType");
 	startScale.EditDragValue("startScale");
 	targetScale.EditDragValue("targetScale");
 	ImGui::Separator();
 
 	// 回転
+	Easing::SelectEasingType(rotationEasingType, "rotationEasingType");
 	startRotationMultiplier.EditDragValue("startRotationMultiplier");
 	targetRotationMultiplier.EditDragValue("targetRotationMultiplier");
 }
@@ -405,27 +500,24 @@ void ParticleParameter::EditMove() {
 	ImGui::Checkbox("moveToDirection", &moveToDirection);
 	ImGui::Separator();
 	// 速さ
+	Easing::SelectEasingType(moveEasingType, "moveEasingType");
 	moveSpeed.EditDragValue("moveSpeed");
 	ImGui::Separator();
-	// イージング処理
-	Easing::SelectEasingType(easingType);
 }
 
 void ParticleParameter::EditMaterial() {
 
 	// flags
-	ImGui::Checkbox("useVertexColor", &useVertexColor);
 	ImGui::Checkbox("useNoiseTexture", &useNoiseTexture);
+	ImGui::Checkbox("useUVTransform", &useUVTransform);
 	ImGui::Separator();
 	// 色
+	Easing::SelectEasingType(colorEasingType, "colorEasingType");
 	startColor.EditColor("startColor");
 	targetColor.EditColor("targetColor");
 	ImGui::Separator();
-	// 頂点色
-	startVertexColor.EditColor("startVertexColor");
-	targetVertexColor.EditColor("targetVertexColor");
-	ImGui::Separator();
 	// 発光
+	Easing::SelectEasingType(emissionEasingType, "emissionEasingType");
 	startEmissiveIntensity.EditDragValue("startEmissiveIntensity");
 	targetEmissiveIntensity.EditDragValue("targetEmissiveIntensity");
 	startEmissionColor.EditColor("startEmissionColor");
@@ -433,10 +525,58 @@ void ParticleParameter::EditMaterial() {
 	ImGui::Separator();
 
 	// alphaReference
+	Easing::SelectEasingType(alphaReferenceEasingType, "alphaReferenceEasingType");
 	startTextureAlphaReference.EditDragValue("startTextureAlphaReference");
 	targetTextureAlphaReference.EditDragValue("targetTextureAlphaReference");
 	ImGui::Separator();
 	startNoiseTextureAlphaReference.EditDragValue("startNoiseTextureAlphaReference");
 	targetNoiseTextureAlphaReference.EditDragValue("targetNoiseTextureAlphaReference");
 	ImGui::Separator();
+
+	// noiseDiscard
+	if (useNoiseTexture) {
+
+		Easing::SelectEasingType(edgeEasingType, "edgeEasingType");
+		startEdgeSize.EditDragValue("startEdgeSize");
+		targetEdgeSize.EditDragValue("targetEdgeSize");
+		ImGui::Separator();
+		startEdgeColor.EditColor("startEdgeColor");
+		targetEdgeColor.EditColor("targetEdgeColor");
+		ImGui::Separator();
+
+		Easing::SelectEasingType(edgeEmissionEasingType, "edgeEmissionEasingType");
+		startEdgeEmissiveIntensity.EditDragValue("startEdgeEmissiveIntensity");
+		targetEdgeEmissiveIntensity.EditDragValue("targetEdgeEmissiveIntensity");
+		ImGui::Separator();
+		startEdgeEmissionColor.EditColor("startEdgeEmissionColor");
+		targetEdgeEmissionColor.EditColor("targetEdgeEmissionColor");
+		ImGui::Separator();
+	}
+
+	// uv
+	if (useUVTransform) {
+
+		Easing::SelectEasingType(uvScaleEasingType, "uvScaleEasingType");
+		startUVScale.EditDragValue("startUVScale");
+		targetUVScale.EditDragValue("targetUVScale");
+		ImGui::Separator();
+		Easing::SelectEasingType(uvRotationZEasingType, "uvRotationZEasingType");
+		startUVRotationZ.EditDragValue("startUVRotationZ");
+		targetUVRotationZ.EditDragValue("targetUVRotationZ");
+		ImGui::Separator();
+		Easing::SelectEasingType(uvTranslationEasingType, "uvTranslationEasingType");
+		startUVTranslation.EditDragValue("startUVTranslation");
+		targetUVTranslation.EditDragValue("targetUVTranslation");
+	}
+}
+
+void ParticleParameter::EditPhysics() {
+
+	// flags
+	ImGui::Checkbox("reflectGround", &reflectGround);
+	// 反射
+	ImGui::DragFloat3("reflectFace", &reflectFace.x, 0.01f);
+	restitution.EditDragValue("restitution");
+	gravityStrength.EditDragValue("gravityStrength");
+	gravityDirection.EditDragValue("gravityDirection");
 }

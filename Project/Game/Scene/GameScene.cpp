@@ -19,19 +19,21 @@
 
 void GameScene::Load(Asset* asset) {
 
-	// particle
+	// particleTexture
 	asset->LoadTexture("circle");
+	asset->LoadTexture("redCircle");
 	asset->LoadTexture("white");
+	asset->LoadTexture("monsterBall");
 	asset->LoadTexture("noise");
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
 
-	// particle
+	// particleModel
 	asset->LoadModel("cube");
+	asset->LoadModel("axis");
 	asset->LoadModel("billboardPlane");
-
-	// particleSystem
-	ParticleSystem::GetInstance()->LoadEmitter("TestEmitter", "testEmitter");
+	asset->LoadModel("cylinder");
+	asset->LoadModel("bunny");
 
 	// player
 	asset->LoadModel("playerBody");

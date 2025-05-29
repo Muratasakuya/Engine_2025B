@@ -70,7 +70,7 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 
 	// 時間
 	particle.currentTime = 0.0f;
-	particle.easedProgressT = 0.0f;
+	particle.progress = 0.0f;
 
 	//============================================================================
 	//	初期化値設定: ランダム値
@@ -91,9 +91,6 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 	// 色
 	particle.parameter.startColor.value = parameter.startColor.GetValue();
 	particle.parameter.targetColor.value = parameter.targetColor.GetValue();
-	// 頂点色
-	particle.parameter.startVertexColor.value = parameter.startVertexColor.GetValue();
-	particle.parameter.targetVertexColor.value = parameter.targetVertexColor.GetValue();
 
 	// 発光
 	// 強度
@@ -110,6 +107,35 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 	// noise
 	particle.parameter.startNoiseTextureAlphaReference.value = parameter.startNoiseTextureAlphaReference.GetValue();
 	particle.parameter.targetNoiseTextureAlphaReference.value = parameter.targetNoiseTextureAlphaReference.GetValue();
+
+	// noiseDiscard
+	// エッジ
+	particle.parameter.startEdgeSize.value = parameter.startEdgeSize.GetValue();
+	particle.parameter.targetEdgeSize.value = parameter.targetEdgeSize.GetValue();
+	particle.parameter.startEdgeColor.value = parameter.startEdgeColor.GetValue();
+	particle.parameter.targetEdgeColor.value = parameter.targetEdgeColor.GetValue();
+	// 発光
+	particle.parameter.startEmissiveIntensity.value = parameter.startEmissiveIntensity.GetValue();
+	particle.parameter.targetEmissiveIntensity.value = parameter.targetEmissiveIntensity.GetValue();
+	particle.parameter.startEdgeEmissionColor.value = parameter.startEdgeEmissionColor.GetValue();
+	particle.parameter.targetEdgeEmissionColor.value = parameter.targetEdgeEmissionColor.GetValue();
+
+	// uv
+	// スケール
+	particle.parameter.startUVScale.value = parameter.startUVScale.GetValue();
+	particle.parameter.targetUVScale.value = parameter.targetUVScale.GetValue();
+	// Z回転
+	particle.parameter.startUVRotationZ.value = parameter.startUVRotationZ.GetValue();
+	particle.parameter.targetUVRotationZ.value = parameter.targetUVRotationZ.GetValue();
+	// スクロール
+	particle.parameter.startUVTranslation.value = parameter.startUVTranslation.GetValue();
+	particle.parameter.targetUVTranslation.value = parameter.targetUVTranslation.GetValue();
+
+	// 物理
+	particle.parameter.reflectFace = parameter.reflectFace;
+	particle.parameter.restitution.value = parameter.restitution.GetValue();
+	particle.parameter.gravityStrength.value = parameter.gravityStrength.GetValue();
+	particle.parameter.gravityDirection.value = parameter.gravityDirection.GetValue();
 }
 
 Matrix4x4 ParticleCreator::CalRotateMatrix(const ParticleParameter& parameter) {

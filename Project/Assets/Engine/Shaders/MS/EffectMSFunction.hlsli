@@ -21,6 +21,11 @@ struct Material {
 	uint useNoiseTexture;
 	uint useVertexColor;
 	
+	// sampler
+	// 0...WRAP
+	// 1...CLAMP
+	uint samplerType;
+	
 	// reference
 	float textureAlphaReference;
 	float noiseTextureAlphaReference;
@@ -28,6 +33,12 @@ struct Material {
 	// emission
 	float emissiveIntensity;
 	float3 emissionColor;
+	
+	// noise
+	float edgeSize;
+	float4 edgeColor;
+	float edgeEmissiveIntensity;
+	float3 edgeEmissionColor;
 	
 	// uv
 	float4x4 uvTransform;
@@ -44,7 +55,8 @@ StructuredBuffer<Material> gMaterials : register(t0);
 //============================================================================
 
 Texture2D<float4> gTextures[] : register(t1, space0);
-SamplerState gSampler : register(s0);
+SamplerState gWRAPSampler : register(s0);
+SamplerState gCLAMPSampler : register(s1);
 
 //============================================================================
 //	functions
@@ -52,27 +64,47 @@ SamplerState gSampler : register(s0);
 
 float4 GetTextureColor(uint id, MSOutput input, float4 transformUV) {
 	
-	// texture
-	float4 textureColor = gTextures[gMaterials[id].textureIndex].Sample(gSampler, transformUV.xy);
+	float4 textureColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+	
+	// textureColor
+	if (gMaterials[id].samplerType == 0) {
+		
+		textureColor = gTextures[gMaterials[id].textureIndex].Sample(gWRAPSampler, transformUV.xy);
+	} else if (gMaterials[id].samplerType == 1) {
+		
+		textureColor = gTextures[gMaterials[id].textureIndex].Sample(gCLAMPSampler, transformUV.xy);
+	}
+	
 	return textureColor;
 }
 
-uint IsNoiseTextureDiscard(uint id, MSOutput input, float4 transformUV) {
+bool ApplyNoiseDiscardAndEdge(uint id, float4 transformUV, out float4 outColor) {
 	
-	// discard == false
-	if (gMaterials[id].useNoiseTexture == 0) {
-		return 0;
-	}
+	Material material = gMaterials[id];
 	
-	// getNoiseTextureAlpha
-	float4 noiseTexture = gTextures[gMaterials[id].noiseTextureIndex].Sample(gSampler, transformUV.xy);
+	float alphaNoise = gTextures[material.noiseTextureIndex].Sample(gWRAPSampler, transformUV.xy).r;
 	
-	// discardCheck
-	if (noiseTexture.r < gMaterials[id].noiseTextureAlphaReference) {
+	float dist = alphaNoise - material.noiseTextureAlphaReference;
+	bool shouldDiscard = dist < 0.0f;
+	
+	float grad = fwidth(alphaNoise);
+	float band = grad * material.edgeSize;
+	
+	float edgeMask = smoothstep(-band, -band * 0.4f, dist) * (1.0f - smoothstep(band * 0.4f, band, dist));
+	
+	// this edge
+	if (edgeMask > 0.0f) {
 		
-		// discard == true
-		return 1;
+		outColor = material.edgeColor;
+		return true;
 	}
+	
+	// discard == true
+	if (shouldDiscard) {
+		
+		discard;
+	}
+	
 	// discard == false
-	return 0;
+	return false;
 }

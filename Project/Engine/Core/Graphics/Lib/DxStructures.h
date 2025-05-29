@@ -53,3 +53,16 @@ namespace Blend {
 	// imgui選択
 	void SelectBlendMode(BlendMode& blendMode, const std::string& label = "label");
 }
+
+enum class UVAddressMode :
+	int32_t {
+
+	WRAP = 0,
+	CLAMP = 1
+};
+
+namespace UVAddress {
+
+	// imgui選択
+	void SelectUVAddressMode(UVAddressMode& adressMode, const std::string& label = "label");
+}

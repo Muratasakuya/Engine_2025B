@@ -5,7 +5,6 @@
 //============================================================================
 #include <Game/Camera/FollowCamera.h>
 #include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
-#include <Engine/Particle/ParticleSystem.h>
 
 //============================================================================
 //	BodyWalkBehavior classMethods
@@ -30,15 +29,6 @@ void BodyWalkBehavior::Execute(BasePlayerParts* parts) {
 	UpdateWalk(parts);
 	// 回転、向いている方向を計算
 	RotateToDirection(parts);
-
-	// particleを発生させる
-	ParticleSystem::GetInstance()->FrequencyEmit("TestEmitter");
-
-	const auto& transform = parts->GetTransform();
-	ParticleSystem::GetInstance()->SetTranslate("TestEmitter", transform.translation);
-	ParticleSystem::GetInstance()->SetRotate("TestEmitter", transform.rotation);
-
-	ParticleSystem::GetInstance()->UpdateEmitter("TestEmitter");
 }
 
 void BodyWalkBehavior::UpdateWalk(BasePlayerParts* parts) {
