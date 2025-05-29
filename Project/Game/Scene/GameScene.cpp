@@ -33,7 +33,6 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadModel("axis");
 	asset->LoadModel("billboardPlane");
 	asset->LoadModel("cylinder");
-	asset->LoadModel("bunny");
 
 	// player
 	asset->LoadModel("playerBody");

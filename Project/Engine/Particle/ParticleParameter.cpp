@@ -84,6 +84,7 @@ void ParticleParameter::Init(std::string name,
 	gravityDirection = ParticleValue<Vector3>::SetValue(Vector3(0.0f, -1.0f, 0.0f));
 
 	isLoop = true;
+	interpolateEmit = false;
 	useScaledTime = false;
 	moveToDirection = false;
 	reflectGround = false;
@@ -119,7 +120,7 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 
 	blendMode = data[key]["blendMode"];
 	billboardType = data[key]["billboardType"];
-	//uvAdressMode = data[key]["uvAdressMode"];
+	uvAdressMode = data[key]["uvAdressMode"];
 
 	// easing
 	moveEasingType = data[key]["moveEasingType"];
@@ -140,6 +141,7 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 	key = "Flag";
 
 	isLoop = data[key]["isLoop"];
+	interpolateEmit = data[key]["interpolateEmit"];
 	useScaledTime = data[key]["useScaledTime"];
 	moveToDirection = data[key]["moveToDirection"];
 	reflectGround = data[key]["reflectGround"];
@@ -161,8 +163,8 @@ void ParticleParameter::Init(const Json& data, Asset* asset) {
 	key = "Parameter";
 
 	frequency = data[key]["frequency"];
-	lifeTime.ApplyJson(data[key], "emitCount");
-	emitCount.ApplyJson(data[key], "lifeTime");
+	emitCount.ApplyJson(data[key], "emitCount");
+	lifeTime.ApplyJson(data[key], "lifeTime");
 	moveSpeed.ApplyJson(data[key], "moveSpeed");
 	// scale
 	startScale.ApplyJson(data[key], "startScale");
@@ -255,6 +257,7 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 	key = "Flag";
 
 	data[key]["isLoop"] = isLoop;
+	data[key]["interpolateEmit"] = interpolateEmit;
 	data[key]["useScaledTime"] = useScaledTime;
 	data[key]["moveToDirection"] = moveToDirection;
 	data[key]["reflectGround"] = reflectGround;
@@ -276,8 +279,8 @@ void ParticleParameter::SaveJson(const std::string& saveName) {
 	key = "Parameter";
 
 	data[key]["frequency"] = frequency;
-	lifeTime.SaveJson(data[key], "emitCount");
-	emitCount.SaveJson(data[key], "lifeTime");
+	lifeTime.SaveJson(data[key], "lifeTime");
+	emitCount.SaveJson(data[key], "emitCount");
 	moveSpeed.SaveJson(data[key], "moveSpeed");
 	// scale
 	startScale.SaveJson(data[key], "startScale");
@@ -470,6 +473,7 @@ void ParticleParameter::EditEmit() {
 	ImGui::Separator();
 	// 発生
 	ImGui::Checkbox("isLoop", &isLoop);
+	ImGui::Checkbox("interpolateEmit", &interpolateEmit);
 	ImGui::Separator();
 	emitCount.EditDragValue("emitCount");
 	ImGui::Separator();

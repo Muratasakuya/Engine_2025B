@@ -14,8 +14,6 @@ EngineInformation:     load texture: axis
 EngineInformation:     load model: axis
 EngineInformation:     load model: billboardPlane
 EngineInformation:     load model: cylinder
-EngineInformation:     load texture: uvChecker
-EngineInformation:     load model: bunny
 EngineInformation:     load model: playerBody
 EngineInformation:     load model: playerLeftHand
 EngineInformation:     load model: playerRightHand
