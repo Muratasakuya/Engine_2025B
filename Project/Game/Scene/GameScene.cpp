@@ -25,6 +25,11 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadTexture("white");
 	asset->LoadTexture("monsterBall");
 	asset->LoadTexture("noise");
+	asset->LoadTexture("smallCircle");
+	asset->LoadTexture("spark");
+	asset->LoadTexture("gradationLine_1");
+	asset->LoadTexture("gradationLine_0");
+	asset->LoadTexture("effectCircle");
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
 
@@ -32,7 +37,6 @@ void GameScene::Load(Asset* asset) {
 	asset->LoadModel("cube");
 	asset->LoadModel("axis");
 	asset->LoadModel("billboardPlane");
-	asset->LoadModel("cylinder");
 
 	// player
 	asset->LoadModel("playerBody");

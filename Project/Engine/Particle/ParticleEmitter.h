@@ -99,6 +99,43 @@ struct ParticleGroup {
 	ParticleParameter parameter;
 	// particle情報
 	std::list<ParticleData> particles;
+
+	ParticleGroup() = default;
+	~ParticleGroup() = default;
+
+	// ムーブコンストラクタ
+	ParticleGroup(ParticleGroup&& other) noexcept
+		: mesh(std::move(other.mesh)),
+		materialBuffer(std::move(other.materialBuffer)),
+		worldMatrixBuffer(std::move(other.worldMatrixBuffer)),
+		numInstance(other.numInstance),
+		transferMaterials(std::move(other.transferMaterials)),
+		transferMatrices(std::move(other.transferMatrices)),
+		preEmitterPos(other.preEmitterPos),
+		parameter(std::move(other.parameter)),
+		particles(std::move(other.particles)) {
+		other.numInstance = 0;
+	}
+
+	// ムーブ代入演算子
+	ParticleGroup& operator=(ParticleGroup&& other) noexcept {
+		if (this != &other) {
+			mesh = std::move(other.mesh);
+			materialBuffer = std::move(other.materialBuffer);
+			worldMatrixBuffer = std::move(other.worldMatrixBuffer);
+			numInstance = other.numInstance;
+			transferMaterials = std::move(other.transferMaterials);
+			transferMatrices = std::move(other.transferMatrices);
+			preEmitterPos = other.preEmitterPos;
+			particles = std::move(other.particles);
+			other.numInstance = 0;
+		}
+		return *this;
+	}
+
+	// コピーは禁止
+	ParticleGroup(const ParticleGroup&) = delete;
+	ParticleGroup& operator=(const ParticleGroup&) = delete;
 };
 
 //============================================================================
@@ -178,6 +215,9 @@ private:
 	ImVec2 dropSize_;       // ドロップ処理受け取りサイズ
 	ImVec2 leftChildSize_;  // 左側
 	ImVec2 rightChildSize_; // 右側
+	bool isAllEmit_;            // 全てのparticleを同時に発生させるか
+	float allEmitCurrentTimer_; // 全てのparticleを同時に発生させるためのクールタイム
+	float allEmitTime_;         // 全てのparticleを同時に発生させるまでの時間
 
 	// 保存処理
 	InputTextValue emitterSave_;
@@ -191,6 +231,10 @@ private:
 
 	// 保存処理
 	void SaveEmitter();
+
+	// 全てのparticleを同時に発生させる
+	void EmitAllParticle();
+	void UpdateAllParticle();
 
 	// 作成処理
 	// editorから
@@ -218,6 +262,8 @@ private:
 	void EditParticle();
 	// 保存処理
 	void SaveParticle();
+	// 削除処理
+	void RemoveParticle();
 
 	void SetEmitterPos(ParticleGroup& group, const Vector3& pos);
 	Vector3 GetEmitterPos(const ParticleParameter& parameter) const;
