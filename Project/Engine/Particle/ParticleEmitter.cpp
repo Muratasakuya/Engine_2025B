@@ -89,6 +89,9 @@ void ParticleEmitter::Update(const Matrix4x4& billboardMatrix, bool useGame) {
 		return;
 	}
 
+	// 全てのparticleの発生処理
+	UpdateAllParticle();
+
 	// 各particleのemitterを描画
 	DrawParticleEmitters(useGame);
 
@@ -326,6 +329,11 @@ void ParticleEmitter::SetRotate(const Quaternion& rotate) {
 
 void ParticleEmitter::UpdateFrequencyEmit(ParticleGroup& group) {
 
+	// 全て発生させてる時こっちは機能させない
+	if (isAllEmit_) {
+		return;
+	}
+
 	// emitCountが0の時は処理しない
 	if (group.parameter.emitCount.GetValue() == 0) {
 		return;
@@ -444,6 +452,31 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix, bool use
 	}
 }
 
+void ParticleEmitter::UpdateAllParticle() {
+#ifdef _DEBUG
+	if (!isAllEmit_) {
+		return;
+	}
+
+	// 時間が過ぎたら全て発生させる
+	allEmitCurrentTimer_ += GameTimer::GetDeltaTime();
+	if (allEmitCurrentTimer_ > allEmitTime_) {
+		for (auto& group : particleGroups_) {
+
+			// 最大インスタンス数以下の時のみ
+			if (group.numInstance < kMaxInstanceNum_) {
+
+				// particleを作成し発生
+				ParticleCreator::Create(group.particles, group.parameter);
+			}
+		}
+
+		// timerリセット処理
+		allEmitCurrentTimer_ = 0.0f;
+	}
+#endif // _DEBUG
+}
+
 void ParticleEmitter::ImGui() {
 
 	EditLayout();
@@ -455,6 +488,8 @@ void ParticleEmitter::ImGui() {
 	ImGui::SeparatorText(("EmitterName: " + name_).c_str());
 	// emitterの保存処理
 	SaveEmitter();
+	// 全てのparticleを同時に発生させる
+	EmitAllParticle();
 
 	// particle追加処理
 	ImGui::BeginChild("AddChild##ParticleEmitter", leftChildSize_, true);
@@ -611,8 +646,14 @@ void ParticleEmitter::EditParticle() {
 	ImGui::Text("particleSize: %d", particleGroups_[currentSelectIndex_.value()].particles.size());
 	// particle保存処理
 	SaveParticle();
+	ImGui::SameLine();
+	// particle削除処理
+	RemoveParticle();
 
-	particleGroups_[currentSelectIndex_.value()].parameter.ImGui();
+	if (currentSelectIndex_.has_value()) {
+
+		particleGroups_[currentSelectIndex_.value()].parameter.ImGui();
+	}
 }
 
 void ParticleEmitter::SaveEmitter() {
@@ -689,6 +730,15 @@ void ParticleEmitter::SaveEmitter() {
 	}
 }
 
+void ParticleEmitter::EmitAllParticle() {
+
+	ImGui::Checkbox("isAllEmit", &isAllEmit_);
+
+	ImGui::SameLine();
+
+	ImGui::DragFloat("allEmitTime", &allEmitTime_, 0.01f);
+}
+
 void ParticleEmitter::SaveParticle() {
 
 	if (ImGui::Button("Save Particle", addButtonSize_)) {
@@ -736,6 +786,36 @@ void ParticleEmitter::SaveParticle() {
 		}
 
 		ImGui::EndPopup();
+	}
+}
+
+void ParticleEmitter::RemoveParticle() {
+
+	if (!currentSelectIndex_.has_value() || particleGroups_.empty()) {
+		return;
+	}
+
+	if (ImGui::Button("Remove Particle", addButtonSize_)) {
+
+		const int removeIndex = currentSelectIndex_.value();
+
+		// 範囲チェック
+		if (0 <= removeIndex && removeIndex < static_cast<int>(particleGroups_.size())) {
+
+			// vectorから削除
+			particleGroups_.erase(particleGroups_.begin() + removeIndex);
+
+			// インデックスを整理
+			if (particleGroups_.empty()) {
+
+				// 全削除されたので選択なし状態
+				currentSelectIndex_.reset();
+			} else {
+
+				const int newSize = static_cast<int>(particleGroups_.size());
+				currentSelectIndex_ = std::clamp(removeIndex, 0, newSize - 1);
+			}
+		}
 	}
 }
 
