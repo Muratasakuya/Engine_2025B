@@ -20,9 +20,6 @@ public:
 	//	public Methods
 	//========================================================================
 
-	ParticleParameter() = default;
-	~ParticleParameter() = default;
-
 	//--------- functions ----------------------------------------------------
 
 	// 初期値設定

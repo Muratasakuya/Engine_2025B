@@ -462,11 +462,6 @@ void ParticleEmitter::UpdateAllParticle(bool useGame) {
 		return;
 	}
 
-#ifdef _DEBUG
-	if (!isAllEmit_) {
-		return;
-	}
-
 	// 時間が過ぎたら全て発生させる
 	allEmitCurrentTimer_ += GameTimer::GetDeltaTime();
 	if (allEmitCurrentTimer_ > allEmitTime_) {
