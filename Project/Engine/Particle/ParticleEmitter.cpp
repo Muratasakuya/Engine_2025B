@@ -478,7 +478,6 @@ void ParticleEmitter::UpdateAllParticle(bool useGame) {
 		// timerリセット処理
 		allEmitCurrentTimer_ = 0.0f;
 	}
-#endif // _DEBUG
 }
 
 void ParticleEmitter::ImGui() {
