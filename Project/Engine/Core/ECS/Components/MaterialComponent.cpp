@@ -129,3 +129,94 @@ void MaterialComponent::FromJson(const Json& data) {
 	uvTransform.rotate = JsonAdapter::ToObject<Vector3>(data["uvRotate"]);
 	uvTransform.translate = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
 }
+
+//============================================================================
+//	SpriteMaterialComponent classMethods
+//============================================================================
+
+void SpriteMaterialComponent::Init(ID3D12Device* device) {
+
+	material.Init();
+	uvTransform.scale = Vector3::AnyInit(1.0f);
+	prevUVTransform.scale = Vector3::AnyInit(1.0f);
+
+	// buffer初期化
+	buffer_.CreateConstBuffer(device);
+}
+
+void SpriteMaterialComponent::UpdateUVTransform() {
+
+	// 値に変更がなければ更新しない
+	if (uvTransform == prevUVTransform) {
+
+		// buffer転送
+		buffer_.TransferData(material);
+		return;
+	}
+
+	// uvの更新
+	material.uvTransform = Matrix4x4::MakeAffineMatrix(
+		uvTransform.scale, uvTransform.rotate, uvTransform.translate);
+
+	// 値を保存
+	prevUVTransform = uvTransform;
+}
+
+void SpriteMaterialComponent::ImGui(float itemSize) {
+
+	// 色
+	ImGui::SeparatorText("Color");
+
+	ImGui::PushItemWidth(itemSize);
+	ImGui::ColorEdit4("color", &material.color.r);
+	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f A:%4.3f",
+		material.color.r, material.color.g,
+		material.color.b, material.color.a);
+
+	// 発行色
+	ImGui::ColorEdit3("emissionColor", &material.emissionColor.x);
+	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f",
+		material.emissionColor.x, material.emissionColor.y,
+		material.emissionColor.z);
+	ImGui::DragFloat("emissiveIntensity", &material.emissiveIntensity, 0.01f);
+
+	// UV
+	ImGui::SeparatorText("UV");
+
+	// transform
+	ImGui::DragFloat2("uvTranslate", &uvTransform.translate.x, 0.1f);
+	ImGui::SliderAngle("uvRotate", &uvTransform.rotate.z);
+	ImGui::DragFloat2("uvScale", &uvTransform.scale.x, 0.1f);
+
+	ImGui::PopItemWidth();
+}
+
+void SpriteMaterialComponent::ToJson(Json& data) {
+
+	// Material
+	// color
+	data["color"] = material.color.ToJson();
+	data["emissionColor"] = material.emissionColor.ToJson();
+	data["emissiveIntensity"] = material.emissiveIntensity;
+	data["useVertexColor"] = material.useVertexColor;
+
+	// UV
+	data["uvScale"] = uvTransform.scale.ToJson();
+	data["uvRotate"] = uvTransform.rotate.ToJson();
+	data["uvTranslate"] = uvTransform.translate.ToJson();
+}
+
+void SpriteMaterialComponent::FromJson(const Json& data) {
+
+	// Material
+	// color
+	material.color = JsonAdapter::ToObject<Color>(data["color"]);
+	material.emissionColor = JsonAdapter::ToObject<Vector3>(data["emissionColor"]);
+	material.emissiveIntensity = data["emissiveIntensity"];
+	material.useVertexColor = data["useVertexColor"];
+
+	// UV
+	uvTransform.scale = JsonAdapter::ToObject<Vector3>(data["uvScale"]);
+	uvTransform.rotate = JsonAdapter::ToObject<Vector3>(data["uvRotate"]);
+	uvTransform.translate = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
+}

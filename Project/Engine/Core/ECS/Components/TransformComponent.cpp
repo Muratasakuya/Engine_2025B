@@ -129,7 +129,7 @@ Vector3 BaseTransform::GetDown() const {
 // 2D
 //============================================================================
 
-void Transform2DComponent::Init() {
+void Transform2DComponent::Init(ID3D12Device* device) {
 
 	translation = Vector2::AnyInit(0.0f);
 	rotation = 0.0f;
@@ -141,6 +141,9 @@ void Transform2DComponent::Init() {
 	// 左上設定
 	textureLeftTop = Vector2::AnyInit(0.0f);
 	textureSize = Vector2::AnyInit(0.0f);
+
+	// buffer初期化
+	buffer_.CreateConstBuffer(device);
 }
 
 void Transform2DComponent::UpdateMatrix() {
@@ -154,6 +157,9 @@ void Transform2DComponent::UpdateMatrix() {
 	if (parent) {
 		matrix = parent->matrix * matrix;
 	}
+
+	// buffer転送
+	buffer_.TransferData(matrix);
 }
 
 void Transform2DComponent::ImGui(float itemSize) {

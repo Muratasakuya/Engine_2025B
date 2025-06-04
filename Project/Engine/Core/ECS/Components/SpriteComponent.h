@@ -32,6 +32,7 @@ public:
 	//	public Methods
 	//========================================================================
 
+	SpriteComponent() = default;
 	SpriteComponent(ID3D12Device* device, Asset* asset,
 		const std::string& textureName, Transform2DComponent& transform);
 	~SpriteComponent() = default;

@@ -237,7 +237,6 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 
 	// bufferの更新
 	sceneBuffer_->Update(cameraManager, lightManager);
-	spriteRenderer_->Update(cameraManager);
 
 	// skybox更新
 	Skybox::GetInstance()->Update();
@@ -336,14 +335,14 @@ void GraphicsCore::RenderFrameBuffer() {
 	postProcessSystem_->RenderFrameBuffer(dxCommand_.get());
 
 	// sprite描画、postPrecessを適用しない
-	//spriteRenderer_->RenderIrrelevant(dxCommand_->GetCommandList());
+	spriteRenderer_->IrrelevantRendering(sceneBuffer_.get(), dxCommand_.get());
 }
 
 void GraphicsCore::Renderers(bool debugEnable) {
 
 	// sprite描画、postPrecess適用
 	// model描画前
-	//spriteRenderer_->RenderApply(SpriteLayer::PreModel, dxCommand_->GetCommandList());
+	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PreModel, sceneBuffer_.get(), dxCommand_.get());
 
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
@@ -357,7 +356,7 @@ void GraphicsCore::Renderers(bool debugEnable) {
 
 	// sprite描画、postPrecess適用
 	// model描画後
-	//spriteRenderer_->RenderApply(SpriteLayer::PostModel, dxCommand_->GetCommandList());
+	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PostModel, sceneBuffer_.get(), dxCommand_.get());
 }
 
 //============================================================================

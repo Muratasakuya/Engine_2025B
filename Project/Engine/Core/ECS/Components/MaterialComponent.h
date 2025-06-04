@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Utility/SimpleAnimation.h>
 #include <Lib/MathUtils/MathUtils.h>
 
@@ -52,7 +53,6 @@ public:
 	Material material;
 
 	UVTransform uvTransform;
-
 private:
 	//========================================================================
 	//	private Methods
@@ -61,4 +61,47 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	UVTransform prevUVTransform;
+};
+
+//============================================================================
+//	SpriteMaterialComponent class
+//============================================================================
+class SpriteMaterialComponent {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	SpriteMaterialComponent() = default;
+	~SpriteMaterialComponent() = default;
+
+	void Init(ID3D12Device* device);
+
+	void UpdateUVTransform();
+
+	void ImGui(float itemSize);
+
+	void ToJson(Json& data);
+	void FromJson(const Json& data);
+
+	//--------- variables ----------------------------------------------------
+
+	SpriteMaterial material;
+
+	UVTransform uvTransform;
+
+	//--------- accessor -----------------------------------------------------
+
+	const DxConstBuffer<SpriteMaterial>& GetBuffer() const { return buffer_; }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	UVTransform prevUVTransform;
+
+	// buffer
+	DxConstBuffer<SpriteMaterial> buffer_;
 };

@@ -19,8 +19,11 @@ struct PSOutput {
 
 cbuffer Material : register(b0) {
 	
-	float4 color;
 	float4x4 uvTransform;
+	float4 color;
+	float3 emissionColor;
+	uint useVertexColor;
+	float emissiveIntensity;
 };
 
 //============================================================================
@@ -40,12 +43,26 @@ PSOutput main(VSOutput input) {
 	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), uvTransform);
 	float4 textureColor = gTexture.Sample(gSampler, transformUV.xy);
 	
-	if (textureColor.a <= 0.4f) {
+	if (textureColor.a <= 0.25f) {
 		discard;
 	}
 
 	output.color.rgb = color.rgb * textureColor.rgb;
-	output.color.a = color.a * textureColor.a;
+	// α値
+	output.color.a = color.a * input.color.a * textureColor.a;
+	
+	//頂点カラー適応
+	if (useVertexColor == 1) {
+
+		// rgbのみ
+		output.color.rgb *= input.color.rgb;
+	}
+	
+	// emission処理
+	// 発光色
+	float3 emission = emissionColor * emissiveIntensity;
+	// emissionを加算
+	output.color.rgb += emission * textureColor.rgb;
 
 	return output;
 }

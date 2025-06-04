@@ -59,3 +59,23 @@ void MaterialSystem::Update(EntityManager& entityManager) {
 		}
 	}
 }
+
+//============================================================================
+//	SpriteMaterialSystem classMethods
+//============================================================================
+
+Archetype SpriteMaterialSystem::Signature() const {
+
+	Archetype arch{};
+	arch.set(EntityManager::GetTypeID<SpriteMaterialComponent>());
+	return arch;
+}
+
+void SpriteMaterialSystem::Update(EntityManager& entityManager) {
+
+	for (uint32_t entity : entityManager.View(Signature())) {
+
+		auto* material = entityManager.GetComponent<SpriteMaterialComponent>(entity);
+		material->UpdateUVTransform();
+	}
+}

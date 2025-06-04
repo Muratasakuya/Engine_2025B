@@ -37,6 +37,9 @@ public:
 	uint32_t CreateObject3D(const std::string& modelName, const std::string& name,
 		const std::string& groupName, const std::optional<std::string>& animationName = std::nullopt);
 
+	uint32_t CreateObject2D(const std::string& textureName, const std::string& name,
+		const std::string& groupName);
+
 	// entity削除
 	void Destroy(uint32_t entity);
 
@@ -59,6 +62,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	Asset* asset_;
+	ID3D12Device* device_;
 
 	static ECSManager* instance_;
 

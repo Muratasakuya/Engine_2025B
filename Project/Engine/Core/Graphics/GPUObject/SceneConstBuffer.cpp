@@ -17,6 +17,7 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 	viewProjectionBuffer_.CreateConstBuffer(device);
 	lightViewProjectionBuffer_.CreateConstBuffer(device);
 	cameraPosBuffer_.CreateConstBuffer(device);
+	orthoProjectionBuffer_.CreateConstBuffer(device);
 	// light
 	lightBuffer_.CreateConstBuffer(device);
 
@@ -37,6 +38,7 @@ void SceneConstBuffer::Update(CameraManager* cameraManager,
 	viewProjectionBuffer_.TransferData(cameraManager->GetCamera()->GetViewProjectionMatrix());
 	lightViewProjectionBuffer_.TransferData(cameraManager->GetLightViewCamera()->GetViewProjectionMatrix());
 	cameraPosBuffer_.TransferData(cameraManager->GetCamera()->GetTransform().translation);
+	orthoProjectionBuffer_.TransferData(cameraManager->GetCamera2D()->GetViewProjectionMatrix());
 	// light
 	lightBuffer_.TransferData(*lightManager->GetLight());
 
@@ -100,4 +102,10 @@ void SceneConstBuffer::SetViewProCommand(bool debugEnable,
 		commandList->SetGraphicsRootConstantBufferView(rootIndex,
 			debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	}
+}
+
+void SceneConstBuffer::SetOrthoProCommand(ID3D12GraphicsCommandList* commandList, UINT rootIndex) {
+
+	commandList->SetGraphicsRootConstantBufferView(rootIndex,
+		orthoProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 }
