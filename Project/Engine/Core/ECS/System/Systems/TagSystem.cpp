@@ -14,7 +14,6 @@ Archetype TagSystem::Signature() const {
 
 	Archetype arch{};
 	arch.set(EntityManager::GetTypeID<TagComponent>());
-	arch.set(EntityManager::GetTypeID<Transform3DComponent>()); // 3D
 	return arch;
 }
 
