@@ -70,6 +70,10 @@ void ParticleEmitter::Init(const Json& data, const std::string& name,
 
 					// 作成
 					CreateParticle(particleData);
+
+					// 同時発生をデフォにする
+					isAllEmit_ = true;
+					allEmitTime_ = 1.0f;
 				}
 			}
 		}
@@ -88,6 +92,9 @@ void ParticleEmitter::Update(const Matrix4x4& billboardMatrix, bool useGame) {
 	if (particleGroups_.empty()) {
 		return;
 	}
+
+	// 全てのparticleの発生処理
+	UpdateAllParticle(useGame);
 
 	// 各particleのemitterを描画
 	DrawParticleEmitters(useGame);
@@ -326,6 +333,11 @@ void ParticleEmitter::SetRotate(const Quaternion& rotate) {
 
 void ParticleEmitter::UpdateFrequencyEmit(ParticleGroup& group) {
 
+	// 全て発生させてる時こっちは機能させない
+	if (isAllEmit_) {
+		return;
+	}
+
 	// emitCountが0の時は処理しない
 	if (group.parameter.emitCount.GetValue() == 0) {
 		return;
@@ -444,6 +456,36 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix, bool use
 	}
 }
 
+void ParticleEmitter::UpdateAllParticle(bool useGame) {
+
+	if (useGame) {
+		return;
+	}
+
+#ifdef _DEBUG
+	if (!isAllEmit_) {
+		return;
+	}
+
+	// 時間が過ぎたら全て発生させる
+	allEmitCurrentTimer_ += GameTimer::GetDeltaTime();
+	if (allEmitCurrentTimer_ > allEmitTime_) {
+		for (auto& group : particleGroups_) {
+
+			// 最大インスタンス数以下の時のみ
+			if (group.numInstance < kMaxInstanceNum_) {
+
+				// particleを作成し発生
+				ParticleCreator::Create(group.particles, group.parameter);
+			}
+		}
+
+		// timerリセット処理
+		allEmitCurrentTimer_ = 0.0f;
+	}
+#endif // _DEBUG
+}
+
 void ParticleEmitter::ImGui() {
 
 	EditLayout();
@@ -455,6 +497,8 @@ void ParticleEmitter::ImGui() {
 	ImGui::SeparatorText(("EmitterName: " + name_).c_str());
 	// emitterの保存処理
 	SaveEmitter();
+	// 全てのparticleを同時に発生させる
+	EmitAllParticle();
 
 	// particle追加処理
 	ImGui::BeginChild("AddChild##ParticleEmitter", leftChildSize_, true);
@@ -585,13 +629,14 @@ void ParticleEmitter::SelectParticle() {
 	}
 
 	for (int i = 0; i < static_cast<int>(particleGroups_.size()); ++i) {
-		const bool selected = (currentSelectIndex_.has_value() && currentSelectIndex_.value() == i);
-		if (ImGui::Selectable(particleGroups_[i].parameter.GetParticleName().c_str(), selected)) {
+
+		std::string label = particleGroups_[i].parameter.GetParticleName() + "##" + std::to_string(i);
+		bool selected = (currentSelectIndex_.has_value() && currentSelectIndex_.value() == i);
+		if (ImGui::Selectable(label.c_str(), selected)) {
 
 			currentSelectIndex_ = i;
 		}
 		if (selected) {
-
 			ImGui::SetItemDefaultFocus();
 		}
 	}
@@ -611,8 +656,14 @@ void ParticleEmitter::EditParticle() {
 	ImGui::Text("particleSize: %d", particleGroups_[currentSelectIndex_.value()].particles.size());
 	// particle保存処理
 	SaveParticle();
+	ImGui::SameLine();
+	// particle削除処理
+	RemoveParticle();
 
-	particleGroups_[currentSelectIndex_.value()].parameter.ImGui();
+	if (currentSelectIndex_.has_value()) {
+
+		particleGroups_[currentSelectIndex_.value()].parameter.ImGui();
+	}
 }
 
 void ParticleEmitter::SaveEmitter() {
@@ -657,7 +708,7 @@ void ParticleEmitter::SaveEmitter() {
 				for (uint32_t index = 0; index < particleGroups_.size(); ++index) {
 
 					// particleの保存名を取得
-					particleNames[index] = particleGroups_[index].parameter.GetParticleName() + ".json";
+					particleNames[index] = std::string(emitterSave_.nameBuffer) + "_" + particleGroups_[index].parameter.GetParticleName() + ".json";
 
 					// particleを保存する
 					particleGroups_[index].parameter.SaveJson("Particle/" + particleNames[index]);
@@ -687,6 +738,15 @@ void ParticleEmitter::SaveEmitter() {
 
 		ImGui::EndPopup();
 	}
+}
+
+void ParticleEmitter::EmitAllParticle() {
+
+	ImGui::Checkbox("isAllEmit", &isAllEmit_);
+
+	ImGui::SameLine();
+
+	ImGui::DragFloat("allEmitTime", &allEmitTime_, 0.01f);
 }
 
 void ParticleEmitter::SaveParticle() {
@@ -736,6 +796,26 @@ void ParticleEmitter::SaveParticle() {
 		}
 
 		ImGui::EndPopup();
+	}
+}
+
+void ParticleEmitter::RemoveParticle() {
+
+	if (!currentSelectIndex_.has_value() || particleGroups_.empty()) {
+		return;
+	}
+
+	if (ImGui::Button("Remove Particle", addButtonSize_)) {
+
+		const int removeIndex = currentSelectIndex_.value();
+
+		// 範囲チェック
+		if (0 <= removeIndex && removeIndex < static_cast<int>(particleGroups_.size())) {
+
+			// vectorから削除
+			particleGroups_.erase(particleGroups_.begin() + removeIndex);
+			currentSelectIndex_ = std::nullopt;
+		}
 	}
 }
 
