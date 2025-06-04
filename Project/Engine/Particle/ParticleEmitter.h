@@ -127,6 +127,7 @@ struct ParticleGroup {
 			transferMaterials = std::move(other.transferMaterials);
 			transferMatrices = std::move(other.transferMatrices);
 			preEmitterPos = other.preEmitterPos;
+			parameter = std::move(other.parameter);
 			particles = std::move(other.particles);
 			other.numInstance = 0;
 		}
@@ -234,7 +235,7 @@ private:
 
 	// 全てのparticleを同時に発生させる
 	void EmitAllParticle();
-	void UpdateAllParticle();
+	void UpdateAllParticle(bool useGame);
 
 	// 作成処理
 	// editorから
