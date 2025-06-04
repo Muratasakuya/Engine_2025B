@@ -70,6 +70,9 @@ private:
 	std::optional<uint32_t> selected3D_;
 	int selectedMaterialIndex_ = 0;
 
+	std::optional<uint32_t> selected2D_;
+	int  selectedSpriteIndex_ = 0;
+
 	const float itemWidth_ = 224.0f;
 
 	//--------- functions ----------------------------------------------------
@@ -79,14 +82,16 @@ private:
 	ImGuiInspector(const ImGuiInspector&) = delete;
 	ImGuiInspector& operator=(const ImGuiInspector&) = delete;
 
+	bool Is3D(uint32_t entity) const;
+	bool Is2D(uint32_t entity) const;
+	void DrawSelectable(uint32_t entity, const std::string& name);
+
 	//----------- group ------------------------------------------------------
 
 	// groupの作成
 	void CreateGroup();
 	// group化されたobjectの選択
 	void SelectGroupedObject();
-	// group化されていないobjectの選択
-	void SelectUnGroupedObject();
 
 	//--------- object3D -----------------------------------------------------
 
@@ -95,4 +100,12 @@ private:
 	void Object3DInformation();
 	void Object3DTransform();
 	void Object3DMaterial();
+
+	//--------- object2D -----------------------------------------------------
+
+	void EditObject2D();
+	void Object2DInformation();
+	void Object2DSprite();
+	void Object2DTransform();
+	void Object2DMaterial();
 };

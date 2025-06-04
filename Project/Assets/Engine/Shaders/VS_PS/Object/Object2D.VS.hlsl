@@ -12,6 +12,7 @@ struct VSInput {
 	
 	float2 position : POSITION0;
 	float2 texcoord : TEXCOORD0;
+	float4 color : COLOR0;
 };
 
 //============================================================================
@@ -38,6 +39,7 @@ VSOutput main(VSInput input) {
 	float4x4 wvp = mul(world, viewProjection);
 	output.position = mul(float4(input.position, 0.0f, 1.0f), wvp);
 	output.texcoord = input.texcoord;
+	output.color = input.color;
 
 	return output;
 }

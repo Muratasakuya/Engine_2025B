@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/CBufferStructures.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Lib/MathUtils/Vector2.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Quaternion.h>
@@ -116,7 +117,7 @@ public:
 	Transform2DComponent() = default;
 	~Transform2DComponent() = default;
 
-	void Init();
+	void Init(ID3D12Device* device);
 
 	void UpdateMatrix();
 
@@ -138,4 +139,17 @@ public:
 	Matrix4x4 matrix;
 
 	const Transform2DComponent* parent = nullptr;
+
+	//--------- accessor -----------------------------------------------------
+
+	const DxConstBuffer<Matrix4x4>& GetBuffer() const { return buffer_; }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	// buffer
+	DxConstBuffer<Matrix4x4> buffer_;
 };

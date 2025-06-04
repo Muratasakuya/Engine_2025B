@@ -16,6 +16,7 @@
 #include <Engine/Core/ECS/System/Systems/MaterialSystem.h>
 #include <Engine/Core/ECS/System/Systems/AnimationSystem.h>
 #include <Engine/Core/ECS/System/Systems/InstancedMeshSystem.h>
+#include <Engine/Core/ECS/System/Systems/SpriteBufferSystem.h>
 #include <Engine/Core/ECS/System/Systems/TagSystem.h>
 
 //============================================================================
@@ -46,15 +47,21 @@ void ECSManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxCommand) 
 	asset_ = nullptr;
 	asset_ = asset;
 
+	device_ = nullptr;
+	device_ = device;
+
 	entityManager_ = std::make_unique<EntityManager>();
 	systemManager_ = std::make_unique<SystemManager>();
 
 	// system登録
 	systemManager_->AddSystem<Transform3DSystem>();
+	systemManager_->AddSystem<Transform2DSystem>();
 	systemManager_->AddSystem<AnimationSystem>();
 	systemManager_->AddSystem<MaterialSystem>();
+	systemManager_->AddSystem<SpriteMaterialSystem>();
 	systemManager_->AddSystem<TagSystem>();
 	systemManager_->AddSystem<InstancedMeshSystem>(device, asset, dxCommand);
+	systemManager_->AddSystem<SpriteBufferSystem>();
 
 	ImGuiInspector::GetInstance()->Init();
 }
@@ -105,6 +112,27 @@ uint32_t ECSManager::CreateObject3D(const std::string& modelName,
 		// bufferを作成
 		systemManager_->GetSystem<InstancedMeshSystem>()->CreateStaticMesh(modelName);
 	}
+
+	return entity;
+}
+
+uint32_t ECSManager::CreateObject2D(const std::string& textureName,
+	const std::string& name, const std::string& groupName) {
+
+	// entity作成
+	uint32_t entity = BuildEmptyEntity(name, groupName);
+	// 必要なcomponentを作成
+	auto* transform = entityManager_->AddComponent<Transform2DComponent>(entity);
+	auto* material = entityManager_->AddComponent<SpriteMaterialComponent>(entity);
+
+	// 各componentを初期化
+	// transform
+	transform->Init(device_);
+	// material
+	material->Init(device_);
+	// sprite
+	entityManager_->AddComponent<SpriteComponent>(entity,
+		device_, asset_, textureName, *transform);
 
 	return entity;
 }

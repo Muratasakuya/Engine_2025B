@@ -12,6 +12,7 @@ EngineInformation:     load texture: spark
 EngineInformation:     load texture: gradationLine_1
 EngineInformation:     load texture: gradationLine_0
 EngineInformation:     load texture: effectCircle
+EngineInformation:     load texture: uvChecker
 EngineInformation:     load texture: docklands_01_2k
 EngineInformation:     load texture: BaseColor_Cube
 EngineInformation:     load model: cube

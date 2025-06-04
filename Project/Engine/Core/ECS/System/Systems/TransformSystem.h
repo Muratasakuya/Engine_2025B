@@ -22,3 +22,21 @@ public:
 
 	void Update(EntityManager& entityManager) override;
 };
+
+//============================================================================
+//	Transform2DSystem class
+//============================================================================
+class Transform2DSystem :
+	public ISystem {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	Transform2DSystem() = default;
+	~Transform2DSystem() = default;
+
+	Archetype Signature() const override;
+
+	void Update(EntityManager& entityManager) override;
+};

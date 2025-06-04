@@ -54,6 +54,4 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	void Load(Asset* asset);
-
-	void CreatePrimitive(Asset* asset);
 };

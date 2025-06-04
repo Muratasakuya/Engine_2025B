@@ -31,6 +31,7 @@ struct SpriteVertexData {
 
 	Vector2 pos;
 	Vector2 texcoord;
+	Color color;
 };
 
 //============================================================================

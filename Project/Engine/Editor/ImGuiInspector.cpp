@@ -13,6 +13,7 @@
 #include <Engine/Core/ECS/Components/MaterialComponent.h>
 #include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Core/ECS/Components/TagComponent.h>
+#include <Engine/Core/ECS/Components/SpriteComponent.h>
 
 // imgui
 #include <imgui.h>
@@ -52,7 +53,38 @@ void ImGuiInspector::SelectObject() {
 
 	CreateGroup();
 	SelectGroupedObject();
-	SelectUnGroupedObject();
+}
+
+bool ImGuiInspector::Is3D(uint32_t entity) const {
+
+	return ecsManager_->GetComponent<Transform3DComponent>(entity) != nullptr;
+}
+
+bool ImGuiInspector::Is2D(uint32_t entity) const {
+
+	return ecsManager_->GetComponent<Transform2DComponent>(entity) != nullptr;
+}
+
+void ImGuiInspector::DrawSelectable(uint32_t entity, const std::string& name) {
+
+	if (Is3D(entity)) {
+		bool selected = (selected3D_ == entity);
+		std::string label = name + "##3D" + std::to_string(entity);
+		if (ImGui::Selectable(label.c_str(), selected)) {
+			selected3D_ = entity;
+			selected2D_.reset();
+		}
+	}
+
+	if (Is2D(entity)) {
+		bool selected = (selected2D_ == entity);
+		std::string label = name + "##2D" + std::to_string(entity);
+		if (ImGui::Selectable(label.c_str(), selected)) {
+
+			selected2D_ = entity;
+			selected3D_.reset();
+		}
+	}
 }
 
 void ImGuiInspector::CreateGroup() {
@@ -63,35 +95,15 @@ void ImGuiInspector::CreateGroup() {
 void ImGuiInspector::SelectGroupedObject() {
 
 	for (auto& [group, ids] : groups_) {
-		if (group.empty()) {
-			continue;
-		}
+		if (group.empty()) continue;
 
 		if (ImGui::TreeNode(group.c_str())) {
 			for (uint32_t id : ids) {
 
 				const std::string& name = tagSystem_->Tags().at(id)->name;
-				bool selected = (selected3D_ == id);
-				if (ImGui::Selectable(name.c_str(), selected)) {
-
-					selected3D_ = id;
-				}
+				DrawSelectable(id, name);
 			}
 			ImGui::TreePop();
-		}
-	}
-}
-
-void ImGuiInspector::SelectUnGroupedObject() {
-
-	if (groups_.count("") == 0) return;
-	for (uint32_t id : groups_[""]) {
-
-		const std::string& name = tagSystem_->Tags().at(id)->name;
-		bool selected = (selected3D_ == id);
-		if (ImGui::Selectable(name.c_str(), selected)) {
-
-			selected3D_ = id;
 		}
 	}
 }
@@ -100,11 +112,13 @@ void ImGuiInspector::EditObject() {
 
 	// 各objectの操作
 	EditObject3D();
+	EditObject2D();
 }
 
 void ImGuiInspector::Reset() {
 
 	selected3D_.reset();
+	selected2D_.reset();
 }
 
 void ImGuiInspector::SetImGuiFunc(uint32_t entity, std::function<void()> func) {
@@ -200,4 +214,80 @@ void ImGuiInspector::Object3DMaterial() {
 
 		materials[selectedMaterialIndex_].ImGui(itemWidth_);
 	}
+}
+
+void ImGuiInspector::EditObject2D() {
+
+	if (!selected2D_) return;
+
+	if (ImGui::BeginTabBar("Obj2DTab")) {
+
+		if (ImGui::BeginTabItem("Info")) {
+
+			Object2DInformation();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Sprite")) {
+
+			Object2DSprite();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Transform")) {
+
+			Object2DTransform();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Material")) {
+
+			Object2DMaterial();
+			ImGui::EndTabItem();
+		}
+
+		if (selected2D_.has_value()) {
+			if (ImGui::BeginTabItem("Individual")) {
+				if (!individualUI_.empty()) {
+
+					individualUI_.at(*selected2D_)();
+				}
+				ImGui::EndTabItem();
+			}
+		}
+		ImGui::EndTabBar();
+	}
+}
+
+void ImGuiInspector::Object2DInformation() {
+
+	uint32_t id = *selected2D_;
+	const auto* tag = tagSystem_->Tags().at(id);
+
+	ImGui::Text("name: %s", tag->name.c_str());
+	ImGui::Text("entityId: %u", id);
+
+	if (ImGui::Button("Remove")) {
+
+		ecsManager_->Destroy(id);
+		selected2D_.reset();
+	}
+}
+
+void ImGuiInspector::Object2DSprite() {
+
+	auto* sprite = ecsManager_->GetComponent<SpriteComponent>(*selected2D_);
+	sprite->ImGui(itemWidth_);
+}
+
+void ImGuiInspector::Object2DTransform() {
+
+	auto* transform = ecsManager_->GetComponent<Transform2DComponent>(*selected2D_);
+	transform->ImGui(itemWidth_);
+}
+
+void ImGuiInspector::Object2DMaterial() {
+
+	auto* material = ecsManager_->GetComponent<SpriteMaterialComponent>(*selected2D_);
+	material->ImGui(itemWidth_);
 }

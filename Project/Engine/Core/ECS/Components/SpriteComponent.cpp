@@ -51,15 +51,19 @@ void SpriteComponent::UpdateVertex(const Transform2DComponent& transform) {
 	// 左下
 	vertexData_[0].pos = { left,bottom };
 	vertexData_[0].texcoord = { texLeft,texBottom };
+	vertexData_[0].color = Color::White();
 	// 左上
 	vertexData_[1].pos = { left,top };
 	vertexData_[1].texcoord = { texLeft,texTop };
+	vertexData_[1].color = Color::White();
 	// 右下
 	vertexData_[2].pos = { right,bottom };
 	vertexData_[2].texcoord = { texRight,texBottom };
+	vertexData_[2].color = Color::White();
 	// 右上
 	vertexData_[3].pos = { right,top };
 	vertexData_[3].texcoord = { texRight,texTop };
+	vertexData_[3].color = Color::White();
 
 	// GPUデータ転送
 	vertexBuffer_.TransferVectorData(vertexData_);
@@ -144,7 +148,7 @@ void SpriteComponent::ImGui(float itemSize) {
 	};
 	int layerIndex = static_cast<int>(layer_);
 
-	if (ImGui::Combo("Blend Mode", &layerIndex, layerItems, IM_ARRAYSIZE(layerItems))) {
+	if (ImGui::Combo("SpriteLayer", &layerIndex, layerItems, IM_ARRAYSIZE(layerItems))) {
 
 		layer_ = static_cast<SpriteLayer>(layerIndex);
 	}

@@ -3,50 +3,44 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Pipeline/PipelineState.h>
+#include <Engine/Core/ECS/System/Base/ISystem.h>
 #include <Engine/Core/ECS/Components/SpriteComponent.h>
-#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Lib/MathUtils/Matrix4x4.h>
 
-// c++
-#include <array>
-#include <memory>
 // front
-class DxCommand;
-class SceneConstBuffer;
+class Transform2DComponent;
+class SpriteMaterialComponent;
 
 //============================================================================
-//	enum class
+//	structure
 //============================================================================
 
-// 描画モード
-enum class RenderMode {
+struct SpriteData {
 
-	IrrelevantPostProcess,
-	ApplyPostProcess,
-
-	Count
+	Transform2DComponent* transform;
+	SpriteMaterialComponent* material;
+	SpriteComponent* sprite;
 };
 
 //============================================================================
-//	SpriteRenderer class
+//	SpriteBufferSystem class
 //============================================================================
-class SpriteRenderer {
+class SpriteBufferSystem :
+	public ISystem {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	SpriteRenderer() = default;
-	~SpriteRenderer() = default;
+	SpriteBufferSystem() = default;
+	~SpriteBufferSystem() = default;
 
-	void Init(ID3D12Device8* device, class SRVDescriptor* srvDescriptor,
-		class DxShaderCompiler* shaderCompiler);
+	Archetype Signature() const override;
 
-	// postProcessをかける
-	void ApplyPostProcessRendering(SpriteLayer layer, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
-	// postProcessをかけない
-	void IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
+	void Update(EntityManager& entityManager) override;
+
+	//--------- accessor -----------------------------------------------------
+
+	const std::vector<SpriteData>& GetSpriteData(SpriteLayer layer) { return spriteDataMap_[layer]; }
 private:
 	//========================================================================
 	//	private Methods
@@ -54,5 +48,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unordered_map<RenderMode, std::unique_ptr<PipelineState>> pipelines_;
+	std::unordered_map<SpriteLayer, std::vector<SpriteData>> spriteDataMap_;
 };

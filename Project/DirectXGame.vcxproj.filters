@@ -500,6 +500,9 @@
     <ClCompile Include="Engine\Particle\Updater\ParticleUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Systems\SpriteBufferSystem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -686,6 +689,7 @@
     <ClInclude Include="Engine\Particle\Creators\ConeEmitterParticleCreator.h" />
     <ClInclude Include="Engine\Particle\ParticleUpdater.h" />
     <ClInclude Include="Engine\Particle\Updater\ParticleUpdater.h" />
+    <ClInclude Include="Engine\Core\ECS\System\Systems\SpriteBufferSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
