@@ -317,6 +317,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Entity\GameEntity2D.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Entity\GameEntity3D.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Entity\Interface\IGameEntity.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Particle\Creators\BoxEmitterParticleCreator.cpp">
       <SubType>
       </SubType>
@@ -720,6 +732,18 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Entity\GameEntity2D.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Entity\GameEntity3D.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Entity\Interface\IGameEntity.h">
       <SubType>
       </SubType>
     </ClInclude>

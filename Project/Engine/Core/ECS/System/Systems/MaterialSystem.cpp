@@ -17,7 +17,7 @@ void MaterialSystem::Init(std::vector<MaterialComponent>& materials,
 	materials.resize(modelData.meshes.size());
 	for (uint32_t meshIndex = 0; meshIndex < modelData.meshes.size(); ++meshIndex) {
 
-		materials[meshIndex].Init();
+		materials[meshIndex].Init(asset);
 		materials[meshIndex].material.textureIndex =
 			asset->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
 

@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
 #include <Game/Time/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
@@ -13,11 +14,14 @@
 //	MaterialComponent classMethods
 //============================================================================
 
-void MaterialComponent::Init() {
+void MaterialComponent::Init(Asset* asset) {
 
 	material.Init();
 	uvTransform.scale = Vector3::AnyInit(1.0f);
 	prevUVTransform.scale = Vector3::AnyInit(1.0f);
+
+	asset_ = nullptr;
+	asset_ = asset;
 }
 
 void MaterialComponent::UpdateUVTransform() {
@@ -29,7 +33,7 @@ void MaterialComponent::UpdateUVTransform() {
 
 	// uvの更新
 	material.uvTransform = Matrix4x4::MakeAffineMatrix(
-		uvTransform.scale, uvTransform.rotate, uvTransform.translate);
+		uvTransform.scale, uvTransform.rotate, uvTransform.translation);
 
 	// 値を保存
 	prevUVTransform = uvTransform;
@@ -57,7 +61,7 @@ void MaterialComponent::ImGui(float itemSize) {
 	ImGui::SeparatorText("UV");
 
 	// transform
-	ImGui::DragFloat2("uvTranslate", &uvTransform.translate.x, 0.1f);
+	ImGui::DragFloat2("uvTranslate", &uvTransform.translation.x, 0.1f);
 	ImGui::SliderAngle("uvRotate", &uvTransform.rotate.z);
 	ImGui::DragFloat2("uvScale", &uvTransform.scale.x, 0.1f);
 
@@ -103,7 +107,7 @@ void MaterialComponent::ToJson(Json& data) {
 	// UV
 	data["uvScale"] = uvTransform.scale.ToJson();
 	data["uvRotate"] = uvTransform.rotate.ToJson();
-	data["uvTranslate"] = uvTransform.translate.ToJson();
+	data["uvTranslate"] = uvTransform.translation.ToJson();
 }
 
 void MaterialComponent::FromJson(const Json& data) {
@@ -127,7 +131,12 @@ void MaterialComponent::FromJson(const Json& data) {
 	// UV
 	uvTransform.scale = JsonAdapter::ToObject<Vector3>(data["uvScale"]);
 	uvTransform.rotate = JsonAdapter::ToObject<Vector3>(data["uvRotate"]);
-	uvTransform.translate = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
+	uvTransform.translation = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
+}
+
+void MaterialComponent::SetTextureName(const std::string& textureName) {
+
+	material.textureIndex = asset_->GetTextureGPUIndex(textureName);
 }
 
 //============================================================================
@@ -156,7 +165,7 @@ void SpriteMaterialComponent::UpdateUVTransform() {
 
 	// uvの更新
 	material.uvTransform = Matrix4x4::MakeAffineMatrix(
-		uvTransform.scale, uvTransform.rotate, uvTransform.translate);
+		uvTransform.scale, uvTransform.rotate, uvTransform.translation);
 
 	// 値を保存
 	prevUVTransform = uvTransform;
@@ -184,7 +193,7 @@ void SpriteMaterialComponent::ImGui(float itemSize) {
 	ImGui::SeparatorText("UV");
 
 	// transform
-	ImGui::DragFloat2("uvTranslate", &uvTransform.translate.x, 0.1f);
+	ImGui::DragFloat2("uvTranslate", &uvTransform.translation.x, 0.1f);
 	ImGui::SliderAngle("uvRotate", &uvTransform.rotate.z);
 	ImGui::DragFloat2("uvScale", &uvTransform.scale.x, 0.1f);
 
@@ -203,7 +212,7 @@ void SpriteMaterialComponent::ToJson(Json& data) {
 	// UV
 	data["uvScale"] = uvTransform.scale.ToJson();
 	data["uvRotate"] = uvTransform.rotate.ToJson();
-	data["uvTranslate"] = uvTransform.translate.ToJson();
+	data["uvTranslate"] = uvTransform.translation.ToJson();
 }
 
 void SpriteMaterialComponent::FromJson(const Json& data) {
@@ -218,5 +227,5 @@ void SpriteMaterialComponent::FromJson(const Json& data) {
 	// UV
 	uvTransform.scale = JsonAdapter::ToObject<Vector3>(data["uvScale"]);
 	uvTransform.rotate = JsonAdapter::ToObject<Vector3>(data["uvRotate"]);
-	uvTransform.translate = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
+	uvTransform.translation = JsonAdapter::ToObject<Vector3>(data["uvTranslate"]);
 }

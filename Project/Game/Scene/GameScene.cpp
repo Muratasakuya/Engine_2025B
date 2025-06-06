@@ -47,6 +47,10 @@ void GameScene::Load(Asset* asset) {
 
 	// environment
 	asset->LoadModel("stageField");
+
+	// animation
+	asset->LoadModel("BrainStem");
+	asset->LoadAnimation("BrainStem", "BrainStem");
 }
 
 void GameScene::Init(
@@ -109,8 +113,6 @@ void GameScene::Init(
 	material->front().material.uvTransform = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
 		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
 	material->front().material.shadowRate = 1.0f;
-
-	ECSManager::GetInstance()->CreateObject2D("uvChecker", "test", "Test");
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

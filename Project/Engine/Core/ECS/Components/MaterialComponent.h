@@ -8,6 +8,9 @@
 #include <Engine/Utility/SimpleAnimation.h>
 #include <Lib/MathUtils/MathUtils.h>
 
+// front
+class Asset;
+
 //============================================================================
 //	UVTransform
 //============================================================================
@@ -16,14 +19,14 @@ struct UVTransform {
 
 	Vector3 scale;
 	Vector3 rotate;
-	Vector3 translate;
+	Vector3 translation;
 
 	// operator
 	bool operator==(const UVTransform& other) const {
 
 		return scale == other.scale &&
 			rotate == other.rotate &&
-			translate == other.translate;
+			translation == other.translation;
 	}
 };
 
@@ -39,7 +42,7 @@ public:
 	MaterialComponent() = default;
 	~MaterialComponent() = default;
 
-	void Init();
+	void Init(Asset* asset);
 
 	void UpdateUVTransform();
 
@@ -47,6 +50,10 @@ public:
 
 	void ToJson(Json& data);
 	void FromJson(const Json& data);
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetTextureName(const std::string& textureName);
 
 	//--------- variables ----------------------------------------------------
 
@@ -59,6 +66,8 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	Asset* asset_;
 
 	UVTransform prevUVTransform;
 };
