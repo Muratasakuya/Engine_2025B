@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Entity/Interface/IGameEntity.h>
+#include <Engine/Collision/Collider.h>
 
 // components
 #include <Engine/Core/ECS/Components/AnimationComponent.h>
@@ -12,7 +13,8 @@
 //	GameEntity3D class
 //============================================================================
 class GameEntity3D :
-	public IGameEntity {
+	public IGameEntity,
+	public Collider {
 public:
 	//========================================================================
 	//	public Methods
@@ -23,6 +25,13 @@ public:
 
 	void Init(const std::string& modelName, const std::string& name,
 		const std::string& groupName, const std::optional<std::string>& animationName = std::nullopt);
+
+	/*-------- collision ----------*/
+
+	// 衝突コールバック関数
+	virtual void OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) override {}
+	virtual void OnCollisionStay([[maybe_unused]] const CollisionBody* collisionBody) override {}
+	virtual void OnCollisionExit([[maybe_unused]] const CollisionBody* collisionBody) override {}
 
 	//--------- accessor -----------------------------------------------------
 
@@ -44,7 +53,7 @@ public:
 	void SetTextureName(const std::string& textureName, std::optional<uint32_t> meshIndex = std::nullopt);
 
 	/*---------- getter ----------*/
-	
+
 	// transform
 	const Transform3DComponent& GetTransform() const { return *transform_; }
 	// SRT

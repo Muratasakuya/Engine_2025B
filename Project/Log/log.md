@@ -26,6 +26,8 @@ EngineInformation:     load model: playerSword
 EngineInformation:     load texture: stageField
 EngineInformation:     load texture: stageFieldNormalMap
 EngineInformation:     load model: stageField
+EngineInformation:     load model: BrainStem
+EngineInformation:     load animation: BrainStem
 EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture
 EngineInformation:     load texture: model

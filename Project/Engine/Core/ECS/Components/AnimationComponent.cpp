@@ -22,6 +22,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 
 	// 初期値
 	transitionDuration_ = 0.4f;
+	currentAnimationName_ = animationName;
 }
 
 void AnimationComponent::Update() {
