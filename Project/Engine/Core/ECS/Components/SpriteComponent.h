@@ -43,6 +43,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetTextureName(const std::string& textureName) { textureName_ = textureName; }
+
 	void SetLayer(SpriteLayer layer) { layer_ = layer; }
 	void SetPostProcessEnable(bool enable) { postProcessEnable_ = enable; }
 

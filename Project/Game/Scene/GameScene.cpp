@@ -111,6 +111,7 @@ void GameScene::Init(
 	material->front().material.shadowRate = 1.0f;
 
 	ECSManager::GetInstance()->CreateObject2D("uvChecker", "test", "Test");
+	ECSManager::GetInstance()->CreateObject2D("monsterBall", "test", "Test");
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
