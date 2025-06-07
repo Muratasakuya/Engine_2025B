@@ -28,25 +28,32 @@ struct TransformationMatrix {
 		const std::optional<Matrix4x4>& billboardMatrix = std::nullopt);
 };
 
-struct Material {
+struct MaterialForGPU {
 
 	Color color;
+
 	uint32_t textureIndex;
 	uint32_t normalMapTextureIndex;
 	int32_t enableNormalMap;
+		
+	float emissiveIntensity;
+	Vector3 emissionColor;
+
+	Matrix4x4 uvTransform;
+};
+
+struct LightingForGPU {
+
 	int32_t enableLighting;
 	int32_t enableHalfLambert;
 	int32_t enableBlinnPhongReflection;
 	int32_t enableImageBasedLighting;
-	float environmentCoefficient;
-	float shadowRate;
+
 	float phongRefShininess;
 	Vector3 specularColor;
-	float emissiveIntensity;
-	Vector3 emissionColor;
-	Matrix4x4 uvTransform;
 
-	void Init();
+	float shadowRate;
+	float environmentCoefficient;
 };
 
 struct SpriteMaterial {

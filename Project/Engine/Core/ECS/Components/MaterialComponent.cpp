@@ -14,9 +14,26 @@
 //	MaterialComponent classMethods
 //============================================================================
 
+void MaterialComponent::InitParameter() {
+
+	color = Color::White();
+	enableNormalMap = false;
+	enableLighting = true;
+	enableHalfLambert = true;
+	enableBlinnPhongReflection = false;
+	enableImageBasedLighting = false;
+	environmentCoefficient = 0.25f;
+	shadowRate = 0.25f;
+	phongRefShininess = 1.0f;
+	specularColor = Vector3(1.0f, 1.0f, 1.0f);
+	emissiveIntensity = 0.0f;
+	emissionColor = Vector3(1.0f, 1.0f, 1.0f);
+	uvMatrix = Matrix4x4::MakeIdentity4x4();
+}
+
 void MaterialComponent::Init(Asset* asset) {
 
-	material.Init();
+	InitParameter();
 	uvTransform.scale = Vector3::AnyInit(1.0f);
 	prevUVTransform.scale = Vector3::AnyInit(1.0f);
 
@@ -32,8 +49,7 @@ void MaterialComponent::UpdateUVTransform() {
 	}
 
 	// uvの更新
-	material.uvTransform = Matrix4x4::MakeAffineMatrix(
-		uvTransform.scale, uvTransform.rotate, uvTransform.translation);
+	uvMatrix = Matrix4x4::MakeAffineMatrix(uvTransform.scale, uvTransform.rotate, uvTransform.translation);
 
 	// 値を保存
 	prevUVTransform = uvTransform;
@@ -45,17 +61,17 @@ void MaterialComponent::ImGui(float itemSize) {
 	ImGui::SeparatorText("Color");
 
 	ImGui::PushItemWidth(itemSize);
-	ImGui::ColorEdit4("color", &material.color.r);
+	ImGui::ColorEdit4("color", &color.r);
 	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f A:%4.3f",
-		material.color.r, material.color.g,
-		material.color.b, material.color.a);
+		color.r, color.g,
+		color.b, color.a);
 
 	// 発行色
-	ImGui::ColorEdit3("emissionColor", &material.emissionColor.x);
+	ImGui::ColorEdit3("emissionColor", &emissionColor.x);
 	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f",
-		material.emissionColor.x, material.emissionColor.y,
-		material.emissionColor.z);
-	ImGui::DragFloat("emissiveIntensity", &material.emissiveIntensity, 0.01f);
+		emissionColor.x, emissionColor.y,
+		emissionColor.z);
+	ImGui::DragFloat("emissiveIntensity", &emissiveIntensity, 0.01f);
 
 	// UV
 	ImGui::SeparatorText("UV");
@@ -68,22 +84,22 @@ void MaterialComponent::ImGui(float itemSize) {
 	// Lighting
 	ImGui::SeparatorText("Lighting");
 
-	ImGui::SliderInt("enableLighting", &material.enableLighting, 0, 1);
-	ImGui::SliderInt("blinnPhongReflection", &material.enableBlinnPhongReflection, 0, 1);
+	ImGui::SliderInt("enableLighting", &enableLighting, 0, 1);
+	ImGui::SliderInt("blinnPhongReflection", &enableBlinnPhongReflection, 0, 1);
 
-	if (material.enableBlinnPhongReflection) {
+	if (enableBlinnPhongReflection) {
 
-		ImGui::ColorEdit3("specularColor", &material.specularColor.x);
-		ImGui::DragFloat("phongRefShininess", &material.phongRefShininess, 0.01f);
+		ImGui::ColorEdit3("specularColor", &specularColor.x);
+		ImGui::DragFloat("phongRefShininess", &phongRefShininess, 0.01f);
 	}
 
-	ImGui::SliderInt("enableImageBasedLighting", &material.enableImageBasedLighting, 0, 1);
-	if (material.enableImageBasedLighting) {
+	ImGui::SliderInt("enableImageBasedLighting", &enableImageBasedLighting, 0, 1);
+	if (enableImageBasedLighting) {
 
-		ImGui::DragFloat("environmentCoefficient", &material.environmentCoefficient, 0.001f, 0.0f, 4.0f);
+		ImGui::DragFloat("environmentCoefficient", &environmentCoefficient, 0.001f, 0.0f, 4.0f);
 	}
 
-	ImGui::DragFloat("shadowRate", &material.shadowRate, 0.01f, 0.0f, 8.0f);
+	ImGui::DragFloat("shadowRate", &shadowRate, 0.01f, 0.0f, 8.0f);
 	ImGui::PopItemWidth();
 }
 
@@ -91,18 +107,18 @@ void MaterialComponent::ToJson(Json& data) {
 
 	// Material
 	// color
-	data["color"] = material.color.ToJson();
-	data["emissionColor"] = material.emissionColor.ToJson();
-	data["emissiveIntensity"] = material.emissiveIntensity;
+	data["color"] = color.ToJson();
+	data["emissionColor"] = emissionColor.ToJson();
+	data["emissiveIntensity"] = emissiveIntensity;
 	// lighting
-	data["enableLighting"] = material.enableLighting;
-	data["enableHalfLambert"] = material.enableHalfLambert;
-	data["enableBlinnPhongReflection"] = material.enableBlinnPhongReflection;
-	data["enableImageBasedLighting"] = material.enableImageBasedLighting;
-	data["phongRefShininess"] = material.phongRefShininess;
-	data["specularColor"] = material.specularColor.ToJson();
-	data["shadowRate"] = material.shadowRate;
-	data["environmentCoefficient"] = material.environmentCoefficient;
+	data["enableLighting"] = enableLighting;
+	data["enableHalfLambert"] = enableHalfLambert;
+	data["enableBlinnPhongReflection"] = enableBlinnPhongReflection;
+	data["enableImageBasedLighting"] = enableImageBasedLighting;
+	data["phongRefShininess"] = phongRefShininess;
+	data["specularColor"] = specularColor.ToJson();
+	data["shadowRate"] = shadowRate;
+	data["environmentCoefficient"] = environmentCoefficient;
 
 	// UV
 	data["uvScale"] = uvTransform.scale.ToJson();
@@ -114,19 +130,19 @@ void MaterialComponent::FromJson(const Json& data) {
 
 	// Material
 	// color
-	material.color = JsonAdapter::ToObject<Color>(data["color"]);
-	material.emissionColor = JsonAdapter::ToObject<Vector3>(data["emissionColor"]);
-	material.emissiveIntensity = data["emissiveIntensity"];
+	color = JsonAdapter::ToObject<Color>(data["color"]);
+	emissionColor = JsonAdapter::ToObject<Vector3>(data["emissionColor"]);
+	emissiveIntensity = data["emissiveIntensity"];
 	// lighting
-	material.enableLighting = data["enableLighting"];
-	material.enableHalfLambert = data["enableHalfLambert"];
-	material.enableBlinnPhongReflection = data["enableBlinnPhongReflection"];
-	material.enableBlinnPhongReflection = data["enableBlinnPhongReflection"];
-	material.enableImageBasedLighting = JsonAdapter::GetValue<bool>(data, "enableImageBasedLighting");
-	material.phongRefShininess = data["phongRefShininess"];
-	material.specularColor = JsonAdapter::ToObject<Vector3>(data["specularColor"]);
-	material.shadowRate = data["shadowRate"];
-	material.environmentCoefficient = JsonAdapter::GetValue<float>(data, "environmentCoefficient");
+	enableLighting = data["enableLighting"];
+	enableHalfLambert = data["enableHalfLambert"];
+	enableBlinnPhongReflection = data["enableBlinnPhongReflection"];
+	enableBlinnPhongReflection = data["enableBlinnPhongReflection"];
+	enableImageBasedLighting = JsonAdapter::GetValue<bool>(data, "enableImageBasedLighting");
+	phongRefShininess = data["phongRefShininess"];
+	specularColor = JsonAdapter::ToObject<Vector3>(data["specularColor"]);
+	shadowRate = data["shadowRate"];
+	environmentCoefficient = JsonAdapter::GetValue<float>(data, "environmentCoefficient");
 
 	// UV
 	uvTransform.scale = JsonAdapter::ToObject<Vector3>(data["uvScale"]);
@@ -136,7 +152,7 @@ void MaterialComponent::FromJson(const Json& data) {
 
 void MaterialComponent::SetTextureName(const std::string& textureName) {
 
-	material.textureIndex = asset_->GetTextureGPUIndex(textureName);
+	textureIndex = asset_->GetTextureGPUIndex(textureName);
 }
 
 //============================================================================

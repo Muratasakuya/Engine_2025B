@@ -31,19 +31,21 @@ void InstancedMeshBuffer::CreateBuffers(const std::string& name) {
 
 	// transform
 	// buffer作成
-	meshGroup.matrix.CreateStructuredBuffer(device_, meshGroup.maxInstance);
+	meshGroup.matrixBuffer.CreateStructuredBuffer(device_, meshGroup.maxInstance);
 
-	// material
+	// material、lighting
 	// meshの数だけ作成する
 	const size_t meshNum = meshGroup.meshNum;
-	meshGroup.materials.resize(meshNum);
-	// componentの数もここで決める
+	meshGroup.materialsBuffer.resize(meshNum);
+	meshGroup.lightingBuffer.resize(meshNum);
 	meshGroup.materialUploadData.resize(meshNum);
+	meshGroup.lightingUploadData.resize(meshNum);
 
 	for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
 		// buffer作成
-		meshGroup.materials[meshIndex].CreateStructuredBuffer(device_, meshGroup.maxInstance);
+		meshGroup.materialsBuffer[meshIndex].CreateStructuredBuffer(device_, meshGroup.maxInstance);
+		meshGroup.lightingBuffer[meshIndex].CreateStructuredBuffer(device_, meshGroup.maxInstance);
 	}
 
 	// skinnedMeshなら専用bufferを作成する
@@ -168,7 +170,25 @@ void InstancedMeshBuffer::SetUploadData(const std::string& name,
 
 	for (uint32_t meshIndex = 0; meshIndex < meshGroups_[name].materialUploadData.size(); ++meshIndex) {
 
-		meshGroups_[name].materialUploadData[meshIndex].emplace_back(materials[meshIndex].material);
+		// material
+		meshGroups_[name].materialUploadData[meshIndex].emplace_back(MaterialForGPU(
+			materials[meshIndex].color,
+			materials[meshIndex].textureIndex,
+			materials[meshIndex].normalMapTextureIndex,
+			materials[meshIndex].enableNormalMap,
+			materials[meshIndex].emissiveIntensity,
+			materials[meshIndex].emissionColor,
+			materials[meshIndex].uvMatrix));
+		// lighting
+		meshGroups_[name].lightingUploadData[meshIndex].emplace_back(LightingForGPU(
+			materials[meshIndex].enableLighting,
+			materials[meshIndex].enableHalfLambert,
+			materials[meshIndex].enableBlinnPhongReflection,
+			materials[meshIndex].enableImageBasedLighting,
+			materials[meshIndex].phongRefShininess,
+			materials[meshIndex].specularColor,
+			materials[meshIndex].shadowRate,
+			materials[meshIndex].environmentCoefficient));
 
 		// skinnedMeshなら設定する
 		if (meshGroups_[name].isSkinned) {
@@ -206,10 +226,11 @@ void InstancedMeshBuffer::Update(DxCommand* dxCommand) {
 		}
 
 		// buffer転送
-		meshGroup.matrix.TransferVectorData(meshGroup.matrixUploadData);
+		meshGroup.matrixBuffer.TransferVectorData(meshGroup.matrixUploadData);
 		for (uint32_t meshIndex = 0; meshIndex < meshGroup.meshNum; ++meshIndex) {
 
-			meshGroup.materials[meshIndex].TransferVectorData(meshGroup.materialUploadData[meshIndex]);
+			meshGroup.materialsBuffer[meshIndex].TransferVectorData(meshGroup.materialUploadData[meshIndex]);
+			meshGroup.lightingBuffer[meshIndex].TransferVectorData(meshGroup.lightingUploadData[meshIndex]);
 
 			// skinnedMeshなら設定する
 			if (meshGroups_[name].isSkinned) {
@@ -254,6 +275,10 @@ void InstancedMeshBuffer::Reset() {
 			if (meshGroup.materialUploadData[meshIndex].size() != 0) {
 
 				meshGroup.materialUploadData[meshIndex].clear();
+			}
+			if (meshGroup.lightingUploadData[meshIndex].size() != 0) {
+
+				meshGroup.lightingUploadData[meshIndex].clear();
 			}
 
 			// skinnedMeshの場合のみ

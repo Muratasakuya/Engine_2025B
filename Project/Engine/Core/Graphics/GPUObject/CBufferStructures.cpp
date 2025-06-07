@@ -61,23 +61,6 @@ void TransformationMatrix::Update(const BaseTransform* parent, const Vector3& sc
 	worldInverseTranspose = Matrix4x4::Transpose(Matrix4x4::Inverse(world));
 }
 
-void Material::Init() {
-
-	color = Color::White();
-	enableNormalMap = false;
-	enableLighting = true;
-	enableHalfLambert = true;
-	enableBlinnPhongReflection = false;
-	enableImageBasedLighting = false;
-	environmentCoefficient = 0.25f;
-	shadowRate = 0.25f;
-	phongRefShininess = 1.0f;
-	specularColor = Vector3(1.0f, 1.0f, 1.0f);
-	emissiveIntensity = 0.0f;
-	emissionColor = Vector3(1.0f, 1.0f, 1.0f);
-	uvTransform = Matrix4x4::MakeIdentity4x4();
-}
-
 void SpriteMaterial::Init() {
 
 	color = Color::White();

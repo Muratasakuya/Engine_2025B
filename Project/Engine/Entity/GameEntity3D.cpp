@@ -31,12 +31,12 @@ void GameEntity3D::SetColor(const Color& color, std::optional<uint32_t> meshInde
 	// meshIndexが設定されている場合のみ指定して設定
 	if (meshIndex.has_value()) {
 
-		(*materials_)[meshIndex.value()].material.color = color;
+		(*materials_)[meshIndex.value()].color = color;
 	} else {
 
 		for (auto& material : *materials_) {
 
-			material.material.color = color;
+			material.color = color;
 		}
 	}
 }
@@ -46,12 +46,12 @@ void GameEntity3D::SetAlpha(float alpha, std::optional<uint32_t> meshIndex) {
 	// meshIndexが設定されている場合のみ指定して設定
 	if (meshIndex.has_value()) {
 
-		(*materials_)[meshIndex.value()].material.color.a = alpha;
+		(*materials_)[meshIndex.value()].color.a = alpha;
 	} else {
 
 		for (auto& material : *materials_) {
 
-			material.material.color.a = alpha;
+			material.color.a = alpha;
 		}
 	}
 }
