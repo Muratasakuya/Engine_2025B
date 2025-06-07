@@ -16,13 +16,29 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 	asset_ = nullptr;
 	asset_ = asset;
 
-	// 骨の情報とクラスターを渡す
-	skeleton_ = asset_->GetSkeletonData(animationName);
-	skinCluster_ = asset_->GetSkinClusterData(animationName);
-
 	// 初期値
 	transitionDuration_ = 0.4f;
 	currentAnimationName_ = animationName;
+
+	// 骨の情報とクラスターを渡す
+	skeleton_ = asset_->GetSkeletonData(currentAnimationName_);
+	skinCluster_ = asset_->GetSkinClusterData(currentAnimationName_);
+	animationData_[currentAnimationName_] = asset_->GetAnimationData(currentAnimationName_);
+
+	// 使用するjointを記録
+	std::vector<const NodeAnimation*>& tracks = jointAnimationTracks_[currentAnimationName_];
+	tracks.assign(skeleton_.joints.size(), nullptr);
+	for (const Joint& j : skeleton_.joints) {
+		// jointIndexで値を設定
+		auto it = animationData_[currentAnimationName_].nodeAnimations.find(j.name);
+		if (it != animationData_[currentAnimationName_].nodeAnimations.end()) {
+
+			tracks[j.index] = &it->second;
+		}
+	}
+
+	// ループ再生状態にする
+	SetPlayAnimation(currentAnimationName_, true);
 }
 
 void AnimationComponent::Update() {

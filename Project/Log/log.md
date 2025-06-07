@@ -32,3 +32,10 @@ EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture
 EngineInformation:     load texture: model
 EngineInformation:     load texture: file
+EngineInformation:     load model: walk
+EngineInformation:     load animation: walk
+EngineInformation:     load model: sneakWalk
+EngineInformation:     load animation: sneakWalk
+EngineInformation:     load texture: XBotTex
+EngineInformation:     load model: Kick
+EngineInformation:     load animation: Kick

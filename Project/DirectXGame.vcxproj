@@ -471,6 +471,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
     <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp" />
     <ClCompile Include="Engine\Scene\Camera\CameraManager.cpp" />
+    <ClCompile Include="Game\Editor\GameEntityEditor.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Object2D\SceneTransition\FadeTransition.cpp">
       <SubType>
       </SubType>
@@ -892,6 +896,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Scene\Camera\LightViewCamera.h" />
     <ClInclude Include="Engine\Scene\Camera\CameraManager.h" />
     <ClInclude Include="Engine\Scene\Light\PunctualLight.h" />
+    <ClInclude Include="Game\Editor\GameEntityEditor.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Object2D\Base\ITransition.h">
       <SubType>
       </SubType>

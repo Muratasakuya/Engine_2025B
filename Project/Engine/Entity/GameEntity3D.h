@@ -26,6 +26,8 @@ public:
 	void Init(const std::string& modelName, const std::string& name,
 		const std::string& groupName, const std::optional<std::string>& animationName = std::nullopt);
 
+	virtual void Update() {}
+
 	/*-------- collision ----------*/
 
 	// 衝突コールバック関数

@@ -73,7 +73,7 @@ void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
 	// GPUとOSに画面の交換を行うように通知する
-	swapChain->Present(1, 0);
+	swapChain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
 }
 
 void DxCommand::FenceEvent() {
@@ -99,7 +99,7 @@ void DxCommand::ExecuteCommands(IDXGISwapChain4* swapChain) {
 	FenceEvent();
 
 	// FPS 固定
-	UpdateFixFPS();
+	//UpdateFixFPS();
 
 	// コマンドリストのリセット
 	HRESULT hr = commandAllocator_->Reset();

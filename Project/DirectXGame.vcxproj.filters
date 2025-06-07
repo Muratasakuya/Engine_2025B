@@ -512,6 +512,9 @@
     <ClCompile Include="Engine\Entity\GameEntity3D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Editor\GameEntityEditor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -702,6 +705,7 @@
     <ClInclude Include="Engine\Entity\Interface\IGameEntity.h" />
     <ClInclude Include="Engine\Entity\GameEntity3D.h" />
     <ClInclude Include="Engine\Entity\GameEntity2D.h" />
+    <ClInclude Include="Game\Editor\GameEntityEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

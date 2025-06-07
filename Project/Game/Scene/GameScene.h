@@ -13,6 +13,9 @@
 // object
 #include <Game/Object3D/Player/Player.h>
 
+// editor
+#include <Game/Editor/GameEntityEditor.h>
+
 //============================================================================
 //	GameScene class
 //============================================================================
@@ -47,9 +50,8 @@ private:
 	// objects
 	std::unique_ptr<Player> player_;
 
-	// debug
-	std::vector<uint32_t> debugId_;
-	std::vector<bool> debugAnimationContoroller_;
+	// editor
+	std::unique_ptr<GameEntityEditor> entityEditor_;
 
 	//--------- functions ----------------------------------------------------
 
