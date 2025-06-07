@@ -9,8 +9,6 @@ struct MSOutput {
 	float3 normal : NORMAL0;
 	float3 worldPosition : POSITION0;
 	float4 positionInLVP : TEXCOORD1;
-	float4 meshletColor : COLOR0;
-	float4 vertexColor : COLOR1;
 	float3 tangent : TANGENT;
 	float3 biNormal : BINORMAL;
 	uint instanceID : INSTANCEID;

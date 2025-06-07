@@ -29,7 +29,7 @@ void MeshRegistry::RegisterMesh(const std::string& modelName,
 	}
 
 	// 頂点、meshlet生成
-	const ResourceMesh resourceMesh = CreateMeshlet(modelName);
+	const ResourceMesh<MeshVertex> resourceMesh = CreateMeshlet(modelName);
 
 	// meshの生成
 	if (isSkinned) {

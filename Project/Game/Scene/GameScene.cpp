@@ -51,6 +51,9 @@ void GameScene::Load(Asset* asset) {
 	// animation
 	asset->LoadModel("BrainStem");
 	asset->LoadAnimation("BrainStem", "BrainStem");
+
+	// debug
+	asset->LoadModel("bricks");
 }
 
 void GameScene::Init(
