@@ -18,22 +18,22 @@ void MaterialSystem::Init(std::vector<MaterialComponent>& materials,
 	for (uint32_t meshIndex = 0; meshIndex < modelData.meshes.size(); ++meshIndex) {
 
 		materials[meshIndex].Init(asset);
-		materials[meshIndex].material.textureIndex =
+		materials[meshIndex].textureIndex =
 			asset->GetTextureGPUIndex(modelData.meshes[meshIndex].textureName.value_or("white"));
 
 		// normalMap用のTextureがあれば設定する
 		if (modelData.meshes[meshIndex].normalMapTexture.has_value()) {
 
-			materials[meshIndex].material.normalMapTextureIndex =
+			materials[meshIndex].normalMapTextureIndex =
 				asset->GetTextureGPUIndex(modelData.meshes[meshIndex].normalMapTexture.value());
-			materials[meshIndex].material.enableNormalMap = true;
+			materials[meshIndex].enableNormalMap = true;
 		}
 
 		// baseColorがあれば色を設定する
 		if (modelData.meshes[meshIndex].baseColor.has_value()) {
 
-			materials[meshIndex].material.color = modelData.meshes[meshIndex].baseColor.value();
-			materials[meshIndex].material.emissionColor = Vector3(
+			materials[meshIndex].color = modelData.meshes[meshIndex].baseColor.value();
+			materials[meshIndex].emissionColor = Vector3(
 				modelData.meshes[meshIndex].baseColor.value().r,
 				modelData.meshes[meshIndex].baseColor.value().g,
 				modelData.meshes[meshIndex].baseColor.value().b);

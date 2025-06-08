@@ -7,6 +7,7 @@
 // components
 #include <Engine/Core/ECS/Components/TransformComponent.h>
 #include <Engine/Core/ECS/Components/MaterialComponent.h>
+#include <Engine/Core/ECS/Components/TagComponent.h>
 
 // c++
 #include <string>
@@ -27,8 +28,13 @@ public:
 	IGameEntity();
 	virtual ~IGameEntity();
 
+	virtual void DerivedImGui() = 0;
+
 	//--------- accessor -----------------------------------------------------
 
+	/*---------- getter ----------*/
+
+	const TagComponent& GetTag() const { return *tag_; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -40,4 +46,9 @@ protected:
 
 	// 自身のentityId
 	uint32_t entityId_;
+	// tag
+	TagComponent* tag_;
+
+	// imgui
+	const float itemWidth_ = 224.0f;
 };

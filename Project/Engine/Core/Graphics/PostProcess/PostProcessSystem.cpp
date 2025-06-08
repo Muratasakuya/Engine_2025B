@@ -146,6 +146,8 @@ void PostProcessSystem::Execute(RenderTexture* inputTexture, DxCommand* dxComman
 			inputGPUHandle.ptr = NULL;
 			inputGPUHandle = processors_[process]->GetSRVGPUHandle();
 		}
+
+		++bloomExecuteCount_;
 	}
 
 	// 最終的なframeBufferに設定するGPUHandleの設定
@@ -178,6 +180,8 @@ void PostProcessSystem::ExecuteDebugScene(RenderTexture* inputTexture, DxCommand
 	dxCommand->TransitionBarriers({ debugSceneBloomProcessor_->GetOutputTextureResource() },
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
+	++bloomExecuteCount_;
 #endif // _DEBUG
 }
 
@@ -236,6 +240,9 @@ void PostProcessSystem::ToWrite(DxCommand* dxCommand) {
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 #endif // _DEBUG
+
+	// リセットする
+	bloomExecuteCount_ = 0;
 }
 
 void PostProcessSystem::CreateCBuffer(PostProcessType type) {

@@ -143,11 +143,6 @@ out indices uint3 polys[126] // 出力三角形インデックス
 		// 接線
 		output.tangent = normalize(mul(input.tangent, worldInverseTranspose));
 		output.biNormal = normalize(mul(input.biNormal, worldInverseTranspose));
-		
-		// meshletの色
-		output.meshletColor = meshlet.color;
-		// 頂点の色
-		output.vertexColor = input.color;
 	
 		float4 worldPos = mul(input.position, world);
 		output.worldPosition = worldPos.xyz;

@@ -77,6 +77,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	uint32_t bloomExecuteCount_;
+
 	// pipeline
 	std::unique_ptr<PostProcessPipeline> pipeline_;
 	std::unique_ptr<PipelineState> offscreenPipeline_;

@@ -9,6 +9,7 @@
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Engine/Asset/ModelLoader.h>
 #include <Engine/Asset/Filesystem.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	AnimationManager classMethods
@@ -29,6 +30,11 @@ void AnimationManager::Init(ID3D12Device* device, SRVDescriptor* srvDescriptor, 
 }
 
 void AnimationManager::Load(const std::string& animationName, const std::string& modelName) {
+
+	// すでに読み込み済みの場合は処理しない
+	if (Algorithm::Find(animations_, animationName)) {
+		return;
+	}
 
 	// animation検索
 	std::filesystem::path filePath;

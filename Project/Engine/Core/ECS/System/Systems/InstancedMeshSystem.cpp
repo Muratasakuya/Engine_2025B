@@ -22,7 +22,7 @@ InstancedMeshSystem::InstancedMeshSystem(ID3D12Device* device, Asset* asset,
 void InstancedMeshSystem::CreateStaticMesh(const std::string& modelName) {
 
 	// 最大instance数
-	const uint32_t kMaxInstanceNum = 1024;
+	const uint32_t kMaxInstanceNum = 0xffff;
 
 	// meshの作成、登録
 	meshRegistry_->RegisterMesh(modelName, false, 0);

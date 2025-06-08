@@ -78,7 +78,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	}
 	
 	// ‡¬ˆ—
-	float3 bloomColor = (weightSum > 0.0) ? bloomAccum / weightSum : 0.0f;
+	float3 bloomColor = (weightSum > 0.0f) ? bloomAccum / weightSum : 0.0f;
 	float3 finalColor = sceneColor.rgb + bloomColor;
 	gOutputTexture[pixelPos] = float4(finalColor, 1.0f);
 }

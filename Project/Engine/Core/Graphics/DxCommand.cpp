@@ -73,6 +73,7 @@ void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
 	// GPUとOSに画面の交換を行うように通知する
+	//swapChain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
 	swapChain->Present(1, 0);
 }
 

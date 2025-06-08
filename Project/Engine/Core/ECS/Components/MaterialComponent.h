@@ -57,8 +57,36 @@ public:
 
 	//--------- variables ----------------------------------------------------
 
-	Material material;
+	Color color; // 色
 
+	// テクスチャインデックス
+	uint32_t textureIndex;
+	uint32_t normalMapTextureIndex;
+
+	// 法線マップ
+	int32_t enableNormalMap;
+
+	// ライティング
+	int32_t enableLighting;
+	int32_t enableHalfLambert;
+	int32_t enableBlinnPhongReflection;
+	
+	float phongRefShininess;
+	Vector3 specularColor;
+
+	// 影倍率(0.0fで真っ黒な影、1.0fで影無し)
+	float shadowRate;
+
+	// 環境マップ
+	int32_t enableImageBasedLighting;
+	float environmentCoefficient;
+
+	// 発光度
+	float emissiveIntensity;
+	Vector3 emissionColor;
+
+	// uv
+	Matrix4x4 uvMatrix;
 	UVTransform uvTransform;
 private:
 	//========================================================================
@@ -70,6 +98,11 @@ private:
 	Asset* asset_;
 
 	UVTransform prevUVTransform;
+
+	//--------- functions ----------------------------------------------------
+
+	// init
+	void InitParameter();
 };
 
 //============================================================================

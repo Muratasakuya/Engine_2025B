@@ -28,13 +28,15 @@ struct MeshInstancingData {
 
 	// buffer更新用のデータ
 	std::vector<TransformationMatrix> matrixUploadData;
-	std::vector<std::vector<Material>> materialUploadData;
+	std::vector<std::vector<MaterialForGPU>> materialUploadData;
+	std::vector<std::vector<LightingForGPU>> lightingUploadData;
 	// skinnedMeshのbuffer更新用のデータ
 	std::vector<std::vector<WellForGPU>> wellUploadData;
 
 	// buffer
-	DxConstBuffer<TransformationMatrix> matrix;
-	std::vector<DxConstBuffer<Material>> materials;
+	DxConstBuffer<TransformationMatrix> matrixBuffer;
+	std::vector<DxConstBuffer<MaterialForGPU>> materialsBuffer;
+	std::vector<DxConstBuffer<LightingForGPU>> lightingBuffer;
 	// skinnedMesh専用buffer
 	std::vector<DxConstBuffer<WellForGPU>> wells;
 	std::vector<DxConstBuffer<VertexInfluence>> influences;

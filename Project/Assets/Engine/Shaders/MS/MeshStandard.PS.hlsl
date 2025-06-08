@@ -22,51 +22,54 @@ PSOutput main(MSOutput input) {
 	
 	// instanceId、Pixelごとの処理
 	uint id = input.instanceID;
+	
+	// bufferアクセス
+	Material material = gMaterials[id];
+	Lighting lighting = gLightings[id];
 
 	// uv
-	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), gMaterials[id].uvTransform);
+	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), material.uvTransform);
 	// diffuseColor
-	float4 diffuseColor = GetDiffuseColor(id, transformUV, input);
+	float4 diffuseColor = GetDiffuseColor(material, transformUV, input);
 	// α値
-	output.color.a = gMaterials[id].color.a * diffuseColor.a;
+	output.color.a = material.color.a * diffuseColor.a;
 	
 	// normal
 	float3 normal = input.normal;
-	if (gMaterials[id].enableNormalMap == 1) {
+	if (material.enableNormalMap == 1) {
 		
 		// normalMapTexture
-		normal = GetNormalMap(id, transformUV, input);
+		normal = GetNormalMap(material, transformUV, input);
 	}
 	
 	// lighting
-	if (gMaterials[id].enableLighting == 1) {
-		if (gMaterials[id].enableHalfLambert == 1) {
+	if (lighting.enableLighting == 1) {
+		if (lighting.enableHalfLambert == 1) {
 			
 			// halfLambert処理
-			output.color.rgb = CalculateLambertLighting(id, normal, diffuseColor.rgb);
+			output.color.rgb = CalculateLambertLighting(material, normal, diffuseColor.rgb);
 		}
-		if (gMaterials[id].enableBlinnPhongReflection == 1) {
+		if (lighting.enableBlinnPhongReflection == 1) {
 			
 			// blinnPhong処理
-			output.color.rgb += CalculateBlinnPhongLighting(id, normal, diffuseColor.rgb, input);
+			output.color.rgb += CalculateBlinnPhongLighting(material, lighting, normal, diffuseColor.rgb, input);
 		}
 	} else {
 
 		// lighting無効
-		output.color.rgb = gMaterials[id].color.rgb * diffuseColor.rgb;
+		output.color.rgb = material.color.rgb * diffuseColor.rgb;
 	}
-	if (gMaterials[id].enableImageBasedLighting == 1) {
+	if (lighting.enableImageBasedLighting == 1) {
 	
 		// imageBasedLighting処理
-		output.color.rgb += CalculateImageBasedLighting(id, normal,
-		gMaterials[id].environmentCoefficient, input);
+		output.color.rgb += CalculateImageBasedLighting(normal, lighting.environmentCoefficient, input);
 	}
 	
 	// emissive
-	float3 emission = gMaterials[id].emissionColor * gMaterials[id].emissiveIntensity;
+	float3 emission = material.emissionColor * material.emissiveIntensity;
 	output.color.rgb += emission * diffuseColor.rgb;
 	// shadow
-	output.color.rgb = ApplyShadow(id, normal, output.color.rgb, input);
+	output.color.rgb = ApplyShadow(lighting, normal, output.color.rgb, input);
 	
 	return output;
 }

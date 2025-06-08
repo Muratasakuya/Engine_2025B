@@ -51,6 +51,9 @@ void GameScene::Load(Asset* asset) {
 	// animation
 	asset->LoadModel("BrainStem");
 	asset->LoadAnimation("BrainStem", "BrainStem");
+
+	// debug
+	asset->LoadModel("bricks");
 }
 
 void GameScene::Init(
@@ -104,15 +107,9 @@ void GameScene::Init(
 	// skybox
 	Skybox::GetInstance()->Create(asset->GetTextureGPUIndex("docklands_01_2k"));
 
-	// 仮の地面
-	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
-	auto transform = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(id);
-	transform->scale.x = 128.0f;
-	transform->scale.z = 128.0f;
-	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
-	material->front().material.uvTransform = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
-		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
-	material->front().material.shadowRate = 1.0f;
+	// entityEditor
+	entityEditor_ = std::make_unique<GameEntityEditor>();
+	entityEditor_->Init(asset);
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -120,6 +117,9 @@ void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
 	followCamera_->Update();
 
 	player_->Update();
+
+	// entityEditor
+	entityEditor_->Update();
 }
 
 void GameScene::ImGui() {

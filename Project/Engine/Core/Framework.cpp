@@ -196,10 +196,12 @@ void Framework::Finalize() {
 	graphicsCore_->Finalize(winApp_->GetHwnd());
 	Input::GetInstance()->Finalize();
 	LineRenderer::GetInstance()->Finalize();
+
+	sceneManager_.reset();
+
 	ParticleSystem::GetInstance()->Finalize();
 	ECSManager::GetInstance()->Finalize();
 
-	sceneManager_.reset();
 	winApp_.reset();
 	asset_.reset();
 	graphicsCore_.reset();

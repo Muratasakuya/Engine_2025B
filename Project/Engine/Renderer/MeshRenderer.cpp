@@ -70,7 +70,7 @@ void MeshRenderer::RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCo
 
 		// meshごとのmatrix設定
 		commandList->SetGraphicsRootShaderResourceView(4,
-			instancingBuffers[name].matrix.GetResource()->GetGPUVirtualAddress());
+			instancingBuffers[name].matrixBuffer.GetResource()->GetGPUVirtualAddress());
 
 		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
 
@@ -114,17 +114,17 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	// 共通のbuffer設定
 	sceneBuffer->SetMainPassCommands(debugEnable, commandList);
 	// allTexture
-	commandList->SetGraphicsRootDescriptorTable(9,
+	commandList->SetGraphicsRootDescriptorTable(10,
 		srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 	// shadowMap
-	commandList->SetGraphicsRootDescriptorTable(10,
+	commandList->SetGraphicsRootDescriptorTable(11,
 		shadowMap_->GetGPUHandle());
 
 	// skyboxがあるときのみ、とりあえず今は
 	if (skybox->IsCreated()) {
 
 		// environmentTexture
-		commandList->SetGraphicsRootDescriptorTable(11,
+		commandList->SetGraphicsRootDescriptorTable(12,
 			srvDescriptor_->GetGPUHandle(skybox->GetTextureIndex()));
 	}
 
@@ -132,13 +132,15 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 
 		// meshごとのmatrix設定
 		commandList->SetGraphicsRootShaderResourceView(4,
-			instancingBuffers[name].matrix.GetResource()->GetGPUVirtualAddress());
+			instancingBuffers[name].matrixBuffer.GetResource()->GetGPUVirtualAddress());
 
 		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
 
-			// meshごとのmaterial設定
+			// meshごとのmaterial、lighting設定
 			commandList->SetGraphicsRootShaderResourceView(8,
-				instancingBuffers[name].materials[meshIndex].GetResource()->GetGPUVirtualAddress());
+				instancingBuffers[name].materialsBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
+			commandList->SetGraphicsRootShaderResourceView(9,
+				instancingBuffers[name].lightingBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
 
 			// 描画処理
 			commandContext.DispatchMesh(commandList,

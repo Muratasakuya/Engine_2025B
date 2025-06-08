@@ -28,6 +28,8 @@ public:
 
 	void Update();
 
+	void ImGui(float itemSize);
+
 	//--------- accessor -----------------------------------------------------
 
 	void SetAnimationData(const std::string& animationName);

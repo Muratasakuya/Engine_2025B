@@ -67,7 +67,7 @@ void SceneConstBuffer::SetMainPassCommands(bool debugEnable, ID3D12GraphicsComma
 			viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 
 		// cameraPos
-		commandList->SetGraphicsRootConstantBufferView(13,
+		commandList->SetGraphicsRootConstantBufferView(14,
 			cameraPosBuffer_.GetResource()->GetGPUVirtualAddress());
 	} else {
 
@@ -76,7 +76,7 @@ void SceneConstBuffer::SetMainPassCommands(bool debugEnable, ID3D12GraphicsComma
 			debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 
 		// cameraPos
-		commandList->SetGraphicsRootConstantBufferView(13,
+		commandList->SetGraphicsRootConstantBufferView(14,
 			debugSceneCameraPosBuffer_.GetResource()->GetGPUVirtualAddress());
 	}
 	// lightViewProjection
@@ -84,7 +84,7 @@ void SceneConstBuffer::SetMainPassCommands(bool debugEnable, ID3D12GraphicsComma
 		lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 
 	// light
-	commandList->SetGraphicsRootConstantBufferView(12,
+	commandList->SetGraphicsRootConstantBufferView(13,
 		lightBuffer_.GetResource()->GetGPUVirtualAddress());
 }
 
