@@ -7,6 +7,9 @@
 #include <Game/Time/GameTimer.h>
 #include <Lib/MathUtils/Algorithm.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
 //	AnimationComponent classMethods
 //============================================================================
@@ -117,6 +120,30 @@ void AnimationComponent::Update() {
 			currentAnimationTimer_ = nextAnimationTimer_;
 		}
 	}
+}
+
+void AnimationComponent::ImGui(float itemSize) {
+
+	ImGui::PushItemWidth(itemSize);
+
+	ImGui::Checkbox("roopAnimation", &roopAnimation_);
+	ImGui::SameLine();
+	if (ImGui::Button("Restart")) {
+		currentAnimationTimer_ = 0.0f;
+	}
+
+	ImGui::Text("currentAnimationTime: %4.3f", currentAnimationTimer_);
+	float animationProgress = currentAnimationTimer_ / animationData_[currentAnimationName_].duration;
+	ImGui::Text("Animation Progress ");
+	ImGui::ProgressBar(animationProgress);
+
+	ImGui::Separator();
+
+	float transitionProgress = transitionTimer_ / transitionDuration_;
+	ImGui::Text("Transition Progress ");
+	ImGui::ProgressBar(transitionProgress);
+
+	ImGui::PopItemWidth();
 }
 
 void AnimationComponent::ApplyAnimation() {

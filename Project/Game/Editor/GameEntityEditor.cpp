@@ -56,6 +56,16 @@ void GameEntityEditor::ImGui() {
 	SelectEntity();
 	ImGui::EndChild();
 
+	ImGui::BeginChild("EditChild##GameEntityEditor");
+	ImGui::SeparatorText("Edit Entity");
+
+	// 削除処理
+	RemoveEntity();
+
+	// 操作処理
+	EditEntity();
+	ImGui::EndChild();
+
 	ImGui::EndGroup();
 }
 
@@ -120,8 +130,12 @@ void GameEntityEditor::AddEntity() {
 			enity->Init(addModelName_.value(), addNameInputText_.name,
 				"GameEntityEditor", addAnimationName_);
 
+			// 実際に追加された名前を取得
+			const std::string name = enity->GetTag().name;
+
 			// emitterの名前追加
-			entityNames_.emplace_back(addNameInputText_.name);
+			entityNames_.emplace_back(name);
+			entityHandles_.push_back(EntityHandle(addClassType_, entities_[addClassType_].size() - 1));
 		}
 	}
 
@@ -137,7 +151,7 @@ void GameEntityEditor::SelectEntity() {
 
 	for (int i = 0; i < static_cast<int>(entityNames_.size()); ++i) {
 
-		const bool selected = (currentSelectIndex_ == i);
+		const bool selected = (currentSelectIndex_.has_value() && currentSelectIndex_.value() == i);
 		if (ImGui::Selectable(entityNames_[i].c_str(), selected)) {
 
 			// indexで名前を選択し設定
@@ -146,6 +160,62 @@ void GameEntityEditor::SelectEntity() {
 		}
 		if (selected) {
 			ImGui::SetItemDefaultFocus();
+		}
+	}
+}
+
+void GameEntityEditor::EditEntity() {
+
+	// 選択されていないときは何もしない
+	if (!currentSelectIndex_.has_value()) {
+		return;
+	}
+
+	// entity操作
+	const EntityHandle& handle = entityHandles_[currentSelectIndex_.value()];
+	GameEntity3D* entity = entities_.at(handle.classType)[handle.innerIndex].get();
+	entity->ImGui();
+}
+
+void GameEntityEditor::RemoveEntity() {
+
+	// 選択されていないときは何もしない
+	if (!currentSelectIndex_.has_value()) {
+		return;
+	}
+
+	if (ImGui::Button("Remove Entity", addButtonSize_)) {
+
+		// 現在のインデックスを取得
+		const int listIndex = currentSelectIndex_.value();
+		const EntityHandle handle = entityHandles_[listIndex];
+
+		// map内の選択されているentityを削除する
+		auto mapIt = entities_.find(handle.classType);
+		if (mapIt != entities_.end() && handle.innerIndex < mapIt->second.size()) {
+
+			mapIt->second.erase(mapIt->second.begin() + static_cast<std::ptrdiff_t>(handle.innerIndex));
+
+			// innerIndexも削除する
+			for (auto& h : entityHandles_) {
+				if (h.classType == handle.classType && h.innerIndex > handle.innerIndex) {
+					--h.innerIndex;
+				}
+			}
+		}
+
+		entityNames_.erase(entityNames_.begin() + listIndex);
+		entityHandles_.erase(entityHandles_.begin() + listIndex);
+
+		if (entityNames_.empty()) {
+
+			currentSelectIndex_.reset();
+			selectEntityName_.reset();
+		} else {
+
+			const int newIndex = std::min(listIndex, static_cast<int>(entityNames_.size() - 1));
+			currentSelectIndex_ = newIndex;
+			selectEntityName_ = entityNames_[newIndex];
 		}
 	}
 }

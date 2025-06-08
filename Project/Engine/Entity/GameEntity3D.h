@@ -28,6 +28,10 @@ public:
 
 	virtual void Update() {}
 
+	// imgui
+	void ImGui();
+	virtual void DerivedImGui() override {}
+
 	/*-------- collision ----------*/
 
 	// 衝突コールバック関数
@@ -64,7 +68,7 @@ public:
 	const Vector3& GetTranslation() const { return transform_->translation; }
 protected:
 	//========================================================================
-	//	private Methods
+	//	protected Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
@@ -76,4 +80,21 @@ protected:
 	std::vector<MaterialComponent>* materials_;
 	// animation
 	AnimationComponent* animation_;
+
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	// material選択インデックス
+	int selectedMaterialIndex_;
+
+	//--------- functions ----------------------------------------------------
+
+	// imgui
+	void TransformImGui();
+	void MaterialImGui();
+	void AnimationImGui();
 };

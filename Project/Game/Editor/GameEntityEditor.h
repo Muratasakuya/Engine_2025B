@@ -43,6 +43,12 @@ private:
 		None, // 通常のクラス
 	};
 
+	struct EntityHandle {
+
+		EntityClassType classType;  // どのクラスのvectorか
+		size_t innerIndex;          // vector内での位置
+	};
+
 	struct InputTextValue {
 
 		char nameBuffer[128]; // imgui入力用
@@ -69,7 +75,8 @@ private:
 
 	// 追加されたentityの名前list
 	std::vector<std::string> entityNames_;
-	int currentSelectIndex_;
+	std::vector<EntityHandle> entityHandles_;
+	std::optional<int> currentSelectIndex_;
 
 	// editor
 	ImVec2 addButtonSize_;  // 追加ボタンサイズ
@@ -88,6 +95,10 @@ private:
 	void AddEntity();
 	// 選択処理
 	void SelectEntity();
+	// 操作処理
+	void EditEntity();
+	// 削除処理
+	void RemoveEntity();
 
 	// helper
 	void DropFile(const std::string& label, std::optional<std::string>& recieveName);
