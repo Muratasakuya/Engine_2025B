@@ -44,9 +44,9 @@ void LineRenderer::Init(ID3D12Device8* device, ID3D12GraphicsCommandList* comman
 	vertexBuffer_.CreateVertexBuffer(device, kMaxLineCount_ * kVertexCountLine_);
 
 	viewProjectionBuffer_.CreateConstBuffer(device);
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugSceneViewProjectionBuffer_.CreateConstBuffer(device);
-#endif // _DEBUG
+#endif
 }
 
 void LineRenderer::DrawLine3D(const Vector3& pointA, const Vector3& pointB, const Color& color) {
@@ -59,7 +59,7 @@ void LineRenderer::DrawLine3D(const Vector3& pointA, const Vector3& pointB, cons
 }
 
 void LineRenderer::ExecuteLine(bool debugEnable) {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	if (lineVertices_.empty()) {
 		return;
 	}
@@ -82,7 +82,7 @@ void LineRenderer::ExecuteLine(bool debugEnable) {
 	}
 
 	commandList_->DrawInstanced(static_cast<UINT>(lineVertices_.size()), 1, 0, 0);
-#endif // _DEBUG
+#endif
 }
 
 void LineRenderer::ResetLine() {

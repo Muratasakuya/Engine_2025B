@@ -35,11 +35,3 @@ EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture
 EngineInformation:     load texture: model
 EngineInformation:     load texture: file
-EngineInformation:     load texture: pc1
-EngineInformation:     load model: pc1
-EngineInformation:     load animation: pc1_PC1_idle
-EngineInformation:     load animation: pc1_PC1_land
-EngineInformation:     load animation: pc1_PC1_walk_RootMotion
-EngineAssertError:     not found animationpc1
-Function: AnimationManager::GetAnimationData
-

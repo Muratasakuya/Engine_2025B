@@ -22,12 +22,12 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 	lightBuffer_.CreateConstBuffer(device);
 
 	// debug
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	// camera
 	debugSceneViewProjectionBuffer_.CreateConstBuffer(device);
 	debugSceneCameraPosBuffer_.CreateConstBuffer(device);
-#endif // _DEBUG
+#endif
 }
 
 void SceneConstBuffer::Update(CameraManager* cameraManager,
@@ -43,12 +43,12 @@ void SceneConstBuffer::Update(CameraManager* cameraManager,
 	lightBuffer_.TransferData(*lightManager->GetLight());
 
 	// debug
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	// camera
 	debugSceneViewProjectionBuffer_.TransferData(cameraManager->GetDebugCamera()->GetViewProjectionMatrix());
 	debugSceneCameraPosBuffer_.TransferData(cameraManager->GetDebugCamera()->GetTransform().translation);
-#endif // _DEBUG
+#endif
 }
 
 void SceneConstBuffer::SetZPassCommands(ID3D12GraphicsCommandList* commandList) {

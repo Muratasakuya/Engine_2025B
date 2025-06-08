@@ -43,7 +43,7 @@ void FollowCamera::Update() {
 
 void FollowCamera::Move() {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	ImGui::Begin("Game", nullptr,
 		ImGuiWindowFlags_NoResize |

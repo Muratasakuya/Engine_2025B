@@ -32,12 +32,12 @@ void LightManager::Update() {
 	}
 
 	// pointLight、spotLightのデバッグ表示
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	// point
 	//DisplayPointLight();
 	// spot
 	//DisplaySpotLight();
-#endif // _DEBUG
+#endif
 }
 
 void LightManager::SetLight(PunctualLight* gameLight) {

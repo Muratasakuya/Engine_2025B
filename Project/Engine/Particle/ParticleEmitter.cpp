@@ -416,12 +416,12 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix, bool use
 	// 所持しているparticleをすべて更新する
 	for (auto& group : particleGroups_) {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 		if (!useGame) {
 			// emit処理
 			UpdateFrequencyEmit(group);
 		}
-#endif // _DEBUG
+#endif
 
 		auto& particles = group.particles;
 		// 各particleの更新

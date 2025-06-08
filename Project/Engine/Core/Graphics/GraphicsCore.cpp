@@ -22,7 +22,7 @@
 //============================================================================
 
 void GraphicsCore::InitDXDevice() {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	ComPtr<ID3D12Debug1> debugController = nullptr;
 	if (SUCCEEDED(D3D12GetDebugInterface(IID_PPV_ARGS(&debugController)))) {
 
@@ -36,7 +36,7 @@ void GraphicsCore::InitDXDevice() {
 
 	dxDevice_->Create();
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	ComPtr<ID3D12InfoQueue> infoQueue = nullptr;
 	if (SUCCEEDED(dxDevice_->Get()->QueryInterface(IID_PPV_ARGS(&infoQueue)))) {
 
@@ -94,21 +94,21 @@ void GraphicsCore::InitRenderTexture() {
 		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
 
 	// gui用texture作成
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	guiRenderTexture_ = std::make_unique<GuiRenderTexture>();
 	guiRenderTexture_->Create(Config::kWindowWidth, Config::kWindowHeight, Config::kSwapChainRTVFormat,
 		device, srvDescriptor_.get());
-#endif // _DEBUG
+#endif
 
 	// debugSceneRenderTexture作成
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	// renderTexture
 	debugSceneRenderTexture_ = std::make_unique<RenderTexture>();
 	debugSceneRenderTexture_->Create(Config::kWindowWidth, Config::kWindowHeight,
 		Color(Config::kWindowClearColor[0], Config::kWindowClearColor[1],
 			Config::kWindowClearColor[2], Config::kWindowClearColor[3]),
 		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
-#endif // _DEBUG
+#endif
 
 	// shadowMap作成
 	shadowMap_ = std::make_unique<ShadowMap>();
@@ -155,11 +155,11 @@ void GraphicsCore::Init(WinApp* winApp) {
 	srvDescriptor_->Init(device, DescriptorType(
 		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE));
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiManager_ = std::make_unique<ImGuiManager>();
 	imguiManager_->Init(winApp->GetHwnd(),
 		dxSwapChain_->GetDesc().BufferCount, device, srvDescriptor_.get());
-#endif // _DEBUG
+#endif
 
 	// renderTexture初期化
 	InitRenderTexture();
@@ -188,7 +188,7 @@ void GraphicsCore::Init(WinApp* winApp) {
 
 void GraphicsCore::Finalize(HWND hwnd) {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiManager_->Finalize();
 	imguiManager_.reset();
 #endif
@@ -203,9 +203,9 @@ void GraphicsCore::Finalize(HWND hwnd) {
 	srvDescriptor_.reset();
 	dxShaderComplier_.reset();
 	renderTexture_.reset();
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugSceneRenderTexture_.reset();
-#endif // _DEBUG
+#endif
 	shadowMap_.reset();
 	postProcessSystem_.reset();
 	meshRenderer_.reset();
@@ -220,7 +220,7 @@ void GraphicsCore::Finalize(HWND hwnd) {
 
 void GraphicsCore::BeginFrame() {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiManager_->Begin();
 #endif
 
@@ -245,7 +245,7 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	RenderZPass();
 	// offscreenTexture
 	RenderOffscreenTexture();
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	// debugSceneRenderTexture
 	RenderDebugSceneRenderTexture();
 #endif // _DEBUG
@@ -365,7 +365,7 @@ void GraphicsCore::Renderers(bool debugEnable) {
 
 void GraphicsCore::EndRenderFrame() {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	// gui描画用のtextureをframeBufferからコピー
 	dxCommand_->CopyTexture(

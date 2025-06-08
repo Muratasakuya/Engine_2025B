@@ -13,7 +13,7 @@ void Assert::DebugAssert(
 	[[maybe_unused]] bool condition,
 	[[maybe_unused]] const std::string& message,
 	[[maybe_unused]] const char* function) {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	if (!condition) {
 
 		std::ostringstream oss;
@@ -38,7 +38,7 @@ void Assert::ReleaseAssert(
 	[[maybe_unused]] bool condition,
 	[[maybe_unused]] const std::string& message,
 	[[maybe_unused]] const char* function) {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	if (!condition) {
 
 		std::ostringstream oss;
@@ -56,7 +56,7 @@ void Assert::ReleaseAssert(
 }
 
 void Assert::AssertHandler(bool condition, const std::string& message, const char* function) {
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	DebugAssert(condition, message, function);
 #else
 	ReleaseAssert(condition, message, function);

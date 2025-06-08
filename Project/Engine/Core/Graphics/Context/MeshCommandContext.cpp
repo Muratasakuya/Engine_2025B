@@ -1,5 +1,3 @@
-#define NOMINMAX
-
 #include "MeshCommandContext.h"
 
 //============================================================================
@@ -58,7 +56,7 @@ void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 		UINT remainingInstances = instanceCount;
 		while (remainingInstances > 0) {
 
-			UINT dispatchInstanceCount = std::min(remainingInstances, maxInstancesPerDispatch);
+			UINT dispatchInstanceCount = (std::min)(remainingInstances, maxInstancesPerDispatch);
 			UINT dispatchThreadGroupCountX = dispatchInstanceCount * meshletCount;
 
 			// 実行
@@ -111,7 +109,7 @@ void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 		UINT remainingInstances = instanceCount;
 		while (remainingInstances > 0) {
 
-			UINT dispatchInstanceCount = std::min(remainingInstances, maxInstancesPerDispatch);
+			UINT dispatchInstanceCount = (std::min)(remainingInstances, maxInstancesPerDispatch);
 			UINT dispatchThreadGroupCountX = dispatchInstanceCount * meshletCount;
 
 			// 実行

@@ -116,12 +116,12 @@ Framework::Framework() {
 	//------------------------------------------------------------------------
 	// imgui機能初期化
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
 	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
 		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
 		graphicsCore_->GetShadowMapGPUHandle());
-#endif // _DEBUG
+#endif
 }
 
 void Framework::Update() {
@@ -136,9 +136,9 @@ void Framework::Update() {
 	// 描画前処理
 	graphicsCore_->BeginFrame();
 	// imgui表示更新
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_->Display();
-#endif // _DEBUG
+#endif
 	// scene更新
 	UpdateScene();
 

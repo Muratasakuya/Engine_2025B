@@ -146,7 +146,7 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 			commandContext.DispatchMesh(commandList,
 				instancingBuffers[name].numInstance, meshIndex, mesh.get());
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 			if (debugEnable) {
 
 				// skinnedMeshなら頂点を書き込み状態に戻す

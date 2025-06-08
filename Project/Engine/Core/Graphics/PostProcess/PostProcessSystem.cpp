@@ -92,13 +92,13 @@ void PostProcessSystem::Create(const std::vector<PostProcessType>& processes) {
 		// pipeline作成
 		pipeline_->Create(process);
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 		if (process == PostProcessType::Bloom) {
 
 			debugSceneBloomProcessor_ = std::make_unique<ComputePostProcessor>();
 			debugSceneBloomProcessor_->Init(device_, srvDescriptor_, width_, height_);
 		}
-#endif // _DEBUG
+#endif
 	}
 }
 
@@ -156,7 +156,7 @@ void PostProcessSystem::Execute(RenderTexture* inputTexture, DxCommand* dxComman
 
 void PostProcessSystem::ExecuteDebugScene(RenderTexture* inputTexture, DxCommand* dxCommand) {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	if (activeProcesses_.empty()) {
 
@@ -182,7 +182,7 @@ void PostProcessSystem::ExecuteDebugScene(RenderTexture* inputTexture, DxCommand
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
 	++bloomExecuteCount_;
-#endif // _DEBUG
+#endif
 }
 
 void PostProcessSystem::RenderFrameBuffer(DxCommand* dxCommand) {
@@ -232,14 +232,14 @@ void PostProcessSystem::ToWrite(DxCommand* dxCommand) {
 		}
 	}
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	// PixelShader -> UnorderedAccess
 	dxCommand->TransitionBarriers(
 		{ debugSceneBloomProcessor_->GetOutputTextureResource() },
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-#endif // _DEBUG
+#endif
 
 	// リセットする
 	bloomExecuteCount_ = 0;

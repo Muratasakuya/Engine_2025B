@@ -16,10 +16,10 @@
 
 void CameraManager::Init() {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugCamera_ = std::make_unique<DebugCamera>();
 	debugCamera_->Init();
-#endif // _DEBUG
+#endif
 
 	// 影生成用
 	lightViewCamera_ = std::make_unique<LightViewCamera>();
@@ -32,9 +32,9 @@ void CameraManager::Init() {
 
 void CameraManager::Update() {
 
-#ifdef _DEBUG
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugCamera_->Update();
-#endif // _DEBUG
+#endif
 
 	lightViewCamera_->Update();
 }
