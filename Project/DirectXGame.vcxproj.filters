@@ -98,7 +98,7 @@
     <ClCompile Include="Engine\Core\Framework.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Renderer\MeshRenderer.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Renderer\MeshRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\main.cpp">
@@ -164,7 +164,7 @@
     <ClCompile Include="Engine\Scene\Camera\DebugCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Renderer\LineRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Editor\ImGuiInspector.cpp">
@@ -182,7 +182,7 @@
     <ClCompile Include="Lib\MathUtils\Algorithm.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Renderer\SpriteRenderer.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Renderer\SpriteRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\ECS\Components\AnimationComponent.cpp">
@@ -550,7 +550,7 @@
     <ClInclude Include="Engine\Asset\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
     <ClInclude Include="Engine\Core\Framework.h" />
-    <ClInclude Include="Engine\Renderer\MeshRenderer.h" />
+    <ClInclude Include="Engine\Core\Graphics\Renderer\MeshRenderer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
     <ClInclude Include="Lib\Adapter\RandomGenerator.h" />
@@ -573,14 +573,14 @@
     <ClInclude Include="Engine\Editor\ImGuiEditor.h" />
     <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Engine\Scene\Camera\DebugCamera.h" />
-    <ClInclude Include="Engine\Renderer\LineRenderer.h" />
+    <ClInclude Include="Engine\Core\Graphics\Renderer\LineRenderer.h" />
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
     <ClInclude Include="Engine\Editor\ImGuiInspector.h" />
     <ClInclude Include="Engine\Collision\CollisionBody.h" />
     <ClInclude Include="Engine\Collision\CollisionManager.h" />
     <ClInclude Include="Engine\Collision\CollisionGeometry.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h" />
-    <ClInclude Include="Engine\Renderer\SpriteRenderer.h" />
+    <ClInclude Include="Engine\Core\Graphics\Renderer\SpriteRenderer.h" />
     <ClInclude Include="Engine\Core\ECS\Components\AnimationComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\Context\MeshCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h" />

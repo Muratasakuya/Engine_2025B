@@ -8,7 +8,7 @@
 #include <Engine/Asset/AssetEditor.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Collision/CollisionManager.h>
-#include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Config.h>
 #include <Game/Time/GameTimer.h>

@@ -445,12 +445,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\main.cpp" />
-    <ClCompile Include="Engine\Renderer\MeshRenderer.cpp" />
-    <ClCompile Include="Engine\Renderer\LineRenderer.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Renderer\MeshRenderer.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\Renderer\LineRenderer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Renderer\SpriteRenderer.cpp">
+    <ClCompile Include="Engine\Core\Graphics\Renderer\SpriteRenderer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -869,12 +869,12 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Renderer\MeshRenderer.h" />
-    <ClInclude Include="Engine\Renderer\LineRenderer.h">
+    <ClInclude Include="Engine\Core\Graphics\Renderer\MeshRenderer.h" />
+    <ClInclude Include="Engine\Core\Graphics\Renderer\LineRenderer.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Renderer\SpriteRenderer.h">
+    <ClInclude Include="Engine\Core\Graphics\Renderer\SpriteRenderer.h">
       <SubType>
       </SubType>
     </ClInclude>

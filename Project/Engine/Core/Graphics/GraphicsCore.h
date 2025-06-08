@@ -18,8 +18,8 @@
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 
 // renderer
-#include <Engine/Renderer/MeshRenderer.h>
-#include <Engine/Renderer/SpriteRenderer.h>
+#include <Engine/Core/Graphics/Renderer/MeshRenderer.h>
+#include <Engine/Core/Graphics/Renderer/SpriteRenderer.h>
 
 // c++
 #include <memory>

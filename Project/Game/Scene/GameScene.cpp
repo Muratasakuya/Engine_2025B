@@ -8,7 +8,7 @@
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
-#include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Particle/ParticleSystem.h>
