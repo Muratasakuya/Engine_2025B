@@ -112,12 +112,21 @@ void DxShaderCompiler::CompileShader(
 	// UTF8の文字コードであることを通知
 	shaderSourceBuffer.Encoding = DXC_CP_UTF8;
 
+	LPCWSTR level = L"";
+	// shader最適化設定
+#if defined(_DEBUG)
+
+	level = L"-Od";
+#else
+	level = L"-O3";
+#endif
+
 	LPCWSTR arguments[] = {
 		filePath.c_str(),
 		L"-E",L"main",
 		L"-T",profile,
 		L"-Zi",L"-Qembed_debug",
-		L"-Od",
+		level,
 		L"-Zpr",
 	};
 	IDxcResult* shaderResult = nullptr;
