@@ -37,7 +37,7 @@ private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE renderTextureGPUHandle_;
 	D3D12_GPU_DESCRIPTOR_HANDLE debugSceneRenderTextureGPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE shadowMapGPUHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE shadowTextureGPUHandle_;
 
 	ImGuiWindowFlags windowFlag_;
 

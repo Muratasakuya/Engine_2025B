@@ -120,7 +120,7 @@ Framework::Framework() {
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
 	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
 		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
-		graphicsCore_->GetShadowMapGPUHandle());
+		graphicsCore_->GetShadowTextureGPUHandle());
 #endif
 }
 

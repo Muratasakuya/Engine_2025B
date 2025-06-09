@@ -110,6 +110,16 @@ void GameScene::Init(
 	// entityEditor
 	entityEditor_ = std::make_unique<GameEntityEditor>();
 	entityEditor_->Init(asset);
+
+	// 仮の地面
+	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
+	auto transform = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(id);
+	transform->scale.x = 128.0f;
+	transform->scale.z = 128.0f;
+	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
+	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
+		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
+	material->front().shadowRate = 1.0f;
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

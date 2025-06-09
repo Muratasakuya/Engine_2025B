@@ -63,7 +63,7 @@ public:
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetDebugSceneRenderTextureGPUHandle() const { return postProcessSystem_->GetDebugSceneGPUHandle(); }
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetShadowTextureGPUHandle() const { return shadowRayTexture_->GetGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -84,7 +84,7 @@ private:
 
 	std::unique_ptr<RenderTexture> debugSceneRenderTexture_;
 
-	std::unique_ptr<ShadowMap> shadowMap_;
+	std::unique_ptr<RenderTexture> shadowRayTexture_;
 
 	std::unique_ptr<PostProcessSystem> postProcessSystem_;
 
@@ -106,7 +106,7 @@ private:
 	void InitRenderTexture();
 
 	// shadowMapへの描画処理
-	void RenderZPass();
+	void TraceRayPass();
 
 	// renderTextureへの描画処理
 	void RenderOffscreenTexture();

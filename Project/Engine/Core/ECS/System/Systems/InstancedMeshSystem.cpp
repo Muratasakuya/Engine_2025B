@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/ECS/Core/EntityManager.h>
+#include <Engine/Core/Graphics/Raytracing/RaytracingScene.h> 
 
 //============================================================================
 //	InstancedMeshSystem classMethods
@@ -71,4 +72,44 @@ void InstancedMeshSystem::Update(EntityManager& entityManager) {
 
 	// buffer転送
 	instancedBuffer_->Update(dxCommand_);
+}
+
+std::vector<RayTracingInstance> InstancedMeshSystem::CollectRTInstances(const RaytracingScene* scene) const {
+
+	std::vector<RayTracingInstance> out;
+	UINT instanceCounter = 0;
+
+	const auto& meshes = meshRegistry_->GetMeshes();
+	const auto& instanceMap = instancedBuffer_->GetInstancingData();
+
+	for (const auto& [modelName, meshPtr] : meshes) {
+
+		auto instIt = instanceMap.find(modelName);
+		if (instIt == instanceMap.end()) {
+			continue;
+		}
+
+		const MeshInstancingData& instData = instIt->second;
+		const uint32_t subMeshCount = meshPtr->GetMeshCount();
+		const size_t numInst = instData.matrixUploadData.size();
+		for (uint32_t j = 0; j < numInst; ++j) {
+
+			const Matrix4x4& world = instData.matrixUploadData[j].world;
+			for (uint32_t sub = 0; sub < subMeshCount; ++sub) {
+
+				RayTracingInstance instance{};
+				instance.matrix = world;
+				instance.instanceID = instanceCounter++;
+				instance.mask = 0xFF;
+				instance.hitGroupIdx = 0;
+				instance.flags = 0;
+				instance.meshIndex = sub;
+
+				instance.blas = scene->GetBLASResource(meshPtr.get(), sub);
+				out.emplace_back(instance);
+			}
+		}
+	}
+
+	return out;
 }

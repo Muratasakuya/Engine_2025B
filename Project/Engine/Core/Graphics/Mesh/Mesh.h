@@ -32,6 +32,7 @@ public:
 	// meshlet数
 	uint32_t GetMeshletCount(uint32_t meshIndex) const { return meshletCounts_[meshIndex]; }
 	uint32_t GetVertexCount(uint32_t meshIndex) const { return vertexCounts_[meshIndex]; }
+	uint32_t GetIndexCount(uint32_t meshIndex) const { return indexCounts_[meshIndex]; }
 
 	const DxConstBuffer<MeshInstanceData>& GetMeshInstanceData(uint32_t meshIndex) const { return meshInstanceData_[meshIndex]; }
 
@@ -40,6 +41,8 @@ public:
 	const DxConstBuffer<ResourcePrimitiveIndex>& GetPrimitiveIndexBuffer(uint32_t meshIndex) const { return primitiveIndices_[meshIndex]; }
 
 	const DxConstBuffer<ResourceMeshlet>& GetMeshletBuffer(uint32_t meshIndex) const { return meshlets_[meshIndex]; }
+
+	const DxConstBuffer<uint32_t>& GetIndexBuffer(uint32_t meshIndex) const { return indices_[meshIndex]; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -54,12 +57,16 @@ protected:
 	std::vector<uint32_t> meshletCounts_;
 	// 頂点数
 	std::vector<uint32_t> vertexCounts_;
+	std::vector<uint32_t> indexCounts_;
 
 	// buffers
 	std::vector<DxConstBuffer<MeshInstanceData>> meshInstanceData_;
 	std::vector<DxConstBuffer<uint32_t>> uniqueVertexIndices_;
 	std::vector<DxConstBuffer<ResourcePrimitiveIndex>> primitiveIndices_;
 	std::vector<DxConstBuffer<ResourceMeshlet>> meshlets_;
+
+	// indexBuffer、描画には使わない
+	std::vector<DxConstBuffer<uint32_t>> indices_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -14,14 +14,14 @@ int RenderTexture::textureCount_ = 0;
 
 void RenderTexture::CreateTextureResource(ComPtr<ID3D12Resource>& resource,
 	uint32_t width, uint32_t height,
-	const Color& color, DXGI_FORMAT format, ID3D12Device* device) {
+	const Color& color, DXGI_FORMAT format, D3D12_RESOURCE_FLAGS flags, ID3D12Device* device) {
 
 	// RenderTargetで設定
 	D3D12_RESOURCE_DESC resourceDesc{};
 	resourceDesc.Width = width;                                   // 横幅
 	resourceDesc.Height = height;                                 // 縦幅
 	resourceDesc.Format = format;                                 // フォーマット設定
-	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET; // RenderTargetとして利用
+	resourceDesc.Flags = flags;                                   // フラグ設定
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;  // 2Dテクスチャで設定
 	resourceDesc.SampleDesc.Count = 1;                            // サンプリングカウント。1固定
 	resourceDesc.DepthOrArraySize = 1;                            // 配列サイズまたは深度を1に設定
@@ -39,33 +39,46 @@ void RenderTexture::CreateTextureResource(ComPtr<ID3D12Resource>& resource,
 	clearValue.Color[2] = color.b;
 	clearValue.Color[3] = color.a;
 
+	// クリアカラーを使用するか
+	const bool needsClearValue =
+		(flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET) != 0 ||
+		(flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL) != 0;
+
 	HRESULT hr = device->CreateCommittedResource(
 		&heapProperties,
 		D3D12_HEAP_FLAG_NONE,
 		&resourceDesc,
-		D3D12_RESOURCE_STATE_RENDER_TARGET,
-		&clearValue,
+		needsClearValue ? D3D12_RESOURCE_STATE_RENDER_TARGET : D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		needsClearValue ? &clearValue : nullptr,
 		IID_PPV_ARGS(&resource));
 	assert(SUCCEEDED(hr));
 }
 
 void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
-	DXGI_FORMAT format, ID3D12Device* device, RTVDescriptor* rtvDescriptor, SRVDescriptor* srvDescriptor) {
+	DXGI_FORMAT format, ID3D12Device* device, RTVDescriptor* rtvDescriptor,
+	SRVDescriptor* srvDescriptor, D3D12_RESOURCE_FLAGS flags) {
 
 	// renderTargetの設定
 	renderTarget_.width = width;
 	renderTarget_.height = height;
 	renderTarget_.clearColor = color;
 
-	// RTV作成
-	CreateTextureResource(resource_,
-		width, height, color, format, device);
+	// texture作成
+	CreateTextureResource(resource_, width, height, color, format, flags, device);
 	resource_->SetName((L"renderTexture" + std::to_wstring(textureCount_)).c_str());
-	// Descの設定
-	D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
-	rtvDesc.Format = format;
-	rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
-	rtvDescriptor->Create(renderTarget_.rtvHandle, resource_.Get(), rtvDesc);
+
+	// renderTargetとして使用するときのみ
+	const bool useRenderTarget =
+		(flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET) != 0 ||
+		(flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL) != 0;
+	if (useRenderTarget) {
+		// RTV作成
+		// Descの設定
+		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
+		rtvDesc.Format = format;
+		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+		rtvDescriptor->Create(renderTarget_.rtvHandle, resource_.Get(), rtvDesc);
+	}
 
 	// SRV作成
 	uint32_t srvIndex = 0;

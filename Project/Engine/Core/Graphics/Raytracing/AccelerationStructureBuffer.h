@@ -7,36 +7,29 @@
 
 // directX
 #include <d3d12.h>
-#include <dxcapi.h>
 // c++
-#include <vector>
-// json
-#include <Externals/nlohmann/json.hpp>
-// namespace using
-namespace fs = std::filesystem;
-using Json = nlohmann::json;
+#include <cassert>
 
 //============================================================================
-//	DxShaderCompiler class
+//	AccelerationStructureBuffer class
 //============================================================================
-class DxShaderCompiler {
+class AccelerationStructureBuffer {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	DxShaderCompiler() = default;
-	~DxShaderCompiler() = default;
+	AccelerationStructureBuffer() = default;
+	~AccelerationStructureBuffer() = default;
 
-	void Init();
+	void Create(ID3D12Device* device, UINT64 sizeInBytes,
+		D3D12_RESOURCE_FLAGS flags = D3D12_RESOURCE_FLAG_NONE,
+		D3D12_RESOURCE_STATES initState = D3D12_RESOURCE_STATE_COMMON,
+		D3D12_HEAP_TYPE heapType = D3D12_HEAP_TYPE_DEFAULT);
 
-	void Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
+	//--------- accessor -----------------------------------------------------
 
-	void CompileShader(
-		const std::wstring& filePath,
-		const wchar_t* profile,
-		ComPtr<IDxcBlob>& shaderBlob,
-		const wchar_t* entry);
+	ID3D12Resource* GetResource()  const { return resource_.Get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -44,7 +37,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	ComPtr<IDxcUtils> dxcUtils_;
-	ComPtr<IDxcCompiler3> dxcCompiler_;
-	ComPtr<IDxcIncludeHandler> includeHandler_;
+	ComPtr<ID3D12Resource> resource_;
 };

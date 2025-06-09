@@ -6,10 +6,11 @@
 // Graphics
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
-#include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
+#include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
+#include <Engine/Config.h>
 
 // ECS
 #include <Engine/Core/ECS/Core/ECSManager.h>
@@ -19,38 +20,37 @@
 //	MeshRenderer classMethods
 //============================================================================
 
-void MeshRenderer::Init(ID3D12Device8* device, ShadowMap* shadowMap,
-	DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor) {
+void MeshRenderer::Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor) {
 
 	srvDescriptor_ = nullptr;
 	srvDescriptor_ = srvDescriptor;
 
-	shadowMap_ = nullptr;
-	shadowMap_ = shadowMap;
-
 	// pipeline作成
+	shadowRayPipeline_ = std::make_unique<RaytracingPipeline>();
+	shadowRayPipeline_->Init(device, shaderCompiler);
+
 	meshShaderPipeline_ = std::make_unique<PipelineState>();
 	meshShaderPipeline_->Create("MeshStandard.json", device, srvDescriptor, shaderCompiler);
-
-	meshShaderZPassPipeline_ = std::make_unique<PipelineState>();
-	meshShaderZPassPipeline_->Create("MeshDepth.json", device, srvDescriptor, shaderCompiler);
 
 	// skybox用pipeline作成
 	skyboxPipeline_ = std::make_unique<PipelineState>();
 	skyboxPipeline_->Create("Skybox.json", device, srvDescriptor, shaderCompiler);
 	// skyboxにdeviceを設定
 	Skybox::GetInstance()->SetDevice(device);
+
+	// rayScene初期化
+	rayScene_ = std::make_unique<RaytracingScene>();
+	rayScene_->Init(device);
 }
 
-void MeshRenderer::RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
+void MeshRenderer::TraceShadowRay(SceneConstBuffer* sceneBuffer,
+	RenderTexture* shadowRayTexture, DxCommand* dxCommand) {
 
 	// commandList取得
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
 	// 描画情報取得
 	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
-	MeshCommandContext commandContext{};
-
 	const auto& meshes = ecsSystem->GetMeshes();
 	auto instancingBuffers = ecsSystem->GetInstancingData();
 
@@ -58,38 +58,59 @@ void MeshRenderer::RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCo
 		return;
 	}
 
-	// renderTextureへの描画処理
-	// pipeline設定
-	commandList->SetGraphicsRootSignature(meshShaderZPassPipeline_->GetRootSignature());
-	commandList->SetPipelineState(meshShaderZPassPipeline_->GetGraphicsPipeline());
+	// TLAS更新処理
+	std::vector<IMesh*> meshPtrs;
+	meshPtrs.reserve(meshes.size());
+	for (auto& [_, mesh] : meshes) {
 
-	// lightViewProjection
-	sceneBuffer->SetZPassCommands(commandList);
-
-	for (const auto& [name, mesh] : meshes) {
-
-		// meshごとのmatrix設定
-		commandList->SetGraphicsRootShaderResourceView(4,
-			instancingBuffers[name].matrixBuffer.GetResource()->GetGPUVirtualAddress());
-
-		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
-
-			// skinnedMeshなら頂点を描画使用できるようにする
-			if (mesh->IsSkinned()) {
-
-				dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
-					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-			}
-
-			// 描画処理
-			commandContext.DispatchMesh(commandList,
-				instancingBuffers[name].numInstance, meshIndex, mesh.get());
-		}
+		meshPtrs.emplace_back(mesh.get());
 	}
+
+	// BLAS更新
+	rayScene_->BuildBLASes(commandList, meshPtrs);
+	std::vector<RayTracingInstance> rtInstances = ecsSystem->CollectRTInstances(rayScene_.get());
+	// TLAS更新
+	rayScene_->BuildTLAS(commandList, rtInstances);
+
+	// pipeline設定
+	commandList->SetComputeRootSignature(shadowRayPipeline_->GetRootSignature());
+	commandList->SetPipelineState1(shadowRayPipeline_->GetPipelineState());
+
+	// TLAS
+	commandList->SetComputeRootShaderResourceView(0, rayScene_->GetTLASResource()->GetGPUVirtualAddress());
+	// UAV
+	commandList->SetComputeRootDescriptorTable(1, shadowRayTexture->GetGPUHandle());
+	// scene情報
+	sceneBuffer->SetRaySceneCommand(commandList, 2);
+
+	// rayDesc設定
+	D3D12_DISPATCH_RAYS_DESC desc = {};
+	ID3D12Resource* shaderTable = shadowRayPipeline_->GetShaderTable();
+
+	const UINT64 base = shaderTable->GetGPUVirtualAddress();
+
+	// RayGeneration
+	desc.RayGenerationShaderRecord.StartAddress = base + RaytracingPipeline::kRayGenOffset;
+	desc.RayGenerationShaderRecord.SizeInBytes = RaytracingPipeline::kHandleSize;
+	// Miss
+	desc.MissShaderTable.StartAddress = base + RaytracingPipeline::kMissOffset;
+	desc.MissShaderTable.StrideInBytes = RaytracingPipeline::kRecordStride;
+	desc.MissShaderTable.SizeInBytes = RaytracingPipeline::kRecordStride * 1;
+	// HitGroup 
+	desc.HitGroupTable.StartAddress = base + RaytracingPipeline::kHitGroupOffset;
+	desc.HitGroupTable.StrideInBytes = RaytracingPipeline::kRecordStride;
+	desc.HitGroupTable.SizeInBytes = RaytracingPipeline::kRecordStride * 1;
+
+	desc.Width = Config::kWindowWidth;
+	desc.Height = Config::kWindowHeight;
+	desc.Depth = 1;
+
+	// 実行
+	commandList->DispatchRays(&desc);
 }
 
-void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
+void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer,
+	RenderTexture* shadowRayTexture, DxCommand* dxCommand) {
 
 	// commandList取得
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
@@ -114,11 +135,9 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	// 共通のbuffer設定
 	sceneBuffer->SetMainPassCommands(debugEnable, commandList);
 	// allTexture
-	commandList->SetGraphicsRootDescriptorTable(10,
-		srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-	// shadowMap
-	commandList->SetGraphicsRootDescriptorTable(11,
-		shadowMap_->GetGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(10, srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+	// shadowTexture
+	commandList->SetGraphicsRootDescriptorTable(11, shadowRayTexture->GetGPUHandle());
 
 	// skyboxがあるときのみ、とりあえず今は
 	if (skybox->IsCreated()) {
@@ -141,6 +160,14 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 				instancingBuffers[name].materialsBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
 			commandList->SetGraphicsRootShaderResourceView(9,
 				instancingBuffers[name].lightingBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
+
+			// skinnedMeshなら頂点を描画使用できるようにする
+			if (mesh->IsSkinned()) {
+
+				dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+			}
 
 			// 描画処理
 			commandContext.DispatchMesh(commandList,

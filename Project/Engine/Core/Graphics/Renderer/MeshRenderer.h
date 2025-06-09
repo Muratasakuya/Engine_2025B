@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
+#include <Engine/Core/Graphics/Raytracing/RaytracingPipeline.h>
+#include <Engine/Core/Graphics/Raytracing/RaytracingScene.h>
 
 // c++
 #include <memory>
@@ -26,12 +28,13 @@ public:
 	MeshRenderer() = default;
 	~MeshRenderer() = default;
 
-	void Init(ID3D12Device8* device, ShadowMap* shadowMap,
-		DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
+	void Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
 
-	void RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
+	void TraceShadowRay(SceneConstBuffer* sceneBuffer,
+		class RenderTexture* shadowRayTexture, DxCommand* dxCommand);
 
-	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
+	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer,
+		RenderTexture* shadowRayTexture, DxCommand* dxCommand);
 private:
 	//========================================================================
 	//	private Methods
@@ -40,10 +43,15 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	SRVDescriptor* srvDescriptor_;
-	ShadowMap* shadowMap_;
 
+	// pipelines
+	// shadowRay
+	std::unique_ptr<RaytracingPipeline> shadowRayPipeline_;
+	// main
 	std::unique_ptr<PipelineState> meshShaderPipeline_;
-	std::unique_ptr<PipelineState> meshShaderZPassPipeline_;
-
+	// skybox
 	std::unique_ptr<PipelineState> skyboxPipeline_;
+
+	// raytracing
+	std::unique_ptr<RaytracingScene> rayScene_;
 };

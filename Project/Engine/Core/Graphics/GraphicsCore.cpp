@@ -110,10 +110,11 @@ void GraphicsCore::InitRenderTexture() {
 		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
 #endif
 
-	// shadowMap作成
-	shadowMap_ = std::make_unique<ShadowMap>();
-	shadowMap_->Create(Config::kShadowMapSize, Config::kShadowMapSize,
-		dsvDescriptor_.get(), srvDescriptor_.get());
+	// shadowRayTexture作成
+	shadowRayTexture_ = std::make_unique<RenderTexture>();
+	shadowRayTexture_->Create(Config::kWindowWidth, Config::kWindowHeight,
+		Color(1.0f, 1.0f, 1.0f, 1.0f), DXGI_FORMAT_R32_FLOAT,
+		device, rtvDescriptor_.get(), srvDescriptor_.get(), D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 }
 
 void GraphicsCore::Init(WinApp* winApp) {
@@ -175,7 +176,7 @@ void GraphicsCore::Init(WinApp* winApp) {
 
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();
-	meshRenderer_->Init(dxDevice_->Get(), shadowMap_.get(), dxShaderComplier_.get(), srvDescriptor_.get());
+	meshRenderer_->Init(dxDevice_->Get(), dxShaderComplier_.get(), srvDescriptor_.get());
 
 	// sprite描画初期化
 	spriteRenderer_ = std::make_unique<SpriteRenderer>();
@@ -206,7 +207,7 @@ void GraphicsCore::Finalize(HWND hwnd) {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugSceneRenderTexture_.reset();
 #endif
-	shadowMap_.reset();
+	shadowRayTexture_.reset();
 	postProcessSystem_.reset();
 	meshRenderer_.reset();
 	spriteRenderer_.reset();
@@ -241,8 +242,11 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	// skybox更新
 	Skybox::GetInstance()->Update();
 
-	// zPass
-	RenderZPass();
+	// srvDescriptorHeap設定
+	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
+
+	// レイ追跡
+	TraceRayPass();
 	// offscreenTexture
 	RenderOffscreenTexture();
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
@@ -269,21 +273,15 @@ void GraphicsCore::DebugUpdate() {
 //	Main
 //============================================================================
 
-void GraphicsCore::RenderZPass() {
+void GraphicsCore::TraceRayPass() {
 
-	// srvDescriptorHeap設定
-	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
+	// ray追跡処理
+	meshRenderer_->TraceShadowRay(sceneBuffer_.get(), shadowRayTexture_.get(), dxCommand_.get());
 
-	dxCommand_->SetRenderTargets(std::nullopt, shadowMap_->GetCPUHandle());
-	dxCommand_->ClearDepthStencilView(shadowMap_->GetCPUHandle());
-	dxCommand_->SetViewportAndScissor(Config::kShadowMapSize, Config::kShadowMapSize);
-
-	// Z値描画
-	meshRenderer_->RenderingZPass(sceneBuffer_.get(), dxCommand_.get());
-
-	// Write -> PixelShader
-	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
-		D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	// ComputeShader -> PixelShader
+	dxCommand_->TransitionBarriers(
+		{ shadowRayTexture_->GetResource() },
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
 void GraphicsCore::RenderOffscreenTexture() {
@@ -348,7 +346,7 @@ void GraphicsCore::Renderers(bool debugEnable) {
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	// 通常描画処理
-	meshRenderer_->Rendering(debugEnable, sceneBuffer_.get(), dxCommand_.get());
+	meshRenderer_->Rendering(debugEnable, sceneBuffer_.get(), shadowRayTexture_.get(), dxCommand_.get());
 
 	// particle描画
 	ParticleSystem::GetInstance()->Rendering(debugEnable,
@@ -381,9 +379,11 @@ void GraphicsCore::EndRenderFrame() {
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 #endif // _DEBUG
 
-	// PixelShader -> Write
-	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE);
+	// PixelShader -> ComputeShader
+	dxCommand_->TransitionBarriers(
+		{ shadowRayTexture_->GetResource() },
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
 	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);

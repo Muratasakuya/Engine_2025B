@@ -6,12 +6,14 @@
 #include <Engine/Core/ECS/System/Base/ISystem.h>
 #include <Engine/Core/Graphics/Mesh/MeshRegistry.h>
 #include <Engine/Core/Graphics/GPUObject/InstancedMeshBuffer.h>
+#include <Engine/Core/Graphics/Raytracing/RaytracingStructures.h>
 
 // directX
 #include <d3d12.h>
 // front
 class DxCommand;
 class Asset;
+class RaytracingScene;
 
 //============================================================================
 //	InstancedMeshSystem class
@@ -39,6 +41,7 @@ public:
 
 	const std::unordered_map<std::string, std::unique_ptr<IMesh>>& GetMeshes() const { return meshRegistry_->GetMeshes(); }
 	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return instancedBuffer_->GetInstancingData(); }
+	std::vector<RayTracingInstance> CollectRTInstances(const RaytracingScene* scene) const;
 private:
 	//========================================================================
 	//	private Methods

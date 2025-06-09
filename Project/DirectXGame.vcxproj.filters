@@ -515,6 +515,21 @@
     <ClCompile Include="Game\Editor\GameEntityEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Raytracing\RaytracingPipeline.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Raytracing\BottomLevelAS.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Raytracing\TopLevelAS.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Raytracing\RaytracingScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\Raytracing\AccelerationStructureBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -706,6 +721,12 @@
     <ClInclude Include="Engine\Entity\GameEntity3D.h" />
     <ClInclude Include="Engine\Entity\GameEntity2D.h" />
     <ClInclude Include="Game\Editor\GameEntityEditor.h" />
+    <ClInclude Include="Engine\Core\Graphics\Raytracing\RaytracingPipeline.h" />
+    <ClInclude Include="Engine\Core\Graphics\Raytracing\AccelerationStructureBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\Raytracing\BottomLevelAS.h" />
+    <ClInclude Include="Engine\Core\Graphics\Raytracing\TopLevelAS.h" />
+    <ClInclude Include="Engine\Core\Graphics\Raytracing\RaytracingScene.h" />
+    <ClInclude Include="Engine\Core\Graphics\Raytracing\RaytracingStructures.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
@@ -714,11 +735,17 @@
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.VS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Bloom.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\CS\Object\Skinning.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_RayGeneration.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_Miss.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_ClosestHit.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />
     <None Include="Assets\Engine\Shaders\MS\StandardMSFunction.hlsli" />
     <None Include="Assets\Engine\Shaders\MS\EffectMSFunction.hlsli" />
     <None Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.hlsli" />
+    <None Include="Assets\Engine\Shaders\DXR\ShadowRay.hlsli" />
   </ItemGroup>
 </Project>

@@ -41,7 +41,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					std::string vertexShader = shaderPass["VertexShader"];
 					if (Filesystem::Found(basePath, vertexShader, fullPath)) {
 						ComPtr<IDxcBlob> vertexShaderBlob;
-						CompileShader(fullPath.wstring(), L"vs_6_0", vertexShaderBlob);
+						CompileShader(fullPath.wstring(), L"vs_6_0", vertexShaderBlob, L"main");
 						shaderBlobs.emplace_back(vertexShaderBlob);
 					} else {
 
@@ -56,7 +56,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					if (Filesystem::Found(basePath, meshShader, fullPath)) {
 
 						ComPtr<IDxcBlob> meshShaderBlob;
-						CompileShader(fullPath.wstring(), L"ms_6_5", meshShaderBlob);
+						CompileShader(fullPath.wstring(), L"ms_6_5", meshShaderBlob, L"main");
 						shaderBlobs.emplace_back(meshShaderBlob);
 					} else {
 
@@ -71,7 +71,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					if (Filesystem::Found(basePath, pixelShader, fullPath)) {
 
 						ComPtr<IDxcBlob> pixelShaderBlob;
-						CompileShader(fullPath.wstring(), L"ps_6_0", pixelShaderBlob);
+						CompileShader(fullPath.wstring(), L"ps_6_0", pixelShaderBlob, L"main");
 						shaderBlobs.emplace_back(pixelShaderBlob);
 					} else {
 
@@ -85,7 +85,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 				if (Filesystem::Found(basePath, computeShader, fullPath)) {
 
 					ComPtr<IDxcBlob> computeShaderBlob;
-					CompileShader(fullPath.wstring(), L"cs_6_0", computeShaderBlob);
+					CompileShader(fullPath.wstring(), L"cs_6_0", computeShaderBlob, L"main");
 					shaderBlobs.push_back(computeShaderBlob);
 				} else {
 
@@ -98,7 +98,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 
 void DxShaderCompiler::CompileShader(
 	const std::wstring& filePath, const wchar_t* profile,
-	ComPtr<IDxcBlob>& shaderBlob) {
+	ComPtr<IDxcBlob>& shaderBlob, const wchar_t* entry) {
 
 	// hlslファイルを読み込む
 	IDxcBlobEncoding* shaderSouce = nullptr;
@@ -123,7 +123,7 @@ void DxShaderCompiler::CompileShader(
 
 	LPCWSTR arguments[] = {
 		filePath.c_str(),
-		L"-E",L"main",
+		L"-E",entry,
 		L"-T",profile,
 		L"-Zi",L"-Qembed_debug",
 		level,
