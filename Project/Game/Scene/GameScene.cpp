@@ -119,7 +119,6 @@ void GameScene::Init(
 	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
 	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
 		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
-	material->front().shadowRate = 1.0f;
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
+#include <Lib/MathUtils/Vector3.h>
 
 //============================================================================
 //	RaytracingPipeline classMethods
@@ -15,18 +16,21 @@ void RaytracingPipeline::Init(ID3D12Device5* device, DxShaderCompiler* shaderCom
 	// shaderのコンパイル処理
 
 	ComPtr<IDxcBlob> missShaderBlob;
-	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_Miss.hlsl", L"lib_6_6", missShaderBlob, L"Miss");
-	ComPtr<IDxcBlob> closesthitShaderBlob;
-	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_ClosestHit.hlsl", L"lib_6_6", closesthitShaderBlob, L"ShadowClosestHit");
+	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_Miss.hlsl", L"lib_6_6", missShaderBlob, L"MissShadow");
+	ComPtr<IDxcBlob> anyHitShaderBlob;
+	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_AnyHit.hlsl", L"lib_6_6", anyHitShaderBlob, L"AnyHitShadow");
 	ComPtr<IDxcBlob> rayGenerationShaderBlob;
 	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_RayGeneration.hlsl", L"lib_6_6", rayGenerationShaderBlob, L"RayGeneration");
 
 	//========================================================================
 	// DXILライブラリの設定
 
-	std::vector<D3D12_EXPORT_DESC> exportList; exportList.reserve(3);
-	std::vector<D3D12_DXIL_LIBRARY_DESC> libList;   libList.reserve(3);
-	std::vector<D3D12_STATE_SUBOBJECT> subobjects; subobjects.reserve(7);
+	const size_t exportCount = 3;
+	const size_t subObjectCount = 7;
+
+	std::vector<D3D12_EXPORT_DESC> exportList; exportList.reserve(exportCount);
+	std::vector<D3D12_DXIL_LIBRARY_DESC> libList;   libList.reserve(exportCount);
+	std::vector<D3D12_STATE_SUBOBJECT> subobjects; subobjects.reserve(subObjectCount);
 	auto CreateLibrarySubobject = [](IDxcBlob* blob, LPCWSTR exportName, std::vector<D3D12_EXPORT_DESC>& exportList, std::vector<D3D12_DXIL_LIBRARY_DESC>& libList) -> D3D12_STATE_SUBOBJECT {
 		exportList.push_back({ exportName, nullptr, D3D12_EXPORT_FLAG_NONE });
 
@@ -44,22 +48,22 @@ void RaytracingPipeline::Init(ID3D12Device5* device, DxShaderCompiler* shaderCom
 		return subobject;
 		};
 	// 各shaderを追加、作成
+	// Miss
+	subobjects.push_back(CreateLibrarySubobject(missShaderBlob.Get(), L"MissShadow", exportList, libList));
+	// AnyHit
+	subobjects.push_back(CreateLibrarySubobject(anyHitShaderBlob.Get(), L"AnyHitShadow", exportList, libList));
+	// RayGeneration
 	subobjects.push_back(CreateLibrarySubobject(rayGenerationShaderBlob.Get(), L"RayGeneration", exportList, libList));
-	subobjects.push_back(CreateLibrarySubobject(missShaderBlob.Get(), L"Miss", exportList, libList));
-	subobjects.push_back(CreateLibrarySubobject(closesthitShaderBlob.Get(), L"ShadowClosestHit", exportList, libList));
 
 	//========================================================================
 	// HitGroupDescの設定
 
 	D3D12_HIT_GROUP_DESC hitGroupDesc{};
-	hitGroupDesc.HitGroupExport = L"ShadowHitGroup";
-	hitGroupDesc.ClosestHitShaderImport = L"ShadowClosestHit";
+	hitGroupDesc.HitGroupExport = L"AnyHitGroup";
+	hitGroupDesc.AnyHitShaderImport = L"AnyHitShadow";
 	hitGroupDesc.Type = D3D12_HIT_GROUP_TYPE_TRIANGLES;
 
-	D3D12_STATE_SUBOBJECT hitGroupSubobject{};
-	hitGroupSubobject.Type = D3D12_STATE_SUBOBJECT_TYPE_HIT_GROUP;
-	hitGroupSubobject.pDesc = &hitGroupDesc;
-	subobjects.push_back(hitGroupSubobject);
+	subobjects.push_back({ D3D12_STATE_SUBOBJECT_TYPE_HIT_GROUP, &hitGroupDesc });
 
 	//========================================================================
 	// Global、LocalRootSignatureの設定
@@ -75,8 +79,23 @@ void RaytracingPipeline::Init(ID3D12Device5* device, DxShaderCompiler* shaderCom
 	//========================================================================
 	// Shader、PipelineConfigの設定
 
+	// firstRay
+	struct RadiancePayload {
+
+		Vector3 color;
+		float hitT;
+		Vector3 worldPos;
+		Vector3 worldNormal;
+	};
+
+	// shadowRay
+	struct ShadowPayload {
+
+		bool occluded;
+	};
+
 	D3D12_RAYTRACING_SHADER_CONFIG shaderConfig{};
-	shaderConfig.MaxPayloadSizeInBytes = sizeof(int); // payload構造体のサイズ
+	shaderConfig.MaxPayloadSizeInBytes = static_cast<UINT>((std::max)(sizeof(RadiancePayload), sizeof(ShadowPayload)));
 	shaderConfig.MaxAttributeSizeInBytes = D3D12_RAYTRACING_MAX_ATTRIBUTE_SIZE_IN_BYTES;
 
 	D3D12_STATE_SUBOBJECT shaderConfigSubobject{};
@@ -155,7 +174,7 @@ ComPtr<ID3D12RootSignature> RaytracingPipeline::CreateGlobalRootSignature(ID3D12
 void RaytracingPipeline::BuildShaderTable(ID3D12Device5* device) {
 
 	// バッファサイズ
-	shaderTableSize_ = 3 * kTableAlign;  // 192byte(64×3)
+	shaderTableSize_ = 5 * kRecordStride; // 64×5
 
 	// リソース作成
 	CD3DX12_RESOURCE_DESC bufferDesc = CD3DX12_RESOURCE_DESC::Buffer(shaderTableSize_, D3D12_RESOURCE_FLAG_NONE);
@@ -174,8 +193,8 @@ void RaytracingPipeline::BuildShaderTable(ID3D12Device5* device) {
 
 	// レコードを3つ配置
 	std::memcpy(pData + kRayGenOffset, stateProps_->GetShaderIdentifier(L"RayGeneration"), kHandleSize);
-	std::memcpy(pData + kMissOffset, stateProps_->GetShaderIdentifier(L"Miss"), kHandleSize);
-	std::memcpy(pData + kHitGroupOffset, stateProps_->GetShaderIdentifier(L"ShadowHitGroup"), kHandleSize);
+	std::memcpy(pData + kMissOffset, stateProps_->GetShaderIdentifier(L"MissShadow"), kHandleSize);
+	std::memcpy(pData + kHitGroupOffset, stateProps_->GetShaderIdentifier(L"AnyHitGroup"), kHandleSize);
 
 	shaderTable_->Unmap(0, nullptr);
 }

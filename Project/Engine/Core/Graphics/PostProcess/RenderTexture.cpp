@@ -89,7 +89,21 @@ void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
 	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MipLevels = 1;
 	srvDescriptor->CreateSRV(srvIndex, resource_.Get(), srvDesc);
-	gpuHandle_ = srvDescriptor->GetGPUHandle(srvIndex);
+	srvGPUHandle_ = srvDescriptor->GetGPUHandle(srvIndex);
+
+	// 使用用途がRenderTarget以外の場合
+	if (!useRenderTarget) {
+
+		// UAVを作成する
+		uint32_t uavIndex = 0;
+		// Descの設定
+		D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+		uavDesc.Format = format;
+		uavDesc.ViewDimension = D3D12_UAV_DIMENSION_TEXTURE2D;
+		uavDesc.Texture2D.MipSlice = 0;
+		srvDescriptor->CreateUAV(uavIndex, resource_.Get(), uavDesc);
+		uavGPUHandle_ = srvDescriptor->GetGPUHandle(uavIndex);
+	}
 
 	++textureCount_;
 }

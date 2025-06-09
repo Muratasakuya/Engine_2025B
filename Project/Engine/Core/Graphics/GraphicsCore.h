@@ -63,7 +63,7 @@ public:
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetDebugSceneRenderTextureGPUHandle() const { return postProcessSystem_->GetDebugSceneGPUHandle(); }
-	D3D12_GPU_DESCRIPTOR_HANDLE GetShadowTextureGPUHandle() const { return shadowRayTexture_->GetGPUHandle(); }
+	D3D12_GPU_DESCRIPTOR_HANDLE GetShadowTextureGPUHandle() const { return shadowRayTexture_->GetSRVGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods

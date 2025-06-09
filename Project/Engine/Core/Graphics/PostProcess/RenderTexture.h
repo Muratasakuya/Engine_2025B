@@ -32,7 +32,8 @@ public:
 
 	const RenderTarget& GetRenderTarget() const { return renderTarget_; }
 
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle() const { return gpuHandle_; }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetSRVGPUHandle() const { return srvGPUHandle_; }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetUAVGPUHandle() const { return uavGPUHandle_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -43,7 +44,8 @@ private:
 	RenderTarget renderTarget_;
 
 	ComPtr<ID3D12Resource> resource_;
-	D3D12_GPU_DESCRIPTOR_HANDLE gpuHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGPUHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE uavGPUHandle_;
 
 	static int textureCount_;
 

@@ -79,7 +79,7 @@ void MeshRenderer::TraceShadowRay(SceneConstBuffer* sceneBuffer,
 	// TLAS
 	commandList->SetComputeRootShaderResourceView(0, rayScene_->GetTLASResource()->GetGPUVirtualAddress());
 	// UAV
-	commandList->SetComputeRootDescriptorTable(1, shadowRayTexture->GetGPUHandle());
+	commandList->SetComputeRootDescriptorTable(1, shadowRayTexture->GetUAVGPUHandle());
 	// scene情報
 	sceneBuffer->SetRaySceneCommand(commandList, 2);
 
@@ -95,11 +95,11 @@ void MeshRenderer::TraceShadowRay(SceneConstBuffer* sceneBuffer,
 	// Miss
 	desc.MissShaderTable.StartAddress = base + RaytracingPipeline::kMissOffset;
 	desc.MissShaderTable.StrideInBytes = RaytracingPipeline::kRecordStride;
-	desc.MissShaderTable.SizeInBytes = RaytracingPipeline::kRecordStride * 1;
+	desc.MissShaderTable.SizeInBytes = RaytracingPipeline::kRecordStride;
 	// HitGroup 
 	desc.HitGroupTable.StartAddress = base + RaytracingPipeline::kHitGroupOffset;
 	desc.HitGroupTable.StrideInBytes = RaytracingPipeline::kRecordStride;
-	desc.HitGroupTable.SizeInBytes = RaytracingPipeline::kRecordStride * 1;
+	desc.HitGroupTable.SizeInBytes = RaytracingPipeline::kRecordStride;
 
 	desc.Width = Config::kWindowWidth;
 	desc.Height = Config::kWindowHeight;
@@ -137,7 +137,7 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer,
 	// allTexture
 	commandList->SetGraphicsRootDescriptorTable(10, srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 	// shadowTexture
-	commandList->SetGraphicsRootDescriptorTable(11, shadowRayTexture->GetGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(11, shadowRayTexture->GetSRVGPUHandle());
 
 	// skyboxがあるときのみ、とりあえず今は
 	if (skybox->IsCreated()) {

@@ -158,3 +158,62 @@ void DxShaderCompiler::CompileShader(
 	shaderResult->Release();
 	shaderError.Reset();
 }
+
+void DxShaderCompiler::CompileShaderLibrary(const std::wstring& filePath,
+	const std::wstring& exports, ComPtr<IDxcBlob>& shaderBlob) {
+
+	// hlslファイルを読み込む
+	IDxcBlobEncoding* shaderSouce = nullptr;
+	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSouce);
+	// 読めなかったら止める
+	assert(SUCCEEDED(hr));
+	// 読み込んだファイルの内容を設定する
+	DxcBuffer shaderSourceBuffer;
+	shaderSourceBuffer.Ptr = shaderSouce->GetBufferPointer();
+	shaderSourceBuffer.Size = shaderSouce->GetBufferSize();
+	// UTF8の文字コードであることを通知
+	shaderSourceBuffer.Encoding = DXC_CP_UTF8;
+
+	LPCWSTR level = L"";
+#if defined(_DEBUG)
+	level = L"-Od";
+#else
+	level = L"-O3";
+#endif
+
+	std::wstring exportArg = L"-exports";
+	DxcBuffer srcBuf{};
+
+	LPCWSTR args[] = {
+		filePath.c_str(),
+		L"-T", L"lib_6_6",
+		exportArg.c_str(), exports.c_str(),
+		L"-Zi", L"-Qembed_debug",
+		level,
+		L"-Zpr",
+	};
+
+	ComPtr<IDxcResult> result;
+	hr = dxcCompiler_->Compile(&shaderSourceBuffer,
+		args, _countof(args),
+		includeHandler_.Get(),
+		IID_PPV_ARGS(&result));
+
+	ComPtr<IDxcBlobUtf8> shaderError = nullptr;
+	// エラー情報を取得
+	result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+
+	if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
+		// エラーの内容
+		const char* errorMessage = reinterpret_cast<const char*>(shaderError->GetBufferPointer());
+		errorMessage;
+		assert(false);
+	}
+
+	hr = result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
+	assert(SUCCEEDED(hr));
+	// もう使わないリソースを解放
+	shaderSouce->Release();
+	result->Release();
+	shaderError.Reset();
+}

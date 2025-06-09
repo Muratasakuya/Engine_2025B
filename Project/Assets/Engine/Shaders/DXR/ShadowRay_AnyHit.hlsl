@@ -5,12 +5,13 @@
 #include "ShadowRay.hlsli"
 
 //============================================================================
-//	Miss
+//	AnyHit
 //============================================================================
 
-[shader("miss")]
-void MissShadow(inout ShadowPayload payload) {
+[shader("anyhit")]
+void AnyHit(inout ShadowPayload payload, in BuiltInTriangleIntersectionAttributes attributes) {
 	
-	// è’ìÀñ≥Çµ
-	payload.occluded = false;
+	// è’ìÀÇµÇΩ
+	payload.occluded = true;
+	AcceptHitAndEndSearch();
 }

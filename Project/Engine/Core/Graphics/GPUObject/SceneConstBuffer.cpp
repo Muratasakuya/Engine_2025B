@@ -46,9 +46,11 @@ void SceneConstBuffer::Update(CameraManager* cameraManager,
 	lightBuffer_.TransferData(*lightManager->GetLight());
 
 	// rayScene
-	raySceneBuffer_.TransferData(RaySceneForGPU(
-		cameraManager->GetCamera()->GetTransform().translation,
-		lightManager->GetLight()->directional.direction));
+	RaySceneForGPU rayScene{};
+	rayScene.cameraPos = cameraManager->GetCamera()->GetTransform().translation;
+	rayScene.cameraRotateMatrix = Matrix4x4::MakeRotateMatrix(cameraManager->GetCamera()->GetTransform().eulerRotate);
+	rayScene.lightDirection = Vector3::Normalize(lightManager->GetLight()->directional.direction);
+	raySceneBuffer_.TransferData(rayScene);
 
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
