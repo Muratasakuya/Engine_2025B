@@ -76,7 +76,15 @@ void GraphicsCore::InitDXDevice() {
 	hr = dxDevice_->Get()->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS7, &features, sizeof(features));
 	if (FAILED(hr) || (features.MeshShaderTier == D3D12_MESH_SHADER_TIER_NOT_SUPPORTED)) {
 
-		ASSERT(FALSE, "meshShaders aren't supported");
+		ASSERT(FALSE, "meshShaders not supported");
+	}
+
+	// rayTracingのチェック
+	D3D12_FEATURE_DATA_D3D12_OPTIONS5 options5 = {};
+	dxDevice_->Get()->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &options5, sizeof(options5));
+	if (options5.RaytracingTier < D3D12_RAYTRACING_TIER_1_1) {
+
+		ASSERT(FALSE, "rayTracing not supported");
 	}
 #endif
 }

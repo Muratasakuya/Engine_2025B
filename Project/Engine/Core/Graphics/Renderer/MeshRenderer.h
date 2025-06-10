@@ -45,7 +45,7 @@ private:
 	SRVDescriptor* srvDescriptor_;
 
 	// pipelines
-	// shadowRay
+	// shadowRayQuery
 	std::unique_ptr<RaytracingPipeline> shadowRayPipeline_;
 	// main
 	std::unique_ptr<PipelineState> meshShaderPipeline_;

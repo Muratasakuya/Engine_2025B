@@ -19,7 +19,7 @@ cbuffer Scene : register(b0) {
 };
 
 //============================================================================
-//	RayReneration
+//	RayGeneration
 //============================================================================
 [shader("raygeneration")]
 void RayGeneration() {

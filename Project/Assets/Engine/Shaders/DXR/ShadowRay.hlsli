@@ -5,21 +5,9 @@
 #ifndef SHADOW_RAY_HLSLI
 #define SHADOW_RAY_HLSLI
 
-#define RAY_TYPE_RADIANCE 0 // firstRay
-#define RAY_TYPE_SHADOW   1 // shadowRay
-
 //============================================================================
 //	structure
 //============================================================================
-
-// firstRay
-struct RadiancePayload {
-	
-	float3 color;
-	float hitT;
-	float3 worldPos;
-	float3 worldNormal;
-};
 
 // shadowRay
 struct ShadowPayload {

@@ -22,6 +22,8 @@ void RaytracingPipeline::Init(ID3D12Device5* device, DxShaderCompiler* shaderCom
 	ComPtr<IDxcBlob> rayGenerationShaderBlob;
 	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_RayGeneration.hlsl", L"lib_6_6", rayGenerationShaderBlob, L"RayGeneration");
 
+	shaderCompiler->CompileShaderLibrary(L"./Assets/Engine/Shaders/DXR/ShadowRay_Miss.hlsl", L";", missShaderBlob);
+
 	//========================================================================
 	// DXILライブラリの設定
 

@@ -737,10 +737,11 @@
     <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Bloom.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\CS\Object\Skinning.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_RayGeneration.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_AnyHit.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_ClosestHit.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_Miss.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_RayGeneration.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRayQuery.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />
