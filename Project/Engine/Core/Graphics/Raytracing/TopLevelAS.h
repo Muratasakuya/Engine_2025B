@@ -34,6 +34,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	ID3D12Device8* device_;
+
 	// スクラッチリソース
 	AccelerationStructureBuffer instanceDescs_;
 	AccelerationStructureBuffer scratch_;

@@ -7,6 +7,9 @@
 void TopLevelAS::Build(ID3D12Device8* device, ID3D12GraphicsCommandList6* commandList,
 	const std::vector<RayTracingInstance>& instances, bool allowUpdate) {
 
+	device_ = nullptr;
+	device_ = device;
+
 	allowUpdate_ = allowUpdate;
 
 	// instanceDescバッファ生成
@@ -23,7 +26,7 @@ void TopLevelAS::Build(ID3D12Device8* device, ID3D12GraphicsCommandList6* comman
 		const RayTracingInstance& instance = instances[i];
 		auto& data = mapped[i];
 
-		CopyMatrix3x4(data.Transform, instance.matrix);
+		CopyMatrix3x4(data.Transform, Matrix4x4::Transpose(instance.matrix));
 		data.InstanceID = instance.instanceID;
 		data.InstanceContributionToHitGroupIndex = instance.hitGroupIdx;
 		data.InstanceMask = instance.mask;
@@ -73,6 +76,13 @@ void TopLevelAS::Update(ID3D12GraphicsCommandList6* commandList, const std::vect
 
 	// skinnedMeshじゃない場合は更新しない
 	if (!allowUpdate_) {
+		return;
+	}
+
+	// インスタンスが変わったら再ビルドし直す
+	if (instances.size() != inputs_.NumDescs) {
+
+		Build(device_, commandList, instances, allowUpdate_);
 		return;
 	}
 
