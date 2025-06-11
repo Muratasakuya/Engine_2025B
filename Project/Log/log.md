@@ -23,3 +23,4 @@ EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture
 EngineInformation:     load texture: model
 EngineInformation:     load texture: file
+EngineInformation:     load model: sphere
