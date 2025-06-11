@@ -35,6 +35,12 @@ public:
 	void CompileShader(
 		const std::wstring& filePath,
 		const wchar_t* profile,
+		ComPtr<IDxcBlob>& shaderBlob,
+		const wchar_t* entry);
+
+	void CompileShaderLibrary(
+		const std::wstring& filePath,
+		const std::wstring& exports,
 		ComPtr<IDxcBlob>& shaderBlob);
 private:
 	//========================================================================

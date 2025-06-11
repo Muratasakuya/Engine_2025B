@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Config.h>
-#include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 
 // imgui
 #include <imgui.h>

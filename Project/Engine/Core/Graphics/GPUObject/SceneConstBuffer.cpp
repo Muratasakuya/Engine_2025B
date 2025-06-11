@@ -21,6 +21,15 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 	// light
 	lightBuffer_.CreateConstBuffer(device);
 
+	// rayScene
+	raySceneBuffer_.CreateConstBuffer(device);
+
+	// rayScene
+	RaySceneForGPU rayScene{};
+	rayScene.rayMin = 0.01f;       // 飛ばす最小位置
+	rayScene.rayMax = 10000000.0f; // 飛ばす距離
+	raySceneBuffer_.TransferData(rayScene);
+
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
@@ -108,4 +117,9 @@ void SceneConstBuffer::SetOrthoProCommand(ID3D12GraphicsCommandList* commandList
 
 	commandList->SetGraphicsRootConstantBufferView(rootIndex,
 		orthoProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+}
+
+void SceneConstBuffer::SetRaySceneCommand(ID3D12GraphicsCommandList* commandList, UINT rootIndex) {
+
+	commandList->SetGraphicsRootConstantBufferView(rootIndex, raySceneBuffer_.GetResource()->GetGPUVirtualAddress());
 }

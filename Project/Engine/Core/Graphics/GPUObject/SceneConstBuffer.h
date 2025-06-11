@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/Raytracing/RaytracingStructures.h>
 #include <Engine/Scene/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Matrix4x4.h>
@@ -28,6 +29,7 @@ public:
 	void SetMainPassCommands(bool debugEnable, ID3D12GraphicsCommandList* commandList);
 	void SetViewProCommand(bool debugEnable, ID3D12GraphicsCommandList* commandList, UINT rootIndex);
 	void SetOrthoProCommand(ID3D12GraphicsCommandList* commandList, UINT rootIndex);
+	void SetRaySceneCommand(ID3D12GraphicsCommandList* commandList, UINT rootIndex);
 private:
 	//========================================================================
 	//	private Methods
@@ -48,4 +50,7 @@ private:
 
 	// light
 	DxConstBuffer<PunctualLight> lightBuffer_;
+
+	// rayScene
+	DxConstBuffer<RaySceneForGPU> raySceneBuffer_;
 };

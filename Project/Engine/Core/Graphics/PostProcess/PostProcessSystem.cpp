@@ -107,14 +107,14 @@ void PostProcessSystem::Execute(RenderTexture* inputTexture, DxCommand* dxComman
 	if (activeProcesses_.empty()) {
 
 		// 使用するpostProcessがない場合はそのままinputTextureを返す
-		frameBufferGPUHandle_ = inputTexture->GetGPUHandle();
+		frameBufferGPUHandle_ = inputTexture->GetSRVGPUHandle();
 		return;
 	}
 
 	auto commandList = dxCommand->GetCommandList();
 	PostProcessCommandContext commandContext{};
 	// 入力画像のGPUHandle取得
-	D3D12_GPU_DESCRIPTOR_HANDLE inputGPUHandle = inputTexture->GetGPUHandle();
+	D3D12_GPU_DESCRIPTOR_HANDLE inputGPUHandle = inputTexture->GetSRVGPUHandle();
 
 	for (const auto& process : activeProcesses_) {
 
@@ -167,7 +167,7 @@ void PostProcessSystem::ExecuteDebugScene(RenderTexture* inputTexture, DxCommand
 	auto commandList = dxCommand->GetCommandList();
 	PostProcessCommandContext commandContext{};
 	// 入力画像のGPUHandle取得
-	D3D12_GPU_DESCRIPTOR_HANDLE inputGPUHandle = inputTexture->GetGPUHandle();
+	D3D12_GPU_DESCRIPTOR_HANDLE inputGPUHandle = inputTexture->GetSRVGPUHandle();
 
 	// pipeline設定
 	pipeline_->SetPipeline(commandList, PostProcessType::Bloom);

@@ -68,8 +68,14 @@ PSOutput main(MSOutput input) {
 	// emissive
 	float3 emission = material.emissionColor * material.emissiveIntensity;
 	output.color.rgb += emission * diffuseColor.rgb;
-	// shadow
-	output.color.rgb = ApplyShadow(lighting, normal, output.color.rgb, input);
+	// âeîªíË
+	bool isShadowed = IsShadowed(input.worldPosition + normal);
+	// âeÇÃéû
+	if (isShadowed) {
+		
+		// îñÇ¢çï
+		output.color.rgb *= lighting.shadowRate;
+	}
 	
 	return output;
 }

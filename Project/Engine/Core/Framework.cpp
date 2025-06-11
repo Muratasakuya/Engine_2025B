@@ -8,7 +8,7 @@
 #include <Engine/Asset/AssetEditor.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Collision/CollisionManager.h>
-#include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Config.h>
 #include <Game/Time/GameTimer.h>
@@ -119,8 +119,7 @@ Framework::Framework() {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
 	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
-		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
-		graphicsCore_->GetShadowMapGPUHandle());
+		graphicsCore_->GetDebugSceneRenderTextureGPUHandle());
 #endif
 }
 

@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
+#include <Engine/Core/Graphics/Raytracing/RaytracingPipeline.h>
+#include <Engine/Core/Graphics/Raytracing/RaytracingScene.h>
 
 // c++
 #include <memory>
@@ -11,7 +13,8 @@
 // front
 class SRVDescriptor;
 class DxCommand;
-class ShadowMap;
+class RenderTexture;
+class DepthTexture;
 class SceneConstBuffer;
 
 //============================================================================
@@ -26,10 +29,7 @@ public:
 	MeshRenderer() = default;
 	~MeshRenderer() = default;
 
-	void Init(ID3D12Device8* device, ShadowMap* shadowMap,
-		DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
-
-	void RenderingZPass(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
+	void Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
 
 	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 private:
@@ -40,10 +40,12 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	SRVDescriptor* srvDescriptor_;
-	ShadowMap* shadowMap_;
 
+	// main
 	std::unique_ptr<PipelineState> meshShaderPipeline_;
-	std::unique_ptr<PipelineState> meshShaderZPassPipeline_;
-
+	// skybox
 	std::unique_ptr<PipelineState> skyboxPipeline_;
+
+	// raytracing
+	std::unique_ptr<RaytracingScene> rayScene_;
 };

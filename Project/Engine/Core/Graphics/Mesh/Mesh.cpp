@@ -14,6 +14,7 @@ void IMesh::Init(ID3D12Device* device, const ResourceMesh<MeshVertex>& resource,
 
 		// 頂点数
 		vertexCounts_.push_back(static_cast<UINT>(resource.vertices[meshIndex].size()));
+		indexCounts_.push_back(static_cast<UINT>(resource.indices[meshIndex].size()));
 		// meshlet数
 		meshletCounts_.push_back(static_cast<uint32_t>(resource.meshlets[meshIndex].size()));
 
@@ -44,6 +45,9 @@ void IMesh::CreateBuffer(ID3D12Device* device, uint32_t meshIndex,
 	// meshlet
 	meshlets_.push_back({});
 	meshlets_[meshIndex].CreateStructuredBuffer(device, meshletCounts_[meshIndex]);
+
+	indices_.push_back({});
+	indices_[meshIndex].CreateIndexBuffer(device, indexCounts_[meshIndex]);
 }
 
 void IMesh::TransferBuffer(uint32_t meshIndex, const ResourceMesh<MeshVertex>& resource, bool isSkinned) {
@@ -59,6 +63,8 @@ void IMesh::TransferBuffer(uint32_t meshIndex, const ResourceMesh<MeshVertex>& r
 	primitiveIndices_[meshIndex].TransferVectorData(resource.primitiveIndices[meshIndex]);
 	// meshlet
 	meshlets_[meshIndex].TransferVectorData(resource.meshlets[meshIndex]);
+
+	indices_[meshIndex].TransferVectorData(resource.indices[meshIndex]);
 }
 
 //============================================================================

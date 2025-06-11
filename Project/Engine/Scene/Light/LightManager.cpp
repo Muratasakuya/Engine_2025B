@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 
 //============================================================================
 //	LightManager classMethods

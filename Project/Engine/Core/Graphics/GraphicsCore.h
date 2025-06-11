@@ -10,16 +10,16 @@
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
-#include <Engine/Core/Graphics/PostProcess/ShadowMap.h>
+#include <Engine/Core/Graphics/PostProcess/DepthTexture.h>
 #include <Engine/Core/Graphics/Descriptors/RTVDescriptor.h>
 #include <Engine/Core/Graphics/Descriptors/DSVDescriptor.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
-#include <Engine/External/ImGuiManager.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
+#include <Engine/External/ImGuiManager.h>
 
 // renderer
-#include <Engine/Renderer/MeshRenderer.h>
-#include <Engine/Renderer/SpriteRenderer.h>
+#include <Engine/Core/Graphics/Renderer/MeshRenderer.h>
+#include <Engine/Core/Graphics/Renderer/SpriteRenderer.h>
 
 // c++
 #include <memory>
@@ -63,7 +63,6 @@ public:
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 	D3D12_GPU_DESCRIPTOR_HANDLE GetDebugSceneRenderTextureGPUHandle() const { return postProcessSystem_->GetDebugSceneGPUHandle(); }
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetShadowMapGPUHandle() const { return shadowMap_->GetGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -71,27 +70,25 @@ private:
 
 	//--------- directX ----------//
 
+	// dxObject
 	std::unique_ptr<DxDevice> dxDevice_;
-
 	std::unique_ptr<DxCommand> dxCommand_;
-
 	std::unique_ptr<DxSwapChain> dxSwapChain_;
-
 	std::unique_ptr<DxShaderCompiler> dxShaderComplier_;
 
+	// renderTexture
 	std::unique_ptr<RenderTexture> renderTexture_;
 	std::unique_ptr<GuiRenderTexture> guiRenderTexture_;
-
 	std::unique_ptr<RenderTexture> debugSceneRenderTexture_;
 
-	std::unique_ptr<ShadowMap> shadowMap_;
-
+	// postProcess
 	std::unique_ptr<PostProcessSystem> postProcessSystem_;
 
 	std::unique_ptr<PipelineState> skinningPipeline_;
 	std::unique_ptr<MeshRenderer> meshRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;
 
+	// descriptor
 	std::unique_ptr<RTVDescriptor> rtvDescriptor_;
 	std::unique_ptr<DSVDescriptor> dsvDescriptor_;
 	std::unique_ptr<SRVDescriptor> srvDescriptor_;
@@ -104,9 +101,6 @@ private:
 
 	void InitDXDevice();
 	void InitRenderTexture();
-
-	// shadowMapへの描画処理
-	void RenderZPass();
 
 	// renderTextureへの描画処理
 	void RenderOffscreenTexture();

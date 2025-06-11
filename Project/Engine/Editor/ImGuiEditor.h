@@ -24,8 +24,7 @@ public:
 	~ImGuiEditor() = default;
 
 	void Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle,
-		const D3D12_GPU_DESCRIPTOR_HANDLE& debugSceneRenderTextureGPUHandle,
-		const D3D12_GPU_DESCRIPTOR_HANDLE& shadowMapGPUHandle);
+		const D3D12_GPU_DESCRIPTOR_HANDLE& debugSceneRenderTextureGPUHandle);
 
 	void Display();
 private:
@@ -37,7 +36,7 @@ private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE renderTextureGPUHandle_;
 	D3D12_GPU_DESCRIPTOR_HANDLE debugSceneRenderTextureGPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE shadowMapGPUHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE shadowTextureGPUHandle_;
 
 	ImGuiWindowFlags windowFlag_;
 

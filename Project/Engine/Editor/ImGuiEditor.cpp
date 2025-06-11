@@ -17,14 +17,10 @@
 //============================================================================
 
 void ImGuiEditor::Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle,
-	const D3D12_GPU_DESCRIPTOR_HANDLE& debugSceneRenderTextureGPUHandle,
-	const D3D12_GPU_DESCRIPTOR_HANDLE& shadowMapGPUHandle) {
+	const D3D12_GPU_DESCRIPTOR_HANDLE& debugSceneRenderTextureGPUHandle) {
 
 	renderTextureGPUHandle_ = renderTextureGPUHandle;
 	debugSceneRenderTextureGPUHandle_ = debugSceneRenderTextureGPUHandle;
-
-	// debug表示用、必要な時以外表示しない
-	shadowMapGPUHandle_ = shadowMapGPUHandle;
 
 	// サイズの変更、移動不可
 	windowFlag_ =

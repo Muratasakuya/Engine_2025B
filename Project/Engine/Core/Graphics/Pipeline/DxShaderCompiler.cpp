@@ -41,7 +41,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					std::string vertexShader = shaderPass["VertexShader"];
 					if (Filesystem::Found(basePath, vertexShader, fullPath)) {
 						ComPtr<IDxcBlob> vertexShaderBlob;
-						CompileShader(fullPath.wstring(), L"vs_6_0", vertexShaderBlob);
+						CompileShader(fullPath.wstring(), L"vs_6_0", vertexShaderBlob, L"main");
 						shaderBlobs.emplace_back(vertexShaderBlob);
 					} else {
 
@@ -56,7 +56,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					if (Filesystem::Found(basePath, meshShader, fullPath)) {
 
 						ComPtr<IDxcBlob> meshShaderBlob;
-						CompileShader(fullPath.wstring(), L"ms_6_5", meshShaderBlob);
+						CompileShader(fullPath.wstring(), L"ms_6_5", meshShaderBlob, L"main");
 						shaderBlobs.emplace_back(meshShaderBlob);
 					} else {
 
@@ -67,11 +67,17 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 				// pixelShaderのcompile
 				if (shaderPass.contains("PixelShader")) {
 
+					const wchar_t* profile = L"ps_6_0";
+					if (shaderPass.contains("PSProfile")) {
+
+						profile = L"ps_6_6";
+					}
+
 					std::string pixelShader = shaderPass["PixelShader"];
 					if (Filesystem::Found(basePath, pixelShader, fullPath)) {
 
 						ComPtr<IDxcBlob> pixelShaderBlob;
-						CompileShader(fullPath.wstring(), L"ps_6_0", pixelShaderBlob);
+						CompileShader(fullPath.wstring(), profile, pixelShaderBlob, L"main");
 						shaderBlobs.emplace_back(pixelShaderBlob);
 					} else {
 
@@ -85,7 +91,20 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 				if (Filesystem::Found(basePath, computeShader, fullPath)) {
 
 					ComPtr<IDxcBlob> computeShaderBlob;
-					CompileShader(fullPath.wstring(), L"cs_6_0", computeShaderBlob);
+					CompileShader(fullPath.wstring(), L"cs_6_0", computeShaderBlob, L"main");
+					shaderBlobs.push_back(computeShaderBlob);
+				} else {
+
+					ASSERT(false, "Failed to find HLSL file: " + computeShader);
+				}
+			} else if (type == "DXR" && shaderPass.contains("ComputeShader")) {
+
+				// DXRのcompile
+				std::string computeShader = shaderPass["ComputeShader"];
+				if (Filesystem::Found(basePath, computeShader, fullPath)) {
+
+					ComPtr<IDxcBlob> computeShaderBlob;
+					CompileShader(fullPath.wstring(), L"cs_6_6", computeShaderBlob, L"main");
 					shaderBlobs.push_back(computeShaderBlob);
 				} else {
 
@@ -98,7 +117,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 
 void DxShaderCompiler::CompileShader(
 	const std::wstring& filePath, const wchar_t* profile,
-	ComPtr<IDxcBlob>& shaderBlob) {
+	ComPtr<IDxcBlob>& shaderBlob, const wchar_t* entry) {
 
 	// hlslファイルを読み込む
 	IDxcBlobEncoding* shaderSouce = nullptr;
@@ -123,7 +142,7 @@ void DxShaderCompiler::CompileShader(
 
 	LPCWSTR arguments[] = {
 		filePath.c_str(),
-		L"-E",L"main",
+		L"-E",entry,
 		L"-T",profile,
 		L"-Zi",L"-Qembed_debug",
 		level,
@@ -156,5 +175,64 @@ void DxShaderCompiler::CompileShader(
 	// もう使わないリソースを解放
 	shaderSouce->Release();
 	shaderResult->Release();
+	shaderError.Reset();
+}
+
+void DxShaderCompiler::CompileShaderLibrary(const std::wstring& filePath,
+	const std::wstring& exports, ComPtr<IDxcBlob>& shaderBlob) {
+
+	// hlslファイルを読み込む
+	IDxcBlobEncoding* shaderSouce = nullptr;
+	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSouce);
+	// 読めなかったら止める
+	assert(SUCCEEDED(hr));
+	// 読み込んだファイルの内容を設定する
+	DxcBuffer shaderSourceBuffer;
+	shaderSourceBuffer.Ptr = shaderSouce->GetBufferPointer();
+	shaderSourceBuffer.Size = shaderSouce->GetBufferSize();
+	// UTF8の文字コードであることを通知
+	shaderSourceBuffer.Encoding = DXC_CP_UTF8;
+
+	LPCWSTR level = L"";
+#if defined(_DEBUG)
+	level = L"-Od";
+#else
+	level = L"-O3";
+#endif
+
+	std::wstring exportArg = L"-exports";
+	DxcBuffer srcBuf{};
+
+	LPCWSTR args[] = {
+		filePath.c_str(),
+		L"-T", L"lib_6_6",
+		exportArg.c_str(), exports.c_str(),
+		L"-Zi", L"-Qembed_debug",
+		level,
+		L"-Zpr",
+	};
+
+	ComPtr<IDxcResult> result;
+	hr = dxcCompiler_->Compile(&shaderSourceBuffer,
+		args, _countof(args),
+		includeHandler_.Get(),
+		IID_PPV_ARGS(&result));
+
+	ComPtr<IDxcBlobUtf8> shaderError = nullptr;
+	// エラー情報を取得
+	result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&shaderError), nullptr);
+
+	if (shaderError != nullptr && shaderError->GetStringLength() != 0) {
+		// エラーの内容
+		const char* errorMessage = reinterpret_cast<const char*>(shaderError->GetBufferPointer());
+		errorMessage;
+		assert(false);
+	}
+
+	hr = result->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);
+	assert(SUCCEEDED(hr));
+	// もう使わないリソースを解放
+	shaderSouce->Release();
+	result->Release();
 	shaderError.Reset();
 }

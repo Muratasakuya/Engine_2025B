@@ -8,7 +8,7 @@
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
-#include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Particle/ParticleSystem.h>
@@ -19,25 +19,8 @@
 
 void GameScene::Load(Asset* asset) {
 
-	// particleTexture
-	asset->LoadTexture("circle");
-	asset->LoadTexture("redCircle");
-	asset->LoadTexture("white");
-	asset->LoadTexture("monsterBall");
-	asset->LoadTexture("noise");
-	asset->LoadTexture("smallCircle");
-	asset->LoadTexture("spark");
-	asset->LoadTexture("gradationLine_1");
-	asset->LoadTexture("gradationLine_0");
-	asset->LoadTexture("effectCircle");
-	asset->LoadTexture("uvChecker");
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
-
-	// particleModel
-	asset->LoadModel("cube");
-	asset->LoadModel("axis");
-	asset->LoadModel("billboardPlane");
 
 	// player
 	asset->LoadModel("playerBody");
@@ -47,13 +30,6 @@ void GameScene::Load(Asset* asset) {
 
 	// environment
 	asset->LoadModel("stageField");
-
-	// animation
-	asset->LoadModel("BrainStem");
-	asset->LoadAnimation("BrainStem", "BrainStem");
-
-	// debug
-	asset->LoadModel("bricks");
 }
 
 void GameScene::Init(
@@ -104,12 +80,22 @@ void GameScene::Init(
 	// 追従先を設定する: player
 	followCamera_->SetTarget(player_->GetTransform());
 
-	// skybox
-	Skybox::GetInstance()->Create(asset->GetTextureGPUIndex("docklands_01_2k"));
-
 	// entityEditor
 	entityEditor_ = std::make_unique<GameEntityEditor>();
 	entityEditor_->Init(asset);
+	// levelEditor
+	levelEditor_ = std::make_unique<LevelEditor>();
+	levelEditor_->LoadFile(asset);
+
+	// 仮の地面
+	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
+	auto transform = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(id);
+	transform->translation.y = -0.8f;
+	transform->scale.x = 128.0f;
+	transform->scale.z = 128.0f;
+	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
+	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
+		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

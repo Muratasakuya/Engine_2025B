@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Game/Camera/FollowCamera.h>
 #include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
 

@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Window/WinApp.h>
-#include <Engine/Renderer/LineRenderer.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Scene/Camera/CameraManager.h>
 #include <Engine/Scene/Light/LightManager.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
@@ -76,7 +76,15 @@ void GraphicsCore::InitDXDevice() {
 	hr = dxDevice_->Get()->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS7, &features, sizeof(features));
 	if (FAILED(hr) || (features.MeshShaderTier == D3D12_MESH_SHADER_TIER_NOT_SUPPORTED)) {
 
-		ASSERT(FALSE, "meshShaders aren't supported");
+		ASSERT(FALSE, "meshShaders not supported");
+	}
+
+	// rayTracingのチェック
+	D3D12_FEATURE_DATA_D3D12_OPTIONS5 options5 = {};
+	dxDevice_->Get()->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &options5, sizeof(options5));
+	if (options5.RaytracingTier < D3D12_RAYTRACING_TIER_1_1) {
+
+		ASSERT(FALSE, "rayTracing not supported");
 	}
 #endif
 }
@@ -109,11 +117,6 @@ void GraphicsCore::InitRenderTexture() {
 			Config::kWindowClearColor[2], Config::kWindowClearColor[3]),
 		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
 #endif
-
-	// shadowMap作成
-	shadowMap_ = std::make_unique<ShadowMap>();
-	shadowMap_->Create(Config::kShadowMapSize, Config::kShadowMapSize,
-		dsvDescriptor_.get(), srvDescriptor_.get());
 }
 
 void GraphicsCore::Init(WinApp* winApp) {
@@ -175,7 +178,7 @@ void GraphicsCore::Init(WinApp* winApp) {
 
 	// mesh描画初期化
 	meshRenderer_ = std::make_unique<MeshRenderer>();
-	meshRenderer_->Init(dxDevice_->Get(), shadowMap_.get(), dxShaderComplier_.get(), srvDescriptor_.get());
+	meshRenderer_->Init(dxDevice_->Get(), dxShaderComplier_.get(), srvDescriptor_.get());
 
 	// sprite描画初期化
 	spriteRenderer_ = std::make_unique<SpriteRenderer>();
@@ -206,7 +209,6 @@ void GraphicsCore::Finalize(HWND hwnd) {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugSceneRenderTexture_.reset();
 #endif
-	shadowMap_.reset();
 	postProcessSystem_.reset();
 	meshRenderer_.reset();
 	spriteRenderer_.reset();
@@ -241,8 +243,9 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	// skybox更新
 	Skybox::GetInstance()->Update();
 
-	// zPass
-	RenderZPass();
+	// srvDescriptorHeap設定
+	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
+
 	// offscreenTexture
 	RenderOffscreenTexture();
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
@@ -268,23 +271,6 @@ void GraphicsCore::DebugUpdate() {
 //============================================================================
 //	Main
 //============================================================================
-
-void GraphicsCore::RenderZPass() {
-
-	// srvDescriptorHeap設定
-	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
-
-	dxCommand_->SetRenderTargets(std::nullopt, shadowMap_->GetCPUHandle());
-	dxCommand_->ClearDepthStencilView(shadowMap_->GetCPUHandle());
-	dxCommand_->SetViewportAndScissor(Config::kShadowMapSize, Config::kShadowMapSize);
-
-	// Z値描画
-	meshRenderer_->RenderingZPass(sceneBuffer_.get(), dxCommand_.get());
-
-	// Write -> PixelShader
-	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
-		D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-}
 
 void GraphicsCore::RenderOffscreenTexture() {
 
@@ -381,9 +367,6 @@ void GraphicsCore::EndRenderFrame() {
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 #endif // _DEBUG
 
-	// PixelShader -> Write
-	dxCommand_->TransitionBarriers({ shadowMap_->GetResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE);
 	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
