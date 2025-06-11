@@ -21,6 +21,8 @@ void GameScene::Load(Asset* asset) {
 
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
+	// lut
+	asset->LoadLutTexture("lut");
 
 	// player
 	asset->LoadModel("playerBody");
@@ -54,9 +56,14 @@ void GameScene::Init(
 	//========================================================================
 
 	postProcessSystem_ = postProcessSystem;
-	postProcessSystem_->Create({ PostProcessType::Bloom });
+	postProcessSystem_->Create({ 
+		PostProcessType::Bloom,
+		PostProcessType::Lut });
 
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
+	postProcessSystem_->AddProcess(PostProcessType::Lut);
+
+	postProcessSystem_->InputProcessTexture("lut", PostProcessType::Lut, asset);
 
 	//========================================================================
 	//	sceneObject

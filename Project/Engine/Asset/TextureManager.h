@@ -9,9 +9,12 @@
 #include <d3d12.h>
 #include <Externals/DirectXTex/DirectXTex.h>
 #include <Externals/DirectXTex/d3dx12.h>
+#include <DirectXMath.h>
+#include <directxpackedvector.h>
 // c++
 #include <string>
 #include <unordered_map>
+#include <filesystem>
 // front
 class DxCommand;
 class SRVDescriptor;
@@ -31,6 +34,7 @@ public:
 	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor);
 
 	void Load(const std::string& textureName);
+	void LoadLutTexture(const std::string& textureName);
 
 	bool Search(const std::string& textureName);
 
@@ -76,8 +80,10 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	DirectX::ScratchImage GenerateMipMaps(const std::string& filePath);
+	DirectX::ScratchImage LoadCubeLUT(const std::filesystem::path& path);
 
 	void CreateTextureResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, const DirectX::TexMetadata& metadata);
+	void CreateTextureResource3D(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, const DirectX::TexMetadata& metadata);
 	void UploadTextureData(ID3D12Resource* texture, ComPtr<ID3D12Resource>& resource, const DirectX::ScratchImage& mipImages);
 
 	void CreateBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, size_t sizeInBytes);

@@ -751,6 +751,7 @@
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_RayGeneration.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRayQuery.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\MS\MeshStandard.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Lut.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />

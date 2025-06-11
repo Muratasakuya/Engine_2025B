@@ -34,6 +34,7 @@ void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescript
 		"SepiaTone.json",
 		"LuminanceBasedOutline.json",
 		"DepthBasedOutline.json",
+		"Lut.json",
 	};
 
 	for (const uint32_t& type : Algorithm::GetEnumArray(PostProcessType::Count)) {

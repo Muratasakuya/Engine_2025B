@@ -20,6 +20,10 @@ void Asset::LoadTexture(const std::string& textureName) {
 	textureManager_->Load(textureName);
 }
 
+void Asset::LoadLutTexture(const std::string& textureName) {
+	textureManager_->LoadLutTexture(textureName);
+}
+
 void Asset::LoadModel(const std::string& modelName) {
 	modelLoader_->Load(modelName);
 }

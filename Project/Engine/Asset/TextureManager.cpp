@@ -105,6 +105,64 @@ void TextureManager::Load(const std::string& textureName) {
 	Logger::Log("load texture: " + identifier);
 }
 
+void TextureManager::LoadLutTexture(const std::string& textureName) {
+
+	// 読みこみ済みなら早期リターン
+	if (textures_.contains(textureName)) {
+		return;
+	}
+
+	// texture検索
+	std::filesystem::path filePath;
+	bool found = false;
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
+		if (entry.is_regular_file() &&
+			entry.path().stem().string() == textureName) {
+
+			std::string extension = entry.path().extension().string();
+			if (extension == ".cube") {
+
+				filePath = entry.path();
+				found = true;
+				break;
+			}
+		}
+	}
+	ASSERT(found, "texture not found in directory or its subdirectories: " + textureName);
+
+	std::string identifier = filePath.stem().string();
+	TextureData& texture = textures_[identifier];
+
+	DirectX::ScratchImage mipImages = LoadCubeLUT(filePath);
+	texture.metadata = mipImages.GetMetadata();
+	CreateTextureResource3D(device_, texture.resource, texture.metadata);
+	ComPtr<ID3D12Resource> intermediateResource = nullptr;
+	UploadTextureData(texture.resource.Get(), intermediateResource, mipImages);
+
+	// GPU実行の完了を待つ
+	dxCommand_->WaitForGPU();
+	intermediateResource.Reset();
+
+	// SRV作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE3D;
+	srvDesc.Texture2D.MipLevels = static_cast<UINT>(texture.metadata.mipLevels);
+
+	// srv作成
+	srvDescriptor_->CreateSRV(texture.srvIndex, texture.resource.Get(), srvDesc);
+	texture.gpuHandle = srvDescriptor_->GetGPUHandle(texture.srvIndex);
+
+	std::wstring resourceName = std::wstring(identifier.begin(), identifier.end());
+	// debug用にGPUResourceにtextureの名前を設定する
+	texture.resource->SetName(resourceName.c_str());
+
+	isCacheValid_ = false;
+
+	Logger::Log("load texture: " + identifier);
+}
+
 bool TextureManager::Search(const std::string& textureName) {
 
 	return Algorithm::Find(textures_, textureName);
@@ -147,6 +205,76 @@ DirectX::ScratchImage TextureManager::GenerateMipMaps(const std::string& filePat
 	return mipImages;
 }
 
+DirectX::ScratchImage TextureManager::LoadCubeLUT(const std::filesystem::path& path) {
+
+	std::ifstream ifs(path);
+	if (!ifs) { throw std::runtime_error("open failed"); }
+
+	size_t size = 0;
+	std::vector<DirectX::XMFLOAT4> table;
+
+	std::string token;
+	while (ifs >> token) {
+
+		//----------------------------
+		// キーワード行を先に判定
+		//----------------------------
+		if (token == "LUT_3D_SIZE") {
+			ifs >> size;
+			table.reserve(size * size * size);
+			continue;
+		}
+		if (token == "TITLE") {                    // 例: TITLE "Gold"
+			std::getline(ifs, token);              // 残り行を読み飛ばす
+			continue;
+		}
+		if (token == "DOMAIN_MIN" || token == "DOMAIN_MAX") {
+			float dummy; ifs >> dummy >> dummy >> dummy; // 値は無視
+			continue;
+		}
+		if (token[0] == '#') {                     // コメント
+			std::getline(ifs, token);
+			continue;
+		}
+
+		//----------------------------
+		// ここに来たら数値行のはず
+		//----------------------------
+		float r = std::stof(token);
+		float g, b;  ifs >> g >> b;
+		table.push_back({ r, g, b, 1.0f });
+	}
+
+	if (size == 0 || table.size() != size * size * size) {
+		throw std::runtime_error(".cube size mismatch");
+	}
+
+	// ScratchImage を作成（ミップ 1, アレイ 1）
+	DirectX::ScratchImage img;
+	HRESULT hr = img.Initialize3D(DXGI_FORMAT_R16G16B16A16_FLOAT,
+		size, size, size, 1);
+	assert(SUCCEEDED(hr));
+
+	// DirectXTex は Z→Y→X の順で格納
+	size_t index = 0;
+	for (size_t z = 0; z < size; ++z) {
+
+		const DirectX::Image* slice = img.GetImage(0, 0, z);
+		auto* dst = reinterpret_cast<DirectX::PackedVector::HALF*>(slice->pixels);
+
+		for (size_t y = 0; y < size; ++y)
+			for (size_t x = 0; x < size; ++x) {
+
+				const auto& src = table[index++];
+				*dst++ = DirectX::PackedVector::XMConvertFloatToHalf(src.x);  // R
+				*dst++ = DirectX::PackedVector::XMConvertFloatToHalf(src.y);  // G
+				*dst++ = DirectX::PackedVector::XMConvertFloatToHalf(src.z);  // B
+				*dst++ = DirectX::PackedVector::XMConvertFloatToHalf(1.0f);   // A
+			}
+	}
+	return img;
+}
+
 void TextureManager::CreateTextureResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, const DirectX::TexMetadata& metadata) {
 
 	HRESULT hr;
@@ -175,6 +303,44 @@ void TextureManager::CreateTextureResource(ID3D12Device* device, ComPtr<ID3D12Re
 			nullptr,                        // Clear最適値、使わない。
 			IID_PPV_ARGS(&resource)         // 作成するResourceポインタへのポインタ
 		);
+	assert(SUCCEEDED(hr));
+}
+
+void TextureManager::CreateTextureResource3D(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, const DirectX::TexMetadata& metadata) {
+
+	HRESULT hr;
+
+	// metadataを元にResourceの設定
+	D3D12_RESOURCE_DESC resourceDesc{};
+
+	resourceDesc.Width = UINT(metadata.width);                  // TextureX
+	resourceDesc.Height = UINT(metadata.height);                // TextureY
+	resourceDesc.DepthOrArraySize = UINT16(metadata.arraySize); // TextureZ
+
+	// TextureのFormat
+	resourceDesc.Format = metadata.format;
+	resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	// 3次元Texture
+	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE3D;
+
+	// mipmapの数
+	resourceDesc.MipLevels = UINT16(metadata.mipLevels);
+	// サンプリングカウント。1固定
+	resourceDesc.SampleDesc.Count = 1;
+
+	// 利用するHeapの設定
+	D3D12_HEAP_PROPERTIES heapProperties{};
+	heapProperties.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+	// Resourceの作成
+	hr = device->CreateCommittedResource(
+		&heapProperties,                   // Heapの設定
+		D3D12_HEAP_FLAG_NONE,              // Heapの特殊な設定
+		&resourceDesc,                     // Resourceの設定
+		D3D12_RESOURCE_STATE_COPY_DEST,    // 初回のResourceState、Textureは基本読むだけ
+		nullptr,                           // Clear最適値、使わない。
+		IID_PPV_ARGS(&resource)            // 作成するResourceポインタへのポインタ
+	);
 	assert(SUCCEEDED(hr));
 }
 

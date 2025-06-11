@@ -189,3 +189,20 @@ public:
 
 	float threshold;
 };
+
+class LutForGPU {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	LutForGPU() = default;
+	~LutForGPU() = default;
+
+	void ImGui();
+
+	//--------- properties ---------------------------------------------------
+
+	float lerp = 0.32f;
+	float lutSize = 33.0f;
+};

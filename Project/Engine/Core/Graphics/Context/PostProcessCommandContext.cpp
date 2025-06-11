@@ -38,6 +38,7 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 		break;
 	case PostProcessType::Dissolve:
 	case PostProcessType::DepthBasedOutline:
+	case PostProcessType::Lut:
 
 		commandList->SetComputeRootDescriptorTable(0, processor->GetUAVGPUHandle());
 		commandList->SetComputeRootDescriptorTable(1, inputTextureGPUHandle);
