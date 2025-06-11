@@ -146,10 +146,6 @@ out indices uint3 polys[126] // 出力三角形インデックス
 	
 		float4 worldPos = mul(input.position, world);
 		output.worldPosition = worldPos.xyz;
-		
-		// lightView空間に変換
-		// 使わないけど残しておく
-		//output.positionInLVP = mul(worldPos, lightViewProjection);
 
 		verts[groupThreadId] = output;
 	}
