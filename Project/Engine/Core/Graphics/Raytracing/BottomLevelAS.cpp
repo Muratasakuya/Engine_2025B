@@ -39,8 +39,7 @@ void BottomLevelAS::Build(ID3D12Device8* device,
 
 	allowUpdate_ = request.allowUpdate;
 
-	D3D12_RAYTRACING_GEOMETRY_DESC geometryDesc;
-	FillGeometryDesc(geometryDesc, request.mesh, request.meshIndex);
+	FillGeometryDesc(geometryDesc_, request.mesh, request.meshIndex);
 
 	// Inputs設定
 	inputs_.Type = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL;
@@ -48,7 +47,7 @@ void BottomLevelAS::Build(ID3D12Device8* device,
 		D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_ALLOW_UPDATE :
 		D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_PREFER_FAST_TRACE;
 	inputs_.NumDescs = 1;
-	inputs_.pGeometryDescs = &geometryDesc;
+	inputs_.pGeometryDescs = &geometryDesc_;
 
 	// バッファサイズ取得
 	D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO buildInfo{};

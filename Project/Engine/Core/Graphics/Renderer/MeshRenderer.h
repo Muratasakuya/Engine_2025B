@@ -31,6 +31,8 @@ public:
 
 	void Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
 
+	void UpdateRayScene(DxCommand* dxCommand);
+
 	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 private:
 	//========================================================================

@@ -30,6 +30,10 @@ void GameScene::Load(Asset* asset) {
 
 	// environment
 	asset->LoadModel("stageField");
+
+	// animation
+	asset->LoadModel("BrainStem");
+	asset->LoadAnimation("BrainStem", "BrainStem");
 }
 
 void GameScene::Init(
@@ -96,6 +100,10 @@ void GameScene::Init(
 	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
 	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
 		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
+
+	id = ECSManager::GetInstance()->CreateObject3D("BrainStem", "BrainStem", "BrainStem", "BrainStem");
+	auto anim = ECSManager::GetInstance()->GetComponent<AnimationComponent>(id);
+	anim->SetPlayAnimation("BrainStem", true);
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {

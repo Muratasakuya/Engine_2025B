@@ -246,6 +246,8 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	// srvDescriptorHeap設定
 	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
 
+	meshRenderer_->UpdateRayScene(dxCommand_.get());
+
 	// offscreenTexture
 	RenderOffscreenTexture();
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)

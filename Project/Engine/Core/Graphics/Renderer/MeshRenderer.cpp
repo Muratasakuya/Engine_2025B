@@ -41,6 +41,48 @@ void MeshRenderer::Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
 	rayScene_->Init(device);
 }
 
+void MeshRenderer::UpdateRayScene(DxCommand* dxCommand) {
+
+	// commandList取得
+	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
+
+	// 描画情報取得
+	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
+
+	const auto& meshes = ecsSystem->GetMeshes();
+	auto instancingBuffers = ecsSystem->GetInstancingData();
+
+	if (meshes.empty()) {
+		return;
+	}
+
+	// TLAS更新処理
+	std::vector<IMesh*> meshPtrs;
+	meshPtrs.reserve(meshes.size());
+	for (auto& [_, mesh] : meshes) {
+
+		meshPtrs.emplace_back(mesh.get());
+
+		// BLASに渡す前に頂点を遷移
+		if (mesh->IsSkinned()) {
+			for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
+
+				dxCommand->TransitionBarriers(
+					{ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
+					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+					D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE
+				);
+			}
+		}
+	}
+
+	// BLAS更新
+	rayScene_->BuildBLASes(commandList, meshPtrs);
+	std::vector<RayTracingInstance> rtInstances = ecsSystem->CollectRTInstances(rayScene_.get());
+	// TLAS更新
+	rayScene_->BuildTLAS(commandList, rtInstances);
+}
+
 void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// commandList取得
@@ -62,20 +104,6 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	// pipeline設定
 	commandList->SetGraphicsRootSignature(meshShaderPipeline_->GetRootSignature());
 	commandList->SetPipelineState(meshShaderPipeline_->GetGraphicsPipeline());
-
-	// TLAS更新処理
-	std::vector<IMesh*> meshPtrs;
-	meshPtrs.reserve(meshes.size());
-	for (auto& [_, mesh] : meshes) {
-
-		meshPtrs.emplace_back(mesh.get());
-	}
-
-	// BLAS更新
-	rayScene_->BuildBLASes(commandList, meshPtrs);
-	std::vector<RayTracingInstance> rtInstances = ecsSystem->CollectRTInstances(rayScene_.get());
-	// TLAS更新
-	rayScene_->BuildTLAS(commandList, rtInstances);
 
 	// 共通のbuffer設定
 	sceneBuffer->SetMainPassCommands(debugEnable, commandList);
@@ -109,6 +137,27 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 				instancingBuffers[name].materialsBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
 			commandList->SetGraphicsRootShaderResourceView(10,
 				instancingBuffers[name].lightingBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+			if (!debugEnable) {
+
+				// skinnedMeshなら頂点を読める状態にする
+				if (mesh->IsSkinned()) {
+
+					dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
+						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+				}
+			}
+#else
+			// skinnedMeshなら頂点を読める状態にする
+			if (mesh->IsSkinned()) {
+
+				dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
+					D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+			}
+#endif
 
 			// 描画処理
 			commandContext.DispatchMesh(commandList,
