@@ -163,3 +163,22 @@ bool IsShadowed(float3 origin) {
 
 	return rayQuery.CommittedStatus() == COMMITTED_TRIANGLE_HIT;
 }
+
+bool IsShadowedToLight(float3 origin, float3 direction, float rayMax) {
+	
+	RayDesc rayDesc;
+	rayDesc.Origin = origin + direction;
+	rayDesc.Direction = direction;
+	rayDesc.TMin = rayMin;
+	rayDesc.TMax = rayMax;
+	
+	// createRayQueryObject
+	RayQuery < 0 > rayQuery;
+	// executeRay
+	rayQuery.TraceRayInline(gScene, 0, 0xFF, rayDesc);
+
+	while (rayQuery.Proceed()) {
+	}
+
+	return rayQuery.CommittedStatus() == COMMITTED_TRIANGLE_HIT;
+}
