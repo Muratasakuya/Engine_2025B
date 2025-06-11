@@ -139,3 +139,12 @@ void LuminanceExtractForGPU::ImGuiWithBloom() {
 	ImGui::DragFloat("threshold##BloomLuminanceExtract", &threshold, 0.01f);
 	ImGui::PopItemWidth();
 }
+
+void LutForGPU::ImGui() {
+
+	ImGui::Text("Lut");
+
+	ImGui::PushItemWidth(itemWidth_);
+	ImGui::DragFloat("lerpRate##Lut", &lerpRate, 0.001f, 0.0f, 1.0f);
+	ImGui::PopItemWidth();
+}

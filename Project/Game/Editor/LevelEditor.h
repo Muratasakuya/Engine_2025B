@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Editor/Base/IGameEditor.h>
 #include <Engine/Core/ECS/Components/TransformComponent.h>
 
 // c++

@@ -1,4 +1,5 @@
 #include "PostProcessSystem.h"
+#include "PostProcessSystem.h"
 
 //============================================================================
 //	include
@@ -146,8 +147,6 @@ void PostProcessSystem::Execute(RenderTexture* inputTexture, DxCommand* dxComman
 			inputGPUHandle.ptr = NULL;
 			inputGPUHandle = processors_[process]->GetSRVGPUHandle();
 		}
-
-		++bloomExecuteCount_;
 	}
 
 	// 最終的なframeBufferに設定するGPUHandleの設定
@@ -180,8 +179,6 @@ void PostProcessSystem::ExecuteDebugScene(RenderTexture* inputTexture, DxCommand
 	dxCommand->TransitionBarriers({ debugSceneBloomProcessor_->GetOutputTextureResource() },
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-
-	++bloomExecuteCount_;
 #endif
 }
 
@@ -331,6 +328,14 @@ void PostProcessSystem::CreateCBuffer(PostProcessType type) {
 	case PostProcessType::DepthBasedOutline: {
 
 		auto buffer = std::make_unique<PostProcessBuffer<DepthBasedOutlineForGPU>>();
+		buffer->Init(device_, 3);
+
+		buffers_[type] = std::move(buffer);
+		break;
+	}
+	case PostProcessType::Lut: {
+
+		auto buffer = std::make_unique<PostProcessBuffer<LutForGPU>>();
 		buffer->Init(device_, 3);
 
 		buffers_[type] = std::move(buffer);

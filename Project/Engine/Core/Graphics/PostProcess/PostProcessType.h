@@ -27,6 +27,7 @@ enum class PostProcessType {
 	SepiaTone,
 	LuminanceBasedOutline,
 	DepthBasedOutline,
+	Lut,
 
 	Count
 };

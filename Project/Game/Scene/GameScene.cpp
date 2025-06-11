@@ -21,6 +21,8 @@ void GameScene::Load(Asset* asset) {
 
 	// cubeMap、.dds
 	asset->LoadTexture("docklands_01_2k");
+	// lut
+	asset->LoadLutTexture("lut_hot");
 
 	// player
 	asset->LoadModel("playerBody");
@@ -55,7 +57,6 @@ void GameScene::Init(
 
 	postProcessSystem_ = postProcessSystem;
 	postProcessSystem_->Create({ PostProcessType::Bloom });
-
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
 
 	//========================================================================
@@ -100,10 +101,6 @@ void GameScene::Init(
 	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
 	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
 		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
-
-	id = ECSManager::GetInstance()->CreateObject3D("BrainStem", "BrainStem", "BrainStem", "BrainStem");
-	auto anim = ECSManager::GetInstance()->GetComponent<AnimationComponent>(id);
-	anim->SetPlayAnimation("BrainStem", true);
 }
 
 void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
