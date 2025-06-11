@@ -119,8 +119,7 @@ Framework::Framework() {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
 	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
-		graphicsCore_->GetDebugSceneRenderTextureGPUHandle(),
-		graphicsCore_->GetShadowTextureGPUHandle());
+		graphicsCore_->GetDebugSceneRenderTextureGPUHandle());
 #endif
 }
 

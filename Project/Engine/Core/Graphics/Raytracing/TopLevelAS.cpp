@@ -35,10 +35,9 @@ void TopLevelAS::Build(ID3D12Device8* device, ID3D12GraphicsCommandList6* comman
 	// Inputs
 	inputs_ = {};
 	inputs_.Type = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL;
-	inputs_.Flags = allowUpdate_
-		? (D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_PREFER_FAST_BUILD |
-			D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_ALLOW_UPDATE)
-		: D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_PREFER_FAST_TRACE;
+	inputs_.Flags = allowUpdate_ ?
+		D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_ALLOW_UPDATE :
+		D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_PREFER_FAST_TRACE;
 	inputs_.NumDescs = static_cast<UINT>(instances.size());
 	inputs_.DescsLayout = D3D12_ELEMENTS_LAYOUT_ARRAY;
 	inputs_.InstanceDescs = instanceDescs_.GetResource()->GetGPUVirtualAddress();
@@ -70,7 +69,7 @@ void TopLevelAS::Build(ID3D12Device8* device, ID3D12GraphicsCommandList6* comman
 	commandList->ResourceBarrier(1, &barrier);
 }
 
-void TopLevelAS::Update(ID3D12GraphicsCommandList6* commandList,const std::vector<RayTracingInstance>& instances) {
+void TopLevelAS::Update(ID3D12GraphicsCommandList6* commandList, const std::vector<RayTracingInstance>& instances) {
 
 	// skinnedMeshじゃない場合は更新しない
 	if (!allowUpdate_) {
@@ -85,7 +84,7 @@ void TopLevelAS::Update(ID3D12GraphicsCommandList6* commandList,const std::vecto
 		const RayTracingInstance& instance = instances[i];
 		auto& data = mapped[i];
 
-		CopyMatrix3x4(data.Transform, instance.matrix);
+		CopyMatrix3x4(data.Transform, Matrix4x4::Transpose(instance.matrix));
 		data.InstanceID = instance.instanceID;
 		data.InstanceContributionToHitGroupIndex = instance.hitGroupIdx;
 		data.InstanceMask = instance.mask;

@@ -15,6 +15,7 @@
 
 // editor
 #include <Game/Editor/GameEntityEditor.h>
+#include <Game/Editor/LevelEditor.h>
 
 //============================================================================
 //	GameScene class
@@ -52,6 +53,7 @@ private:
 
 	// editor
 	std::unique_ptr<GameEntityEditor> entityEditor_;
+	std::unique_ptr<LevelEditor> levelEditor_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -99,11 +99,10 @@ std::vector<RayTracingInstance> InstancedMeshSystem::CollectRTInstances(const Ra
 
 				RayTracingInstance instance{};
 				instance.matrix = world;
-				instance.instanceID = instanceCounter++;
+				instance.instanceID = ++instanceCounter;
 				instance.mask = 0xFF;
 				instance.hitGroupIdx = 0;
 				instance.flags = 0;
-				instance.meshIndex = sub;
 
 				instance.blas = scene->GetBLASResource(meshPtr.get(), sub);
 				out.emplace_back(instance);

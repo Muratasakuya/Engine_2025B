@@ -176,7 +176,7 @@ ComPtr<ID3D12RootSignature> RaytracingPipeline::CreateGlobalRootSignature(ID3D12
 void RaytracingPipeline::BuildShaderTable(ID3D12Device5* device) {
 
 	// バッファサイズ
-	shaderTableSize_ = 5 * kRecordStride; // 64×5
+	shaderTableSize_ = 3 * kRecordStride; // 64×5
 
 	// リソース作成
 	CD3DX12_RESOURCE_DESC bufferDesc = CD3DX12_RESOURCE_DESC::Buffer(shaderTableSize_, D3D12_RESOURCE_FLAG_NONE);

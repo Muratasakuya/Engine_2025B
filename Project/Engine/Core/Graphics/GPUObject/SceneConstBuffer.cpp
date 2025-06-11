@@ -24,6 +24,12 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 	// rayScene
 	raySceneBuffer_.CreateConstBuffer(device);
 
+	// rayScene
+	RaySceneForGPU rayScene{};
+	rayScene.rayMin = 0.01f;       // 飛ばす最小位置
+	rayScene.rayMax = 10000000.0f; // 飛ばす距離
+	raySceneBuffer_.TransferData(rayScene);
+
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
@@ -44,13 +50,6 @@ void SceneConstBuffer::Update(CameraManager* cameraManager,
 	orthoProjectionBuffer_.TransferData(cameraManager->GetCamera2D()->GetViewProjectionMatrix());
 	// light
 	lightBuffer_.TransferData(*lightManager->GetLight());
-
-	// rayScene
-	RaySceneForGPU rayScene{};
-	rayScene.cameraPos = cameraManager->GetCamera()->GetTransform().translation;
-	rayScene.cameraRotateMatrix = Matrix4x4::MakeRotateMatrix(cameraManager->GetCamera()->GetTransform().eulerRotate);
-	rayScene.lightDirection = Vector3::Normalize(lightManager->GetLight()->directional.direction);
-	raySceneBuffer_.TransferData(rayScene);
 
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
@@ -122,5 +121,5 @@ void SceneConstBuffer::SetOrthoProCommand(ID3D12GraphicsCommandList* commandList
 
 void SceneConstBuffer::SetRaySceneCommand(ID3D12GraphicsCommandList* commandList, UINT rootIndex) {
 
-	commandList->SetComputeRootConstantBufferView(rootIndex, raySceneBuffer_.GetResource()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(rootIndex, raySceneBuffer_.GetResource()->GetGPUVirtualAddress());
 }

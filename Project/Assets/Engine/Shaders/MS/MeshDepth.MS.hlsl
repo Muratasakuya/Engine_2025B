@@ -29,9 +29,9 @@ cbuffer InstanceData : register(b0) {
 	int isSkinned;
 };
 
-cbuffer ShadowLight : register(b1) {
+cbuffer CameraData : register(b1) {
 	
-	float4x4 lightViewProjection;
+	float4x4 viewProjection;
 };
 
 //============================================================================
@@ -121,8 +121,8 @@ out indices uint3 polys[126] // 出力三角形インデックス
 		MSInput input = gVertices[index];
 		MSOutput output = (MSOutput) 0;
 		
-		// light空間に座標変換
-		output.position = mul(mul(input.position, world), lightViewProjection);
+		// 座標変換
+		output.position = mul(mul(input.position, world), viewProjection);
 
 		verts[groupThreadId] = output;
 	}

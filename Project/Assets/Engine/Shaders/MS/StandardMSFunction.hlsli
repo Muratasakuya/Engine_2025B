@@ -52,19 +52,25 @@ cbuffer Camera : register(b1) {
 	float3 worldPosition;
 };
 
-StructuredBuffer<Material> gMaterials : register(t0);
-StructuredBuffer<Lighting> gLightings : register(t1);
+cbuffer Scene : register(b2) {
+
+	// ray
+	float rayMin;
+	float rayMax;
+};
+
+RaytracingAccelerationStructure gScene : register(t0);
+StructuredBuffer<Material> gMaterials : register(t1);
+StructuredBuffer<Lighting> gLightings : register(t2);
 
 //============================================================================
 //	texture Sampler
 //============================================================================
 
-Texture2D<float4> gTextures[] : register(t2, space0);
-Texture2D<float3> gShadowTexture : register(t3, space1);
-TextureCube<float4> gEnvironmentTexture : register(t4, space2);
+Texture2D<float4> gTextures[] : register(t3, space0);
+TextureCube<float4> gEnvironmentTexture : register(t4, space1);
 
 SamplerState gSampler : register(s0);
-SamplerComparisonState gShadowSampler : register(s1);
 
 //============================================================================
 //	functions
@@ -138,40 +144,22 @@ float3 CalculateImageBasedLighting(float3 normal, float environmentCoefficient, 
 	return environmentColor.rgb * environmentCoefficient;
 }
 
-float3 ApplyShadow(Lighting lighting, float3 normal, float3 color, MSOutput input) {
+bool IsShadowed(float3 origin) {
 	
-	float2 shadowMapUV = input.positionInLVP.xy / input.positionInLVP.w;
-	shadowMapUV *= float2(0.5f, -0.5f);
-	shadowMapUV += 0.5f;
+	// rayDesc
+	RayDesc rayDesc;
+	rayDesc.Origin = origin;
+	rayDesc.Direction = -directionalLight.direction;
+	rayDesc.TMin = rayMin;
+	rayDesc.TMax = rayMax;
 	
-	float zInLVp = input.positionInLVP.z / input.positionInLVP.w;
+	// createRayQueryObject
+	RayQuery < 0 > rayQuery;
+	// executeRay
+	rayQuery.TraceRayInline(gScene, 0, 0xFF, rayDesc);
 	
-	float3 outputColor = color.rgb;
-	
-	if (input.normal.y == 0.0f) {
-		return outputColor;
+	while (rayQuery.Proceed()) {
 	}
-	
-	if (shadowMapUV.x > 0.0f && shadowMapUV.x < 1.0f &&
-		shadowMapUV.y > 0.0f && shadowMapUV.y < 1.0f) {
-		
-		float NdotL = max(0.0f, dot(normal, directionalLight.direction));
 
-		float slopeScale = 1.0f;
-		float constantBias = 0.001f;
-		float bias = NdotL + constantBias;
-		
-		float zInShadowMap = gShadowTexture.Sample(gSampler, shadowMapUV).r;
-
-		if (zInLVp - bias > zInShadowMap) {
-
-			float shadow = gShadowTexture.SampleCmpLevelZero(
-			gShadowSampler, shadowMapUV, zInLVp);
-
-			float3 shadowColor = color.rgb * lighting.shadowRate;
-			outputColor = lerp(color.rgb, shadowColor, shadow);
-		}
-	}
-	
-	return outputColor;
+	return rayQuery.CommittedStatus() == COMMITTED_TRIANGLE_HIT;
 }

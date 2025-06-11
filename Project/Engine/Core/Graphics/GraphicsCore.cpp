@@ -117,12 +117,6 @@ void GraphicsCore::InitRenderTexture() {
 			Config::kWindowClearColor[2], Config::kWindowClearColor[3]),
 		Config::kRenderTextureRTVFormat, device, rtvDescriptor_.get(), srvDescriptor_.get());
 #endif
-
-	// shadowRayTexture作成
-	shadowRayTexture_ = std::make_unique<RenderTexture>();
-	shadowRayTexture_->Create(Config::kWindowWidth, Config::kWindowHeight,
-		Color(1.0f, 1.0f, 1.0f, 1.0f), DXGI_FORMAT_R32_FLOAT,
-		device, rtvDescriptor_.get(), srvDescriptor_.get(), D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS);
 }
 
 void GraphicsCore::Init(WinApp* winApp) {
@@ -215,7 +209,6 @@ void GraphicsCore::Finalize(HWND hwnd) {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugSceneRenderTexture_.reset();
 #endif
-	shadowRayTexture_.reset();
 	postProcessSystem_.reset();
 	meshRenderer_.reset();
 	spriteRenderer_.reset();
@@ -253,8 +246,6 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 	// srvDescriptorHeap設定
 	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
 
-	// レイ追跡
-	TraceRayPass();
 	// offscreenTexture
 	RenderOffscreenTexture();
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
@@ -280,17 +271,6 @@ void GraphicsCore::DebugUpdate() {
 //============================================================================
 //	Main
 //============================================================================
-
-void GraphicsCore::TraceRayPass() {
-
-	// ray追跡処理
-	meshRenderer_->TraceShadowRay(sceneBuffer_.get(), shadowRayTexture_.get(), dxCommand_.get());
-
-	// ComputeShader -> PixelShader
-	dxCommand_->TransitionBarriers(
-		{ shadowRayTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-}
 
 void GraphicsCore::RenderOffscreenTexture() {
 
@@ -354,7 +334,7 @@ void GraphicsCore::Renderers(bool debugEnable) {
 	LineRenderer::GetInstance()->ExecuteLine(debugEnable);
 
 	// 通常描画処理
-	meshRenderer_->Rendering(debugEnable, sceneBuffer_.get(), shadowRayTexture_.get(), dxCommand_.get());
+	meshRenderer_->Rendering(debugEnable, sceneBuffer_.get(), dxCommand_.get());
 
 	// particle描画
 	ParticleSystem::GetInstance()->Rendering(debugEnable,
@@ -386,11 +366,6 @@ void GraphicsCore::EndRenderFrame() {
 	dxCommand_->TransitionBarriers({ debugSceneRenderTexture_->GetResource() },
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 #endif // _DEBUG
-
-	// PixelShader -> ComputeShader
-	dxCommand_->TransitionBarriers(
-		{ shadowRayTexture_->GetResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
 	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ renderTexture_->GetResource() },

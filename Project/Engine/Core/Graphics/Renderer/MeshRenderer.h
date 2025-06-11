@@ -13,7 +13,8 @@
 // front
 class SRVDescriptor;
 class DxCommand;
-class ShadowMap;
+class RenderTexture;
+class DepthTexture;
 class SceneConstBuffer;
 
 //============================================================================
@@ -30,11 +31,7 @@ public:
 
 	void Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler, SRVDescriptor* srvDescriptor);
 
-	void TraceShadowRay(SceneConstBuffer* sceneBuffer,
-		class RenderTexture* shadowRayTexture, DxCommand* dxCommand);
-
-	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer,
-		RenderTexture* shadowRayTexture, DxCommand* dxCommand);
+	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 private:
 	//========================================================================
 	//	private Methods
@@ -44,9 +41,6 @@ private:
 
 	SRVDescriptor* srvDescriptor_;
 
-	// pipelines
-	// shadowRayQuery
-	std::unique_ptr<RaytracingPipeline> shadowRayPipeline_;
 	// main
 	std::unique_ptr<PipelineState> meshShaderPipeline_;
 	// skybox

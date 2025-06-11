@@ -530,6 +530,12 @@
     <ClCompile Include="Engine\Core\Graphics\Raytracing\AccelerationStructureBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\PostProcess\DepthTexture.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Editor\LevelEditor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -727,6 +733,8 @@
     <ClInclude Include="Engine\Core\Graphics\Raytracing\TopLevelAS.h" />
     <ClInclude Include="Engine\Core\Graphics\Raytracing\RaytracingScene.h" />
     <ClInclude Include="Engine\Core\Graphics\Raytracing\RaytracingStructures.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\DepthTexture.h" />
+    <ClInclude Include="Game\Editor\LevelEditor.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
@@ -742,6 +750,7 @@
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_Miss.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_RayGeneration.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRayQuery.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\MS\MeshStandard.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />

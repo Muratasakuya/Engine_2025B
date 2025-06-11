@@ -7,9 +7,11 @@
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
+#include <Engine/Core/Graphics/PostProcess/DepthTexture.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
+#include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Engine/Config.h>
 
 // ECS
@@ -25,10 +27,6 @@ void MeshRenderer::Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
 	srvDescriptor_ = nullptr;
 	srvDescriptor_ = srvDescriptor;
 
-	// pipeline作成
-	shadowRayPipeline_ = std::make_unique<RaytracingPipeline>();
-	shadowRayPipeline_->Init(device, shaderCompiler);
-
 	meshShaderPipeline_ = std::make_unique<PipelineState>();
 	meshShaderPipeline_->Create("MeshStandard.json", device, srvDescriptor, shaderCompiler);
 
@@ -43,74 +41,7 @@ void MeshRenderer::Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
 	rayScene_->Init(device);
 }
 
-void MeshRenderer::TraceShadowRay(SceneConstBuffer* sceneBuffer,
-	RenderTexture* shadowRayTexture, DxCommand* dxCommand) {
-
-	// commandList取得
-	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
-
-	// 描画情報取得
-	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
-	const auto& meshes = ecsSystem->GetMeshes();
-	auto instancingBuffers = ecsSystem->GetInstancingData();
-
-	if (meshes.empty()) {
-		return;
-	}
-
-	// TLAS更新処理
-	std::vector<IMesh*> meshPtrs;
-	meshPtrs.reserve(meshes.size());
-	for (auto& [_, mesh] : meshes) {
-
-		meshPtrs.emplace_back(mesh.get());
-	}
-
-	// BLAS更新
-	rayScene_->BuildBLASes(commandList, meshPtrs);
-	std::vector<RayTracingInstance> rtInstances = ecsSystem->CollectRTInstances(rayScene_.get());
-	// TLAS更新
-	rayScene_->BuildTLAS(commandList, rtInstances);
-
-	// pipeline設定
-	commandList->SetComputeRootSignature(shadowRayPipeline_->GetRootSignature());
-	commandList->SetPipelineState1(shadowRayPipeline_->GetPipelineState());
-
-	// TLAS
-	commandList->SetComputeRootShaderResourceView(0, rayScene_->GetTLASResource()->GetGPUVirtualAddress());
-	// UAV
-	commandList->SetComputeRootDescriptorTable(1, shadowRayTexture->GetUAVGPUHandle());
-	// scene情報
-	sceneBuffer->SetRaySceneCommand(commandList, 2);
-
-	// rayDesc設定
-	D3D12_DISPATCH_RAYS_DESC desc = {};
-	ID3D12Resource* shaderTable = shadowRayPipeline_->GetShaderTable();
-
-	const UINT64 base = shaderTable->GetGPUVirtualAddress();
-
-	// RayGeneration
-	desc.RayGenerationShaderRecord.StartAddress = base + RaytracingPipeline::kRayGenOffset;
-	desc.RayGenerationShaderRecord.SizeInBytes = RaytracingPipeline::kHandleSize;
-	// Miss
-	desc.MissShaderTable.StartAddress = base + RaytracingPipeline::kMissOffset;
-	desc.MissShaderTable.StrideInBytes = RaytracingPipeline::kRecordStride;
-	desc.MissShaderTable.SizeInBytes = RaytracingPipeline::kRecordStride;
-	// HitGroup 
-	desc.HitGroupTable.StartAddress = base + RaytracingPipeline::kHitGroupOffset;
-	desc.HitGroupTable.StrideInBytes = RaytracingPipeline::kRecordStride;
-	desc.HitGroupTable.SizeInBytes = RaytracingPipeline::kRecordStride;
-
-	desc.Width = Config::kWindowWidth;
-	desc.Height = Config::kWindowHeight;
-	desc.Depth = 1;
-
-	// 実行
-	commandList->DispatchRays(&desc);
-}
-
-void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer,
-	RenderTexture* shadowRayTexture, DxCommand* dxCommand) {
+void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// commandList取得
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
@@ -132,12 +63,30 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer,
 	commandList->SetGraphicsRootSignature(meshShaderPipeline_->GetRootSignature());
 	commandList->SetPipelineState(meshShaderPipeline_->GetGraphicsPipeline());
 
+	// TLAS更新処理
+	std::vector<IMesh*> meshPtrs;
+	meshPtrs.reserve(meshes.size());
+	for (auto& [_, mesh] : meshes) {
+
+		meshPtrs.emplace_back(mesh.get());
+	}
+
+	// BLAS更新
+	rayScene_->BuildBLASes(commandList, meshPtrs);
+	std::vector<RayTracingInstance> rtInstances = ecsSystem->CollectRTInstances(rayScene_.get());
+	// TLAS更新
+	rayScene_->BuildTLAS(commandList, rtInstances);
+
 	// 共通のbuffer設定
 	sceneBuffer->SetMainPassCommands(debugEnable, commandList);
 	// allTexture
-	commandList->SetGraphicsRootDescriptorTable(10, srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-	// shadowTexture
-	commandList->SetGraphicsRootDescriptorTable(11, shadowRayTexture->GetSRVGPUHandle());
+	commandList->SetGraphicsRootDescriptorTable(11, srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+	
+	// RayQuery
+	// TLAS
+	commandList->SetGraphicsRootShaderResourceView(8, rayScene_->GetTLASResource()->GetGPUVirtualAddress());
+	// scene情報
+	sceneBuffer->SetRaySceneCommand(commandList, 15);
 
 	// skyboxがあるときのみ、とりあえず今は
 	if (skybox->IsCreated()) {
@@ -156,18 +105,10 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer,
 		for (uint32_t meshIndex = 0; meshIndex < mesh->GetMeshCount(); ++meshIndex) {
 
 			// meshごとのmaterial、lighting設定
-			commandList->SetGraphicsRootShaderResourceView(8,
-				instancingBuffers[name].materialsBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
 			commandList->SetGraphicsRootShaderResourceView(9,
+				instancingBuffers[name].materialsBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
+			commandList->SetGraphicsRootShaderResourceView(10,
 				instancingBuffers[name].lightingBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
-
-			// skinnedMeshなら頂点を描画使用できるようにする
-			if (mesh->IsSkinned()) {
-
-				dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
-					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-			}
 
 			// 描画処理
 			commandContext.DispatchMesh(commandList,

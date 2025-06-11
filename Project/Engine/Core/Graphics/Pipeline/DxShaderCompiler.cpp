@@ -67,11 +67,17 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 				// pixelShaderのcompile
 				if (shaderPass.contains("PixelShader")) {
 
+					const wchar_t* profile = L"ps_6_0";
+					if (shaderPass.contains("PSProfile")) {
+
+						profile = L"ps_6_6";
+					}
+
 					std::string pixelShader = shaderPass["PixelShader"];
 					if (Filesystem::Found(basePath, pixelShader, fullPath)) {
 
 						ComPtr<IDxcBlob> pixelShaderBlob;
-						CompileShader(fullPath.wstring(), L"ps_6_0", pixelShaderBlob, L"main");
+						CompileShader(fullPath.wstring(), profile, pixelShaderBlob, L"main");
 						shaderBlobs.emplace_back(pixelShaderBlob);
 					} else {
 
@@ -86,6 +92,19 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 
 					ComPtr<IDxcBlob> computeShaderBlob;
 					CompileShader(fullPath.wstring(), L"cs_6_0", computeShaderBlob, L"main");
+					shaderBlobs.push_back(computeShaderBlob);
+				} else {
+
+					ASSERT(false, "Failed to find HLSL file: " + computeShader);
+				}
+			} else if (type == "DXR" && shaderPass.contains("ComputeShader")) {
+
+				// DXRのcompile
+				std::string computeShader = shaderPass["ComputeShader"];
+				if (Filesystem::Found(basePath, computeShader, fullPath)) {
+
+					ComPtr<IDxcBlob> computeShaderBlob;
+					CompileShader(fullPath.wstring(), L"cs_6_6", computeShaderBlob, L"main");
 					shaderBlobs.push_back(computeShaderBlob);
 				} else {
 

@@ -65,19 +65,22 @@ void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
 
 	// texture作成
 	CreateTextureResource(resource_, width, height, color, format, flags, device);
-	resource_->SetName((L"renderTexture" + std::to_wstring(textureCount_)).c_str());
 
 	// renderTargetとして使用するときのみ
 	const bool useRenderTarget =
 		(flags & D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET) != 0 ||
 		(flags & D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL) != 0;
 	if (useRenderTarget) {
+
+		resource_->SetName((L"renderTexture" + std::to_wstring(textureCount_)).c_str());
 		// RTV作成
 		// Descの設定
 		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc{};
 		rtvDesc.Format = format;
 		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
 		rtvDescriptor->Create(renderTarget_.rtvHandle, resource_.Get(), rtvDesc);
+
+		++textureCount_;
 	}
 
 	// SRV作成
@@ -104,8 +107,6 @@ void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
 		srvDescriptor->CreateUAV(uavIndex, resource_.Get(), uavDesc);
 		uavGPUHandle_ = srvDescriptor->GetGPUHandle(uavIndex);
 	}
-
-	++textureCount_;
 }
 
 //============================================================================

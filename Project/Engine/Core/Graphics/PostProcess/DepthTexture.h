@@ -3,30 +3,38 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Lib/ComPtr.h>
 
 // directX
 #include <d3d12.h>
-// imgui
-#include <imgui.h>
+// c++
+#include <cstdint>
+
 // front
-class CameraManager;
+class DSVDescriptor;
+class SRVDescriptor;
 
 //============================================================================
-//	ImGuiEditor class
+//	DepthTexture class
 //============================================================================
-class ImGuiEditor {
+class DepthTexture {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ImGuiEditor() = default;
-	~ImGuiEditor() = default;
+	DepthTexture() = default;
+	~DepthTexture() = default;
 
-	void Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle,
-		const D3D12_GPU_DESCRIPTOR_HANDLE& debugSceneRenderTextureGPUHandle);
+	void Create(uint32_t width, uint32_t height,
+		DSVDescriptor* dsvDescriptor, SRVDescriptor* srvDescriptor);
 
-	void Display();
+	//--------- accessor -----------------------------------------------------
+
+	ID3D12Resource* GetResource() const { return resource_.Get(); }
+
+	const D3D12_CPU_DESCRIPTOR_HANDLE& GetCPUHandle() const { return dsvCPUHandle_; }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle() const { return srvGPUHandle_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -34,37 +42,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	D3D12_GPU_DESCRIPTOR_HANDLE renderTextureGPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE debugSceneRenderTextureGPUHandle_;
-	D3D12_GPU_DESCRIPTOR_HANDLE shadowTextureGPUHandle_;
-
-	ImGuiWindowFlags windowFlag_;
-
-	// imgui表示フラグ
-	bool displayEnable_;
-
-	// parameter
-	bool editMode_;
-	ImVec2 gameViewSize_;
-	ImVec2 debugViewSize_;
+	// 深度
+	ComPtr<ID3D12Resource> resource_;
+	D3D12_CPU_DESCRIPTOR_HANDLE dsvCPUHandle_; // DSV
+	D3D12_GPU_DESCRIPTOR_HANDLE srvGPUHandle_; // SRV
 
 	//--------- functions ----------------------------------------------------
 
-	// layoutEditor
-	void EditLayout();
-
-	// renderTextureの描画
-	void MainWindow();
-
-	// console
-	void Console();
-
-	// hierarchy
-	void Hierarchy();
-
-	// inspector
-	void Inspector();
-
-	// asset
-	void Asset();
 };
