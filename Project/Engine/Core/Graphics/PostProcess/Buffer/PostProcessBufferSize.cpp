@@ -145,6 +145,6 @@ void LutForGPU::ImGui() {
 	ImGui::Text("Lut");
 
 	ImGui::PushItemWidth(itemWidth_);
-	ImGui::DragFloat("lerp##Lut", &lerp, 0.001f, 0.0f, 1.0f);
+	ImGui::DragFloat("lerpRate##Lut", &lerpRate, 0.001f, 0.0f, 1.0f);
 	ImGui::PopItemWidth();
 }

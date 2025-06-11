@@ -9,7 +9,7 @@
 
 cbuffer Params : register(b0) {
 	
-	float lerp;
+	float lerpRate;
 	float lutSize;
 };
 
@@ -42,6 +42,6 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float3 graded = gLutTexture.SampleLevel(gSampler, inputColor, 0.0f).rgb;
 	
 	// output‚É‘‚«‚İ
-	float3 final = lerp(inputColor, graded, lerp);
+	float3 final = lerp(inputColor, graded, lerpRate);
 	gOutputTexture[DTid.xy] = float4(final, 1.0f);
 }
