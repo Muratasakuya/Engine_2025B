@@ -10,13 +10,13 @@
 #include <Engine/Core/Graphics/PostProcess/DepthTexture.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
-#include <Engine/Core/Graphics/Skybox/Skybox.h>
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Engine/Config.h>
 
 // ECS
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Core/ECS/System/Systems/InstancedMeshSystem.h>
+#include <Engine/Core/ECS/System/Systems/SkyboxRenderSystem.h>
 
 //============================================================================
 //	MeshRenderer classMethods
@@ -33,8 +33,6 @@ void MeshRenderer::Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
 	// skybox用pipeline作成
 	skyboxPipeline_ = std::make_unique<PipelineState>();
 	skyboxPipeline_->Create("Skybox.json", device, srvDescriptor, shaderCompiler);
-	// skyboxにdeviceを設定
-	Skybox::GetInstance()->SetDevice(device);
 
 	// rayScene初期化
 	rayScene_ = std::make_unique<RaytracingScene>();
@@ -90,8 +88,8 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 
 	// 描画情報取得
 	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
+	const auto& skyBoxSystem = ECSManager::GetInstance()->GetSystem<SkyboxRenderSystem>();
 	MeshCommandContext commandContext{};
-	Skybox* skybox = Skybox::GetInstance();
 
 	const auto& meshes = ecsSystem->GetMeshes();
 	auto instancingBuffers = ecsSystem->GetInstancingData();
@@ -109,7 +107,7 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	sceneBuffer->SetMainPassCommands(debugEnable, commandList);
 	// allTexture
 	commandList->SetGraphicsRootDescriptorTable(11, srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-	
+
 	// RayQuery
 	// TLAS
 	commandList->SetGraphicsRootShaderResourceView(8, rayScene_->GetTLASResource()->GetGPUVirtualAddress());
@@ -117,11 +115,11 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	sceneBuffer->SetRaySceneCommand(commandList, 15);
 
 	// skyboxがあるときのみ、とりあえず今は
-	if (skybox->IsCreated()) {
+	if (skyBoxSystem->IsCreated()) {
 
 		// environmentTexture
 		commandList->SetGraphicsRootDescriptorTable(12,
-			srvDescriptor_->GetGPUHandle(skybox->GetTextureIndex()));
+			srvDescriptor_->GetGPUHandle(skyBoxSystem->GetTextureIndex()));
 	}
 
 	for (const auto& [name, mesh] : meshes) {
@@ -187,7 +185,7 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	}
 
 	// 作成されていなかったら早期リターン
-	if (!skybox->IsCreated()) {
+	if (!skyBoxSystem->IsCreated()) {
 		return;
 	}
 
@@ -196,21 +194,10 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	commandList->SetGraphicsRootSignature(skyboxPipeline_->GetRootSignature());
 	commandList->SetPipelineState(skyboxPipeline_->GetGraphicsPipeline());
 
-	// buffer設定
-	// vertex
-	commandList->IASetVertexBuffers(0, 1, &skybox->GetVertexBuffer().GetVertexBuffer());
-	commandList->IASetIndexBuffer(&skybox->GetIndexBuffer().GetIndexBuffer());
-	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-	// matrix
-	commandList->SetGraphicsRootConstantBufferView(0, skybox->GetMatrixBuffer().GetResource()->GetGPUVirtualAddress());
 	// viewPro
 	sceneBuffer->SetViewProCommand(debugEnable, commandList, 1);
 	// texture
 	commandList->SetGraphicsRootDescriptorTable(2,
 		srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-	// material
-	commandList->SetGraphicsRootConstantBufferView(3, skybox->GetMaterialBuffer().GetResource()->GetGPUVirtualAddress());
-
-	// 描画
-	commandList->DrawIndexedInstanced(skybox->GetIndexCount(), 1, 0, 0, 0);
+	skyBoxSystem->Render(commandList);
 }

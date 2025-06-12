@@ -209,6 +209,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\Components\SkyboxComponent.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\ECS\Components\SpriteComponent.cpp">
       <SubType>
       </SubType>
@@ -234,6 +238,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Core\ECS\System\Systems\MaterialSystem.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Systems\SkyboxRenderSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -334,10 +342,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\RenderEngine.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Skybox\Skybox.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -652,6 +656,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\ECS\Components\SkyboxComponent.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\ECS\Components\SpriteComponent.h">
       <SubType>
       </SubType>
@@ -686,6 +694,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\ECS\System\Systems\MaterialSystem.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\ECS\System\Systems\SkyboxRenderSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -794,10 +806,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\RenderEngine.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Core\Graphics\Skybox\Skybox.h">
       <SubType>
       </SubType>
     </ClInclude>

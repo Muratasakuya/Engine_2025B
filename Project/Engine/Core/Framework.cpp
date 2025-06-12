@@ -10,7 +10,6 @@
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
-#include <Engine/Core/Graphics/Skybox/Skybox.h>
 #include <Engine/Config.h>
 #include <Game/Time/GameTimer.h>
 
@@ -254,7 +253,6 @@ void Framework::Finalize() {
 	renderEngine_->Finalize();
 	Input::GetInstance()->Finalize();
 	LineRenderer::GetInstance()->Finalize();
-	Skybox::GetInstance()->Finalize();
 
 	sceneManager_.reset();
 

@@ -37,6 +37,9 @@ public:
 	uint32_t CreateObject3D(const std::string& modelName, const std::string& name,
 		const std::string& groupName, const std::optional<std::string>& animationName = std::nullopt);
 
+	uint32_t CreateSkybox(const std::string& textureName, const std::string& name,
+		const std::string& groupName);
+
 	uint32_t CreateObject2D(const std::string& textureName, const std::string& name,
 		const std::string& groupName);
 

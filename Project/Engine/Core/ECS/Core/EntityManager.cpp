@@ -100,6 +100,7 @@ template void EntityManager::SetBit<class MaterialComponent>(uint32_t, bool);
 template void EntityManager::SetBit<class SpriteMaterialComponent>(uint32_t, bool);
 template void EntityManager::SetBit<class AnimationComponent>(uint32_t, bool);
 template void EntityManager::SetBit<class SpriteComponent>(uint32_t, bool);
+template void EntityManager::SetBit<class SkyboxComponent>(uint32_t, bool);
 template void EntityManager::SetBit<struct TagComponent>(uint32_t, bool);
 
 uint32_t EntityManager::PopAlive() {

@@ -17,6 +17,7 @@
 #include <Engine/Core/ECS/System/Systems/AnimationSystem.h>
 #include <Engine/Core/ECS/System/Systems/InstancedMeshSystem.h>
 #include <Engine/Core/ECS/System/Systems/SpriteBufferSystem.h>
+#include <Engine/Core/ECS/System/Systems/SkyboxRenderSystem.h>
 #include <Engine/Core/ECS/System/Systems/TagSystem.h>
 
 //============================================================================
@@ -62,6 +63,7 @@ void ECSManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxCommand) 
 	systemManager_->AddSystem<TagSystem>();
 	systemManager_->AddSystem<InstancedMeshSystem>(device, asset, dxCommand);
 	systemManager_->AddSystem<SpriteBufferSystem>();
+	systemManager_->AddSystem<SkyboxRenderSystem>();
 
 	ImGuiInspector::GetInstance()->Init();
 }
@@ -112,6 +114,20 @@ uint32_t ECSManager::CreateObject3D(const std::string& modelName,
 		// bufferを作成
 		systemManager_->GetSystem<InstancedMeshSystem>()->CreateStaticMesh(modelName);
 	}
+
+	return entity;
+}
+
+uint32_t ECSManager::CreateSkybox(const std::string& textureName,
+	const std::string& name, const std::string& groupName) {
+	
+	// entity作成
+	uint32_t entity = BuildEmptyEntity(name, groupName);
+	// 必要なcomponentを作成
+	auto* skybox = entityManager_->AddComponent<SkyboxComponent>(entity);
+
+	// 各componentを初期化
+	skybox->Create(device_, asset_->GetTextureGPUIndex(textureName));
 
 	return entity;
 }

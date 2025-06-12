@@ -1,29 +1,10 @@
-#include "Skybox.h"
+#include "SkyboxComponent.h"
 
 //============================================================================
-//	Skybox classMethods
+//	SkyboxComponent classMethods
 //============================================================================
 
-Skybox* Skybox::instance_ = nullptr;
-
-Skybox* Skybox::GetInstance() {
-
-	if (instance_ == nullptr) {
-		instance_ = new Skybox();
-	}
-	return instance_;
-}
-
-void Skybox::Finalize() {
-
-	if (instance_ != nullptr) {
-
-		delete instance_;
-		instance_ = nullptr;
-	}
-}
-
-void Skybox::CreateVertexBuffer() {
+void SkyboxComponent::CreateVertexBuffer(ID3D12Device* device) {
 
 	// 頂点データ設定
 	std::vector<Vector4> vertices = {
@@ -88,10 +69,8 @@ void Skybox::CreateVertexBuffer() {
 	};
 
 	// buffer作成
-	vertexBuffer_.CreateVertexBuffer(device_,
-		static_cast<UINT>(vertices.size()));
-	indexBuffer_.CreateIndexBuffer(device_,
-		static_cast<UINT>(indices.size()));
+	vertexBuffer_.CreateVertexBuffer(device, static_cast<UINT>(vertices.size()));
+	indexBuffer_.CreateIndexBuffer(device, static_cast<UINT>(indices.size()));
 	// index数設定
 	indexCount_ = static_cast<UINT>(indices.size());
 
@@ -100,7 +79,7 @@ void Skybox::CreateVertexBuffer() {
 	indexBuffer_.TransferVectorData(indices);
 }
 
-void Skybox::CreateCBuffer(uint32_t textureIndex) {
+void SkyboxComponent::CreateCBuffer(ID3D12Device* device, uint32_t textureIndex) {
 
 	// cBufferに渡す値の初期化
 	transform_.Init();
@@ -115,30 +94,24 @@ void Skybox::CreateCBuffer(uint32_t textureIndex) {
 	material_.textureIndex = textureIndex;
 
 	// buffer作成
-	matrixBuffer_.CreateConstBuffer(device_);
-	materialBuffer_.CreateConstBuffer(device_);
+	matrixBuffer_.CreateConstBuffer(device);
+	materialBuffer_.CreateConstBuffer(device);
 
 	// 1度bufferを転送する
 	matrixBuffer_.TransferData(transform_.matrix.world);
 	materialBuffer_.TransferData(material_);
 }
 
-void Skybox::Create(uint32_t textureIndex) {
+void SkyboxComponent::Create(ID3D12Device* device, uint32_t textureIndex) {
 
 	// 頂点buffer作成
-	CreateVertexBuffer();
+	CreateVertexBuffer(device);
 
 	// cBuffer作成
-	CreateCBuffer(textureIndex);
-
-	isCreated_ = true;
+	CreateCBuffer(device, textureIndex);
 }
 
-void Skybox::Update() {
-
-	if (!isCreated_) {
-		return;
-	}
+void SkyboxComponent::Update() {
 
 	// 行列更新
 	transform_.UpdateMatrix();
@@ -146,19 +119,4 @@ void Skybox::Update() {
 	// buffer転送
 	matrixBuffer_.TransferData(transform_.matrix.world);
 	materialBuffer_.TransferData(material_);
-}
-
-void Skybox::ImGui() {
-
-	if (!isCreated_) {
-		return;
-	}
-
-	ImGui::SeparatorText("Transform");
-
-	transform_.ImGui(itemWidth_);
-
-	ImGui::SeparatorText("Color");
-
-	ImGui::ColorEdit4("color", &material_.color.r);
 }

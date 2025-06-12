@@ -3,14 +3,10 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
-#include <Engine/Core/Graphics/Skybox/Skybox.h>
-#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
-#include <Engine/Core/ECS/Components/AnimationComponent.h>
-#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Scene/SceneView.h>
+#include <Engine/Asset/Asset.h>
 
 //============================================================================
 //	TitleScene classMethods
@@ -94,6 +90,8 @@ void GameScene::Init() {
 	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
 	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
 		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
+
+	ECSManager::GetInstance()->CreateSkybox("docklands_01_2k", "skybox", "Environment");
 }
 
 void GameScene::Update() {

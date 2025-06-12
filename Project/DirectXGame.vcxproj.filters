@@ -416,9 +416,6 @@
     <ClCompile Include="Engine\Utility\KeyframeAnimation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\Skybox\Skybox.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Asset\AssetEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -534,6 +531,12 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\GraphicsPlatform.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\Components\SkyboxComponent.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\ECS\System\Systems\SkyboxRenderSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -691,7 +694,6 @@
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordWaitBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordWalkBehavior.h" />
     <ClInclude Include="Engine\Utility\KeyframeAnimation.h" />
-    <ClInclude Include="Engine\Core\Graphics\Skybox\Skybox.h" />
     <ClInclude Include="Engine\Asset\AssetEditor.h" />
     <ClInclude Include="Engine\Core\ECS\Core\ComponentPool.h" />
     <ClInclude Include="Engine\Core\ECS\Core\EntityManager.h" />
@@ -735,6 +737,8 @@
     <ClInclude Include="Engine\Core\Graphics\RenderEngine.h" />
     <ClInclude Include="Engine\Scene\SceneView.h" />
     <ClInclude Include="Engine\Core\Graphics\GraphicsPlatform.h" />
+    <ClInclude Include="Engine\Core\ECS\Components\SkyboxComponent.h" />
+    <ClInclude Include="Engine\Core\ECS\System\Systems\SkyboxRenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
