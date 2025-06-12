@@ -83,17 +83,17 @@ void GameScene::Init() {
 	entityEditor_ = std::make_unique<GameEntityEditor>();
 	entityEditor_->Init(asset_);
 
-	// 仮の地面
-	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
-	auto transform = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(id);
-	transform->translation.y = -0.8f;
-	transform->scale.x = 128.0f;
-	transform->scale.z = 128.0f;
-	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
-	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
-		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
+	//// 仮の地面
+	//uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
+	//auto transform = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(id);
+	//transform->translation.y = -0.8f;
+	//transform->scale.x = 128.0f;
+	//transform->scale.z = 128.0f;
+	//auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
+	//material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
+	//	Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
 
-	ECSManager::GetInstance()->CreateSkybox("kloppenheim_02_puresky_2k");
+	//ECSManager::GetInstance()->CreateSkybox("kloppenheim_02_puresky_2k");
 }
 
 void GameScene::Update() {
