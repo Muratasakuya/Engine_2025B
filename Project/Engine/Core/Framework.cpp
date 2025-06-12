@@ -10,6 +10,7 @@
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
+#include <Engine/Core/Graphics/Skybox/Skybox.h>
 #include <Engine/Config.h>
 #include <Game/Time/GameTimer.h>
 
@@ -250,8 +251,10 @@ void Framework::EndRequest() {
 void Framework::Finalize() {
 
 	graphicsPlatform_->Finalize(winApp_->GetHwnd());
+	renderEngine_->Finalize();
 	Input::GetInstance()->Finalize();
 	LineRenderer::GetInstance()->Finalize();
+	Skybox::GetInstance()->Finalize();
 
 	sceneManager_.reset();
 
@@ -264,6 +267,7 @@ void Framework::Finalize() {
 	renderEngine_.reset();
 	postProcessSystem_.reset();
 	sceneView_.reset();
+	imguiEditor_.reset();
 
 	// ComFinalize
 	CoUninitialize();

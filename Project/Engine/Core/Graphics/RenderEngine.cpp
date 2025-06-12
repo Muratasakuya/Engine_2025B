@@ -118,6 +118,14 @@ void RenderEngine::Init(WinApp* winApp, ID3D12Device8* device, DxShaderCompiler*
 	InitRenderer(device, shaderCompiler);
 }
 
+void RenderEngine::Finalize() {
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+	imguiManager_->Finalize();
+	imguiManager_.reset();
+#endif
+}
+
 void RenderEngine::BeginFrame() {
 
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)

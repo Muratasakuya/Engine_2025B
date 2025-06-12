@@ -50,6 +50,8 @@ public:
 	void Init(WinApp* winApp, ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
 		DxCommand* dxCommand, IDXGIFactory7* factory);
 
+	void Finalize();
+
 	void BeginFrame();
 
 	// GPUの更新処理
