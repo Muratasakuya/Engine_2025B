@@ -20,5 +20,6 @@ public:
 	SceneFactory() = default;
 	~SceneFactory() = default;
 
-	std::unique_ptr<IScene> Create(Scene scene);
+	std::unique_ptr<IScene> Create(Scene scene, Asset* asset, PostProcessSystem* postProcessSystem,
+		SceneView* sceneView, SceneManager* sceneManager);
 };

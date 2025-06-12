@@ -6,8 +6,6 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
-#include <Engine/Scene/Camera/CameraManager.h>
-#include <Engine/Scene/Light/LightManager.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Config.h>
@@ -242,9 +240,6 @@ void GraphicsCore::Render(CameraManager* cameraManager,
 
 	// skybox更新
 	Skybox::GetInstance()->Update();
-
-	// srvDescriptorHeap設定
-	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
 
 	meshRenderer_->UpdateRayScene(dxCommand_.get());
 

@@ -3,45 +3,37 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
-#include <Engine/Scene/Camera/BaseCamera.h>
-#include <Engine/Scene/Camera/DebugCamera.h>
-#include <Engine/Scene/Camera/LightViewCamera.h>
-#include <Engine/Scene/Camera/Camera2D.h>
+#include <Engine/Core/Graphics/DxDevice.h>
+#include <Engine/Core/Graphics/DxCommand.h>
+#include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 
-// c++
-#include <memory>
-#include <optional>
+// directX
+#include <dxgidebug.h>
+#include <dxgi1_6.h>
 
 //============================================================================
-//	CameraManager class
+//	GraphicsPlatform class
 //============================================================================
-class CameraManager :
-	public IGameEditor {
+class GraphicsPlatform {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	CameraManager() : IGameEditor("cameraManager") {};
-	~CameraManager() = default;
+	GraphicsPlatform() = default;
+	~GraphicsPlatform() = default;
 
 	void Init();
 
-	void Update();
+	void Finalize(HWND hwnd);
 
-	void ImGui() override;
 	//--------- accessor -----------------------------------------------------
 
-	void SetCamera(BaseCamera* gameCamera);
+	ID3D12Device8* GetDevice() const { return dxDevice_->Get(); }
 
-	BaseCamera* GetCamera() const;
+	DxCommand* GetDxCommand() const { return dxCommand_.get(); }
 
-	DebugCamera* GetDebugCamera() const { return debugCamera_.get(); }
-
-	LightViewCamera* GetLightViewCamera() const { return lightViewCamera_.get(); }
-
-	Camera2D* GetCamera2D() const { return camera2D_.get(); }
+	DxShaderCompiler* GetDxShaderCompiler() const { return dxShaderComplier_.get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -49,15 +41,13 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::optional<BaseCamera*> gameCamera_;
+	std::unique_ptr<DxDevice> dxDevice_;
 
-	std::unique_ptr<DebugCamera> debugCamera_;
+	std::unique_ptr<DxCommand> dxCommand_;
 
-	std::unique_ptr<LightViewCamera> lightViewCamera_;
-
-	std::unique_ptr<Camera2D> camera2D_;
+	std::unique_ptr<DxShaderCompiler> dxShaderComplier_;
 
 	//--------- functions ----------------------------------------------------
 
-	void RenderCameraFrame();
+	void InitDXDevice();
 };

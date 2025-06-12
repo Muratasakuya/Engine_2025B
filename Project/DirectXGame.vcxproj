@@ -265,6 +265,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\GraphicsPlatform.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Lib\DxStructures.cpp">
       <SubType>
       </SubType>
@@ -326,6 +330,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Raytracing\TopLevelAS.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\RenderEngine.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -399,11 +407,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Particle\Updater\ParticleUpdater.cpp" />
-    <ClCompile Include="Engine\Scene\Light\LightManager.cpp">
+    <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
+    <ClCompile Include="Engine\Scene\SceneView.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -494,7 +502,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Game\Camera\GameCamera.cpp" />
     <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp" />
-    <ClCompile Include="Engine\Scene\Camera\CameraManager.cpp" />
     <ClCompile Include="Game\Editor\GameEntityEditor.cpp">
       <SubType>
       </SubType>
@@ -711,6 +718,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\GraphicsPlatform.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Mesh\Mesh.h">
       <SubType>
       </SubType>
@@ -780,6 +791,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Core\Graphics\Raytracing\TopLevelAS.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Graphics\RenderEngine.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -857,7 +872,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Particle\Updater\ParticleUpdater.h" />
-    <ClInclude Include="Engine\Scene\Light\LightManager.h">
+    <ClInclude Include="Engine\Scene\SceneView.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -950,7 +965,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Game\Camera\GameCamera.h" />
     <ClInclude Include="Engine\Scene\Camera\LightViewCamera.h" />
-    <ClInclude Include="Engine\Scene\Camera\CameraManager.h" />
     <ClInclude Include="Engine\Scene\Light\PunctualLight.h" />
     <ClInclude Include="Game\Editor\GameEntityEditor.h">
       <SubType>

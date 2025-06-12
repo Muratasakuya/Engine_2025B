@@ -1,35 +1,51 @@
-#include "LightManager.h"
+#include "SceneView.h"
 
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 
 //============================================================================
-//	LightManager classMethods
+//	SceneView classMethods
 //============================================================================
 
-void LightManager::ImGui() {
+void SceneView::InitCamera() {
 
-	if (gameLight_.has_value()) {
+	// 2D
+	camera2D_ = std::make_unique<Camera2D>();
+	camera2D_->Init();
 
-		// 現在使われているライトの表示
-		gameLight_.value()->ImGui();
-	}
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+	debugCamera_ = std::make_unique<DebugCamera>();
+	debugCamera_->Init();
+#endif
 }
 
-void LightManager::Update() {
+void SceneView::Init() {
 
-	// 正規化
-	gameLight_.value()->directional.direction =
-		Vector3::Normalize(gameLight_.value()->directional.direction);
-	gameLight_.value()->spot.direction=
-		Vector3::Normalize(gameLight_.value()->spot.direction);
+	// scene情報初期化
+	InitCamera();
+}
 
-	if (!gameLight_.has_value()) {
-		return;
-	}
+void SceneView::Update() {
+
+	// scene更新
+	UpdateCamera();
+}
+
+void SceneView::UpdateCamera() {
+
+	// 3Dカメラの更新は各sceneクラスで行う
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+	debugCamera_->Update();
+#endif
+}
+
+void SceneView::UpdateLight() {
+
+	// ライトの更新はエンジン側で行う
+	punctualLight_.value()->Update();
 
 	// pointLight、spotLightのデバッグ表示
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
@@ -40,59 +56,57 @@ void LightManager::Update() {
 #endif
 }
 
-void LightManager::SetLight(PunctualLight* gameLight) {
+void SceneView::ImGui() {
 
-	// ライトのセット
-	gameLight_ = std::nullopt;
-	gameLight_ = gameLight;
+
 }
 
-PunctualLight* LightManager::GetLight() const {
+void SceneView::SetCamera(BaseCamera* gameCamera) {
 
-	if (!gameLight_.has_value()) {
-		ASSERT(FALSE, "un setting gameLight");
-		return nullptr;
-	}
-	return *gameLight_;
+	// カメラのセット
+	activeCamera3D_ = std::nullopt;
+	activeCamera3D_ = gameCamera;
 }
 
-void LightManager::DisplayPointLight() {
+void SceneView::DisplayPointLight() {
 
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+	const auto& light = punctualLight_.value();
 
 	// 規定値
 	const int sphereDivision = 8;
 	const float sphereRadius = 0.12f;
 	const Color sphereColor = Color(
-		gameLight_.value()->point.color.r,
-		gameLight_.value()->point.color.g,
-		gameLight_.value()->point.color.b,
+		light->point.color.r,
+		light->point.color.g,
+		light->point.color.b,
 		0.8f); // 薄く表示する
 
 	// 球で描画
 	lineRenderer->DrawSphere(
 		sphereDivision,
 		sphereRadius,
-		gameLight_.value()->point.pos,
+		light->point.pos,
 		sphereColor);
 }
 
-void LightManager::DisplaySpotLight() {
+void SceneView::DisplaySpotLight() {
 
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+	const auto& light = punctualLight_.value();
 
 	const float coneLength = 2.0f;
 	const Color coneColor = Color(
-		gameLight_.value()->spot.color.r,
-		gameLight_.value()->spot.color.g,
-		gameLight_.value()->spot.color.b,
+		light->spot.color.r,
+		light->spot.color.g,
+		light->spot.color.b,
 		0.8f);
 
-	const Vector3 pos = gameLight_.value()->spot.pos;
-	const Vector3 dir = Vector3::Normalize(gameLight_.value()->spot.direction);
+	const Vector3 pos = light->spot.pos;
+	const Vector3 dir = Vector3::Normalize(light->spot.direction);
 
 	const int coneDivision = 4;
-	const float radius = coneLength * std::tanf(gameLight_.value()->spot.cosAngle * 0.5f);
+	const float radius = coneLength * std::tanf(light->spot.cosAngle * 0.5f);
 	Vector3 baseCenter = pos + dir * coneLength;
 
 	for (uint32_t index = 0; index < coneDivision; ++index) {

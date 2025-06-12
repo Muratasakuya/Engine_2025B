@@ -30,10 +30,9 @@ public:
 	GameScene() :IGameEditor("GameScene") {};
 	~GameScene() = default;
 
-	void Init(Asset* asset, CameraManager* cameraManager,
-		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
+	void Init() override;
 
-	void Update(SceneManager* sceneManager) override;
+	void Update() override;
 
 	void ImGui() override;
 private:
@@ -57,5 +56,5 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
-	void Load(Asset* asset);
+	void Load();
 };

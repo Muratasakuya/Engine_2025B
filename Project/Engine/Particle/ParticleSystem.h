@@ -11,7 +11,7 @@
 // c++
 #include <unordered_map>
 // front
-class CameraManager;
+class SceneView;
 class SRVDescriptor;
 
 //============================================================================
@@ -26,7 +26,7 @@ public:
 
 	void Init(Asset* asset, ID3D12Device8* device,
 		SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler,
-		CameraManager* cameraManager);
+		SceneView* sceneView);
 
 	void Update();
 

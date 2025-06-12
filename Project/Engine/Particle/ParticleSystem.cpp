@@ -7,7 +7,7 @@
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
-#include <Engine/Scene/Camera/CameraManager.h>
+#include <Engine/Scene/SceneView.h>
 
 //============================================================================
 //	ParticleSystem classMethods
@@ -33,8 +33,7 @@ void ParticleSystem::Finalize() {
 }
 
 void ParticleSystem::Init(Asset* asset, ID3D12Device8* device,
-	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler,
-	CameraManager* cameraManager) {
+	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler, SceneView* sceneView) {
 
 	asset_ = nullptr;
 	asset_ = asset;

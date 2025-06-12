@@ -4,12 +4,9 @@
 //	include
 //============================================================================
 
-// c++
-#include <string>
 // front
 class Asset;
-class CameraManager;
-class LightManager;
+class SceneView;
 class SceneManager;
 class PostProcessSystem;
 
@@ -32,16 +29,13 @@ public:
 	//	public Methods
 	//========================================================================
 
-	IScene() = default;
+	IScene(Asset* asset, PostProcessSystem* postProcessSystem,
+		SceneView* sceneView, SceneManager* sceneManager);
 	virtual ~IScene() = default;
 
-	virtual void Init(
-		Asset* asset,
-		CameraManager* cameraManager,
-		LightManager* lightManager,
-		PostProcessSystem* postProcessSystem) = 0;
+	virtual void Init() = 0;
 
-	virtual void Update(SceneManager* sceneManager) = 0;
+	virtual void Update() = 0;
 protected:
 	//========================================================================
 	//	protected Methods
@@ -49,7 +43,9 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
-	CameraManager* cameraManager_;
-	LightManager* lightManager_;
+	Asset* asset_;
 	PostProcessSystem* postProcessSystem_;
+
+	SceneView* sceneView_;
+	SceneManager* sceneManager_;
 };
