@@ -44,8 +44,8 @@ void ParticleSystem::Init(Asset* asset, ID3D12Device8* device,
 	device_ = nullptr;
 	device_ = device;
 
-	cameraManager_ = nullptr;
-	cameraManager_ = cameraManager;
+	sceneView_ = nullptr;
+	sceneView_ = sceneView;
 
 	emitterHandler_ = std::make_unique<ParticleEmitterHandler>();
 	emitterHandler_->Init();
@@ -84,7 +84,7 @@ void ParticleSystem::LoadEmitter(const std::string& emitterName, const std::stri
 
 void ParticleSystem::UpdateEmitter(const std::string& emitterName) {
 
-	Matrix4x4 billboardMatrix = cameraManager_->GetCamera()->GetBillboardMatrix();
+	Matrix4x4 billboardMatrix = sceneView_->GetCamera()->GetBillboardMatrix();
 	auto& emitter = gameEmitters_[emitterName];
 
 	// emitterを更新
@@ -185,7 +185,7 @@ void ParticleSystem::UpdateEmitter() {
 	}
 
 	// 各emitterの更新
-	Matrix4x4 billboardMatrix = cameraManager_->GetDebugCamera()->GetBillboardMatrix();
+	Matrix4x4 billboardMatrix = sceneView_->GetDebugCamera()->GetBillboardMatrix();
 	for (const auto& emitter : std::views::values(editorEmitters_)) {
 
 		emitter->Update(billboardMatrix, false);

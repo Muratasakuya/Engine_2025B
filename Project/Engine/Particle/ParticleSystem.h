@@ -83,7 +83,7 @@ private:
 	Asset* asset_;
 	SRVDescriptor* srvDescriptor_;
 	ID3D12Device8* device_;
-	CameraManager* cameraManager_;
+	SceneView* sceneView_;
 
 	// handler、editorによる追加、選択、削除
 	std::unique_ptr<ParticleEmitterHandler> emitterHandler_;

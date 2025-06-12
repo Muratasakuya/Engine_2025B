@@ -68,6 +68,13 @@ void SceneView::SetCamera(BaseCamera* gameCamera) {
 	activeCamera3D_ = gameCamera;
 }
 
+void SceneView::SetLight(PunctualLight* gameLight) {
+
+	// ライトのセット
+	punctualLight_ = std::nullopt;
+	punctualLight_ = gameLight;
+}
+
 void SceneView::DisplayPointLight() {
 
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();

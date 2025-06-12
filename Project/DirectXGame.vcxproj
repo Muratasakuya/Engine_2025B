@@ -440,7 +440,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Graphics\DxCommand.cpp" />
     <ClCompile Include="Engine\Core\Graphics\DxDevice.cpp" />
     <ClCompile Include="Engine\Core\Graphics\DxSwapChain.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\GraphicsCore.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.cpp" />
     <ClCompile Include="Engine\External\ImGuiManager.cpp">
       <SubType>
@@ -902,7 +901,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Graphics\DxCommand.h" />
     <ClInclude Include="Engine\Core\Graphics\DxDevice.h" />
     <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
-    <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.h" />
     <ClInclude Include="Engine\External\ImGuiManager.h">
       <SubType>

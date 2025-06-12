@@ -16,7 +16,7 @@ SceneManager::SceneManager(Scene scene, Asset* asset,
 	asset_ = asset;
 
 	sceneView_ = nullptr;
-	sceneView_ = sceneView_;
+	sceneView_ = sceneView;
 
 	postProcessSystem_ = nullptr;
 	postProcessSystem_ = postProcessSystem;
@@ -66,7 +66,8 @@ void SceneManager::LoadScene(Scene scene) {
 
 	currentScene_.reset();
 	// 次のSceneを作成
-	currentScene_ = factory_->Create(scene, asset_, postProcessSystem_, sceneView_, this);
+	currentScene_ = factory_->Create(scene);
+	currentScene_->SetPtr(asset_, postProcessSystem_, sceneView_, this);
 
 	// imgui選択をリセット
 	ImGuiInspector::GetInstance()->Reset();

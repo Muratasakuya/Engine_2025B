@@ -36,8 +36,8 @@ public:
 	void Create(const std::vector<PostProcessType>& processes);
 
 	// postProcess実行
-	void Execute(class RenderTexture* inputTexture, class DxCommand* dxCommand);
-	void ExecuteDebugScene(class RenderTexture* inputTexture, class DxCommand* dxCommand);
+	void Execute(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, class DxCommand* dxCommand);
+	void ExecuteDebugScene(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, class DxCommand* dxCommand);
 
 	// 最終的なtextureをframeBufferに描画する
 	void RenderFrameBuffer(class DxCommand* dxCommand);

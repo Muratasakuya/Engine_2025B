@@ -30,6 +30,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	ID3D12Device8* GetDevice() const { return dxDevice_->Get(); }
+	IDXGIFactory7* GetDxgiFactory() const { return dxDevice_->GetDxgiFactory(); }
 
 	DxCommand* GetDxCommand() const { return dxCommand_.get(); }
 

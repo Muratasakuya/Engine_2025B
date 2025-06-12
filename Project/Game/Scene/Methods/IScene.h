@@ -29,13 +29,17 @@ public:
 	//	public Methods
 	//========================================================================
 
-	IScene(Asset* asset, PostProcessSystem* postProcessSystem,
-		SceneView* sceneView, SceneManager* sceneManager);
+	IScene() = default;
 	virtual ~IScene() = default;
 
 	virtual void Init() = 0;
 
 	virtual void Update() = 0;
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetPtr(Asset* asset, PostProcessSystem* postProcessSystem,
+		SceneView* sceneView, SceneManager* sceneManager);
 protected:
 	//========================================================================
 	//	protected Methods

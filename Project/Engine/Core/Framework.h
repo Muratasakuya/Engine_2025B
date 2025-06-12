@@ -53,11 +53,15 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	// update
 	void Update();
 	void UpdateScene();
 
+	// draw
 	void Draw();
+	void RenderPath(DxCommand* dxCommand);
 
+	void EndRequest();
 	void Finalize();
 
 	//--------- LeakChecker ----------------------------------------------------

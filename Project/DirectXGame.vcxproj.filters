@@ -74,9 +74,6 @@
     <ClCompile Include="Engine\Core\Graphics\DxSwapChain.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\GraphicsCore.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\PostProcess\RenderTexture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -564,7 +561,6 @@
     <ClInclude Include="Engine\Core\Graphics\DxCommand.h" />
     <ClInclude Include="Engine\Core\Graphics\DxDevice.h" />
     <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
-    <ClInclude Include="Engine\Core\Graphics\GraphicsCore.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\CBufferStructures.h" />

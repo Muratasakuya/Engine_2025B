@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Window/WinApp.h>
 #include <Engine/Core/Graphics/DxCommand.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
@@ -85,7 +86,8 @@ void RenderEngine::InitRenderer(ID3D12Device8* device, DxShaderCompiler* shaderC
 	spriteRenderer_->Init(device, srvDescriptor_.get(), shaderCompiler);
 }
 
-void RenderEngine::Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler, DxCommand* dxCommand) {
+void RenderEngine::Init(WinApp* winApp, ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
+	DxCommand* dxCommand, IDXGIFactory7* factory) {
 
 	ecsManager_ = nullptr;
 	ecsManager_ = ECSManager::GetInstance();
@@ -100,18 +102,30 @@ void RenderEngine::Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
 	// descriptor初期化
 	InitDescriptor(device);
 
-	// renderer初期化
-	InitRenderer(device, shaderCompiler);
-}
-
-void RenderEngine::CreateRenderTexture(WinApp* winApp, ID3D12Device8* device, IDXGIFactory7* factory) {
-
 	// 画面設定
 	dxSwapChain_ = std::make_unique<DxSwapChain>();
 	dxSwapChain_->Create(winApp, factory, dxCommand_->GetQueue(), rtvDescriptor_.get());
 
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+	imguiManager_ = std::make_unique<ImGuiManager>();
+	imguiManager_->Init(winApp->GetHwnd(), dxSwapChain_->GetDesc().BufferCount, device, srvDescriptor_.get());
+#endif
+
 	// renderTexture初期化
 	InitRenderTextrue(device);
+
+	// renderer初期化
+	InitRenderer(device, shaderCompiler);
+}
+
+void RenderEngine::BeginFrame() {
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+	imguiManager_->Begin();
+#endif
+
+	// srvDescriptorHeap設定
+	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
 }
 
 void RenderEngine::UpdateGPUBuffer(SceneView* sceneView) {
@@ -164,6 +178,10 @@ void RenderEngine::EndRenderFrameBuffer() {
 	dxCommand_->CopyTexture(
 		guiRenderTexture_->GetResource(), D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 		dxSwapChain_->GetCurrentResource(), D3D12_RESOURCE_STATE_RENDER_TARGET);
+
+	// imgui描画
+	imguiManager_->End();
+	imguiManager_->Draw(dxCommand_->GetCommandList());
 
 	// ComputeShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ renderTextures_[ViewType::Debug]->GetResource() },

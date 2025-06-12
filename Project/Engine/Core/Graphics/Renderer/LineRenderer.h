@@ -11,7 +11,7 @@
 // c++
 #include <memory>
 // front
-class CameraManager;
+class SceneView;
 
 //============================================================================
 //	LineRenderer class
@@ -24,7 +24,7 @@ public:
 
 	void Init(ID3D12Device8* device, ID3D12GraphicsCommandList* commandList,
 		class SRVDescriptor* srvDescriptor, class DxShaderCompiler* shaderCompiler,
-		CameraManager* cameraManager);
+		SceneView* sceneView);
 
 	void DrawLine3D(const Vector3& pointA, const Vector3& pointB, const Color& color);
 
@@ -70,7 +70,7 @@ private:
 	static LineRenderer* instance_;
 
 	ID3D12GraphicsCommandList* commandList_;
-	CameraManager* cameraManager_;
+	SceneView* sceneView_;
 
 	// 線分の最大数
 	static constexpr const uint32_t kMaxLineCount_ = 8196;

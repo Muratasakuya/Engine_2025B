@@ -10,18 +10,15 @@
 //	SceneFactory classMethods
 //============================================================================
 
-std::unique_ptr<IScene> SceneFactory::Create(Scene scene, Asset* asset,
-	PostProcessSystem* postProcessSystem, SceneView* sceneView, SceneManager* sceneManager) {
+std::unique_ptr<IScene> SceneFactory::Create(Scene scene) {
 
 	switch (scene) {
 	case Scene::Title:
 
-		return std::make_unique<TitleScene>(asset, postProcessSystem,
-			sceneView, sceneManager);
+		return std::make_unique<TitleScene>();
 	case Scene::Game:
 
-		return std::make_unique<GameScene>(asset, postProcessSystem,
-			sceneView, sceneManager);
+		return std::make_unique<GameScene>();
 	}
 
 	return nullptr;

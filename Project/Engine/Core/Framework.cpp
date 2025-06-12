@@ -22,7 +22,10 @@ void Framework::Run() {
 	while (true) {
 
 		Update();
+
 		Draw();
+
+		EndRequest();
 
 		// fullScreen切り替え
 		if (Input::GetInstance()->TriggerKey(DIK_F11)) {
@@ -77,12 +80,16 @@ Framework::Framework() {
 	DxShaderCompiler* shaderCompiler = graphicsPlatform_->GetDxShaderCompiler();
 
 	renderEngine_ = std::make_unique<RenderEngine>();
-	renderEngine_->Init(device, shaderCompiler, dxCommand);
+	renderEngine_->Init(winApp_.get(), device, shaderCompiler, dxCommand, graphicsPlatform_->GetDxgiFactory());
+
+	SRVDescriptor* srvDescriptor = renderEngine_->GetSRVDescriptor();
+
+	postProcessSystem_ = std::make_unique<PostProcessSystem>();
+	postProcessSystem_->Init(device, shaderCompiler, srvDescriptor);
 
 	// asset機能初期化
 	asset_ = std::make_unique<Asset>();
-	asset_->Init(graphicsCore_->GetDevice(), graphicsCore_->GetDxCommand(),
-		graphicsCore_->GetSRVDescriptor());
+	asset_->Init(device, dxCommand, srvDescriptor);
 
 	// fullScreen設定
 	winApp_->SetFullscreen(fullscreenEnable_);
@@ -90,29 +97,26 @@ Framework::Framework() {
 	//------------------------------------------------------------------------
 	// particle機能初期化
 
-	ParticleSystem::GetInstance()->Init(asset_.get(),
-		graphicsCore_->GetDevice(), graphicsCore_->GetSRVDescriptor(),
-		graphicsCore_->GetDxShaderCompiler(), sceneView_.get());
+	ParticleSystem::GetInstance()->Init(asset_.get(), device,
+		srvDescriptor, shaderCompiler, sceneView_.get());
 
 	//------------------------------------------------------------------------
 	// component機能初期化
 
-	ECSManager::GetInstance()->Init(graphicsCore_->GetDevice(),
-		asset_.get(), graphicsCore_->GetDxCommand());
+	ECSManager::GetInstance()->Init(device, asset_.get(), dxCommand);
 
 	//------------------------------------------------------------------------
 	// scene管理クラス初期化
 
-	sceneManager_ = std::make_unique<SceneManager>(
-		Scene::Game, asset_.get(), sceneView_.get(), graphicsCore_->GetPostProcessSystem());
+	sceneManager_ = std::make_unique<SceneManager>(Scene::Game,
+		asset_.get(), postProcessSystem_.get(), sceneView_.get());
 
 	//------------------------------------------------------------------------
 	// module初期化
 
 	Input::GetInstance()->Init(winApp_.get());
-	LineRenderer::GetInstance()->Init(graphicsCore_->GetDevice(),
-		graphicsCore_->GetDxCommand()->GetCommandList(),
-		graphicsCore_->GetSRVDescriptor(), graphicsCore_->GetDxShaderCompiler(), cameraManager_.get());
+	LineRenderer::GetInstance()->Init(device, dxCommand->GetCommandList(),
+		srvDescriptor, shaderCompiler, sceneView_.get());
 	AssetEditor::GetInstance()->Init(asset_.get());
 
 	//------------------------------------------------------------------------
@@ -120,8 +124,7 @@ Framework::Framework() {
 
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
-	imguiEditor_->Init(graphicsCore_->GetRenderTextureGPUHandle(),
-		graphicsCore_->GetDebugSceneRenderTextureGPUHandle());
+	imguiEditor_->Init(renderEngine_->GetRenderTextureGPUHandle(), postProcessSystem_->GetDebugSceneGPUHandle());
 #endif
 }
 
@@ -135,7 +138,7 @@ void Framework::Update() {
 	GameTimer::BeginUpdateCount();
 
 	// 描画前処理
-	graphicsCore_->BeginFrame();
+	renderEngine_->BeginFrame();
 	// imgui表示更新
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_->Display();
@@ -168,32 +171,85 @@ void Framework::UpdateScene() {
 
 void Framework::Draw() {
 
+	DxCommand* dxCommand = graphicsPlatform_->GetDxCommand();
+
 	//========================================================================
 	//	draw: endFrame
 	//========================================================================
 
 	GameTimer::BeginDrawCount();
 
-	graphicsCore_->DebugUpdate();
-	// GPUBuffer転送
-	ECSManager::GetInstance()->UpdateBuffer();
+	// GPUの更新処理
+	renderEngine_->UpdateGPUBuffer(sceneView_.get());
+
+	//========================================================================
+	//	draw: render
+	//========================================================================
 
 	// 描画処理
-	graphicsCore_->Render();
+	RenderPath(dxCommand);
+
+	//========================================================================
+	//	draw: execute
+	//========================================================================
+
+	renderEngine_->EndRenderFrameBuffer();
+
+	// csへの書き込み状態へ遷移
+	postProcessSystem_->ToWrite(dxCommand);
+
+	// command実行
+	dxCommand->ExecuteCommands(renderEngine_->GetDxSwapChain()->Get());
+
+	GameTimer::EndDrawCount();
+	GameTimer::EndFrameCount();
+}
+
+void Framework::RenderPath(DxCommand* dxCommand) {
+
+	//========================================================================
+	//	draw: renderTexture
+	//========================================================================
+
+	renderEngine_->Rendering(RenderEngine::ViewType::Main);
+
+	// postProcess処理実行
+	postProcessSystem_->Execute(renderEngine_->GetRenderTexture(
+		RenderEngine::ViewType::Main)->GetSRVGPUHandle(), dxCommand);
+
+	//========================================================================
+	//	draw: debugViewRenderTexture
+	//========================================================================
+
+	renderEngine_->Rendering(RenderEngine::ViewType::Debug);
+
+	// bloom処理を行う
+	postProcessSystem_->ExecuteDebugScene(renderEngine_->GetRenderTexture(
+		RenderEngine::ViewType::Debug)->GetSRVGPUHandle(), dxCommand);
+
+	//========================================================================
+	//	draw: frameBuffer
+	//========================================================================
+
+	renderEngine_->BeginRenderFrameBuffer();
+
+	// frameBufferへ結果を描画
+	postProcessSystem_->RenderFrameBuffer(dxCommand);
+}
+
+void Framework::EndRequest() {
+
 	// scene遷移依頼
 	sceneManager_->SwitchScene();
 	// lineReset
 	LineRenderer::GetInstance()->ResetLine();
 	// particleReset
 	ParticleSystem::GetInstance()->ResetParticleData();
-
-	GameTimer::EndDrawCount();
-	GameTimer::EndFrameCount();
 }
 
 void Framework::Finalize() {
 
-	graphicsCore_->Finalize(winApp_->GetHwnd());
+	graphicsPlatform_->Finalize(winApp_->GetHwnd());
 	Input::GetInstance()->Finalize();
 	LineRenderer::GetInstance()->Finalize();
 
@@ -204,7 +260,10 @@ void Framework::Finalize() {
 
 	winApp_.reset();
 	asset_.reset();
-	graphicsCore_.reset();
+	graphicsPlatform_.reset();
+	renderEngine_.reset();
+	postProcessSystem_.reset();
+	sceneView_.reset();
 
 	// ComFinalize
 	CoUninitialize();

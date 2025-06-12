@@ -9,7 +9,6 @@
 #include <Engine/Asset/AssetEditor.h>
 #include <Engine/Editor/ImGuiInspector.h>
 #include <Engine/Editor/Manager/GameEditorManager.h>
-#include <Engine/Scene/Camera/CameraManager.h>
 #include <Game/Time/GameTimer.h>
 
 //============================================================================

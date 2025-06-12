@@ -43,14 +43,14 @@ public:
 	// camera
 	void SetCamera(BaseCamera* gameCamera);
 
-	BaseCamera* GetCamera() const;
+	BaseCamera* GetCamera() const { return activeCamera3D_.value(); }
 	DebugCamera* GetDebugCamera() const { return debugCamera_.get(); }
 	Camera2D* GetCamera2D() const { return camera2D_.get(); }
 
 	// light
 	void SetLight(PunctualLight* gameLight);
 
-	PunctualLight* GetLight() const;
+	PunctualLight* GetLight() const { return punctualLight_.value(); }
 private:
 	//========================================================================
 	//	private Methods

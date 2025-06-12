@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Scene/Camera/CameraManager.h>
+#include <Engine/Scene/SceneView.h>
 
 //============================================================================
 //	LineRenderer classMethods
@@ -30,13 +30,13 @@ void LineRenderer::Finalize() {
 }
 
 void LineRenderer::Init(ID3D12Device8* device, ID3D12GraphicsCommandList* commandList,
-	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler, CameraManager* cameraManager) {
+	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler, SceneView* sceneView) {
 
 	commandList_ = nullptr;
 	commandList_ = commandList;
 
-	cameraManager_ = nullptr;
-	cameraManager_ = cameraManager;
+	sceneView_ = nullptr;
+	sceneView_ = sceneView;
 
 	pipeline_ = std::make_unique<PipelineState>();
 	pipeline_->Create("PrimitiveLine.json", device, srvDescriptor, shaderCompiler);
@@ -73,11 +73,11 @@ void LineRenderer::ExecuteLine(bool debugEnable) {
 
 	if (!debugEnable) {
 
-		viewProjectionBuffer_.TransferData(cameraManager_->GetCamera()->GetViewProjectionMatrix());
+		viewProjectionBuffer_.TransferData(sceneView_->GetCamera()->GetViewProjectionMatrix());
 		commandList_->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	} else {
 
-		debugSceneViewProjectionBuffer_.TransferData(cameraManager_->GetDebugCamera()->GetViewProjectionMatrix());
+		debugSceneViewProjectionBuffer_.TransferData(sceneView_->GetDebugCamera()->GetViewProjectionMatrix());
 		commandList_->SetGraphicsRootConstantBufferView(0, debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	}
 

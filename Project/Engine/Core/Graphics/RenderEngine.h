@@ -8,6 +8,7 @@
 #include <Engine/Core/Graphics/Descriptors/RTVDescriptor.h>
 #include <Engine/Core/Graphics/Descriptors/DSVDescriptor.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
+#include <Engine/External/ImGuiManager.h>
 
 // scene
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
@@ -18,6 +19,7 @@
 
 // front
 class SceneView;
+class WinApp;
 class ECSManager;
 class DxCommand;
 
@@ -45,8 +47,10 @@ public:
 	RenderEngine() = default;
 	~RenderEngine() = default;
 
-	void Init(ID3D12Device8* device, DxShaderCompiler* shaderCompiler, DxCommand* dxCommand);
-	void CreateRenderTexture(class WinApp* winApp, ID3D12Device8* device, IDXGIFactory7* factory);
+	void Init(WinApp* winApp, ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
+		DxCommand* dxCommand, IDXGIFactory7* factory);
+
+	void BeginFrame();
 
 	// GPUの更新処理
 	void UpdateGPUBuffer(SceneView* sceneView);
@@ -60,6 +64,13 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	SRVDescriptor* GetSRVDescriptor() const { return srvDescriptor_.get(); }
+
+	DxSwapChain* GetDxSwapChain() const { return dxSwapChain_.get(); }
+
+	RenderTexture* GetRenderTexture(ViewType type) const { return renderTextures_.at(type).get(); }
+
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -90,6 +101,9 @@ private:
 	// renderer
 	std::unique_ptr<MeshRenderer> meshRenderer_;
 	std::unique_ptr<SpriteRenderer> spriteRenderer_;
+
+	// imgui
+	std::unique_ptr<ImGuiManager> imguiManager_;
 
 	//--------- functions ----------------------------------------------------
 
