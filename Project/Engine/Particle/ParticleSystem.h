@@ -11,7 +11,7 @@
 // c++
 #include <unordered_map>
 // front
-class CameraManager;
+class SceneView;
 class SRVDescriptor;
 
 //============================================================================
@@ -26,7 +26,7 @@ public:
 
 	void Init(Asset* asset, ID3D12Device8* device,
 		SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler,
-		CameraManager* cameraManager);
+		SceneView* sceneView);
 
 	void Update();
 
@@ -83,7 +83,7 @@ private:
 	Asset* asset_;
 	SRVDescriptor* srvDescriptor_;
 	ID3D12Device8* device_;
-	CameraManager* cameraManager_;
+	SceneView* sceneView_;
 
 	// handler、editorによる追加、選択、削除
 	std::unique_ptr<ParticleEmitterHandler> emitterHandler_;

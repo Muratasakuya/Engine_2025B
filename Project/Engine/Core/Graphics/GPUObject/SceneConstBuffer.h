@@ -23,9 +23,8 @@ public:
 
 	void Create(ID3D12Device* device);
 
-	void Update(class CameraManager* cameraManager, class LightManager* lightManager);
+	void Update(class SceneView* sceneView);
 
-	void SetZPassCommands(ID3D12GraphicsCommandList* commandList);
 	void SetMainPassCommands(bool debugEnable, ID3D12GraphicsCommandList* commandList);
 	void SetViewProCommand(bool debugEnable, ID3D12GraphicsCommandList* commandList, UINT rootIndex);
 	void SetOrthoProCommand(ID3D12GraphicsCommandList* commandList, UINT rootIndex);
@@ -40,7 +39,6 @@ private:
 	// camera3D
 	// main
 	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;
-	DxConstBuffer<Matrix4x4> lightViewProjectionBuffer_;
 	DxConstBuffer<Vector3> cameraPosBuffer_;
 	// debug
 	DxConstBuffer<Matrix4x4> debugSceneViewProjectionBuffer_;

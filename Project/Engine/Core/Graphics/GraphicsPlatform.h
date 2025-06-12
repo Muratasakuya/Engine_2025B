@@ -3,30 +3,38 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
-#include <Engine/Scene/Light/PunctualLight.h>
+#include <Engine/Core/Graphics/DxDevice.h>
+#include <Engine/Core/Graphics/DxCommand.h>
+#include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
+
+// directX
+#include <dxgidebug.h>
+#include <dxgi1_6.h>
 
 //============================================================================
-//	LightManager class
+//	GraphicsPlatform class
 //============================================================================
-class LightManager :
-	public IGameEditor {
+class GraphicsPlatform {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	LightManager() : IGameEditor("lightManager") {};
-	~LightManager() = default;
+	GraphicsPlatform() = default;
+	~GraphicsPlatform() = default;
 
-	void Update();
+	void Init();
 
-	void ImGui() override;
+	void Finalize(HWND hwnd);
+
 	//--------- accessor -----------------------------------------------------
 
-	void SetLight(PunctualLight* gameLight);
+	ID3D12Device8* GetDevice() const { return dxDevice_->Get(); }
+	IDXGIFactory7* GetDxgiFactory() const { return dxDevice_->GetDxgiFactory(); }
 
-	PunctualLight* GetLight() const;
+	DxCommand* GetDxCommand() const { return dxCommand_.get(); }
+
+	DxShaderCompiler* GetDxShaderCompiler() const { return dxShaderComplier_.get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -34,10 +42,13 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::optional<PunctualLight*> gameLight_;
+	std::unique_ptr<DxDevice> dxDevice_;
+
+	std::unique_ptr<DxCommand> dxCommand_;
+
+	std::unique_ptr<DxShaderCompiler> dxShaderComplier_;
 
 	//--------- functions ----------------------------------------------------
 
-	void DisplayPointLight();
-	void DisplaySpotLight();
+	void InitDXDevice();
 };

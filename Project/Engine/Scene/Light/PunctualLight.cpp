@@ -94,6 +94,25 @@ void PunctualLight::Init() {
 	directional.Init();
 	point.Init();
 	spot.Init();
+
+	preDirectionalLightDirection_ = directional.direction;
+	preSpotLightDirection_ = spot.direction;
+}
+
+void PunctualLight::Update() {
+
+	// 向きに変更があった場合のみ正規化
+	if (preDirectionalLightDirection_ != directional.direction) {
+		
+		directional.direction = directional.direction.Normalize();
+		preDirectionalLightDirection_ = directional.direction;
+	}
+
+	if (preSpotLightDirection_ != spot.direction) {
+
+		directional.direction = spot.direction.Normalize();
+		preSpotLightDirection_ = spot.direction;
+	}
 }
 
 void PunctualLight::ImGui() {

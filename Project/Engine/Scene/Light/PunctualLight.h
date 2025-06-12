@@ -71,6 +71,8 @@ public:
 
 	void Init();
 
+	void Update();
+
 	void ImGui();
 
 	//--------- variables ----------------------------------------------------
@@ -78,7 +80,6 @@ public:
 	DirectionalLight directional;
 	PointLight point;
 	SpotLight spot;
-
 private:
 	//========================================================================
 	//	private Methods
@@ -86,5 +87,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	const float itemWidth_ = 192.0f;
+	const float itemWidth_ = 224.0f;
+
+	Vector3 preDirectionalLightDirection_;
+	Vector3 preSpotLightDirection_;
 };

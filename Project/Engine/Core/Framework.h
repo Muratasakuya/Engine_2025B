@@ -3,21 +3,18 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Window/WinApp.h>
-#include <Engine/Core/Graphics/GraphicsCore.h>
 #include <Engine/Asset/Asset.h>
 #include <Engine/Editor/ImGuiEditor.h>
 
-// scene
-#include <Engine/Scene/Camera/CameraManager.h>
-#include <Engine/Scene/Light/LightManager.h>
-#include <Game/Scene/Manager/SceneManager.h>
+// core
+#include <Engine/Core/Window/WinApp.h>
+#include <Engine/Core/Graphics/GraphicsPlatform.h>
+#include <Engine/Core/Graphics/RenderEngine.h>
+#include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 
-// directX
-#include <dxgidebug.h>
-#include <dxgi1_6.h>
-// c++
-#include <memory>
+// scene
+#include <Engine/Scene/SceneView.h>
+#include <Game/Scene/Manager/SceneManager.h>
 
 //============================================================================
 //	Framework class
@@ -42,7 +39,9 @@ private:
 	std::unique_ptr<WinApp> winApp_;
 	bool fullscreenEnable_;
 
-	std::unique_ptr<GraphicsCore> graphicsCore_;
+	std::unique_ptr<GraphicsPlatform> graphicsPlatform_;
+	std::unique_ptr<RenderEngine> renderEngine_;
+	std::unique_ptr<PostProcessSystem> postProcessSystem_;
 
 	std::unique_ptr<Asset> asset_;
 
@@ -50,16 +49,19 @@ private:
 
 	std::unique_ptr<SceneManager> sceneManager_;
 
-	std::unique_ptr<CameraManager> cameraManager_;
-	std::unique_ptr<LightManager> lightManager_;
+	std::unique_ptr<SceneView> sceneView_;
 
 	//--------- functions ----------------------------------------------------
 
+	// update
 	void Update();
 	void UpdateScene();
 
+	// draw
 	void Draw();
+	void RenderPath(DxCommand* dxCommand);
 
+	void EndRequest();
 	void Finalize();
 
 	//--------- LeakChecker ----------------------------------------------------

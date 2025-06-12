@@ -6,56 +6,49 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Graphics/Skybox/Skybox.h>
-#include <Engine/Scene/Camera/CameraManager.h>
-#include <Engine/Scene/Light/LightManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Particle/ParticleSystem.h>
+#include <Engine/Scene/SceneView.h>
 
 //============================================================================
 //	TitleScene classMethods
 //============================================================================
 
-void GameScene::Load(Asset* asset) {
+void GameScene::Load() {
 
 	// cubeMap、.dds
-	asset->LoadTexture("docklands_01_2k");
+	asset_->LoadTexture("docklands_01_2k");
 	// lut
-	asset->LoadLutTexture("lut_hot");
+	asset_->LoadLutTexture("lut_hot");
 
 	// player
-	asset->LoadModel("playerBody");
-	asset->LoadModel("playerLeftHand");
-	asset->LoadModel("playerRightHand");
-	asset->LoadModel("playerSword");
+	asset_->LoadModel("playerBody");
+	asset_->LoadModel("playerLeftHand");
+	asset_->LoadModel("playerRightHand");
+	asset_->LoadModel("playerSword");
 
 	// environment
-	asset->LoadModel("stageField");
+	asset_->LoadModel("stageField");
 
 	// animation
-	asset->LoadModel("BrainStem");
-	asset->LoadAnimation("BrainStem", "BrainStem");
+	asset_->LoadModel("BrainStem");
+	asset_->LoadAnimation("BrainStem", "BrainStem");
 }
 
-void GameScene::Init(
-	[[maybe_unused]] Asset* asset,
-	[[maybe_unused]] CameraManager* cameraManager,
-	[[maybe_unused]] LightManager* lightManager,
-	[[maybe_unused]] PostProcessSystem* postProcessSystem
-) {
+void GameScene::Init() {
 
 	//========================================================================
 	//	load
 	//========================================================================
 
-	Load(asset);
+	Load();
 
 	//========================================================================
 	//	postProcess
 	//========================================================================
 
-	postProcessSystem_ = postProcessSystem;
 	postProcessSystem_->Create({ PostProcessType::Bloom });
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
 
@@ -67,13 +60,13 @@ void GameScene::Init(
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Init();
 
-	cameraManager->SetCamera(followCamera_.get());
+	sceneView_->SetCamera(followCamera_.get());
 
 	// light
 	gameLight_ = std::make_unique<PunctualLight>();
 	gameLight_->Init();
 
-	lightManager->SetLight(gameLight_.get());
+	sceneView_->SetLight(gameLight_.get());
 
 	//========================================================================
 	//	initObject
@@ -87,10 +80,10 @@ void GameScene::Init(
 
 	// entityEditor
 	entityEditor_ = std::make_unique<GameEntityEditor>();
-	entityEditor_->Init(asset);
+	entityEditor_->Init(asset_);
 	// levelEditor
 	levelEditor_ = std::make_unique<LevelEditor>();
-	levelEditor_->LoadFile(asset);
+	levelEditor_->LoadFile(asset_);
 
 	// 仮の地面
 	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
@@ -103,7 +96,7 @@ void GameScene::Init(
 		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
 }
 
-void GameScene::Update([[maybe_unused]] SceneManager* sceneManager) {
+void GameScene::Update() {
 
 	followCamera_->Update();
 

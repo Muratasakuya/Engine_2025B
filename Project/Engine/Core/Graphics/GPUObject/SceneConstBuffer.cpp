@@ -3,8 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Scene/Camera/CameraManager.h>
-#include <Engine/Scene/Light/LightManager.h>
+#include <Engine/Scene/SceneView.h>
 
 //============================================================================
 //	SceneConstBuffer classMethods
@@ -15,7 +14,6 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 	// buffer作成
 	// camera
 	viewProjectionBuffer_.CreateConstBuffer(device);
-	lightViewProjectionBuffer_.CreateConstBuffer(device);
 	cameraPosBuffer_.CreateConstBuffer(device);
 	orthoProjectionBuffer_.CreateConstBuffer(device);
 	// light
@@ -39,32 +37,23 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 #endif
 }
 
-void SceneConstBuffer::Update(CameraManager* cameraManager,
-	LightManager* lightManager) {
+void SceneConstBuffer::Update(class SceneView* sceneView) {
 
 	// buffer更新
 	// camera
-	viewProjectionBuffer_.TransferData(cameraManager->GetCamera()->GetViewProjectionMatrix());
-	lightViewProjectionBuffer_.TransferData(cameraManager->GetLightViewCamera()->GetViewProjectionMatrix());
-	cameraPosBuffer_.TransferData(cameraManager->GetCamera()->GetTransform().translation);
-	orthoProjectionBuffer_.TransferData(cameraManager->GetCamera2D()->GetViewProjectionMatrix());
+	viewProjectionBuffer_.TransferData(sceneView->GetCamera()->GetViewProjectionMatrix());
+	cameraPosBuffer_.TransferData(sceneView->GetCamera()->GetTransform().translation);
+	orthoProjectionBuffer_.TransferData(sceneView->GetCamera2D()->GetViewProjectionMatrix());
 	// light
-	lightBuffer_.TransferData(*lightManager->GetLight());
+	lightBuffer_.TransferData(*sceneView->GetLight());
 
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	// camera
-	debugSceneViewProjectionBuffer_.TransferData(cameraManager->GetDebugCamera()->GetViewProjectionMatrix());
-	debugSceneCameraPosBuffer_.TransferData(cameraManager->GetDebugCamera()->GetTransform().translation);
+	debugSceneViewProjectionBuffer_.TransferData(sceneView->GetDebugCamera()->GetViewProjectionMatrix());
+	debugSceneCameraPosBuffer_.TransferData(sceneView->GetDebugCamera()->GetTransform().translation);
 #endif
-}
-
-void SceneConstBuffer::SetZPassCommands(ID3D12GraphicsCommandList* commandList) {
-
-	// lightViewProjection
-	commandList->SetGraphicsRootConstantBufferView(6,
-		lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 }
 
 void SceneConstBuffer::SetMainPassCommands(bool debugEnable, ID3D12GraphicsCommandList* commandList) {
@@ -88,9 +77,6 @@ void SceneConstBuffer::SetMainPassCommands(bool debugEnable, ID3D12GraphicsComma
 		commandList->SetGraphicsRootConstantBufferView(14,
 			debugSceneCameraPosBuffer_.GetResource()->GetGPUVirtualAddress());
 	}
-	// lightViewProjection
-	commandList->SetGraphicsRootConstantBufferView(7,
-		lightViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 
 	// light
 	commandList->SetGraphicsRootConstantBufferView(13,

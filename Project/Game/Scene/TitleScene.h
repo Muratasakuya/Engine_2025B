@@ -22,10 +22,9 @@ public:
 	TitleScene() = default;
 	~TitleScene() = default;
 
-	void Init(Asset* asset, CameraManager* cameraManager,
-		LightManager* lightManager, PostProcessSystem* postProcessSystem) override;
+	void Init() override;
 
-	void Update(SceneManager* sceneManager) override;
+	void Update() override;
 private:
 	//========================================================================
 	//	private Methods
@@ -33,7 +32,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unique_ptr<GameCamera> gameCamera_;
 
-	uint32_t titleNameId_;
 };
