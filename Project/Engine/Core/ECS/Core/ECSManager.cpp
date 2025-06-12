@@ -118,15 +118,14 @@ uint32_t ECSManager::CreateObject3D(const std::string& modelName,
 	return entity;
 }
 
-uint32_t ECSManager::CreateSkybox(const std::string& textureName,
-	const std::string& name, const std::string& groupName) {
+uint32_t ECSManager::CreateSkybox(const std::string& textureName) {
 	
 	// entity作成
-	uint32_t entity = BuildEmptyEntity(name, groupName);
+	uint32_t entity = BuildEmptyEntity("skybox", "Environment");
 	// 必要なcomponentを作成
 	auto* skybox = entityManager_->AddComponent<SkyboxComponent>(entity);
 
-	// 各componentを初期化
+	// componentを初期化
 	skybox->Create(device_, asset_->GetTextureGPUIndex(textureName));
 
 	return entity;

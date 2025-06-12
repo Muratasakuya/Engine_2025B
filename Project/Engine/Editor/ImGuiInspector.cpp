@@ -14,6 +14,7 @@
 #include <Engine/Core/ECS/Components/AnimationComponent.h>
 #include <Engine/Core/ECS/Components/TagComponent.h>
 #include <Engine/Core/ECS/Components/SpriteComponent.h>
+#include <Engine/Core/ECS/Components/SkyboxComponent.h>
 
 // imgui
 #include <imgui.h>
@@ -57,7 +58,8 @@ void ImGuiInspector::SelectObject() {
 
 bool ImGuiInspector::Is3D(uint32_t entity) const {
 
-	return ecsManager_->GetComponent<Transform3DComponent>(entity) != nullptr;
+	return ecsManager_->GetComponent<Transform3DComponent>(entity) != nullptr ||
+		ecsManager_->GetComponent<SkyboxComponent>(entity) != nullptr;
 }
 
 bool ImGuiInspector::Is2D(uint32_t entity) const {
@@ -132,31 +134,47 @@ void ImGuiInspector::EditObject3D() {
 
 	if (ImGui::BeginTabBar("Obj3DTab")) {
 
-		if (ImGui::BeginTabItem("Info")) {
+		const auto* tag = tagSystem_->Tags().at(selected3D_.value());
+		// skyboxの時と他のオブジェクトで分岐
+		if (tag->name == "skybox") {
 
-			Object3DInformation();
-			ImGui::EndTabItem();
-		}
+			if (ImGui::BeginTabItem("Info")) {
 
-		if (ImGui::BeginTabItem("Transform")) {
-
-			Object3DTransform();
-			ImGui::EndTabItem();
-		}
-
-		if (ImGui::BeginTabItem("Material")) {
-
-			Object3DMaterial();
-			ImGui::EndTabItem();
-		}
-
-		if (selected3D_.has_value()) {
-			if (ImGui::BeginTabItem("Individual")) {
-				if (!individualUI_.empty()) {
-
-					individualUI_.at(*selected3D_)();
-				}
+				Object3DInformation();
 				ImGui::EndTabItem();
+			}
+			if (ImGui::BeginTabItem("Skybox")) {
+
+				EditSkybox();
+				ImGui::EndTabItem();
+			}
+		} else {
+			if (ImGui::BeginTabItem("Info")) {
+
+				Object3DInformation();
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Transform")) {
+
+				Object3DTransform();
+				ImGui::EndTabItem();
+			}
+
+			if (ImGui::BeginTabItem("Material")) {
+
+				Object3DMaterial();
+				ImGui::EndTabItem();
+			}
+
+			if (selected3D_.has_value()) {
+				if (ImGui::BeginTabItem("Individual")) {
+					if (!individualUI_.empty()) {
+
+						individualUI_.at(*selected3D_)();
+					}
+					ImGui::EndTabItem();
+				}
 			}
 		}
 		ImGui::EndTabBar();
@@ -214,6 +232,12 @@ void ImGuiInspector::Object3DMaterial() {
 
 		materials[selectedMaterialIndex_].ImGui(itemWidth_);
 	}
+}
+
+void ImGuiInspector::EditSkybox() {
+
+	auto* skybox = ecsManager_->GetComponent<SkyboxComponent>(*selected3D_);
+	skybox->ImGui(itemWidth_);
 }
 
 void ImGuiInspector::EditObject2D() {

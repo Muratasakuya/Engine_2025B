@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Core/ECS/Components/MaterialComponent.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
@@ -22,6 +23,8 @@ private:
 
 		Color color;
 		uint32_t textureIndex;
+		float pad0[3];
+		Matrix4x4 uvTransform;
 	};
 public:
 	//========================================================================
@@ -34,6 +37,8 @@ public:
 	void Create(ID3D12Device* device, uint32_t textureIndex);
 
 	void Update();
+
+	void ImGui(float itemSize);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -62,6 +67,10 @@ private:
 	BaseTransform transform_;
 	SkyboxMaterial material_;
 
+	// uv
+	UVTransform uvTransform_;
+	UVTransform prevUVTransform_;
+
 	// cBuffer
 	DxConstBuffer<Matrix4x4> matrixBuffer_;
 	DxConstBuffer<SkyboxMaterial> materialBuffer_;
@@ -70,4 +79,7 @@ private:
 
 	void CreateVertexBuffer(ID3D12Device* device);
 	void CreateCBuffer(ID3D12Device* device, uint32_t textureIndex);
+
+	// update
+	void UpdateUVTransform();
 };

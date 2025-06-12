@@ -41,6 +41,48 @@ void FollowCamera::Update() {
 	UpdateMatrix();
 }
 
+void FollowCamera::FirstUpdate() {
+
+	Vector3 rotate{};
+	rotate.Init();
+
+	interTarget_ = Vector3::Lerp(interTarget_, target_->GetWorldPos(), 1.0f);
+
+	Vector3 offset{};
+	offset.Init();
+
+	// マウス移動量の取得
+	Vector2 mouseDelta = Input::GetInstance()->GetMouseMoveValue();
+
+	if (Input::GetInstance()->PushKey(DIK_LCONTROL)) {
+		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
+
+			isDebugMode_ = !isDebugMode_;
+		}
+	}
+
+	if (!isDebugMode_) {
+
+		// Y軸回転: 左右
+		eulerRotation_.y += mouseDelta.x * sensitivity_.y;
+
+		// X軸回転: 上下
+		eulerRotation_.x += mouseDelta.y * sensitivity_.x;
+		// 値を制限
+		eulerRotation_.x = std::clamp(eulerRotation_.x,
+			eulerRotateClampMinusX_, eulerRotateClampPlusX_);
+	}
+
+	Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(eulerRotation_);
+	offset = Vector3::TransferNormal(offsetTranslation_, rotateMatrix);
+
+	// offset分座標をずらす
+	transform_.translation = interTarget_ + offset;
+
+	// 行列更新
+	UpdateMatrix();
+}
+
 void FollowCamera::Move() {
 
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)

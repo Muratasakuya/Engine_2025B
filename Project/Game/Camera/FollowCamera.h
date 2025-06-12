@@ -21,6 +21,7 @@ public:
 	void Init() override;
 
 	void Update() override;
+	void FirstUpdate();
 
 	void ImGui() override;
 

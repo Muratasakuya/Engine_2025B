@@ -101,6 +101,8 @@ private:
 	void Object3DTransform();
 	void Object3DMaterial();
 
+	void EditSkybox();
+
 	//--------- object2D -----------------------------------------------------
 
 	void EditObject2D();

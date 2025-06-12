@@ -35,7 +35,7 @@ void MaterialComponent::Init(Asset* asset) {
 
 	InitParameter();
 	uvTransform.scale = Vector3::AnyInit(1.0f);
-	prevUVTransform.scale = Vector3::AnyInit(1.0f);
+	prevUVTransform_.scale = Vector3::AnyInit(1.0f);
 
 	asset_ = nullptr;
 	asset_ = asset;
@@ -44,7 +44,7 @@ void MaterialComponent::Init(Asset* asset) {
 void MaterialComponent::UpdateUVTransform() {
 
 	// 値に変更がなければ更新しない
-	if (uvTransform == prevUVTransform) {
+	if (uvTransform == prevUVTransform_) {
 		return;
 	}
 
@@ -52,7 +52,7 @@ void MaterialComponent::UpdateUVTransform() {
 	uvMatrix = Matrix4x4::MakeAffineMatrix(uvTransform.scale, uvTransform.rotate, uvTransform.translation);
 
 	// 値を保存
-	prevUVTransform = uvTransform;
+	prevUVTransform_ = uvTransform;
 }
 
 void MaterialComponent::ImGui(float itemSize) {
@@ -163,7 +163,7 @@ void SpriteMaterialComponent::Init(ID3D12Device* device) {
 
 	material.Init();
 	uvTransform.scale = Vector3::AnyInit(1.0f);
-	prevUVTransform.scale = Vector3::AnyInit(1.0f);
+	prevUVTransform_.scale = Vector3::AnyInit(1.0f);
 
 	// buffer初期化
 	buffer_.CreateConstBuffer(device);
@@ -172,7 +172,7 @@ void SpriteMaterialComponent::Init(ID3D12Device* device) {
 void SpriteMaterialComponent::UpdateUVTransform() {
 
 	// 値に変更がなければ更新しない
-	if (uvTransform == prevUVTransform) {
+	if (uvTransform == prevUVTransform_) {
 
 		// buffer転送
 		buffer_.TransferData(material);
@@ -184,7 +184,7 @@ void SpriteMaterialComponent::UpdateUVTransform() {
 		uvTransform.scale, uvTransform.rotate, uvTransform.translation);
 
 	// 値を保存
-	prevUVTransform = uvTransform;
+	prevUVTransform_ = uvTransform;
 }
 
 void SpriteMaterialComponent::ImGui(float itemSize) {

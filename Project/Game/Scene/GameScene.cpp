@@ -15,9 +15,7 @@
 void GameScene::Load() {
 
 	// cubeMap、.dds
-	asset_->LoadTexture("docklands_01_2k");
-	// lut
-	asset_->LoadLutTexture("lut_hot");
+	asset_->LoadTexture("kloppenheim_02_puresky_2k");
 
 	// player
 	asset_->LoadModel("playerBody");
@@ -27,10 +25,6 @@ void GameScene::Load() {
 
 	// environment
 	asset_->LoadModel("stageField");
-
-	// animation
-	asset_->LoadModel("BrainStem");
-	asset_->LoadAnimation("BrainStem", "BrainStem");
 }
 
 void GameScene::Init() {
@@ -61,6 +55,9 @@ void GameScene::Init() {
 	// light
 	gameLight_ = std::make_unique<PunctualLight>();
 	gameLight_->Init();
+	gameLight_->directional.direction.x = 1.0f;
+	gameLight_->directional.direction.z = 1.0f;
+	gameLight_->directional.direction.y = -0.5f;
 
 	sceneView_->SetLight(gameLight_.get());
 
@@ -73,13 +70,11 @@ void GameScene::Init() {
 
 	// 追従先を設定する: player
 	followCamera_->SetTarget(player_->GetTransform());
+	followCamera_->FirstUpdate();
 
 	// entityEditor
 	entityEditor_ = std::make_unique<GameEntityEditor>();
 	entityEditor_->Init(asset_);
-	// levelEditor
-	levelEditor_ = std::make_unique<LevelEditor>();
-	levelEditor_->LoadFile(asset_);
 
 	// 仮の地面
 	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
@@ -91,7 +86,7 @@ void GameScene::Init() {
 	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
 		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
 
-	ECSManager::GetInstance()->CreateSkybox("docklands_01_2k", "skybox", "Environment");
+	ECSManager::GetInstance()->CreateSkybox("kloppenheim_02_puresky_2k");
 }
 
 void GameScene::Update() {

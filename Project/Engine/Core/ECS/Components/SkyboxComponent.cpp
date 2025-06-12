@@ -1,6 +1,13 @@
 #include "SkyboxComponent.h"
 
 //============================================================================
+//	include
+//============================================================================
+
+// imgui
+#include <imgui.h>
+
+//============================================================================
 //	SkyboxComponent classMethods
 //============================================================================
 
@@ -93,6 +100,12 @@ void SkyboxComponent::CreateCBuffer(ID3D12Device* device, uint32_t textureIndex)
 	material_.color = Color::White();
 	material_.textureIndex = textureIndex;
 
+	uvTransform_.scale = Vector3::AnyInit(1.0f);
+	prevUVTransform_.scale = Vector3::AnyInit(1.0f);
+	// uvの更新
+	material_.uvTransform = Matrix4x4::MakeAffineMatrix(
+		uvTransform_.scale, uvTransform_.rotate, uvTransform_.translation);
+
 	// buffer作成
 	matrixBuffer_.CreateConstBuffer(device);
 	materialBuffer_.CreateConstBuffer(device);
@@ -113,10 +126,51 @@ void SkyboxComponent::Create(ID3D12Device* device, uint32_t textureIndex) {
 
 void SkyboxComponent::Update() {
 
-	// 行列更新
+	// transform更新
 	transform_.UpdateMatrix();
-
 	// buffer転送
 	matrixBuffer_.TransferData(transform_.matrix.world);
+
+	// material更新
+	UpdateUVTransform();
+	// buffer転送
 	materialBuffer_.TransferData(material_);
+}
+
+void SkyboxComponent::UpdateUVTransform() {
+
+	// 値に変更がなければ更新しない
+	if (uvTransform_ == prevUVTransform_) {
+		return;
+	}
+
+	// uvの更新
+	material_.uvTransform = Matrix4x4::MakeAffineMatrix(
+		uvTransform_.scale, uvTransform_.rotate, uvTransform_.translation);
+
+	// 値を保存
+	prevUVTransform_ = uvTransform_;
+}
+
+void SkyboxComponent::ImGui(float itemSize) {
+
+	ImGui::PushItemWidth(itemSize);
+
+	ImGui::SeparatorText("Transform");
+
+	transform_.ImGui(itemSize);
+
+	ImGui::SeparatorText("Color");
+
+	ImGui::ColorEdit4("color", &material_.color.r);
+
+	// UV
+	ImGui::SeparatorText("UV");
+
+	// transform
+	ImGui::DragFloat2("uvTranslate", &uvTransform_.translation.x, 0.01f);
+	ImGui::SliderAngle("uvRotate", &uvTransform_.rotate.z);
+	ImGui::DragFloat2("uvScale", &uvTransform_.scale.x, 0.01f);
+
+	ImGui::PopItemWidth();
 }

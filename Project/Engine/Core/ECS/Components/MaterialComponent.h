@@ -97,7 +97,7 @@ private:
 
 	Asset* asset_;
 
-	UVTransform prevUVTransform;
+	UVTransform prevUVTransform_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -142,7 +142,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	UVTransform prevUVTransform;
+	UVTransform prevUVTransform_;
 
 	// buffer
 	DxConstBuffer<SpriteMaterial> buffer_;

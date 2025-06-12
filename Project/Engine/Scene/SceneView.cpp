@@ -31,6 +31,7 @@ void SceneView::Update() {
 
 	// scene更新
 	UpdateCamera();
+	UpdateLight();
 }
 
 void SceneView::UpdateCamera() {
@@ -58,7 +59,44 @@ void SceneView::UpdateLight() {
 
 void SceneView::ImGui() {
 
+	ImGui::PushItemWidth(itemWidth_);
 
+	if (ImGui::BeginTabBar("SceneTab")) {
+
+		if (ImGui::BeginTabItem("Camera")) {
+
+			EditCamera();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Light")) {
+
+			EditLight();
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
+
+	ImGui::PopItemWidth();
+}
+
+void SceneView::EditCamera() {
+
+	if (ImGui::CollapsingHeader("ActiveCamera")) {
+
+		activeCamera3D_.value()->ImGui();
+
+	}
+
+	if (ImGui::CollapsingHeader("DebugCamera")) {
+
+		debugCamera_->ImGui();
+	}
+}
+
+void SceneView::EditLight() {
+
+	punctualLight_.value()->ImGui();
 }
 
 void SceneView::SetCamera(BaseCamera* gameCamera) {

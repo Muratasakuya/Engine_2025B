@@ -77,6 +77,9 @@ private:
 	void UpdateCamera();
 	void UpdateLight();
 
+	void EditCamera();
+	void EditLight();
+
 	// debug
 	void DisplayPointLight();
 	void DisplaySpotLight();
