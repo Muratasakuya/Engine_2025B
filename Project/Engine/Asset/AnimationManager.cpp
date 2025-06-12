@@ -44,7 +44,7 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 			entry.path().stem().string() == animationName) {
 
 			std::string extension = entry.path().extension().string();
-			if (extension == ".gltf" || extension == ".fbx") {
+			if (extension == ".gltf") {
 				filePath = entry.path();
 				found = true;
 				break;
