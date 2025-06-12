@@ -203,6 +203,6 @@ public:
 
 	//--------- properties ---------------------------------------------------
 
-	float lerpRate = 0.32f;
+	float lerpRate = 0.2f;
 	float lutSize = 33.0f;
 };

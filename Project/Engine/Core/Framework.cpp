@@ -220,13 +220,14 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 	//========================================================================
 	//	draw: debugViewRenderTexture
 	//========================================================================
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	renderEngine_->Rendering(RenderEngine::ViewType::Debug);
 
 	// bloom処理を行う
 	postProcessSystem_->ExecuteDebugScene(renderEngine_->GetRenderTexture(
 		RenderEngine::ViewType::Debug)->GetSRVGPUHandle(), dxCommand);
-
+#endif
 	//========================================================================
 	//	draw: frameBuffer
 	//========================================================================
