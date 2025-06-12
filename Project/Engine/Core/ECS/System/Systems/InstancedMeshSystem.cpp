@@ -4,7 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/ECS/Core/EntityManager.h>
-#include <Engine/Core/Graphics/Raytracing/RaytracingScene.h> 
+#include <Engine/Core/Graphics/Raytracing/RaytracingScene.h>
+#include <Engine/Config.h>
 
 //============================================================================
 //	InstancedMeshSystem classMethods
@@ -22,20 +23,17 @@ InstancedMeshSystem::InstancedMeshSystem(ID3D12Device* device, Asset* asset,
 
 void InstancedMeshSystem::CreateStaticMesh(const std::string& modelName) {
 
-	// 最大instance数
-	const uint32_t kMaxInstanceNum = 0xffff;
-
 	// meshの作成、登録
 	meshRegistry_->RegisterMesh(modelName, false, 0);
 	// instancingデータ作成
 	instancedBuffer_->Create(meshRegistry_->GetMeshes().at(modelName).get(),
-		modelName, kMaxInstanceNum);
+		modelName, Config::kMaxInstanceNum);
 }
 
 void InstancedMeshSystem::CreateSkinnedMesh(const std::string& modelName) {
 
 	// 最大instance数
-	const uint32_t kMaxInstanceNum = 64;
+	const uint32_t kMaxInstanceNum = 16;
 
 	// meshの作成、登録
 	meshRegistry_->RegisterMesh(modelName, true, kMaxInstanceNum);

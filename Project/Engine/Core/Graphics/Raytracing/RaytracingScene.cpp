@@ -26,11 +26,15 @@ void RaytracingScene::BuildBLASes(ID3D12GraphicsCommandList6* commandList, const
 
 			MeshKey key{ mesh, i };
 			auto& blas = blases_[key];
+
+			// まだ作成されていない場合は作成する
 			if (!blas.GetResource()) {
 
 				BuildRequest request{ mesh, i, mesh->IsSkinned() };
 				blas.Build(device_, commandList, request);
-			} else if (mesh->IsSkinned()) {
+			}
+			// skinnedMeshの場合は更新する
+			else if (mesh->IsSkinned()) {
 
 				// 更新処理
 				blas.Update(commandList);

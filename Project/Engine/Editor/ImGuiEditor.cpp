@@ -9,7 +9,7 @@
 #include <Engine/Asset/AssetEditor.h>
 #include <Engine/Editor/ImGuiInspector.h>
 #include <Engine/Editor/Manager/GameEditorManager.h>
-#include <Game/Time/GameTimer.h>
+#include <Engine/Utility/GameTimer.h>
 
 //============================================================================
 //	ImGuiEditor classMethods

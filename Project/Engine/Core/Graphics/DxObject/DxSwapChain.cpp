@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/DxDevice.h>
+#include <Engine/Core/Graphics/DxObject/DxDevice.h>
 #include <Engine/Core/Graphics/Descriptors/RTVDescriptor.h>
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Config.h>

@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Particle/ParticleEmitter.h>
-#include <Game/Time/GameTimer.h>
+#include <Engine/Utility/GameTimer.h>
 
 //============================================================================
 //	ParticleUpdater classMethods

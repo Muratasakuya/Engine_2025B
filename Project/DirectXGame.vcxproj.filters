@@ -65,13 +65,13 @@
     <ClCompile Include="Engine\Core\Graphics\Pipeline\PipelineState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\DxCommand.cpp">
+    <ClCompile Include="Engine\Core\Graphics\DxObject\DxCommand.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\DxDevice.cpp">
+    <ClCompile Include="Engine\Core\Graphics\DxObject\DxDevice.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\DxSwapChain.cpp">
+    <ClCompile Include="Engine\Core\Graphics\DxObject\DxSwapChain.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\PostProcess\RenderTexture.cpp">
@@ -134,16 +134,16 @@
     <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Manager\SceneManager.cpp">
+    <ClCompile Include="Engine\Scene\Manager\SceneManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Methods\IScene.cpp">
+    <ClCompile Include="Engine\Scene\Methods\IScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Methods\SceneFactory.cpp">
+    <ClCompile Include="Engine\Scene\Methods\SceneFactory.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Time\GameTimer.cpp">
+    <ClCompile Include="Engine\Utility\GameTimer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\External\ImGuiManager.cpp">
@@ -233,7 +233,7 @@
     <ClCompile Include="Game\Scene\GameScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Methods\SceneTransition.cpp">
+    <ClCompile Include="Engine\Scene\Methods\SceneTransition.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Object2D\SceneTransition\FadeTransition.cpp">
@@ -561,9 +561,9 @@
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxRootSignature.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\DxShaderCompiler.h" />
     <ClInclude Include="Engine\Core\Graphics\Pipeline\PipelineState.h" />
-    <ClInclude Include="Engine\Core\Graphics\DxCommand.h" />
-    <ClInclude Include="Engine\Core\Graphics\DxDevice.h" />
-    <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxObject\DxCommand.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxObject\DxDevice.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxObject\DxSwapChain.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\RenderTexture.h" />
     <ClInclude Include="Engine\Core\Graphics\PostProcess\ShadowMap.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\CBufferStructures.h" />
@@ -587,10 +587,10 @@
     <ClInclude Include="Game\Camera\GameCamera.h" />
     <ClInclude Include="Engine\Scene\Camera\LightViewCamera.h" />
     <ClInclude Include="Engine\Scene\Light\PunctualLight.h" />
-    <ClInclude Include="Game\Scene\Manager\SceneManager.h" />
-    <ClInclude Include="Game\Scene\Methods\IScene.h" />
-    <ClInclude Include="Game\Scene\Methods\SceneFactory.h" />
-    <ClInclude Include="Game\Time\GameTimer.h" />
+    <ClInclude Include="Engine\Scene\Manager\SceneManager.h" />
+    <ClInclude Include="Engine\Scene\Methods\IScene.h" />
+    <ClInclude Include="Engine\Scene\Methods\SceneFactory.h" />
+    <ClInclude Include="Engine\Utility\GameTimer.h" />
     <ClInclude Include="Engine\External\ImGuiManager.h" />
     <ClInclude Include="Engine\Editor\ImGuiEditor.h" />
     <ClInclude Include="Engine\Input\Input.h" />
@@ -624,7 +624,7 @@
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Game\Object2D\Base\ITransition.h" />
-    <ClInclude Include="Game\Scene\Methods\SceneTransition.h" />
+    <ClInclude Include="Engine\Scene\Methods\SceneTransition.h" />
     <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h" />
     <ClInclude Include="Game\Algorithm\StateTimer.h" />
     <ClInclude Include="Engine\Core\ECS\Components\MaterialComponent.h" />

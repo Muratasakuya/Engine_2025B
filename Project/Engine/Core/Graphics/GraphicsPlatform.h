@@ -3,8 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/DxDevice.h>
-#include <Engine/Core/Graphics/DxCommand.h>
+#include <Engine/Core/Graphics/DxObject/DxDevice.h>
+#include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Pipeline/DxShaderCompiler.h>
 
 // directX

@@ -3,9 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/Methods/IScene.h>
-#include <Game/Scene/Methods/SceneFactory.h>
-#include <Game/Scene/Methods/SceneTransition.h>
+#include <Engine/Scene/Methods/IScene.h>
+#include <Engine/Scene/Methods/SceneFactory.h>
+#include <Engine/Scene/Methods/SceneTransition.h>
 
 // c++
 #include <memory>

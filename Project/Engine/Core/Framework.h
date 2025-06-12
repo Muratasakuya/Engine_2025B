@@ -13,8 +13,8 @@
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 
 // scene
+#include <Engine/Scene/Manager/SceneManager.h>
 #include <Engine/Scene/SceneView.h>
-#include <Game/Scene/Manager/SceneManager.h>
 
 //============================================================================
 //	Framework class

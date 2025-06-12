@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/Methods/IScene.h>
+#include <Engine/Scene/Methods/IScene.h>
 #include <Game/Camera/GameCamera.h>
 
 // object

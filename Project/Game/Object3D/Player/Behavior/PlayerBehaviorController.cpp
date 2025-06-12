@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Input/Input.h>
-#include <Game/Time/GameTimer.h>
+#include <Engine/Utility/GameTimer.h>
 
 //============================================================================
 //	PlayerBehaviorController classMethods

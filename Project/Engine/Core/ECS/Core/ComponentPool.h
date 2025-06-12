@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
+#include <Engine/Config.h>
 
 // c++
 #include <cstdint>
@@ -126,8 +127,7 @@ template<class T, bool kMultiple>
 inline ComponentPool<T, kMultiple>::ComponentPool() {
 
 	// 最初に最大数を確保、これ以降は禁止
-	const size_t maxEntities = 0xffff;
-	data_.reserve(maxEntities);
+	data_.reserve(Config::kMaxInstanceNum);
 }
 
 template<class T, bool kMultiple>

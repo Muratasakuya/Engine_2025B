@@ -441,9 +441,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Debug\Assert.cpp" />
     <ClCompile Include="Engine\Core\Debug\Logger.cpp" />
     <ClCompile Include="Engine\Core\Framework.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\DxCommand.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\DxDevice.cpp" />
-    <ClCompile Include="Engine\Core\Graphics\DxSwapChain.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\DxObject\DxCommand.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\DxObject\DxDevice.cpp" />
+    <ClCompile Include="Engine\Core\Graphics\DxObject\DxSwapChain.cpp" />
     <ClCompile Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.cpp" />
     <ClCompile Include="Engine\External\ImGuiManager.cpp">
       <SubType>
@@ -598,10 +598,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Scene\Manager\SceneManager.cpp" />
-    <ClCompile Include="Game\Scene\Methods\IScene.cpp" />
-    <ClCompile Include="Game\Scene\Methods\SceneFactory.cpp" />
-    <ClCompile Include="Game\Scene\Methods\SceneTransition.cpp">
+    <ClCompile Include="Engine\Scene\Manager\SceneManager.cpp" />
+    <ClCompile Include="Engine\Scene\Methods\IScene.cpp" />
+    <ClCompile Include="Engine\Scene\Methods\SceneFactory.cpp" />
+    <ClCompile Include="Engine\Scene\Methods\SceneTransition.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -609,7 +609,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Time\GameTimer.cpp" />
+    <ClCompile Include="Engine\Utility\GameTimer.cpp" />
     <ClCompile Include="Lib\Adapter\Easing.cpp" />
     <ClCompile Include="Lib\Adapter\JsonAdapter.cpp" />
     <ClCompile Include="Lib\Adapter\RandomGenerator.cpp">
@@ -906,9 +906,9 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
     <ClInclude Include="Engine\Core\Debug\Logger.h" />
     <ClInclude Include="Engine\Core\Framework.h" />
-    <ClInclude Include="Engine\Core\Graphics\DxCommand.h" />
-    <ClInclude Include="Engine\Core\Graphics\DxDevice.h" />
-    <ClInclude Include="Engine\Core\Graphics\DxSwapChain.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxObject\DxCommand.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxObject\DxDevice.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxObject\DxSwapChain.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.h" />
     <ClInclude Include="Engine\External\ImGuiManager.h">
       <SubType>
@@ -1106,10 +1106,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Scene\Manager\SceneManager.h" />
-    <ClInclude Include="Game\Scene\Methods\IScene.h" />
-    <ClInclude Include="Game\Scene\Methods\SceneFactory.h" />
-    <ClInclude Include="Game\Scene\Methods\SceneTransition.h">
+    <ClInclude Include="Engine\Scene\Manager\SceneManager.h" />
+    <ClInclude Include="Engine\Scene\Methods\IScene.h" />
+    <ClInclude Include="Engine\Scene\Methods\SceneFactory.h" />
+    <ClInclude Include="Engine\Scene\Methods\SceneTransition.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -1117,7 +1117,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Time\GameTimer.h" />
+    <ClInclude Include="Engine\Utility\GameTimer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
     <ClInclude Include="Lib\Adapter\RandomGenerator.h" />

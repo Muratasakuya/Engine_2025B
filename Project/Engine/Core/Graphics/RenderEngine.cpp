@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
-#include <Engine/Core/Graphics/DxCommand.h>
+#include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Particle/ParticleSystem.h>
@@ -164,6 +164,31 @@ void RenderEngine::Rendering(ViewType type) {
 	EndRenderTarget(renderTextures_[type].get());
 }
 
+void RenderEngine::Renderers(ViewType type) {
+
+	// 再設定
+	// srvDescriptorHeap設定
+	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
+
+	// sprite描画、postPrecess適用
+	// model描画前
+	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PreModel, sceneBuffer_.get(), dxCommand_);
+
+	// line描画実行
+	LineRenderer::GetInstance()->ExecuteLine(static_cast<bool>(type));
+
+	// 通常描画処理
+	meshRenderer_->Rendering(static_cast<bool>(type), sceneBuffer_.get(), dxCommand_);
+
+	// particle描画
+	ParticleSystem::GetInstance()->Rendering(static_cast<bool>(type),
+		sceneBuffer_.get(), dxCommand_->GetCommandList());
+
+	// sprite描画、postPrecess適用
+	// model描画後
+	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PostModel, sceneBuffer_.get(), dxCommand_);
+}
+
 void RenderEngine::BeginRenderFrameBuffer() {
 
 	const RenderTarget renderTarget = dxSwapChain_->GetRenderTarget();
@@ -202,27 +227,6 @@ void RenderEngine::EndRenderFrameBuffer() {
 	// Present -> RenderTarget
 	dxCommand_->TransitionBarriers({ dxSwapChain_->GetCurrentResource() },
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
-}
-
-void RenderEngine::Renderers(ViewType type) {
-
-	// sprite描画、postPrecess適用
-	// model描画前
-	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PreModel, sceneBuffer_.get(), dxCommand_);
-
-	// line描画実行
-	LineRenderer::GetInstance()->ExecuteLine(static_cast<bool>(type));
-
-	// 通常描画処理
-	meshRenderer_->Rendering(static_cast<bool>(type), sceneBuffer_.get(), dxCommand_);
-
-	// particle描画
-	ParticleSystem::GetInstance()->Rendering(static_cast<bool>(type),
-		sceneBuffer_.get(), dxCommand_->GetCommandList());
-
-	// sprite描画、postPrecess適用
-	// model描画後
-	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PostModel, sceneBuffer_.get(), dxCommand_);
 }
 
 void RenderEngine::BeginRenderTarget(RenderTexture* renderTexture) {

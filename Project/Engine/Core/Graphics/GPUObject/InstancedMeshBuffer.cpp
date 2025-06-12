@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
-#include <Engine/Core/Graphics/DxCommand.h>
+#include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Lib/MathUtils/Algorithm.h>
 

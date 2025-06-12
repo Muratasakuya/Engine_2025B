@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Object3D/Player/Parts/Base/BasePlayerParts.h>
-#include <Game/Time/GameTimer.h>
+#include <Engine/Utility/GameTimer.h>
 
 //============================================================================
 //	BodyWaitBehavior classMethods

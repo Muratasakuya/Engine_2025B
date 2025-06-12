@@ -11,7 +11,7 @@
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Config.h>
-#include <Game/Time/GameTimer.h>
+#include <Engine/Utility/GameTimer.h>
 
 //============================================================================
 //	Framework classMethods

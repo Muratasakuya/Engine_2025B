@@ -10,7 +10,7 @@
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/Creators/ParticleCreator.h>
 #include <Engine/Particle/Updater/ParticleUpdater.h>
-#include <Game/Time/GameTimer.h>
+#include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
