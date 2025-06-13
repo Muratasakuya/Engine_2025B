@@ -57,11 +57,11 @@ void GraphicsPlatform::InitDXDevice() {
 	}
 
 	// shaderModelのチェック
-	D3D12_FEATURE_DATA_SHADER_MODEL shaderModel = { D3D_SHADER_MODEL_6_5 };
+	D3D12_FEATURE_DATA_SHADER_MODEL shaderModel = { D3D_SHADER_MODEL_6_6 };
 	auto hr = dxDevice_->Get()->CheckFeatureSupport(D3D12_FEATURE_SHADER_MODEL, &shaderModel, sizeof(shaderModel));
-	if (FAILED(hr) || (shaderModel.HighestShaderModel < D3D_SHADER_MODEL_6_5)) {
+	if (FAILED(hr) || (shaderModel.HighestShaderModel < D3D_SHADER_MODEL_6_6)) {
 
-		ASSERT(FALSE, "shaderModel 6.5 is not supported");
+		ASSERT(FALSE, "shaderModel 6.6 is not supported");
 	}
 
 	// meshShaderに対応しているかチェック
