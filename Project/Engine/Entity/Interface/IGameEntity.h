@@ -32,9 +32,15 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	/*---------- setter ----------*/
+
+	void SetIdentifier(const std::string& identifier) { identifier_ = identifier; }
+
 	/*---------- getter ----------*/
 
 	const TagComponent& GetTag() const { return *tag_; }
+
+	const std::string& GetIdentifier() const { return identifier_; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -48,6 +54,9 @@ protected:
 	uint32_t entityId_;
 	// tag
 	TagComponent* tag_;
+
+	// 序列関係なしの名前
+	std::string identifier_;
 
 	// imgui
 	const float itemWidth_ = 224.0f;

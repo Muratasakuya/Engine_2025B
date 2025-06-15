@@ -27,7 +27,11 @@ void GameScene::Load() {
 	asset_->LoadModel("playerSword");
 
 	// environment
-	asset_->LoadModel("stageField");
+	asset_->LoadModel("field");
+	asset_->LoadModel("fence");
+	asset_->LoadModel("loftNurbs");
+	asset_->LoadModel("rustyMetal");
+	asset_->LoadModel("wall");
 }
 
 void GameScene::Init() {
@@ -72,6 +76,8 @@ void GameScene::Init() {
 	//	initObject
 	//========================================================================
 
+	//ECSManager::GetInstance()->CreateSkybox("kloppenheim_02_puresky_2k");
+
 	player_ = std::make_unique<Player>();
 	player_->Init(followCamera_.get());
 
@@ -79,21 +85,12 @@ void GameScene::Init() {
 	followCamera_->SetTarget(player_->GetTransform());
 	followCamera_->FirstUpdate();
 
-	// entityEditor
+	// editor
 	entityEditor_ = std::make_unique<GameEntityEditor>();
 	entityEditor_->Init(asset_);
 
-	// 仮の地面
-	uint32_t id = ECSManager::GetInstance()->CreateObject3D("stageField", "field", "Environment");
-	auto transform = ECSManager::GetInstance()->GetComponent<Transform3DComponent>(id);
-	transform->translation.y = -0.8f;
-	transform->scale.x = 128.0f;
-	transform->scale.z = 128.0f;
-	auto material = ECSManager::GetInstance()->GetComponent<MaterialComponent, true>(id);
-	material->front().uvMatrix = Matrix4x4::MakeAffineMatrix(Vector3(24.0f, 24.0f, 0.0f),
-		Vector3::AnyInit(0.0f), Vector3::AnyInit(0.0f));
-
-	ECSManager::GetInstance()->CreateSkybox("kloppenheim_02_puresky_2k");
+	levelEditor_ = std::make_unique<LevelEditor>();
+	levelEditor_->Init();
 }
 
 void GameScene::Update() {
@@ -102,8 +99,9 @@ void GameScene::Update() {
 
 	player_->Update();
 
-	// entityEditor
+	// editor
 	entityEditor_->Update();
+	levelEditor_->Update();
 }
 
 void GameScene::ImGui() {
