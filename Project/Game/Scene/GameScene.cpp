@@ -17,9 +17,6 @@ void GameScene::Load() {
 	// cubeMap、.dds
 	asset_->LoadTexture("overcast_soil_puresky_4k");
 
-	// lut
-	asset_->LoadLutTexture("lut_cool");
-
 	// player
 	asset_->LoadModel("playerBody");
 	asset_->LoadModel("playerLeftHand");
@@ -46,12 +43,8 @@ void GameScene::Init() {
 	//	postProcess
 	//========================================================================
 
-	postProcessSystem_->Create({ 
-		PostProcessType::Bloom,PostProcessType::Lut });
+	postProcessSystem_->Create({ PostProcessType::Bloom });
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
-	postProcessSystem_->AddProcess(PostProcessType::Lut);
-
-	postProcessSystem_->InputProcessTexture("lut_cool", PostProcessType::Lut, asset_);
 
 	//========================================================================
 	//	sceneObject
