@@ -4,16 +4,20 @@
         {
             "type": "LIGHT",
             "name": "Light",
+            "entity_flag": false,
+            "entity_type": "None",
+            "modelName": "Light",
             "transform": {
                 "translation": [
                     4.076245307922363,
                     1.0054539442062378,
-                    5.903861999511719
+                    51.736427307128906
                 ],
-                "rotation": [
-                    37.26104736328125,
-                    3.1637091636657715,
-                    106.93632507324219
+                "rotation_quaternion": [
+                    0.16907574236392975,
+                    0.27217137813568115,
+                    0.7558803558349609,
+                    0.570947527885437
                 ],
                 "scaling": [
                     1.0,
@@ -25,16 +29,20 @@
         {
             "type": "CAMERA",
             "name": "Camera",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "Camera",
             "transform": {
                 "translation": [
                     7.358891487121582,
                     -6.925790786743164,
                     4.958309173583984
                 ],
-                "rotation": [
-                    63.559295654296875,
-                    2.2983238068263745e-07,
-                    46.69194412231445
+                "rotation_quaternion": [
+                    0.483536034822464,
+                    0.20870360732078552,
+                    0.33687159419059753,
+                    0.7804827094078064
                 ],
                 "scaling": [
                     1.0,
@@ -45,38 +53,321 @@
         },
         {
             "type": "MESH",
-            "name": "suzanne",
+            "name": "field_0",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "field",
             "transform": {
                 "translation": [
-                    -7.751046180725098,
-                    13.914539337158203,
-                    5.1974616050720215
+                    -1.4497506618499756,
+                    2.4234275817871094,
+                    -0.6536014080047607
                 ],
-                "rotation": [
-                     -6.10371732711792,
-                    6.10371732711792,
-                    36.0
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.7061486840248108,
+                    0.7080636620521545
                 ],
                 "scaling": [
-                    3.0,
-                    3.0,
-                    3.0
+                    63.999996185302734,
+                    63.999996185302734,
+                    1.0
                 ]
             }
         },
         {
             "type": "MESH",
-            "name": "cube",
+            "name": "rustyMetal_1",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "rustyMetal",
             "transform": {
                 "translation": [
-                    5.443110466003418,
-                    11.725944519042969,
-                    1.1655884981155396
+                    61.72159957885742,
+                    65.44306182861328,
+                    0.3095686435699463
                 ],
-                "rotation": [
+                "rotation_quaternion": [
                     0.0,
                     0.0,
-                    0.0
+                    0.7061486840248108,
+                    0.7080636620521545
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    0.9999999403953552,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "rustyMetal_0",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "rustyMetal",
+            "transform": {
+                "translation": [
+                    -65.40691375732422,
+                    -61.23390579223633,
+                    0.3095686435699463
+                ],
+                "rotation_quaternion": [
+                    -0.0,
+                    -0.0,
+                    -0.708063542842865,
+                    0.7061488032341003
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    0.9999999403953552,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "fence_2",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "fence",
+            "transform": {
+                "translation": [
+                    -50.32228088378906,
+                    63.95145797729492,
+                    0.44116854667663574
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.7061486840248108,
+                    0.7080636620521545
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    0.9999999403953552,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "fence_1",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "fence",
+            "transform": {
+                "translation": [
+                    49.251121520996094,
+                    -59.463905334472656,
+                    0.44116854667663574
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.7061486840248108,
+                    0.7080636620521545
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    0.9999999403953552,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "loftNurbs_1",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "loftNurbs",
+            "transform": {
+                "translation": [
+                    56.38206481933594,
+                    20.88064193725586,
+                    0.3049405813217163
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.7061486840248108,
+                    0.7080636620521545
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    0.9999999403953552,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "loftNurbs_0",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "loftNurbs",
+            "transform": {
+                "translation": [
+                    -64.233642578125,
+                    -37.42880630493164,
+                    0.3049405813217163
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.7061486840248108,
+                    0.7080636620521545
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    0.9999999403953552,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wall_0",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "wall",
+            "transform": {
+                "translation": [
+                    -10.968029022216797,
+                    64.69336700439453,
+                    4.154030799865723
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.7061486840248108,
+                    0.7080636620521545
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    25.644596099853516,
+                    3.200000047683716
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wall_1",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "wall",
+            "transform": {
+                "translation": [
+                    7.616310119628906,
+                    -59.53202438354492,
+                    4.154030799865723
+                ],
+                "rotation_quaternion": [
+                    -0.0,
+                    -0.0,
+                    -0.708063542842865,
+                    0.7061488032341003
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    25.644596099853516,
+                    3.200000047683716
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wall_2",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "wall",
+            "transform": {
+                "translation": [
+                    59.87060546875,
+                    -17.79500961303711,
+                    4.154030799865723
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    -0.001354157691821456,
+                    0.9999991059303284
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    37.860877990722656,
+                    3.200000047683716
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wall_3",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "wall",
+            "transform": {
+                "translation": [
+                    -63.799739837646484,
+                    23.395294189453125,
+                    4.154030799865723
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.9999991059303284,
+                    0.0013540544314309955
+                ],
+                "scaling": [
+                    0.9999999403953552,
+                    37.860877990722656,
+                    3.200000047683716
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "平面",
+            "entity_flag": false,
+            "entity_type": "None",
+            "modelName": "平面",
+            "transform": {
+                "translation": [
+                    0.0,
+                    0.0,
+                    32.0
+                ],
+                "rotation_quaternion": [
+                    3.0908619663705394e-08,
+                    0.7071067690849304,
+                    0.7071067690849304,
+                    3.0908619663705394e-08
+                ],
+                "scaling": [
+                    4.0,
+                    4.0,
+                    12.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "立方体",
+            "entity_flag": false,
+            "entity_type": "None",
+            "modelName": "立方体",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -16.0,
+                    1.600000023841858
+                ],
+                "rotation_quaternion": [
+                    3.0908619663705394e-08,
+                    0.7071067690849304,
+                    0.7071067690849304,
+                    3.0908619663705394e-08
                 ],
                 "scaling": [
                     1.0,
@@ -87,43 +378,101 @@
         },
         {
             "type": "MESH",
-            "name": "bricks",
+            "name": "Sphere.001",
+            "entity_flag": false,
+            "entity_type": "None",
+            "modelName": "Sphere.",
             "transform": {
                 "translation": [
-                    -8.52841567993164,
-                    14.669806480407715,
-                    -3.227881669998169
+                    1.072849988937378,
+                    -16.0,
+                    1.4650685787200928
                 ],
-                "rotation": [
-                    0.0,
-                    0.0,
-                   0.0
+                "rotation_quaternion": [
+                    3.0908619663705394e-08,
+                    0.7071067690849304,
+                    0.7071067690849304,
+                    3.0908619663705394e-08
                 ],
                 "scaling": [
-                    4.0,
-                    4.0,
-                    4.0
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             }
         },
         {
             "type": "MESH",
-            "name": "teapot",
+            "name": "Sphere.002",
+            "entity_flag": false,
+            "entity_type": "None",
+            "modelName": "Sphere.",
             "transform": {
                 "translation": [
-                    7.291501998901367,
-                    11.957317352294922,
-                    6.244607925415039
+                    -1.072849988937378,
+                    -16.0,
+                    1.4650685787200928
                 ],
-                "rotation": [
-                   0.0,
-                   0.0,
-                   0.0
+                "rotation_quaternion": [
+                    3.0908619663705394e-08,
+                    0.7071067690849304,
+                    0.7071067690849304,
+                    3.0908619663705394e-08
                 ],
                 "scaling": [
-                    2.0,
-                    2.0,
-                    2.0
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "平面.003",
+            "entity_flag": false,
+            "entity_type": "None",
+            "modelName": "平面.",
+            "transform": {
+                "translation": [
+                    1.9282509088516235,
+                    -16.0,
+                    2.1580851078033447
+                ],
+                "rotation_quaternion": [
+                    3.0908619663705394e-08,
+                    0.7071067690849304,
+                    0.7071067690849304,
+                    3.0908619663705394e-08
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "平面.001",
+            "entity_flag": false,
+            "entity_type": "None",
+            "modelName": "平面.",
+            "transform": {
+                "translation": [
+                    -1.9318541288375854,
+                    -16.0,
+                    2.1580851078033447
+                ],
+                "rotation_quaternion": [
+                    3.0908619663705394e-08,
+                    0.7071067690849304,
+                    0.7071067690849304,
+                    3.0908619663705394e-08
+                ],
+                "scaling": [
+                    1.0,
+                    1.0,
+                    1.0
                 ]
             }
         }

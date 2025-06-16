@@ -74,7 +74,8 @@ public:
 	float phongRefShininess;
 	Vector3 specularColor;
 
-	// 影倍率(0.0fで真っ黒な影、1.0fで影無し)
+	// 影
+	int32_t castShadow;
 	float shadowRate;
 
 	// 環境マップ

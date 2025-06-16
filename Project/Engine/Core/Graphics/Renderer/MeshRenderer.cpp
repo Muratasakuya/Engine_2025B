@@ -86,9 +86,26 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	// commandList取得
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
+	const auto& skyBoxSystem = ECSManager::GetInstance()->GetSystem<SkyboxRenderSystem>();
+
+	// 作成されていなかったら早期リターン
+	if (skyBoxSystem->IsCreated()) {
+
+		// skybox描画
+		// pipeline設定
+		commandList->SetGraphicsRootSignature(skyboxPipeline_->GetRootSignature());
+		commandList->SetPipelineState(skyboxPipeline_->GetGraphicsPipeline());
+
+		// viewPro
+		sceneBuffer->SetViewProCommand(debugEnable, commandList, 1);
+		// texture
+		commandList->SetGraphicsRootDescriptorTable(2,
+			srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
+		skyBoxSystem->Render(commandList);
+	}
+
 	// 描画情報取得
 	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
-	const auto& skyBoxSystem = ECSManager::GetInstance()->GetSystem<SkyboxRenderSystem>();
 	MeshCommandContext commandContext{};
 
 	const auto& meshes = ecsSystem->GetMeshes();
@@ -183,21 +200,4 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 #endif
 		}
 	}
-
-	// 作成されていなかったら早期リターン
-	if (!skyBoxSystem->IsCreated()) {
-		return;
-	}
-
-	// skybox描画
-	// pipeline設定
-	commandList->SetGraphicsRootSignature(skyboxPipeline_->GetRootSignature());
-	commandList->SetPipelineState(skyboxPipeline_->GetGraphicsPipeline());
-
-	// viewPro
-	sceneBuffer->SetViewProCommand(debugEnable, commandList, 1);
-	// texture
-	commandList->SetGraphicsRootDescriptorTable(2,
-		srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
-	skyBoxSystem->Render(commandList);
 }

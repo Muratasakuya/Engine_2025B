@@ -22,6 +22,7 @@ void MaterialComponent::InitParameter() {
 	enableHalfLambert = true;
 	enableBlinnPhongReflection = false;
 	enableImageBasedLighting = false;
+	castShadow = true;
 	environmentCoefficient = 0.25f;
 	shadowRate = 0.25f;
 	phongRefShininess = 1.0f;
@@ -99,6 +100,7 @@ void MaterialComponent::ImGui(float itemSize) {
 		ImGui::DragFloat("environmentCoefficient", &environmentCoefficient, 0.001f, 0.0f, 4.0f);
 	}
 
+	ImGui::SliderInt("castShadow", &castShadow, 0, 1);
 	ImGui::DragFloat("shadowRate", &shadowRate, 0.01f, 0.0f, 8.0f);
 	ImGui::PopItemWidth();
 }
@@ -115,6 +117,7 @@ void MaterialComponent::ToJson(Json& data) {
 	data["enableHalfLambert"] = enableHalfLambert;
 	data["enableBlinnPhongReflection"] = enableBlinnPhongReflection;
 	data["enableImageBasedLighting"] = enableImageBasedLighting;
+	data["castShadow"] = castShadow;
 	data["phongRefShininess"] = phongRefShininess;
 	data["specularColor"] = specularColor.ToJson();
 	data["shadowRate"] = shadowRate;
@@ -132,16 +135,16 @@ void MaterialComponent::FromJson(const Json& data) {
 	// color
 	color = JsonAdapter::ToObject<Color>(data["color"]);
 	emissionColor = JsonAdapter::ToObject<Vector3>(data["emissionColor"]);
-	emissiveIntensity = data["emissiveIntensity"];
+	emissiveIntensity = JsonAdapter::GetValue<float>(data, "emissiveIntensity");
 	// lighting
-	enableLighting = data["enableLighting"];
-	enableHalfLambert = data["enableHalfLambert"];
-	enableBlinnPhongReflection = data["enableBlinnPhongReflection"];
-	enableBlinnPhongReflection = data["enableBlinnPhongReflection"];
-	enableImageBasedLighting = JsonAdapter::GetValue<bool>(data, "enableImageBasedLighting");
-	phongRefShininess = data["phongRefShininess"];
+	enableLighting = JsonAdapter::GetValue<int32_t>(data, "enableLighting");
+	enableHalfLambert = JsonAdapter::GetValue<int32_t>(data, "enableHalfLambert");
+	enableBlinnPhongReflection = JsonAdapter::GetValue<int32_t>(data, "enableBlinnPhongReflection");
+	enableImageBasedLighting = JsonAdapter::GetValue<int32_t>(data, "enableImageBasedLighting");
+	castShadow = JsonAdapter::GetValue<int32_t>(data, "castShadow");
+	phongRefShininess = JsonAdapter::GetValue<float>(data, "phongRefShininess");
 	specularColor = JsonAdapter::ToObject<Vector3>(data["specularColor"]);
-	shadowRate = data["shadowRate"];
+	shadowRate = JsonAdapter::GetValue<float>(data, "shadowRate");
 	environmentCoefficient = JsonAdapter::GetValue<float>(data, "environmentCoefficient");
 
 	// UV

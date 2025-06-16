@@ -90,15 +90,17 @@ std::vector<RayTracingInstance> InstancedMeshSystem::CollectRTInstances(const Ra
 		const MeshInstancingData& instData = instIt->second;
 		const uint32_t subMeshCount = meshPtr->GetMeshCount();
 		const size_t numInst = instData.matrixUploadData.size();
+		const std::vector<std::vector<LightingForGPU>>& lightingData = instData.lightingUploadData;
 		for (uint32_t j = 0; j < numInst; ++j) {
 
 			const Matrix4x4& world = instData.matrixUploadData[j].world;
 			for (uint32_t sub = 0; sub < subMeshCount; ++sub) {
 
 				RayTracingInstance instance{};
+				const LightingForGPU& lighting = lightingData[sub][j];
 				instance.matrix = world;
 				instance.instanceID = ++instanceCounter;
-				instance.mask = 0xFF;
+				instance.mask = lighting.castShadow ? 0xFF : 0x01;
 				instance.hitGroupIdx = 0;
 				instance.flags = 0;
 

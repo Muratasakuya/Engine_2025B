@@ -509,10 +509,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Editor\LevelEditor.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
+    <ClCompile Include="Game\Editor\LevelEditor\LevelEditor.cpp" />
+    <ClCompile Include="Game\Editor\LevelEditor\SceneBuilder.cpp" />
     <ClCompile Include="Game\Object2D\SceneTransition\FadeTransition.cpp">
       <SubType>
       </SubType>
@@ -895,10 +893,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Algorithm\StateTimer.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Engine\Core\ECS\Components\TransformComponent.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InputAssembler.h" />
@@ -976,14 +970,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Editor\LevelEditor.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Object2D\Base\ITransition.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="Game\Editor\LevelEditor\LevelEditor.h" />
+    <ClInclude Include="Game\Editor\LevelEditor\LevelStructures.h" />
+    <ClInclude Include="Game\Editor\LevelEditor\SceneBuilder.h" />
+    <ClInclude Include="Game\Object2D\Base\ITransition.h" />
     <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h">
       <SubType>
       </SubType>
@@ -992,7 +982,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Base\IPlayerBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyDashAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyDashBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\BodyFirstAttackBehavior.h" />
@@ -1082,22 +1071,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Parts\PlayerLeftSword.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Parts\PlayerPartsController.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Parts\PlayerRightHand.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Object3D\Player\Parts\PlayerRightSword.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerLeftSword.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerPartsController.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerRightHand.h" />
+    <ClInclude Include="Game\Object3D\Player\Parts\PlayerRightSword.h" />
     <ClInclude Include="Game\Object3D\Player\Player.h">
       <SubType>
       </SubType>

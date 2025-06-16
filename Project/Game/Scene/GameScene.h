@@ -15,7 +15,7 @@
 
 // editor
 #include <Game/Editor/GameEntityEditor.h>
-#include <Game/Editor/LevelEditor.h>
+#include <Game/Editor/LevelEditor/LevelEditor.h>
 
 //============================================================================
 //	GameScene class

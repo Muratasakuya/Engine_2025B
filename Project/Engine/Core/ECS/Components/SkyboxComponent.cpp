@@ -91,13 +91,11 @@ void SkyboxComponent::CreateCBuffer(ID3D12Device* device, uint32_t textureIndex)
 	// cBufferに渡す値の初期化
 	transform_.Init();
 	// 初期化値で320.0fにスケーリング
-	const float scale = 320.0f;
+	const float scale = 400.0f;
 	transform_.scale = Vector3::AnyInit(scale);
-	// Y座標は64.0f
-	transform_.translation.y = 64.0f;
 	transform_.UpdateMatrix();
 
-	material_.color = Color::White();
+	material_.color = Color::Convert(0x474747ff);
 	material_.textureIndex = textureIndex;
 
 	uvTransform_.scale = Vector3::AnyInit(1.0f);
