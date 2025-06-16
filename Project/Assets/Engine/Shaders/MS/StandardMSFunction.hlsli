@@ -28,6 +28,7 @@ struct Lighting {
 	int enableHalfLambert;
 	int enableBlinnPhongReflection;
 	int enableImageBasedLighting;
+	int castShadow;
 	
 	float shininess;
 	float3 specularColor;
@@ -152,11 +153,11 @@ bool IsShadowed(float3 origin) {
 	rayDesc.Direction = -directionalLight.direction;
 	rayDesc.TMin = rayMin;
 	rayDesc.TMax = rayMax;
-	
+		
 	// createRayQueryObject
 	RayQuery < 0 > rayQuery;
 	// executeRay
-	rayQuery.TraceRayInline(gScene, 0, 0xFF, rayDesc);
+	rayQuery.TraceRayInline(gScene, 0, 0xFE, rayDesc);
 	
 	while (rayQuery.Proceed()) {
 	}

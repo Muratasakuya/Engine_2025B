@@ -2,7 +2,7 @@ EngineInformation:     [StartLogginig]
 EngineInformation:     Use Adapter:NVIDIA GeForce RTX 3060 Laptop GPU
 
 EngineInformation:     12.2
-EngineInformation:     load texture: kloppenheim_02_puresky_2k
+EngineInformation:     load texture: overcast_soil_puresky_4k
 EngineInformation:     load texture: lut_cool
 EngineInformation:     load texture: white
 EngineInformation:     load model: playerBody

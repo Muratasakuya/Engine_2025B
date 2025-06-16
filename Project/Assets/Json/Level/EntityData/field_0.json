@@ -1,0 +1,44 @@
+{
+    "Material0": {
+        "castShadow": 0,
+        "color": {
+            "a": 1.0,
+            "b": 0.9666271805763245,
+            "g": 1.0,
+            "r": 0.8553845882415771
+        },
+        "emissionColor": {
+            "x": 0.589699387550354,
+            "y": 0.9630769491195679,
+            "z": 0.8355540633201599
+        },
+        "emissiveIntensity": -0.23999999463558197,
+        "enableBlinnPhongReflection": 0,
+        "enableHalfLambert": 1,
+        "enableImageBasedLighting": 1,
+        "enableLighting": 1,
+        "environmentCoefficient": 0.23999999463558197,
+        "phongRefShininess": 1.0,
+        "shadowRate": 0.5400000214576721,
+        "specularColor": {
+            "x": 1.0,
+            "y": 1.0,
+            "z": 1.0
+        },
+        "uvRotate": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
+        "uvScale": {
+            "x": 4.0,
+            "y": 4.0,
+            "z": 1.0
+        },
+        "uvTranslate": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        }
+    }
+}

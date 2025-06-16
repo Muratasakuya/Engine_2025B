@@ -48,6 +48,7 @@ struct LightingForGPU {
 	int32_t enableHalfLambert;
 	int32_t enableBlinnPhongReflection;
 	int32_t enableImageBasedLighting;
+	int32_t castShadow;
 
 	float phongRefShininess;
 	Vector3 specularColor;

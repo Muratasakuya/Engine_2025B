@@ -26,7 +26,7 @@ public:
 	SceneBuilder() = default;
 	~SceneBuilder() = default;
 
-	void Init();
+	void Init(const std::string& jsonPath);
 
 	void CreateEntitiesMap(std::unordered_map<Level::EntityType,
 		std::vector<std::unique_ptr<GameEntity3D>>>& entitiesMap);
@@ -37,6 +37,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetFile(const std::string& sceneFile);
+
 	bool IsCreate() const { return fileName_.has_value(); }
 private:
 	//========================================================================
@@ -45,6 +47,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	std::string jsonPath_;
+
 	// 追加するときのファイル名
 	std::optional<std::string> fileName_;
 
@@ -52,11 +56,13 @@ private:
 	bool idDeleteOnSameName_;
 
 	// editor
-	ImVec2 buttonSize_; // ボタンサイズ
+	ImVec2 leftChildSize_; // 左側
+	ImVec2 buttonSize_;    // ボタンサイズ
 
 	//--------- functions ----------------------------------------------------
 
-	// jsonファイル受け取り
+	// json
+	Json LoadEntityFile(const std::string& identifier);
 	void RecieveFile();
 
 	// helper
@@ -73,4 +79,5 @@ private:
 		const std::string& identifier);
 
 	void ApplyTransform(GameEntity3D& entity, const Json& obj);
+	void ApplyMaterial(GameEntity3D& entity, const Json& data);
 };

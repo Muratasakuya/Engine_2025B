@@ -64,6 +64,27 @@ void GameEntity3D::ImGui() {
 	ImGui::PopItemWidth();
 }
 
+void GameEntity3D::ApplyMaterial(const Json& data) {
+
+	for (uint32_t meshIndex = 0; meshIndex < static_cast<uint32_t>((*materials_).size()); ++meshIndex) {
+
+		(*materials_)[meshIndex].FromJson(data[GetIndexLabel("Material", meshIndex)]);
+	}
+}
+
+void GameEntity3D::SaveMaterial(Json& data) {
+
+	for (uint32_t meshIndex = 0; meshIndex < static_cast<uint32_t>((*materials_).size()); ++meshIndex) {
+
+		(*materials_)[meshIndex].ToJson(data[GetIndexLabel("Material", meshIndex)]);
+	}
+}
+
+std::string GameEntity3D::GetIndexLabel(const std::string& label, uint32_t index) const {
+
+	return label + std::to_string(index);
+}
+
 void GameEntity3D::TransformImGui() {
 
 	transform_->ImGui(itemWidth_);

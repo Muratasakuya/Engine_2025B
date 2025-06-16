@@ -10,11 +10,30 @@
 //	SceneBuilder classMethods
 //============================================================================
 
-void SceneBuilder::Init() {
+void SceneBuilder::Init(const std::string& jsonPath) {
+
+	jsonPath_ = jsonPath;
 
 	idDeleteOnSameName_ = true;
 
+	leftChildSize_ = ImVec2(320.0f, 320.0f);
 	buttonSize_ = ImVec2(256.0f, 32.0f);
+}
+
+void SceneBuilder::ImGui() {
+
+	// layout
+	ImGui::BeginGroup();
+
+	// jsonファイル受け取り
+	ImGui::BeginChild("RecieveChild##SceneBuilder", leftChildSize_, true);
+	ImGui::SeparatorText("Recieve File");
+
+	RecieveFile();
+	ImGui::EndChild();
+
+	// 横並びにする
+	ImGui::SameLine();
 }
 
 void SceneBuilder::CreateEntitiesMap(std::unordered_map<Level::EntityType,
@@ -68,6 +87,9 @@ void SceneBuilder::BuildEntities(const Json& obj,
 
 		// transform反映
 		ApplyTransform(*newEntity, obj);
+		// material反映
+		Json materialData = LoadEntityFile(identifier);
+		ApplyMaterial(*newEntity, materialData);
 
 		// 登録
 		entities.emplace_back(std::move(newEntity));
@@ -80,6 +102,18 @@ void SceneBuilder::BuildEntities(const Json& obj,
 			BuildEntities(child, entitiesMap);
 		}
 	}
+}
+
+Json SceneBuilder::LoadEntityFile(const std::string& identifier) {
+
+	Json data;
+	if (!JsonAdapter::LoadCheck(jsonPath_ + identifier + ".json", data)) {
+
+		// 読み込めなかった場合空のJsonを返す
+		return Json();
+	}
+
+	return data;
 }
 
 void SceneBuilder::HandleDuplicateEntity(std::vector<std::unique_ptr<GameEntity3D>>& entities,
@@ -105,8 +139,8 @@ std::unique_ptr<GameEntity3D> SceneBuilder::CreateEntity(
 }
 
 std::unique_ptr<GameEntity3D> SceneBuilder::CreateEntityPtr(Level::EntityType entityType) {
-	
-	switch (entityType){
+
+	switch (entityType) {
 	case Level::EntityType::None: {
 
 		return std::make_unique<GameEntity3D>();
@@ -147,15 +181,26 @@ void SceneBuilder::ApplyTransform(GameEntity3D& entity, const Json& obj) {
 	}
 }
 
+void SceneBuilder::ApplyMaterial(GameEntity3D& entity, const Json& data) {
+
+	// 空の場合処理しない
+	if (data.empty()) {
+		return;
+	}
+	
+	entity.ApplyMaterial(data);
+}
+
 void SceneBuilder::Reset() {
 
 	fileName_ = std::nullopt;
 }
 
-void SceneBuilder::ImGui() {
+void SceneBuilder::SetFile(const std::string& sceneFile) {
 
-	// jsonファイル受け取り
-	RecieveFile();
+	std::string loadName = "Level/" + sceneFile + ".json";
+	// 作成元設定
+	fileName_ = loadName;
 }
 
 void SceneBuilder::RecieveFile() {

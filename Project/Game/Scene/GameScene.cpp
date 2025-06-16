@@ -15,7 +15,7 @@
 void GameScene::Load() {
 
 	// cubeMap、.dds
-	asset_->LoadTexture("kloppenheim_02_puresky_2k");
+	asset_->LoadTexture("overcast_soil_puresky_4k");
 
 	// lut
 	asset_->LoadLutTexture("lut_cool");
@@ -66,9 +66,10 @@ void GameScene::Init() {
 	// light
 	gameLight_ = std::make_unique<PunctualLight>();
 	gameLight_->Init();
-	gameLight_->directional.direction.x = 1.0f;
-	gameLight_->directional.direction.z = 1.0f;
-	gameLight_->directional.direction.y = -0.5f;
+	gameLight_->directional.direction.x = -0.306f;
+	gameLight_->directional.direction.y = -0.836f;
+	gameLight_->directional.direction.z = -0.455f;
+	gameLight_->directional.color = Color::Convert(0xaeeefdff);
 
 	sceneView_->SetLight(gameLight_.get());
 
@@ -76,7 +77,7 @@ void GameScene::Init() {
 	//	initObject
 	//========================================================================
 
-	//ECSManager::GetInstance()->CreateSkybox("kloppenheim_02_puresky_2k");
+	ECSManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
 
 	player_ = std::make_unique<Player>();
 	player_->Init(followCamera_.get());
@@ -90,7 +91,7 @@ void GameScene::Init() {
 	entityEditor_->Init(asset_);
 
 	levelEditor_ = std::make_unique<LevelEditor>();
-	levelEditor_->Init();
+	levelEditor_->Init("levelEditor");
 }
 
 void GameScene::Update() {

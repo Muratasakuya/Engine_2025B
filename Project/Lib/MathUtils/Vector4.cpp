@@ -65,10 +65,10 @@ void Vector4::Init() {
 
 Color Color::Convert(int color) {
 
-	int r = color & 0xFF;
-	int g = (color >> 8) & 0xFF;
-	int b = (color >> 16) & 0xFF;
-	int a = (color >> 24) & 0xFF;
+	int r = (color >> 24) & 0xFF;
+	int g = (color >> 16) & 0xFF;
+	int b = (color >> 8) & 0xFF;
+	int a = color & 0xFF;
 
 	return Color(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
 }

@@ -32,6 +32,10 @@ public:
 	void ImGui();
 	virtual void DerivedImGui() override {}
 
+	// json
+	void ApplyMaterial(const Json& data);
+	void SaveMaterial(Json& data);
+
 	/*-------- collision ----------*/
 
 	// 衝突コールバック関数
@@ -97,4 +101,7 @@ private:
 	void TransformImGui();
 	void MaterialImGui();
 	void AnimationImGui();
+
+	// json
+	std::string GetIndexLabel(const std::string& label, uint32_t index) const;
 };

@@ -27,7 +27,7 @@ public:
 	LevelEditor() :IGameEditor("LevelEditor") {};
 	~LevelEditor() = default;
 
-	void Init();
+	void Init(const std::optional<std::string>& initSceneFile);
 
 	void Update();
 
@@ -42,15 +42,31 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	const std::string jsonPath_ = "Level/EntityData/";
+
 	// 全てのentityを管理
 	std::unordered_map<Level::EntityType, std::vector<std::unique_ptr<GameEntity3D>>> entitiesMap_;
 
 	// builder
 	std::unique_ptr<SceneBuilder> sceneBuilder_;
 
+	Level::EntityType currentSelectType_;   // 選択中のタイプ
+	std::optional<int> currentSelectIndex_; // 選択インデックス
+
+	// editor
+	ImVec2 rightChildSize_; // 右側
+	ImVec2 buttonSize_;    // ボタンサイズ
+
 	//--------- functions ----------------------------------------------------
 
-	void BuildEntities();
+	// json
+	void SaveEntity(GameEntity3D* entity);
 
+	// update
+	void BuildEntities();
 	void UpdateEntities();
+
+	// editor
+	void SelectEntity();
+	void EditEntity();
 };
