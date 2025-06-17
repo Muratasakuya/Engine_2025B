@@ -25,6 +25,9 @@ void GameEntity3D::Init(const std::string& modelName, const std::string& name,
 
 		animation_ = ecsManager_->GetComponent<AnimationComponent>(entityId_);
 	}
+
+	// 継承先のinit実装
+	DerivedInit();
 }
 
 void GameEntity3D::ImGui() {

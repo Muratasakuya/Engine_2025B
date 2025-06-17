@@ -14,5 +14,6 @@ namespace Level {
 	enum class EntityType {
 
 		None,
+		CrossMarkWall,
 	};
 }

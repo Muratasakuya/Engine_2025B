@@ -98,7 +98,7 @@ void LevelEditor::SelectEntity() {
 
 	// entityType選択
 	const char* typeOptions[] = {
-		"None",
+		"None","CrossMarkWall",
 	};
 
 	int typeIndex = static_cast<int>(currentSelectType_);

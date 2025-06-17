@@ -542,6 +542,9 @@
     <ClCompile Include="Game\Editor\LevelEditor\SceneBuilder.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Object3D\Environment\FieldCrossMarkWall.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -742,6 +745,7 @@
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordFirstAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordSecondAttackBehavior.h" />
+    <ClInclude Include="Game\Object3D\Environment\FieldCrossMarkWall.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

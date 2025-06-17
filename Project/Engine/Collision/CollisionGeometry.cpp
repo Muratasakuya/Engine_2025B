@@ -15,6 +15,24 @@ bool Collision::SphereToSphere(const CollisionShape::Sphere& sphereA,
 	return false;
 }
 
+bool Collision::SphereToAABB(const CollisionShape::Sphere& sphere, const CollisionShape::AABB& aabb) {
+
+	const Vector3 min = aabb.GetMin();
+	const Vector3 max = aabb.GetMax();
+
+	// 球の中心をAABB内にクランプしてAABB上の最近接点を求める
+	Vector3 closestPoint(
+		std::clamp(sphere.center.x, min.x, max.x),
+		std::clamp(sphere.center.y, min.y, max.y),
+		std::clamp(sphere.center.z, min.z, max.z));
+
+	// 最近接点と球中心との距離の二乗を比較
+	Vector3 diff = closestPoint - sphere.center;
+	float distanceSquared = Vector3::Dot(diff, diff);
+
+	return distanceSquared <= (sphere.radius * sphere.radius);
+}
+
 bool Collision::SphereToOBB(const CollisionShape::Sphere& sphere,
 	const CollisionShape::OBB& obb) {
 
@@ -46,6 +64,31 @@ bool Collision::SphereToOBB(const CollisionShape::Sphere& sphere,
 	float distanceSquared = Vector3::Dot(diff, diff);
 
 	return distanceSquared <= (sphere.radius * sphere.radius);
+}
+
+bool Collision::AABBToOBB(const CollisionShape::AABB& aabb, const CollisionShape::OBB& obbB) {
+
+	CollisionShape::OBB obbA;
+	obbA.center = aabb.center;
+	obbA.size = aabb.extent;
+	obbA.rotate = Quaternion::IdentityQuaternion();
+
+	return OBBToOBB(obbA, obbB);
+}
+
+bool Collision::AABBToAABB(const CollisionShape::AABB& aabbA, const CollisionShape::AABB& aabbB) {
+
+	Vector3 minA = aabbA.GetMin();
+	Vector3 maxA = aabbA.GetMax();
+	Vector3 minB = aabbB.GetMin();
+	Vector3 maxB = aabbB.GetMax();
+
+	// 各軸で重なっているか確認
+	bool overlapX = (minA.x <= maxB.x) && (maxA.x >= minB.x);
+	bool overlapY = (minA.y <= maxB.y) && (maxA.y >= minB.y);
+	bool overlapZ = (minA.z <= maxB.z) && (maxA.z >= minB.z);
+
+	return overlapX && overlapY && overlapZ;
 }
 
 bool Collision::OBBToOBB(const CollisionShape::OBB& obbA, const CollisionShape::OBB& obbB) {
@@ -95,4 +138,19 @@ bool Collision::OBBToOBB(const CollisionShape::OBB& obbA, const CollisionShape::
 	}
 
 	return true;
+}
+
+bool Collision::AABBToSphere(const CollisionShape::AABB& aabb, const CollisionShape::Sphere& sphere) {
+
+	return SphereToAABB(sphere, aabb);
+}
+
+bool Collision::OBBToSphere(const CollisionShape::OBB& obb, const CollisionShape::Sphere& sphere) {
+
+	return SphereToOBB(sphere, obb);
+}
+
+bool Collision::OBBToAABB(const CollisionShape::OBB& obb, const CollisionShape::AABB& aabb) {
+
+	return AABBToOBB(aabb, obb);
 }

@@ -84,7 +84,11 @@ Json Vector3::ToJson() const {
 
 Vector3 Vector3::FromJson(const Json& data) {
 	Vector3 v{};
-	if (data.contains("x") && data.contains("y") && data.contains("z")) {
+	if (data.is_array() && data.size() == 3) {
+		v.x = data[0].get<float>();
+		v.y = data[2].get<float>();
+		v.z = data[1].get<float>();
+	} else if (data.contains("x") && data.contains("y") && data.contains("z")) {
 		v.x = data["x"].get<float>();
 		v.y = data["y"].get<float>();
 		v.z = data["z"].get<float>();

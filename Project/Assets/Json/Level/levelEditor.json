@@ -230,7 +230,7 @@
             "type": "MESH",
             "name": "wall_0",
             "entity_flag": true,
-            "entity_type": "None",
+            "entity_type": "CrossMarkWall",
             "modelName": "wall",
             "transform": {
                 "translation": [
@@ -249,13 +249,38 @@
                     25.644596099853516,
                     3.200000047683716
                 ]
-            }
+            },
+            "collision": [
+                {
+                    "shape": "OBB",
+                    "center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "selfType": "CrossMarkWall",
+                    "targetTypes": [
+                        "Player"
+                    ],
+                    "size": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "rotate": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ]
         },
         {
             "type": "MESH",
             "name": "wall_1",
             "entity_flag": true,
-            "entity_type": "None",
+            "entity_type": "CrossMarkWall",
             "modelName": "wall",
             "transform": {
                 "translation": [
@@ -274,13 +299,38 @@
                     25.644596099853516,
                     3.200000047683716
                 ]
-            }
+            },
+            "collision": [
+                {
+                    "shape": "OBB",
+                    "center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "selfType": "CrossMarkWall",
+                    "targetTypes": [
+                        "Player"
+                    ],
+                    "size": [
+                        2.0,
+                        2.0,
+                        2.0
+                    ],
+                    "rotate": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ]
         },
         {
             "type": "MESH",
             "name": "wall_2",
             "entity_flag": true,
-            "entity_type": "None",
+            "entity_type": "CrossMarkWall",
             "modelName": "wall",
             "transform": {
                 "translation": [
@@ -299,13 +349,32 @@
                     37.860877990722656,
                     3.200000047683716
                 ]
-            }
+            },
+            "collision": [
+                {
+                    "shape": "AABB",
+                    "center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "selfType": "CrossMarkWall",
+                    "targetTypes": [
+                        "Player"
+                    ],
+                    "extent": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            ]
         },
         {
             "type": "MESH",
             "name": "wall_3",
             "entity_flag": true,
-            "entity_type": "None",
+            "entity_type": "CrossMarkWall",
             "modelName": "wall",
             "transform": {
                 "translation": [
@@ -324,7 +393,26 @@
                     37.860877990722656,
                     3.200000047683716
                 ]
-            }
+            },
+            "collision": [
+                {
+                    "shape": "AABB",
+                    "center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "selfType": "CrossMarkWall",
+                    "targetTypes": [
+                        "Player"
+                    ],
+                    "extent": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ]
+                }
+            ]
         },
         {
             "type": "MESH",
