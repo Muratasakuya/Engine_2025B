@@ -25,6 +25,7 @@ void GameScene::Load() {
 
 	// environment
 	asset_->LoadModel("field");
+	asset_->LoadModel("fieldUnder");
 	asset_->LoadModel("fence");
 	asset_->LoadModel("loftNurbs");
 	asset_->LoadModel("rustyMetal");
