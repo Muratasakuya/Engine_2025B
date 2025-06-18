@@ -11,6 +11,8 @@ EngineInformation:     load model: playerSword
 EngineInformation:     load texture: field
 EngineInformation:     load texture: fieldNormal
 EngineInformation:     load model: field
+EngineInformation:     load texture: noise
+EngineInformation:     load model: fieldUnder
 EngineInformation:     load texture: fence
 EngineInformation:     load model: fence
 EngineInformation:     load texture: concreteBarrier

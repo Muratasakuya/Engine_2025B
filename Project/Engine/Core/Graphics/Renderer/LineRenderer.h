@@ -39,6 +39,8 @@ public:
 	void DrawHemisphere(int division, float radius, const Vector3& centerPos,
 		const Vector3& eulerRotate, const Color& color);
 
+	void DrawAABB(const Vector3& min, const Vector3& max, const Color& color);
+
 	void DrawOBB(const CollisionShape::OBB& obb, const Color& color);
 	void DrawOBB(const Vector3& centerPos, const Vector3& size,
 		const Vector3& eulerRotate, const Color& color);

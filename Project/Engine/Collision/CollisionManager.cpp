@@ -10,6 +10,52 @@
 //	CollisionManager classMethods
 //============================================================================
 
+namespace {
+
+	template<class L, class R> struct NarrowPhase;
+	using ShapeVariant = CollisionShape::Shapes;
+	using CheckFunc = bool(*)(const ShapeVariant&, const ShapeVariant&);
+	template<class L, class R>
+	bool Call(const ShapeVariant& lhs, const ShapeVariant& rhs) {
+
+		return NarrowPhase<L, R>::Test(std::get<L>(lhs), std::get<R>(rhs));
+	}
+#define NARROW(lhs, rhs, fn)                               \
+template<> struct NarrowPhase<lhs, rhs> {              \
+static bool Test(const lhs& a, const rhs& b)       \
+{ return Collision::fn(a, b); }                    \
+};
+
+	NARROW(CollisionShape::Sphere, CollisionShape::Sphere, SphereToSphere)
+		NARROW(CollisionShape::Sphere, CollisionShape::AABB, SphereToAABB)
+		NARROW(CollisionShape::Sphere, CollisionShape::OBB, SphereToOBB)
+
+		NARROW(CollisionShape::AABB, CollisionShape::Sphere, AABBToSphere)
+		NARROW(CollisionShape::AABB, CollisionShape::AABB, AABBToAABB)
+		NARROW(CollisionShape::AABB, CollisionShape::OBB, AABBToOBB)
+
+		NARROW(CollisionShape::OBB, CollisionShape::Sphere, OBBToSphere)
+		NARROW(CollisionShape::OBB, CollisionShape::AABB, OBBToAABB)
+		NARROW(CollisionShape::OBB, CollisionShape::OBB, OBBToOBB)
+#undef NARROW
+
+		// 衝突する際のタイプテーブル
+		constexpr CheckFunc DispatchTable[3][3] = {
+
+			{ &Call<CollisionShape::Sphere, CollisionShape::Sphere>,
+			  &Call<CollisionShape::Sphere, CollisionShape::AABB>,
+			  &Call<CollisionShape::Sphere, CollisionShape::OBB> },
+
+			{ &Call<CollisionShape::AABB,  CollisionShape::Sphere>,
+			  &Call<CollisionShape::AABB,  CollisionShape::AABB>,
+			  &Call<CollisionShape::AABB,  CollisionShape::OBB> },
+
+			{ &Call<CollisionShape::OBB,   CollisionShape::Sphere>,
+			  &Call<CollisionShape::OBB,   CollisionShape::AABB>,
+			  &Call<CollisionShape::OBB,   CollisionShape::OBB> }
+	};
+}
+
 CollisionManager* CollisionManager::instance_ = nullptr;
 
 CollisionManager* CollisionManager::GetInstance() {
@@ -110,6 +156,7 @@ void CollisionManager::Update() {
 
 	preCollisions_ = currentCollisions;
 
+	// colliderの描画
 	DrawCollider();
 }
 
@@ -118,29 +165,11 @@ bool CollisionManager::IsColliding(CollisionBody* colliderA, CollisionBody* coll
 	// 形状取得
 	const auto& shapeA = colliderA->GetShape();
 	const auto& shapeB = colliderB->GetShape();
+	// 0:Sphere 1:AABB 2:OBB
+	const size_t indexA = shapeA.index();
+	const size_t indexB = shapeB.index();
 
-	return std::visit([&](const auto& shapeA, const auto& shapeB) {
-
-		using ShapeTypeA = std::decay_t<decltype(shapeA)>;
-		using ShapeTypeB = std::decay_t<decltype(shapeB)>;
-
-		if constexpr (std::is_same_v<ShapeTypeA, CollisionShape::Sphere> && std::is_same_v<ShapeTypeB, CollisionShape::Sphere>) {
-
-			return Collision::SphereToSphere(shapeA, shapeB);
-		} else if constexpr (std::is_same_v<ShapeTypeA, CollisionShape::Sphere> && std::is_same_v<ShapeTypeB, CollisionShape::OBB>) {
-
-			return Collision::SphereToOBB(shapeA, shapeB);
-		} else if constexpr (std::is_same_v<ShapeTypeA, CollisionShape::OBB> && std::is_same_v<ShapeTypeB, CollisionShape::Sphere>) {
-
-			return Collision::SphereToOBB(shapeB, shapeA);
-		} else if constexpr (std::is_same_v<ShapeTypeA, CollisionShape::OBB> && std::is_same_v<ShapeTypeB, CollisionShape::OBB>) {
-
-			return Collision::OBBToOBB(shapeA, shapeB);
-		} else {
-
-			return false;
-		}
-		}, shapeA, shapeB);
+	return DispatchTable[indexA][indexB](shapeA, shapeB);
 }
 
 void CollisionManager::DrawCollider() {
@@ -155,7 +184,10 @@ void CollisionManager::DrawCollider() {
 		if (std::holds_alternative<CollisionShape::Sphere>(shape)) {
 
 			center = std::get<CollisionShape::Sphere>(shape).center;
-		}else if(std::holds_alternative<CollisionShape::OBB>(shape)) {
+		} else if (std::holds_alternative<CollisionShape::AABB>(shape)) {
+
+			center = std::get<CollisionShape::AABB>(shape).center;
+		} else if (std::holds_alternative<CollisionShape::OBB>(shape)) {
 
 			center = std::get<CollisionShape::OBB>(shape).center;
 		}
@@ -170,7 +202,7 @@ void CollisionManager::DrawCollider() {
 		}
 
 		// 衝突状態に応じた色を設定
-		Color color = isColliding ? Color::Red() : Color::Green();
+		Color color = isColliding ? Color::Red() : Color::Convert(0x00ffffff);
 
 		std::visit([&](const auto& shapeData) {
 			using ShapeType = std::decay_t<decltype(shapeData)>;
@@ -178,6 +210,9 @@ void CollisionManager::DrawCollider() {
 			if constexpr (std::is_same_v<ShapeType, CollisionShape::Sphere>) {
 
 				lineRenderer->DrawSphere(8, shapeData.radius, center, color);
+			} else if constexpr (std::is_same_v<ShapeType, CollisionShape::AABB>) {
+
+				lineRenderer->DrawAABB(shapeData.GetMin(), shapeData.GetMax(), color);
 			} else if constexpr (std::is_same_v<ShapeType, CollisionShape::OBB>) {
 
 				lineRenderer->DrawOBB(shapeData, color);

@@ -21,10 +21,11 @@ public:
 	//========================================================================
 
 	GameEntity3D() = default;
-	~GameEntity3D() = default;
+	virtual ~GameEntity3D() = default;
 
 	void Init(const std::string& modelName, const std::string& name,
 		const std::string& groupName, const std::optional<std::string>& animationName = std::nullopt);
+	virtual void DerivedInit() override {}
 
 	virtual void Update() {}
 
@@ -33,6 +34,7 @@ public:
 	virtual void DerivedImGui() override {}
 
 	// json
+	// material
 	void ApplyMaterial(const Json& data);
 	void SaveMaterial(Json& data);
 
@@ -84,7 +86,6 @@ protected:
 	std::vector<MaterialComponent>* materials_;
 	// animation
 	AnimationComponent* animation_;
-
 private:
 	//========================================================================
 	//	private Methods

@@ -48,6 +48,17 @@ void CollisionBody::UpdateSphere(const CollisionShape::Sphere& sphere) {
 	}
 }
 
+void CollisionBody::UpdateAABB(const CollisionShape::AABB& aabb) {
+
+	if (std::holds_alternative<CollisionShape::AABB>(shape_)) {
+
+		std::get<CollisionShape::AABB>(shape_) = aabb;
+	} else {
+
+		ASSERT(FALSE, "collision shape is not 'aabb'");
+	}
+}
+
 void CollisionBody::UpdateOBB(const CollisionShape::OBB& obb) {
 
 	if (std::holds_alternative<CollisionShape::OBB>(shape_)) {
@@ -57,10 +68,4 @@ void CollisionBody::UpdateOBB(const CollisionShape::OBB& obb) {
 
 		ASSERT(FALSE, "collision shape is not 'obb'");
 	}
-}
-
-void CollisionBody::SetType(ColliderType type, ColliderType target) {
-
-	type_ = type;
-	targetType_ = target;
 }

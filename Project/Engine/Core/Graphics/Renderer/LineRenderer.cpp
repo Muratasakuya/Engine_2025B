@@ -174,6 +174,36 @@ void LineRenderer::DrawHemisphere(int division, float radius, const Vector3& cen
 	}
 }
 
+void LineRenderer::DrawAABB(const Vector3& min, const Vector3& max, const Color& color) {
+
+	// AABBの各頂点
+	std::vector<Vector3> vertices = {
+		{min.x, min.y, min.z},
+		{max.x, min.y, min.z},
+		{min.x, max.y, min.z},
+		{max.x, max.y, min.z},
+		{min.x, min.y, max.z},
+		{max.x, min.y, max.z},
+		{min.x, max.y, max.z},
+		{max.x, max.y, max.z} };
+
+	// 各辺
+	std::vector<std::pair<int, int>> edges = {
+		{0, 1}, {1, 3}, {3, 2}, {2, 0}, // 前面
+		{4, 5}, {5, 7}, {7, 6}, {6, 4}, // 背面
+		{0, 4}, {1, 5}, {2, 6}, {3, 7}  // 前面と背面を繋ぐ辺
+	};
+
+	for (const auto& edge : edges) {
+
+		const Vector3& start = vertices[edge.first];
+		const Vector3& end = vertices[edge.second];
+
+		// 各辺の描画
+		DrawLine3D(start, end, color);
+	}
+}
+
 void LineRenderer::DrawOBB(const CollisionShape::OBB& obb, const Color& color) {
 
 	const int vertexNum = 8;

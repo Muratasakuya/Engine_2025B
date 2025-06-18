@@ -6,6 +6,9 @@
 #include <Engine/Asset/AssetEditor.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
+// entity
+#include <Game/Object3D/Environment/FieldCrossMarkWall.h>
+
 //============================================================================
 //	SceneBuilder classMethods
 //============================================================================
@@ -90,6 +93,8 @@ void SceneBuilder::BuildEntities(const Json& obj,
 		// material反映
 		Json materialData = LoadEntityFile(identifier);
 		ApplyMaterial(*newEntity, materialData);
+		// collision反映
+		ApplyCollision(*newEntity, obj);
 
 		// 登録
 		entities.emplace_back(std::move(newEntity));
@@ -145,6 +150,10 @@ std::unique_ptr<GameEntity3D> SceneBuilder::CreateEntityPtr(Level::EntityType en
 
 		return std::make_unique<GameEntity3D>();
 	}
+	case Level::EntityType::CrossMarkWall: {
+
+		return std::make_unique<FieldCrossMarkWall>();
+	}
 	}
 
 	return nullptr;
@@ -187,8 +196,22 @@ void SceneBuilder::ApplyMaterial(GameEntity3D& entity, const Json& data) {
 	if (data.empty()) {
 		return;
 	}
-	
+
 	entity.ApplyMaterial(data);
+}
+
+void SceneBuilder::ApplyCollision(GameEntity3D& entity, const Json& data) {
+
+	if (!data.contains("collision")) {
+		return;
+	}
+
+	// 有効な型かチェックする
+	if (CheckCollisionValid<FieldCrossMarkWall>(entity)) {
+
+		// colliderを設定
+		entity.BuildBodies(data["collision"]);
+	}
 }
 
 void SceneBuilder::Reset() {
@@ -237,6 +260,9 @@ Level::EntityType SceneBuilder::GetEntityType(const std::string& entityTypeName)
 	if (entityTypeName == "None") {
 
 		entityType = Level::EntityType::None;
+	} else if (entityTypeName == "CrossMarkWall") {
+
+		entityType = Level::EntityType::CrossMarkWall;
 	}
 
 	return entityType;

@@ -9,8 +9,6 @@
 #include <cstdint>
 #include <optional>
 #include <functional>
-// colliderID
-using ColliderID = uint32_t;
 
 //============================================================================
 //	ColliderType
@@ -18,8 +16,10 @@ using ColliderID = uint32_t;
 
 enum class ColliderType {
 
-	Type_None = 0,      // ビットが立っていない状態
-	Type_Test = 1 << 0, // テスト
+	Type_None = 0, // ビットが立っていない状態
+	Type_Test = 1 << 0,
+	Type_Player = 1 << 1,
+	Type_CrossMarkWall = 1 << 2,
 };
 
 // operator
@@ -65,13 +65,15 @@ public:
 	void SetOnCollisionExit(std::function<void(CollisionBody*)> onCollisionEnter) { onExit_ = onCollisionEnter; }
 
 	void UpdateSphere(const CollisionShape::Sphere& sphere);
+	void UpdateAABB(const CollisionShape::AABB& aabb);
 	void UpdateOBB(const CollisionShape::OBB& obb);
 
 	//--------- accessor -----------------------------------------------------
 
 	void SetShape(const CollisionShape::Shapes& shape) { shape_ = shape; }
 
-	void SetType(ColliderType type, ColliderType target);
+	void SetType(ColliderType type) { type_ = type; }
+	void SetTargetType(ColliderType target) { targetType_ = target; }
 
 	ColliderType GetType() const { return type_; }
 	ColliderType GetTargetType() const { return targetType_; }

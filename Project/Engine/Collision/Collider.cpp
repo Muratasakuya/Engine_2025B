@@ -3,11 +3,61 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/ECS/Components/TransformComponent.h>
 #include <Engine/Collision/CollisionManager.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
 //	Collider classMethods
 //============================================================================
+
+void Collider::UpdateAllBodies(const Transform3DComponent& transform) {
+
+	if (bodies_.empty()) {
+		return;
+	}
+
+	for (size_t i = 0; i < bodies_.size(); ++i) {
+
+		const auto& body = bodies_[i];
+		const auto& offset = bodyOffsets_[i];
+
+		std::visit([&](const auto& shape) {
+			using T = std::decay_t<decltype(shape)>;
+			if constexpr (std::is_same_v<T, CollisionShape::Sphere>) {
+
+				UpdateSphereBody(body, transform, std::get<CollisionShape::Sphere>(offset));
+			} else if constexpr (std::is_same_v<T, CollisionShape::AABB>) {
+
+				UpdateAABBBody(body, transform, std::get<CollisionShape::AABB>(offset));
+			} else if constexpr (std::is_same_v<T, CollisionShape::OBB>) {
+
+				UpdateOBBBody(body, transform, std::get<CollisionShape::OBB>(offset));
+			}
+			}, offset);
+	}
+}
+
+void Collider::UpdateSphereBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::Sphere& offset) {
+
+	Vector3 center = transform.translation + offset.center;
+	body->UpdateSphere(CollisionShape::Sphere(center));
+}
+
+void Collider::UpdateAABBBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::AABB& offset) {
+
+	Vector3 center = transform.translation + offset.center;
+	Vector3 extent = transform.scale * offset.extent;
+	body->UpdateAABB(CollisionShape::AABB(center, extent));
+}
+
+void Collider::UpdateOBBBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::OBB& offset) {
+
+	Vector3 center = transform.translation + offset.center;
+	Vector3 size = transform.scale * offset.size;
+	Quaternion rotation = (transform.rotation * offset.rotate).Normalize();
+	body->UpdateOBB(CollisionShape::OBB(center, size, rotation));
+}
 
 CollisionBody* Collider::AddCollider(const CollisionShape::Shapes& shape) {
 
@@ -31,4 +81,126 @@ CollisionBody* Collider::AddCollider(const CollisionShape::Shapes& shape) {
 void Collider::RemoveCollider(CollisionBody* collisionBody) {
 
 	CollisionManager::GetInstance()->RemoveCollisionBody(collisionBody);
+}
+
+void Collider::BuildBodies(const Json& data) {
+
+	if (!bodies_.empty()) {
+		for (const auto& body : bodies_) {
+
+			RemoveCollider(body);
+		}
+		// リセット
+		bodies_.clear();
+	}
+
+	// 配列か単一のデータかどうか
+	auto makeRange = [](const Json& json) -> std::vector<Json> {
+		if (json.is_array()) {
+			return { json.begin(), json.end() };
+		} else { return { json }; }};
+
+	// colliderのjsonデータを回して設定する
+	uint32_t index = 0;
+	for (const Json& colliderData : makeRange(data)) {
+
+		//  形状文字列を小文字統一
+		std::string shapeString = colliderData.value("shape", "AABB");
+		std::transform(shapeString.begin(), shapeString.end(), shapeString.begin(),
+			[](unsigned char c) { return static_cast<char>(::tolower(c)); });
+
+		// 形状設定
+		if (!SetShapeParamFromJson(shapeString, colliderData)) {
+			continue;
+		}
+
+		// 衝突ボディ追加
+		CollisionBody* body = bodies_.emplace_back(AddCollider(bodyOffsets_[index]));
+		// タイプ設定
+		SetTypeFromJson(*body, colliderData);
+
+		++index;
+	}
+}
+
+bool Collider::SetShapeParamFromJson(const std::string& shapeName, const Json& data) {
+
+	if (shapeName == "sphere") {
+
+		auto sphere = CollisionShape::Sphere::Default();
+		if (data.contains("center")) {
+
+			sphere.center = JsonAdapter::ToObject<Vector3>(data["center"]);
+		}
+		if (data.contains("radius")) {
+
+			sphere.radius = JsonAdapter::GetValue<float>(data, "radius");
+		}
+		bodyOffsets_.emplace_back(sphere);
+		return true;
+	} else if (shapeName == "aabb") {
+
+		auto aabb = CollisionShape::AABB::Default();
+		if (data.contains("center")) {
+
+			aabb.center = JsonAdapter::ToObject<Vector3>(data["center"]);
+		}
+		if (data.contains("extent")) {
+
+			aabb.extent = JsonAdapter::ToObject<Vector3>(data["extent"]);
+		}
+		bodyOffsets_.emplace_back(aabb);
+		return true;
+	} else if (shapeName == "obb") {
+
+		auto obb = CollisionShape::OBB::Default();
+		if (data.contains("center")) {
+
+			obb.center = JsonAdapter::ToObject<Vector3>(data["center"]);
+		}
+		if (data.contains("size")) {
+
+			obb.size = JsonAdapter::ToObject<Vector3>(data["size"]) / 2.0f;
+		}
+		if (data.contains("rotate")) {
+
+			obb.rotate = JsonAdapter::ToObject<Quaternion>(data["rotate"]);
+		}
+		bodyOffsets_.emplace_back(obb);
+		return true;
+	}
+
+	// 作成できなかった
+	return false;
+}
+
+void Collider::SetTypeFromJson(CollisionBody& body, const Json& data) {
+
+	// 自身のタイプ
+	if (data.contains("selfType")) {
+
+		std::string selfTypeName = data["selfType"].get<std::string>();
+		body.SetType(ToColliderType(selfTypeName));
+	}
+
+	// 衝突相手
+	if (data.contains("targetTypes")) {
+
+		ColliderType mask = ColliderType::Type_None;
+		for (const auto& targetName : data["targetTypes"]) {
+
+			mask |= ToColliderType(targetName.get<std::string>());
+		}
+		body.SetTargetType(mask);
+	}
+}
+
+ColliderType Collider::ToColliderType(const std::string& name) const {
+
+	if (name == "None") return ColliderType::Type_None;
+	if (name == "Test") return ColliderType::Type_Test;
+	if (name == "Player") return ColliderType::Type_Player;
+	if (name == "CrossMarkWall") return ColliderType::Type_CrossMarkWall;
+
+	return ColliderType::Type_None;
 }

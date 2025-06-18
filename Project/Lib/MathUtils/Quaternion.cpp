@@ -53,7 +53,12 @@ Json Quaternion::ToJson() const {
 Quaternion Quaternion::FromJson(const Json& data) {
 
 	Quaternion quaternion{};
-	if (data.contains("x") && data.contains("y") &&
+	if (data.is_array() && data.size() == 4) {
+		quaternion.x = data[1].get<float>();
+		quaternion.y = -data[3].get<float>();
+		quaternion.z = -data[2].get<float>();
+		quaternion.w = data[0].get<float>();
+	} else if (data.contains("x") && data.contains("y") &&
 		data.contains("z") && data.contains("w")) {
 		quaternion.x = data["x"].get<float>();
 		quaternion.y = data["y"].get<float>();

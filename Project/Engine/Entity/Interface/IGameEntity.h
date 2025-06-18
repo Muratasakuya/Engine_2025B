@@ -28,6 +28,8 @@ public:
 	IGameEntity();
 	virtual ~IGameEntity();
 
+	virtual void DerivedInit() = 0;
+
 	virtual void DerivedImGui() = 0;
 
 	//--------- accessor -----------------------------------------------------
