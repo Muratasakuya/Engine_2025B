@@ -72,7 +72,7 @@ PSOutput main(MSOutput input) {
 	if (lighting.shadowRate < 1.0f) {
 		
 		// ‰e”»’è
-		bool isShadowed = IsShadowed(input.worldPosition + normal);
+		bool isShadowed = IsShadowed(input.worldPosition);
 		// ‰e‚ÌŽž
 		if (isShadowed) {
 		

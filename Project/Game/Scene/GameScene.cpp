@@ -60,10 +60,10 @@ void GameScene::Init() {
 	// light
 	gameLight_ = std::make_unique<PunctualLight>();
 	gameLight_->Init();
-	gameLight_->directional.direction.x = -0.306f;
-	gameLight_->directional.direction.y = -0.836f;
-	gameLight_->directional.direction.z = -0.455f;
-	gameLight_->directional.color = Color::Convert(0xaeeefdff);
+	gameLight_->directional.direction.x = -0.381f;
+	gameLight_->directional.direction.y = -0.604f;
+	gameLight_->directional.direction.z = -0.699f;
+	gameLight_->directional.color = Color::Convert(0xffeaceff);
 
 	sceneView_->SetLight(gameLight_.get());
 

@@ -11,6 +11,18 @@
 //	Collider classMethods
 //============================================================================
 
+Collider::~Collider() {
+
+	if (bodies_.empty()) {
+		return;
+	}
+
+	for (const auto& body : bodies_) {
+
+		RemoveCollider(body);
+	}
+}
+
 void Collider::UpdateAllBodies(const Transform3DComponent& transform) {
 
 	if (bodies_.empty()) {
@@ -84,15 +96,6 @@ void Collider::RemoveCollider(CollisionBody* collisionBody) {
 }
 
 void Collider::BuildBodies(const Json& data) {
-
-	if (!bodies_.empty()) {
-		for (const auto& body : bodies_) {
-
-			RemoveCollider(body);
-		}
-		// リセット
-		bodies_.clear();
-	}
 
 	// 配列か単一のデータかどうか
 	auto makeRange = [](const Json& json) -> std::vector<Json> {

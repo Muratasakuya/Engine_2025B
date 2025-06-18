@@ -21,7 +21,7 @@ public:
 	//========================================================================
 
 	Collider() = default;
-	virtual ~Collider() = default;
+	virtual ~Collider();
 
 	void UpdateAllBodies(const Transform3DComponent& transform);
 
