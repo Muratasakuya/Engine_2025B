@@ -24,8 +24,8 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 	currentAnimationName_ = animationName;
 
 	// 骨の情報とクラスターを渡す
-	skeleton_ = asset_->GetSkeletonData(currentAnimationName_);
-	skinCluster_ = asset_->GetSkinClusterData(currentAnimationName_);
+	skeleton_ = asset_->GetSkeletonData(Algorithm::RemoveAfterUnderscore(currentAnimationName_));
+	skinCluster_ = asset_->GetSkinClusterData(Algorithm::RemoveAfterUnderscore(currentAnimationName_));
 	animationData_[currentAnimationName_] = asset_->GetAnimationData(currentAnimationName_);
 
 	// 使用するjointを記録

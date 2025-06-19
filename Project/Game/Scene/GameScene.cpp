@@ -23,6 +23,10 @@ void GameScene::Load() {
 	asset_->LoadModel("playerRightHand");
 	asset_->LoadModel("playerSword");
 
+	// enemy
+	asset_->LoadModel("bossEnemy");
+	asset_->LoadAnimation("bossEnemy", "bossEnemy");
+
 	// environment
 	asset_->LoadModel("field");
 	asset_->LoadModel("fieldUnder");
@@ -86,6 +90,8 @@ void GameScene::Init() {
 
 	levelEditor_ = std::make_unique<LevelEditor>();
 	levelEditor_->Init("levelEditor");
+
+	ECSManager::GetInstance()->CreateObject3D("bossEnemy", "boss", "Enemy");
 }
 
 void GameScene::Update() {

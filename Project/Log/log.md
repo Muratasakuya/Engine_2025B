@@ -8,6 +8,8 @@ EngineInformation:     load model: playerBody
 EngineInformation:     load model: playerLeftHand
 EngineInformation:     load model: playerRightHand
 EngineInformation:     load model: playerSword
+EngineInformation:     load model: bossEnemy
+EngineInformation:     load animation: bossEnemy
 EngineInformation:     load texture: field
 EngineInformation:     load texture: fieldNormal
 EngineInformation:     load model: field

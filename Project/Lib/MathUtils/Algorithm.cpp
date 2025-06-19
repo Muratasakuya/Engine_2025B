@@ -17,6 +17,15 @@ std::string Algorithm::RemoveSubstring(const std::string& input, const std::stri
 	return result;
 }
 
+std::string Algorithm::RemoveAfterUnderscore(const std::string& input) {
+
+	size_t pos = input.find('_');
+	if (pos != std::string::npos) {
+		return input.substr(0, pos);
+	}
+	return input;
+}
+
 float Algorithm::GetReparameterizedT(float t, const std::vector<float>& arcLengths) {
 
 	// arcLengthsになにも値が入ってない

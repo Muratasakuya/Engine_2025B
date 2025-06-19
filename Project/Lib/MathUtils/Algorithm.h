@@ -38,6 +38,8 @@ namespace Algorithm {
 
 	std::string RemoveSubstring(const std::string& input, const std::string& toRemove);
 
+	std::string RemoveAfterUnderscore(const std::string& input);
+
 	template<typename T>
 	std::string ClassName(const T& obj) {
 
