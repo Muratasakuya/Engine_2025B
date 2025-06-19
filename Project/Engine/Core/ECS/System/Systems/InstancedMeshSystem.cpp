@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/ECS/Core/EntityManager.h>
 #include <Engine/Core/Graphics/Raytracing/RaytracingScene.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Config.h>
 
 //============================================================================

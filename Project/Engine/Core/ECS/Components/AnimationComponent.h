@@ -40,6 +40,8 @@ public:
 	bool IsTransition() const { return inTransition_; }
 
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
+
+	const Skeleton& GetSkeleton() const { return skeleton_; }
 private:
 	//========================================================================
 	//	private Methods

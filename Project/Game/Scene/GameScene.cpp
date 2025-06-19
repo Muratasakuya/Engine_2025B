@@ -91,7 +91,10 @@ void GameScene::Init() {
 	levelEditor_ = std::make_unique<LevelEditor>();
 	levelEditor_->Init("levelEditor");
 
-	ECSManager::GetInstance()->CreateObject3D("bossEnemy", "boss", "Enemy");
+	uint32_t id = ECSManager::GetInstance()->CreateObject3D("bossEnemy", "boss", "Enemy", "bossEnemy_lightAttack");
+
+	auto animation = ECSManager::GetInstance()->GetComponent<AnimationComponent>(id);
+	animation->SetPlayAnimation("bossEnemy_lightAttack", true);
 }
 
 void GameScene::Update() {
