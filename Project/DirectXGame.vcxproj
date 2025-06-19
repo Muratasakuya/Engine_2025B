@@ -431,10 +431,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Algorithm\StateTimer.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Engine\Core\ECS\Components\TransformComponent.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GPUObject\InputAssembler.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.cpp" />
