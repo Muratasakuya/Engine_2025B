@@ -1,6 +1,55 @@
 #include "CollisionGeometry.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Lib/Adapter/JsonAdapter.h>
+
+//============================================================================
+//	CollisionShape Methods
+//============================================================================
+
+void CollisionShape::Sphere::ToJson(Json& data) {
+
+	data["Sphere"]["center"] = JsonAdapter::FromObject<Vector3>(center);
+	data["Sphere"]["radius"] = radius;
+}
+
+void CollisionShape::Sphere::FromJson(const Json& data) {
+
+	center = JsonAdapter::ToObject<Vector3>(data["Sphere"]["center"]);
+	radius = data["Sphere"]["radius"];
+}
+
+void CollisionShape::AABB::ToJson(Json& data) {
+
+	data["AABB"]["center"] = JsonAdapter::FromObject<Vector3>(center);
+	data["AABB"]["extent"] = JsonAdapter::FromObject<Vector3>(extent);
+}
+
+void CollisionShape::AABB::FromJson(const Json& data) {
+
+	center = JsonAdapter::ToObject<Vector3>(data["AABB"]["center"]);
+	extent = JsonAdapter::ToObject<Vector3>(data["AABB"]["extent"]);
+}
+
+void CollisionShape::OBB::ToJson(Json& data) {
+
+	data["OBB"]["center"] = JsonAdapter::FromObject<Vector3>(center);
+	data["OBB"]["size"] = JsonAdapter::FromObject<Vector3>(size);
+	data["OBB"]["eulerRotate"] = JsonAdapter::FromObject<Vector3>(eulerRotate);
+	data["OBB"]["rotate"] = JsonAdapter::FromObject<Quaternion>(rotate);
+}
+
+void CollisionShape::OBB::FromJson(const Json& data) {
+
+	center = JsonAdapter::ToObject<Vector3>(data["OBB"]["center"]);
+	size = JsonAdapter::ToObject<Vector3>(data["OBB"]["size"]);
+	eulerRotate = JsonAdapter::ToObject<Vector3>(data["OBB"]["eulerRotate"]);
+	rotate = JsonAdapter::ToObject<Quaternion>(data["OBB"]["rotate"]);
+}
+
+//============================================================================
 //	Collision Methods
 //============================================================================
 

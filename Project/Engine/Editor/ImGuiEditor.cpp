@@ -7,7 +7,7 @@
 
 // imgui表示
 #include <Engine/Asset/AssetEditor.h>
-#include <Engine/Editor/ImGuiInspector.h>
+#include <Engine/Editor/ImGuiEntityEditor.h>
 #include <Engine/Editor/Manager/GameEditorManager.h>
 #include <Engine/Utility/GameTimer.h>
 
@@ -77,11 +77,6 @@ void ImGuiEditor::Display() {
 
 void ImGuiEditor::EditLayout() {
 
-	//if (Input::GetInstance()->TriggerKey(DIK_1)) {
-
-	//	editMode_ = !editMode_;
-	//}
-
 	if (!editMode_) {
 		return;
 	}
@@ -126,7 +121,7 @@ void ImGuiEditor::Hierarchy() {
 		if (ImGui::BeginTabItem("GameObject")) {
 
 			// scene内のobject選択
-			ImGuiInspector::GetInstance()->SelectObject();
+			ImGuiEntityEditor::GetInstance()->SelectObject();
 			ImGui::EndTabItem();
 		}
 
@@ -153,7 +148,7 @@ void ImGuiEditor::Inspector() {
 		if (ImGui::BeginTabItem("GameObject")) {
 
 			// scene内のobject選択
-			ImGuiInspector::GetInstance()->EditObject();
+			ImGuiEntityEditor::GetInstance()->EditObject();
 			ImGui::EndTabItem();
 		}
 

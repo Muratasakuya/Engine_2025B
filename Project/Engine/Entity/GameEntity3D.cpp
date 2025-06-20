@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/ECS/Core/ECSManager.h>
+#include <Engine/Editor/ImGuiEntityEditor.h>
 
 //============================================================================
 //	GameEntity3D classMethods
@@ -25,6 +26,9 @@ void GameEntity3D::Init(const std::string& modelName, const std::string& name,
 
 		animation_ = ecsManager_->GetComponent<AnimationComponent>(entityId_);
 	}
+
+	// editorに登録
+	ImGuiEntityEditor::GetInstance()->RegisterEntity(entityId_, this);
 
 	// 継承先のinit実装
 	DerivedInit();
@@ -71,7 +75,7 @@ void GameEntity3D::ApplyMaterial(const Json& data) {
 
 	for (uint32_t meshIndex = 0; meshIndex < static_cast<uint32_t>((*materials_).size()); ++meshIndex) {
 
-		(*materials_)[meshIndex].FromJson(data[GetIndexLabel("Material", meshIndex)]);
+		(*materials_)[meshIndex].FromJson(data[Algorithm::GetIndexLabel("Material", meshIndex)]);
 	}
 }
 
@@ -79,13 +83,8 @@ void GameEntity3D::SaveMaterial(Json& data) {
 
 	for (uint32_t meshIndex = 0; meshIndex < static_cast<uint32_t>((*materials_).size()); ++meshIndex) {
 
-		(*materials_)[meshIndex].ToJson(data[GetIndexLabel("Material", meshIndex)]);
+		(*materials_)[meshIndex].ToJson(data[Algorithm::GetIndexLabel("Material", meshIndex)]);
 	}
-}
-
-std::string GameEntity3D::GetIndexLabel(const std::string& label, uint32_t index) const {
-
-	return label + std::to_string(index);
 }
 
 void GameEntity3D::TransformImGui() {

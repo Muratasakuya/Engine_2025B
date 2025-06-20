@@ -30,6 +30,7 @@ public:
 
 	virtual void DerivedInit() = 0;
 
+	virtual void ImGui() = 0;
 	virtual void DerivedImGui() = 0;
 
 	//--------- accessor -----------------------------------------------------

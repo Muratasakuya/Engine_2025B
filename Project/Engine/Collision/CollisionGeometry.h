@@ -25,6 +25,9 @@ namespace CollisionShape {
 			};
 			return sphere;
 		};
+
+		void ToJson(Json& data);
+		void FromJson(const Json& data);
 	};
 
 	struct AABB {
@@ -43,12 +46,16 @@ namespace CollisionShape {
 			};
 			return aabb;
 		};
+
+		void ToJson(Json& data);
+		void FromJson(const Json& data);
 	};
 
 	struct OBB {
 
 		Vector3 center;
 		Vector3 size;
+		Vector3 eulerRotate;
 		Quaternion rotate;
 
 		static OBB Default() {
@@ -59,6 +66,9 @@ namespace CollisionShape {
 			};
 			return obb;
 		};
+
+		void ToJson(Json& data);
+		void FromJson(const Json& data);
 	};
 
 	using Shapes = std::variant<Sphere, AABB, OBB>;

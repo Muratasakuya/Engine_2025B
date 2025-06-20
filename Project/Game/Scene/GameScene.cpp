@@ -84,24 +84,40 @@ void GameScene::Init() {
 	followCamera_->SetTarget(player_->GetTransform());
 	followCamera_->FirstUpdate();
 
+	bossEnemy_ = std::make_unique<BossEnemy>();
+	bossEnemy_->Init("bossEnemy", "bossEnemy", "Enemy", "bossEnemy_idle");
+
+	//========================================================================
+	//	editor
+	//========================================================================
+
 	// editor
 	entityEditor_ = std::make_unique<GameEntityEditor>();
 	entityEditor_->Init(asset_);
 
 	levelEditor_ = std::make_unique<LevelEditor>();
 	levelEditor_->Init("levelEditor");
-
-	uint32_t id = ECSManager::GetInstance()->CreateObject3D("bossEnemy", "boss", "Enemy", "bossEnemy_lightAttack");
-
-	auto animation = ECSManager::GetInstance()->GetComponent<AnimationComponent>(id);
-	animation->SetPlayAnimation("bossEnemy_lightAttack", true);
 }
 
 void GameScene::Update() {
 
+	//========================================================================
+	//	sceneObject
+	//========================================================================
+
 	followCamera_->Update();
 
+	//========================================================================
+	//	entity
+	//========================================================================
+
 	player_->Update();
+
+	bossEnemy_->Update();
+
+	//========================================================================
+	//	editor
+	//========================================================================
 
 	// editor
 	entityEditor_->Update();

@@ -1,4 +1,4 @@
-#include "ImGuiInspector.h"
+#include "ImGuiEntityEditor.h"
 
 //============================================================================
 //	imgui
@@ -6,6 +6,7 @@
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Core/ECS/System/Systems/TagSystem.h>
+#include <Engine/Entity/Interface/IGameEntity.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // components
@@ -20,20 +21,20 @@
 #include <imgui.h>
 
 //============================================================================
-//	ImGuiInspector classMethods
+//	ImGuiEntityEditor classMethods
 //============================================================================
 
-ImGuiInspector* ImGuiInspector::instance_ = nullptr;
+ImGuiEntityEditor* ImGuiEntityEditor::instance_ = nullptr;
 
-ImGuiInspector* ImGuiInspector::GetInstance() {
+ImGuiEntityEditor* ImGuiEntityEditor::GetInstance() {
 
 	if (instance_ == nullptr) {
-		instance_ = new ImGuiInspector();
+		instance_ = new ImGuiEntityEditor();
 	}
 	return instance_;
 }
 
-void ImGuiInspector::Finalize() {
+void ImGuiEntityEditor::Finalize() {
 
 	if (instance_ != nullptr) {
 
@@ -42,7 +43,7 @@ void ImGuiInspector::Finalize() {
 	}
 }
 
-void ImGuiInspector::Init() {
+void ImGuiEntityEditor::Init() {
 
 	ecsManager_ = nullptr;
 	ecsManager_ = ECSManager::GetInstance();
@@ -50,24 +51,24 @@ void ImGuiInspector::Init() {
 	tagSystem_ = ecsManager_->GetSystem<TagSystem>();
 }
 
-void ImGuiInspector::SelectObject() {
+void ImGuiEntityEditor::SelectObject() {
 
 	CreateGroup();
 	SelectGroupedObject();
 }
 
-bool ImGuiInspector::Is3D(uint32_t entity) const {
+bool ImGuiEntityEditor::Is3D(uint32_t entity) const {
 
 	return ecsManager_->GetComponent<Transform3DComponent>(entity) != nullptr ||
 		ecsManager_->GetComponent<SkyboxComponent>(entity) != nullptr;
 }
 
-bool ImGuiInspector::Is2D(uint32_t entity) const {
+bool ImGuiEntityEditor::Is2D(uint32_t entity) const {
 
 	return ecsManager_->GetComponent<Transform2DComponent>(entity) != nullptr;
 }
 
-void ImGuiInspector::DrawSelectable(uint32_t entity, const std::string& name) {
+void ImGuiEntityEditor::DrawSelectable(uint32_t entity, const std::string& name) {
 
 	if (Is3D(entity)) {
 		bool selected = (selected3D_ == entity);
@@ -89,12 +90,12 @@ void ImGuiInspector::DrawSelectable(uint32_t entity, const std::string& name) {
 	}
 }
 
-void ImGuiInspector::CreateGroup() {
+void ImGuiEntityEditor::CreateGroup() {
 
 	groups_ = tagSystem_->Groups();
 }
 
-void ImGuiInspector::SelectGroupedObject() {
+void ImGuiEntityEditor::SelectGroupedObject() {
 
 	for (auto& [group, ids] : groups_) {
 		if (group.empty()) continue;
@@ -110,31 +111,38 @@ void ImGuiInspector::SelectGroupedObject() {
 	}
 }
 
-void ImGuiInspector::EditObject() {
+void ImGuiEntityEditor::EditObject() {
 
 	// 各objectの操作
 	EditObject3D();
 	EditObject2D();
 }
 
-void ImGuiInspector::Reset() {
+void ImGuiEntityEditor::Reset() {
 
 	selected3D_.reset();
 	selected2D_.reset();
 }
 
-void ImGuiInspector::SetImGuiFunc(uint32_t entity, std::function<void()> func) {
+void ImGuiEntityEditor::RegisterEntity(uint32_t id, IGameEntity* entity) {
 
-	individualUI_[entity] = std::move(func);
+	entitiesMap_[id] = entity;
 }
 
-void ImGuiInspector::EditObject3D() {
+void ImGuiEntityEditor::EditObject3D() {
 
 	if (!selected3D_) return;
+	uint32_t id = selected3D_.value();
+
+	if (Algorithm::Find(entitiesMap_, id)) {
+
+		entitiesMap_[id].value()->ImGui();
+		return;
+	}
 
 	if (ImGui::BeginTabBar("Obj3DTab")) {
 
-		const auto* tag = tagSystem_->Tags().at(selected3D_.value());
+		const auto* tag = tagSystem_->Tags().at(id);
 		// skyboxの時と他のオブジェクトで分岐
 		if (tag->name == "skybox") {
 
@@ -166,22 +174,12 @@ void ImGuiInspector::EditObject3D() {
 				Object3DMaterial();
 				ImGui::EndTabItem();
 			}
-
-			if (selected3D_.has_value()) {
-				if (ImGui::BeginTabItem("Individual")) {
-					if (!individualUI_.empty()) {
-
-						individualUI_.at(*selected3D_)();
-					}
-					ImGui::EndTabItem();
-				}
-			}
 		}
 		ImGui::EndTabBar();
 	}
 }
 
-void ImGuiInspector::Object3DInformation() {
+void ImGuiEntityEditor::Object3DInformation() {
 
 	uint32_t id = *selected3D_;
 	const auto* tag = tagSystem_->Tags().at(id);
@@ -196,13 +194,13 @@ void ImGuiInspector::Object3DInformation() {
 	}
 }
 
-void ImGuiInspector::Object3DTransform() {
+void ImGuiEntityEditor::Object3DTransform() {
 
 	auto* transform = ecsManager_->GetComponent<Transform3DComponent>(*selected3D_);
 	transform->ImGui(itemWidth_);
 }
 
-void ImGuiInspector::Object3DMaterial() {
+void ImGuiEntityEditor::Object3DMaterial() {
 
 	auto* matsPtr = ecsManager_->GetComponent<MaterialComponent, true>(*selected3D_);
 	auto& materials = *matsPtr;
@@ -234,15 +232,22 @@ void ImGuiInspector::Object3DMaterial() {
 	}
 }
 
-void ImGuiInspector::EditSkybox() {
+void ImGuiEntityEditor::EditSkybox() {
 
 	auto* skybox = ecsManager_->GetComponent<SkyboxComponent>(*selected3D_);
 	skybox->ImGui(itemWidth_);
 }
 
-void ImGuiInspector::EditObject2D() {
+void ImGuiEntityEditor::EditObject2D() {
 
 	if (!selected2D_) return;
+	uint32_t id = selected2D_.value();
+
+	if (Algorithm::Find(entitiesMap_, id)) {
+
+		entitiesMap_[id].value()->ImGui();
+		return;
+	}
 
 	if (ImGui::BeginTabBar("Obj2DTab")) {
 
@@ -269,21 +274,11 @@ void ImGuiInspector::EditObject2D() {
 			Object2DMaterial();
 			ImGui::EndTabItem();
 		}
-
-		if (selected2D_.has_value()) {
-			if (ImGui::BeginTabItem("Individual")) {
-				if (!individualUI_.empty()) {
-
-					individualUI_.at(*selected2D_)();
-				}
-				ImGui::EndTabItem();
-			}
-		}
 		ImGui::EndTabBar();
 	}
 }
 
-void ImGuiInspector::Object2DInformation() {
+void ImGuiEntityEditor::Object2DInformation() {
 
 	uint32_t id = *selected2D_;
 	const auto* tag = tagSystem_->Tags().at(id);
@@ -298,19 +293,19 @@ void ImGuiInspector::Object2DInformation() {
 	}
 }
 
-void ImGuiInspector::Object2DSprite() {
+void ImGuiEntityEditor::Object2DSprite() {
 
 	auto* sprite = ecsManager_->GetComponent<SpriteComponent>(*selected2D_);
 	sprite->ImGui(itemWidth_);
 }
 
-void ImGuiInspector::Object2DTransform() {
+void ImGuiEntityEditor::Object2DTransform() {
 
 	auto* transform = ecsManager_->GetComponent<Transform2DComponent>(*selected2D_);
 	transform->ImGui(itemWidth_);
 }
 
-void ImGuiInspector::Object2DMaterial() {
+void ImGuiEntityEditor::Object2DMaterial() {
 
 	auto* material = ecsManager_->GetComponent<SpriteMaterialComponent>(*selected2D_);
 	material->ImGui(itemWidth_);

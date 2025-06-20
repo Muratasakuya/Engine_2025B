@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
-#include <Engine/Editor/ImGuiInspector.h>
+#include <Engine/Editor/ImGuiEntityEditor.h>
 
 // components
 #include <Engine/Core/ECS/Components/TransformComponent.h>
@@ -65,7 +65,7 @@ void ECSManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxCommand) 
 	systemManager_->AddSystem<SpriteBufferSystem>();
 	systemManager_->AddSystem<SkyboxRenderSystem>();
 
-	ImGuiInspector::GetInstance()->Init();
+	ImGuiEntityEditor::GetInstance()->Init();
 }
 
 void ECSManager::UpdateComponent() {

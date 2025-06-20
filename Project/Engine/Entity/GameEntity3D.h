@@ -30,20 +30,13 @@ public:
 	virtual void Update() {}
 
 	// imgui
-	void ImGui();
+	void ImGui() override;
 	virtual void DerivedImGui() override {}
 
 	// json
 	// material
 	void ApplyMaterial(const Json& data);
 	void SaveMaterial(Json& data);
-
-	/*-------- collision ----------*/
-
-	// 衝突コールバック関数
-	virtual void OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) override {}
-	virtual void OnCollisionStay([[maybe_unused]] const CollisionBody* collisionBody) override {}
-	virtual void OnCollisionExit([[maybe_unused]] const CollisionBody* collisionBody) override {}
 
 	//--------- accessor -----------------------------------------------------
 
@@ -102,7 +95,4 @@ private:
 	void TransformImGui();
 	void MaterialImGui();
 	void AnimationImGui();
-
-	// json
-	std::string GetIndexLabel(const std::string& label, uint32_t index) const;
 };

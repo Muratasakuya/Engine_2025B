@@ -463,7 +463,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Graphics\Lib\DxUtils.cpp" />
     <ClCompile Include="Engine\Asset\Filesystem.cpp" />
     <ClCompile Include="Engine\Core\Window\WinApp.cpp" />
-    <ClCompile Include="Engine\Editor\ImGuiInspector.cpp">
+    <ClCompile Include="Engine\Editor\ImGuiEntityEditor.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -508,6 +508,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Editor\LevelEditor\LevelEditor.cpp" />
     <ClCompile Include="Game\Editor\LevelEditor\SceneBuilder.cpp" />
     <ClCompile Include="Game\Object2D\SceneTransition\FadeTransition.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\BossEnemy.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -928,7 +932,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Graphics\Lib\DxUtils.h" />
     <ClInclude Include="Engine\Asset\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
-    <ClInclude Include="Engine\Editor\ImGuiInspector.h">
+    <ClInclude Include="Engine\Editor\ImGuiEntityEditor.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -975,6 +979,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Editor\LevelEditor\SceneBuilder.h" />
     <ClInclude Include="Game\Object2D\Base\ITransition.h" />
     <ClInclude Include="Game\Object2D\SceneTransition\FadeTransition.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Enemy\Boss\BossEnemy.h">
       <SubType>
       </SubType>
     </ClInclude>

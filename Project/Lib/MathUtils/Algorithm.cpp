@@ -26,6 +26,11 @@ std::string Algorithm::RemoveAfterUnderscore(const std::string& input) {
 	return input;
 }
 
+std::string Algorithm::GetIndexLabel(const std::string& label, uint32_t index) {
+
+	return label + std::to_string(index);
+}
+
 float Algorithm::GetReparameterizedT(float t, const std::vector<float>& arcLengths) {
 
 	// arcLengthsになにも値が入ってない

@@ -16,11 +16,12 @@
 // front
 class TagSystem;
 class ECSManager;
+class IGameEntity;
 
 //============================================================================
-//	ImGuiInspector class
+//	ImGuiEntityEditor class
 //============================================================================
-class ImGuiInspector {
+class ImGuiEntityEditor {
 public:
 	//========================================================================
 	//	public Methods
@@ -36,13 +37,13 @@ public:
 	// 選択全解除
 	void Reset();
 
+	void RegisterEntity(uint32_t id, IGameEntity* entity);
+
 	//--------- accessor -----------------------------------------------------
 
 	// singleton
-	static ImGuiInspector* GetInstance();
+	static ImGuiEntityEditor* GetInstance();
 	static void Finalize();
-
-	void SetImGuiFunc(uint32_t entity, std::function<void()> func);
 private:
 	//========================================================================
 	//	private Methods
@@ -59,13 +60,14 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	static ImGuiInspector* instance_;
+	static ImGuiEntityEditor* instance_;
 
 	TagSystem* tagSystem_;
 	ECSManager* ecsManager_;
 
 	std::unordered_map<std::string, std::vector<uint32_t>> groups_;
-	std::unordered_map<uint32_t, std::function<void()>> individualUI_;
+
+	std::unordered_map<uint32_t, std::optional<IGameEntity*>> entitiesMap_;
 
 	std::optional<uint32_t> selected3D_;
 	int selectedMaterialIndex_ = 0;
@@ -77,10 +79,10 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
-	ImGuiInspector() = default;
-	~ImGuiInspector() = default;
-	ImGuiInspector(const ImGuiInspector&) = delete;
-	ImGuiInspector& operator=(const ImGuiInspector&) = delete;
+	ImGuiEntityEditor() = default;
+	~ImGuiEntityEditor() = default;
+	ImGuiEntityEditor(const ImGuiEntityEditor&) = delete;
+	ImGuiEntityEditor& operator=(const ImGuiEntityEditor&) = delete;
 
 	bool Is3D(uint32_t entity) const;
 	bool Is2D(uint32_t entity) const;

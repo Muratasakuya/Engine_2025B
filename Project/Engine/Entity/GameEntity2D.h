@@ -26,6 +26,10 @@ public:
 	void Init(const std::string& textureName, const std::string& name,
 		const std::string& groupName);
 
+	// imgui
+	void ImGui() override {};
+	virtual void DerivedImGui() override {}
+
 	//--------- accessor -----------------------------------------------------
 
 	/*---------- setter ----------*/

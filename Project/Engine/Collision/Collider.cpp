@@ -6,6 +6,10 @@
 #include <Engine/Core/ECS/Components/TransformComponent.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Lib/Adapter/JsonAdapter.h>
+#include <Lib/MathUtils/Algorithm.h>
+
+// imgui
+#include <imgui.h>
 
 //============================================================================
 //	Collider classMethods
@@ -29,10 +33,10 @@ void Collider::UpdateAllBodies(const Transform3DComponent& transform) {
 		return;
 	}
 
-	for (size_t i = 0; i < bodies_.size(); ++i) {
+	for (size_t index = 0; index < bodies_.size(); ++index) {
 
-		const auto& body = bodies_[i];
-		const auto& offset = bodyOffsets_[i];
+		const auto& body = bodies_[index];
+		const auto& offset = bodyOffsets_[index];
 
 		std::visit([&](const auto& shape) {
 			using T = std::decay_t<decltype(shape)>;
@@ -68,7 +72,7 @@ void Collider::UpdateOBBBody(CollisionBody* body, const Transform3DComponent& tr
 	Vector3 center = transform.translation + offset.center;
 	Vector3 size = transform.scale * offset.size;
 	Quaternion rotation = (transform.rotation * offset.rotate).Normalize();
-	body->UpdateOBB(CollisionShape::OBB(center, size, rotation));
+	body->UpdateOBB(CollisionShape::OBB(center, size, Vector3::AnyInit(0.0f), rotation));
 }
 
 CollisionBody* Collider::AddCollider(const CollisionShape::Shapes& shape) {
@@ -93,6 +97,119 @@ CollisionBody* Collider::AddCollider(const CollisionShape::Shapes& shape) {
 void Collider::RemoveCollider(CollisionBody* collisionBody) {
 
 	CollisionManager::GetInstance()->RemoveCollisionBody(collisionBody);
+}
+
+void Collider::ImGui(float itemWidth) {
+
+	if (bodyOffsets_.empty()) {
+		return;
+	}
+
+	ImGui::PushItemWidth(itemWidth);
+
+	for (uint32_t index = 0; index < bodyOffsets_.size(); ++index) {
+
+		auto& offset = bodyOffsets_[index];
+
+		std::visit([&](const auto& shape) {
+			using T = std::decay_t<decltype(shape)>;
+			if constexpr (std::is_same_v<T, CollisionShape::Sphere>) {
+
+				EditSphereBody(index, std::get<CollisionShape::Sphere>(offset));
+			} else if constexpr (std::is_same_v<T, CollisionShape::AABB>) {
+
+				EditAABBBody(index, std::get<CollisionShape::AABB>(offset));
+			} else if constexpr (std::is_same_v<T, CollisionShape::OBB>) {
+
+				EditOBBBody(index, std::get<CollisionShape::OBB>(offset));
+			}
+			}, offset);
+
+		ImGui::Separator();
+	}
+
+	ImGui::PopItemWidth();
+}
+
+void Collider::EditSphereBody(uint32_t index, CollisionShape::Sphere& offset) {
+
+	ImGui::Text("body: Sphere");
+	ImGui::Text("bodyIndex: %d", index);
+
+	ImGui::DragFloat3(("center" + std::to_string(index)).c_str(), &offset.center.x, 0.01f);
+	ImGui::DragFloat(("radius" + std::to_string(index)).c_str(), &offset.radius, 0.01f);
+}
+
+void Collider::EditAABBBody(uint32_t index, CollisionShape::AABB& offset) {
+
+	ImGui::Text("body: AABB");
+	ImGui::Text("bodyIndex: %d", index);
+
+	ImGui::DragFloat3(("center" + std::to_string(index)).c_str(), &offset.center.x, 0.01f);
+	ImGui::DragFloat3(("extent" + std::to_string(index)).c_str(), &offset.extent.x, 0.01f);
+}
+
+void Collider::EditOBBBody(uint32_t index, CollisionShape::OBB& offset) {
+
+	ImGui::Text("body: OBB");
+	ImGui::Text("bodyIndex: %d", index);
+
+	ImGui::DragFloat3(("center" + std::to_string(index)).c_str(), &offset.center.x, 0.01f);
+
+	if (ImGui::DragFloat3(("eulerRotate" + std::to_string(index)).c_str(), &offset.eulerRotate.x, 0.01f)) {
+
+		offset.rotate = Quaternion::EulerToQuaternion(offset.eulerRotate);
+	}
+	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
+		offset.rotate.x, offset.rotate.y, offset.rotate.z, offset.rotate.w);
+
+	ImGui::DragFloat3(("size" + std::to_string(index)).c_str(), &offset.size.x, 0.01f);
+}
+
+void Collider::ApplyBodyOffset(const Json& data) {
+
+	for (uint32_t index = 0; index < bodyOffsets_.size(); ++index) {
+
+		std::string label = Algorithm::GetIndexLabel("CollisionBody", index);
+		auto& offset = bodyOffsets_[index];
+
+		std::visit([&](const auto& shape) {
+			using T = std::decay_t<decltype(shape)>;
+			if constexpr (std::is_same_v<T, CollisionShape::Sphere>) {
+
+				std::get<CollisionShape::Sphere>(offset).FromJson(data[label]);
+			} else if constexpr (std::is_same_v<T, CollisionShape::AABB>) {
+
+				std::get<CollisionShape::AABB>(offset).FromJson(data[label]);
+			} else if constexpr (std::is_same_v<T, CollisionShape::OBB>) {
+
+				std::get<CollisionShape::OBB>(offset).FromJson(data[label]);
+			}
+			}, offset);
+	}
+}
+
+void Collider::SaveBodyOffset(Json& data) {
+
+	for (uint32_t index = 0; index < bodyOffsets_.size(); ++index) {
+		
+		std::string label = Algorithm::GetIndexLabel("CollisionBody", index);
+		auto& offset = bodyOffsets_[index];
+
+		std::visit([&](const auto& shape) {
+			using T = std::decay_t<decltype(shape)>;
+			if constexpr (std::is_same_v<T, CollisionShape::Sphere>) {
+
+				std::get<CollisionShape::Sphere>(offset).ToJson(data[label]);
+			} else if constexpr (std::is_same_v<T, CollisionShape::AABB>) {
+
+				std::get<CollisionShape::AABB>(offset).ToJson(data[label]);
+			} else if constexpr (std::is_same_v<T, CollisionShape::OBB>) {
+
+				std::get<CollisionShape::OBB>(offset).ToJson(data[label]);
+			}
+			}, offset);
+	}
 }
 
 void Collider::BuildBodies(const Json& data) {

@@ -35,6 +35,14 @@ public:
 
 	virtual void OnCollisionExit([[maybe_unused]] const CollisionBody* collisionBody) {};
 
+	// imgui
+	void ImGui(float itemWidth);
+
+	// json
+	// material
+	void ApplyBodyOffset(const Json& data);
+	void SaveBodyOffset(Json& data);
+
 	// json
 	void BuildBodies(const Json& data);
 protected:
@@ -62,4 +70,8 @@ private:
 	void SetTypeFromJson(CollisionBody& body, const Json& data);
 
 	ColliderType ToColliderType(const std::string& name) const;
+
+	void EditSphereBody(uint32_t index, CollisionShape::Sphere& offset);
+	void EditAABBBody(uint32_t index, CollisionShape::AABB& offset);
+	void EditOBBBody(uint32_t index, CollisionShape::OBB& offset);
 };

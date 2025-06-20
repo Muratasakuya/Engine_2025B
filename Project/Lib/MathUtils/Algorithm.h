@@ -40,6 +40,8 @@ namespace Algorithm {
 
 	std::string RemoveAfterUnderscore(const std::string& input);
 
+	std::string GetIndexLabel(const std::string& label, uint32_t index);
+
 	template<typename T>
 	std::string ClassName(const T& obj) {
 
