@@ -49,6 +49,7 @@ public:
 	void SetTranslation(const Vector3& translation) { transform_->translation = translation; }
 	// 親
 	void SetParent(const Transform3DComponent& parent) { transform_->parent = &parent; }
+	const Transform3DComponent* GetJointTransform(const std::string& jointName) const;
 
 	// material
 	// 色
@@ -56,6 +57,9 @@ public:
 	void SetAlpha(float alpha, std::optional<uint32_t> meshIndex = std::nullopt);
 	// texture
 	void SetTextureName(const std::string& textureName, std::optional<uint32_t> meshIndex = std::nullopt);
+
+	// animation
+	Vector3 GetJointWorldPos(const std::string& jointName) const;
 
 	/*---------- getter ----------*/
 

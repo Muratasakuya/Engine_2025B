@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
@@ -17,6 +18,9 @@ void BossEnemy::InitAnimations() {
 	// animationのデータを設定
 	animation_->SetAnimationData("bossEnemy_falter");      // 怯み
 	animation_->SetAnimationData("bossEnemy_lightAttack"); // 弱攻撃
+
+	// 右手を親として更新させる
+	animation_->SetParentJoint("rightHand");
 }
 
 void BossEnemy::InitCollision() {

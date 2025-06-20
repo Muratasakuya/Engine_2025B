@@ -130,6 +130,38 @@ void GameEntity3D::AnimationImGui() {
 	animation_->ImGui(itemWidth_);
 }
 
+Vector3 GameEntity3D::GetJointWorldPos(const std::string& jointName) const {
+
+	// animationが存在しない場合は空のVector3を返す
+	if (!animation_) {
+		return Vector3();
+	}
+
+	// 骨の情報を取得
+	const Skeleton& skeleton = animation_->GetSkeleton();
+
+	// 指定されたjointNameの骨が存在するか確認
+	if (!Algorithm::Find(skeleton.jointMap, jointName)) {
+		return Vector3();
+	}
+	// jointNameに対応するindexを取得
+	uint32_t jointIndex = skeleton.jointMap.at(jointName);
+
+	// model空間の行列を取得
+	const Matrix4x4& jointToModel = skeleton.joints[jointIndex].skeletonSpaceMatrix;
+
+	// 行列を合成する
+	Matrix4x4 world = jointToModel * transform_->matrix.world;
+
+	// 平行移動成分でワールド座標を返す
+	return world.GetTranslationValue();
+}
+
+const Transform3DComponent* GameEntity3D::GetJointTransform(const std::string& jointName) const {
+
+	return animation_ ? animation_->FindJointTransform(jointName) : nullptr;
+}
+
 void GameEntity3D::SetColor(const Color& color, std::optional<uint32_t> meshIndex) {
 
 	// meshIndexが設定されている場合のみ指定して設定

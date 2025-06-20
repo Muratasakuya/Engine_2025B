@@ -22,6 +22,7 @@ void AnimationSystem::Update(EntityManager& entityManager) {
 	for (uint32_t entity : entityManager.View(Signature())) {
 
 		auto* animation = entityManager.GetComponent<AnimationComponent>(entity);
-		animation->Update();
+		auto* transform = entityManager.GetComponent<Transform3DComponent>(entity);
+		animation->Update(transform->matrix.world);
 	}
 }

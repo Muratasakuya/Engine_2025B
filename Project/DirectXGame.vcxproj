@@ -511,7 +511,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Enemy\Boss\BossEnemy.cpp">
+    <ClCompile Include="Game\Object3D\Enemy\Boss\Entity\BossEnemy.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\Entity\BossEnemyWeapon.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\Manager\BossEnemyManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -982,7 +990,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Object3D\Enemy\Boss\BossEnemy.h">
+    <ClInclude Include="Game\Object3D\Enemy\Boss\Entity\BossEnemy.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Enemy\Boss\Entity\BossEnemyWeapon.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Enemy\Boss\Manager\BossEnemyManager.h">
       <SubType>
       </SubType>
     </ClInclude>

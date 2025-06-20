@@ -457,3 +457,8 @@ Vector3 Matrix4x4::TransformPoint(const Vector3& point) const {
 
 	return Vector3(x, y, z);
 }
+
+Vector3 Matrix4x4::GetTranslationValue() const {
+
+	return Vector3(m[3][0], m[3][1], m[3][2]);
+}

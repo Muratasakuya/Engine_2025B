@@ -25,6 +25,7 @@ void GameScene::Load() {
 
 	// enemy
 	asset_->LoadModel("bossEnemy");
+	asset_->LoadModel("bossEnemyWeapon");
 	asset_->LoadAnimation("bossEnemy", "bossEnemy");
 
 	// environment
@@ -84,8 +85,8 @@ void GameScene::Init() {
 	followCamera_->SetTarget(player_->GetTransform());
 	followCamera_->FirstUpdate();
 
-	bossEnemy_ = std::make_unique<BossEnemy>();
-	bossEnemy_->Init("bossEnemy", "bossEnemy", "Enemy", "bossEnemy_idle");
+	bossEnemyManager_ = std::make_unique<BossEnemyManager>();
+	bossEnemyManager_->Init();
 
 	//========================================================================
 	//	editor
@@ -113,7 +114,7 @@ void GameScene::Update() {
 
 	player_->Update();
 
-	bossEnemy_->Update();
+	bossEnemyManager_->Update();
 
 	//========================================================================
 	//	editor

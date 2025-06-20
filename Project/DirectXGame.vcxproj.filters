@@ -542,7 +542,13 @@
     <ClCompile Include="Game\Object3D\Environment\FieldCrossMarkWall.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Enemy\Boss\BossEnemy.cpp">
+    <ClCompile Include="Game\Object3D\Enemy\Boss\Entity\BossEnemy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\Entity\BossEnemyWeapon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\Manager\BossEnemyManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -746,7 +752,9 @@
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.h" />
     <ClInclude Include="Game\Object3D\Player\Behavior\Parts\RightSword\RightSwordSecondAttackBehavior.h" />
     <ClInclude Include="Game\Object3D\Environment\FieldCrossMarkWall.h" />
-    <ClInclude Include="Game\Object3D\Enemy\Boss\BossEnemy.h" />
+    <ClInclude Include="Game\Object3D\Enemy\Boss\Entity\BossEnemy.h" />
+    <ClInclude Include="Game\Object3D\Enemy\Boss\Entity\BossEnemyWeapon.h" />
+    <ClInclude Include="Game\Object3D\Enemy\Boss\Manager\BossEnemyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

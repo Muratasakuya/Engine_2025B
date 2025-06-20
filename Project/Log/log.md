@@ -9,6 +9,7 @@ EngineInformation:     load model: playerLeftHand
 EngineInformation:     load model: playerRightHand
 EngineInformation:     load model: playerSword
 EngineInformation:     load model: bossEnemy
+EngineInformation:     load model: bossEnemyWeapon
 EngineInformation:     load animation: bossEnemy_falter
 EngineInformation:     load animation: bossEnemy_idle
 EngineInformation:     load animation: bossEnemy_lightAttack

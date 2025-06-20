@@ -12,7 +12,7 @@
 
 // object
 #include <Game/Object3D/Player/Player.h>
-#include <Game/Object3D/Enemy/Boss/BossEnemy.h>
+#include <Game/Object3D/Enemy/Boss/Manager/BossEnemyManager.h>
 
 // editor
 #include <Game/Editor/GameEntityEditor.h>
@@ -50,7 +50,7 @@ private:
 
 	// objects
 	std::unique_ptr<Player> player_;
-	std::unique_ptr<BossEnemy> bossEnemy_;
+	std::unique_ptr<BossEnemyManager> bossEnemyManager_;
 
 	// editor
 	std::unique_ptr<GameEntityEditor> entityEditor_;

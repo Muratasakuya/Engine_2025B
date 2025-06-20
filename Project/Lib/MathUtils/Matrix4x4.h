@@ -68,4 +68,6 @@ public:
 	static Matrix4x4 MakeAxisAffineMatrix(const Vector3& scale, const Quaternion& rotate, const Vector3& translate);
 
 	Vector3 TransformPoint(const Vector3& point) const;
+
+	Vector3 GetTranslationValue() const;
 };
