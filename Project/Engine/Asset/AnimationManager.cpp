@@ -141,6 +141,7 @@ int32_t AnimationManager::CreateJoint(const Node& node, const std::optional<int3
 
 	Joint joint;
 	joint.name = node.name;
+	joint.isParentTransform = false;
 	joint.localMatrix = node.localMatrix;
 	joint.skeletonSpaceMatrix = Matrix4x4::MakeIdentity4x4();
 	joint.transform = node.transform;

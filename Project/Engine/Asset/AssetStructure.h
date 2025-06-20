@@ -123,6 +123,8 @@ struct AnimationData {
 struct Joint {
 
 	Transform3DComponent transform;
+	bool isParentTransform;
+
 	Matrix4x4 localMatrix;
 	Matrix4x4 skeletonSpaceMatrix;   // skeletonSpaceでの変換行列
 	std::string name;

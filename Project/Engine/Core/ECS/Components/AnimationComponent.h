@@ -26,7 +26,7 @@ public:
 
 	void Init(const std::string& animationName, Asset* asset);
 
-	void Update();
+	void Update(const Matrix4x4& worldMatrix);
 
 	void ImGui(float itemSize);
 
@@ -36,12 +36,19 @@ public:
 
 	// animation再生
 	void SetPlayAnimation(const std::string& animationName, bool roopAnimation);
+	// 切り替えAnimation
+	void SwitchAnimation(const std::string& nextAnimName, bool loopAnimation, float transitionDuration);
+
+	// 親として更新するjointを設定
+	void SetParentJoint(const std::string& jointName);
 
 	bool IsTransition() const { return inTransition_; }
 
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
 
 	const Skeleton& GetSkeleton() const { return skeleton_; }
+
+	const Transform3DComponent* FindJointTransform(const std::string& name) const;
 private:
 	//========================================================================
 	//	private Methods
@@ -82,7 +89,7 @@ private:
 
 	// joint更新
 	void ApplyAnimation();
-	void UpdateSkeleton();
+	void UpdateSkeleton(const Matrix4x4& worldMatrix);
 	void UpdateSkinCluster();
 
 	// blend処理

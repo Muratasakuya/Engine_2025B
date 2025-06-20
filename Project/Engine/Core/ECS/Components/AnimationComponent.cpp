@@ -44,7 +44,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 	SetPlayAnimation(currentAnimationName_, true);
 }
 
-void AnimationComponent::Update() {
+void AnimationComponent::Update(const Matrix4x4& worldMatrix) {
 
 	// animationがなにも設定されていなければ何もしない
 	if (animationData_.empty()) {
@@ -85,7 +85,7 @@ void AnimationComponent::Update() {
 
 		// jointの値を更新する
 		ApplyAnimation();
-		UpdateSkeleton();
+		UpdateSkeleton(worldMatrix);
 
 		// bufferに渡す値を更新する
 		UpdateSkinCluster();
@@ -107,7 +107,7 @@ void AnimationComponent::Update() {
 		BlendAnimation(skeleton_,
 			animationData_[oldAnimationName_], oldAnimationTimer_,
 			animationData_[nextAnimationName_], nextAnimationTimer_, alpha);
-		UpdateSkeleton();
+		UpdateSkeleton(worldMatrix);
 
 		// bufferに渡す値を更新する
 		UpdateSkinCluster();
@@ -143,6 +143,23 @@ void AnimationComponent::ImGui(float itemSize) {
 	ImGui::Text("Transition Progress ");
 	ImGui::ProgressBar(transitionProgress);
 
+	ImGui::Separator();
+
+	// 全てのanimationを選択して遷移できるようにする
+	ImGui::Text(("currentAnimationName:" + currentAnimationName_).c_str());
+	for (const auto& [name, animation] : animationData_) {
+
+		// 同じ名前のanimationは選択肢から外す
+		if (name == currentAnimationName_) {
+			continue;
+		}
+
+		if (ImGui::Button(("current -> " + name).c_str(), ImVec2(400.0f, 32.0f))) {
+
+			SwitchAnimation(name, true, transitionDuration_);
+		}
+	}
+
 	ImGui::PopItemWidth();
 }
 
@@ -169,7 +186,7 @@ void AnimationComponent::ApplyAnimation() {
 		});
 }
 
-void AnimationComponent::UpdateSkeleton() {
+void AnimationComponent::UpdateSkeleton(const Matrix4x4& worldMatrix) {
 
 	// 全てのJointを更新、親が若いので通常ループで処理可能
 	for (auto& joint : skeleton_.joints) {
@@ -185,6 +202,12 @@ void AnimationComponent::UpdateSkeleton() {
 		else {
 
 			joint.skeletonSpaceMatrix = joint.localMatrix;
+		}
+
+		// 親なら行列を更新する
+		if (joint.isParentTransform) {
+
+			joint.transform.matrix.world = joint.skeletonSpaceMatrix * worldMatrix;
 		}
 	}
 }
@@ -294,4 +317,41 @@ void AnimationComponent::SetPlayAnimation(const std::string& animationName, bool
 	currentAnimationTimer_ = 0.0f;
 	currentAnimationName_ = animationName;
 	roopAnimation_ = roopAnimation;
+}
+
+void AnimationComponent::SwitchAnimation(const std::string& nextAnimName,
+	bool loopAnimation, float transitionDuration) {
+
+	// 現在のAnimationを設定
+	oldAnimationName_ = currentAnimationName_;
+	oldAnimationTimer_ = currentAnimationTimer_;
+
+	// 次のAnimationを設定
+	nextAnimationName_ = nextAnimName;
+	nextAnimationTimer_ = 0.0f;
+
+	// 遷移開始
+	inTransition_ = true;
+	transitionTimer_ = 0.0f;
+	transitionDuration_ = transitionDuration;
+
+	roopAnimation_ = loopAnimation;
+}
+
+void AnimationComponent::SetParentJoint(const std::string& jointName) {
+
+	for (auto& joint : skeleton_.joints) {
+		if (joint.name == jointName) {
+
+			// 親として更新させる
+			joint.isParentTransform = true;
+			return;
+		}
+	}
+}
+
+const Transform3DComponent* AnimationComponent::FindJointTransform(const std::string& name) const {
+
+	auto it = skeleton_.jointMap.find(name);
+	return (it == skeleton_.jointMap.end()) ? nullptr : &skeleton_.joints[it->second].transform;
 }
