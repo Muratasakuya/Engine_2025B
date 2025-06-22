@@ -3,45 +3,41 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity3D.h>
+#include <Game/Object3D/Enemy/Boss/State/Interface/BossEnemyIState.h>
+#include <Game/Object3D/Enemy/Boss/Structures/BossEnemyStructures.h>
 
-// weapon
-#include <Game/Object3D/Enemy/Boss/Entity/BossEnemyWeapon.h>
-// state
-#include <Game/Object3D/Enemy/Boss/State/BossEnemyStateController.h>
-
+// c++
+#include <memory>
+#include <optional>
+#include <unordered_map>
 // front
 class Player;
 
 //============================================================================
-//	BossEnemy class
+//	BossEnemyStateController class
 //============================================================================
-class BossEnemy :
-	public GameEntity3D {
+class BossEnemyStateController {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemy() = default;
-	~BossEnemy() = default;
+	BossEnemyStateController() = default;
+	~BossEnemyStateController() = default;
 
-	void DerivedInit() override;
+	void Init(BossEnemy& owner);
 
-	void Update() override;
+	void Update(BossEnemy& owner);
 
-	void DerivedImGui() override;
+	// 状態遷移をリクエスト
+	void RequestState(BossEnemyState state) { requested_ = state; }
 
-	/*-------- collision ----------*/
-
-	// 衝突コールバック関数
-	void OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) override;
-
+	void ImGui();
 	//--------- accessor -----------------------------------------------------
 
-	void SetNextAnimation(const std::string& nextAnimationName, bool loopAnimation, float transitionDuration);
-
 	void SetPlayer(const Player* player);
+
+	BossEnemyState GetCurrentState() const { return current_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -49,17 +45,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	const Player* player_;
+	std::unordered_map<BossEnemyState, std::unique_ptr<BossEnemyIState>> states_;
 
-	// 使用する武器
-	std::unique_ptr<BossEnemyWeapon> weapon_;
-
-	// 状態の管理
-	std::unique_ptr<BossEnemyStateController> stateController_;
-
-	// parameters
-	// 初期化時の値
-	Transform3DComponent initTransform_;
+	BossEnemyState current_;                  // 現在の状態
+	std::optional<BossEnemyState> requested_; // 次の状態
 
 	//--------- functions ----------------------------------------------------
 
@@ -67,12 +56,6 @@ private:
 	void ApplyJson();
 	void SaveJson();
 
-	// init
-	void InitWeapon();
-	void InitAnimations();
-	void InitCollision();
-	void InitState();
-
 	// helper
-	void SetInitTransform();
+	void ChangeState(BossEnemy& owner);
 };

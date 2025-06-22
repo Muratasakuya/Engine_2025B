@@ -548,7 +548,13 @@
     <ClCompile Include="Game\Object3D\Enemy\Boss\Entity\BossEnemyWeapon.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Enemy\Boss\Manager\BossEnemyManager.cpp">
+    <ClCompile Include="Game\Object3D\Enemy\Boss\State\Interface\BossEnemyIState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\State\BossEnemyIdleState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\State\BossEnemyStateController.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -754,7 +760,10 @@
     <ClInclude Include="Game\Object3D\Environment\FieldCrossMarkWall.h" />
     <ClInclude Include="Game\Object3D\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Object3D\Enemy\Boss\Entity\BossEnemyWeapon.h" />
-    <ClInclude Include="Game\Object3D\Enemy\Boss\Manager\BossEnemyManager.h" />
+    <ClInclude Include="Game\Object3D\Enemy\Boss\State\Interface\BossEnemyIState.h" />
+    <ClInclude Include="Game\Object3D\Enemy\Boss\State\BossEnemyIdleState.h" />
+    <ClInclude Include="Game\Object3D\Enemy\Boss\Structures\BossEnemyStructures.h" />
+    <ClInclude Include="Game\Object3D\Enemy\Boss\State\BossEnemyStateController.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

@@ -377,3 +377,22 @@ Quaternion Quaternion::FromRotationMatrix(const Matrix4x4& m) {
 
 	return q;
 }
+
+Quaternion Quaternion::LookTarget(const Vector3& from, const Vector3& to, const Vector3& axis,
+	const Quaternion& rotation, float lerpRate) {
+
+	Vector3 direction = (from - to).Normalize();
+	direction.y = 0.0f;
+	if (direction.Length() < std::numeric_limits<float>::epsilon()) {
+		return rotation;
+	}
+	direction = direction.Normalize();
+
+	// 回転を計算して設定
+	Quaternion targetRotation = Quaternion::LookRotation(direction, axis);
+
+	float t = std::clamp(lerpRate, 0.0f, 1.0f);
+	Quaternion newRotation = Quaternion::Slerp(rotation, targetRotation, t).Normalize();
+
+	return newRotation;
+}

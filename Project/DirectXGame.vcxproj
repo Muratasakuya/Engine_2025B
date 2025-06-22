@@ -519,7 +519,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Object3D\Enemy\Boss\Manager\BossEnemyManager.cpp">
+    <ClCompile Include="Game\Object3D\Enemy\Boss\State\BossEnemyIdleState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\State\BossEnemyStateController.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Object3D\Enemy\Boss\State\Interface\BossEnemyIState.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -998,7 +1006,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Object3D\Enemy\Boss\Manager\BossEnemyManager.h">
+    <ClInclude Include="Game\Object3D\Enemy\Boss\State\BossEnemyIdleState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Enemy\Boss\State\BossEnemyStateController.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Enemy\Boss\State\Interface\BossEnemyIState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Object3D\Enemy\Boss\Structures\BossEnemyStructures.h">
       <SubType>
       </SubType>
     </ClInclude>

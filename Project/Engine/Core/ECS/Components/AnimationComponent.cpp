@@ -322,6 +322,10 @@ void AnimationComponent::SetPlayAnimation(const std::string& animationName, bool
 void AnimationComponent::SwitchAnimation(const std::string& nextAnimName,
 	bool loopAnimation, float transitionDuration) {
 
+	if (currentAnimationName_ == nextAnimName) {
+		return;
+	}
+
 	// 現在のAnimationを設定
 	oldAnimationName_ = currentAnimationName_;
 	oldAnimationTimer_ = currentAnimationTimer_;

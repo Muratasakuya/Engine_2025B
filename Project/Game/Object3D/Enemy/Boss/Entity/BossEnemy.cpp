@@ -10,6 +10,18 @@
 //	BossEnemy classMethods
 //============================================================================
 
+void BossEnemy::InitWeapon() {
+
+	weapon_ = std::make_unique<BossEnemyWeapon>();
+	weapon_->Init("bossEnemyWeapon", "bossEnemyWeapon", "Enemy");
+
+	// 武器を右手を親として動かす
+	if (const auto& hand = GetJointTransform("rightHand")) {
+
+		weapon_->SetParent(*hand);
+	}
+}
+
 void BossEnemy::InitAnimations() {
 
 	// 最初は待機状態で初期化
@@ -33,6 +45,16 @@ void BossEnemy::InitCollision() {
 	body->SetTargetType(ColliderType::Type_Player);
 }
 
+void BossEnemy::InitState() {
+
+	// 初期化、ここで初期状態も設定
+	stateController_ = std::make_unique<BossEnemyStateController>();
+	stateController_->Init(*this);
+
+	// playerをセット
+	stateController_->SetPlayer(player_);
+}
+
 void BossEnemy::SetInitTransform() {
 
 	transform_->scale = initTransform_.scale;
@@ -43,18 +65,45 @@ void BossEnemy::SetInitTransform() {
 
 void BossEnemy::DerivedInit() {
 
+	// 使用する武器を初期化
+	InitWeapon();
+
 	// animation初期化、設定
 	InitAnimations();
 
 	// collision初期化、設定
 	InitCollision();
 
+	// 状態初期化
+	InitState();
+
 	// json適応
 	ApplyJson();
 }
 
+void BossEnemy::SetNextAnimation(const std::string& nextAnimationName, bool loopAnimation, float transitionDuration) {
+
+	// 次のanimationを設定
+	animation_->SwitchAnimation(nextAnimationName, loopAnimation, transitionDuration);
+}
+
+void BossEnemy::SetPlayer(const Player* player) {
+
+	player_ = nullptr;
+	player_ = player;
+
+	stateController_->SetPlayer(player);
+}
+
 void BossEnemy::Update() {
 
+	// 状態の更新
+	stateController_->Update(*this);
+
+	// 武器の更新
+	weapon_->Update();
+
+	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
 }
 
@@ -80,6 +129,11 @@ void BossEnemy::DerivedImGui() {
 
 			Collider::ImGui(itemWidth_);
 		}
+	}
+
+	if (ImGui::CollapsingHeader("State")) {
+
+		stateController_->ImGui();
 	}
 }
 

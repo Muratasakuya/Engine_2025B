@@ -68,7 +68,7 @@ void GameScene::Init() {
 	gameLight_->directional.direction.x = -0.381f;
 	gameLight_->directional.direction.y = -0.604f;
 	gameLight_->directional.direction.z = -0.699f;
-	gameLight_->directional.color = Color::Convert(0xffeaceff);
+	gameLight_->directional.color = Color::Convert(0xadceffff);
 
 	sceneView_->SetLight(gameLight_.get());
 
@@ -85,8 +85,11 @@ void GameScene::Init() {
 	followCamera_->SetTarget(player_->GetTransform());
 	followCamera_->FirstUpdate();
 
-	bossEnemyManager_ = std::make_unique<BossEnemyManager>();
-	bossEnemyManager_->Init();
+	bossEnemy_ = std::make_unique<BossEnemy>();
+	bossEnemy_->Init("bossEnemy", "bossEnemy", "Enemy", "bossEnemy_idle");
+
+	// playerをセット
+	bossEnemy_->SetPlayer(player_.get());
 
 	//========================================================================
 	//	editor
@@ -114,7 +117,7 @@ void GameScene::Update() {
 
 	player_->Update();
 
-	bossEnemyManager_->Update();
+	bossEnemy_->Update();
 
 	//========================================================================
 	//	editor

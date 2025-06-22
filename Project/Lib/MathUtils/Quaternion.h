@@ -86,4 +86,6 @@ public:
 
 	static Quaternion FromRotationMatrix(const Matrix4x4& m);
 
+	static Quaternion LookTarget(const Vector3& from, const Vector3& to, const Vector3& axis,
+		const Quaternion& rotation, float lerpRate);
 };

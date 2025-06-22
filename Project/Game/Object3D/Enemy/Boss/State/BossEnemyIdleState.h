@@ -3,33 +3,33 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
-
-// entities
-#include <Game/Object3D/Enemy/Boss/Entity/BossEnemy.h>
-#include <Game/Object3D/Enemy/Boss/Entity/BossEnemyWeapon.h>
+#include <Game/Object3D/Enemy/Boss/State/Interface/BossEnemyIState.h>
 
 //============================================================================
-//	BossEnemyManager class
+//	BossEnemyIdleState class
 //============================================================================
-class BossEnemyManager :
-	public IGameEditor {
+class BossEnemyIdleState :
+	public BossEnemyIState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemyManager() :IGameEditor("BossEnemyManager") {};
-	~BossEnemyManager() = default;
+	BossEnemyIdleState() = default;
+	~BossEnemyIdleState() = default;
 
-	void Init();
+	void Enter(BossEnemy& bossEnemy) override;
 
-	void Update();
+	void Update(BossEnemy& bossEnemy) override;
 
+	void Exit(BossEnemy& bossEnemy) override;
+
+	// imgui
 	void ImGui() override;
 
-	//--------- accessor -----------------------------------------------------
-
+	// json
+	void ApplyJson([[maybe_unused]] const Json& data) override;
+	void SaveJson([[maybe_unused]] Json& data) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -37,15 +37,9 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// entities
-	std::unique_ptr<BossEnemy> bossEnemy_;             // ボスの実体
-	std::unique_ptr<BossEnemyWeapon> bossEnemyWeapon_; // 武器
+	// parameters
+	float backStepSpeed_;    // 後ずさりするときの速度
 
 	//--------- functions ----------------------------------------------------
 
-	// init
-	void InitEntities();
-
-	// upodate
-	void UpdateEntities();
 };
