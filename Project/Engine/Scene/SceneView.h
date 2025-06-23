@@ -16,6 +16,9 @@
 // light
 #include <Engine/Scene/Light/PunctualLight.h>
 
+// dither
+#include <Engine/Core/Graphics/GPUObject/DitherStructures.h>
+
 // c++
 #include <memory>
 #include <optional>
@@ -51,6 +54,9 @@ public:
 	void SetLight(PunctualLight* gameLight);
 
 	PunctualLight* GetLight() const { return punctualLight_.value(); }
+
+	// dither
+	const DitherForGPU& GetDither() const { return dither_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -67,6 +73,9 @@ private:
 
 	// light
 	std::optional<PunctualLight*> punctualLight_;
+
+	// dither
+	DitherForGPU dither_;
 
 	//--------- functions ----------------------------------------------------
 

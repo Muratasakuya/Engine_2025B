@@ -35,7 +35,8 @@ struct MaterialForGPU {
 	uint32_t textureIndex;
 	uint32_t normalMapTextureIndex;
 	int32_t enableNormalMap;
-		
+	int32_t enableDithering;
+
 	float emissiveIntensity;
 	Vector3 emissionColor;
 

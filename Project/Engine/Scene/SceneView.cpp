@@ -25,6 +25,8 @@ void SceneView::Init() {
 
 	// scene情報初期化
 	InitCamera();
+
+	dither_.Init();
 }
 
 void SceneView::Update() {
@@ -72,6 +74,12 @@ void SceneView::ImGui() {
 		if (ImGui::BeginTabItem("Light")) {
 
 			EditLight();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Dither")) {
+
+			dither_.ImGui();
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();

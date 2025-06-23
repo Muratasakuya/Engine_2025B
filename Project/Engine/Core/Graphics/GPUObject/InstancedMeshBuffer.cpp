@@ -176,6 +176,7 @@ void InstancedMeshBuffer::SetUploadData(const std::string& name,
 			materials[meshIndex].textureIndex,
 			materials[meshIndex].normalMapTextureIndex,
 			materials[meshIndex].enableNormalMap,
+			materials[meshIndex].enableDithering,
 			materials[meshIndex].emissiveIntensity,
 			materials[meshIndex].emissionColor,
 			materials[meshIndex].uvMatrix));

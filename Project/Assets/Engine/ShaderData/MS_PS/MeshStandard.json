@@ -24,7 +24,8 @@
         { "RootIndex": 12, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 4, "NumDescriptors": "0","RegisterSpace": 1 } },
         { "RootIndex": 13, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 0 },
         { "RootIndex": 14, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 1 },
-        { "RootIndex": 15, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 2 }
+        { "RootIndex": 15, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 2 },
+        { "RootIndex": 16, "Type": "CBV", "Visibility": "PIXEL", "ShaderRegister": 3 }
     ],
     "StaticSampler": [
         { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER", "ShaderRegister": 0 }

@@ -28,6 +28,9 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 	rayScene.rayMax = 10000000.0f; // 飛ばす距離
 	raySceneBuffer_.TransferData(rayScene);
 
+	// dither
+	ditherBuffer_.CreateConstBuffer(device);
+
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
@@ -46,6 +49,9 @@ void SceneConstBuffer::Update(class SceneView* sceneView) {
 	orthoProjectionBuffer_.TransferData(sceneView->GetCamera2D()->GetViewProjectionMatrix());
 	// light
 	lightBuffer_.TransferData(*sceneView->GetLight());
+
+	// dither
+	ditherBuffer_.TransferData(sceneView->GetDither());
 
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
@@ -81,6 +87,10 @@ void SceneConstBuffer::SetMainPassCommands(bool debugEnable, ID3D12GraphicsComma
 	// light
 	commandList->SetGraphicsRootConstantBufferView(13,
 		lightBuffer_.GetResource()->GetGPUVirtualAddress());
+
+	// dither
+	commandList->SetGraphicsRootConstantBufferView(16,
+		ditherBuffer_.GetResource()->GetGPUVirtualAddress());
 }
 
 void SceneConstBuffer::SetViewProCommand(bool debugEnable,

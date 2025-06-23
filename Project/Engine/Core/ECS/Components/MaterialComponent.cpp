@@ -18,6 +18,7 @@ void MaterialComponent::InitParameter() {
 
 	color = Color::White();
 	enableNormalMap = false;
+	enableDithering = false;
 	enableLighting = true;
 	enableHalfLambert = true;
 	enableBlinnPhongReflection = false;
@@ -102,6 +103,9 @@ void MaterialComponent::ImGui(float itemSize) {
 
 	ImGui::SliderInt("castShadow", &castShadow, 0, 1);
 	ImGui::DragFloat("shadowRate", &shadowRate, 0.01f, 0.0f, 8.0f);
+
+	ImGui::SliderInt("enableDithering", &enableDithering, 0, 1);
+
 	ImGui::PopItemWidth();
 }
 
@@ -112,6 +116,7 @@ void MaterialComponent::ToJson(Json& data) {
 	data["color"] = color.ToJson();
 	data["emissionColor"] = emissionColor.ToJson();
 	data["emissiveIntensity"] = emissiveIntensity;
+	data["enableDithering"] = enableDithering;
 	// lighting
 	data["enableLighting"] = enableLighting;
 	data["enableHalfLambert"] = enableHalfLambert;
@@ -136,6 +141,7 @@ void MaterialComponent::FromJson(const Json& data) {
 	color = JsonAdapter::ToObject<Color>(data["color"]);
 	emissionColor = JsonAdapter::ToObject<Vector3>(data["emissionColor"]);
 	emissiveIntensity = JsonAdapter::GetValue<float>(data, "emissiveIntensity");
+	enableDithering = JsonAdapter::GetValue<int32_t>(data, "enableDithering");
 	// lighting
 	enableLighting = JsonAdapter::GetValue<int32_t>(data, "enableLighting");
 	enableHalfLambert = JsonAdapter::GetValue<int32_t>(data, "enableHalfLambert");

@@ -66,6 +66,9 @@ public:
 	// 法線マップ
 	int32_t enableNormalMap;
 
+	// ディザ抜き
+	int32_t enableDithering;
+
 	// ライティング
 	int32_t enableLighting;
 	int32_t enableHalfLambert;

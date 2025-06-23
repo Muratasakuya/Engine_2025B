@@ -566,6 +566,9 @@
     <ClCompile Include="Game\Objects\Base\GameDigitDisplay.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\DitherStructures.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -777,6 +780,7 @@
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Base\GameHPBar.h" />
     <ClInclude Include="Game\Objects\Base\GameDigitDisplay.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\DitherStructures.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
@@ -801,5 +805,6 @@
     <None Include="Assets\Engine\Shaders\MS\EffectMSFunction.hlsli" />
     <None Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.hlsli" />
     <None Include="Assets\Engine\Shaders\DXR\ShadowRay.hlsli" />
+    <None Include="Assets\Engine\Shaders\MS\Dither.hlsli" />
   </ItemGroup>
 </Project>

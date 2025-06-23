@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Core/Graphics/Raytracing/RaytracingStructures.h>
+#include <Engine/Core/Graphics/GPUObject/DitherStructures.h>
 #include <Engine/Scene/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Matrix4x4.h>
@@ -51,4 +52,7 @@ private:
 
 	// rayScene
 	DxConstBuffer<RaySceneForGPU> raySceneBuffer_;
+
+	// dither
+	DxConstBuffer<DitherForGPU> ditherBuffer_;
 };

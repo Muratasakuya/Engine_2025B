@@ -26,6 +26,14 @@ PSOutput main(MSOutput input) {
 	// bufferアクセス
 	Material material = gMaterials[id];
 	Lighting lighting = gLightings[id];
+	
+	// ディザ抜き処理を行うか
+	if (material.enableDithering == 1) {
+		
+		// pixelの距離を計算
+		float distanceToEye = distance(worldPosition, input.worldPosition);
+		ApplyDistanceDither(input.position.xy, distanceToEye);
+	}
 
 	// uv
 	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), material.uvTransform);

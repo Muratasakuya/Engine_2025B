@@ -3,6 +3,7 @@
 //============================================================================
 
 #include "MeshStandard.hlsli"
+#include "Dither.hlsli"
 
 //============================================================================
 //	structure
@@ -15,6 +16,7 @@ struct Material {
 	uint textureIndex;
 	uint normalMapTextureIndex;
 	int enableNormalMap;
+	int enableDithering;
 	
 	float emissiveIntensity;
 	float3 emissionColor;
