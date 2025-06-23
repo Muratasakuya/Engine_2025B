@@ -84,5 +84,6 @@
             "z": 48.0
         }
     },
+    "maxDestroyToughness": 100,
     "maxHP": 100
 }

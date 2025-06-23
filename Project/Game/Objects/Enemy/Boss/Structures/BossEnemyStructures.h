@@ -22,4 +22,7 @@ struct BossEnemyStats {
 
 	int maxHP;     // 最大HP
 	int currentHP; // 現在のHP
+
+	int maxDestroyToughness;     // 撃破靭性値
+	int currentDestroyToughness; // 現在の撃破靭性値
 };

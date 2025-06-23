@@ -15,13 +15,22 @@ void GameHPBar::Init(const std::string& textureName, const std::string& alphaTex
 	material_->material.useAlphaColor = true;
 }
 
-void GameHPBar::Update(int currentHP, int maxHP) {
+void GameHPBar::Update(int current, int max, bool isReverse) {
 
-	if (maxHP <= 0) {
+	// 0除算回避
+	if (max <= 0) {
 		return;
 	}
 
 	// HPの割合を計算
-	material_->material.alphaReference = std::clamp(
-		1.0f - static_cast<float>(currentHP) / static_cast<float>(maxHP), 0.0f, 1.0f);
+	float ratio = 0.0f;
+	if (isReverse) {
+
+		ratio = 1.0f - static_cast<float>(current) / static_cast<float>(max);
+	} else {
+
+		ratio = static_cast<float>(current) / static_cast<float>(max);
+	}
+
+	material_->material.alphaReference = std::clamp(ratio, 0.0f, 1.0f);
 }

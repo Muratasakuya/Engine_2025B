@@ -58,15 +58,12 @@ private:
 	// HP残量
 	std::unique_ptr<GameHPBar> hpBar_;
 	InitParameter hpBarParameter_;
+	// 撃破靭性値
+	std::unique_ptr<GameHPBar> destroyBar_;
+	InitParameter destroyBarParameter_;
 	// 名前文字表示
 	std::unique_ptr<GameEntity2D> nameText_;
 	InitParameter nameTextParameter_;
-
-	// parameters
-	// hp残量表示の左側頂点を波で揺らせる
-	float hpBarWaveDuration_; // 現在の経過時間
-	float vertexAmplitude_;   // 振幅
-	float amplitudeSpeed_;    // 振幅速度
 
 	//--------- functions ----------------------------------------------------
 

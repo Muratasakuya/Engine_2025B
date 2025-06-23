@@ -20,6 +20,10 @@ void BossEnemyHUD::InitSprite() {
 	hpBar_ = std::make_unique<GameHPBar>();
 	hpBar_->Init("enemyHPBar", "whiteAlphaGradation", "hpBar", "BossEnemyHUD");
 
+	// 撃破靭性値
+	destroyBar_ = std::make_unique<GameHPBar>();
+	destroyBar_->Init("enemyDestroyBar", "whiteAlphaGradation", "destroyBar", "BossEnemyHUD");
+
 	// 名前文字表示
 	nameText_ = std::make_unique<GameEntity2D>();
 	nameText_->Init("bossName", "bossName", "BossEnemyHUD");
@@ -48,18 +52,10 @@ void BossEnemyHUD::Update() {
 void BossEnemyHUD::UpdateSprite() {
 
 	// HP残量を更新
-	{
-		if (stats_.currentHP != stats_.maxHP) {
+	hpBar_->Update(stats_.currentHP, stats_.maxHP, true);
 
-			// cosで左側の頂点を揺らす
-			hpBarWaveDuration_ += GameTimer::GetDeltaTime() * amplitudeSpeed_;
-			// 頂点オフセットを設定
-			hpBar_->SetVertexOffset(0, Vector2(std::cos(hpBarWaveDuration_) * vertexAmplitude_, 0.0f));
-			// 1周期ずらす
-			hpBar_->SetVertexOffset(1, Vector2(std::cos(hpBarWaveDuration_ + pi) * vertexAmplitude_, 0.0f));
-		}
-		hpBar_->Update(stats_.currentHP, stats_.maxHP);
-	}
+	// 撃破靭性値を更新
+	destroyBar_->Update(stats_.currentDestroyToughness, stats_.maxDestroyToughness, false);
 }
 
 void BossEnemyHUD::ImGui() {
@@ -69,9 +65,6 @@ void BossEnemyHUD::ImGui() {
 		SaveJson();
 	}
 
-	ImGui::DragFloat("vertexAmplitude", &vertexAmplitude_, 0.001f);
-	ImGui::DragFloat("amplitudeSpeed", &amplitudeSpeed_, 0.001f);
-
 	if (hpBackgroundParameter_.ImGui("HPBackground")) {
 
 		hpBackground_->SetTranslation(hpBackgroundParameter_.translation);
@@ -80,6 +73,11 @@ void BossEnemyHUD::ImGui() {
 	if (hpBarParameter_.ImGui("HPBar")) {
 
 		hpBar_->SetTranslation(hpBarParameter_.translation);
+	}
+
+	if (destroyBarParameter_.ImGui("DestroyBar")) {
+
+		destroyBar_->SetTranslation(destroyBarParameter_.translation);
 	}
 
 	if (nameTextParameter_.ImGui("NameText")) {
@@ -101,11 +99,11 @@ void BossEnemyHUD::ApplyJson() {
 	hpBarParameter_.ApplyJson(data["hpBar"]);
 	SetInitParameter(*hpBar_, hpBarParameter_);
 
+	destroyBarParameter_.ApplyJson(data["destroyBar"]);
+	SetInitParameter(*destroyBar_, destroyBarParameter_);
+
 	nameTextParameter_.ApplyJson(data["nameText"]);
 	SetInitParameter(*nameText_, nameTextParameter_);
-
-	vertexAmplitude_ = JsonAdapter::GetValue<float>(data, "vertexAmplitude");
-	amplitudeSpeed_ = JsonAdapter::GetValue<float>(data, "amplitudeSpeed");
 }
 
 void BossEnemyHUD::SaveJson() {
@@ -114,10 +112,8 @@ void BossEnemyHUD::SaveJson() {
 
 	hpBackgroundParameter_.SaveJson(data["hpBackground"]);
 	hpBarParameter_.SaveJson(data["hpBar"]);
+	destroyBarParameter_.SaveJson(data["destroyBar"]);
 	nameTextParameter_.SaveJson(data["nameText"]);
-
-	data["vertexAmplitude"] = vertexAmplitude_;
-	data["amplitudeSpeed"] = amplitudeSpeed_;
 
 	JsonAdapter::Save("Enemy/Boss/hudParameter.json", data);
 }

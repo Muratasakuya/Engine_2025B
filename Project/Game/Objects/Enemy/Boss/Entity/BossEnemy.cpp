@@ -129,15 +129,26 @@ void BossEnemy::OnCollisionEnter([[maybe_unused]] const CollisionBody* collision
 
 void BossEnemy::DerivedImGui() {
 
-	ImGui::SeparatorText("Statas");
+	ImGui::SeparatorText("HP");
 
 	ImGui::Text("currentHP: %d / %d", stats_.currentHP, stats_.maxHP);
-	ImGui::DragInt("maxHP", &stats_.maxHP, 1);
-	ImGui::DragInt("currentHP", &stats_.currentHP, 1);
+	ImGui::DragInt("maxHP", &stats_.maxHP, 1, 0);
+	ImGui::DragInt("currentHP", &stats_.currentHP, 1, 0, stats_.maxHP);
 	if (ImGui::Button("ResetHP")) {
 
 		// HPをリセットする
 		stats_.currentHP = stats_.maxHP;
+	}
+
+	ImGui::SeparatorText("DestroyToughness");
+
+	ImGui::Text("currentDestroyToughness: %d / %d", stats_.currentDestroyToughness, stats_.maxDestroyToughness);
+	ImGui::DragInt("maxDestroyToughness", &stats_.maxDestroyToughness, 1, 0);
+	ImGui::DragInt("currentDestroyToughness", &stats_.currentDestroyToughness, 1, 0, stats_.maxDestroyToughness);
+	if (ImGui::Button("ResetDestroyToughness")) {
+
+		// 靭性値をリセットする
+		stats_.currentDestroyToughness = 0;
 	}
 
 	if (ImGui::CollapsingHeader("Init")) {
@@ -182,7 +193,8 @@ void BossEnemy::ApplyJson() {
 	Collider::ApplyBodyOffset(data);
 
 	stats_.maxHP = JsonAdapter::GetValue<int>(data, "maxHP");
-	// 初期化時は最大HPと同じ値にする
+	stats_.maxDestroyToughness = JsonAdapter::GetValue<int>(data, "maxDestroyToughness");
+	// 初期化時は最大と同じ値にする
 	stats_.currentHP = stats_.maxHP;
 }
 
@@ -195,6 +207,7 @@ void BossEnemy::SaveJson() {
 	Collider::SaveBodyOffset(data);
 
 	data["maxHP"] = stats_.maxHP;
+	data["maxDestroyToughness"] = stats_.maxDestroyToughness;
 
 	JsonAdapter::Save("Enemy/Boss/initParameter.json", data);
 }

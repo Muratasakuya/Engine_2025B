@@ -21,5 +21,5 @@ public:
 	void Init(const std::string& textureName, const std::string& alphaTextureName,
 		const std::string& name, const std::string& groupName);
 
-	void Update(int currentHP, int maxHP);
+	void Update(int current, int max, bool isReverse);
 };
