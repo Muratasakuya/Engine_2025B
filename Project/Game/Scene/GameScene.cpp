@@ -36,6 +36,7 @@ void GameScene::Load() {
 	asset_->LoadTexture("enemyHPBackground");
 	asset_->LoadTexture("enemyHPBar");
 	asset_->LoadTexture("enemyDestroyBar");
+	asset_->LoadTexture("toughnessNumber");
 	asset_->LoadTexture("whiteAlphaGradation");
 	asset_->LoadTexture("bossName");
 

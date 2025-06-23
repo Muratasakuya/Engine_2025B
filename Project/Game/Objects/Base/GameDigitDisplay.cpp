@@ -1,0 +1,71 @@
+#include "GameDigitDisplay.h"
+
+//============================================================================
+//	include
+//============================================================================
+
+//============================================================================
+//	GameDigitDisplay classMethods
+//============================================================================
+
+void GameDigitDisplay::Init(uint32_t maxDigit, const std::string& textureName,
+	const std::string& name, const std::string& groupName) {
+
+	digitSprites_.reserve(maxDigit);
+
+	// 左端の数字
+	GameEntity2D* firstSprite = digitSprites_.emplace_back(std::make_unique<GameEntity2D>()).get();
+	firstSprite->Init(textureName, name + "_0", groupName);
+
+	// 画像サイズ設定
+	const Vector2 texSize = firstSprite->GetTextureSize();
+	digitSize_ = Vector2(texSize.x / 10.0f, texSize.y);
+	firstSprite->SetTextureSize(digitSize_);
+	firstSprite->SetAnchor(Vector2::AnyInit(0.0f));
+
+	// 残りの桁を作成
+	for (uint32_t index = 1; index < maxDigit; ++index) {
+
+		GameEntity2D* sprite = digitSprites_.emplace_back(std::make_unique<GameEntity2D>()).get();
+		sprite->Init(textureName, name + "_" + std::to_string(index), groupName);
+		sprite->SetTextureSize(digitSize_);
+		sprite->SetAnchor(Vector2::AnyInit(0.0f));
+	}
+}
+
+void GameDigitDisplay::SetTranslation(const Vector2& translation, const Vector2& offset) {
+
+	for (uint32_t index = 0; index < digitSprites_.size(); ++index) {
+
+		digitSprites_[index]->SetTranslation(Vector2(
+			translation.x + offset.x * index, translation.y + offset.y * index));
+	}
+}
+
+void GameDigitDisplay::SetSize(const Vector2& size) {
+
+	for (uint32_t index = 0; index < digitSprites_.size(); ++index) {
+
+		digitSprites_[index]->SetSize(size);
+	}
+}
+
+void GameDigitDisplay::Update(uint32_t maxDigit, int num) {
+
+	// 最大値にclampする
+	const int maxValue = static_cast<int>(std::pow(10, maxDigit) - 1);
+	num = std::clamp(num, 0, maxValue);
+
+	// maxDigit桁で0埋めした文字列を取得
+	std::ostringstream oss;
+	oss << std::setw(maxDigit) << std::setfill('0') << num;
+	const std::string numString = oss.str();
+
+	// 桁を計算して設定
+	for (uint32_t index = 0; index < maxDigit; ++index) {
+
+		// 桁数
+		const int digit = numString[index] - '0';
+		digitSprites_[index]->SetTextureLeftTop(Vector2(digitSize_.x * digit, 0.0f));
+	}
+}

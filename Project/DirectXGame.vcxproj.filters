@@ -563,6 +563,9 @@
     <ClCompile Include="Game\Objects\Base\GameHPBar.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Base\GameDigitDisplay.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -773,6 +776,7 @@
     <ClInclude Include="Game\Objects\Player\Parts\PlayerRightSword.h" />
     <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Base\GameHPBar.h" />
+    <ClInclude Include="Game\Objects\Base\GameDigitDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

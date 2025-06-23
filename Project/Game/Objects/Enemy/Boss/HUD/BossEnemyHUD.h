@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Objects/Base/GameHPBar.h>
+#include <Game/Objects/Base/GameDigitDisplay.h>
 #include <Game/Objects/Enemy/Boss/Structures/BossEnemyStructures.h>
 
 //============================================================================
@@ -61,6 +62,11 @@ private:
 	// 撃破靭性値
 	std::unique_ptr<GameHPBar> destroyBar_;
 	InitParameter destroyBarParameter_;
+	// 撃破靭性値の数字表示
+	std::unique_ptr<GameDigitDisplay> destroyNumDisplay_;
+	InitParameter destroyNumParameter_;
+	Vector2 destroyNumOffset_; // オフセット座標
+	Vector2 destroyNumSize_;   // サイズ
 	// 名前文字表示
 	std::unique_ptr<GameEntity2D> nameText_;
 	InitParameter nameTextParameter_;

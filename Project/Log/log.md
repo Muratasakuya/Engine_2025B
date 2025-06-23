@@ -21,6 +21,7 @@ EngineInformation:     load model: wall
 EngineInformation:     load texture: enemyHPBackground
 EngineInformation:     load texture: enemyHPBar
 EngineInformation:     load texture: enemyDestroyBar
+EngineInformation:     load texture: toughnessNumber
 EngineInformation:     load texture: whiteAlphaGradation
 EngineInformation:     load texture: bossName
 EngineInformation:     load model: bossEnemy

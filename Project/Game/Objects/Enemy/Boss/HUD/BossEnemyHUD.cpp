@@ -24,6 +24,10 @@ void BossEnemyHUD::InitSprite() {
 	destroyBar_ = std::make_unique<GameHPBar>();
 	destroyBar_->Init("enemyDestroyBar", "whiteAlphaGradation", "destroyBar", "BossEnemyHUD");
 
+	// 撃破靭性値の数字表示
+	destroyNumDisplay_ = std::make_unique<GameDigitDisplay>();
+	destroyNumDisplay_->Init(2, "toughnessNumber", "destroyNum", "BossEnemyHUD");
+
 	// 名前文字表示
 	nameText_ = std::make_unique<GameEntity2D>();
 	nameText_->Init("bossName", "bossName", "BossEnemyHUD");
@@ -55,7 +59,10 @@ void BossEnemyHUD::UpdateSprite() {
 	hpBar_->Update(stats_.currentHP, stats_.maxHP, true);
 
 	// 撃破靭性値を更新
-	destroyBar_->Update(stats_.currentDestroyToughness, stats_.maxDestroyToughness, false);
+	destroyBar_->Update(stats_.currentDestroyToughness, stats_.maxDestroyToughness, true);
+
+	// 撃破靭性値の数字を更新
+	destroyNumDisplay_->Update(2, stats_.currentDestroyToughness);
 }
 
 void BossEnemyHUD::ImGui() {
@@ -80,6 +87,14 @@ void BossEnemyHUD::ImGui() {
 		destroyBar_->SetTranslation(destroyBarParameter_.translation);
 	}
 
+	if (destroyNumParameter_.ImGui("DestroyNum") ||
+		ImGui::DragFloat2("destroyNumOffset", &destroyNumOffset_.x, 1.0f) ||
+		ImGui::DragFloat2("destroyNumSize", &destroyNumSize_.x, 1.0f)) {
+
+		destroyNumDisplay_->SetTranslation(destroyNumParameter_.translation, destroyNumOffset_);
+		destroyNumDisplay_->SetSize(destroyNumSize_);
+	}
+
 	if (nameTextParameter_.ImGui("NameText")) {
 
 		nameText_->SetTranslation(nameTextParameter_.translation);
@@ -102,6 +117,12 @@ void BossEnemyHUD::ApplyJson() {
 	destroyBarParameter_.ApplyJson(data["destroyBar"]);
 	SetInitParameter(*destroyBar_, destroyBarParameter_);
 
+	destroyNumParameter_.ApplyJson(data["destroyNum"]);
+	destroyNumOffset_ = destroyNumOffset_.FromJson(data["destroyNum"]["numOffset"]);
+	destroyNumSize_ = destroyNumSize_.FromJson(data["destroyNum"]["numSize"]);
+	destroyNumDisplay_->SetTranslation(destroyNumParameter_.translation, destroyNumOffset_);
+	destroyNumDisplay_->SetSize(destroyNumSize_);
+
 	nameTextParameter_.ApplyJson(data["nameText"]);
 	SetInitParameter(*nameText_, nameTextParameter_);
 }
@@ -113,6 +134,9 @@ void BossEnemyHUD::SaveJson() {
 	hpBackgroundParameter_.SaveJson(data["hpBackground"]);
 	hpBarParameter_.SaveJson(data["hpBar"]);
 	destroyBarParameter_.SaveJson(data["destroyBar"]);
+	destroyNumParameter_.SaveJson(data["destroyNum"]);
+	data["destroyNum"]["numOffset"] = destroyNumOffset_.ToJson();
+	data["destroyNum"]["numSize"] = destroyNumSize_.ToJson();
 	nameTextParameter_.SaveJson(data["nameText"]);
 
 	JsonAdapter::Save("Enemy/Boss/hudParameter.json", data);
