@@ -51,7 +51,7 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// lightViewProjection
-	sceneBuffer->SetOrthoProCommand(commandList, 2);
+	sceneBuffer->SetOrthoProCommand(commandList, 3);
 	// index
 	commandList->IASetIndexBuffer(&spriteData.front().sprite->GetIndexBuffer().GetIndexBuffer());
 
@@ -68,10 +68,15 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 
 		// texture
 		commandList->SetGraphicsRootDescriptorTable(0, buffer.sprite->GetTextureGPUHandle());
+		// alphaTexture
+		if (buffer.sprite->UseAlphaTexture()) {
+
+			commandList->SetGraphicsRootDescriptorTable(1, buffer.sprite->GetAlphaTextureGPUHandle());
+		}
 		// matrix
-		commandList->SetGraphicsRootConstantBufferView(1, buffer.transform->GetBuffer().GetResource()->GetGPUVirtualAddress());
+		commandList->SetGraphicsRootConstantBufferView(2, buffer.transform->GetBuffer().GetResource()->GetGPUVirtualAddress());
 		// material
-		commandList->SetGraphicsRootConstantBufferView(3, buffer.material->GetBuffer().GetResource()->GetGPUVirtualAddress());
+		commandList->SetGraphicsRootConstantBufferView(4, buffer.material->GetBuffer().GetResource()->GetGPUVirtualAddress());
 
 		// 描画処理
 		commandList->DrawIndexedInstanced(SpriteComponent::GetIndexNum(), 1, 0, 0, 0);
@@ -99,7 +104,7 @@ void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxComman
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// lightViewProjection
-	sceneBuffer->SetOrthoProCommand(commandList, 2);
+	sceneBuffer->SetOrthoProCommand(commandList, 3);
 	// index
 	commandList->IASetIndexBuffer(&spriteData.front().sprite->GetIndexBuffer().GetIndexBuffer());
 
@@ -116,10 +121,15 @@ void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxComman
 
 		// texture
 		commandList->SetGraphicsRootDescriptorTable(0, buffer.sprite->GetTextureGPUHandle());
+		// alphaTexture
+		if (buffer.sprite->UseAlphaTexture()) {
+
+			commandList->SetGraphicsRootDescriptorTable(1, buffer.sprite->GetAlphaTextureGPUHandle());
+		}
 		// matrix
-		commandList->SetGraphicsRootConstantBufferView(1, buffer.transform->GetBuffer().GetResource()->GetGPUVirtualAddress());
+		commandList->SetGraphicsRootConstantBufferView(2, buffer.transform->GetBuffer().GetResource()->GetGPUVirtualAddress());
 		// material
-		commandList->SetGraphicsRootConstantBufferView(3, buffer.material->GetBuffer().GetResource()->GetGPUVirtualAddress());
+		commandList->SetGraphicsRootConstantBufferView(4, buffer.material->GetBuffer().GetResource()->GetGPUVirtualAddress());
 
 		// 描画処理
 		commandList->DrawIndexedInstanced(SpriteComponent::GetIndexNum(), 1, 0, 0, 0);

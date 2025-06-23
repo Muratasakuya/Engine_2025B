@@ -95,13 +95,13 @@ private:
 	// group化されたobjectの選択
 	void SelectGroupedObject();
 
-	//--------- object3D -----------------------------------------------------
+	//--------- Objects -----------------------------------------------------
 
 	// Object詳細、操作
-	void EditObject3D();
-	void Object3DInformation();
-	void Object3DTransform();
-	void Object3DMaterial();
+	void EditObjects();
+	void ObjectsInformation();
+	void ObjectsTransform();
+	void ObjectsMaterial();
 
 	void EditSkybox();
 

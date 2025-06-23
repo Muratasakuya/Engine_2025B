@@ -14,27 +14,44 @@
 
 void GameScene::Load() {
 
+	//========================================================================
+	//	environment
+	//========================================================================
+
 	// cubeMap、.dds
 	asset_->LoadTexture("overcast_soil_puresky_4k");
 
-	// player
-	asset_->LoadModel("playerBody");
-	asset_->LoadModel("playerLeftHand");
-	asset_->LoadModel("playerRightHand");
-	asset_->LoadModel("playerSword");
-
-	// enemy
-	asset_->LoadModel("bossEnemy");
-	asset_->LoadModel("bossEnemyWeapon");
-	asset_->LoadAnimation("bossEnemy", "bossEnemy");
-
-	// environment
 	asset_->LoadModel("field");
 	asset_->LoadModel("fieldUnder");
 	asset_->LoadModel("fence");
 	asset_->LoadModel("loftNurbs");
 	asset_->LoadModel("rustyMetal");
 	asset_->LoadModel("wall");
+
+	//========================================================================
+	//	enemy
+	//========================================================================
+
+	// HUD
+	asset_->LoadTexture("enemyHPBackground");
+	asset_->LoadTexture("enemyHPBar");
+	asset_->LoadTexture("whiteAlphaGradation");
+	asset_->LoadTexture("bossName");
+
+	// model
+	asset_->LoadModel("bossEnemy");
+	asset_->LoadModel("bossEnemyWeapon");
+	asset_->LoadAnimation("bossEnemy", "bossEnemy");
+
+	//========================================================================
+	//	player
+	//========================================================================
+
+	// player
+	asset_->LoadModel("playerBody");
+	asset_->LoadModel("playerLeftHand");
+	asset_->LoadModel("playerRightHand");
+	asset_->LoadModel("playerSword");
 }
 
 void GameScene::Init() {

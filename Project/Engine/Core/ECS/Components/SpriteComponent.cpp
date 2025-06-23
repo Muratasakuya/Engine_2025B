@@ -159,3 +159,12 @@ const D3D12_GPU_DESCRIPTOR_HANDLE& SpriteComponent::GetTextureGPUHandle() const 
 
 	return asset_->GetGPUHandle(textureName_);
 }
+
+const D3D12_GPU_DESCRIPTOR_HANDLE& SpriteComponent::GetAlphaTextureGPUHandle() const {
+
+	if (!alphaTextureName_.has_value()) {
+		assert(false && "alpha texture name is not set");
+	}
+
+	return asset_->GetGPUHandle(alphaTextureName_.value());
+}

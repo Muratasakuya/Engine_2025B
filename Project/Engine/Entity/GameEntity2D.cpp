@@ -20,6 +20,7 @@ void GameEntity2D::Init(const std::string& textureName,
 	// component取得
 	transform_ = ecsManager_->GetComponent<Transform2DComponent>(entityId_);
 	material_ = ecsManager_->GetComponent<SpriteMaterialComponent>(entityId_);
+	sprite_ = ecsManager_->GetComponent<SpriteComponent>(entityId_);
 }
 
 void GameEntity2D::SetCenterTranslation() {

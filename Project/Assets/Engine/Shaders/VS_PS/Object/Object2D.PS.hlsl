@@ -23,7 +23,9 @@ cbuffer Material : register(b0) {
 	float4 color;
 	float3 emissionColor;
 	uint useVertexColor;
+	uint useAlphaColor;
 	float emissiveIntensity;
+	float alphaReference;
 };
 
 //============================================================================
@@ -31,6 +33,7 @@ cbuffer Material : register(b0) {
 //============================================================================
 
 Texture2D<float4> gTexture : register(t0);
+Texture2D<float4> gAlphaTexture : register(t1);
 SamplerState gSampler : register(s0);
 
 //============================================================================
@@ -41,6 +44,17 @@ PSOutput main(VSOutput input) {
 	PSOutput output;
 	
 	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), uvTransform);
+	
+	// alpha値の参照を専用のテクスチャから取得する
+	if (useAlphaColor == 1) {
+		
+		float textureAlpha = gAlphaTexture.Sample(gSampler, transformUV.xy).a;
+		// 閾値以下なら破棄
+		if (textureAlpha < alphaReference) {
+			discard;
+		}
+	}
+	
 	float4 textureColor = gTexture.Sample(gSampler, transformUV.xy);
 	
 	if (textureColor.a <= 0.25f) {

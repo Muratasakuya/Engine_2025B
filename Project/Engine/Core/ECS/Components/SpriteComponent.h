@@ -44,6 +44,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetTextureName(const std::string& textureName) { textureName_ = textureName; }
+	void SetAlphaTextureName(const std::string& textureName) { alphaTextureName_ = textureName; }
 
 	void SetLayer(SpriteLayer layer) { layer_ = layer; }
 	void SetPostProcessEnable(bool enable) { postProcessEnable_ = enable; }
@@ -52,11 +53,13 @@ public:
 
 	SpriteLayer GetLayer() const { return layer_; }
 	bool GetPostProcessEnable() const { return postProcessEnable_; }
+	bool UseAlphaTexture() const { return alphaTextureName_.has_value(); }
 
 	const DxConstBuffer<SpriteVertexData>& GetVertexBuffer() const { return vertexBuffer_; }
 	const DxConstBuffer<uint32_t>& GetIndexBuffer() const { return indexBuffer_; }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetTextureGPUHandle() const;
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetAlphaTextureGPUHandle() const;
 private:
 	//========================================================================
 	//	private Methods
@@ -70,6 +73,7 @@ private:
 	Asset* asset_;
 
 	std::string textureName_;
+	std::optional<std::string> alphaTextureName_;
 
 	SpriteLayer layer_;
 	bool postProcessEnable_;

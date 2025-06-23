@@ -1,0 +1,20 @@
+{
+    "hpBackground": {
+        "translation": {
+            "x": 1398.0,
+            "y": 64.0
+        }
+    },
+    "hpBar": {
+        "translation": {
+            "x": 1436.0,
+            "y": 64.0
+        }
+    },
+    "nameText": {
+        "translation": {
+            "x": 1814.0,
+            "y": 82.0
+        }
+    }
+}

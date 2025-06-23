@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
-#include <Game/Object2D/Base/ITransition.h>
+#include <Game/Objects/Base/ITransition.h>
 
 // c++
 #include <memory>

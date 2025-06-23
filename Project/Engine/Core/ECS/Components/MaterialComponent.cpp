@@ -201,6 +201,12 @@ void SpriteMaterialComponent::ImGui(float itemSize) {
 		material.color.r, material.color.g,
 		material.color.b, material.color.a);
 
+	ImGui::SliderInt("useAlphaColor", &material.useAlphaColor, 0, 1);
+	if (material.useAlphaColor) {
+
+		ImGui::DragFloat("alphaReference", &material.alphaReference, 0.001f);
+	}
+
 	// 発行色
 	ImGui::ColorEdit3("emissionColor", &material.emissionColor.x);
 	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f",

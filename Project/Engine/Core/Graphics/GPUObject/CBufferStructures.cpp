@@ -65,7 +65,9 @@ void SpriteMaterial::Init() {
 
 	color = Color::White();
 	useVertexColor = false;
+	useAlphaColor = false;
 	emissiveIntensity = 0.0f;
+	alphaReference = 0.0f;
 	emissionColor = Vector3::AnyInit(1.0f);
 	uvTransform = Matrix4x4::MakeIdentity4x4();
 }

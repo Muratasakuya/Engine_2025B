@@ -21,10 +21,11 @@ public:
 	//========================================================================
 
 	GameEntity2D() = default;
-	~GameEntity2D() = default;
+	virtual ~GameEntity2D() = default;
 
-	void Init(const std::string& textureName, const std::string& name,
-		const std::string& groupName);
+	void Init(const std::string& textureName, const std::string& name, const std::string& groupName);
+
+	void DerivedInit() override {};
 
 	// imgui
 	void ImGui() override {};
@@ -62,6 +63,7 @@ public:
 
 	// sprite
 	void SetTextureName(const std::string& textureName) { sprite_->SetTextureName(textureName); }
+	void SetAlphaTextureName(const std::string& textureName) { sprite_->SetAlphaTextureName(textureName); }
 	void SetSpriteLayer(SpriteLayer layer) { sprite_->SetLayer(layer); }
 	void SetPostProcessEnable(bool enable) { sprite_->SetPostProcessEnable(enable); }
 
@@ -75,9 +77,9 @@ public:
 
 	// material
 	const Color& GetColor() const { return material_->material.color; }
-private:
+protected:
 	//========================================================================
-	//	private Methods
+	//	protected Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------

@@ -114,7 +114,7 @@ void ImGuiEntityEditor::SelectGroupedObject() {
 void ImGuiEntityEditor::EditObject() {
 
 	// 各objectの操作
-	EditObject3D();
+	EditObjects();
 	EditObject2D();
 }
 
@@ -129,7 +129,7 @@ void ImGuiEntityEditor::RegisterEntity(uint32_t id, IGameEntity* entity) {
 	entitiesMap_[id] = entity;
 }
 
-void ImGuiEntityEditor::EditObject3D() {
+void ImGuiEntityEditor::EditObjects() {
 
 	if (!selected3D_) return;
 	uint32_t id = selected3D_.value();
@@ -148,7 +148,7 @@ void ImGuiEntityEditor::EditObject3D() {
 
 			if (ImGui::BeginTabItem("Info")) {
 
-				Object3DInformation();
+				ObjectsInformation();
 				ImGui::EndTabItem();
 			}
 			if (ImGui::BeginTabItem("Skybox")) {
@@ -159,19 +159,19 @@ void ImGuiEntityEditor::EditObject3D() {
 		} else {
 			if (ImGui::BeginTabItem("Info")) {
 
-				Object3DInformation();
+				ObjectsInformation();
 				ImGui::EndTabItem();
 			}
 
 			if (ImGui::BeginTabItem("Transform")) {
 
-				Object3DTransform();
+				ObjectsTransform();
 				ImGui::EndTabItem();
 			}
 
 			if (ImGui::BeginTabItem("Material")) {
 
-				Object3DMaterial();
+				ObjectsMaterial();
 				ImGui::EndTabItem();
 			}
 		}
@@ -179,7 +179,7 @@ void ImGuiEntityEditor::EditObject3D() {
 	}
 }
 
-void ImGuiEntityEditor::Object3DInformation() {
+void ImGuiEntityEditor::ObjectsInformation() {
 
 	uint32_t id = *selected3D_;
 	const auto* tag = tagSystem_->Tags().at(id);
@@ -194,13 +194,13 @@ void ImGuiEntityEditor::Object3DInformation() {
 	}
 }
 
-void ImGuiEntityEditor::Object3DTransform() {
+void ImGuiEntityEditor::ObjectsTransform() {
 
 	auto* transform = ecsManager_->GetComponent<Transform3DComponent>(*selected3D_);
 	transform->ImGui(itemWidth_);
 }
 
-void ImGuiEntityEditor::Object3DMaterial() {
+void ImGuiEntityEditor::ObjectsMaterial() {
 
 	auto* matsPtr = ecsManager_->GetComponent<MaterialComponent, true>(*selected3D_);
 	auto& materials = *matsPtr;

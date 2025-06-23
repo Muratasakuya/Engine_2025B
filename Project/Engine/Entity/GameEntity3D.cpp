@@ -14,7 +14,7 @@ void GameEntity3D::Init(const std::string& modelName, const std::string& name,
 	const std::string& groupName, const std::optional<std::string>& animationName) {
 
 	// entity作成
-	entityId_ = ecsManager_->CreateObject3D(modelName, name, groupName, animationName);
+	entityId_ = ecsManager_->CreateObjects(modelName, name, groupName, animationName);
 
 	// component取得
 	transform_ = ecsManager_->GetComponent<Transform3DComponent>(entityId_);

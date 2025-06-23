@@ -62,8 +62,10 @@ struct SpriteMaterial {
 	Matrix4x4 uvTransform;
 	Color color;
 	Vector3 emissionColor;
-	uint32_t useVertexColor;
+	int32_t useVertexColor;
+	int32_t useAlphaColor;
 	float emissiveIntensity;
+	float alphaReference;
 
 	void Init();
 	void ImGui();

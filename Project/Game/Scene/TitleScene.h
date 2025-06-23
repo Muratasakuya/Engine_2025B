@@ -7,7 +7,7 @@
 #include <Game/Camera/GameCamera.h>
 
 // object
-#include <Game/Object2D/SceneTransition/FadeTransition.h>
+#include <Game/Objects/SceneTransition/FadeTransition.h>
 
 //============================================================================
 //	TitleScene class

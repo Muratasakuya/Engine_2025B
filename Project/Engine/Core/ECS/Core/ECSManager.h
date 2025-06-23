@@ -34,7 +34,7 @@ public:
 
 	// entity追加
 	// helper
-	uint32_t CreateObject3D(const std::string& modelName, const std::string& name,
+	uint32_t CreateObjects(const std::string& modelName, const std::string& name,
 		const std::string& groupName, const std::optional<std::string>& animationName = std::nullopt);
 
 	uint32_t CreateSkybox(const std::string& textureName);

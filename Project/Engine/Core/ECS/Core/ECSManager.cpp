@@ -78,7 +78,7 @@ void ECSManager::UpdateBuffer() {
 	systemManager_->UpdateBuffer(*entityManager_.get());
 }
 
-uint32_t ECSManager::CreateObject3D(const std::string& modelName,
+uint32_t ECSManager::CreateObjects(const std::string& modelName,
 	const std::string& name, const std::string& groupName,
 	const std::optional<std::string>& animationName) {
 
