@@ -136,6 +136,12 @@ public:
 	Vector2 textureLeftTop; // テクスチャ左上座標
 	Vector2 textureSize;    // テクスチャ切り出しサイズ
 
+	// 0: 左下
+	// 1: 左上
+	// 2: 右下
+	// 3: 右上
+	std::array<Vector2, 4> vertexOffset_; // 頂点オフセット
+
 	Matrix4x4 matrix;
 
 	const Transform2DComponent* parent = nullptr;

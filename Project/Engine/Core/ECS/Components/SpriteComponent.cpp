@@ -49,19 +49,19 @@ void SpriteComponent::UpdateVertex(const Transform2DComponent& transform) {
 
 	// vertexデータの更新
 	// 左下
-	vertexData_[0].pos = { left,bottom };
+	vertexData_[0].pos = Vector2(left, bottom) + transform.vertexOffset_[0];
 	vertexData_[0].texcoord = { texLeft,texBottom };
 	vertexData_[0].color = Color::White();
 	// 左上
-	vertexData_[1].pos = { left,top };
+	vertexData_[1].pos = Vector2(left, top) + transform.vertexOffset_[1];
 	vertexData_[1].texcoord = { texLeft,texTop };
 	vertexData_[1].color = Color::White();
 	// 右下
-	vertexData_[2].pos = { right,bottom };
+	vertexData_[2].pos = Vector2(right, bottom) + transform.vertexOffset_[2];
 	vertexData_[2].texcoord = { texRight,texBottom };
 	vertexData_[2].color = Color::White();
 	// 右上
-	vertexData_[3].pos = { right,top };
+	vertexData_[3].pos = Vector2(right, top) + transform.vertexOffset_[3];
 	vertexData_[3].texcoord = { texRight,texTop };
 	vertexData_[3].color = Color::White();
 

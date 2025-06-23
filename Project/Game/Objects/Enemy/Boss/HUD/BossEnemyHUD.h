@@ -62,6 +62,12 @@ private:
 	std::unique_ptr<GameEntity2D> nameText_;
 	InitParameter nameTextParameter_;
 
+	// parameters
+	// hp残量表示の左側頂点を波で揺らせる
+	float hpBarWaveDuration_; // 現在の経過時間
+	float vertexAmplitude_;   // 振幅
+	float amplitudeSpeed_;    // 振幅速度
+
 	//--------- functions ----------------------------------------------------
 
 	// json

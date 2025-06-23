@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
@@ -47,7 +48,18 @@ void BossEnemyHUD::Update() {
 void BossEnemyHUD::UpdateSprite() {
 
 	// HP残量を更新
-	hpBar_->Update(stats_.currentHP, stats_.maxHP);
+	{
+		if (stats_.currentHP != stats_.maxHP) {
+
+			// cosで左側の頂点を揺らす
+			hpBarWaveDuration_ += GameTimer::GetDeltaTime() * amplitudeSpeed_;
+			// 頂点オフセットを設定
+			hpBar_->SetVertexOffset(0, Vector2(std::cos(hpBarWaveDuration_) * vertexAmplitude_, 0.0f));
+			// 1周期ずらす
+			hpBar_->SetVertexOffset(1, Vector2(std::cos(hpBarWaveDuration_ + pi) * vertexAmplitude_, 0.0f));
+		}
+		hpBar_->Update(stats_.currentHP, stats_.maxHP);
+	}
 }
 
 void BossEnemyHUD::ImGui() {
@@ -56,6 +68,9 @@ void BossEnemyHUD::ImGui() {
 
 		SaveJson();
 	}
+
+	ImGui::DragFloat("vertexAmplitude", &vertexAmplitude_, 0.001f);
+	ImGui::DragFloat("amplitudeSpeed", &amplitudeSpeed_, 0.001f);
 
 	if (hpBackgroundParameter_.ImGui("HPBackground")) {
 
@@ -88,6 +103,9 @@ void BossEnemyHUD::ApplyJson() {
 
 	nameTextParameter_.ApplyJson(data["nameText"]);
 	SetInitParameter(*nameText_, nameTextParameter_);
+
+	vertexAmplitude_ = JsonAdapter::GetValue<float>(data, "vertexAmplitude");
+	amplitudeSpeed_ = JsonAdapter::GetValue<float>(data, "amplitudeSpeed");
 }
 
 void BossEnemyHUD::SaveJson() {
@@ -97,6 +115,9 @@ void BossEnemyHUD::SaveJson() {
 	hpBackgroundParameter_.SaveJson(data["hpBackground"]);
 	hpBarParameter_.SaveJson(data["hpBar"]);
 	nameTextParameter_.SaveJson(data["nameText"]);
+
+	data["vertexAmplitude"] = vertexAmplitude_;
+	data["amplitudeSpeed"] = amplitudeSpeed_;
 
 	JsonAdapter::Save("Enemy/Boss/hudParameter.json", data);
 }

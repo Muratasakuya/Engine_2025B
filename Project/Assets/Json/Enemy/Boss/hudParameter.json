@@ -1,4 +1,5 @@
 {
+    "amplitudeSpeed": 3.200000047683716,
     "hpBackground": {
         "translation": {
             "x": 1398.0,
@@ -16,5 +17,6 @@
             "x": 1814.0,
             "y": 82.0
         }
-    }
+    },
+    "vertexAmplitude": 0.012000000104308128
 }

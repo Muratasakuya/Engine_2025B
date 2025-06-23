@@ -48,6 +48,8 @@ public:
 	void SetAnchor(const Vector2& anchor) { transform_->anchorPoint = anchor; }
 	// 親
 	void SetParent(const Transform2DComponent& parent) { transform_->parent = &parent; }
+	// 頂点オフセット
+	void SetVertexOffset(uint32_t index, const Vector2& offset) { transform_->vertexOffset_[index] = offset; };
 
 	// material
 	// 色
