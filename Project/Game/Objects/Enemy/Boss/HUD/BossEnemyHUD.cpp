@@ -33,11 +33,6 @@ void BossEnemyHUD::InitSprite() {
 	nameText_->Init("bossName", "bossName", "BossEnemyHUD");
 }
 
-void BossEnemyHUD::SetInitParameter(GameEntity2D& sprite, InitParameter parameter) {
-
-	sprite.SetTranslation(parameter.translation);
-}
-
 void BossEnemyHUD::Init() {
 
 	// sprite初期化
@@ -45,6 +40,11 @@ void BossEnemyHUD::Init() {
 
 	// json適応
 	ApplyJson();
+}
+
+void BossEnemyHUD::SetInitParameter(GameEntity2D& sprite, const  GameCommon::HUDInitParameter& parameter) {
+
+	sprite.SetTranslation(parameter.translation);
 }
 
 void BossEnemyHUD::Update() {
@@ -140,25 +140,4 @@ void BossEnemyHUD::SaveJson() {
 	nameTextParameter_.SaveJson(data["nameText"]);
 
 	JsonAdapter::Save("Enemy/Boss/hudParameter.json", data);
-}
-
-bool BossEnemyHUD::InitParameter::ImGui(const std::string& label) {
-
-	bool edit = false;
-
-	ImGui::SeparatorText(label.c_str());
-
-	edit = ImGui::DragFloat2(("translation##" + label).c_str(), &translation.x, 1.0f);
-
-	return edit;
-}
-
-void BossEnemyHUD::InitParameter::ApplyJson(const Json& data) {
-
-	translation = translation.FromJson(data["translation"]);
-}
-
-void BossEnemyHUD::InitParameter::SaveJson(Json& data) {
-
-	data["translation"] = translation.ToJson();
 }

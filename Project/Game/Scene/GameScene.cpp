@@ -49,11 +49,25 @@ void GameScene::Load() {
 	//	player
 	//========================================================================
 
+	// HUD
+	// operate
+	asset_->LoadTexture("attackIcon");
+	asset_->LoadTexture("dashIcon");
+	asset_->LoadTexture("skilIcon");
+	asset_->LoadTexture("specialIcon");
+	// mouse
+	asset_->LoadTexture("leftMouseClick");
+	asset_->LoadTexture("rightMouseClick");
+	asset_->LoadTexture("EButton");
+	asset_->LoadTexture("QButton");
+	// gamePad
+	asset_->LoadTexture("XButton");
+	asset_->LoadTexture("AButton");
+	asset_->LoadTexture("YButton");
+	asset_->LoadTexture("RTButton");
+
 	// player
 	asset_->LoadModel("playerBody");
-	asset_->LoadModel("playerLeftHand");
-	asset_->LoadModel("playerRightHand");
-	asset_->LoadModel("playerSword");
 }
 
 void GameScene::Init() {
@@ -98,7 +112,7 @@ void GameScene::Init() {
 	ECSManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
 
 	player_ = std::make_unique<Player>();
-	player_->Init(followCamera_.get());
+	player_->Init("playerBody", "player", "Player");
 
 	// 追従先を設定する: player
 	followCamera_->SetTarget(player_->GetTransform());

@@ -11,7 +11,7 @@
 #include <Game/Camera/FollowCamera.h>
 
 // object
-#include <Game/Objects/Player/Player.h>
+#include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 
 // editor

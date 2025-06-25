@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Utility/GameTimer.h>
-#include <Game/Objects/Player/Player.h>
+#include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 
 //============================================================================

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Lib/ComPtr.h>
+#include <Engine/Input/InputStructures.h>
 #include <Lib/MathUtils/Vector2.h>
 
 // directInput
@@ -17,30 +18,6 @@
 #include <cassert>
 // front
 class WinApp;
-
-//============================================================================
-//	enum class
-//============================================================================
-
-// XINPUTGamePadのボタンの種類
-enum class GamePadButtons {
-
-	ARROW_UP,       // 十字ボタンの上方向
-	ARROW_DOWN,     // 十字ボタンの下方向
-	ARROW_LEFT,     // 十字ボタンの左方向
-	ARROW_RIGHT,    // 十字ボタンの右方向
-	START,          // スタートボタン
-	BACK,           // バックボタン
-	LEFT_THUMB,     // 左スティックのボタン
-	RIGHT_THUMB,    // 右スティックのボタン
-	LEFT_SHOULDER,  // 左ショルダーボタン（LB）
-	RIGHT_SHOULDER, // 右ショルダーボタン（RB）
-	A,              // Aボタン
-	B,              // Bボタン
-	X,              // Xボタン
-	Y,              // Yボタン
-	Counts          // ボタンの数を表すための定数
-};
 
 //============================================================================
 //	Input class
@@ -85,6 +62,8 @@ public:
 	Vector2 GetMouseMoveValue() const;
 	float GetMouseWheel();
 
+	InputType GetType() const { return inputType_; }
+
 	// deadZone
 	void SetDeadZone(float deadZone);
 
@@ -101,6 +80,9 @@ private:
 	static Input* instance_;
 
 	WinApp* winApp_;
+
+	// 入力状態
+	InputType inputType_;
 
 	// key
 	std::array<BYTE, 256> key_{};

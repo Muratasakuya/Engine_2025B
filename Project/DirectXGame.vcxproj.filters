@@ -410,156 +410,6 @@
     <ClCompile Include="Game\Objects\Environment\FieldCrossMarkWall.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Base\IPlayerBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Body\BodyDashAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Body\BodyDashBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Body\BodyFirstAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Body\BodyParryBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Body\BodySecondAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Body\BodyThirdAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Body\BodyWaitBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\Body\BodyWalkBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandDashAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandDashBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandFirstAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandParryBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandSecondAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandThirdAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandWaitBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandWalkBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordDashAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordDashBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordFirstAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordParryBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordSecondAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordThirdAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordWaitBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordWalkBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandDashAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandDashBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandFirstAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandParryBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandSecondAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandWaitBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandWalkBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordDashAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordDashBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordFirstAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordSecondAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordThirdAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordWaitBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordWalkBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\PlayerBehaviorController.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Parts\Base\BasePlayerParts.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Parts\PlayerBody.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Parts\PlayerLeftHand.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Parts\PlayerLeftSword.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Parts\PlayerPartsController.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Parts\PlayerRightHand.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Parts\PlayerRightSword.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Player.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandThirdAttackBehavior.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Base\GameHPBar.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -567,6 +417,15 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\GPUObject\DitherStructures.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Entity\Player.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\HUD\PlayerHUD.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Base\GameCommonStructures.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -660,15 +519,6 @@
     <ClInclude Include="Engine\Utility\UVHelper.h" />
     <ClInclude Include="Engine\Utility\SimpleAnimation.h" />
     <ClInclude Include="Game\Camera\FollowCamera.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\IPlayerBehavior.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashBehavior.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyFirstAttackBehavior.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyDashAttackBehavior.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodySecondAttackBehavior.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyThirdAttackBehavior.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyParryBehavior.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyWaitBehavior.h" />
-    <ClInclude Include="Game\Object3D\Player\Behavior\Parts\Body\PlayerBodyWalkBehavior.h" />
     <ClInclude Include="Engine\Utility\KeyframeAnimation.h" />
     <ClInclude Include="Engine\Asset\AssetEditor.h" />
     <ClInclude Include="Engine\Core\ECS\Core\ComponentPool.h" />
@@ -727,60 +577,13 @@
     <ClInclude Include="Game\Objects\Enemy\Boss\State\BossEnemyStateController.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Structures\BossEnemyStructures.h" />
     <ClInclude Include="Game\Objects\Environment\FieldCrossMarkWall.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Base\IPlayerBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Body\BodyDashAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Body\BodyDashBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Body\BodyFirstAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Body\BodyParryBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Body\BodySecondAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Body\BodyThirdAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Body\BodyWaitBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\Body\BodyWalkBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandDashAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandDashBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandFirstAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandParryBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandSecondAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandThirdAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandWaitBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftHand\LeftHandWalkBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordDashAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordDashBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordFirstAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordParryBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordSecondAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordThirdAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordWaitBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\LeftSword\LeftSwordWalkBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandDashAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandDashBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandFirstAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandParryBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandSecondAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandThirdAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandWaitBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightHand\RightHandWalkBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordDashAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordDashBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordFirstAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordParryBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordSecondAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordThirdAttackBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordWaitBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\Parts\RightSword\RightSwordWalkBehavior.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\PlayerBehaviorController.h" />
-    <ClInclude Include="Game\Objects\Player\Behavior\PlayerBehaviorType.h" />
-    <ClInclude Include="Game\Objects\Player\Parts\Base\BasePlayerParts.h" />
-    <ClInclude Include="Game\Objects\Player\Parts\PlayerBody.h" />
-    <ClInclude Include="Game\Objects\Player\Parts\PlayerLeftHand.h" />
-    <ClInclude Include="Game\Objects\Player\Parts\PlayerLeftSword.h" />
-    <ClInclude Include="Game\Objects\Player\Parts\PlayerPartsController.h" />
-    <ClInclude Include="Game\Objects\Player\Parts\PlayerRightHand.h" />
-    <ClInclude Include="Game\Objects\Player\Parts\PlayerRightSword.h" />
-    <ClInclude Include="Game\Objects\Player\Player.h" />
     <ClInclude Include="Game\Objects\Base\GameHPBar.h" />
     <ClInclude Include="Game\Objects\Base\GameDigitDisplay.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DitherStructures.h" />
+    <ClInclude Include="Game\Objects\Player\Entity\Player.h" />
+    <ClInclude Include="Game\Objects\Player\HUD\PlayerHUD.h" />
+    <ClInclude Include="Game\Objects\Base\GameCommonStructures.h" />
+    <ClInclude Include="Engine\Input\InputStructures.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

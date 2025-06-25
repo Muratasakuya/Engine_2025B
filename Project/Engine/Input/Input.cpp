@@ -196,6 +196,24 @@ void Input::Update() {
 	ZeroMemory(&gamepadState_, sizeof(XINPUT_STATE));
 	DWORD dwResult = XInputGetState(0, &gamepadState_);
 
+	for (const auto& key : key_) {
+		if (key) {
+
+			inputType_ = InputType::Keyboard;
+			break;
+		}
+	}
+
+	if (dwResult == ERROR_SUCCESS) {
+		for (const auto& button : gamepadButtons_) {
+			if (button) {
+
+				inputType_ = InputType::GamePad;
+				break;
+			}
+		}
+	}
+
 	if (dwResult == ERROR_SUCCESS) {
 
 #pragma region ///ゲームパッドが接続されている場合の処理 ///
