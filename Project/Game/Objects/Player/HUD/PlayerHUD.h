@@ -3,9 +3,10 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity2D.h>
+#include <Game/Objects/Base/GameHPBar.h>
 #include <Engine/Input/InputStructures.h>
 #include <Game/Objects/Base/GameCommonStructures.h>
+#include <Game/Objects/Player/Structures/PlayerStructures.h>
 
 // c++
 #include <utility>
@@ -27,6 +28,10 @@ public:
 	void Update();
 
 	void ImGui();
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
 private:
 	//========================================================================
 	//	private Methods
@@ -59,8 +64,28 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// ステータス
+	PlayerStats stats_;
 	// 現在の入力状態
 	InputType inputType_;
+
+	//----------- stats ------------------------//
+
+	// HP背景
+	std::unique_ptr<GameEntity2D> hpBackground_;
+	GameCommon::HUDInitParameter hpBackgroundParameter_;
+	// HP残量
+	std::unique_ptr<GameHPBar> hpBar_;
+	GameCommon::HUDInitParameter hpBarParameter_;
+	// スキル値
+	std::unique_ptr<GameHPBar> skilBar_;
+	GameCommon::HUDInitParameter skilBarParameter_;
+
+	// 名前文字表示
+	std::unique_ptr<GameEntity2D> nameText_;
+	GameCommon::HUDInitParameter nameTextParameter_;
+
+	//----------- operate ----------------------//
 
 	// 操作方法表示
 	InputStateSprite attack_;  // 攻撃

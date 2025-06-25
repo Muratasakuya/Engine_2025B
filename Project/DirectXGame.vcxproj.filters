@@ -584,6 +584,7 @@
     <ClInclude Include="Game\Objects\Player\HUD\PlayerHUD.h" />
     <ClInclude Include="Game\Objects\Base\GameCommonStructures.h" />
     <ClInclude Include="Engine\Input\InputStructures.h" />
+    <ClInclude Include="Game\Objects\Player\Structures\PlayerStructures.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

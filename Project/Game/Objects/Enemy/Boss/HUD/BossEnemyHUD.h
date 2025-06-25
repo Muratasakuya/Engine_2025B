@@ -36,7 +36,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// 現在のHP
+	// ステータス
 	BossEnemyStats stats_;
 
 	// HP背景
@@ -68,7 +68,4 @@ private:
 
 	// update
 	void UpdateSprite();
-
-	// helper
-	void SetInitParameter(GameEntity2D& sprite, const  GameCommon::HUDInitParameter& parameter);
 };

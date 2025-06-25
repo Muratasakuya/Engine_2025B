@@ -7,6 +7,8 @@
 
 // c++
 #include <string>
+// front
+class GameEntity2D;
 
 //============================================================================
 //	GameCommonStructures class
@@ -26,4 +28,6 @@ namespace GameCommon {
 		void ApplyJson(const Json& data);
 		void SaveJson(Json& data);
 	};
+
+	void SetInitParameter(GameEntity2D& sprite, const  GameCommon::HUDInitParameter& parameter);
 }

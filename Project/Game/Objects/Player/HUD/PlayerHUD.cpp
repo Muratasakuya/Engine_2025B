@@ -12,6 +12,22 @@
 
 void PlayerHUD::InitSprite() {
 
+	// HP背景
+	hpBackground_ = std::make_unique<GameEntity2D>();
+	hpBackground_->Init("playerHPBackground", "hpBackground", "PlayerHUD");
+
+	// HP残量
+	hpBar_ = std::make_unique<GameHPBar>();
+	hpBar_->Init("playerHPBar", "whiteAlphaGradation_1", "hpBar", "PlayerHUD");
+
+	// スキル値
+	skilBar_ = std::make_unique<GameHPBar>();
+	skilBar_->Init("playerSkilBar", "whiteAlphaGradation_1", "destroyBar", "PlayerHUD");
+
+	// 名前文字表示
+	nameText_ = std::make_unique<GameEntity2D>();
+	nameText_->Init("playerName", "playerName", "PlayerHUD");
+
 	// キーボード操作とパッド操作のtextureの名前を格納する
 	std::unordered_map<InputType, std::string> dynamicTextures{};
 
@@ -56,6 +72,11 @@ void PlayerHUD::Update() {
 
 void PlayerHUD::UpdateSprite() {
 
+	// HP残量を更新
+	hpBar_->Update(stats_.currentHP, stats_.maxHP, true);
+	// スキル値を更新
+	skilBar_->Update(stats_.currentSkilPoint, stats_.maxSkilPoint, true);
+
 	// 入力状態に応じて表示を切り替える
 	ChangeAllOperateSprite();
 }
@@ -98,6 +119,29 @@ void PlayerHUD::ImGui() {
 		SaveJson();
 	}
 
+	if (hpBackgroundParameter_.ImGui("HPBackground")) {
+
+		hpBackground_->SetTranslation(hpBackgroundParameter_.translation);
+	}
+
+	if (hpBarParameter_.ImGui("HPBar")) {
+
+		hpBar_->SetTranslation(hpBarParameter_.translation);
+	}
+
+	if (skilBarParameter_.ImGui("SkilBar")) {
+
+		skilBar_->SetTranslation(skilBarParameter_.translation);
+	}
+
+
+	if (nameTextParameter_.ImGui("NameText")) {
+
+		nameText_->SetTranslation(nameTextParameter_.translation);
+	}
+
+	ImGui::Separator();
+
 	bool edit = false;
 
 	edit |= ImGui::DragFloat2("leftSpriteTranslation", &leftSpriteTranslation_.x, 1.0f);
@@ -125,6 +169,18 @@ void PlayerHUD::ApplyJson() {
 		return;
 	}
 
+	hpBackgroundParameter_.ApplyJson(data["hpBackground"]);
+	GameCommon::SetInitParameter(*hpBackground_, hpBackgroundParameter_);
+
+	hpBarParameter_.ApplyJson(data["hpBar"]);
+	GameCommon::SetInitParameter(*hpBar_, hpBarParameter_);
+
+	skilBarParameter_.ApplyJson(data["skilBar"]);
+	GameCommon::SetInitParameter(*skilBar_, skilBarParameter_);
+
+	nameTextParameter_.ApplyJson(data["nameText"]);
+	GameCommon::SetInitParameter(*nameText_, nameTextParameter_);
+
 	leftSpriteTranslation_ = leftSpriteTranslation_.FromJson(data["leftSpriteTranslation"]);
 	staticSpriteSize_ = leftSpriteTranslation_.FromJson(data["staticSpriteSize"]);
 	dynamicSpriteSize_ = leftSpriteTranslation_.FromJson(data["dynamicSpriteSize"]);
@@ -138,6 +194,11 @@ void PlayerHUD::ApplyJson() {
 void PlayerHUD::SaveJson() {
 
 	Json data;
+
+	hpBackgroundParameter_.SaveJson(data["hpBackground"]);
+	hpBarParameter_.SaveJson(data["hpBar"]);
+	skilBarParameter_.SaveJson(data["skilBar"]);
+	nameTextParameter_.SaveJson(data["nameText"]);
 
 	data["leftSpriteTranslation"] = leftSpriteTranslation_.ToJson();
 	data["staticSpriteSize"] = staticSpriteSize_.ToJson();

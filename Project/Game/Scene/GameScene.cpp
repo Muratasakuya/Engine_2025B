@@ -21,6 +21,10 @@ void GameScene::Load() {
 	// cubeMap、.dds
 	asset_->LoadTexture("overcast_soil_puresky_4k");
 
+	// common
+	asset_->LoadTexture("whiteAlphaGradation_0");
+	asset_->LoadTexture("whiteAlphaGradation_1");
+
 	asset_->LoadModel("field");
 	asset_->LoadModel("fieldUnder");
 	asset_->LoadModel("fence");
@@ -37,7 +41,6 @@ void GameScene::Load() {
 	asset_->LoadTexture("enemyHPBar");
 	asset_->LoadTexture("enemyDestroyBar");
 	asset_->LoadTexture("toughnessNumber");
-	asset_->LoadTexture("whiteAlphaGradation");
 	asset_->LoadTexture("bossName");
 
 	// model
@@ -50,6 +53,10 @@ void GameScene::Load() {
 	//========================================================================
 
 	// HUD
+	asset_->LoadTexture("playerHPBackground");
+	asset_->LoadTexture("playerHPBar");
+	asset_->LoadTexture("playerSkilBar");
+	asset_->LoadTexture("playerName");
 	// operate
 	asset_->LoadTexture("attackIcon");
 	asset_->LoadTexture("dashIcon");

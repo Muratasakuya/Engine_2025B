@@ -39,6 +39,9 @@ private:
 	// HUD
 	std::unique_ptr<PlayerHUD> hudSprites_;
 
+	// parameters
+	PlayerStats stats_; // ステータス
+
 	//--------- functions ----------------------------------------------------
 
 	// json

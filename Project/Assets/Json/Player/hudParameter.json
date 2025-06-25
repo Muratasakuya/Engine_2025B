@@ -4,11 +4,35 @@
         "x": 64.0,
         "y": 64.0
     },
+    "hpBackground": {
+        "translation": {
+            "x": 398.0,
+            "y": 64.0
+        }
+    },
+    "hpBar": {
+        "translation": {
+            "x": 398.0,
+            "y": 64.0
+        }
+    },
     "leftSpriteTranslation": {
         "x": 1348.0,
         "y": 900.0
     },
+    "nameText": {
+        "translation": {
+            "x": 88.0,
+            "y": 84.0
+        }
+    },
     "operateSpriteSpancingX": 140.85000610351563,
+    "skilBar": {
+        "translation": {
+            "x": 456.0,
+            "y": 76.0
+        }
+    },
     "staticSpriteSize": {
         "x": 128.0,
         "y": 128.0

@@ -957,6 +957,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Structures\PlayerStructures.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\SceneTransition\FadeTransition.h" />
     <ClInclude Include="Game\Scene\GameScene.h">
       <SubType>

@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Entity/GameEntity2D.h>
 
 // imgui
 #include <imgui.h>
@@ -30,4 +31,9 @@ void GameCommon::HUDInitParameter::ApplyJson(const Json& data) {
 void GameCommon::HUDInitParameter::SaveJson(Json& data) {
 
 	data["translation"] = translation.ToJson();
+}
+
+void GameCommon::SetInitParameter(GameEntity2D& sprite, const  GameCommon::HUDInitParameter& parameter) {
+
+	sprite.SetTranslation(parameter.translation);
 }
