@@ -55,6 +55,17 @@ void PlayerHUD::Update() {
 }
 
 void PlayerHUD::UpdateSprite() {
+
+	// 入力状態に応じて表示を切り替える
+	ChangeAllOperateSprite();
+}
+
+void PlayerHUD::ChangeAllOperateSprite() {
+
+	attack_.ChangeDynamicSprite(inputType_);
+	dash_.ChangeDynamicSprite(inputType_);
+	skil_.ChangeDynamicSprite(inputType_);
+	special_.ChangeDynamicSprite(inputType_);
 }
 
 void PlayerHUD::SetAllOperateTranslation() {
@@ -151,6 +162,20 @@ void PlayerHUD::InputStateSprite::Init(uint32_t spriteIndex, const std::string& 
 
 		dynamicSprites[type] = std::make_unique<GameEntity2D>();
 		dynamicSprites[type]->Init(texture, texture, groupName);
+	}
+}
+
+void PlayerHUD::InputStateSprite::ChangeDynamicSprite(InputType type) {
+
+	// 表示の切り替え
+	for (auto& [key, sprite] : dynamicSprites) {
+		if (key == type) {
+
+			sprite->SetAlpha(1.0f);
+		} else {
+
+			sprite->SetAlpha(0.0f);
+		}
 	}
 }
 

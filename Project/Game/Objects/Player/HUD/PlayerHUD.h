@@ -48,6 +48,8 @@ private:
 		void Init(uint32_t spriteIndex, const std::string& staticSpriteTextureName,
 			const std::unordered_map<InputType, std::string>& dynamicSpritesTextureName);
 
+		void ChangeDynamicSprite(InputType type);
+
 		void SetTranslation(const Vector2& leftSpriteTranslation,
 			float dynamicSpriteOffsetY, float operateSpriteSpancingX);
 
@@ -87,6 +89,7 @@ private:
 	void UpdateSprite();
 
 	// helper
+	void ChangeAllOperateSprite();
 	void SetAllOperateTranslation();
 	void SetAllOperateSize();
 };

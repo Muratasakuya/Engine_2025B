@@ -203,6 +203,10 @@ void Input::Update() {
 			break;
 		}
 	}
+	// マウス入力があれば
+	if (mouseButtons_[0] || mouseButtons_[1] || mouseButtons_[2] || GetMouseMoveValue().Length() != 0.0f) {
+		inputType_ = InputType::Keyboard;
+	}
 
 	if (dwResult == ERROR_SUCCESS) {
 		for (const auto& button : gamepadButtons_) {
@@ -211,6 +215,11 @@ void Input::Update() {
 				inputType_ = InputType::GamePad;
 				break;
 			}
+		}
+
+		// スティック入力があれば
+		if (GetLeftStickVal().Length() > deadZone_ || GetRightStickVal().Length() > deadZone_) {
+			inputType_ = InputType::GamePad;
 		}
 	}
 
@@ -227,6 +236,8 @@ void Input::Update() {
 		gamepadButtons_[static_cast<size_t>(GamePadButtons::RIGHT_THUMB)] = (gamepadState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_THUMB) != 0;
 		gamepadButtons_[static_cast<size_t>(GamePadButtons::LEFT_SHOULDER)] = (gamepadState_.Gamepad.wButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) != 0;
 		gamepadButtons_[static_cast<size_t>(GamePadButtons::RIGHT_SHOULDER)] = (gamepadState_.Gamepad.wButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) != 0;
+		gamepadButtons_[static_cast<size_t>(GamePadButtons::LEFT_TRIGGER)] = (leftTriggerValue_ > 0);
+		gamepadButtons_[static_cast<size_t>(GamePadButtons::RIGHT_TRIGGER)] = (rightTriggerValue_ > 0);
 		gamepadButtons_[static_cast<size_t>(GamePadButtons::A)] = (gamepadState_.Gamepad.wButtons & XINPUT_GAMEPAD_A) != 0;
 		gamepadButtons_[static_cast<size_t>(GamePadButtons::B)] = (gamepadState_.Gamepad.wButtons & XINPUT_GAMEPAD_B) != 0;
 		gamepadButtons_[static_cast<size_t>(GamePadButtons::X)] = (gamepadState_.Gamepad.wButtons & XINPUT_GAMEPAD_X) != 0;
