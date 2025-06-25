@@ -3,39 +3,32 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Scene/Methods/IScene.h>
-#include <Engine/Scene/Light/PunctualLight.h>
+#include <Engine/Entity/GameEntity3D.h>
 
-// camera
-#include <Game/Camera/GameCamera.h>
-#include <Game/Camera/FollowCamera.h>
-
-// object
-#include <Game/Objects/Player/Entity/Player.h>
-#include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
-
-// editor
-#include <Game/Editor/GameEntityEditor.h>
-#include <Game/Editor/LevelEditor/LevelEditor.h>
+// HUD
+#include <Game/Objects/Player/HUD/PlayerHUD.h>
 
 //============================================================================
-//	GameScene class
+//	Player class
 //============================================================================
-class GameScene :
-	public IScene, public IGameEditor {
+class Player :
+	public GameEntity3D {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	GameScene() :IGameEditor("GameScene") {};
-	~GameScene() = default;
+	Player() = default;
+	~Player() = default;
 
-	void Init() override;
+	void DerivedInit() override;
 
 	void Update() override;
 
-	void ImGui() override;
+	void DerivedImGui() override;
+
+	//--------- accessor -----------------------------------------------------
+
 private:
 	//========================================================================
 	//	private Methods
@@ -43,20 +36,17 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// camera
-	std::unique_ptr<FollowCamera> followCamera_;
-	// light
-	std::unique_ptr<PunctualLight> gameLight_;
+	// HUD
+	std::unique_ptr<PlayerHUD> hudSprites_;
 
-	// objects
-	std::unique_ptr<Player> player_;
-	std::unique_ptr<BossEnemy> bossEnemy_;
-
-	// editor
-	std::unique_ptr<GameEntityEditor> entityEditor_;
-	std::unique_ptr<LevelEditor> levelEditor_;
+	// parameters
+	PlayerStats stats_; // ステータス
 
 	//--------- functions ----------------------------------------------------
 
-	void Load();
+	// json
+	void ApplyJson();
+	void SaveJson();
+
+	void InitHUD();
 };

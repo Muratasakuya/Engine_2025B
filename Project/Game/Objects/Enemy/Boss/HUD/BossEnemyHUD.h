@@ -5,6 +5,7 @@
 //============================================================================
 #include <Game/Objects/Base/GameHPBar.h>
 #include <Game/Objects/Base/GameDigitDisplay.h>
+#include <Game/Objects/Base/GameCommonStructures.h>
 #include <Game/Objects/Enemy/Boss/Structures/BossEnemyStructures.h>
 
 //============================================================================
@@ -33,43 +34,28 @@ private:
 	//	private Methods
 	//========================================================================
 
-	//--------- structure ----------------------------------------------------
-
-	// 各spriteごとの初期化値
-	struct InitParameter {
-
-		Vector2 translation; // 座標
-
-		// imgui
-		bool ImGui(const std::string& label);
-
-		// json
-		void ApplyJson(const Json& data);
-		void SaveJson(Json& data);
-	};
-
 	//--------- variables ----------------------------------------------------
 
-	// 現在のHP
+	// ステータス
 	BossEnemyStats stats_;
 
 	// HP背景
 	std::unique_ptr<GameEntity2D> hpBackground_;
-	InitParameter hpBackgroundParameter_;
+	GameCommon::HUDInitParameter hpBackgroundParameter_;
 	// HP残量
 	std::unique_ptr<GameHPBar> hpBar_;
-	InitParameter hpBarParameter_;
+	GameCommon::HUDInitParameter hpBarParameter_;
 	// 撃破靭性値
 	std::unique_ptr<GameHPBar> destroyBar_;
-	InitParameter destroyBarParameter_;
+	GameCommon::HUDInitParameter destroyBarParameter_;
 	// 撃破靭性値の数字表示
 	std::unique_ptr<GameDigitDisplay> destroyNumDisplay_;
-	InitParameter destroyNumParameter_;
+	GameCommon::HUDInitParameter destroyNumParameter_;
 	Vector2 destroyNumOffset_; // オフセット座標
 	Vector2 destroyNumSize_;   // サイズ
 	// 名前文字表示
 	std::unique_ptr<GameEntity2D> nameText_;
-	InitParameter nameTextParameter_;
+	GameCommon::HUDInitParameter nameTextParameter_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -82,7 +68,4 @@ private:
 
 	// update
 	void UpdateSprite();
-
-	// helper
-	void SetInitParameter(GameEntity2D& sprite, InitParameter parameter);
 };

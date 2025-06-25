@@ -3,6 +3,8 @@ EngineInformation:     Use Adapter:NVIDIA GeForce RTX 3060 Laptop GPU
 
 EngineInformation:     12.2
 EngineInformation:     load texture: overcast_soil_puresky_4k
+EngineInformation:     load texture: whiteAlphaGradation_0
+EngineInformation:     load texture: whiteAlphaGradation_1
 EngineInformation:     load texture: field
 EngineInformation:     load texture: fieldNormal
 EngineInformation:     load model: field
@@ -22,18 +24,30 @@ EngineInformation:     load texture: enemyHPBackground
 EngineInformation:     load texture: enemyHPBar
 EngineInformation:     load texture: enemyDestroyBar
 EngineInformation:     load texture: toughnessNumber
-EngineInformation:     load texture: whiteAlphaGradation
 EngineInformation:     load texture: bossName
 EngineInformation:     load model: bossEnemy
 EngineInformation:     load model: bossEnemyWeapon
 EngineInformation:     load animation: bossEnemy_falter
 EngineInformation:     load animation: bossEnemy_idle
 EngineInformation:     load animation: bossEnemy_lightAttack
+EngineInformation:     load texture: playerHPBackground
+EngineInformation:     load texture: playerHPBar
+EngineInformation:     load texture: playerSkilBar
+EngineInformation:     load texture: playerName
+EngineInformation:     load texture: attackIcon
+EngineInformation:     load texture: dashIcon
+EngineInformation:     load texture: skilIcon
+EngineInformation:     load texture: specialIcon
+EngineInformation:     load texture: leftMouseClick
+EngineInformation:     load texture: rightMouseClick
+EngineInformation:     load texture: EButton
+EngineInformation:     load texture: QButton
+EngineInformation:     load texture: XButton
+EngineInformation:     load texture: AButton
+EngineInformation:     load texture: YButton
+EngineInformation:     load texture: RTButton
 EngineInformation:     load texture: white
 EngineInformation:     load model: playerBody
-EngineInformation:     load model: playerLeftHand
-EngineInformation:     load model: playerRightHand
-EngineInformation:     load model: playerSword
 EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture
 EngineInformation:     load texture: model
