@@ -24,7 +24,7 @@
 namespace {
 
 	// 各状態の名前
-	const char* kStatetateNames[] = {
+	const char* kStateNames[] = {
 		"Idle","Teleport","Stun","Falter","LightAttack","StrongAttack",
 		"ChargeAttack","RushAttack",
 	};
@@ -97,7 +97,6 @@ void BossEnemyStateController::UpdatePhase() {
 		}
 	}
 
-	prevPhase_ = UINT32_MAX;
 	// phaseが切り替わったらリセットする
 	if (prevPhase_ != currentPhase_) {
 
@@ -209,8 +208,8 @@ void BossEnemyStateController::ImGui() {
 
 	// 各stateの値を調整
 	editingStateIndex_ = 0;
-	ImGui::Combo("EditState", &editingStateIndex_, kStatetateNames, IM_ARRAYSIZE(kStatetateNames));
-	ImGui::SeparatorText(kStatetateNames[editingStateIndex_]);
+	ImGui::Combo("EditState", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
+	ImGui::SeparatorText(kStateNames[editingStateIndex_]);
 
 	if (const auto& state = states_[static_cast<BossEnemyState>(editingStateIndex_)].get()) {
 
@@ -299,7 +298,7 @@ void BossEnemyStateController::EditStateTable() {
 
 				bool clicked = false;
 				DrawHighlighted(isCurrentState, kHighlight, [&] {
-					clicked = ImGui::Button(kStatetateNames[stateId], buttonSize); });
+					clicked = ImGui::Button(kStateNames[stateId], buttonSize); });
 				if (clicked) {
 
 					combo.sequence.erase(combo.sequence.begin() + seqIdx);
@@ -313,7 +312,7 @@ void BossEnemyStateController::EditStateTable() {
 
 						const int payload = static_cast<int>(seqIdx);
 						ImGui::SetDragDropPayload("SeqReorder", &payload, sizeof(int));
-						ImGui::Text("%s", kStatetateNames[stateId]);
+						ImGui::Text("%s", kStateNames[stateId]);
 						ImGui::EndDragDropSource();
 					}
 					if (ImGui::BeginDragDropTarget()) {
@@ -349,7 +348,7 @@ void BossEnemyStateController::EditStateTable() {
 
 				static int selectedState = 0;
 				const std::string addLabel = "##" + std::to_string(comboIdx);
-				if (ImGui::Combo(addLabel.c_str(), &selectedState, kStatetateNames, IM_ARRAYSIZE(kStatetateNames))) {
+				if (ImGui::Combo(addLabel.c_str(), &selectedState, kStateNames, IM_ARRAYSIZE(kStateNames))) {
 
 					const BossEnemyState newState = static_cast<BossEnemyState>(selectedState);
 					if (std::ranges::find(combo.sequence, newState) == combo.sequence.end()) {
@@ -497,7 +496,7 @@ void BossEnemyStateController::ApplyJson() {
 
 		for (auto& [state, ptr] : states_) {
 
-			ptr->ApplyJson(data[kStatetateNames[static_cast<int>(state)]]);
+			ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
 		}
 	}
 
@@ -529,7 +528,7 @@ void BossEnemyStateController::SaveJson() {
 		Json data;
 		for (auto& [state, ptr] : states_) {
 
-			ptr->SaveJson(data[kStatetateNames[static_cast<int>(state)]]);
+			ptr->SaveJson(data[kStateNames[static_cast<int>(state)]]);
 		}
 
 		JsonAdapter::Save(kStateJsonPath, data);

@@ -6,29 +6,29 @@
 #include <Lib/MathUtils/MathUtils.h>
 
 // front
-class BossEnemy;
 class Player;
+class BossEnemy;
 
 //============================================================================
-//	BossEnemyIState class
+//	PlayerIState class
 //============================================================================
-class BossEnemyIState {
+class PlayerIState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemyIState() = default;
-	virtual ~BossEnemyIState() = default;
+	PlayerIState() = default;
+	virtual ~PlayerIState() = default;
 
 	// 状態遷移時
-	virtual void Enter(BossEnemy& bossEnemy) = 0;
+	virtual void Enter(Player& player) = 0;
 
 	// 更新処理
-	virtual void Update(BossEnemy& bossEnemy) = 0;
+	virtual void Update(Player& player) = 0;
 
 	// 状態終了時
-	virtual void Exit(BossEnemy& bossEnemy) = 0;
+	virtual void Exit(Player& player) = 0;
 
 	// imgui
 	virtual void ImGui() = 0;
@@ -39,7 +39,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetPlayer(const Player* player) { player_ = player; }
+	void SetBossEnemy(const BossEnemy* bossEnemy) { bossEnemy_ = bossEnemy; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -47,9 +47,8 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
-	const Player* player_;
+	const BossEnemy* bossEnemy_;
 
 	// 共通parameters
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
-	float rotationLerpRate_; // 回転補完割合
 };

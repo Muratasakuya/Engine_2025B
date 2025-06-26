@@ -130,6 +130,8 @@ void GameScene::Init() {
 
 	// playerをセット
 	bossEnemy_->SetPlayer(player_.get());
+	// bossEnemtをセット
+	player_->SetBossEnemy(bossEnemy_.get());
 
 	//========================================================================
 	//	editor

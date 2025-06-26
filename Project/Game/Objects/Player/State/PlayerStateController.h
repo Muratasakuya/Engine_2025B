@@ -3,40 +3,39 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity3D.h>
+#include <Game/Objects/Player/State/Interface/PlayerIState.h>
+#include <Game/Objects/Player/Structures/PlayerStructures.h>
 
-// state
-#include <Game/Objects/Player/State/PlayerStateController.h>
-// HUD
-#include <Game/Objects/Player/HUD/PlayerHUD.h>
+// c++
+#include <memory>
+#include <optional>
+#include <unordered_map>
+// imgui
+#include <imgui.h>
 
 //============================================================================
-//	Player class
+//	PlayerStateController class
 //============================================================================
-class Player :
-	public GameEntity3D {
+class PlayerStateController {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	Player() = default;
-	~Player() = default;
+	PlayerStateController() = default;
+	~PlayerStateController() = default;
 
-	void DerivedInit() override;
+	void Init(Player& owner);
 
-	void Update() override;
+	void Update(Player& owner);
 
-	void DerivedImGui() override;
-
-	/*-------- collision ----------*/
-
-	// 衝突コールバック関数
-	void OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) override;
+	void ImGui();
 
 	//--------- accessor -----------------------------------------------------
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
+
+	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
 private:
 	//========================================================================
 	//	private Methods
@@ -44,16 +43,16 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	const BossEnemy* bossEnemy_;
+	// ステータス
+	PlayerStats stats_;
 
-	// 状態の管理
-	std::unique_ptr<PlayerStateController> stateController_;
+	std::unordered_map<PlayerState, std::unique_ptr<PlayerIState>> states_;
 
-	// HUD
-	std::unique_ptr<PlayerHUD> hudSprites_;
+	PlayerState current_;                  // 現在の状態
+	std::optional<PlayerState> requested_; // 次の状態
 
-	// parameters
-	PlayerStats stats_; // ステータス
+	// editor
+	int editingStateIndex_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -61,7 +60,6 @@ private:
 	void ApplyJson();
 	void SaveJson();
 
-	// init
-	void InitState();
-	void InitHUD();
+	// helper
+	void ChangeState(Player& owner);
 };

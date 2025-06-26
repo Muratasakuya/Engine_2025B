@@ -8,6 +8,13 @@
 //	Player classMethods
 //============================================================================
 
+void Player::InitState() {
+
+	// 初期化、ここで初期状態も設定
+	stateController_ = std::make_unique<PlayerStateController>();
+	stateController_->Init(*this);
+}
+
 void Player::InitHUD() {
 
 	// HUDの初期化
@@ -17,6 +24,9 @@ void Player::InitHUD() {
 
 void Player::DerivedInit() {
 
+	// 状態初期化
+	InitState();
+
 	// HUD初期化
 	InitHUD();
 
@@ -24,11 +34,26 @@ void Player::DerivedInit() {
 	ApplyJson();
 }
 
+void Player::SetBossEnemy(const BossEnemy* bossEnemy) {
+
+	bossEnemy_ = nullptr;
+	bossEnemy_ = bossEnemy;
+
+	stateController_->SetBossEnemy(bossEnemy);
+}
+
 void Player::Update() {
+
+	// 状態の更新
+	stateController_->SetStatas(stats_);
+	stateController_->Update(*this);
 
 	// HUDの更新
 	hudSprites_->SetStatas(stats_);
 	hudSprites_->Update();
+}
+
+void Player::OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {
 }
 
 void Player::DerivedImGui() {

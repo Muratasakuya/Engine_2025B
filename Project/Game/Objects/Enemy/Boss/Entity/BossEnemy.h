@@ -41,8 +41,6 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetNextAnimation(const std::string& nextAnimationName, bool loopAnimation, float transitionDuration);
-
 	void SetPlayer(const Player* player);
 private:
 	//========================================================================

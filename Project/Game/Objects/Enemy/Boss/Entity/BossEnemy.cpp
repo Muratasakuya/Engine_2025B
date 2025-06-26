@@ -50,9 +50,6 @@ void BossEnemy::InitState() {
 	// 初期化、ここで初期状態も設定
 	stateController_ = std::make_unique<BossEnemyStateController>();
 	stateController_->Init(*this);
-
-	// playerをセット
-	stateController_->SetPlayer(player_);
 }
 
 void BossEnemy::InitHUD() {
@@ -89,13 +86,6 @@ void BossEnemy::DerivedInit() {
 
 	// json適応
 	ApplyJson();
-}
-
-void BossEnemy::SetNextAnimation(const std::string& nextAnimationName,
-	bool loopAnimation, float transitionDuration) {
-
-	// 次のanimationを設定
-	animation_->SwitchAnimation(nextAnimationName, loopAnimation, transitionDuration);
 }
 
 void BossEnemy::SetPlayer(const Player* player) {
