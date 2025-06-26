@@ -526,9 +526,23 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Enemy\Boss\Entity\BossEnemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\HUD\BossEnemyHUD.cpp" />
-    <ClCompile Include="Game\Objects\Enemy\Boss\State\BossEnemyIdleState.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\State\BossEnemyStateController.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\State\Interface\BossEnemyIState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyChargeAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyFalterState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyIdleState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyLightAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyRushAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStrongAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStunState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyTeleportationState.cpp" />
+    <ClCompile Include="Game\Objects\Enemy\Boss\Structures\BossEnemyStructures.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Environment\FieldCrossMarkWall.cpp" />
     <ClCompile Include="Game\Objects\Player\Entity\Player.cpp">
       <SubType>
@@ -944,9 +958,19 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\HUD\BossEnemyHUD.h" />
-    <ClInclude Include="Game\Objects\Enemy\Boss\State\BossEnemyIdleState.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\State\BossEnemyStateController.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\State\Interface\BossEnemyIState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyChargeAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyFalterState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyIdleState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyLightAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyRushAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStrongAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStunState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyTeleportationState.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Structures\BossEnemyStructures.h" />
     <ClInclude Include="Game\Objects\Environment\FieldCrossMarkWall.h" />
     <ClInclude Include="Game\Objects\Player\Entity\Player.h">
