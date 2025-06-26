@@ -1,0 +1,47 @@
+{
+    "combos": [
+        {
+            "allowRepeat": true,
+            "sequence": [
+                0
+            ]
+        },
+        {
+            "allowRepeat": false,
+            "sequence": [
+                0,
+                1,
+                4
+            ]
+        },
+        {
+            "allowRepeat": false,
+            "sequence": [
+                1,
+                4
+            ]
+        }
+    ],
+    "phases": [
+        {
+            "comboIndices": [
+                0
+            ],
+            "nextStateDuration": 1.0
+        },
+        {
+            "comboIndices": [
+                0,
+                1
+            ],
+            "nextStateDuration": 1.0
+        },
+        {
+            "comboIndices": [
+                0,
+                2
+            ],
+            "nextStateDuration": 1.0
+        }
+    ]
+}

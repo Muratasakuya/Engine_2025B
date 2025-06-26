@@ -401,9 +401,6 @@
     <ClCompile Include="Game\Objects\Enemy\Boss\State\Interface\BossEnemyIState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Enemy\Boss\State\BossEnemyIdleState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\Boss\State\BossEnemyStateController.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -426,6 +423,33 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\Base\GameCommonStructures.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\Structures\BossEnemyStructures.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyChargeAttackState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyFalterState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyIdleState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyLightAttackState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyRushAttackState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStrongAttackState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyTeleportationState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStunState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -573,7 +597,6 @@
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\HUD\BossEnemyHUD.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\State\Interface\BossEnemyIState.h" />
-    <ClInclude Include="Game\Objects\Enemy\Boss\State\BossEnemyIdleState.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\State\BossEnemyStateController.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Structures\BossEnemyStructures.h" />
     <ClInclude Include="Game\Objects\Environment\FieldCrossMarkWall.h" />
@@ -585,6 +608,14 @@
     <ClInclude Include="Game\Objects\Base\GameCommonStructures.h" />
     <ClInclude Include="Engine\Input\InputStructures.h" />
     <ClInclude Include="Game\Objects\Player\Structures\PlayerStructures.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyChargeAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyFalterState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyIdleState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyLightAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyRushAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStrongAttackState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyTeleportationState.h" />
+    <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStunState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

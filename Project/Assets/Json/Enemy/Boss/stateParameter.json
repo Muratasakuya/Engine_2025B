@@ -1,6 +1,42 @@
 {
+    "ChargeAttack": {
+        "backStepSpeed_": 0.0,
+        "nextAnimDuration_": 0.0,
+        "rotationLerpRate_": 0.0
+    },
+    "Falter": {
+        "backStepSpeed_": 0.0,
+        "nextAnimDuration_": 0.0,
+        "rotationLerpRate_": 0.0
+    },
     "Idle": {
         "backStepSpeed_": -1.0,
+        "nextAnimDuration_": 0.0,
         "rotationLerpRate_": 4.199999809265137
+    },
+    "LightAttack": {
+        "backStepSpeed_": 0.0,
+        "nextAnimDuration_": 0.0,
+        "rotationLerpRate_": 0.0
+    },
+    "RushAttack": {
+        "backStepSpeed_": 0.0,
+        "nextAnimDuration_": 0.0,
+        "rotationLerpRate_": 0.0
+    },
+    "StrongAttack": {
+        "backStepSpeed_": 0.0,
+        "nextAnimDuration_": 0.0,
+        "rotationLerpRate_": 0.0
+    },
+    "Stun": {
+        "backStepSpeed_": 0.0,
+        "nextAnimDuration_": 0.0,
+        "rotationLerpRate_": 0.0
+    },
+    "Teleport": {
+        "backStepSpeed_": 0.0,
+        "nextAnimDuration_": 0.0,
+        "rotationLerpRate_": 0.0
     }
 }

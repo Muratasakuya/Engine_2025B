@@ -137,6 +137,9 @@ void BossEnemy::OnCollisionEnter([[maybe_unused]] const CollisionBody* collision
 
 void BossEnemy::DerivedImGui() {
 
+	// 文字サイズを設定
+	ImGui::SetWindowFontScale(0.72f);
+
 	ImGui::SeparatorText("HP");
 
 	ImGui::Text("currentHP: %d / %d", stats_.currentHP, stats_.maxHP);
@@ -159,56 +162,75 @@ void BossEnemy::DerivedImGui() {
 		stats_.currentDestroyToughness = 0;
 	}
 
-	if (ImGui::CollapsingHeader("Init")) {
-		if (ImGui::Button("SaveJson...initParameter.json")) {
+	ImGui::Separator();
 
-			SaveJson();
-		}
+	if (ImGui::BeginTabBar("BossEnemyTab")) {
+		if (ImGui::BeginTabItem("Init")) {
 
-		// 閾値の追加、設定処理
-		if (ImGui::Button("AddHPThreshold")) {
+			if (ImGui::Button("SaveJson...initParameter.json")) {
 
-			stats_.hpThresholds.emplace_back(0);
-		}
-		if (!stats_.hpThresholds.empty()) {
-
-			std::vector<std::string> phaseLabels;
-			std::vector<const char*> labelPtrs;
-
-			phaseLabels.reserve(stats_.hpThresholds.size());
-			labelPtrs.reserve(stats_.hpThresholds.size());
-			for (size_t i = 0; i < stats_.hpThresholds.size(); ++i) {
-
-				phaseLabels.emplace_back("Phase" + std::to_string(i));
-				labelPtrs.push_back(phaseLabels.back().c_str());
+				SaveJson();
 			}
-			ImGui::Combo("Edit Phase", &selectedPhaseIndex_, labelPtrs.data(), static_cast<int>(labelPtrs.size()));
-			ImGui::DragInt("Threshold(%)", &stats_.hpThresholds[selectedPhaseIndex_], 1, 0, 100);
+
+			// 閾値の追加、設定処理
+			if (ImGui::Button("AddHPThreshold")) {
+
+				stats_.hpThresholds.emplace_back(0);
+			}
+			if (!stats_.hpThresholds.empty()) {
+
+				std::vector<std::string> phaseLabels;
+				std::vector<const char*> labelPtrs;
+
+				phaseLabels.reserve(stats_.hpThresholds.size());
+				labelPtrs.reserve(stats_.hpThresholds.size());
+				for (size_t i = 0; i < stats_.hpThresholds.size(); ++i) {
+
+					phaseLabels.emplace_back("Phase" + std::to_string(i));
+					labelPtrs.push_back(phaseLabels.back().c_str());
+				}
+				ImGui::Combo("Edit Phase", &selectedPhaseIndex_, labelPtrs.data(), static_cast<int>(labelPtrs.size()));
+				ImGui::DragInt("Threshold(%)", &stats_.hpThresholds[selectedPhaseIndex_], 1, 0, 100);
+			}
+
+			ImGui::Separator();
+
+			if (ImGui::CollapsingHeader("Transform")) {
+
+				initTransform_.ImGui(itemWidth_);
+				SetInitTransform();
+			}
+
+			if (ImGui::CollapsingHeader("Collision")) {
+
+				Collider::ImGui(itemWidth_);
+			}
+			ImGui::EndTabItem();
 		}
 
-		ImGui::Separator();
+		if (ImGui::BeginTabItem("StateParam")) {
 
-		if (ImGui::CollapsingHeader("Transform")) {
-
-			initTransform_.ImGui(itemWidth_);
-			SetInitTransform();
+			stateController_->ImGui();
+			ImGui::EndTabItem();
 		}
 
-		if (ImGui::CollapsingHeader("Collision")) {
+		if (ImGui::BeginTabItem("StateTable")) {
 
-			Collider::ImGui(itemWidth_);
+			stateController_->EditStateTable();
+			ImGui::EndTabItem();
 		}
+
+		if (ImGui::BeginTabItem("HUD")) {
+
+			hudSprites_->ImGui();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
 	}
 
-	if (ImGui::CollapsingHeader("State")) {
-
-		stateController_->ImGui();
-	}
-
-	if (ImGui::CollapsingHeader("HUD")) {
-
-		hudSprites_->ImGui();
-	}
+	// 文字サイズを元に戻す
+	ImGui::SetWindowFontScale(1.0f);
 }
 
 void BossEnemy::ApplyJson() {
