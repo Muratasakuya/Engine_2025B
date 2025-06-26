@@ -108,7 +108,15 @@ void BossEnemy::SetPlayer(const Player* player) {
 
 void BossEnemy::Update() {
 
+	// 閾値のリストの条件に誤りがないかチェック
+	// indexNはindexN+1の値より必ず大きい(N=80、N+1=85にはならない)
+	if (!stats_.hpThresholds.empty()) {
+
+		std::sort(stats_.hpThresholds.begin(), stats_.hpThresholds.end(), std::greater<int>());
+	}
+
 	// 状態の更新
+	stateController_->SetStatas(stats_);
 	stateController_->Update(*this);
 
 	// 武器の更新
@@ -156,6 +164,30 @@ void BossEnemy::DerivedImGui() {
 
 			SaveJson();
 		}
+
+		// 閾値の追加、設定処理
+		if (ImGui::Button("AddHPThreshold")) {
+
+			stats_.hpThresholds.emplace_back(0);
+		}
+		if (!stats_.hpThresholds.empty()) {
+
+			std::vector<std::string> phaseLabels;
+			std::vector<const char*> labelPtrs;
+
+			phaseLabels.reserve(stats_.hpThresholds.size());
+			labelPtrs.reserve(stats_.hpThresholds.size());
+			for (size_t i = 0; i < stats_.hpThresholds.size(); ++i) {
+
+				phaseLabels.emplace_back("Phase" + std::to_string(i));
+				labelPtrs.push_back(phaseLabels.back().c_str());
+			}
+			ImGui::Combo("Edit Phase", &selectedPhaseIndex_, labelPtrs.data(), static_cast<int>(labelPtrs.size()));
+			ImGui::DragInt("Threshold(%)", &stats_.hpThresholds[selectedPhaseIndex_], 1, 0, 100);
+		}
+
+		ImGui::Separator();
+
 		if (ImGui::CollapsingHeader("Transform")) {
 
 			initTransform_.ImGui(itemWidth_);
@@ -196,6 +228,8 @@ void BossEnemy::ApplyJson() {
 	stats_.maxDestroyToughness = JsonAdapter::GetValue<int>(data, "maxDestroyToughness");
 	// 初期化時は最大と同じ値にする
 	stats_.currentHP = stats_.maxHP;
+
+	stats_.hpThresholds = JsonAdapter::ToVector<int>(data["hpThresholds"]);
 }
 
 void BossEnemy::SaveJson() {
@@ -208,6 +242,8 @@ void BossEnemy::SaveJson() {
 
 	data["maxHP"] = stats_.maxHP;
 	data["maxDestroyToughness"] = stats_.maxDestroyToughness;
+
+	data["hpThresholds"] = JsonAdapter::FromVector<int>(stats_.hpThresholds);
 
 	JsonAdapter::Save("Enemy/Boss/initParameter.json", data);
 }

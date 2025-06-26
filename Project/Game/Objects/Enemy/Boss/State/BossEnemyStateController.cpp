@@ -50,6 +50,9 @@ void BossEnemyStateController::SetPlayer(const Player* player) {
 
 void BossEnemyStateController::Update(BossEnemy& owner) {
 
+	// 現在のフェーズの更新処理
+	UpdatePhase();
+
 	// 何か設定されて入れば状態遷移させる
 	if (requested_.has_value()) {
 
@@ -60,6 +63,22 @@ void BossEnemyStateController::Update(BossEnemy& owner) {
 	if (BossEnemyIState* currentState = states_[current_].get()) {
 
 		currentState->Update(owner);
+	}
+}
+
+void BossEnemyStateController::UpdatePhase() {
+
+	// 現在のHP割合
+	uint32_t hpRate = (stats_.currentHP * 100) / stats_.maxHP;
+
+	// HP割合に応じて現在のフェーズを計算して設定
+	currentPhase_ = 0;
+	for (uint32_t threshold : stats_.hpThresholds) {
+		if (hpRate < threshold) {
+
+			// 閾値以下ならフェーズを進める
+			++currentPhase_;
+		}
 	}
 }
 
@@ -93,6 +112,8 @@ void BossEnemyStateController::ImGui() {
 
 		SaveJson();
 	}
+
+	ImGui::Text("currentPhase: %d / %d", currentPhase_, stats_.hpThresholds.size());
 
 	int current = static_cast<int>(current_);
 	if (ImGui::Combo("CurrentState", &current, kStatetateNames, IM_ARRAYSIZE(kStatetateNames))) {

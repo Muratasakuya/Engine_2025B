@@ -66,6 +66,9 @@ private:
 	Transform3DComponent initTransform_; // 初期化時の値
 	BossEnemyStats stats_;               // ステータス
 
+	// editor
+	int selectedPhaseIndex_;
+
 	//--------- functions ----------------------------------------------------
 
 	// json

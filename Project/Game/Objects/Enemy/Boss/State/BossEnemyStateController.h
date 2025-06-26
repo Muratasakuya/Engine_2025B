@@ -37,6 +37,8 @@ public:
 
 	void SetPlayer(const Player* player);
 
+	void SetStatas(const BossEnemyStats& stats) { stats_ = stats; }
+
 	BossEnemyState GetCurrentState() const { return current_; }
 private:
 	//========================================================================
@@ -44,6 +46,12 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	// ステータス
+	BossEnemyStats stats_;
+
+	// 現在のフェーズ
+	uint32_t currentPhase_;
 
 	std::unordered_map<BossEnemyState, std::unique_ptr<BossEnemyIState>> states_;
 
@@ -55,6 +63,9 @@ private:
 	// json
 	void ApplyJson();
 	void SaveJson();
+
+	// update
+	void UpdatePhase();
 
 	// helper
 	void ChangeState(BossEnemy& owner);
