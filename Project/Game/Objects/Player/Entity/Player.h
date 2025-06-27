@@ -53,6 +53,7 @@ private:
 	std::unique_ptr<PlayerHUD> hudSprites_;
 
 	// parameters
+	Transform3DComponent initTransform_; // 初期化時の値
 	PlayerStats stats_; // ステータス
 
 	//--------- functions ----------------------------------------------------
@@ -62,6 +63,10 @@ private:
 	void SaveJson();
 
 	// init
+	void InitCollision();
 	void InitState();
 	void InitHUD();
+
+	// helper
+	void SetInitTransform();
 };
