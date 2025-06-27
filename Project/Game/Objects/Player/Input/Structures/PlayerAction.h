@@ -14,9 +14,11 @@
 enum class PlayerAction :
 	uint8_t {
 
-	MoveX,  // X移動
-	MoveZ,  // Z移動
-	Dash,   // ダッシュ
-	Attack, // 攻撃
-	Count,  // アクションの数
+	MoveX,   // X移動
+	MoveZ,   // Z移動
+	Dash,    // ダッシュ
+	Attack,  // 通常攻撃
+	Skill,   // スキル攻撃
+	Special, // 必殺攻撃
+	Count,   // アクションの数
 };

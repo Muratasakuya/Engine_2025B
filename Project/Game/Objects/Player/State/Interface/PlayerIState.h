@@ -40,6 +40,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetBossEnemy(const BossEnemy* bossEnemy) { bossEnemy_ = bossEnemy; }
+
+	virtual bool GetCanExit() const { return true; }
 protected:
 	//========================================================================
 	//	protected Methods

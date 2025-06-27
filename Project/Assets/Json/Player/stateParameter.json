@@ -1,0 +1,101 @@
+{
+    "Attack_1st": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Attack_2nd": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Attack_3rd": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Conditions": {
+        "Attack_2nd": {
+            "allowedPreState": [
+                3
+            ],
+            "chainInputTime": 0.6399999856948853,
+            "coolTime": 0.0,
+            "interruptableBy": [
+                9,
+                8
+            ],
+            "requireSkillPoint": 0
+        },
+        "Attack_3rd": {
+            "allowedPreState": [
+                4
+            ],
+            "chainInputTime": 0.6399999856948853,
+            "coolTime": 0.0,
+            "interruptableBy": [
+                9,
+                8
+            ],
+            "requireSkillPoint": 0
+        },
+        "Dash": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 1.0,
+            "interruptableBy": [],
+            "requireSkillPoint": 0
+        },
+        "DashAttack": {
+            "allowedPreState": [
+                2
+            ],
+            "chainInputTime": 0.0,
+            "coolTime": 0.3199999928474426,
+            "interruptableBy": [
+                9,
+                8
+            ],
+            "requireSkillPoint": 0
+        },
+        "Idle": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.0,
+            "interruptableBy": [],
+            "requireSkillPoint": 0
+        },
+        "SkilAttack": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.0,
+            "interruptableBy": [
+                8,
+                9
+            ],
+            "requireSkillPoint": 50
+        },
+        "SpecialAttack": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.0,
+            "interruptableBy": [],
+            "requireSkillPoint": 0
+        }
+    },
+    "Dash": {
+        "nextAnimDuration_": 0.1599999964237213
+    },
+    "DashAttack": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Idle": {
+        "nextAnimDuration_": 0.20000000298023224
+    },
+    "Parry": {
+        "nextAnimDuration_": 0.10000000149011612
+    },
+    "SkilAttack": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "SpecialAttack": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Walk": {
+        "nextAnimDuration_": 0.3199999928474426
+    }
+}

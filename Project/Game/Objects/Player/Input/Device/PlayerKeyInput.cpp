@@ -47,6 +47,14 @@ bool PlayerKeyInput::IsPressed(PlayerAction button) const {
 
 		return input_->PushMouseLeft();
 	}
+	case PlayerAction::Skill: {
+
+		return input_->PushKey(DIK_E);
+	}
+	case PlayerAction::Special: {
+
+		return input_->PushKey(DIK_Q);
+	}
 	}
 	return false;
 }
@@ -61,6 +69,14 @@ bool PlayerKeyInput::IsTriggered(PlayerAction button) const {
 	case PlayerAction::Attack: {
 
 		return input_->TriggerMouseLeft();
+	}
+	case PlayerAction::Skill: {
+
+		return input_->TriggerKey(DIK_E);
+	}
+	case PlayerAction::Special: {
+
+		return input_->TriggerKey(DIK_Q);
 	}
 	}
 	return false;

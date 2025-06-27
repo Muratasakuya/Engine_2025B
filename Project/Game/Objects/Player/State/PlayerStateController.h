@@ -51,11 +51,22 @@ private:
 
 	std::unordered_map<PlayerState, std::unique_ptr<PlayerIState>> states_;
 
+	// 各状態の遷移条件
+	std::unordered_map<PlayerState, PlayerStateCondition> conditions_;
+
+	// 各状態の遷移クールタイム
+	std::unordered_map<PlayerState, float> lastEnterTime_;
+	float currentEnterTime_;
+
+	// 受付済みコンボ
+	std::optional<PlayerState> queued_;
+
 	PlayerState current_;                  // 現在の状態
 	std::optional<PlayerState> requested_; // 次の状態
 
 	// editor
 	int editingStateIndex_;
+	int comboIndex_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -69,4 +80,5 @@ private:
 	// helper
 	bool Request(PlayerState state);
 	void ChangeState(Player& owner);
+	bool CanTransition(PlayerState next, bool viaQueue) const;
 };

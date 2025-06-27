@@ -37,6 +37,14 @@ bool PlayerGamePadInput::IsPressed(PlayerAction button) const {
 
 		return input_->PushGamepadButton(GamePadButtons::X);
 	}
+	case PlayerAction::Skill: {
+
+		return input_->PushGamepadButton(GamePadButtons::Y);
+	}
+	case PlayerAction::Special: {
+
+		return input_->PushGamepadButton(GamePadButtons::RIGHT_TRIGGER);
+	}
 	}
 	return false;
 }
@@ -51,6 +59,14 @@ bool PlayerGamePadInput::IsTriggered(PlayerAction button) const {
 	case PlayerAction::Attack: {
 
 		return input_->TriggerGamepadButton(GamePadButtons::X);
+	}
+	case PlayerAction::Skill: {
+
+		return input_->TriggerGamepadButton(GamePadButtons::Y);
+	}
+	case PlayerAction::Special: {
+
+		return input_->TriggerGamepadButton(GamePadButtons::RIGHT_TRIGGER);
 	}
 	}
 	return false;

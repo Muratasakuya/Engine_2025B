@@ -82,6 +82,15 @@ void PlayerStateController::Update(Player& owner) {
 	UpdateInputState();
 
 	// 何か設定されて入れば状態遷移させる
+	if (queued_) {
+		if (states_[current_]->GetCanExit() && CanTransition(*queued_, true)) {
+
+			requested_ = queued_;
+			queued_.reset();
+		}
+	}
+
+	// 何か設定されていれば遷移させる
 	if (requested_.has_value()) {
 
 		ChangeState(owner);
@@ -99,11 +108,11 @@ void PlayerStateController::UpdateInputState() {
 	// 歩き、待機状態の状態遷移
 	{
 		// 移動方向
-		Vector2 move = Vector2(inputMapper_->GetVector(PlayerAction::MoveX),
+		const Vector2 move(inputMapper_->GetVector(PlayerAction::MoveX),
 			inputMapper_->GetVector(PlayerAction::MoveZ));
 
 		// 動いたかどうか判定
-		const bool  isMove = move.Length() > std::numeric_limits<float>::epsilon();
+		const bool isMove = move.Length() > std::numeric_limits<float>::epsilon();
 		// 移動していた場合は歩き、していなければ待機状態のまま
 		if (isMove) {
 
@@ -123,13 +132,55 @@ void PlayerStateController::UpdateInputState() {
 
 		if (inputMapper_->IsTriggered(PlayerAction::Attack)) {
 
-			Request(PlayerState::Attack_1st);
+			// ダッシュ中 -> DashAttack
+			if (current_ == PlayerState::Dash) {
+				Request(PlayerState::DashAttack);
+			}
+			// 1段 -> 2段
+			else if (current_ == PlayerState::Attack_1st) {
+				Request(PlayerState::Attack_2nd);
+			}
+			// 2段 -> 3段
+			else if (current_ == PlayerState::Attack_2nd) {
+				Request(PlayerState::Attack_3rd);
+			}
+			// 1段目
+			else {
+				Request(PlayerState::Attack_1st);
+			}
 		}
+
+		// スキル攻撃
+		if (inputMapper_->IsTriggered(PlayerAction::Skill)) {
+
+			Request(PlayerState::SkilAttack);
+		}
+		// 必殺
+		if (inputMapper_->IsTriggered(PlayerAction::Special)) {
+
+			Request(PlayerState::SpecialAttack);
+		}
+
 	}
 }
 
 bool PlayerStateController::Request(PlayerState state) {
 
+	// 遷移できるかどうか判定
+	const bool result = CanTransition(state, false);
+	if (!result) {
+		return false;
+	}
+
+	if (auto* currentState = states_[current_].get()) {
+		if (!currentState->GetCanExit()) {
+
+			queued_ = state;
+			return true;
+		}
+	}
+
+	// 次の状態をリクエスト
 	requested_ = state;
 	return true;
 }
@@ -156,6 +207,63 @@ void PlayerStateController::ChangeState(Player& owner) {
 
 		currentState->Enter(owner);
 	}
+
+	currentEnterTime_ = GameTimer::GetTotalTime();
+	lastEnterTime_[current_] = currentEnterTime_;
+}
+
+bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const {
+
+	const auto it = conditions_.find(next);
+	if (it == conditions_.end()) {
+		return true;
+	}
+
+	const PlayerStateCondition& condition = it->second;
+	const float totalTime = GameTimer::GetTotalTime();
+
+	// クールタイムの処理
+	auto itTime = lastEnterTime_.find(next);
+	if (itTime != lastEnterTime_.end() &&
+		totalTime - itTime->second < condition.coolTime) {
+
+		return false;
+	}
+	// SP比較
+	if (stats_.currentSkilPoint < condition.requireSkillPoint) {
+		return false;
+	}
+
+	// 強制キャンセル判定
+	if (!viaQueue) {
+		if (!condition.interruptableBy.empty()) {
+			const bool cancel = std::ranges::find(condition.interruptableBy, current_) !=
+				condition.interruptableBy.end();
+			if (!cancel) {
+
+				return false;
+			}
+		}
+	}
+
+	// 前状態
+	if (!condition.allowedPreState.empty()) {
+		const bool ok = std::ranges::find(condition.allowedPreState, current_) !=
+			condition.allowedPreState.end();
+		if (!ok) {
+
+			return false;
+		}
+	}
+
+	// チェイン入力判定
+	if (condition.chainInputTime > 0.0f) {
+		if (totalTime - currentEnterTime_ > condition.chainInputTime) {
+
+			return false;
+		}
+	}
+	return true;
 }
 
 void PlayerStateController::ImGui() {
@@ -169,13 +277,58 @@ void PlayerStateController::ImGui() {
 	ImGui::Text("currentStat: %s", kStateNames[static_cast<uint32_t>(current_)]);
 
 	// 各stateの値を調整
-	editingStateIndex_ = 0;
 	ImGui::Combo("EditState", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
 	ImGui::SeparatorText(kStateNames[editingStateIndex_]);
 
 	if (const auto& state = states_[static_cast<PlayerState>(editingStateIndex_)].get()) {
 
 		state->ImGui();
+	}
+
+	if (ImGui::CollapsingHeader("Transition Conditions")) {
+
+		ImGui::Combo("State##cond", &comboIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
+		PlayerState state = static_cast<PlayerState>(comboIndex_);
+		PlayerStateCondition& condition = conditions_[state];
+
+		ImGui::DragFloat("coolTime", &condition.coolTime, 0.01f, 0.0f);
+		ImGui::DragFloat("chainInputTime", &condition.chainInputTime, 0.01f, 0.0f);
+		ImGui::DragInt("needSP", &condition.requireSkillPoint, 1, 0);
+
+		if (ImGui::TreeNode("AllowedPrev")) {
+			for (int i = 0; i < IM_ARRAYSIZE(kStateNames); ++i) {
+
+				bool has = std::ranges::find(condition.allowedPreState, static_cast<PlayerState>(i)) !=
+					condition.allowedPreState.end();
+				if (ImGui::CheckboxFlags(kStateNames[i], &reinterpret_cast<int&>(has), 1)) {
+					if (has) {
+
+						condition.allowedPreState.push_back(static_cast<PlayerState>(i));
+					} else {
+
+						std::erase(condition.allowedPreState, static_cast<PlayerState>(i));
+					}
+				}
+			}
+			ImGui::TreePop();
+		}
+		if (ImGui::TreeNode("InterruptableBy")) {
+			for (int i = 0; i < IM_ARRAYSIZE(kStateNames); ++i) {
+
+				bool has = std::ranges::find(condition.interruptableBy, static_cast<PlayerState>(i)) !=
+					condition.interruptableBy.end();
+				if (ImGui::CheckboxFlags(kStateNames[i], &reinterpret_cast<int&>(has), 1)) {
+					if (has) {
+
+						condition.interruptableBy.push_back(static_cast<PlayerState>(i));
+					} else {
+
+						std::erase(condition.interruptableBy, static_cast<PlayerState>(i));
+					}
+				}
+			}
+			ImGui::TreePop();
+		}
 	}
 }
 
@@ -190,6 +343,22 @@ void PlayerStateController::ApplyJson() {
 
 		ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
 	}
+
+	if (!data.contains("Conditions")) return;
+	const Json& condRoot = data["Conditions"];
+
+
+	for (auto& [state, ptr] : states_) {
+
+		const char* key = kStateNames[static_cast<int>(state)];
+		if (!condRoot.contains(key)) {
+			continue;
+		}
+
+		PlayerStateCondition condition;
+		condition.FromJson(condRoot[key]);
+		conditions_[state] = std::move(condition);
+	}
 }
 
 void PlayerStateController::SaveJson() {
@@ -198,6 +367,12 @@ void PlayerStateController::SaveJson() {
 	for (auto& [state, ptr] : states_) {
 
 		ptr->SaveJson(data[kStateNames[static_cast<int>(state)]]);
+	}
+
+	Json& condRoot = data["Conditions"];
+	for (auto& [state, cond] : conditions_) {
+
+		cond.ToJson(condRoot[kStateNames[static_cast<int>(state)]]);
 	}
 
 	JsonAdapter::Save(kStateJsonPath, data);
