@@ -3,8 +3,13 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Input/Input.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
+
+// inputDevice
+#include <Game/Objects/Player/Input/Device/PlayerKeyInput.h>
+#include <Game/Objects/Player/Input/Device/PlayerGamePadInput.h>
 
 // state
 #include <Game/Objects/Player/State/States/PlayerIdleState.h>
@@ -35,6 +40,12 @@ namespace {
 }
 
 void PlayerStateController::Init(Player& owner) {
+
+	// 入力クラスを初期化
+	Input* input = Input::GetInstance();
+	inputMapper_ = std::make_unique<PlayerInputMapper>();
+	inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>(input));
+	inputMapper_->AddDevice(std::make_unique<PlayerGamePadInput>(input));
 
 	// 各状態を初期化
 	states_.emplace(PlayerState::Idle, std::make_unique<PlayerIdleState>());
@@ -67,6 +78,9 @@ void PlayerStateController::SetBossEnemy(const BossEnemy* bossEnemy) {
 
 void PlayerStateController::Update(Player& owner) {
 
+	// 入力に応じた状態の遷移
+	UpdateInputState();
+
 	// 何か設定されて入れば状態遷移させる
 	if (requested_.has_value()) {
 
@@ -78,6 +92,46 @@ void PlayerStateController::Update(Player& owner) {
 
 		currentState->Update(owner);
 	}
+}
+
+void PlayerStateController::UpdateInputState() {
+
+	// 歩き、待機状態の状態遷移
+	{
+		// 移動方向
+		Vector2 move = Vector2(inputMapper_->GetVector(PlayerAction::MoveX),
+			inputMapper_->GetVector(PlayerAction::MoveZ));
+
+		// 動いたかどうか判定
+		const bool  isMove = move.Length() > std::numeric_limits<float>::epsilon();
+		// 移動していた場合は歩き、していなければ待機状態のまま
+		if (isMove) {
+
+			Request(PlayerState::Walk);
+		} else {
+
+			Request(PlayerState::Idle);
+		}
+	}
+
+	// ダッシュ、攻撃の状態遷移
+	{
+		if (inputMapper_->IsTriggered(PlayerAction::Dash)) {
+
+			Request(PlayerState::Dash);
+		}
+
+		if (inputMapper_->IsTriggered(PlayerAction::Attack)) {
+
+			Request(PlayerState::Attack_1st);
+		}
+	}
+}
+
+bool PlayerStateController::Request(PlayerState state) {
+
+	requested_ = state;
+	return true;
 }
 
 void PlayerStateController::ChangeState(Player& owner) {
@@ -110,6 +164,9 @@ void PlayerStateController::ImGui() {
 
 		SaveJson();
 	}
+
+	// 現在の状態
+	ImGui::Text("currentStat: %s", kStateNames[static_cast<uint32_t>(current_)]);
 
 	// 各stateの値を調整
 	editingStateIndex_ = 0;

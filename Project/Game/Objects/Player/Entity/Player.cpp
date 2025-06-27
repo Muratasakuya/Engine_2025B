@@ -107,15 +107,22 @@ void Player::DerivedImGui() {
 		SaveJson();
 	}
 
-	if (ImGui::CollapsingHeader("Transform")) {
+	if (ImGui::CollapsingHeader("Init")) {
+		if (ImGui::CollapsingHeader("Transform")) {
 
-		initTransform_.ImGui(itemWidth_);
-		SetInitTransform();
+			initTransform_.ImGui(itemWidth_);
+			SetInitTransform();
+		}
+
+		if (ImGui::CollapsingHeader("Collision")) {
+
+			Collider::ImGui(itemWidth_);
+		}
 	}
 
-	if (ImGui::CollapsingHeader("Collision")) {
+	if (ImGui::CollapsingHeader("State")) {
 
-		Collider::ImGui(itemWidth_);
+		stateController_->ImGui();
 	}
 
 	if (ImGui::CollapsingHeader("HUD")) {

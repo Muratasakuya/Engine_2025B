@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
 //	PlayerStructures class
@@ -31,4 +32,16 @@ struct PlayerStats {
 
 	int maxSkilPoint;     // 最大スキルポイント
 	int currentSkilPoint; // 現在のスキルポイント
+};
+
+// 遷移条件
+struct PlayerStateCondition {
+
+	float coolTime;                           // 遷移までのクールタイム
+	std::vector<PlayerState> allowedPreState; // 前状態制限
+	int requireSkillPoint;                    // 必要SP
+	float chainInputTime;                     // コンボ受付時間
+
+	void FromJson(const Json& data);
+	void ToJson(Json& data);
 };

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Objects/Player/State/Interface/PlayerIState.h>
+#include <Game/Objects/Player/Input/PlayerInputMapper.h>
 #include <Game/Objects/Player/Structures/PlayerStructures.h>
 
 // c++
@@ -43,6 +44,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// 入力
+	std::unique_ptr<PlayerInputMapper> inputMapper_;
 	// ステータス
 	PlayerStats stats_;
 
@@ -59,7 +62,11 @@ private:
 	// json
 	void ApplyJson();
 	void SaveJson();
+	
+	// update
+	void UpdateInputState();
 
 	// helper
+	bool Request(PlayerState state);
 	void ChangeState(Player& owner);
 };
