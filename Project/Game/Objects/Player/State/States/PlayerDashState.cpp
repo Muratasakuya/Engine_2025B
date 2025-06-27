@@ -12,7 +12,7 @@
 
 void PlayerDashState::Enter(Player& player) {
 
-	player.SetNextAnimation("player_idle",true, nextAnimDuration_);
+	player.SetNextAnimation("player_dash", true, nextAnimDuration_);
 }
 
 void PlayerDashState::Update([[maybe_unused]] Player& player) {

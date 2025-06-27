@@ -53,4 +53,5 @@ protected:
 
 	// 共通parameters
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
+	bool animationFinished_; // アニメーションが終了したかどうか
 };

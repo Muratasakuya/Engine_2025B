@@ -30,6 +30,10 @@ public:
 	// json
 	void ApplyJson([[maybe_unused]] const Json& data) override;
 	void SaveJson([[maybe_unused]] Json& data) override;
+
+	//--------- accessor -----------------------------------------------------
+
+	bool GetCanExit() const override { return animationFinished_; }
 private:
 	//========================================================================
 	//	private Methods

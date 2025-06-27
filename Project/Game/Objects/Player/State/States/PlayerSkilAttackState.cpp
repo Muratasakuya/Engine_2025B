@@ -12,10 +12,14 @@
 
 void PlayerSkilAttackState::Enter(Player& player) {
 
-	player.SetNextAnimation("player_idle",true, nextAnimDuration_);
+	player.SetNextAnimation("player_skilAttack", false, nextAnimDuration_);
+	animationFinished_ = false;
 }
 
-void PlayerSkilAttackState::Update([[maybe_unused]] Player& player) {
+void PlayerSkilAttackState::Update(Player& player) {
+
+	// animationが終わったかチェック
+	animationFinished_ = player.IsAnimationFinished();
 }
 
 void PlayerSkilAttackState::Exit([[maybe_unused]] Player& player) {

@@ -12,10 +12,14 @@
 
 void PlayerAttack_2ndState::Enter(Player& player) {
 
-	player.SetNextAnimation("player_idle",true, nextAnimDuration_);
+	player.SetNextAnimation("player_attack_2nd",true, nextAnimDuration_);
+	animationFinished_ = false;
 }
 
-void PlayerAttack_2ndState::Update([[maybe_unused]] Player& player) {
+void PlayerAttack_2ndState::Update(Player& player) {
+
+	// animationが終わったかチェック
+	animationFinished_ = player.IsAnimationFinished();
 }
 
 void PlayerAttack_2ndState::Exit([[maybe_unused]] Player& player) {

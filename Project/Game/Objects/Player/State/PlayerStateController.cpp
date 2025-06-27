@@ -18,7 +18,6 @@
 #include <Game/Objects/Player/State/States/PlayerAttack_1stState.h>
 #include <Game/Objects/Player/State/States/PlayerAttack_2ndState.h>
 #include <Game/Objects/Player/State/States/PlayerAttack_3rdState.h>
-#include <Game/Objects/Player/State/States/PlayerDashAttackState.h>
 #include <Game/Objects/Player/State/States/PlayerSkilAttackState.h>
 #include <Game/Objects/Player/State/States/PlayerSpecialAttackState.h>
 #include <Game/Objects/Player/State/States/PlayerParryState.h>
@@ -32,7 +31,7 @@ namespace {
 	// 各状態の名前
 	const char* kStateNames[] = {
 		"Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
-		"DashAttack","SkilAttack","SpecialAttack","Parry",
+		"SkilAttack","SpecialAttack","Parry",
 	};
 
 	// jsonを保存するパス
@@ -54,7 +53,6 @@ void PlayerStateController::Init(Player& owner) {
 	states_.emplace(PlayerState::Attack_1st, std::make_unique<PlayerAttack_1stState>());
 	states_.emplace(PlayerState::Attack_2nd, std::make_unique<PlayerAttack_2ndState>());
 	states_.emplace(PlayerState::Attack_3rd, std::make_unique<PlayerAttack_3rdState>());
-	states_.emplace(PlayerState::DashAttack, std::make_unique<PlayerDashAttackState>());
 	states_.emplace(PlayerState::SkilAttack, std::make_unique<PlayerSkilAttackState>());
 	states_.emplace(PlayerState::SpecialAttack, std::make_unique<PlayerSpecialAttackState>());
 	states_.emplace(PlayerState::Parry, std::make_unique<PlayerParryState>());
@@ -132,12 +130,8 @@ void PlayerStateController::UpdateInputState() {
 
 		if (inputMapper_->IsTriggered(PlayerAction::Attack)) {
 
-			// ダッシュ中 -> DashAttack
-			if (current_ == PlayerState::Dash) {
-				Request(PlayerState::DashAttack);
-			}
 			// 1段 -> 2段
-			else if (current_ == PlayerState::Attack_1st) {
+			if (current_ == PlayerState::Attack_1st) {
 				Request(PlayerState::Attack_2nd);
 			}
 			// 2段 -> 3段

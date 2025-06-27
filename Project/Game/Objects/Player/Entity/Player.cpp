@@ -8,6 +8,24 @@
 //	Player classMethods
 //============================================================================
 
+void Player::InitAnimations() {
+
+	// 最初は待機状態で初期化
+	animation_->SetPlayAnimation("player_idle", true);
+
+	// animationのデータを設定
+	animation_->SetAnimationData("player_walk");
+	animation_->SetAnimationData("player_dash");
+	animation_->SetAnimationData("player_attack_1st");
+	animation_->SetAnimationData("player_attack_2nd");
+	animation_->SetAnimationData("player_attack_3rd");
+	animation_->SetAnimationData("player_skilAttack");
+
+	// 両手を親として更新させる
+	animation_->SetParentJoint("rightHand");
+	animation_->SetParentJoint("leftHand");
+}
+
 void Player::InitCollision() {
 
 	CollisionBody* body = bodies_.emplace_back(Collider::AddCollider(CollisionShape::OBB().Default()));
@@ -41,6 +59,9 @@ void Player::SetInitTransform() {
 }
 
 void Player::DerivedInit() {
+
+	// animation初期化、設定
+	InitAnimations();
 
 	// collision初期化、設定
 	InitCollision();

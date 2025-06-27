@@ -63,6 +63,7 @@ private:
 	void SaveJson();
 
 	// init
+	void InitAnimations();
 	void InitCollision();
 	void InitState();
 	void InitHUD();

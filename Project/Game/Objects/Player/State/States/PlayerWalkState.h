@@ -28,8 +28,8 @@ public:
 	void ImGui() override;
 
 	// json
-	void ApplyJson([[maybe_unused]] const Json& data) override;
-	void SaveJson([[maybe_unused]] Json& data) override;
+	void ApplyJson(const Json& data) override;
+	void SaveJson(Json& data) override;
 private:
 	//========================================================================
 	//	private Methods

@@ -43,6 +43,7 @@ public:
 	void SetParentJoint(const std::string& jointName);
 
 	bool IsTransition() const { return inTransition_; }
+	bool IsAnimationFinished() const { return animationFinish_; }
 
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
 

@@ -482,9 +482,6 @@
     <ClCompile Include="Game\Objects\Player\State\States\PlayerAttack_3rdState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\State\States\PlayerDashAttackState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Player\State\States\PlayerDashState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -677,7 +674,6 @@
     <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_1stState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_2ndState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_3rdState.h" />
-    <ClInclude Include="Game\Objects\Player\State\States\PlayerDashAttackState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerWalkState.h" />
     <ClInclude Include="Game\Objects\Player\Input\Interface\PlayerIInputDevice.h" />
     <ClInclude Include="Game\Objects\Player\Input\Structures\PlayerAction.h" />
