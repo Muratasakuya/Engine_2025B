@@ -143,15 +143,26 @@ void PlayerStateController::UpdateInputState() {
 
 	// ダッシュ、攻撃の状態遷移
 	{
-		if (inputMapper_->IsTriggered(PlayerAction::Dash)) {
+		if (inputMapper_->IsPressed(PlayerAction::Dash)) {
 
 			Request(PlayerState::Dash);
+		} else {
+			// ダッシュ中に離したら待機状態にする
+			if (current_ == PlayerState::Dash) {
+
+				Request(PlayerState::Idle);
+			}
 		}
 
 		if (inputMapper_->IsTriggered(PlayerAction::Attack)) {
 
+			// dash -> 1段
+			if (current_ == PlayerState::Dash) {
+
+				Request(PlayerState::Attack_1st);
+			}
 			// 1段 -> 2段
-			if (current_ == PlayerState::Attack_1st) {
+			else if (current_ == PlayerState::Attack_1st) {
 				Request(PlayerState::Attack_2nd);
 			}
 			// 2段 -> 3段
@@ -174,7 +185,6 @@ void PlayerStateController::UpdateInputState() {
 
 			Request(PlayerState::SpecialAttack);
 		}
-
 	}
 }
 

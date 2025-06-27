@@ -5,7 +5,6 @@
 //============================================================================
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
-#include <Game/Objects/Player/Input/PlayerInputMapper.h>
 #include <Game/Camera/FollowCamera.h>
 
 //============================================================================

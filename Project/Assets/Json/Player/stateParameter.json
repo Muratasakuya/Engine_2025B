@@ -36,7 +36,7 @@
         "Dash": {
             "allowedPreState": [],
             "chainInputTime": 0.0,
-            "coolTime": 1.0,
+            "coolTime": 0.47999998927116394,
             "interruptableBy": [],
             "requireSkillPoint": 0
         },
@@ -66,7 +66,20 @@
         }
     },
     "Dash": {
-        "nextAnimDuration_": 0.1599999964237213
+        "nextAnimDuration_": 0.10000000149011612,
+        "rotationLerpRate_": 0.1599999964237213,
+        "speedLerpValue_": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": 0.9599999785423279,
+            "move_.moveValue": 0.0,
+            "move_.start": 0.0,
+            "time_.end": 0.18000000715255737,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": true
+        }
     },
     "Idle": {
         "nextAnimDuration_": 0.20000000298023224
