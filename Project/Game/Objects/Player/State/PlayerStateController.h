@@ -35,6 +35,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
+	void SetFollowCamera(const FollowCamera* followCamera);
 
 	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
 private:
@@ -78,6 +79,7 @@ private:
 	void UpdateInputState();
 
 	// helper
+	void SetInputMapper();
 	bool Request(PlayerState state);
 	void ChangeState(Player& owner);
 	bool CanTransition(PlayerState next, bool viaQueue) const;

@@ -37,14 +37,13 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
+	void SetFollowCamera(const FollowCamera* followCamera);
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
-
-	const BossEnemy* bossEnemy_;
 
 	// 状態の管理
 	std::unique_ptr<PlayerStateController> stateController_;

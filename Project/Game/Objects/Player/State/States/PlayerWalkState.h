@@ -37,8 +37,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	Vector3 move_;    // 移動量
+	float moveSpeed_; // 移動速度
+	float moveDecay_; // 移動減衰率
 
 	//--------- functions ----------------------------------------------------
 
+	void UpdateWalk(Player& player);
 };

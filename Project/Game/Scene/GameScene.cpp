@@ -131,8 +131,9 @@ void GameScene::Init() {
 
 	// playerをセット
 	bossEnemy_->SetPlayer(player_.get());
-	// bossEnemtをセット
+	// bossEnemy、カメラをセット
 	player_->SetBossEnemy(bossEnemy_.get());
+	player_->SetFollowCamera(followCamera_.get());
 
 	//========================================================================
 	//	editor

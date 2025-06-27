@@ -56,6 +56,8 @@ void PlayerStateController::Init(Player& owner) {
 	states_.emplace(PlayerState::SkilAttack, std::make_unique<PlayerSkilAttackState>());
 	states_.emplace(PlayerState::SpecialAttack, std::make_unique<PlayerSpecialAttackState>());
 	states_.emplace(PlayerState::Parry, std::make_unique<PlayerParryState>());
+	// inputを設定
+	SetInputMapper();
 
 	// json適応
 	ApplyJson();
@@ -65,12 +67,30 @@ void PlayerStateController::Init(Player& owner) {
 	ChangeState(owner);
 }
 
+void PlayerStateController::SetInputMapper() {
+
+	// 各状態にinputをセット
+	for (const auto& state : std::views::values(states_)) {
+
+		state->SetInputMapper(inputMapper_.get());
+	}
+}
+
 void PlayerStateController::SetBossEnemy(const BossEnemy* bossEnemy) {
 
 	// 各状態にbossEnemyをセット
 	for (const auto& state : std::views::values(states_)) {
 
 		state->SetBossEnemy(bossEnemy);
+	}
+}
+
+void PlayerStateController::SetFollowCamera(const FollowCamera* followCamera) {
+
+	// 各状態にfollowCameraをセット
+	for (const auto& state : std::views::values(states_)) {
+
+		state->SetFollowCamera(followCamera);
 	}
 }
 

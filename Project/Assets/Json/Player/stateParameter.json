@@ -40,18 +40,6 @@
             "interruptableBy": [],
             "requireSkillPoint": 0
         },
-        "DashAttack": {
-            "allowedPreState": [
-                2
-            ],
-            "chainInputTime": 0.0,
-            "coolTime": 0.3199999928474426,
-            "interruptableBy": [
-                9,
-                8
-            ],
-            "requireSkillPoint": 0
-        },
         "Idle": {
             "allowedPreState": [],
             "chainInputTime": 0.0,
@@ -80,9 +68,6 @@
     "Dash": {
         "nextAnimDuration_": 0.1599999964237213
     },
-    "DashAttack": {
-        "nextAnimDuration_": 0.25999999046325684
-    },
     "Idle": {
         "nextAnimDuration_": 0.20000000298023224
     },
@@ -96,6 +81,9 @@
         "nextAnimDuration_": 0.25999999046325684
     },
     "Walk": {
-        "nextAnimDuration_": 0.3199999928474426
+        "moveDecay_": 0.4399999976158142,
+        "moveSpeed_": 0.4000000059604645,
+        "nextAnimDuration_": 0.1599999964237213,
+        "rotationLerpRate_": 0.1599999964237213
     }
 }

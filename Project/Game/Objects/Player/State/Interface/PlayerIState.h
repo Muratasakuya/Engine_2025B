@@ -7,7 +7,9 @@
 
 // front
 class Player;
+class PlayerInputMapper;
 class BossEnemy;
+class FollowCamera;
 
 //============================================================================
 //	PlayerIState class
@@ -39,7 +41,9 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetInputMapper(const PlayerInputMapper* inputMapper) { inputMapper_ = inputMapper; }
 	void SetBossEnemy(const BossEnemy* bossEnemy) { bossEnemy_ = bossEnemy; }
+	void SetFollowCamera(const FollowCamera* followCamera) { followCamera_ = followCamera; }
 
 	virtual bool GetCanExit() const { return true; }
 protected:
@@ -49,9 +53,20 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
+	const PlayerInputMapper* inputMapper_;
 	const BossEnemy* bossEnemy_;
+	const FollowCamera* followCamera_;
 
 	// 共通parameters
+	const float epsilon_ = std::numeric_limits<float>::epsilon();
+
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
 	bool animationFinished_; // アニメーションが終了したかどうか
+
+	float rotationLerpRate_; // 回転補間割合
+
+	//--------- functions ----------------------------------------------------
+
+	// helper
+	void SetRotateToDirection(Player& player, const Vector3& move);
 };

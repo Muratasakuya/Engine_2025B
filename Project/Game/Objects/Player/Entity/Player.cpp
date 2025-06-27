@@ -78,10 +78,12 @@ void Player::DerivedInit() {
 
 void Player::SetBossEnemy(const BossEnemy* bossEnemy) {
 
-	bossEnemy_ = nullptr;
-	bossEnemy_ = bossEnemy;
-
 	stateController_->SetBossEnemy(bossEnemy);
+}
+
+void Player::SetFollowCamera(const FollowCamera* followCamera) {
+
+	stateController_->SetFollowCamera(followCamera);
 }
 
 void Player::Update() {
