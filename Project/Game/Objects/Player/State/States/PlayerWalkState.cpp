@@ -12,7 +12,7 @@
 
 void PlayerWalkState::Enter(Player& player) {
 
-	player.SetNextAnimation("player_idle",true, nextAnimDuration_);
+	player.SetNextAnimation("player_walk",true, nextAnimDuration_);
 }
 
 void PlayerWalkState::Update([[maybe_unused]] Player& player) {

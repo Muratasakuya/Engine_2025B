@@ -74,7 +74,8 @@ void GameScene::Load() {
 	asset_->LoadTexture("RTButton");
 
 	// player
-	asset_->LoadModel("playerBody");
+	asset_->LoadModel("player");
+	asset_->LoadAnimation("player", "player");
 }
 
 void GameScene::Init() {
@@ -119,7 +120,7 @@ void GameScene::Init() {
 	ECSManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
 
 	player_ = std::make_unique<Player>();
-	player_->Init("playerBody", "player", "Player");
+	player_->Init("player", "player", "Player", "player_idle");
 
 	// 追従先を設定する: player
 	followCamera_->SetTarget(player_->GetTransform());

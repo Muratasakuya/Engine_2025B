@@ -47,7 +47,9 @@ EngineInformation:     load texture: AButton
 EngineInformation:     load texture: YButton
 EngineInformation:     load texture: RTButton
 EngineInformation:     load texture: white
-EngineInformation:     load model: playerBody
+EngineInformation:     load model: player
+EngineInformation:     load animation: player_idle
+EngineInformation:     load animation: player_walk
 EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture
 EngineInformation:     load texture: model
