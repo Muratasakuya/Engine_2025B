@@ -3,53 +3,41 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Lib/MathUtils/MathUtils.h>
+#include <Game/Objects/Player/Input/Interface/PlayerIInputDevice.h>
 
-// front
-class BossEnemy;
-class Player;
+// c++
+#include <memory>
+#include <vector>
+#include <algorithm>
 
 //============================================================================
-//	BossEnemyIState class
+//	PlayerInputMapper class
 //============================================================================
-class BossEnemyIState {
+class PlayerInputMapper {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemyIState() = default;
-	virtual ~BossEnemyIState() = default;
+	PlayerInputMapper() = default;
+	~PlayerInputMapper() = default;
 
-	// 状態遷移時
-	virtual void Enter(BossEnemy& bossEnemy) = 0;
-
-	// 更新処理
-	virtual void Update(BossEnemy& bossEnemy) = 0;
-
-	// 状態終了時
-	virtual void Exit(BossEnemy& bossEnemy) = 0;
-
-	// imgui
-	virtual void ImGui() = 0;
-
-	// json
-	virtual void ApplyJson([[maybe_unused]] const Json& data) = 0;
-	virtual void SaveJson([[maybe_unused]] Json& data) = 0;
+	// 使用する入力デバイスを追加
+	void AddDevice(std::unique_ptr<PlayerIInputDevice> device);
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetPlayer(const Player* player) { player_ = player; }
-protected:
+	float GetVector(PlayerAction action) const;
+
+	bool IsPressed(PlayerAction button) const;
+	bool IsTriggered(PlayerAction button) const;
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	const Player* player_;
-
-	// 共通parameters
-	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
-	float rotationLerpRate_; // 回転補完割合
+	// 使用する入力デバイス
+	std::vector<std::unique_ptr<PlayerIInputDevice>> devices_;
 };

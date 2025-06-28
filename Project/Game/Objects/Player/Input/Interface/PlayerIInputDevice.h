@@ -3,43 +3,31 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Lib/MathUtils/MathUtils.h>
+#include <Game/Objects/Player/Input/Structures/PlayerAction.h>
 
 // front
-class BossEnemy;
-class Player;
+class Input;
 
 //============================================================================
-//	BossEnemyIState class
+//	PlayerIInputDevice class
 //============================================================================
-class BossEnemyIState {
+class PlayerIInputDevice {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemyIState() = default;
-	virtual ~BossEnemyIState() = default;
-
-	// 状態遷移時
-	virtual void Enter(BossEnemy& bossEnemy) = 0;
-
-	// 更新処理
-	virtual void Update(BossEnemy& bossEnemy) = 0;
-
-	// 状態終了時
-	virtual void Exit(BossEnemy& bossEnemy) = 0;
-
-	// imgui
-	virtual void ImGui() = 0;
-
-	// json
-	virtual void ApplyJson([[maybe_unused]] const Json& data) = 0;
-	virtual void SaveJson([[maybe_unused]] Json& data) = 0;
+	PlayerIInputDevice() = default;
+	virtual ~PlayerIInputDevice() = default;
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetPlayer(const Player* player) { player_ = player; }
+	// 連続入力
+	virtual float GetVector(PlayerAction axis)  const = 0;
+
+	// 単入力
+	virtual bool IsPressed(PlayerAction button) const = 0;
+	virtual bool IsTriggered(PlayerAction button) const = 0;
 protected:
 	//========================================================================
 	//	protected Methods
@@ -47,9 +35,5 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
-	const Player* player_;
-
-	// 共通parameters
-	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
-	float rotationLerpRate_; // 回転補完割合
+	Input* input_;
 };

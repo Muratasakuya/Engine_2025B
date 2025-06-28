@@ -3,53 +3,46 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Lib/MathUtils/MathUtils.h>
-
-// front
-class BossEnemy;
-class Player;
+#include <Game/Objects/Player/State/Interface/PlayerIState.h>
 
 //============================================================================
-//	BossEnemyIState class
+//	PlayerAttack_2ndState class
 //============================================================================
-class BossEnemyIState {
+class PlayerAttack_2ndState :
+	public PlayerIState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemyIState() = default;
-	virtual ~BossEnemyIState() = default;
+	PlayerAttack_2ndState() = default;
+	~PlayerAttack_2ndState() = default;
 
-	// 状態遷移時
-	virtual void Enter(BossEnemy& bossEnemy) = 0;
+	void Enter(Player& player) override;
 
-	// 更新処理
-	virtual void Update(BossEnemy& bossEnemy) = 0;
+	void Update(Player& player) override;
 
-	// 状態終了時
-	virtual void Exit(BossEnemy& bossEnemy) = 0;
+	void Exit(Player& player) override;
 
 	// imgui
-	virtual void ImGui() = 0;
+	void ImGui() override;
 
 	// json
-	virtual void ApplyJson([[maybe_unused]] const Json& data) = 0;
-	virtual void SaveJson([[maybe_unused]] Json& data) = 0;
+	void ApplyJson(const Json& data) override;
+	void SaveJson(Json& data) override;
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetPlayer(const Player* player) { player_ = player; }
-protected:
+	bool GetCanExit() const override { return animationFinished_; }
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	const Player* player_;
 
-	// 共通parameters
-	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
-	float rotationLerpRate_; // 回転補完割合
+
+	//--------- functions ----------------------------------------------------
+
 };

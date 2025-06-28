@@ -1,0 +1,102 @@
+{
+    "Attack_1st": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Attack_2nd": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Attack_3rd": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Conditions": {
+        "Attack_2nd": {
+            "allowedPreState": [
+                3
+            ],
+            "chainInputTime": 0.6399999856948853,
+            "coolTime": 0.0,
+            "interruptableBy": [
+                9,
+                8
+            ],
+            "requireSkillPoint": 0
+        },
+        "Attack_3rd": {
+            "allowedPreState": [
+                4
+            ],
+            "chainInputTime": 0.6399999856948853,
+            "coolTime": 0.0,
+            "interruptableBy": [
+                9,
+                8
+            ],
+            "requireSkillPoint": 0
+        },
+        "Dash": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.47999998927116394,
+            "interruptableBy": [],
+            "requireSkillPoint": 0
+        },
+        "Idle": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.0,
+            "interruptableBy": [],
+            "requireSkillPoint": 0
+        },
+        "SkilAttack": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.0,
+            "interruptableBy": [
+                8,
+                9
+            ],
+            "requireSkillPoint": 50
+        },
+        "SpecialAttack": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.0,
+            "interruptableBy": [],
+            "requireSkillPoint": 0
+        }
+    },
+    "Dash": {
+        "nextAnimDuration_": 0.10000000149011612,
+        "rotationLerpRate_": 0.1599999964237213,
+        "speedLerpValue_": {
+            "loop_.interval": 0.0,
+            "loop_.isLoop": false,
+            "loop_.maxCount": 0,
+            "move_.easingType": 14,
+            "move_.end": 0.9599999785423279,
+            "move_.moveValue": 0.0,
+            "move_.start": 0.0,
+            "time_.end": 0.18000000715255737,
+            "time_.movedValueInterval": 0.0,
+            "time_.useScaledDeltaTime": true
+        }
+    },
+    "Idle": {
+        "nextAnimDuration_": 0.20000000298023224
+    },
+    "Parry": {
+        "nextAnimDuration_": 0.10000000149011612
+    },
+    "SkilAttack": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "SpecialAttack": {
+        "nextAnimDuration_": 0.25999999046325684
+    },
+    "Walk": {
+        "moveDecay_": 0.4399999976158142,
+        "moveSpeed_": 0.4000000059604645,
+        "nextAnimDuration_": 0.1599999964237213,
+        "rotationLerpRate_": 0.1599999964237213
+    }
+}

@@ -130,6 +130,13 @@ void GameEntity3D::AnimationImGui() {
 	animation_->ImGui(itemWidth_);
 }
 
+void GameEntity3D::SetNextAnimation(const std::string& nextAnimationName,
+	bool loopAnimation, float transitionDuration) {
+
+	// 次のanimationを設定
+	animation_->SwitchAnimation(nextAnimationName, loopAnimation, transitionDuration);
+}
+
 Vector3 GameEntity3D::GetJointWorldPos(const std::string& jointName) const {
 
 	// animationが存在しない場合は空のVector3を返す
@@ -155,6 +162,11 @@ Vector3 GameEntity3D::GetJointWorldPos(const std::string& jointName) const {
 
 	// 平行移動成分でワールド座標を返す
 	return world.GetTranslationValue();
+}
+
+bool GameEntity3D::IsAnimationFinished() const {
+
+	return animation_->IsAnimationFinished();
 }
 
 const Transform3DComponent* GameEntity3D::GetJointTransform(const std::string& jointName) const {

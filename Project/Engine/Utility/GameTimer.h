@@ -40,6 +40,8 @@ public:
 	static float GetDeltaTime() { return deltaTime_; }
 	static float GetScaledDeltaTime() { return deltaTime_ * timeScale_; }
 
+	static float GetTotalTime();
+
 	static float GetTimeScale() { return timeScale_; }
 
 	static void SetTimeScale(float timeScale) { timeScale_ = timeScale; }
@@ -61,6 +63,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	static std::chrono::steady_clock::time_point startTime_;
 	static std::chrono::steady_clock::time_point lastFrameTime_;
 
 	static Measurement allMeasure_;

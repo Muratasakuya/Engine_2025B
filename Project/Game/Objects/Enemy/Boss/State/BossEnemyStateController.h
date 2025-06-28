@@ -13,8 +13,6 @@
 #include <unordered_map>
 // imgui
 #include <imgui.h>
-// front
-class Player;
 
 //============================================================================
 //	BossEnemyStateController class

@@ -452,6 +452,54 @@
     <ClCompile Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStunState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\Interface\PlayerIState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\PlayerStateController.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerParryState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerSkilAttackState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerWalkState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerAttack_1stState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerAttack_2ndState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerAttack_3rdState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerDashState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\Interface\PlayerIInputDevice.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\PlayerInputMapper.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Structures\PlayerStructures.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerKeyInput.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -616,6 +664,22 @@
     <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStrongAttackState.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyTeleportationState.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\State\States\BossEnemyStunState.h" />
+    <ClInclude Include="Game\Objects\Player\State\Interface\PlayerIState.h" />
+    <ClInclude Include="Game\Objects\Player\State\PlayerStateController.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerParryState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerSkilAttackState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerDashState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_1stState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_2ndState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_3rdState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerWalkState.h" />
+    <ClInclude Include="Game\Objects\Player\Input\Interface\PlayerIInputDevice.h" />
+    <ClInclude Include="Game\Objects\Player\Input\Structures\PlayerAction.h" />
+    <ClInclude Include="Game\Objects\Player\Input\PlayerInputMapper.h" />
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerKeyInput.h" />
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

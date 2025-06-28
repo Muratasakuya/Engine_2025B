@@ -12,6 +12,7 @@
 //	GameTimer classMethods
 //============================================================================
 
+std::chrono::steady_clock::time_point GameTimer::startTime_ = std::chrono::steady_clock::now();
 std::chrono::steady_clock::time_point GameTimer::lastFrameTime_ = std::chrono::steady_clock::now();
 GameTimer::Measurement GameTimer::allMeasure_ = {};
 GameTimer::Measurement GameTimer::updateMeasure_ = {};
@@ -63,6 +64,7 @@ void GameTimer::ImGui() {
 	ImGui::Text("frameRate:       %.2f fps", ImGui::GetIO().Framerate); //* フレームレート情報
 	ImGui::Text("deltaTime:       %.3f s", deltaTime_);                  //* ΔTime
 	ImGui::Text("scaledDeltaTime: %.3f s", GetScaledDeltaTime());        //* ScaledΔTime
+	ImGui::Text("totalTime:       %.3f s", GetTotalTime());              //* 合計時間
 
 	ImGui::Text("frameTime:       %.2f ms", GetSmoothedFrameTime());   // ループにかかった時間
 	ImGui::Text("updateTime:      %.2f ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間
@@ -106,6 +108,13 @@ void GameTimer::EndDrawCount() {
 	drawMeasure_.resultSeconds = drawMeasure_.end - drawMeasure_.start;
 
 	AddMeasurement(drawTimes_, drawMeasure_.resultSeconds.count());
+}
+
+float GameTimer::GetTotalTime() {
+
+	auto now = std::chrono::steady_clock::now();
+	std::chrono::duration<float> elapsed = now - startTime_;
+	return elapsed.count();
 }
 
 void GameTimer::AddMeasurement(std::vector<float>& buffer, float value) {

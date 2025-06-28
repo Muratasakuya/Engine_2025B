@@ -552,6 +552,46 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\Device\PlayerKeyInput.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\Interface\PlayerIInputDevice.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\Input\PlayerInputMapper.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\Interface\PlayerIState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\PlayerStateController.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerAttack_1stState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerAttack_2ndState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerAttack_3rdState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerDashState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerIdleState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerParryState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerSkilAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerWalkState.cpp" />
+    <ClCompile Include="Game\Objects\Player\Structures\PlayerStructures.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\SceneTransition\FadeTransition.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp">
       <SubType>
@@ -981,6 +1021,46 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerGamePadInput.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\Interface\PlayerIInputDevice.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\PlayerInputMapper.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\Device\PlayerKeyInput.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\Input\Structures\PlayerAction.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\Interface\PlayerIState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\PlayerStateController.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_1stState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_2ndState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_3rdState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerDashState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerParryState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerSkilAttackState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerWalkState.h" />
     <ClInclude Include="Game\Objects\Player\Structures\PlayerStructures.h">
       <SubType>
       </SubType>

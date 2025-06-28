@@ -3,53 +3,52 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Lib/MathUtils/MathUtils.h>
-
-// front
-class BossEnemy;
-class Player;
+#include <Engine/Utility/SimpleAnimation.h>
+#include <Game/Objects/Player/State/Interface/PlayerIState.h>
 
 //============================================================================
-//	BossEnemyIState class
+//	PlayerDashState class
 //============================================================================
-class BossEnemyIState {
+class PlayerDashState :
+	public PlayerIState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemyIState() = default;
-	virtual ~BossEnemyIState() = default;
+	PlayerDashState() = default;
+	~PlayerDashState() = default;
 
-	// 状態遷移時
-	virtual void Enter(BossEnemy& bossEnemy) = 0;
+	void Enter(Player& player) override;
 
-	// 更新処理
-	virtual void Update(BossEnemy& bossEnemy) = 0;
+	void Update(Player& player) override;
 
-	// 状態終了時
-	virtual void Exit(BossEnemy& bossEnemy) = 0;
+	void Exit(Player& player) override;
 
 	// imgui
-	virtual void ImGui() = 0;
+	void ImGui() override;
 
 	// json
-	virtual void ApplyJson([[maybe_unused]] const Json& data) = 0;
-	virtual void SaveJson([[maybe_unused]] Json& data) = 0;
+	void ApplyJson(const Json& data) override;
+	void SaveJson(Json& data) override;
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetPlayer(const Player* player) { player_ = player; }
-protected:
+	bool GetCanExit() const override;
+private:
 	//========================================================================
-	//	protected Methods
+	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	const Player* player_;
+	Vector3 move_;    // 移動量
+	float moveSpeed_; // 移動速度
 
-	// 共通parameters
-	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
-	float rotationLerpRate_; // 回転補完割合
+	// ダッシュの速度補間
+	std::unique_ptr<SimpleAnimation<float>> speedLerpValue_;
+
+	//--------- functions ----------------------------------------------------
+
+	void UpdateDash(Player& player);
 };

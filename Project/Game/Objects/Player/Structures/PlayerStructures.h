@@ -3,10 +3,25 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
 //	PlayerStructures class
 //============================================================================
+
+// 状態の種類
+enum class PlayerState {
+
+	Idle,          // 何もしない
+	Walk,          // 歩き...       WASD/左スティック入力
+	Dash,          // ダッシュ...    右クリック/Aボタン
+	Attack_1st,    // 通常攻撃1段目...左クリック/Xボタン
+	Attack_2nd,    // 通常攻撃2段目...左クリック/Xボタン(1段目攻撃中にのみ入力受付)
+	Attack_3rd,    // 通常攻撃3段目...左クリック/Xボタン(2段目攻撃中にのみ入力受付)
+	SkilAttack,    // スキル攻撃...   E/Yボタン(SP50以上で発動可能)
+	SpecialAttack, // 必殺...        Q/RTボタン(通常攻撃を5回敵に当てたら発動可能)
+	Parry,         // 攻撃カウンター...Space/RBボタン
+};
 
 // ステータス
 struct PlayerStats {
@@ -16,4 +31,17 @@ struct PlayerStats {
 
 	int maxSkilPoint;     // 最大スキルポイント
 	int currentSkilPoint; // 現在のスキルポイント
+};
+
+// 遷移条件
+struct PlayerStateCondition {
+
+	float coolTime;                           // 次に入るまでのクールタイム
+	std::vector<PlayerState> allowedPreState; // 遷移元を制限
+	int requireSkillPoint;                    // 必要SP
+	float chainInputTime;                     // 受付猶予
+	std::vector<PlayerState> interruptableBy; // 強制キャンセルできる遷移相手
+
+	void FromJson(const Json& data);
+	void ToJson(Json& data);
 };
