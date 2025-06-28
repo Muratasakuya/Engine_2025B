@@ -12,7 +12,7 @@
 
 void PlayerAttack_3rdState::Enter(Player& player) {
 
-	player.SetNextAnimation("player_attack_3rd",true, nextAnimDuration_);
+	player.SetNextAnimation("player_attack_3rd", true, nextAnimDuration_);
 	animationFinished_ = false;
 }
 
