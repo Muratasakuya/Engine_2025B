@@ -63,7 +63,10 @@ void PlayerStateController::Init(Player& owner) {
 	ApplyJson();
 
 	// 初期状態を設定
+	current_ = PlayerState::Idle;
 	requested_ = PlayerState::Idle;
+	currentEnterTime_ = GameTimer::GetTotalTime();
+	lastEnterTime_[current_] = currentEnterTime_;
 	ChangeState(owner);
 }
 
@@ -106,6 +109,11 @@ void PlayerStateController::Update(Player& owner) {
 			requested_ = queued_;
 			queued_.reset();
 		}
+		// 条件外の場合はリセットする
+		else if (states_[current_]->GetCanExit()) {
+
+			queued_.reset();
+		}
 	}
 
 	// 何か設定されていれば遷移させる
@@ -123,21 +131,31 @@ void PlayerStateController::Update(Player& owner) {
 
 void PlayerStateController::UpdateInputState() {
 
+	// コンボ中は判定をスキップする
+	const bool inCombat = IsCombatState(current_);
+	const bool canExit = states_.at(current_)->GetCanExit();
+	const bool actionLocked =
+		(inCombat && !canExit) ||
+		(inCombat && IsInChain()) ||
+		HasAttackQueued();
+
 	// 歩き、待機状態の状態遷移
 	{
-		// 移動方向
-		const Vector2 move(inputMapper_->GetVector(PlayerAction::MoveX),
-			inputMapper_->GetVector(PlayerAction::MoveZ));
+		if (!actionLocked) {
+			// 移動方向
+			const Vector2 move(inputMapper_->GetVector(PlayerAction::MoveX),
+				inputMapper_->GetVector(PlayerAction::MoveZ));
 
-		// 動いたかどうか判定
-		const bool isMove = move.Length() > std::numeric_limits<float>::epsilon();
-		// 移動していた場合は歩き、していなければ待機状態のまま
-		if (isMove) {
+			// 動いたかどうか判定
+			const bool isMove = move.Length() > std::numeric_limits<float>::epsilon();
+			// 移動していた場合は歩き、していなければ待機状態のまま
+			if (isMove) {
 
-			Request(PlayerState::Walk);
-		} else {
+				Request(PlayerState::Walk);
+			} else {
 
-			Request(PlayerState::Idle);
+				Request(PlayerState::Idle);
+			}
 		}
 	}
 
@@ -248,8 +266,8 @@ bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const
 
 	// クールタイムの処理
 	auto itTime = lastEnterTime_.find(next);
-	if (itTime != lastEnterTime_.end() &&
-		totalTime - itTime->second < condition.coolTime) {
+	// クールタイムが終わっていなければ遷移不可
+	if (itTime != lastEnterTime_.end() && totalTime - itTime->second < condition.coolTime) {
 
 		return false;
 	}
@@ -258,11 +276,11 @@ bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const
 		return false;
 	}
 
-	// 強制キャンセル判定
+	// 強制キャンセルを行えるか判定
 	if (!viaQueue) {
 		if (!condition.interruptableBy.empty()) {
-			const bool cancel = std::ranges::find(condition.interruptableBy, current_) !=
-				condition.interruptableBy.end();
+			const bool cancel = std::ranges::find(
+				condition.interruptableBy, current_) != condition.interruptableBy.end();
 			if (!cancel) {
 
 				return false;
@@ -270,7 +288,7 @@ bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const
 		}
 	}
 
-	// 前状態
+	// 遷移可能な前状態かチェック
 	if (!condition.allowedPreState.empty()) {
 		const bool ok = std::ranges::find(condition.allowedPreState, current_) !=
 			condition.allowedPreState.end();
@@ -280,14 +298,44 @@ bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const
 		}
 	}
 
-	// チェイン入力判定
-	if (condition.chainInputTime > 0.0f) {
+	// コンボ入力判定
+	if (!viaQueue && condition.chainInputTime > 0.0f) {
 		if (totalTime - currentEnterTime_ > condition.chainInputTime) {
-
 			return false;
 		}
 	}
 	return true;
+}
+
+bool PlayerStateController::IsCombatState(PlayerState state) const {
+
+	switch (state) {
+	case PlayerState::Attack_1st:
+	case PlayerState::Attack_2nd:
+	case PlayerState::Attack_3rd:
+	case PlayerState::SkilAttack:
+	case PlayerState::SpecialAttack:
+	case PlayerState::Parry:
+		return true;
+	default:
+		return false;
+	}
+}
+
+bool PlayerStateController::HasAttackQueued() const {
+
+	return queued_.has_value() && IsCombatState(*queued_);
+}
+
+bool PlayerStateController::IsInChain() const {
+
+	auto it = conditions_.find(current_);
+	if (it == conditions_.end()) {
+		return false;
+	}
+
+	const float elapsed = GameTimer::GetTotalTime() - currentEnterTime_;
+	return (it->second.chainInputTime > 0.0f) && (elapsed <= it->second.chainInputTime);
 }
 
 void PlayerStateController::ImGui(const Player& owner) {
@@ -368,10 +416,10 @@ void PlayerStateController::ApplyJson() {
 		ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
 	}
 
-	if (!data.contains("Conditions")) return;
+	if (!data.contains("Conditions")) {
+		return;
+	}
 	const Json& condRoot = data["Conditions"];
-
-
 	for (auto& [state, ptr] : states_) {
 
 		const char* key = kStateNames[static_cast<int>(state)];

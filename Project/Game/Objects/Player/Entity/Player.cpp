@@ -171,6 +171,7 @@ void Player::ApplyJson() {
 	stats_.maxSkilPoint = JsonAdapter::GetValue<int>(data, "maxSkilPoint");
 	// 初期化時は最大と同じ値にする
 	stats_.currentHP = stats_.maxHP;
+	stats_.currentSkilPoint = stats_.maxSkilPoint;
 }
 
 void Player::SaveJson() {

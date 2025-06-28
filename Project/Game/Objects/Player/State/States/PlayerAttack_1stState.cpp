@@ -20,6 +20,10 @@ void PlayerAttack_1stState::Update(Player& player) {
 
 	// animationが終わったかチェック
 	animationFinished_ = player.IsAnimationFinished();
+	if (animationFinished_) {
+		int a = 0;
+		a++;
+	}
 
 	// 座標、回転補間
 	AttackAssist(player);

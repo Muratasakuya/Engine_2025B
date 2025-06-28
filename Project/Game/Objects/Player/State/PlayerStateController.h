@@ -83,4 +83,7 @@ private:
 	bool Request(PlayerState state);
 	void ChangeState(Player& owner);
 	bool CanTransition(PlayerState next, bool viaQueue) const;
+	bool IsCombatState(PlayerState state) const;
+	bool HasAttackQueued() const;
+	bool IsInChain() const;
 };
