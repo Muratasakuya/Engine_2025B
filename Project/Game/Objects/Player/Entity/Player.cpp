@@ -145,7 +145,7 @@ void Player::DerivedImGui() {
 
 	if (ImGui::CollapsingHeader("State")) {
 
-		stateController_->ImGui();
+		stateController_->ImGui(*this);
 	}
 
 	if (ImGui::CollapsingHeader("HUD")) {

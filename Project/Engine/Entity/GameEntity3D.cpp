@@ -164,11 +164,6 @@ Vector3 GameEntity3D::GetJointWorldPos(const std::string& jointName) const {
 	return world.GetTranslationValue();
 }
 
-bool GameEntity3D::IsAnimationFinished() const {
-
-	return animation_->IsAnimationFinished();
-}
-
 const Transform3DComponent* GameEntity3D::GetJointTransform(const std::string& jointName) const {
 
 	return animation_ ? animation_->FindJointTransform(jointName) : nullptr;

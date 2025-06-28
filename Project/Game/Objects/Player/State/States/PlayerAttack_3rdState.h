@@ -25,7 +25,7 @@ public:
 	void Exit(Player& player) override;
 
 	// imgui
-	void ImGui() override;
+	void ImGui(const Player& player) override;
 
 	// json
 	void ApplyJson(const Json& data) override;

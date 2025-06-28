@@ -21,7 +21,7 @@ void PlayerParryState::Update([[maybe_unused]] Player& player) {
 void PlayerParryState::Exit([[maybe_unused]] Player& player) {
 }
 
-void PlayerParryState::ImGui() {
+void PlayerParryState::ImGui([[maybe_unused]] const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 }

@@ -30,7 +30,7 @@ public:
 
 	void Update(Player& owner);
 
-	void ImGui();
+	void ImGui(const Player& owner);
 
 	//--------- accessor -----------------------------------------------------
 

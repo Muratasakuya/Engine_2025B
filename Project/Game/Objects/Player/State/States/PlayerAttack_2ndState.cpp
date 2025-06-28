@@ -25,7 +25,7 @@ void PlayerAttack_2ndState::Update(Player& player) {
 void PlayerAttack_2ndState::Exit([[maybe_unused]] Player& player) {
 }
 
-void PlayerAttack_2ndState::ImGui() {
+void PlayerAttack_2ndState::ImGui([[maybe_unused]] const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 }

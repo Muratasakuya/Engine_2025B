@@ -45,6 +45,8 @@ public:
 	bool IsTransition() const { return inTransition_; }
 	bool IsAnimationFinished() const { return animationFinish_; }
 
+	float GetAnimationProgress() const { return animationProgress_; }
+
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
 
 	const Skeleton& GetSkeleton() const { return skeleton_; }
@@ -70,20 +72,20 @@ private:
 	float currentAnimationTimer_;      // 現在のAnimation経過時間
 	bool roopAnimation_;               // ループ再生するかどうか
 
-	bool animationFinish_; // 現在のAnimationが終了したかどうか
+	bool animationFinish_; // 現在のanimationが終了したかどうか
 
 	bool inTransition_;        // 遷移中かどうか
 	float transitionTimer_;    // 遷移管理タイマー
 	float transitionDuration_; // 遷移時間
 
-	// 切り替え前のAnimation
+	// 切り替え前のanimation
 	std::string oldAnimationName_;
 	float oldAnimationTimer_;
-	// 切り替え後のAnimation
+	// 切り替え後のanimation
 	std::string nextAnimationName_;
 	float nextAnimationTimer_;
 
-	// Animationの経過率
+	// animationの経過率
 	float animationProgress_;
 
 	//--------- variables ----------------------------------------------------

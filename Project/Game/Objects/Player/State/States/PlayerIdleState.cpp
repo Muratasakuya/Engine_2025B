@@ -21,7 +21,7 @@ void PlayerIdleState::Update([[maybe_unused]] Player& player) {
 void PlayerIdleState::Exit([[maybe_unused]] Player& player) {
 }
 
-void PlayerIdleState::ImGui() {
+void PlayerIdleState::ImGui([[maybe_unused]] const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 }

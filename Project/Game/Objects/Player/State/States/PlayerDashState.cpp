@@ -78,7 +78,7 @@ bool PlayerDashState::GetCanExit() const {
 	return !inputMapper_->IsPressed(PlayerAction::Dash);
 }
 
-void PlayerDashState::ImGui() {
+void PlayerDashState::ImGui([[maybe_unused]] const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate_", &rotationLerpRate_, 0.001f);

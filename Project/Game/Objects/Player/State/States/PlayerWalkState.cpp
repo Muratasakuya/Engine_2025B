@@ -62,10 +62,10 @@ void PlayerWalkState::UpdateWalk(Player& player) {
 void PlayerWalkState::Exit([[maybe_unused]] Player& player) {
 }
 
-void PlayerWalkState::ImGui() {
+void PlayerWalkState::ImGui([[maybe_unused]] const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
-	ImGui::DragFloat("rotationLerpRate_", &rotationLerpRate_, 0.001f);
+	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
 	ImGui::DragFloat("moveSpeed", &moveSpeed_, 0.01f);
 	ImGui::DragFloat("moveDecay", &moveDecay_, 0.01f);
 }

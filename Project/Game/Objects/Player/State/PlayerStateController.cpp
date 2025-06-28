@@ -290,7 +290,7 @@ bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const
 	return true;
 }
 
-void PlayerStateController::ImGui() {
+void PlayerStateController::ImGui(const Player& owner) {
 
 	if (ImGui::Button("SaveJson...stateParameter.json")) {
 
@@ -306,7 +306,7 @@ void PlayerStateController::ImGui() {
 
 	if (const auto& state = states_[static_cast<PlayerState>(editingStateIndex_)].get()) {
 
-		state->ImGui();
+		state->ImGui(owner);
 	}
 
 	if (ImGui::CollapsingHeader("Transition Conditions")) {

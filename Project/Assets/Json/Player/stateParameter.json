@@ -1,6 +1,12 @@
 {
     "Attack_1st": {
-        "nextAnimDuration_": 0.25999999046325684
+        "attackLookAtCircleRange_": 108.0,
+        "attackOffsetTranslation_": 8.0,
+        "attackPosEaseType_": 14,
+        "attackPosLerpCircleRange_": 40.0,
+        "attackPosLerpTime_": 0.4399999976158142,
+        "nextAnimDuration_": 0.07999999821186066,
+        "rotationLerpRate_": 0.3199999928474426
     },
     "Attack_2nd": {
         "nextAnimDuration_": 0.25999999046325684
