@@ -198,6 +198,10 @@ void Player::ApplyJson() {
 	GameEntity3D::ApplyMaterial(data);
 	Collider::ApplyBodyOffset(data);
 
+	// 武器
+	rightWeapon_->ApplyMaterial(data["RightWeapon"]);
+	leftWeapon_->ApplyMaterial(data["LeftWeapon"]);
+
 	stats_.maxHP = JsonAdapter::GetValue<int>(data, "maxHP");
 	stats_.maxSkilPoint = JsonAdapter::GetValue<int>(data, "maxSkilPoint");
 	// 初期化時は最大と同じ値にする
@@ -212,6 +216,10 @@ void Player::SaveJson() {
 	initTransform_.ToJson(data["Transform"]);
 	GameEntity3D::SaveMaterial(data);
 	Collider::SaveBodyOffset(data);
+
+	// 武器
+	rightWeapon_->SaveMaterial(data["RightWeapon"]);
+	leftWeapon_->SaveMaterial(data["LeftWeapon"]);
 
 	data["maxHP"] = stats_.maxHP;
 	data["maxSkilPoint"] = stats_.maxSkilPoint;
