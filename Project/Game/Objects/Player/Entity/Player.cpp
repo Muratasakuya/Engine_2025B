@@ -105,53 +105,60 @@ void Player::OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBod
 
 void Player::DerivedImGui() {
 
-	ImGui::Text("currentHP: %d / %d", stats_.currentHP, stats_.maxHP);
-	ImGui::DragInt("maxHP", &stats_.maxHP, 1, 0);
-	ImGui::DragInt("currentHP", &stats_.currentHP, 1, 0, stats_.maxHP);
-	if (ImGui::Button("ResetHP")) {
+	ImGui::PushItemWidth(itemWidth_);
+	ImGui::SetWindowFontScale(0.8f);
 
-		// HPをリセットする
-		stats_.currentHP = stats_.maxHP;
-	}
+	if (ImGui::BeginTabBar("PlayerTabs")) {
 
-	ImGui::SeparatorText("SkilPoint");
+		// ---- Stats ---------------------------------------------------
+		if (ImGui::BeginTabItem("Stats")) {
 
-	ImGui::Text("currentSkilPoint: %d / %d", stats_.currentSkilPoint, stats_.maxSkilPoint);
-	ImGui::DragInt("maxSkilPoint", &stats_.maxSkilPoint, 1, 0);
-	ImGui::DragInt("currentSkilPoint", &stats_.currentSkilPoint, 1, 0, stats_.maxSkilPoint);
-	if (ImGui::Button("ResetSkilPoint")) {
+			ImGui::Text("HP : %d / %d", stats_.currentHP, stats_.maxHP);
+			ImGui::Text("SP : %d / %d", stats_.currentSkilPoint, stats_.maxSkilPoint);
 
-		// スキル値をリセットする
-		stats_.currentSkilPoint = 0;
-	}
+			ImGui::DragInt("Max HP", &stats_.maxHP, 1, 0);
+			ImGui::DragInt("Cur HP", &stats_.currentHP, 1, 0, stats_.maxHP);
+			ImGui::DragInt("Max SP", &stats_.maxSkilPoint, 1, 0);
+			ImGui::DragInt("Cur SP", &stats_.currentSkilPoint, 1, 0, stats_.maxSkilPoint);
 
-	if (ImGui::Button("SaveJson...initParameter.json")) {
+			if (ImGui::Button("Reset HP")) {
+				stats_.currentHP = stats_.maxHP;
+			}
+			ImGui::SameLine();
+			if (ImGui::Button("Reset SP")) {
+				stats_.currentSkilPoint = 0;
+			}
+			ImGui::EndTabItem();
+		}
 
-		SaveJson();
-	}
+		// ---- Init ----------------------------------------------------
+		if (ImGui::BeginTabItem("Init")) {
 
-	if (ImGui::CollapsingHeader("Init")) {
-		if (ImGui::CollapsingHeader("Transform")) {
+			if (ImGui::Button("Save##InitJson")) {
+				SaveJson();
+			}
 
 			initTransform_.ImGui(itemWidth_);
-			SetInitTransform();
-		}
-
-		if (ImGui::CollapsingHeader("Collision")) {
-
 			Collider::ImGui(itemWidth_);
+			ImGui::EndTabItem();
 		}
+
+		// ---- State ---------------------------------------------------
+		if (ImGui::BeginTabItem("State")) {
+			stateController_->ImGui(*this);
+			ImGui::EndTabItem();
+		}
+
+		// ---- HUD -----------------------------------------------------
+		if (ImGui::BeginTabItem("HUD")) {
+			hudSprites_->ImGui();
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
 	}
 
-	if (ImGui::CollapsingHeader("State")) {
-
-		stateController_->ImGui(*this);
-	}
-
-	if (ImGui::CollapsingHeader("HUD")) {
-
-		hudSprites_->ImGui();
-	}
+	ImGui::PopItemWidth();
+	ImGui::SetWindowFontScale(1.0f);
 }
 
 void Player::ApplyJson() {

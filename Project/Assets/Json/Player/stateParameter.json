@@ -23,6 +23,7 @@
         "attackPosEaseType_": 14,
         "attackPosLerpCircleRange_": 40.0,
         "attackPosLerpTime_": 0.4399999976158142,
+        "exitTime_": 0.3199999928474426,
         "nextAnimDuration_": 0.07999999821186066,
         "rotationLerpRate_": 0.3199999928474426
     },
@@ -89,7 +90,7 @@
                 4
             ],
             "chainInputTime": 0.0,
-            "coolTime": 1.0,
+            "coolTime": 0.6399999856948853,
             "interruptableBy": [
                 8,
                 9,

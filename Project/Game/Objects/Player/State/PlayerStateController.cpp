@@ -340,67 +340,109 @@ bool PlayerStateController::IsInChain() const {
 
 void PlayerStateController::ImGui(const Player& owner) {
 
-	if (ImGui::Button("SaveJson...stateParameter.json")) {
-
+	// ──────────── ① 上部ツールバー ────────────
+	ImGui::Text("Current : %s", kStateNames[static_cast<int>(current_)]);
+	ImGui::SameLine();
+	if (ImGui::Button("Save##StateJson")) {
 		SaveJson();
 	}
 
-	// 現在の状態
-	ImGui::Text("currentStat: %s", kStateNames[static_cast<uint32_t>(current_)]);
+	// ──────────── ② メインタブ ────────────
+	if (ImGui::BeginTabBar("PStateTabs")) {
 
-	// 各stateの値を調整
-	ImGui::Combo("EditState", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
-	ImGui::SeparatorText(kStateNames[editingStateIndex_]);
+		// ---- Runtime -------------------------------------------------
+		if (ImGui::BeginTabItem("Runtime")) {
+			ImGui::Text("Enter Time   : %.2f", currentEnterTime_);
+			ImGui::Text("Queued State : %s",
+				queued_ ? kStateNames[static_cast<int>(*queued_)] : "None");
+			ImGui::EndTabItem();
+		}
 
-	if (const auto& state = states_[static_cast<PlayerState>(editingStateIndex_)].get()) {
-
-		state->ImGui(owner);
-	}
-
-	if (ImGui::CollapsingHeader("Transition Conditions")) {
-
-		ImGui::Combo("State##cond", &comboIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
-		PlayerState state = static_cast<PlayerState>(comboIndex_);
-		PlayerStateCondition& condition = conditions_[state];
-
-		ImGui::DragFloat("coolTime", &condition.coolTime, 0.01f, 0.0f);
-		ImGui::DragFloat("chainInputTime", &condition.chainInputTime, 0.01f, 0.0f);
-		ImGui::DragInt("needSP", &condition.requireSkillPoint, 1, 0);
-
-		if (ImGui::TreeNode("AllowedPrev")) {
+		// ---- States --------------------------------------------------
+		if (ImGui::BeginTabItem("States")) {
+			ImGui::BeginChild("StateList", ImVec2(140, 0), true);
 			for (int i = 0; i < IM_ARRAYSIZE(kStateNames); ++i) {
-
-				bool has = std::ranges::find(condition.allowedPreState, static_cast<PlayerState>(i)) !=
-					condition.allowedPreState.end();
-				if (ImGui::CheckboxFlags(kStateNames[i], &reinterpret_cast<int&>(has), 1)) {
-					if (has) {
-
-						condition.allowedPreState.push_back(static_cast<PlayerState>(i));
-					} else {
-
-						std::erase(condition.allowedPreState, static_cast<PlayerState>(i));
-					}
+				bool selected = (editingStateIndex_ == i);
+				if (ImGui::Selectable(kStateNames[i], selected)) {
+					editingStateIndex_ = i;
 				}
 			}
-			ImGui::TreePop();
+			ImGui::EndChild();
+
+			ImGui::SameLine();
+
+			ImGui::BeginChild("StateDetail", ImVec2(0, 0), true);
+			if (auto* st = states_[static_cast<PlayerState>(editingStateIndex_)].get()) {
+				st->ImGui(owner);
+			}
+			ImGui::EndChild();
+
+			ImGui::EndTabItem();
 		}
-		if (ImGui::TreeNode("InterruptableBy")) {
-			for (int i = 0; i < IM_ARRAYSIZE(kStateNames); ++i) {
 
-				bool has = std::ranges::find(condition.interruptableBy, static_cast<PlayerState>(i)) !=
-					condition.interruptableBy.end();
-				if (ImGui::CheckboxFlags(kStateNames[i], &reinterpret_cast<int&>(has), 1)) {
-					if (has) {
+		// ---- Conditions ---------------------------------------------
+		if (ImGui::BeginTabItem("Conditions")) {
+			ImGui::Combo("Edit##cond-state",
+				&comboIndex_,
+				kStateNames,
+				IM_ARRAYSIZE(kStateNames));
 
-						condition.interruptableBy.push_back(static_cast<PlayerState>(i));
-					} else {
+			PlayerState            st = static_cast<PlayerState>(comboIndex_);
+			PlayerStateCondition& cond = conditions_[st];
 
-						std::erase(condition.interruptableBy, static_cast<PlayerState>(i));
+			ImGui::DragFloat("CoolTime", &cond.coolTime, 0.01f, 0.0f);
+			ImGui::DragFloat("InputWindow", &cond.chainInputTime, 0.01f, 0.0f);
+			ImGui::DragInt("Need SP", &cond.requireSkillPoint, 1, 0);
+
+			// Allowed / Interruptable をテーブルで
+			if (ImGui::BeginTable("CondTable", 3, ImGuiTableFlags_Borders)) {
+				ImGui::TableSetupColumn("State");
+				ImGui::TableSetupColumn("Allowed");
+				ImGui::TableSetupColumn("Interrupt");
+				ImGui::TableHeadersRow();
+
+				for (int i = 0; i < IM_ARRAYSIZE(kStateNames); ++i) {
+					PlayerState s = static_cast<PlayerState>(i);
+
+					ImGui::TableNextRow();
+					ImGui::TableNextColumn();
+					ImGui::TextUnformatted(kStateNames[i]);
+
+					// ---- Allowed 列 -------------------------------------------------
+					ImGui::TableNextColumn();
+					{
+						bool allowed = std::ranges::find(cond.allowedPreState, s)
+							!= cond.allowedPreState.end();
+						std::string id = "##allow_" + std::to_string(i);
+						if (ImGui::Checkbox(id.c_str(), &allowed)) {
+							if (allowed) {
+								cond.allowedPreState.push_back(s);
+							} else {
+								std::erase(cond.allowedPreState, s);
+							}
+						}
+					}
+
+					// ---- Interrupt 列 -----------------------------------------------
+					ImGui::TableNextColumn();
+					{
+						bool intr = std::ranges::find(cond.interruptableBy, s)
+							!= cond.interruptableBy.end();
+						std::string id = "##intr_" + std::to_string(i);
+						if (ImGui::Checkbox(id.c_str(), &intr)) {
+							if (intr) {
+								cond.interruptableBy.push_back(s);
+							} else {
+								std::erase(cond.interruptableBy, s);
+							}
+						}
 					}
 				}
+				ImGui::EndTable();
 			}
-			ImGui::TreePop();
+			ImGui::EndTabItem();
 		}
+		ImGui::EndTabBar();
 	}
 }
 
