@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/Adapter/Easing.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 // front
@@ -33,7 +34,7 @@ public:
 	virtual void Exit(Player& player) = 0;
 
 	// imgui
-	virtual void ImGui() = 0;
+	virtual void ImGui(const Player& player) = 0;
 
 	// json
 	virtual void ApplyJson([[maybe_unused]] const Json& data) = 0;
@@ -65,8 +66,21 @@ protected:
 
 	float rotationLerpRate_; // 回転補間割合
 
+	// 攻撃共通parameters
+	float attackPosLerpCircleRange_; // 攻撃したとき指定の座標まで補間する範囲(円の半径)
+	float attackLookAtCircleRange_;  // 攻撃したとき敵の方向を向く範囲(円の半径)
+	float attackOffsetTranslation_;  // 敵の座標からのオフセット距離
+	float attackPosLerpTimer_;       // 座標補間の際の経過時間
+	float attackPosLerpTime_;        // 座標補間にかける時間
+	EasingType attackPosEaseType_;   // 座標補間に使用するイージングの種類
+
 	//--------- functions ----------------------------------------------------
 
 	// helper
 	void SetRotateToDirection(Player& player, const Vector3& move);
+	void AttackAssist(Player& player);
+
+	// debug
+	void DrawAttackOffset(const Player& player);
+	void DrawAttackRangeCircle(const Player& player, float range);
 };

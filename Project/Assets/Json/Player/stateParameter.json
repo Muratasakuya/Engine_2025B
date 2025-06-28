@@ -1,14 +1,46 @@
 {
     "Attack_1st": {
-        "nextAnimDuration_": 0.25999999046325684
+        "attackLookAtCircleRange_": 108.0,
+        "attackOffsetTranslation_": 8.0,
+        "attackPosEaseType_": 14,
+        "attackPosLerpCircleRange_": 40.0,
+        "attackPosLerpTime_": 0.4399999976158142,
+        "nextAnimDuration_": 0.07999999821186066,
+        "rotationLerpRate_": 0.3199999928474426
     },
     "Attack_2nd": {
-        "nextAnimDuration_": 0.25999999046325684
+        "attackLookAtCircleRange_": 108.0,
+        "attackOffsetTranslation_": 8.0,
+        "attackPosEaseType_": 14,
+        "attackPosLerpCircleRange_": 40.0,
+        "attackPosLerpTime_": 0.4399999976158142,
+        "nextAnimDuration_": 0.07999999821186066,
+        "rotationLerpRate_": 0.3199999928474426
     },
     "Attack_3rd": {
-        "nextAnimDuration_": 0.25999999046325684
+        "attackLookAtCircleRange_": 108.0,
+        "attackOffsetTranslation_": 8.0,
+        "attackPosEaseType_": 14,
+        "attackPosLerpCircleRange_": 40.0,
+        "attackPosLerpTime_": 0.4399999976158142,
+        "exitTime_": 0.3199999928474426,
+        "nextAnimDuration_": 0.07999999821186066,
+        "rotationLerpRate_": 0.3199999928474426
     },
     "Conditions": {
+        "Attack_1st": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.0,
+            "interruptableBy": [
+                8,
+                7,
+                0,
+                1,
+                2
+            ],
+            "requireSkillPoint": 0
+        },
         "Attack_2nd": {
             "allowedPreState": [
                 3
@@ -16,8 +48,9 @@
             "chainInputTime": 0.6399999856948853,
             "coolTime": 0.0,
             "interruptableBy": [
-                9,
-                8
+                3,
+                8,
+                7
             ],
             "requireSkillPoint": 0
         },
@@ -28,8 +61,9 @@
             "chainInputTime": 0.6399999856948853,
             "coolTime": 0.0,
             "interruptableBy": [
-                9,
-                8
+                8,
+                4,
+                7
             ],
             "requireSkillPoint": 0
         },
@@ -48,12 +82,24 @@
             "requireSkillPoint": 0
         },
         "SkilAttack": {
-            "allowedPreState": [],
+            "allowedPreState": [
+                2,
+                1,
+                0,
+                3,
+                4
+            ],
             "chainInputTime": 0.0,
-            "coolTime": 0.0,
+            "coolTime": 0.6399999856948853,
             "interruptableBy": [
                 8,
-                9
+                9,
+                7,
+                0,
+                1,
+                2,
+                3,
+                4
             ],
             "requireSkillPoint": 50
         },

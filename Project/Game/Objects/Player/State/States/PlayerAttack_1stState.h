@@ -25,11 +25,11 @@ public:
 	void Exit(Player& player) override;
 
 	// imgui
-	void ImGui() override;
+	void ImGui(const Player& player) override;
 
 	// json
-	void ApplyJson([[maybe_unused]] const Json& data) override;
-	void SaveJson([[maybe_unused]] Json& data) override;
+	void ApplyJson(const Json& data) override;
+	void SaveJson(Json& data) override;
 
 	//--------- accessor -----------------------------------------------------
 

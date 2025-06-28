@@ -25,7 +25,7 @@ public:
 	void Exit(Player& player) override;
 
 	// imgui
-	void ImGui() override;
+	void ImGui(const Player& player) override;
 
 	// json
 	void ApplyJson(const Json& data) override;
@@ -33,7 +33,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	bool GetCanExit() const override { return animationFinished_; }
+	bool GetCanExit() const override;
 private:
 	//========================================================================
 	//	private Methods
@@ -41,8 +41,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
-
-	//--------- functions ----------------------------------------------------
-
+	float exitTimer_; // 経過時間
+	float exitTime_;  // 次に状態に遷移できるまでの時間
 };
