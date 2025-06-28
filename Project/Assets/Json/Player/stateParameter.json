@@ -14,10 +14,13 @@
         "attackOffsetTranslation_": 8.0,
         "attackPosEaseType_": 14,
         "attackPosLerpCircleRange_": 40.0,
-        "attackPosLerpTime_": 0.4399999976158142,
-        "exitTime_": 0.0,
-        "nextAnimDuration_": 0.07999999821186066,
-        "rotationLerpRate_": 0.3199999928474426
+        "attackPosLerpTime_": 0.47999998927116394,
+        "exitTime_": 0.4000000059604645,
+        "leftPointAngle_": 0.6399999856948853,
+        "nextAnimDuration_": 0.04800000041723251,
+        "rightPointAngle_": 0.9200000166893005,
+        "rotationLerpRate_": 0.4000000059604645,
+        "swayRate_": -0.1599999964237213
     },
     "Attack_3rd": {
         "attackLookAtCircleRange_": 108.0,

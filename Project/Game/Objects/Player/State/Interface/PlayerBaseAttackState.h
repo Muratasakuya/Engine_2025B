@@ -35,6 +35,10 @@ protected:
 	float attackPosLerpTime_;        // 座標補間にかける時間
 	EasingType attackPosEaseType_;   // 座標補間に使用するイージングの種類
 
+	// 補間目標
+	std::optional<Vector3> targetTranslation_;
+	std::optional<Quaternion> targetRotation_;
+
 	//--------- functions ----------------------------------------------------
 
 	// json
@@ -52,14 +56,4 @@ protected:
 	// debug
 	void DrawAttackOffset(const Player& player);
 	void DrawAttackRangeCircle(const Player& player, float range);
-private:
-	//========================================================================
-	//	protected Methods
-	//========================================================================
-
-	//--------- variables ----------------------------------------------------
-
-	// 補間目標
-	std::optional<Vector3> targetTranslation_;
-	std::optional<Quaternion> targetRotation_;
 };
