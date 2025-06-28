@@ -56,22 +56,36 @@ void Collider::UpdateAllBodies(const Transform3DComponent& transform) {
 
 void Collider::UpdateSphereBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::Sphere& offset) {
 
-	Vector3 center = transform.translation + offset.center;
+	// 子か親かで座標を変える
+	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
+	Vector3 center = bodyTranslation + offset.center;
+
 	body->UpdateSphere(CollisionShape::Sphere(center));
 }
 
 void Collider::UpdateAABBBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::AABB& offset) {
 
-	Vector3 center = transform.translation + offset.center;
+	// 子か親かで座標を変える
+	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
+	Vector3 center = bodyTranslation + offset.center;
+
 	Vector3 extent = transform.scale * offset.extent;
+
 	body->UpdateAABB(CollisionShape::AABB(center, extent));
 }
 
 void Collider::UpdateOBBBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::OBB& offset) {
 
-	Vector3 center = transform.translation + offset.center;
+	// 子か親かで座標を変える
+	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
+	Vector3 center = bodyTranslation + offset.center;
+
 	Vector3 size = transform.scale * offset.size;
-	Quaternion rotation = (transform.rotation * offset.rotate).Normalize();
+
+	// 子か親かで回転を変える
+	Quaternion bodyRotation = isChild_ ? Quaternion::FromRotationMatrix(transform.matrix.world) : transform.rotation;
+	Quaternion rotation = (bodyRotation * offset.rotate).Normalize();
+
 	body->UpdateOBB(CollisionShape::OBB(center, size, Vector3::AnyInit(0.0f), rotation));
 }
 
@@ -192,7 +206,7 @@ void Collider::ApplyBodyOffset(const Json& data) {
 void Collider::SaveBodyOffset(Json& data) {
 
 	for (uint32_t index = 0; index < bodyOffsets_.size(); ++index) {
-		
+
 		std::string label = Algorithm::GetIndexLabel("CollisionBody", index);
 		auto& offset = bodyOffsets_[index];
 

@@ -45,6 +45,10 @@ public:
 
 	// json
 	void BuildBodies(const Json& data);
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetIsChild(bool isChild) { isChild_ = isChild; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -54,6 +58,8 @@ protected:
 
 	std::vector<CollisionBody*> bodies_;
 	std::vector<CollisionShape::Shapes> bodyOffsets_;
+
+	bool isChild_; // 子の場合は行列を使用して更新する
 private:
 	//========================================================================
 	//	private Methods

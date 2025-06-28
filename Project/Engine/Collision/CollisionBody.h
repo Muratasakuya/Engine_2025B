@@ -19,8 +19,9 @@ enum class ColliderType {
 	Type_None = 0, // ビットが立っていない状態
 	Type_Test = 1 << 0,
 	Type_Player = 1 << 1,
-	Type_BossEnemy = 1 << 2,
-	Type_CrossMarkWall = 1 << 3,
+	Type_PlayerWeapon = 1 << 2,
+	Type_BossEnemy = 1 << 3,
+	Type_CrossMarkWall = 1 << 4,
 };
 
 // operator

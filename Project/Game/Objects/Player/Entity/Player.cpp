@@ -116,6 +116,10 @@ void Player::Update() {
 	stateController_->SetStatas(stats_);
 	stateController_->Update(*this);
 
+	// 武器の更新
+	rightWeapon_->Update();
+	leftWeapon_->Update();
+
 	// HUDの更新
 	hudSprites_->SetStatas(stats_);
 	hudSprites_->Update();
@@ -199,8 +203,8 @@ void Player::ApplyJson() {
 	Collider::ApplyBodyOffset(data);
 
 	// 武器
-	rightWeapon_->ApplyMaterial(data["RightWeapon"]);
-	leftWeapon_->ApplyMaterial(data["LeftWeapon"]);
+	rightWeapon_->ApplyJson(data["RightWeapon"]);
+	leftWeapon_->ApplyJson(data["LeftWeapon"]);
 
 	stats_.maxHP = JsonAdapter::GetValue<int>(data, "maxHP");
 	stats_.maxSkilPoint = JsonAdapter::GetValue<int>(data, "maxSkilPoint");
@@ -218,8 +222,8 @@ void Player::SaveJson() {
 	Collider::SaveBodyOffset(data);
 
 	// 武器
-	rightWeapon_->SaveMaterial(data["RightWeapon"]);
-	leftWeapon_->SaveMaterial(data["LeftWeapon"]);
+	rightWeapon_->SaveJson(data["RightWeapon"]);
+	leftWeapon_->SaveJson(data["LeftWeapon"]);
 
 	data["maxHP"] = stats_.maxHP;
 	data["maxSkilPoint"] = stats_.maxSkilPoint;

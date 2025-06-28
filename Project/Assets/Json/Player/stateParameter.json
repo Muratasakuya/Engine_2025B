@@ -137,7 +137,7 @@
         "attackPosLerpCircleRange_": 40.0,
         "attackPosLerpTime_": 0.4399999976158142,
         "exitTime_": 0.05999999865889549,
-        "nextAnimDuration_": 0.019999999552965164,
+        "nextAnimDuration_": 0.0,
         "rotationLerpRate_": 0.3199999928474426
     },
     "SpecialAttack": {

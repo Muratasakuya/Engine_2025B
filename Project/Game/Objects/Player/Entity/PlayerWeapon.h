@@ -18,6 +18,14 @@ public:
 	PlayerWeapon() = default;
 	~PlayerWeapon() = default;
 
+	void Update() override;
+
+	void DerivedImGui() override;
+
+	// json
+	void ApplyJson(const Json& data);
+	void SaveJson(Json& data);
+
 	//--------- accessor -----------------------------------------------------
 
 private:
@@ -27,8 +35,11 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	// parameters
+	Transform3DComponent initTransform_; // 初期化時の値
 
 	//--------- functions ----------------------------------------------------
 
+	// helper
+	void SetInitTransform();
 };
