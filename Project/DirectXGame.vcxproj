@@ -568,6 +568,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\Interface\PlayerBaseAttackState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Player\State\Interface\PlayerIState.cpp">
       <SubType>
       </SubType>
@@ -1038,6 +1042,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\Input\Structures\PlayerAction.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\Interface\PlayerBaseAttackState.h">
       <SubType>
       </SubType>
     </ClInclude>

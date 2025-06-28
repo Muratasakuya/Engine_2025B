@@ -135,12 +135,7 @@ void PlayerStateController::UpdateInputState() {
 	const bool inCombat = IsCombatState(current_);
 	const bool canExit = states_.at(current_)->GetCanExit();
 	const bool isInChain = IsInChain();
-	const bool hasAttackQueued = HasAttackQueued();
-	const bool isSelfQueued = IsSelfQueued();
-	const bool actionLocked =
-		(inCombat && !canExit) ||
-		(inCombat && isInChain) ||
-		(hasAttackQueued && !isSelfQueued);
+	const bool actionLocked = (inCombat && !canExit) || (inCombat && isInChain);
 
 	// 歩き、待機状態の状態遷移
 	{
@@ -331,16 +326,6 @@ bool PlayerStateController::IsCombatState(PlayerState state) const {
 	}
 }
 
-bool PlayerStateController::HasAttackQueued() const {
-
-	return queued_ && (*queued_ != current_);
-}
-
-bool PlayerStateController::IsSelfQueued() const {
-
-	return queued_ && (*queued_ == current_);
-}
-
 bool PlayerStateController::IsInChain() const {
 
 	auto it = conditions_.find(current_);
@@ -354,14 +339,14 @@ bool PlayerStateController::IsInChain() const {
 
 void PlayerStateController::ImGui(const Player& owner) {
 
-	// ──────────── ① 上部ツールバー ────────────
+	// tool
 	ImGui::Text("Current : %s", kStateNames[static_cast<int>(current_)]);
 	ImGui::SameLine();
 	if (ImGui::Button("Save##StateJson")) {
 		SaveJson();
 	}
 
-	// ──────────── ② メインタブ ────────────
+	// main
 	if (ImGui::BeginTabBar("PStateTabs")) {
 
 		// ---- Runtime -------------------------------------------------

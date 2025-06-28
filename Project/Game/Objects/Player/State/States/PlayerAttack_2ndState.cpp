@@ -35,36 +35,25 @@ void PlayerAttack_2ndState::ImGui(const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
+	ImGui::DragFloat("exitTime", &exitTime_, 0.01f);
 
-	ImGui::DragFloat("attackPosLerpCircleRange", &attackPosLerpCircleRange_, 0.1f);
-	ImGui::DragFloat("attackLookAtCircleRange", &attackLookAtCircleRange_, 0.1f);
-	ImGui::DragFloat("attackOffsetTranslation", &attackOffsetTranslation_, 0.1f);
-	ImGui::DragFloat("attackPosLerpTime", &attackPosLerpTime_, 0.01f);
-	Easing::SelectEasingType(attackPosEaseType_);
-
-	DrawAttackOffset(player);
-	DrawAttackRangeCircle(player, attackPosLerpCircleRange_);
-	DrawAttackRangeCircle(player, attackLookAtCircleRange_);
+	PlayerBaseAttackState::ImGui(player);
 }
 
 void PlayerAttack_2ndState::ApplyJson(const Json& data) {
 
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
-	attackPosLerpCircleRange_ = JsonAdapter::GetValue<float>(data, "attackPosLerpCircleRange_");
-	attackLookAtCircleRange_ = JsonAdapter::GetValue<float>(data, "attackLookAtCircleRange_");
-	attackOffsetTranslation_ = JsonAdapter::GetValue<float>(data, "attackOffsetTranslation_");
-	attackPosLerpTime_ = JsonAdapter::GetValue<float>(data, "attackPosLerpTime_");
-	attackPosEaseType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "attackPosEaseType_"));
+	exitTime_ = JsonAdapter::GetValue<float>(data, "exitTime_");
+
+	PlayerBaseAttackState::ApplyJson(data);
 }
 
 void PlayerAttack_2ndState::SaveJson(Json& data) {
 
 	data["nextAnimDuration_"] = nextAnimDuration_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
-	data["attackPosLerpCircleRange_"] = attackPosLerpCircleRange_;
-	data["attackLookAtCircleRange_"] = attackLookAtCircleRange_;
-	data["attackOffsetTranslation_"] = attackOffsetTranslation_;
-	data["attackPosLerpTime_"] = attackPosLerpTime_;
-	data["attackPosEaseType_"] = static_cast<int>(attackPosEaseType_);
+	data["exitTime_"] = exitTime_;
+
+	PlayerBaseAttackState::SaveJson(data);
 }
