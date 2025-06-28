@@ -34,6 +34,9 @@ void FollowCamera::Init() {
 
 void FollowCamera::Update() {
 
+	// input状態を取得
+	inputType_ = Input::GetInstance()->GetType();
+
 	// 追従処理
 	Move();
 
@@ -51,23 +54,28 @@ void FollowCamera::FirstUpdate() {
 	Vector3 offset{};
 	offset.Init();
 
-	// マウス移動量の取得
+	// 移動量
 	Vector2 mouseDelta = Input::GetInstance()->GetMouseMoveValue();
-
-	if (Input::GetInstance()->PushKey(DIK_LCONTROL)) {
-		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
-
-			isDebugMode_ = !isDebugMode_;
-		}
-	}
+	Vector2 padStick = Input::GetInstance()->GetRightStickVal() * 1.0f / 32767.0f;
 
 	if (!isDebugMode_) {
 
-		// Y軸回転: 左右
-		eulerRotation_.y += mouseDelta.x * sensitivity_.y;
+		if (inputType_ == InputType::Keyboard) {
 
-		// X軸回転: 上下
-		eulerRotation_.x += mouseDelta.y * sensitivity_.x;
+			// Y軸回転: 左右
+			eulerRotation_.y += mouseDelta.x * sensitivity_.y;
+			// X軸回転: 上下
+			eulerRotation_.x += mouseDelta.y * sensitivity_.x;
+		}
+		// 右スティック入力
+		else if (inputType_ == InputType::GamePad) {
+
+			// Y軸回転: 左右
+			eulerRotation_.y += padStick.x * padSensitivity_.y;
+			// X軸回転: 上下
+			eulerRotation_.x += padStick.y * padSensitivity_.x;
+		}
+
 		// 値を制限
 		eulerRotation_.x = std::clamp(eulerRotation_.x,
 			eulerRotateClampMinusX_, eulerRotateClampPlusX_);
@@ -110,8 +118,9 @@ void FollowCamera::Move() {
 	Vector3 offset{};
 	offset.Init();
 
-	// マウス移動量の取得
+	// 移動量
 	Vector2 mouseDelta = Input::GetInstance()->GetMouseMoveValue();
+	Vector2 padStick = Input::GetInstance()->GetRightStickVal() * 1.0f / 32767.0f;
 
 	if (Input::GetInstance()->PushKey(DIK_LCONTROL)) {
 		if (Input::GetInstance()->TriggerKey(DIK_RETURN)) {
@@ -122,11 +131,22 @@ void FollowCamera::Move() {
 
 	if (!isDebugMode_) {
 
-		// Y軸回転: 左右
-		eulerRotation_.y += mouseDelta.x * sensitivity_.y;
+		if (inputType_ == InputType::Keyboard) {
 
-		// X軸回転: 上下
-		eulerRotation_.x += mouseDelta.y * sensitivity_.x;
+			// Y軸回転: 左右
+			eulerRotation_.y += mouseDelta.x * sensitivity_.y;
+			// X軸回転: 上下
+			eulerRotation_.x += mouseDelta.y * sensitivity_.x;
+		}
+		// 右スティック入力
+		else if (inputType_ == InputType::GamePad) {
+
+			// Y軸回転: 左右
+			eulerRotation_.y += padStick.x * padSensitivity_.y;
+			// X軸回転: 上下
+			eulerRotation_.x += padStick.y * padSensitivity_.x;
+		}
+
 		// 値を制限
 		eulerRotation_.x = std::clamp(eulerRotation_.x,
 			eulerRotateClampMinusX_, eulerRotateClampPlusX_);
@@ -182,6 +202,7 @@ void FollowCamera::ImGui() {
 	ImGui::DragFloat3("offsetTranslation", &offsetTranslation_.x, 0.1f);
 	ImGui::DragFloat("lerpRate", &lerpRate_, 0.1f);
 	ImGui::DragFloat2("sensitivity", &sensitivity_.x, 0.001f);
+	ImGui::DragFloat2("padSensitivity", &padSensitivity_.x, 0.001f);
 	ImGui::DragFloat("eulerRotateClampPlusX", &eulerRotateClampPlusX_, 0.001f);
 	ImGui::DragFloat("eulerRotateClampMinusX", &eulerRotateClampMinusX_, 0.001f);
 
@@ -204,6 +225,7 @@ void FollowCamera::ApplyJson() {
 	eulerRotation_.y = 0.0f;
 	lerpRate_ = JsonAdapter::GetValue<float>(data, "lerpRate_");
 	sensitivity_ = JsonAdapter::ToObject<Vector2>(data["sensitivity_"]);
+	padSensitivity_ = JsonAdapter::ToObject<Vector2>(data["padSensitivity_"]);
 	eulerRotateClampPlusX_ = JsonAdapter::GetValue<float>(data, "eulerRotateClampPlusX_");
 	eulerRotateClampMinusX_ = JsonAdapter::GetValue<float>(data, "eulerRotateClampMinusX_");
 }
@@ -219,6 +241,7 @@ void FollowCamera::SaveJson() {
 	data["eulerRotation_"] = JsonAdapter::FromObject<Vector3>(eulerRotation_);
 	data["lerpRate_"] = lerpRate_;
 	data["sensitivity_"] = JsonAdapter::FromObject<Vector2>(sensitivity_);
+	data["padSensitivity_"] = JsonAdapter::FromObject<Vector2>(padSensitivity_);
 	data["eulerRotateClampPlusX_"] = eulerRotateClampPlusX_;
 	data["eulerRotateClampMinusX_"] = eulerRotateClampMinusX_;
 

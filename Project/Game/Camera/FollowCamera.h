@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Input/InputStructures.h>
 #include <Engine/Scene/Camera/BaseCamera.h>
 
 //============================================================================
@@ -35,6 +36,9 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// 現在の入力状態
+	InputType inputType_;
+
 	const Transform3DComponent* target_;
 	float aspectRatio_;
 
@@ -44,8 +48,9 @@ private:
 	float eulerRotateClampPlusX_;  // カメラのX軸回転の制限: +
 	float eulerRotateClampMinusX_; // カメラのX軸回転の制限: -
 
-	float lerpRate_;      // 補間速度
-	Vector2 sensitivity_; // マウス感度
+	float lerpRate_;         // 補間速度
+	Vector2 sensitivity_;    // マウス感度
+	Vector2 padSensitivity_; // パッド操作の感度
 	
 	// editor
 	bool isDebugMode_;
