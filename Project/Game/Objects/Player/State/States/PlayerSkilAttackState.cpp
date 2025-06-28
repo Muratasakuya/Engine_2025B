@@ -13,13 +13,13 @@
 void PlayerSkilAttackState::Enter(Player& player) {
 
 	player.SetNextAnimation("player_skilAttack", false, nextAnimDuration_);
-	animationFinished_ = false;
+	canExit_ = false;
 }
 
 void PlayerSkilAttackState::Update(Player& player) {
 
 	// animationが終わったかチェック
-	animationFinished_ = player.IsAnimationFinished();
+	canExit_ = player.IsAnimationFinished();
 }
 
 void PlayerSkilAttackState::Exit([[maybe_unused]] Player& player) {

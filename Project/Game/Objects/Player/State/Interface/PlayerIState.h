@@ -45,8 +45,9 @@ public:
 	void SetInputMapper(const PlayerInputMapper* inputMapper) { inputMapper_ = inputMapper; }
 	void SetBossEnemy(const BossEnemy* bossEnemy) { bossEnemy_ = bossEnemy; }
 	void SetFollowCamera(const FollowCamera* followCamera) { followCamera_ = followCamera; }
+	void SetCanExit(bool canExit) { canExit_ = canExit; }
 
-	virtual bool GetCanExit() const { return true; }
+	virtual bool GetCanExit() const { return canExit_; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -62,7 +63,7 @@ protected:
 	const float epsilon_ = std::numeric_limits<float>::epsilon();
 
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
-	bool animationFinished_; // アニメーションが終了したかどうか
+	bool canExit_ = true;    // 遷移可能かどうか
 
 	float rotationLerpRate_; // 回転補間割合
 

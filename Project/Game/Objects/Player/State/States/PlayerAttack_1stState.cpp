@@ -13,17 +13,13 @@
 void PlayerAttack_1stState::Enter(Player& player) {
 
 	player.SetNextAnimation("player_attack_1st", false, nextAnimDuration_);
-	animationFinished_ = false;
+	canExit_ = false;
 }
 
 void PlayerAttack_1stState::Update(Player& player) {
 
 	// animationが終わったかチェック
-	animationFinished_ = player.IsAnimationFinished();
-	if (animationFinished_) {
-		int a = 0;
-		a++;
-	}
+	canExit_ = player.IsAnimationFinished();
 
 	// 座標、回転補間
 	AttackAssist(player);

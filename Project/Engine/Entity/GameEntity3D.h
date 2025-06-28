@@ -61,9 +61,7 @@ public:
 	// animation
 	void SetNextAnimation(const std::string& nextAnimationName, bool loopAnimation, float transitionDuration);
 	Vector3 GetJointWorldPos(const std::string& jointName) const;
-
 	bool IsAnimationFinished() const { return animation_->IsAnimationFinished(); }
-	float GetAnimationProgress() const { return animation_->GetAnimationProgress(); }
 
 	/*---------- getter ----------*/
 

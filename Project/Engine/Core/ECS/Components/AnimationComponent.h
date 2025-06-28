@@ -45,8 +45,6 @@ public:
 	bool IsTransition() const { return inTransition_; }
 	bool IsAnimationFinished() const { return animationFinish_; }
 
-	float GetAnimationProgress() const { return animationProgress_; }
-
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
 
 	const Skeleton& GetSkeleton() const { return skeleton_; }

@@ -86,4 +86,5 @@ private:
 	bool IsCombatState(PlayerState state) const;
 	bool HasAttackQueued() const;
 	bool IsInChain() const;
+	bool IsSelfQueued() const;
 };

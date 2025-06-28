@@ -31,7 +31,7 @@
         "Attack_1st": {
             "allowedPreState": [],
             "chainInputTime": 0.0,
-            "coolTime": 0.0,
+            "coolTime": 1.0,
             "interruptableBy": [
                 8,
                 7,
@@ -82,15 +82,9 @@
             "requireSkillPoint": 0
         },
         "SkilAttack": {
-            "allowedPreState": [
-                2,
-                1,
-                0,
-                3,
-                4
-            ],
+            "allowedPreState": [],
             "chainInputTime": 0.0,
-            "coolTime": 0.6399999856948853,
+            "coolTime": 1.0,
             "interruptableBy": [
                 8,
                 9,

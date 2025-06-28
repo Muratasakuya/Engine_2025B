@@ -134,10 +134,13 @@ void PlayerStateController::UpdateInputState() {
 	// コンボ中は判定をスキップする
 	const bool inCombat = IsCombatState(current_);
 	const bool canExit = states_.at(current_)->GetCanExit();
+	const bool isInChain = IsInChain();
+	const bool hasAttackQueued = HasAttackQueued();
+	const bool isSelfQueued = IsSelfQueued();
 	const bool actionLocked =
 		(inCombat && !canExit) ||
-		(inCombat && IsInChain()) ||
-		HasAttackQueued();
+		(inCombat && isInChain) ||
+		(hasAttackQueued && !isSelfQueued);
 
 	// 歩き、待機状態の状態遷移
 	{
@@ -208,22 +211,28 @@ void PlayerStateController::UpdateInputState() {
 
 bool PlayerStateController::Request(PlayerState state) {
 
+	// 現在の状態と同じなら何もしない
+	if (state == current_ && !states_.at(current_)->GetCanExit()) {
+		return false;
+	}
+	if (queued_ && *queued_ == state) {
+		return true;
+	}
+
 	// 遷移できるかどうか判定
 	const bool result = CanTransition(state, false);
 	if (!result) {
 		return false;
 	}
 
-	if (auto* currentState = states_[current_].get()) {
-		if (!currentState->GetCanExit()) {
+	// 遷移可能か、現在の状態が終了可能かチェック
+	if (!states_.at(current_)->GetCanExit()) {
 
-			queued_ = state;
-			return true;
-		}
+		queued_ = state;
+	} else {
+
+		requested_ = state;
 	}
-
-	// 次の状態をリクエスト
-	requested_ = state;
 	return true;
 }
 
@@ -324,7 +333,12 @@ bool PlayerStateController::IsCombatState(PlayerState state) const {
 
 bool PlayerStateController::HasAttackQueued() const {
 
-	return queued_.has_value() && IsCombatState(*queued_);
+	return queued_ && (*queued_ != current_);
+}
+
+bool PlayerStateController::IsSelfQueued() const {
+
+	return queued_ && (*queued_ == current_);
 }
 
 bool PlayerStateController::IsInChain() const {

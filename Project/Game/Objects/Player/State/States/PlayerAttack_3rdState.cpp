@@ -13,15 +13,15 @@
 void PlayerAttack_3rdState::Enter(Player& player) {
 
 	player.SetNextAnimation("player_attack_3rd", false, nextAnimDuration_);
-	animationFinished_ = false;
+	canExit_ = false;
 }
 
 void PlayerAttack_3rdState::Update(Player& player) {
 
 	// animationが終わったかチェック
-	animationFinished_ = player.IsAnimationFinished();
+	canExit_ = player.IsAnimationFinished();
 	// animationが終わったら時間経過を進める
-	if (animationFinished_) {
+	if (canExit_) {
 
 		exitTimer_ += GameTimer::GetScaledDeltaTime();
 	}
