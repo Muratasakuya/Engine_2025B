@@ -525,6 +525,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\Boss\Entity\BossEnemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.cpp" />
+    <ClCompile Include="Game\Objects\Player\Entity\PlayerWeapon.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\Boss\HUD\BossEnemyHUD.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\State\BossEnemyStateController.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\State\Interface\BossEnemyIState.cpp" />
@@ -1001,6 +1005,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Base\ITransition.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.h" />
+    <ClInclude Include="Game\Objects\Player\Entity\PlayerWeapon.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Enemy\Boss\HUD\BossEnemyHUD.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\State\BossEnemyStateController.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\State\Interface\BossEnemyIState.h" />

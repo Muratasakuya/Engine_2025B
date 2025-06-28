@@ -75,6 +75,8 @@ void GameScene::Load() {
 
 	// player
 	asset_->LoadModel("player");
+	asset_->LoadModel("playerRightWeapon");
+	asset_->LoadModel("playerLeftWeapon");
 	asset_->LoadAnimation("player", "player");
 }
 

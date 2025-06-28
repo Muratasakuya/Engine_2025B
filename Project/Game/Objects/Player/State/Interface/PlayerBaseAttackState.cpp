@@ -12,7 +12,7 @@
 //	PlayerBaseAttackState classMethods
 //============================================================================
 
-void PlayerBaseAttackState::AttackAssist(Player& player) {
+void PlayerBaseAttackState::AttackAssist(Player& player, bool onceTarget) {
 
 	// 時間経過
 	attackPosLerpTimer_ += GameTimer::GetScaledDeltaTime();
@@ -26,11 +26,26 @@ void PlayerBaseAttackState::AttackAssist(Player& player) {
 
 	// 指定円の中に敵がいれば座標を補完する
 	Vector3 direction = (enemyPos - playerPos).Normalize();
+
+	// 補間先を設定
+	if (onceTarget) {
+		if (!targetTranslation_.has_value() &&
+			!targetRotation_.has_value()) {
+
+			targetTranslation_ = enemyPos - direction * attackOffsetTranslation_;
+			targetRotation_ = Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f));
+		}
+	} else {
+
+		targetTranslation_ = enemyPos - direction * attackOffsetTranslation_;
+		targetRotation_ = Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f));
+	}
+
+	// 指定円の中に敵がいれば敵の座標まで補間する
 	if (attackPosLerpCircleRange_ > epsilon_ && distance <= attackPosLerpCircleRange_) {
 
 		// 補間先
-		Vector3 target = enemyPos - direction * attackOffsetTranslation_;
-		Vector3 translation = Vector3::Lerp(playerPos, target, std::clamp(lerpT, 0.0f, 1.0f));
+		Vector3 translation = Vector3::Lerp(playerPos, *targetTranslation_, std::clamp(lerpT, 0.0f, 1.0f));
 		player.SetTranslation(translation);
 	}
 
@@ -38,8 +53,7 @@ void PlayerBaseAttackState::AttackAssist(Player& player) {
 	if (attackLookAtCircleRange_ > epsilon_ && distance <= attackLookAtCircleRange_) {
 
 		Quaternion currentRotation = player.GetRotation();
-		Quaternion targetRotation = Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f));
-		player.SetRotation(Quaternion::Slerp(currentRotation, targetRotation, std::clamp(rotationLerpRate_, 0.0f, 1.0f)));
+		player.SetRotation(Quaternion::Slerp(currentRotation, *targetRotation_, std::clamp(rotationLerpRate_, 0.0f, 1.0f)));
 	}
 }
 
@@ -75,6 +89,14 @@ void PlayerBaseAttackState::DrawAttackRangeCircle(const Player& player, float ra
 
 		lineRenderer->DrawLine3D(p0, p1, Color::Red());
 	}
+}
+
+void PlayerBaseAttackState::ResetTarget() {
+
+	// 補間目標をリセット
+	attackPosLerpTimer_ = 0.0f;
+	targetTranslation_ = std::nullopt;
+	targetRotation_ = std::nullopt;
 }
 
 void PlayerBaseAttackState::ImGui(const Player& player) {

@@ -48,6 +48,8 @@ EngineInformation:     load texture: YButton
 EngineInformation:     load texture: RTButton
 EngineInformation:     load texture: white
 EngineInformation:     load model: player
+EngineInformation:     load model: playerRightWeapon
+EngineInformation:     load model: playerLeftWeapon
 EngineInformation:     load animation: player_attack_1st
 EngineInformation:     load animation: player_attack_2nd
 EngineInformation:     load animation: player_attack_3rd

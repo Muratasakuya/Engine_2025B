@@ -5,7 +5,8 @@
         "attackPosEaseType_": 14,
         "attackPosLerpCircleRange_": 40.0,
         "attackPosLerpTime_": 0.4399999976158142,
-        "nextAnimDuration_": 0.07999999821186066,
+        "exitTime_": 0.0,
+        "nextAnimDuration_": 0.019999999552965164,
         "rotationLerpRate_": 0.3199999928474426
     },
     "Attack_2nd": {
@@ -14,6 +15,7 @@
         "attackPosEaseType_": 14,
         "attackPosLerpCircleRange_": 40.0,
         "attackPosLerpTime_": 0.4399999976158142,
+        "exitTime_": 0.0,
         "nextAnimDuration_": 0.07999999821186066,
         "rotationLerpRate_": 0.3199999928474426
     },
@@ -84,7 +86,7 @@
         "SkilAttack": {
             "allowedPreState": [],
             "chainInputTime": 0.0,
-            "coolTime": 1.0,
+            "coolTime": 0.8799999952316284,
             "interruptableBy": [
                 8,
                 9,
@@ -93,7 +95,8 @@
                 1,
                 2,
                 3,
-                4
+                4,
+                6
             ],
             "requireSkillPoint": 50
         },
@@ -128,7 +131,14 @@
         "nextAnimDuration_": 0.10000000149011612
     },
     "SkilAttack": {
-        "nextAnimDuration_": 0.25999999046325684
+        "attackLookAtCircleRange_": 108.0,
+        "attackOffsetTranslation_": -14.0,
+        "attackPosEaseType_": 14,
+        "attackPosLerpCircleRange_": 40.0,
+        "attackPosLerpTime_": 0.4399999976158142,
+        "exitTime_": 0.05999999865889549,
+        "nextAnimDuration_": 0.019999999552965164,
+        "rotationLerpRate_": 0.3199999928474426
     },
     "SpecialAttack": {
         "nextAnimDuration_": 0.25999999046325684

@@ -20,7 +20,7 @@ public:
 	~PlayerBaseAttackState() = default;
 protected:
 	//========================================================================
-	//	private Methods
+	//	protected Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
@@ -44,9 +44,22 @@ protected:
 	// imgui
 	void ImGui(const Player& player);
 
-	void AttackAssist(Player& player);
+	void ResetTarget();
+
+	// update
+	void AttackAssist(Player& player, bool onceTarget = false);
 
 	// debug
 	void DrawAttackOffset(const Player& player);
 	void DrawAttackRangeCircle(const Player& player, float range);
+private:
+	//========================================================================
+	//	protected Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	// 補間目標
+	std::optional<Vector3> targetTranslation_;
+	std::optional<Quaternion> targetRotation_;
 };

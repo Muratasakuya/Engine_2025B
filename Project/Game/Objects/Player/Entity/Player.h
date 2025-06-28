@@ -5,6 +5,8 @@
 //============================================================================
 #include <Engine/Entity/GameEntity3D.h>
 
+// weapon
+#include <Game/Objects/Player/Entity/PlayerWeapon.h>
 // state
 #include <Game/Objects/Player/State/PlayerStateController.h>
 // HUD
@@ -45,6 +47,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// 使用する武器
+	std::unique_ptr<PlayerWeapon> rightWeapon_; // 右手
+	std::unique_ptr<PlayerWeapon> leftWeapon_;  // 左手
+
 	// 状態の管理
 	std::unique_ptr<PlayerStateController> stateController_;
 
@@ -62,6 +68,7 @@ private:
 	void SaveJson();
 
 	// init
+	void InitWeapon();
 	void InitAnimations();
 	void InitCollision();
 	void InitState();

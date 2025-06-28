@@ -3,13 +3,13 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Objects/Player/State/Interface/PlayerIState.h>
+#include <Game/Objects/Player/State/Interface/PlayerBaseAttackState.h>
 
 //============================================================================
 //	PlayerSkilAttackState class
 //============================================================================
 class PlayerSkilAttackState :
-	public PlayerIState {
+	public PlayerBaseAttackState {
 public:
 	//========================================================================
 	//	public Methods
@@ -30,15 +30,8 @@ public:
 	// json
 	void ApplyJson(const Json& data) override;
 	void SaveJson(Json& data) override;
-private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
 
-	//--------- variables ----------------------------------------------------
+	//--------- accessor -----------------------------------------------------
 
-
-
-	//--------- functions ----------------------------------------------------
-
+	bool GetCanExit() const override;
 };

@@ -8,6 +8,27 @@
 //	Player classMethods
 //============================================================================
 
+void Player::InitWeapon() {
+
+	// 右手
+	rightWeapon_ = std::make_unique<PlayerWeapon>();
+	rightWeapon_->Init("playerRightWeapon", "playerRightWeapon", "Player");
+
+	// 左手
+	leftWeapon_ = std::make_unique<PlayerWeapon>();
+	leftWeapon_->Init("playerLeftWeapon", "playerLeftWeapon", "Player");
+
+	// 武器を手を親として動かす
+	if (const auto& hand = GetJointTransform("rightHand")) {
+
+		rightWeapon_->SetParent(*hand);
+	}
+	if (const auto& hand = GetJointTransform("leftHand")) {
+
+		leftWeapon_->SetParent(*hand);
+	}
+}
+
 void Player::InitAnimations() {
 
 	// 最初は待機状態で初期化
@@ -59,6 +80,9 @@ void Player::SetInitTransform() {
 }
 
 void Player::DerivedInit() {
+
+	// 使用する武器を初期化
+	InitWeapon();
 
 	// animation初期化、設定
 	InitAnimations();
