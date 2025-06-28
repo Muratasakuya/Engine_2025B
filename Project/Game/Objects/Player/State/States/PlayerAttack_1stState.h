@@ -30,4 +30,8 @@ public:
 	// json
 	void ApplyJson(const Json& data) override;
 	void SaveJson(Json& data) override;
+
+	//--------- accessor -----------------------------------------------------
+
+	bool GetCanExit() const override;
 };

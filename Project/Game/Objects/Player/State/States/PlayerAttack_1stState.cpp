@@ -20,6 +20,11 @@ void PlayerAttack_1stState::Update(Player& player) {
 
 	// animationが終わったかチェック
 	canExit_ = player.IsAnimationFinished();
+	// animationが終わったら時間経過を進める
+	if (canExit_) {
+
+		exitTimer_ += GameTimer::GetScaledDeltaTime();
+	}
 
 	// 座標、回転補間
 	AttackAssist(player);
@@ -29,6 +34,7 @@ void PlayerAttack_1stState::Exit([[maybe_unused]] Player& player) {
 
 	// timerをリセット
 	attackPosLerpTimer_ = 0.0f;
+	exitTimer_ = 0.0f;
 }
 
 void PlayerAttack_1stState::ImGui(const Player& player) {
@@ -56,4 +62,11 @@ void PlayerAttack_1stState::SaveJson(Json& data) {
 	data["exitTime_"] = exitTime_;
 
 	PlayerBaseAttackState::SaveJson(data);
+}
+
+bool PlayerAttack_1stState::GetCanExit() const {
+
+	// 経過時間が過ぎたら
+	bool canExit = exitTimer_ > exitTime_;
+	return canExit;
 }
