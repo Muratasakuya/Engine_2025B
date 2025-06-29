@@ -13,31 +13,38 @@
 
 void BossEnemyIdleState::Enter(BossEnemy& bossEnemy) {
 
+	canExit_ = false;
+	// animationをリセットする
+	bossEnemy.ResetAnimation();
+
 	bossEnemy.SetNextAnimation("bossEnemy_idle", true, nextAnimDuration_);
 }
 
 void BossEnemyIdleState::Update(BossEnemy& bossEnemy) {
 
-	const float deltaTime = GameTimer::GetDeltaTime();
-
-	// 前方ベクトルを取得
-	Vector3 bossPos = bossEnemy.GetTranslation();
-	Vector3 playerPos = player_->GetTransform().translation;
-
-	// 回転を計算して設定
-	Quaternion bossRotation = Quaternion::LookTarget(bossPos, playerPos,
-		Vector3(0.0f, 1.0f, 0.0f), bossEnemy.GetRotation(), rotationLerpRate_ * deltaTime);
-	bossEnemy.SetRotation(bossRotation);
+	// playerの方を向かせる
+	LookTarget(bossEnemy, player_->GetTranslation());
 
 	// 後ずさりさせる
-	Vector3 backStepVelocity = bossEnemy.GetTransform().GetBack() * backStepSpeed_ * deltaTime;
+	Vector3 bossPos = bossEnemy.GetTranslation();
+	Vector3 backStepVelocity = bossEnemy.GetTransform().GetBack() * backStepSpeed_ * GameTimer::GetDeltaTime();
 	bossEnemy.SetTranslation(bossPos + backStepVelocity);
+
+	// animationが終了したら遷移可能にする
+	if (bossEnemy.GetAnimationRepeatCount() != 0) {
+
+		canExit_ = true;
+	}
 }
 
-void BossEnemyIdleState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
+void BossEnemyIdleState::Exit(BossEnemy& bossEnemy) {
+
+	canExit_ = false;
+	// animationをリセットする
+	bossEnemy.ResetAnimation();
 }
 
-void BossEnemyIdleState::ImGui() {
+void BossEnemyIdleState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);

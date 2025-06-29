@@ -40,6 +40,13 @@ enum class BossEnemyState {
 	RushAttack,    // 突進攻撃
 };
 
+// テレポートの種類
+enum class BossEnemyTeleportType {
+
+	Far, // 遠くに
+	Near // 近くに
+};
+
 // ステータス
 struct BossEnemyStats {
 
@@ -59,6 +66,7 @@ struct BossEnemyCombo {
 
 	std::vector<BossEnemyState> sequence; // コンボの順序
 	bool allowRepeat;                     // 同じComboを繰り返してもよいか
+	BossEnemyTeleportType teleportType;   // テレポートの種類
 
 	void FromJson(const Json& data);
 	void ToJson(Json& data);
@@ -69,6 +77,7 @@ struct BossEnemyPhase {
 
 	float nextStateDuration = 1.0f; // この秒数経過で次状態へ遷移
 	std::vector<int> comboIndices;  // コンボインデックスのリスト
+	bool autoIdleAfterAttack; // 強制的に待機状態に戻すか
 
 	void FromJson(const Json& data);
 	void ToJson(Json& data);

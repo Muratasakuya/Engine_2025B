@@ -3,11 +3,14 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Game/Objects/Enemy/Boss/Structures/BossEnemyStructures.h>
+#include <Lib/Adapter/Easing.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 // front
 class BossEnemy;
 class Player;
+class FollowCamera;
 
 //============================================================================
 //	BossEnemyIState class
@@ -31,7 +34,7 @@ public:
 	virtual void Exit(BossEnemy& bossEnemy) = 0;
 
 	// imgui
-	virtual void ImGui() = 0;
+	virtual void ImGui(const BossEnemy& bossEnemy) = 0;
 
 	// json
 	virtual void ApplyJson([[maybe_unused]] const Json& data) = 0;
@@ -40,6 +43,9 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetPlayer(const Player* player) { player_ = player; }
+	void SetFollowCamera(const FollowCamera* followCamera) { followCamera_ = followCamera; }
+
+	virtual bool GetCanExit() const { return canExit_; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -48,8 +54,18 @@ protected:
 	//--------- variables ----------------------------------------------------
 
 	const Player* player_;
+	const FollowCamera* followCamera_;
 
 	// 共通parameters
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
+	bool canExit_ = true;    // 遷移可能かどうか
 	float rotationLerpRate_; // 回転補完割合
+
+	//--------- functions ----------------------------------------------------
+
+	void LookTarget(BossEnemy& bossEnemy, const Vector3& target);
+
+	// debug
+	void DrawArc(const Vector3& center, const Vector3& direction,
+		float radius, float halfAngle, const Color& color);
 };

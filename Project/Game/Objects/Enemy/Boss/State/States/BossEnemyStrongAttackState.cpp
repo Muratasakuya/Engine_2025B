@@ -37,7 +37,7 @@ void BossEnemyStrongAttackState::Update(BossEnemy& bossEnemy) {
 void BossEnemyStrongAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 }
 
-void BossEnemyStrongAttackState::ImGui() {
+void BossEnemyStrongAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);

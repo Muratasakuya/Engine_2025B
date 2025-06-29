@@ -60,8 +60,10 @@ public:
 
 	// animation
 	void SetNextAnimation(const std::string& nextAnimationName, bool loopAnimation, float transitionDuration);
+	void ResetAnimation();
 	Vector3 GetJointWorldPos(const std::string& jointName) const;
 	bool IsAnimationFinished() const { return animation_->IsAnimationFinished(); }
+	int GetAnimationRepeatCount() const { return animation_->GetRepeatCount(); }
 
 	/*---------- getter ----------*/
 

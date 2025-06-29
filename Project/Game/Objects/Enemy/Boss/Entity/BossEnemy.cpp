@@ -28,8 +28,13 @@ void BossEnemy::InitAnimations() {
 	animation_->SetPlayAnimation("bossEnemy_idle", true);
 
 	// animationのデータを設定
-	animation_->SetAnimationData("bossEnemy_falter");      // 怯み
-	animation_->SetAnimationData("bossEnemy_lightAttack"); // 弱攻撃
+	animation_->SetAnimationData("bossEnemy_teleport");
+	animation_->SetAnimationData("bossEnemy_falter");
+	animation_->SetAnimationData("bossEnemy_lightAttack");
+	animation_->SetAnimationData("bossEnemy_strongAttack");
+	animation_->SetAnimationData("bossEnemy_rushAttack");
+	animation_->SetAnimationData("bossEnemy_stun");
+	animation_->SetAnimationData("bossEnemy_stunUpdate");
 
 	// 右手を親として更新させる
 	animation_->SetParentJoint("rightHand");
@@ -94,6 +99,11 @@ void BossEnemy::SetPlayer(const Player* player) {
 	player_ = player;
 
 	stateController_->SetPlayer(player);
+}
+
+void BossEnemy::SetFollowCamera(const FollowCamera* followCamera) {
+
+	stateController_->SetFollowCamera(followCamera);
 }
 
 void BossEnemy::Update() {
@@ -200,7 +210,7 @@ void BossEnemy::DerivedImGui() {
 
 		if (ImGui::BeginTabItem("StateParam")) {
 
-			stateController_->ImGui();
+			stateController_->ImGui(*this);
 			ImGui::EndTabItem();
 		}
 

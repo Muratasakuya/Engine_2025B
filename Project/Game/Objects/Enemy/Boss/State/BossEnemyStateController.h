@@ -33,12 +33,13 @@ public:
 	// 状態遷移をリクエスト
 	void RequestState(BossEnemyState state) { requested_ = state; }
 
-	void ImGui();
+	void ImGui(const BossEnemy& bossEnemy);
 	void EditStateTable();
 
 	//--------- accessor -----------------------------------------------------
 
 	void SetPlayer(const Player* player);
+	void SetFollowCamera(const FollowCamera* followCamera);
 
 	void SetStatas(const BossEnemyStats& stats) { stats_ = stats; }
 
@@ -55,10 +56,11 @@ private:
 	// 状態デーブル
 	BossEnemyStateTable stateTable_;
 	// 再生中情報
-	uint32_t currentComboIndex_;
 	uint32_t currentSequenceIndex_;
 	uint32_t currentComboSlot_;
+	uint32_t currentComboIndex_;
 	uint32_t prevPhase_;
+	uint32_t prevComboIndex_;
 	float stateTimer_;
 
 	// 現在のフェーズ
@@ -72,6 +74,7 @@ private:
 	// editor
 	int editingStateIndex_;
 	const ImVec4 kHighlight = ImVec4(1.0f, 0.85f, 0.2f, 1.0f);
+	bool disableTransitions_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -37,7 +37,7 @@ void BossEnemyStunState::Update(BossEnemy& bossEnemy) {
 void BossEnemyStunState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 }
 
-void BossEnemyStunState::ImGui() {
+void BossEnemyStunState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);

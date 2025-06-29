@@ -28,6 +28,8 @@ namespace {
 		"Idle","Teleport","Stun","Falter","LightAttack","StrongAttack",
 		"ChargeAttack","RushAttack",
 	};
+	// テレポートの種類の名前
+	const char* kTeleportNames[] = { "Far","Near" };
 
 	// jsonを保存するパス
 	const std::string kStateJsonPath = "Enemy/Boss/stateParameter.json";
@@ -52,6 +54,8 @@ void BossEnemyStateController::Init(BossEnemy& owner) {
 	// 初期状態を設定
 	requested_ = BossEnemyState::Idle;
 	ChangeState(owner);
+
+	disableTransitions_ = true;
 }
 
 void BossEnemyStateController::SetPlayer(const Player* player) {
@@ -60,6 +64,15 @@ void BossEnemyStateController::SetPlayer(const Player* player) {
 	for (const auto& state : std::views::values(states_)) {
 
 		state->SetPlayer(player);
+	}
+}
+
+void BossEnemyStateController::SetFollowCamera(const FollowCamera* followCamera) {
+
+	// 各状態にfollowCameraをセット
+	for (const auto& state : std::views::values(states_)) {
+
+		state->SetFollowCamera(followCamera);
 	}
 }
 
@@ -109,14 +122,47 @@ void BossEnemyStateController::UpdatePhase() {
 
 void BossEnemyStateController::UpdateStateTimer() {
 
-	// 時間経過を進める
-	stateTimer_ += GameTimer::GetDeltaTime();
-
+	// 現在のフェーズの時間を更新
 	const auto& phase = stateTable_.phases[currentPhase_];
-	if (phase.nextStateDuration <= stateTimer_) {
+	BossEnemyIState* state = states_[current_].get();
 
-		// 次のステートを決定する
-		ChooseNextState(phase);
+	// 遷移不可
+	if (disableTransitions_) {
+		requested_.reset();
+		stateTimer_ = 0.0f;
+		return;
+	}
+
+	// 遷移可能状態になったら時間を進めて遷移させる
+	if (state->GetCanExit()) {
+
+		// 攻撃したかどうか
+		const bool isAttack =
+			(current_ == BossEnemyState::LightAttack) ||
+			(current_ == BossEnemyState::StrongAttack) ||
+			(current_ == BossEnemyState::ChargeAttack) ||
+			(current_ == BossEnemyState::RushAttack);
+		// 攻撃状態空の遷移でかつ強制遷移するなら
+		if (isAttack && phase.autoIdleAfterAttack) {
+
+			// 強制的に待機状態にする
+			requested_ = BossEnemyState::Idle;
+			currentComboSlot_ = 0;
+			prevComboIndex_ = currentComboIndex_;
+			currentSequenceIndex_ = 0;
+			stateTimer_ = 0.0f;
+			return;
+		}
+
+		stateTimer_ += GameTimer::GetDeltaTime();
+		if (stateTimer_ >= phase.nextStateDuration) {
+
+			ChooseNextState(phase);
+			stateTimer_ = 0.0f;
+		}
+	}
+	// 遷移できない状態
+	else {
 		stateTimer_ = 0.0f;
 	}
 }
@@ -138,6 +184,13 @@ void BossEnemyStateController::ChangeState(BossEnemy& owner) {
 	// 次の状態を設定する
 	current_ = requested_.value();
 
+	if (current_ == BossEnemyState::Teleport) {
+
+		// テレポートの種類を設定
+		auto* teleport = static_cast<BossEnemyTeleportationState*>(states_[BossEnemyState::Teleport].get());
+		teleport->SetTeleportType(stateTable_.combos[currentComboIndex_].teleportType);
+	}
+
 	// 次の状態を初期化する
 	if (auto* currentState = states_[current_].get()) {
 
@@ -147,26 +200,45 @@ void BossEnemyStateController::ChangeState(BossEnemy& owner) {
 
 void BossEnemyStateController::ChooseNextState(const BossEnemyPhase& phase) {
 
-	if (phase.comboIndices.size() > 1) {
+	// 新しいコンボを抽選して設定
+	const bool startingNewCombo = (currentSequenceIndex_ == 0);
+	if (startingNewCombo) {
+		if (phase.comboIndices.empty()) return;
 
-		// 複数のコンボがある場合はランダムに選ぶ
-		currentComboSlot_ = RandomGenerator::Generate(0, static_cast<int>(phase.comboIndices.size() - 1));
+		int tryCount = 0;
+		// 同じコンボは連続で選択できないようにする
+		// tryCountが6を超えたらその状態にする
+		do {
+			currentComboSlot_ = (phase.comboIndices.size() == 1) ? 0
+				: RandomGenerator::Generate(0, int(phase.comboIndices.size() - 1));
+
+			currentComboIndex_ = std::clamp(phase.comboIndices[currentComboSlot_],
+				0, int(stateTable_.combos.size() - 1));
+			++tryCount;
+		} while (currentComboIndex_ == prevComboIndex_ &&
+			!stateTable_.combos[currentComboIndex_].allowRepeat && tryCount < 6);
+
+		prevComboIndex_ = currentComboIndex_;
+		currentSequenceIndex_ = 0;
 	}
 
-	int comboID = phase.comboIndices[currentComboSlot_];
-	comboID = std::clamp(comboID, 0, static_cast<int>(stateTable_.combos.size() - 1));
-	const BossEnemyCombo& combo = stateTable_.combos[comboID];
+	// 次に再生する状態を取得
+	const BossEnemyCombo& combo = stateTable_.combos[currentComboIndex_];
+	uint32_t sequenceIndex = currentSequenceIndex_;
+	BossEnemyState next = combo.sequence[sequenceIndex];
 
-	// コンボのインデックスを更新
-	currentSequenceIndex_ = (currentSequenceIndex_ + 1) % combo.sequence.size();
-	BossEnemyState next = combo.sequence[currentSequenceIndex_];
+	if (!startingNewCombo && !combo.allowRepeat && next == current_) {
 
-	// 現在の状態と同じなら次の状態を選ぶ
-	if (!combo.allowRepeat && next == current_) {
-
-		currentSequenceIndex_ = (currentSequenceIndex_ + 1) % combo.sequence.size();
-		next = combo.sequence[currentSequenceIndex_];
+		sequenceIndex = (sequenceIndex + 1) % combo.sequence.size();
+		next = combo.sequence[sequenceIndex];
 	}
+
+	// indexを次に進める
+	currentSequenceIndex_ = sequenceIndex + 1;
+	if (combo.sequence.size() <= currentSequenceIndex_) {
+		currentSequenceIndex_ = 0;
+	}
+
 	requested_ = next;
 }
 
@@ -199,7 +271,7 @@ void BossEnemyStateController::DrawHighlighted(bool highlight, const ImVec4& col
 	}
 }
 
-void BossEnemyStateController::ImGui() {
+void BossEnemyStateController::ImGui(const BossEnemy& bossEnemy) {
 
 	if (ImGui::Button("SaveJson...stateParameter.json")) {
 
@@ -207,13 +279,12 @@ void BossEnemyStateController::ImGui() {
 	}
 
 	// 各stateの値を調整
-	editingStateIndex_ = 0;
 	ImGui::Combo("EditState", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
 	ImGui::SeparatorText(kStateNames[editingStateIndex_]);
 
 	if (const auto& state = states_[static_cast<BossEnemyState>(editingStateIndex_)].get()) {
 
-		state->ImGui();
+		state->ImGui(bossEnemy);
 	}
 }
 
@@ -231,6 +302,9 @@ void BossEnemyStateController::EditStateTable() {
 	//--------------------------------------------------------------------
 	// 概要表示
 	//--------------------------------------------------------------------
+
+	ImGui::Checkbox("disableTransitions", &disableTransitions_);
+	ImGui::Text("currentState: %s", kStateNames[static_cast<int>(current_)]);
 
 	if (ImGui::Button("SaveJson...stateParameter.json")) {
 
@@ -253,11 +327,13 @@ void BossEnemyStateController::EditStateTable() {
 		stateTable_.combos.emplace_back(BossEnemyCombo{});
 	}
 
-	if (ImGui::BeginTable("##ComboList", 4, ImGuiTableFlags_BordersInner)) {
+	if (ImGui::BeginTable("##ComboList", 5, ImGuiTableFlags_BordersInner)) {
 
 		ImGui::TableSetupColumn("Combo");     // 0
 		ImGui::TableSetupColumn("Sequence");  // 1
-		ImGui::TableSetupColumn("AddState");  // 2
+		ImGui::TableSetupColumn("Repeat");    // 2
+		ImGui::TableSetupColumn("Teleport");  // 3
+		ImGui::TableSetupColumn("AddState");  // 4
 		ImGui::TableHeadersRow();
 
 		for (int comboIdx = 0; comboIdx < static_cast<int>(stateTable_.combos.size()); ++comboIdx) {
@@ -292,7 +368,7 @@ void BossEnemyStateController::EditStateTable() {
 			for (size_t seqIdx = 0; seqIdx < combo.sequence.size();) {
 
 				const int stateId = static_cast<int>(combo.sequence[seqIdx]);
-				bool isCurrentState = isCurrentCombo && (seqIdx == currentSequenceIndex_);
+				bool isCurrentState = isCurrentCombo && (combo.sequence[seqIdx] == current_);
 
 				ImGui::PushID(static_cast<int>(seqIdx));
 
@@ -340,7 +416,29 @@ void BossEnemyStateController::EditStateTable() {
 			}
 
 			//----------------------------------------------------------------
-			// 列2: AddStateドロップダウン
+			// 列2: Repeat
+			//----------------------------------------------------------------
+
+			ImGui::TableNextColumn();
+			ImGui::Checkbox("##allowRepeat", &combo.allowRepeat);
+
+			//----------------------------------------------------------------
+			// 列3: Teleport
+			//----------------------------------------------------------------
+
+			ImGui::TableNextColumn();
+
+			ImGui::PushItemWidth(buttonSize.x);
+			int teleportIndex = (combo.teleportType == BossEnemyTeleportType::Far) ? 0 : 1;
+			if (ImGui::Combo("##TeleportType", &teleportIndex, kTeleportNames, IM_ARRAYSIZE(kTeleportNames))) {
+
+				combo.teleportType = (teleportIndex == 0) ? BossEnemyTeleportType::Far : BossEnemyTeleportType::Near;
+			}
+
+			ImGui::PopItemWidth();
+
+			//----------------------------------------------------------------
+			// 列4: AddStateドロップダウン
 			//----------------------------------------------------------------
 			ImGui::TableNextColumn();
 			{
@@ -386,10 +484,11 @@ void BossEnemyStateController::EditStateTable() {
 	// 必要フェーズ数をHP閾値に合わせて調整
 	SyncPhaseCount();
 
-	if (ImGui::BeginTable("##Phases", 4, ImGuiTableFlags_BordersInner)) {
+	if (ImGui::BeginTable("##Phases", 5, ImGuiTableFlags_BordersInner)) {
 
 		ImGui::TableSetupColumn("Phase");
 		ImGui::TableSetupColumn("Duration");
+		ImGui::TableSetupColumn("AutoIdle");
 		ImGui::TableSetupColumn("Combos");
 		ImGui::TableSetupColumn("AddCombo");
 		ImGui::TableHeadersRow();
@@ -415,9 +514,16 @@ void BossEnemyStateController::EditStateTable() {
 
 			ImGui::TableNextColumn();
 			ImGui::DragFloat("##value", &phase.nextStateDuration, 0.01f);
+			
+			//----------------------------------------------------------------
+			// 列1: AutoIdle
+			//----------------------------------------------------------------
+
+			ImGui::TableNextColumn();
+			ImGui::Checkbox("##autoIdle", &phase.autoIdleAfterAttack);
 
 			//----------------------------------------------------------------
-			// 列2: Phaseが保持するCombo
+			// 列3: Phaseが保持するCombo
 			//----------------------------------------------------------------
 
 			ImGui::TableNextColumn();
@@ -465,7 +571,7 @@ void BossEnemyStateController::EditStateTable() {
 			}
 
 			//----------------------------------------------------------------
-			// 列3: AddComboドロップターゲット
+			// 列4: AddComboドロップターゲット
 			//----------------------------------------------------------------
 			ImGui::TableNextColumn();
 			ImGui::Dummy(ImVec2(70.0f, 20.0f));

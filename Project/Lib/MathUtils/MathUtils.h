@@ -14,3 +14,15 @@
 
 constexpr float pi = std::numbers::pi_v<float>;
 constexpr float radian = pi / 180.0f;
+
+//============================================================================
+//	Math namespace
+//============================================================================
+
+namespace Math {
+
+	float GetYawRadian(const Vector3& direction);
+
+	Vector3 RandomPointOnArc(const Vector3& center, const Vector3& direction,
+		float radius, float halfAngle);
+}

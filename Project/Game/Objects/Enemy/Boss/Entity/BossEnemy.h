@@ -42,6 +42,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetPlayer(const Player* player);
+	void SetFollowCamera(const FollowCamera* followCamera);
 private:
 	//========================================================================
 	//	private Methods

@@ -25,7 +25,7 @@ public:
 	void Exit(BossEnemy& bossEnemy) override;
 
 	// imgui
-	void ImGui() override;
+	void ImGui(const BossEnemy& bossEnemy) override;
 
 	// json
 	void ApplyJson([[maybe_unused]] const Json& data) override;
