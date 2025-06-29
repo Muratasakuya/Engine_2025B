@@ -137,6 +137,11 @@ void GameEntity3D::SetNextAnimation(const std::string& nextAnimationName,
 	animation_->SwitchAnimation(nextAnimationName, loopAnimation, transitionDuration);
 }
 
+void GameEntity3D::ResetAnimation() {
+
+	animation_->ResetAnimation();
+}
+
 Vector3 GameEntity3D::GetJointWorldPos(const std::string& jointName) const {
 
 	// animationが存在しない場合は空のVector3を返す

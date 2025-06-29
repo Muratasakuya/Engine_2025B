@@ -627,6 +627,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Lib\MathUtils\MathUtils.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Lib\MathUtils\Matrix4x4.cpp" />
     <ClCompile Include="Lib\MathUtils\Quaternion.cpp" />
     <ClCompile Include="Lib\MathUtils\Vector2.cpp" />

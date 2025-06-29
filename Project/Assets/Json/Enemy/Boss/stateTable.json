@@ -4,44 +4,79 @@
             "allowRepeat": true,
             "sequence": [
                 0
-            ]
-        },
-        {
-            "allowRepeat": false,
-            "sequence": [
-                0,
-                1,
-                4
-            ]
+            ],
+            "teleportType": 0
         },
         {
             "allowRepeat": false,
             "sequence": [
                 1,
                 4
-            ]
+            ],
+            "teleportType": 1
+        },
+        {
+            "allowRepeat": false,
+            "sequence": [
+                1,
+                5
+            ],
+            "teleportType": 1
+        },
+        {
+            "allowRepeat": false,
+            "sequence": [
+                1
+            ],
+            "teleportType": 0
+        },
+        {
+            "allowRepeat": false,
+            "sequence": [
+                1,
+                6
+            ],
+            "teleportType": 0
+        },
+        {
+            "allowRepeat": false,
+            "sequence": [
+                7
+            ],
+            "teleportType": 0
         }
     ],
     "phases": [
         {
-            "comboIndices": [
-                0
-            ],
-            "nextStateDuration": 1.0
-        },
-        {
+            "autoIdleAfterAttack": true,
             "comboIndices": [
                 0,
-                1
+                1,
+                3
             ],
-            "nextStateDuration": 1.0
+            "nextStateDuration": 0.6399999856948853
         },
         {
+            "autoIdleAfterAttack": true,
             "comboIndices": [
                 0,
-                2
+                1,
+                2,
+                3,
+                4
             ],
-            "nextStateDuration": 1.0
+            "nextStateDuration": 0.5400000214576721
+        },
+        {
+            "autoIdleAfterAttack": false,
+            "comboIndices": [
+                0,
+                1,
+                2,
+                4,
+                5
+            ],
+            "nextStateDuration": 0.7200000286102295
         }
     ]
 }

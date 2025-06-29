@@ -25,11 +25,11 @@ public:
 	void Exit(BossEnemy& bossEnemy) override;
 
 	// imgui
-	void ImGui() override;
+	void ImGui(const BossEnemy& bossEnemy) override;
 
 	// json
-	void ApplyJson([[maybe_unused]] const Json& data) override;
-	void SaveJson([[maybe_unused]] Json& data) override;
+	void ApplyJson(const Json& data) override;
+	void SaveJson(Json& data) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -38,8 +38,6 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// parameters
-	float backStepSpeed_;    // 後ずさりするときの速度
-
-	//--------- functions ----------------------------------------------------
-
+	float exitTimer_; // 遷移可能にするまでの経過時間
+	float exitTime_;  // 遷移可能にするまでの時間
 };

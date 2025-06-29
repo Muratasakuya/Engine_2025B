@@ -36,6 +36,8 @@ public:
 
 	// animation再生
 	void SetPlayAnimation(const std::string& animationName, bool roopAnimation);
+	// animationリセット
+	void ResetAnimation();
 	// 切り替えAnimation
 	void SwitchAnimation(const std::string& nextAnimName, bool loopAnimation, float transitionDuration);
 
@@ -44,6 +46,7 @@ public:
 
 	bool IsTransition() const { return inTransition_; }
 	bool IsAnimationFinished() const { return animationFinish_; }
+	int GetRepeatCount() const { return repeatCount_; }
 
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
 
@@ -71,6 +74,7 @@ private:
 	bool roopAnimation_;               // ループ再生するかどうか
 
 	bool animationFinish_; // 現在のanimationが終了したかどうか
+	int repeatCount_;      // リピート回数
 
 	bool inTransition_;        // 遷移中かどうか
 	float transitionTimer_;    // 遷移管理タイマー

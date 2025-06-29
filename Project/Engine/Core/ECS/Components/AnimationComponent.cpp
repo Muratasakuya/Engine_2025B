@@ -41,7 +41,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 	}
 
 	// ループ再生状態にする
-	SetPlayAnimation(currentAnimationName_, true);
+	SetPlayAnimation(currentAnimationName_, false);
 }
 
 void AnimationComponent::Update(const Matrix4x4& worldMatrix) {
@@ -60,9 +60,13 @@ void AnimationComponent::Update(const Matrix4x4& worldMatrix) {
 		// ループ再生かしないか
 		if (roopAnimation_) {
 
-			// 経過時間を進める
-			currentAnimationTimer_ += GameTimer::GetScaledDeltaTime();
-			currentAnimationTimer_ = std::fmod(currentAnimationTimer_, animationData_[currentAnimationName_].duration);
+			float deltaTime = GameTimer::GetScaledDeltaTime();
+			float duration = animationData_[currentAnimationName_].duration;
+			if (currentAnimationTimer_ + deltaTime >= duration) {
+				++repeatCount_;
+			}
+
+			currentAnimationTimer_ = std::fmod(currentAnimationTimer_ + deltaTime, duration);
 
 			// 進行度を計算
 			animationProgress_ = currentAnimationTimer_ / animationData_[currentAnimationName_].duration;
@@ -131,6 +135,7 @@ void AnimationComponent::ImGui(float itemSize) {
 	if (ImGui::Button("Restart")) {
 		currentAnimationTimer_ = 0.0f;
 	}
+	ImGui::Text("Repeat Count: %d", repeatCount_);
 
 	ImGui::Text("currentAnimationTime: %4.3f", currentAnimationTimer_);
 	float animationProgress = currentAnimationTimer_ / animationData_[currentAnimationName_].duration;
@@ -317,6 +322,15 @@ void AnimationComponent::SetPlayAnimation(const std::string& animationName, bool
 	currentAnimationTimer_ = 0.0f;
 	currentAnimationName_ = animationName;
 	roopAnimation_ = roopAnimation;
+
+	animationFinish_ = false;
+}
+
+void AnimationComponent::ResetAnimation() {
+
+	// animationリセット
+	repeatCount_ = 0;
+	animationFinish_ = false;
 }
 
 void AnimationComponent::SwitchAnimation(const std::string& nextAnimName,
@@ -340,6 +354,7 @@ void AnimationComponent::SwitchAnimation(const std::string& nextAnimName,
 	transitionDuration_ = transitionDuration;
 
 	roopAnimation_ = loopAnimation;
+	animationFinish_ = false;
 }
 
 void AnimationComponent::SetParentJoint(const std::string& jointName) {

@@ -131,8 +131,9 @@ void GameScene::Init() {
 	bossEnemy_ = std::make_unique<BossEnemy>();
 	bossEnemy_->Init("bossEnemy", "bossEnemy", "Enemy", "bossEnemy_idle");
 
-	// playerをセット
+	// player、カメラをセット
 	bossEnemy_->SetPlayer(player_.get());
+	bossEnemy_->SetFollowCamera(followCamera_.get());
 	// bossEnemy、カメラをセット
 	player_->SetBossEnemy(bossEnemy_.get());
 	player_->SetFollowCamera(followCamera_.get());

@@ -17,6 +17,7 @@ void BossEnemyCombo::FromJson(const Json& data) {
 		sequence.emplace_back(static_cast<BossEnemyState>(state.get<int>()));
 	}
 	allowRepeat = data.value("allowRepeat", true);
+	teleportType = static_cast<BossEnemyTeleportType>(data.value("teleportType", 0));
 }
 
 void BossEnemyCombo::ToJson(Json& data) {
@@ -27,18 +28,21 @@ void BossEnemyCombo::ToJson(Json& data) {
 		data["sequence"].push_back(static_cast<int>(state));
 	}
 	data["allowRepeat"] = allowRepeat;
+	data["teleportType"] = static_cast<int>(teleportType);
 }
 
 void BossEnemyPhase::FromJson(const Json& data) {
 
 	nextStateDuration = data.value("nextStateDuration", 1.0f);
 	comboIndices = JsonAdapter::ToVector<int>(data["comboIndices"]);
+	autoIdleAfterAttack = data.value("autoIdleAfterAttack", false);
 }
 
 void BossEnemyPhase::ToJson(Json& data) {
 
 	data["nextStateDuration"] = nextStateDuration;
 	data["comboIndices"] = JsonAdapter::FromVector<int>(comboIndices);
+	data["autoIdleAfterAttack"] = autoIdleAfterAttack;
 }
 
 void BossEnemyStateTable::FromJson(const Json& data) {
