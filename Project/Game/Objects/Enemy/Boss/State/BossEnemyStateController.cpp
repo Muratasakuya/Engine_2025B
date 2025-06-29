@@ -117,6 +117,16 @@ void BossEnemyStateController::UpdatePhase() {
 		currentComboIndex_ = 0;
 		currentSequenceIndex_ = 0;
 		stateTimer_ = 0.0f;
+
+		// 最後のphaseの時
+		if (currentPhase_ + 1 == stateTable_.phases.size()) {
+
+			// 強制遷移先を設定
+			forcedState_ = BossEnemyState::RushAttack;
+		} else {
+
+			forcedState_.reset();
+		}
 	}
 }
 
@@ -135,6 +145,18 @@ void BossEnemyStateController::UpdateStateTimer() {
 
 	// 遷移可能状態になったら時間を進めて遷移させる
 	if (state->GetCanExit()) {
+		
+		// 強制遷移先が設定されていればその状態に遷移させる
+		if (forcedState_.has_value()) {
+
+			requested_ = *forcedState_;
+			forcedState_.reset();
+			currentComboSlot_ = 0;
+			prevComboIndex_ = currentComboIndex_;
+			currentSequenceIndex_ = 0;
+			stateTimer_ = 0.0f;
+			return;
+		}
 
 		// 攻撃したかどうか
 		const bool isAttack =

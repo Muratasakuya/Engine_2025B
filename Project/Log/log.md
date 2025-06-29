@@ -27,6 +27,7 @@ EngineInformation:     load texture: toughnessNumber
 EngineInformation:     load texture: bossName
 EngineInformation:     load model: bossEnemy
 EngineInformation:     load model: bossEnemyWeapon
+EngineInformation:     load animation: bossEnemy_chargeAttack
 EngineInformation:     load animation: bossEnemy_falter
 EngineInformation:     load animation: bossEnemy_idle
 EngineInformation:     load animation: bossEnemy_lightAttack

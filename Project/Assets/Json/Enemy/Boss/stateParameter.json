@@ -1,8 +1,8 @@
 {
     "ChargeAttack": {
-        "backStepSpeed_": 0.0,
-        "nextAnimDuration_": 0.0,
-        "rotationLerpRate_": 0.0
+        "exitTime_": 0.05999999865889549,
+        "nextAnimDuration_": 0.1599999964237213,
+        "rotationLerpRate_": 14.0
     },
     "Falter": {
         "backStepSpeed_": 0.0,
@@ -23,14 +23,22 @@
         "rotationLerpRate_": 14.0
     },
     "RushAttack": {
-        "backStepSpeed_": 0.0,
-        "nextAnimDuration_": 0.0,
-        "rotationLerpRate_": 0.0
+        "attackCoolTime_": 1.399999976158142,
+        "easingType_": 14,
+        "farRadius_": 80.0,
+        "halfAngle_": 36.0,
+        "lerpTime_": 0.7200000286102295,
+        "nearRadius_": 20.0,
+        "nextAnimDuration_": 0.03999999910593033,
+        "rotationLerpRate_": 14.0
     },
     "StrongAttack": {
-        "backStepSpeed_": 0.0,
-        "nextAnimDuration_": 0.0,
-        "rotationLerpRate_": 0.0
+        "attackOffsetTranslation_": -20.0,
+        "easingType_": 14,
+        "exitTime_": 0.10000000149011612,
+        "lerpTime_": 0.7200000286102295,
+        "nextAnimDuration_": 0.03200000151991844,
+        "rotationLerpRate_": 14.0
     },
     "Stun": {
         "backStepSpeed_": 0.0,

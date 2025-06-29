@@ -13,47 +13,57 @@
 
 void BossEnemyChargeAttackState::Enter(BossEnemy& bossEnemy) {
 
-	bossEnemy.SetNextAnimation("bossEnemy_idle", true, nextAnimDuration_);
+	bossEnemy.SetNextAnimation("bossEnemy_chargeAttack", false, nextAnimDuration_);
+
+	Vector3 startPos = bossEnemy.GetTranslation();
+	Vector3 targetPos = player_->GetTranslation();
+
+	// 開始時に一気playerの方を向かせる
+	LookTarget(bossEnemy, targetPos);
+
+	canExit_ = false;
 }
 
 void BossEnemyChargeAttackState::Update(BossEnemy& bossEnemy) {
 
-	const float deltaTime = GameTimer::GetDeltaTime();
+	if (bossEnemy.IsAnimationFinished()) {
 
-	// 前方ベクトルを取得
-	Vector3 bossPos = bossEnemy.GetTranslation();
-	Vector3 playerPos = player_->GetTransform().translation;
+		exitTimer_ += GameTimer::GetDeltaTime();
+		// 時間経過が過ぎたら遷移可能
+		if (exitTime_ < exitTimer_) {
 
-	// 回転を計算して設定
-	Quaternion bossRotation = Quaternion::LookTarget(bossPos, playerPos,
-		Vector3(0.0f, 1.0f, 0.0f), bossEnemy.GetRotation(), rotationLerpRate_ * deltaTime);
-	bossEnemy.SetRotation(bossRotation);
-
-	// 後ずさりさせる
-	Vector3 backStepVelocity = bossEnemy.GetTransform().GetBack() * backStepSpeed_ * deltaTime;
-	bossEnemy.SetTranslation(bossPos + backStepVelocity);
+			canExit_ = true;
+		}
+	}
 }
 
 void BossEnemyChargeAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
+
+	// リセット
+	exitTimer_ = 0.0f;
+	canExit_ = false;
 }
 
 void BossEnemyChargeAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
-	ImGui::DragFloat("backStepSpeed", &backStepSpeed_, 0.001f);
+
+	ImGui::DragFloat("exitTime", &exitTime_, 0.01f);
 }
 
 void BossEnemyChargeAttackState::ApplyJson(const Json& data) {
 
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
-	backStepSpeed_ = JsonAdapter::GetValue<float>(data, "backStepSpeed_");
+
+	exitTime_ = JsonAdapter::GetValue<float>(data, "exitTime_");
 }
 
 void BossEnemyChargeAttackState::SaveJson(Json& data) {
 
 	data["nextAnimDuration_"] = nextAnimDuration_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
-	data["backStepSpeed_"] = backStepSpeed_;
+
+	data["exitTime_"] = exitTime_;
 }

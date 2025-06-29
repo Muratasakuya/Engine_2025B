@@ -32,6 +32,7 @@ void BossEnemy::InitAnimations() {
 	animation_->SetAnimationData("bossEnemy_falter");
 	animation_->SetAnimationData("bossEnemy_lightAttack");
 	animation_->SetAnimationData("bossEnemy_strongAttack");
+	animation_->SetAnimationData("bossEnemy_chargeAttack");
 	animation_->SetAnimationData("bossEnemy_rushAttack");
 	animation_->SetAnimationData("bossEnemy_stun");
 	animation_->SetAnimationData("bossEnemy_stunUpdate");

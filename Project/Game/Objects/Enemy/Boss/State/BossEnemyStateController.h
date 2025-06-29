@@ -68,8 +68,9 @@ private:
 
 	std::unordered_map<BossEnemyState, std::unique_ptr<BossEnemyIState>> states_;
 
-	BossEnemyState current_;                  // 現在の状態
-	std::optional<BossEnemyState> requested_; // 次の状態
+	BossEnemyState current_;                    // 現在の状態
+	std::optional<BossEnemyState> requested_;   // 次の状態
+	std::optional<BossEnemyState> forcedState_; // 状態の強制遷移
 
 	// editor
 	int editingStateIndex_;

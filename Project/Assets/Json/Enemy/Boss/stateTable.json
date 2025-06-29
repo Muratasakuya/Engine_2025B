@@ -33,7 +33,15 @@
         {
             "allowRepeat": false,
             "sequence": [
+                1,
                 6
+            ],
+            "teleportType": 0
+        },
+        {
+            "allowRepeat": false,
+            "sequence": [
+                7
             ],
             "teleportType": 0
         }
@@ -63,7 +71,10 @@
             "autoIdleAfterAttack": false,
             "comboIndices": [
                 0,
-                2
+                1,
+                2,
+                4,
+                5
             ],
             "nextStateDuration": 0.7200000286102295
         }
