@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Input/Input.h>
 #include <Engine/Utility/GameTimer.h>
+#include <Game/Objects/Player/Entity/Player.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 // inputDevice
@@ -256,6 +257,9 @@ void PlayerStateController::ChangeState(Player& owner) {
 
 	currentEnterTime_ = GameTimer::GetTotalTime();
 	lastEnterTime_[current_] = currentEnterTime_;
+
+	// player側に切り替えを通知する
+	owner.GetAttackCollision()->SetEnterState(current_);
 }
 
 bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const {

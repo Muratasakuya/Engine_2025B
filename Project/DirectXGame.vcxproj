@@ -525,6 +525,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\Boss\Entity\BossEnemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.cpp" />
+    <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollision.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Player\Entity\PlayerWeapon.cpp">
       <SubType>
       </SubType>
@@ -1009,6 +1013,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Base\ITransition.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.h" />
+    <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollision.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Player\Entity\PlayerWeapon.h">
       <SubType>
       </SubType>
