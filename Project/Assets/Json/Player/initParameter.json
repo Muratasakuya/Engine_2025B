@@ -1,4 +1,141 @@
 {
+    "AttackCollision": {
+        "Attack_1st": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 4.0,
+                "z": 5.400000095367432
+            },
+            "hitInterval": 0.30000001192092896,
+            "offTime": 0.38999998569488525,
+            "onTime": 0.0,
+            "size": {
+                "x": 5.599999904632568,
+                "y": 4.0,
+                "z": 3.5999999046325684
+            }
+        },
+        "Attack_2nd": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 4.0,
+                "z": 6.0
+            },
+            "hitInterval": 0.3199999928474426,
+            "offTime": 0.5,
+            "onTime": 0.0,
+            "size": {
+                "x": 6.0,
+                "y": 4.0,
+                "z": 4.400000095367432
+            }
+        },
+        "Attack_3rd": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 3.0,
+                "z": 4.0
+            },
+            "hitInterval": 0.25999999046325684,
+            "offTime": 1.5,
+            "onTime": 0.0,
+            "size": {
+                "x": 3.200000047683716,
+                "y": 10.0,
+                "z": 4.0
+            }
+        },
+        "Dash": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "hitInterval": 0.0,
+            "offTime": 0.0,
+            "onTime": 0.0,
+            "size": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        "Idle": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "hitInterval": 0.0,
+            "offTime": 0.0,
+            "onTime": 0.0,
+            "size": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        "Parry": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "hitInterval": 0.0,
+            "offTime": 0.0,
+            "onTime": 0.0,
+            "size": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        "SkilAttack": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 4.0,
+                "z": 6.0
+            },
+            "hitInterval": 0.019999999552965164,
+            "offTime": 0.07999999821186066,
+            "onTime": 0.0,
+            "size": {
+                "x": 3.200000047683716,
+                "y": 3.200000047683716,
+                "z": 6.0
+            }
+        },
+        "SpecialAttack": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 4.0,
+                "z": 6.0
+            },
+            "hitInterval": 0.019999999552965164,
+            "offTime": 0.07999999821186066,
+            "onTime": 0.0,
+            "size": {
+                "x": 3.200000047683716,
+                "y": 3.200000047683716,
+                "z": 6.0
+            }
+        },
+        "Walk": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "hitInterval": 0.0,
+            "offTime": 0.0,
+            "onTime": 0.0,
+            "size": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        }
+    },
     "CollisionBody0": {
         "OBB": {
             "center": {

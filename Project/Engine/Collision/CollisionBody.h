@@ -21,7 +21,8 @@ enum class ColliderType {
 	Type_Player = 1 << 1,
 	Type_PlayerWeapon = 1 << 2,
 	Type_BossEnemy = 1 << 3,
-	Type_CrossMarkWall = 1 << 4,
+	Type_BossWeapon = 1 << 4,
+	Type_CrossMarkWall = 1 << 5,
 };
 
 // operator

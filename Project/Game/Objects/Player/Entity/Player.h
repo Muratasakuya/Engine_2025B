@@ -9,6 +9,8 @@
 #include <Game/Objects/Player/Entity/PlayerWeapon.h>
 // state
 #include <Game/Objects/Player/State/PlayerStateController.h>
+// collision
+#include <Game/Objects/Player/Collision/PlayerAttackCollision.h>
 // HUD
 #include <Game/Objects/Player/HUD/PlayerHUD.h>
 
@@ -40,6 +42,8 @@ public:
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
 	void SetFollowCamera(const FollowCamera* followCamera);
+
+	PlayerAttackCollision* GetAttackCollision() const { return playerAttackCollision_.get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -53,6 +57,9 @@ private:
 
 	// 状態の管理
 	std::unique_ptr<PlayerStateController> stateController_;
+
+	// 攻撃の衝突
+	std::unique_ptr<PlayerAttackCollision> playerAttackCollision_;
 
 	// HUD
 	std::unique_ptr<PlayerHUD> hudSprites_;

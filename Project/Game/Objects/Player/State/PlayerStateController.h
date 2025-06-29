@@ -38,6 +38,8 @@ public:
 	void SetFollowCamera(const FollowCamera* followCamera);
 
 	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
+
+	PlayerState GetCurrentState() const { return current_; }
 private:
 	//========================================================================
 	//	private Methods

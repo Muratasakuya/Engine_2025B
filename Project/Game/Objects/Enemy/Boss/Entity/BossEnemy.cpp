@@ -48,7 +48,7 @@ void BossEnemy::InitCollision() {
 
 	// タイプ設定
 	body->SetType(ColliderType::Type_BossEnemy);
-	body->SetTargetType(ColliderType::Type_Player);
+	body->SetTargetType(ColliderType::Type_PlayerWeapon);
 }
 
 void BossEnemy::InitState() {
@@ -131,9 +131,14 @@ void BossEnemy::Update() {
 	Collider::UpdateAllBodies(*transform_);
 }
 
-void BossEnemy::OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {
+void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {
 
+	// playerからの攻撃を受けた時
+	if (collisionBody->GetType() == ColliderType::Type_PlayerWeapon) {
 
+		// ダメージを受ける
+		--stats_.currentHP;
+	}
 }
 
 void BossEnemy::DerivedImGui() {

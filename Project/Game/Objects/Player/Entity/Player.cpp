@@ -55,6 +55,10 @@ void Player::InitCollision() {
 	// タイプ設定
 	body->SetType(ColliderType::Type_Player);
 	body->SetTargetType(ColliderType::Type_BossEnemy);
+
+	// 攻撃の衝突
+	playerAttackCollision_ = std::make_unique<PlayerAttackCollision>();
+	playerAttackCollision_->Init();
 }
 
 void Player::InitState() {
@@ -126,6 +130,7 @@ void Player::Update() {
 
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
+	playerAttackCollision_->Update(*transform_);
 }
 
 void Player::OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {
@@ -177,6 +182,11 @@ void Player::DerivedImGui() {
 			ImGui::EndTabItem();
 		}
 
+		if (ImGui::BeginTabItem("AttackCollision")) {
+			playerAttackCollision_->ImGui();
+			ImGui::EndTabItem();
+		}
+
 		// ---- HUD -----------------------------------------------------
 		if (ImGui::BeginTabItem("HUD")) {
 			hudSprites_->ImGui();
@@ -206,6 +216,9 @@ void Player::ApplyJson() {
 	rightWeapon_->ApplyJson(data["RightWeapon"]);
 	leftWeapon_->ApplyJson(data["LeftWeapon"]);
 
+	// 衝突
+	playerAttackCollision_->ApplyJson(data["AttackCollision"]);
+
 	stats_.maxHP = JsonAdapter::GetValue<int>(data, "maxHP");
 	stats_.maxSkilPoint = JsonAdapter::GetValue<int>(data, "maxSkilPoint");
 	// 初期化時は最大と同じ値にする
@@ -224,6 +237,9 @@ void Player::SaveJson() {
 	// 武器
 	rightWeapon_->SaveJson(data["RightWeapon"]);
 	leftWeapon_->SaveJson(data["LeftWeapon"]);
+
+	// 衝突
+	playerAttackCollision_->SaveJson(data["AttackCollision"]);
 
 	data["maxHP"] = stats_.maxHP;
 	data["maxSkilPoint"] = stats_.maxSkilPoint;
