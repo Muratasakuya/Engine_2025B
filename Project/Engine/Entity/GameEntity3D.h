@@ -55,6 +55,7 @@ public:
 	// 色
 	void SetColor(const Color& color, std::optional<uint32_t> meshIndex = std::nullopt);
 	void SetAlpha(float alpha, std::optional<uint32_t> meshIndex = std::nullopt);
+	void SetCastShadow(bool cast, std::optional<uint32_t> meshIndex = std::nullopt);
 	// texture
 	void SetTextureName(const std::string& textureName, std::optional<uint32_t> meshIndex = std::nullopt);
 

@@ -43,6 +43,9 @@ public:
 
 	void SetPlayer(const Player* player);
 	void SetFollowCamera(const FollowCamera* followCamera);
+
+	void SetAlpha(float alpha);
+	void SetCastShadow(bool cast);
 private:
 	//========================================================================
 	//	private Methods

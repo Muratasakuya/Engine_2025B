@@ -47,6 +47,8 @@
     },
     "Teleport": {
         "easingType_": 14,
+        "fadeInTime_": 0.07999999821186066,
+        "fadeOutTime_": 0.11999999731779099,
         "farRadius_": 54.0,
         "halfAngle_": 35.900001525878906,
         "lerpTime_": 0.800000011920929,

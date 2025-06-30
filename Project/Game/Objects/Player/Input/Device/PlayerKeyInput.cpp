@@ -53,7 +53,7 @@ bool PlayerKeyInput::IsPressed(PlayerAction button) const {
 	}
 	case PlayerAction::Special: {
 
-		return input_->PushKey(DIK_Q);
+		//return input_->PushKey(DIK_Q);
 	}
 	}
 	return false;
@@ -76,7 +76,7 @@ bool PlayerKeyInput::IsTriggered(PlayerAction button) const {
 	}
 	case PlayerAction::Special: {
 
-		return input_->TriggerKey(DIK_Q);
+		//return input_->TriggerKey(DIK_Q);
 	}
 	}
 	return false;

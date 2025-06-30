@@ -83,13 +83,15 @@ void BossEnemyRushAttackState::UpdateTeleport(BossEnemy& bossEnemy, float deltaT
 
 	// tが1.0fになったら攻撃animationに切り替える
 	if (1.0f <= lerpT) {
+		if (currentAttackCount_ < pattern_.size()) {
 
-		// 攻撃アニメーションへ切り替え
-		bossEnemy.SetNextAnimation(pattern_[currentAttackCount_].animationName, false, nextAnimDuration_);
-		bossEnemy.SetTranslation(targetPos_);
+			// 攻撃アニメーションへ切り替え
+			bossEnemy.SetNextAnimation(pattern_[currentAttackCount_].animationName, false, nextAnimDuration_);
+			bossEnemy.SetTranslation(targetPos_);
 
-		currentState_ = State::Attack;
-		lerpTimer_ = 0.0f;
+			currentState_ = State::Attack;
+			lerpTimer_ = 0.0f;
+		}
 	}
 }
 

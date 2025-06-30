@@ -56,4 +56,8 @@ private:
 	float lerpTimer_;       // 座標補間の際の経過時間
 	float lerpTime_;        // 座標補間にかける時間
 	EasingType easingType_; // 補間の際のイージング
+
+	float fadeOutTime_;  // テレポート開始時の時間
+	float fadeInTime_;   // テレポート終了時の時間
+	float currentAlpha_; // α値
 };

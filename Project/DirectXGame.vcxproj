@@ -604,6 +604,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Result\GameResult.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\SceneTransition\FadeTransition.cpp" />
     <ClCompile Include="Game\Scene\GameScene.cpp">
       <SubType>
@@ -1090,6 +1094,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerWalkState.h" />
     <ClInclude Include="Game\Objects\Player\Structures\PlayerStructures.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Result\GameResult.h">
       <SubType>
       </SubType>
     </ClInclude>

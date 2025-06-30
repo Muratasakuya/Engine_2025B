@@ -204,6 +204,21 @@ void GameEntity3D::SetAlpha(float alpha, std::optional<uint32_t> meshIndex) {
 	}
 }
 
+void GameEntity3D::SetCastShadow(bool cast, std::optional<uint32_t> meshIndex) {
+
+	// meshIndexが設定されている場合のみ指定して設定
+	if (meshIndex.has_value()) {
+
+		(*materials_)[meshIndex.value()].castShadow = cast;
+	} else {
+
+		for (auto& material : *materials_) {
+
+			material.castShadow = cast;
+		}
+	}
+}
+
 void GameEntity3D::SetTextureName(const std::string& textureName, std::optional<uint32_t> meshIndex) {
 
 	// meshIndexが設定されている場合のみ指定して設定

@@ -109,6 +109,20 @@ void BossEnemy::SetFollowCamera(const FollowCamera* followCamera) {
 	hudSprites_->SetFollowCamera(followCamera);
 }
 
+void BossEnemy::SetAlpha(float alpha) {
+
+	// 武器も一緒に設定する
+	GameEntity3D::SetAlpha(alpha);
+	weapon_->SetAlpha(alpha);
+}
+
+void BossEnemy::SetCastShadow(bool cast) {
+
+	// 武器も一緒に設定する
+	GameEntity3D::SetCastShadow(cast);
+	weapon_->SetCastShadow(cast);
+}
+
 void BossEnemy::Update() {
 
 	// 閾値のリストの条件に誤りがないかチェック

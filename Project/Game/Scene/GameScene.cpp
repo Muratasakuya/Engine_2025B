@@ -117,7 +117,7 @@ void GameScene::Init() {
 	sceneView_->SetLight(gameLight_.get());
 
 	//========================================================================
-	//	initObject
+	//	backObjects
 	//========================================================================
 
 	ECSManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
@@ -129,16 +129,6 @@ void GameScene::Init() {
 	followCamera_->SetTarget(player_->GetTransform());
 	followCamera_->FirstUpdate();
 
-	bossEnemy_ = std::make_unique<BossEnemy>();
-	bossEnemy_->Init("bossEnemy", "bossEnemy", "Enemy", "bossEnemy_idle");
-
-	// player、カメラをセット
-	bossEnemy_->SetPlayer(player_.get());
-	bossEnemy_->SetFollowCamera(followCamera_.get());
-	// bossEnemy、カメラをセット
-	player_->SetBossEnemy(bossEnemy_.get());
-	player_->SetFollowCamera(followCamera_.get());
-
 	//========================================================================
 	//	editor
 	//========================================================================
@@ -149,6 +139,20 @@ void GameScene::Init() {
 
 	levelEditor_ = std::make_unique<LevelEditor>();
 	levelEditor_->Init("levelEditor");
+
+	//========================================================================
+	//	frontObjects
+	//========================================================================
+
+	bossEnemy_ = std::make_unique<BossEnemy>();
+	bossEnemy_->Init("bossEnemy", "bossEnemy", "Enemy", "bossEnemy_idle");
+
+	// player、カメラをセット
+	bossEnemy_->SetPlayer(player_.get());
+	bossEnemy_->SetFollowCamera(followCamera_.get());
+	// bossEnemy、カメラをセット
+	player_->SetBossEnemy(bossEnemy_.get());
+	player_->SetFollowCamera(followCamera_.get());
 }
 
 void GameScene::Update() {

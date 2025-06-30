@@ -29,6 +29,9 @@ void BossEnemyTeleportationState::Enter(BossEnemy& bossEnemy) {
 		targetPos_ = Math::RandomPointOnArc(center, forward, nearRadius_, halfAngle_);
 	}
 
+	currentAlpha_ = 1.0f;
+	bossEnemy.SetAlpha(currentAlpha_);
+
 	canExit_ = false;
 }
 
@@ -44,6 +47,25 @@ void BossEnemyTeleportationState::Update(BossEnemy& bossEnemy) {
 	// playerの方を向かせる
 	LookTarget(bossEnemy, player_->GetTranslation());
 
+	const float disappearEnd = fadeOutTime_;           // 消え終わる時間
+	const float appearStart = lerpTime_ - fadeInTime_; // 現れ始める時間
+
+	bossEnemy.SetCastShadow(true);
+	if (lerpTimer_ <= disappearEnd) {
+
+		const float t = std::clamp(lerpTimer_ / fadeOutTime_, 0.0f, 1.0f);
+		currentAlpha_ = 1.0f - t;
+	} else if (lerpTimer_ >= appearStart) {
+
+		const float t = std::clamp((lerpTimer_ - appearStart) / fadeInTime_, 0.0f, 1.0f);
+		currentAlpha_ = t;
+	} else {
+
+		currentAlpha_ = 0.0f;
+		bossEnemy.SetCastShadow(false);
+	}
+	bossEnemy.SetAlpha(currentAlpha_);
+
 	// 時間経過が過ぎたら状態遷移可能にする
 	if (lerpTime_ < lerpTimer_) {
 
@@ -57,6 +79,7 @@ void BossEnemyTeleportationState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 	// リセット
 	canExit_ = false;
 	lerpTimer_ = 0.0f;
+	currentAlpha_ = 1.0f;
 }
 
 void BossEnemyTeleportationState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
@@ -72,6 +95,8 @@ void BossEnemyTeleportationState::ImGui([[maybe_unused]] const BossEnemy& bossEn
 	ImGui::DragFloat("nearRadius:Blue", &nearRadius_, 0.1f);
 	ImGui::DragFloat("halfAngle", &halfAngle_, 0.1f);
 	ImGui::DragFloat("lerpTime", &lerpTime_, 0.01f);
+	ImGui::DragFloat("fadeOutTime", &fadeOutTime_, 0.01f);
+	ImGui::DragFloat("fadeInTime", &fadeInTime_, 0.01f);
 	Easing::SelectEasingType(easingType_);
 
 	DrawArc(player_->GetTranslation(), followCamera_->GetTransform().GetForward(),
@@ -88,6 +113,8 @@ void BossEnemyTeleportationState::ApplyJson(const Json& data) {
 	nearRadius_ = JsonAdapter::GetValue<float>(data, "nearRadius_");
 	halfAngle_ = JsonAdapter::GetValue<float>(data, "halfAngle_");
 	lerpTime_ = JsonAdapter::GetValue<float>(data, "lerpTime_");
+	fadeOutTime_ = JsonAdapter::GetValue<float>(data, "fadeOutTime_");
+	fadeInTime_ = JsonAdapter::GetValue<float>(data, "fadeInTime_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
 }
 
@@ -99,5 +126,7 @@ void BossEnemyTeleportationState::SaveJson(Json& data) {
 	data["nearRadius_"] = nearRadius_;
 	data["halfAngle_"] = halfAngle_;
 	data["lerpTime_"] = lerpTime_;
+	data["fadeOutTime_"] = fadeOutTime_;
+	data["fadeInTime_"] = fadeInTime_;
 	data["easingType_"] = static_cast<int>(easingType_);
 }
