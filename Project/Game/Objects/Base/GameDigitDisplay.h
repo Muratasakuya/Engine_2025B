@@ -25,8 +25,13 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetTranslation(const Vector2& translation, const Vector2& offset);
+	Vector2 ProjectToScreen(const Vector3& translation, const BaseCamera& camera);
 
 	void SetSize(const Vector2& size);
+	void SetDigitSize(uint32_t digitIndex, const Vector2& size);
+
+	void SetPostProcessEnable(bool apply);
+	void SetEmissive(uint32_t digitIndex, float emissive);
 private:
 	//========================================================================
 	//	private Methods

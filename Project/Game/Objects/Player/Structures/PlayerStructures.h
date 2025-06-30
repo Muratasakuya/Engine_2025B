@@ -31,6 +31,9 @@ struct PlayerStats {
 
 	int maxSkilPoint;     // 最大スキルポイント
 	int currentSkilPoint; // 現在のスキルポイント
+
+	std::unordered_map<PlayerState, int> damages; // 各攻撃のダメージ量
+	int damageRandomRange;                        // ダメージのランダム範囲
 };
 
 // 遷移条件

@@ -29,10 +29,10 @@ void GameEntity2D::SetCenterTranslation() {
 	transform_->translation = Vector2(Config::kWindowWidthf / 2.0f, Config::kWindowHeightf / 2.0f);
 }
 
-void GameEntity2D::ProjectToScreen(const Vector3& translation, BaseCamera* camera) {
+void GameEntity2D::ProjectToScreen(const Vector3& translation, const BaseCamera& camera) {
 
-	Matrix4x4 viewMatrix = camera->GetViewMatrix();
-	Matrix4x4 projectionMatrix = camera->GetProjectionMatrix();
+	Matrix4x4 viewMatrix = camera.GetViewMatrix();
+	Matrix4x4 projectionMatrix = camera.GetProjectionMatrix();
 
 	Vector3 viewPos = Vector3::Transform(translation, viewMatrix);
 	Vector3 clipPos = Vector3::Transform(viewPos, projectionMatrix);

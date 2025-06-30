@@ -44,6 +44,7 @@ public:
 	void SetFollowCamera(const FollowCamera* followCamera);
 
 	PlayerAttackCollision* GetAttackCollision() const { return playerAttackCollision_.get(); }
+	int GetDamage() const;
 private:
 	//========================================================================
 	//	private Methods
@@ -67,6 +68,9 @@ private:
 	// parameters
 	Transform3DComponent initTransform_; // 初期化時の値
 	PlayerStats stats_; // ステータス
+
+	// editor
+	int editingStateIndex_;
 
 	//--------- functions ----------------------------------------------------
 

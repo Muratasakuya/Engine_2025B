@@ -3,10 +3,21 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================
 //	Player classMethods
 //============================================================================
+
+namespace {
+
+	// 各状態の名前
+	const char* kStateNames[] = {
+		"Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
+		"SkilAttack","SpecialAttack","Parry",
+	};
+}
+
 
 void Player::InitWeapon() {
 
@@ -114,6 +125,18 @@ void Player::SetFollowCamera(const FollowCamera* followCamera) {
 	stateController_->SetFollowCamera(followCamera);
 }
 
+int Player::GetDamage() const {
+
+	// 現在の状態に応じたダメージを取得
+	PlayerState currentState = stateController_->GetCurrentState();
+	int damage = stats_.damages.at(currentState);
+	// ランダムでダメージを設定
+	damage = RandomGenerator::Generate(damage - stats_.damageRandomRange,
+		damage + stats_.damageRandomRange);
+
+	return damage;
+}
+
 void Player::Update() {
 
 	// 状態の更新
@@ -153,6 +176,14 @@ void Player::DerivedImGui() {
 			ImGui::DragInt("Cur HP", &stats_.currentHP, 1, 0, stats_.maxHP);
 			ImGui::DragInt("Max SP", &stats_.maxSkilPoint, 1, 0);
 			ImGui::DragInt("Cur SP", &stats_.currentSkilPoint, 1, 0, stats_.maxSkilPoint);
+
+			// 各stateダメージの値を調整
+			ImGui::Combo("EditDamage", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
+
+			ImGui::SeparatorText(kStateNames[editingStateIndex_]);
+			PlayerState editingState = static_cast<PlayerState>(editingStateIndex_);
+			ImGui::DragInt("Damage", &stats_.damages[editingState], 1, 0);
+			ImGui::DragInt("DamageRange", &stats_.damageRandomRange, 1, 0);
 
 			if (ImGui::Button("Reset HP")) {
 				stats_.currentHP = stats_.maxHP;
@@ -224,6 +255,14 @@ void Player::ApplyJson() {
 	// 初期化時は最大と同じ値にする
 	stats_.currentHP = stats_.maxHP;
 	stats_.currentSkilPoint = stats_.maxSkilPoint;
+
+	for (const auto& [key, value] : data["Damages"].items()) {
+
+		PlayerState state = static_cast<PlayerState>(std::stoi(key));
+		stats_.damages[state] = value.get<int>();
+	}
+
+	stats_.damageRandomRange = JsonAdapter::GetValue<int>(data, "DamageRandomRange");
 }
 
 void Player::SaveJson() {
@@ -243,6 +282,12 @@ void Player::SaveJson() {
 
 	data["maxHP"] = stats_.maxHP;
 	data["maxSkilPoint"] = stats_.maxSkilPoint;
+
+	for (const auto& [state, value] : stats_.damages) {
+
+		data["Damages"][std::to_string(static_cast<int>(state))] = value;
+	}
+	data["DamageRandomRange"] = stats_.damageRandomRange;
 
 	JsonAdapter::Save("Player/initParameter.json", data);
 }

@@ -64,6 +64,8 @@ public:
 
 	static Vector2 Normalize(const Vector2& v);
 
+	static Vector2 Lerp(const Vector2& v0, const Vector2& v1, float t);
+
 	// catmullRom
 	static Vector2 CatmullRomInterpolation(const Vector2& p0, const Vector2& p1,
 		const Vector2& p2, const Vector2& p3, float t);

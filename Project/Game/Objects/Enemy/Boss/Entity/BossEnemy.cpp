@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Game/Objects/Player/Entity/Player.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
@@ -105,6 +106,7 @@ void BossEnemy::SetPlayer(const Player* player) {
 void BossEnemy::SetFollowCamera(const FollowCamera* followCamera) {
 
 	stateController_->SetFollowCamera(followCamera);
+	hudSprites_->SetFollowCamera(followCamera);
 }
 
 void BossEnemy::Update() {
@@ -125,7 +127,7 @@ void BossEnemy::Update() {
 
 	// HUDの更新
 	hudSprites_->SetStatas(stats_);
-	hudSprites_->Update();
+	hudSprites_->Update(*this);
 
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
@@ -137,7 +139,10 @@ void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {
 	if (collisionBody->GetType() == ColliderType::Type_PlayerWeapon) {
 
 		// ダメージを受ける
-		--stats_.currentHP;
+		stats_.currentHP -= player_->GetDamage();
+
+		// HUDに通知
+		hudSprites_->SetDamage(player_->GetDamage());
 	}
 }
 

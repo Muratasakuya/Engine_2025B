@@ -41,6 +41,7 @@ void GameScene::Load() {
 	asset_->LoadTexture("enemyHPBar");
 	asset_->LoadTexture("enemyDestroyBar");
 	asset_->LoadTexture("toughnessNumber");
+	asset_->LoadTexture("damageNumber");
 	asset_->LoadTexture("bossName");
 
 	// model

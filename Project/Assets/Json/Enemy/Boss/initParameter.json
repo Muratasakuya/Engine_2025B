@@ -90,5 +90,5 @@
         50
     ],
     "maxDestroyToughness": 100,
-    "maxHP": 100
+    "maxHP": 300000
 }

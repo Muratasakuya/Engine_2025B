@@ -39,7 +39,7 @@ public:
 	// 座標
 	void SetTranslation(const Vector2& translation) { transform_->translation = translation; }
 	void SetCenterTranslation();
-	void ProjectToScreen(const Vector3& translation, BaseCamera* camera);
+	void ProjectToScreen(const Vector3& translation, const BaseCamera& camera);
 	// サイズ
 	void SetSize(const Vector2& size) { transform_->size = size; }
 	void SetTextureSize(const Vector2& size) { transform_->textureSize = size; }

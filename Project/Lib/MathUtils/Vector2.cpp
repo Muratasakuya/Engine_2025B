@@ -116,6 +116,11 @@ Vector2 Vector2::Normalize(const Vector2& v) {
 	return Vector2(v.x / length, v.y / length);
 }
 
+Vector2 Vector2::Lerp(const Vector2& v0, const Vector2& v1, float t) {
+
+	return Vector2(std::lerp(v0.x, v1.x, t), std::lerp(v0.y, v1.y, t));
+}
+
 Vector2 Vector2::CatmullRomInterpolation(const Vector2& p0, const Vector2& p1,
 	const Vector2& p2, const Vector2& p3, float t) {
 

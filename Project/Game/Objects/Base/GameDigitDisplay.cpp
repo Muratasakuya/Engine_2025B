@@ -3,6 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Config.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
 
 //============================================================================
 //	GameDigitDisplay classMethods
@@ -42,11 +44,49 @@ void GameDigitDisplay::SetTranslation(const Vector2& translation, const Vector2&
 	}
 }
 
+Vector2 GameDigitDisplay::ProjectToScreen(const Vector3& translation, const BaseCamera& camera) {
+
+	Matrix4x4 viewMatrix = camera.GetViewMatrix();
+	Matrix4x4 projectionMatrix = camera.GetProjectionMatrix();
+
+	Vector3 viewPos = Vector3::Transform(translation, viewMatrix);
+	Vector3 clipPos = Vector3::Transform(viewPos, projectionMatrix);
+
+	float screenX = (clipPos.x * 0.5f + 0.5f) * Config::kWindowWidthf;
+	float screenY = (1.0f - (clipPos.y * 0.5f + 0.5f)) * Config::kWindowHeightf;
+
+	return Vector2(screenX, screenY);
+}
+
 void GameDigitDisplay::SetSize(const Vector2& size) {
 
 	for (uint32_t index = 0; index < digitSprites_.size(); ++index) {
 
 		digitSprites_[index]->SetSize(size);
+	}
+}
+
+void GameDigitDisplay::SetDigitSize(uint32_t digitIndex, const Vector2& size) {
+
+	if (digitIndex < digitSprites_.size()) {
+
+		digitSprites_[digitIndex]->SetSize(size);
+	}
+}
+
+void GameDigitDisplay::SetPostProcessEnable(bool apply) {
+
+	for (uint32_t index = 0; index < digitSprites_.size(); ++index) {
+
+		digitSprites_[index]->SetPostProcessEnable(apply);
+	}
+}
+
+void GameDigitDisplay::SetEmissive(uint32_t digitIndex, float emissive) {
+
+	if (digitIndex < digitSprites_.size()) {
+
+		digitSprites_[digitIndex]->SetEmissiveIntensity(emissive);
 	}
 }
 
