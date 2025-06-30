@@ -25,6 +25,8 @@
     "RushAttack": {
         "attackCoolTime_": 1.399999976158142,
         "easingType_": 14,
+        "fadeInTime_": 0.07999999821186066,
+        "fadeOutTime_": 0.11999999731779099,
         "farRadius_": 80.0,
         "halfAngle_": 36.0,
         "lerpTime_": 0.7200000286102295,

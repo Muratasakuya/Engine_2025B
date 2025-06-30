@@ -32,6 +32,10 @@ void BossEnemyRushAttackState::Enter(BossEnemy& bossEnemy) {
 	startPos_ = bossEnemy.GetTranslation();
 	targetPos_ = Math::RandomPointOnArc(center, forward, farRadius_, halfAngle_);
 
+	currentAlpha_ = 1.0f;
+	bossEnemy.SetAlpha(currentAlpha_);
+	bossEnemy.SetCastShadow(true);
+
 	// playerの方を向かせる
 	LookTarget(bossEnemy, player_->GetTranslation());
 }
@@ -81,6 +85,25 @@ void BossEnemyRushAttackState::UpdateTeleport(BossEnemy& bossEnemy, float deltaT
 	bossEnemy.SetTranslation(Vector3::Lerp(startPos_, targetPos_, lerpT));
 	LookTarget(bossEnemy, player_->GetTranslation());
 
+	const float disappearEnd = fadeOutTime_;           // 消え終わる時間
+	const float appearStart = lerpTime_ - fadeInTime_; // 現れ始める時間
+
+	bossEnemy.SetCastShadow(true);
+	if (lerpTimer_ <= disappearEnd) {
+
+		float t = std::clamp(lerpTimer_ / fadeOutTime_, 0.0f, 1.0f);
+		currentAlpha_ = 1.0f - t;
+	} else if (lerpTimer_ >= appearStart) {
+
+		float t = std::clamp((lerpTimer_ - appearStart) / fadeInTime_, 0.0f, 1.0f);
+		currentAlpha_ = t;
+	} else {
+
+		currentAlpha_ = 0.0f;
+		bossEnemy.SetCastShadow(false);
+	}
+	bossEnemy.SetAlpha(currentAlpha_);
+
 	// tが1.0fになったら攻撃animationに切り替える
 	if (1.0f <= lerpT) {
 		if (currentAttackCount_ < pattern_.size()) {
@@ -88,6 +111,9 @@ void BossEnemyRushAttackState::UpdateTeleport(BossEnemy& bossEnemy, float deltaT
 			// 攻撃アニメーションへ切り替え
 			bossEnemy.SetNextAnimation(pattern_[currentAttackCount_].animationName, false, nextAnimDuration_);
 			bossEnemy.SetTranslation(targetPos_);
+
+			bossEnemy.SetAlpha(1.0f);
+			bossEnemy.SetCastShadow(true);
 
 			currentState_ = State::Attack;
 			lerpTimer_ = 0.0f;
@@ -131,13 +157,16 @@ void BossEnemyRushAttackState::UpdateCooldown(BossEnemy& bossEnemy, float deltaT
 	}
 }
 
-void BossEnemyRushAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
+void BossEnemyRushAttackState::Exit(BossEnemy& bossEnemy) {
 
 	// リセット
 	canExit_ = false;
 	lerpTimer_ = 0.0f;
 	attackCoolTimer_ = 0.0f;
 	currentAttackCount_ = 0;
+	currentAlpha_ = 1.0f;
+	bossEnemy.SetAlpha(currentAlpha_);
+	bossEnemy.SetCastShadow(true);
 }
 
 void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
@@ -152,6 +181,8 @@ void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy
 	ImGui::DragFloat("nearRadius:Blue", &nearRadius_, 0.1f);
 	ImGui::DragFloat("halfAngle", &halfAngle_, 0.1f);
 	ImGui::DragFloat("lerpTime", &lerpTime_, 0.01f);
+	ImGui::DragFloat("fadeOutTime", &fadeOutTime_, 0.01f);
+	ImGui::DragFloat("fadeInTime", &fadeInTime_, 0.01f);
 	ImGui::DragFloat("attackCoolTime", &attackCoolTime_, 0.01f);
 	Easing::SelectEasingType(easingType_);
 
@@ -170,6 +201,8 @@ void BossEnemyRushAttackState::ApplyJson(const Json& data) {
 	halfAngle_ = JsonAdapter::GetValue<float>(data, "halfAngle_");
 	lerpTime_ = JsonAdapter::GetValue<float>(data, "lerpTime_");
 	attackCoolTime_ = JsonAdapter::GetValue<float>(data, "attackCoolTime_");
+	fadeOutTime_ = JsonAdapter::GetValue<float>(data, "fadeOutTime_");
+	fadeInTime_ = JsonAdapter::GetValue<float>(data, "fadeInTime_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
 }
 
@@ -182,5 +215,7 @@ void BossEnemyRushAttackState::SaveJson(Json& data) {
 	data["halfAngle_"] = halfAngle_;
 	data["lerpTime_"] = lerpTime_;
 	data["attackCoolTime_"] = attackCoolTime_;
+	data["fadeOutTime_"] = fadeOutTime_;
+	data["fadeInTime_"] = fadeInTime_;
 	data["easingType_"] = static_cast<int>(easingType_);
 }

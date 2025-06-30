@@ -89,6 +89,10 @@ private:
 	int maxAttackCount_;     // 攻撃回数
 	int currentAttackCount_; // 現在の攻撃回数
 
+	float fadeOutTime_;  // テレポート開始時の時間
+	float fadeInTime_;   // テレポート終了時の時間
+	float currentAlpha_; // α値
+
 	//--------- functions ----------------------------------------------------
 
 	// 各状態の更新
