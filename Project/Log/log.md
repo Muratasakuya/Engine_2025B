@@ -2,13 +2,38 @@ EngineInformation:     [StartLogginig]
 EngineInformation:     Use Adapter:NVIDIA GeForce RTX 3060 Laptop GPU
 
 EngineInformation:     12.2
+EngineInformation:     load texture: circle
+EngineInformation:     load texture: effectCircle
+EngineInformation:     load texture: starCircle
+EngineInformation:     load texture: starCircle2
+EngineInformation:     load texture: circle4
+EngineInformation:     load texture: gradationLine_0
+EngineInformation:     load texture: gradationLine_1
+EngineInformation:     load texture: groundEffect
+EngineInformation:     load texture: redCircle
+EngineInformation:     load texture: smallCircle
+EngineInformation:     load texture: flashLlight
+EngineInformation:     load texture: noise
+EngineInformation:     load texture: noise1
+EngineInformation:     load texture: noise2
+EngineInformation:     load model: billboardPlane
+EngineInformation:     load model: bottomLocalbillboardPlane
+EngineInformation:     load model: topLocalbillboardPlane
+EngineInformation:     load model: crossPlane
+EngineInformation:     load model: groundPlane
+EngineInformation:     load model: groundRing
+EngineInformation:     load model: hitLine
+EngineInformation:     load model: slashEffect
+EngineInformation:     load model: verticalPlane
+EngineInformation:     load model: verticalRing
+EngineInformation:     load model: primitiveRing
+EngineInformation:     load model: primitiveCylinder
 EngineInformation:     load texture: overcast_soil_puresky_4k
 EngineInformation:     load texture: whiteAlphaGradation_0
 EngineInformation:     load texture: whiteAlphaGradation_1
 EngineInformation:     load texture: field
 EngineInformation:     load texture: fieldNormal
 EngineInformation:     load model: field
-EngineInformation:     load texture: noise
 EngineInformation:     load model: fieldUnder
 EngineInformation:     load texture: fence
 EngineInformation:     load model: fence

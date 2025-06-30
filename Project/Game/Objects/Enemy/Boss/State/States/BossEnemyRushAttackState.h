@@ -93,6 +93,8 @@ private:
 	float fadeInTime_;   // テレポート終了時の時間
 	float currentAlpha_; // α値
 
+	float emitParticleOffsetY_; // particleの発生位置のオフセット
+
 	//--------- functions ----------------------------------------------------
 
 	// 各状態の更新

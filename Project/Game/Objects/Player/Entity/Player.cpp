@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Particle/ParticleSystem.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================
@@ -120,7 +121,7 @@ void Player::SetBossEnemy(const BossEnemy* bossEnemy) {
 	stateController_->SetBossEnemy(bossEnemy);
 }
 
-void Player::SetFollowCamera(const FollowCamera* followCamera) {
+void Player::SetFollowCamera(FollowCamera* followCamera) {
 
 	stateController_->SetFollowCamera(followCamera);
 }
@@ -154,6 +155,10 @@ void Player::Update() {
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
 	playerAttackCollision_->Update(*transform_);
+
+	// particle更新
+	ParticleSystem::GetInstance()->UpdateEmitter("hitEffectEmitter");
+	ParticleSystem::GetInstance()->UpdateEmitter("groundEffectEmitter");
 }
 
 void Player::OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {

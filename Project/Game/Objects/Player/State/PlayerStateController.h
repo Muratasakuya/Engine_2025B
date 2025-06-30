@@ -35,7 +35,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
-	void SetFollowCamera(const FollowCamera* followCamera);
+	void SetFollowCamera(FollowCamera* followCamera);
 
 	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
 

@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Asset/Asset.h>
 
@@ -13,6 +14,42 @@
 //============================================================================
 
 void GameScene::Load() {
+
+	//========================================================================
+	//	effect
+	//========================================================================
+
+	asset_->LoadTexture("circle");
+	asset_->LoadTexture("effectCircle");
+	asset_->LoadTexture("starCircle");
+	asset_->LoadTexture("starCircle2");
+	asset_->LoadTexture("circle4");
+	asset_->LoadTexture("gradationLine_0");
+	asset_->LoadTexture("gradationLine_1");
+	asset_->LoadTexture("groundEffect");
+	asset_->LoadTexture("redCircle");
+	asset_->LoadTexture("smallCircle");
+	asset_->LoadTexture("flashLlight");
+	asset_->LoadTexture("noise");
+	asset_->LoadTexture("noise1");
+	asset_->LoadTexture("noise2");
+
+	asset_->LoadModel("billboardPlane");
+	asset_->LoadModel("bottomLocalbillboardPlane");
+	asset_->LoadModel("topLocalbillboardPlane");
+	asset_->LoadModel("crossPlane");
+	asset_->LoadModel("groundPlane");
+	asset_->LoadModel("groundRing");
+	asset_->LoadModel("hitLine");
+	asset_->LoadModel("slashEffect");
+	asset_->LoadModel("verticalPlane");
+	asset_->LoadModel("verticalRing");
+	asset_->LoadModel("primitiveRing");
+	asset_->LoadModel("primitiveCylinder");
+
+	ParticleSystem::GetInstance()->LoadEmitter("bossTeleportEmitter", "bossTeleportEmitter");
+	ParticleSystem::GetInstance()->LoadEmitter("hitEffectEmitter", "hitEffectEmitter");
+	ParticleSystem::GetInstance()->LoadEmitter("groundEffectEmitter", "groundEffectEmitter");
 
 	//========================================================================
 	//	environment

@@ -3,7 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
+#include <Game/Camera/FollowCamera.h>
 #include <Game/Objects/Player/Entity/Player.h>
 
 //============================================================================
@@ -24,6 +26,16 @@ void PlayerAttack_3rdState::Update(Player& player) {
 	if (canExit_) {
 
 		exitTimer_ += GameTimer::GetScaledDeltaTime();
+		if (!emitEffect_) {
+
+			Vector3 emitPos = player.GetTranslation();
+			emitPos.y = 1.0f;
+			ParticleSystem::GetInstance()->SetTranslate("groundEffectEmitter", emitPos);
+			ParticleSystem::GetInstance()->Emit("groundEffectEmitter");
+			emitEffect_ = true;
+		}
+
+		followCamera_->StartScreenShake(true);
 	}
 
 	// 座標、回転補間
@@ -35,6 +47,7 @@ void PlayerAttack_3rdState::Exit([[maybe_unused]] Player& player) {
 	// timerをリセット
 	attackPosLerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
+	emitEffect_ = false;
 }
 
 void PlayerAttack_3rdState::ImGui(const Player& player) {

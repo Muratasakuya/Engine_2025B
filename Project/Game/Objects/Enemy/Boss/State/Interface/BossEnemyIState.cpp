@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 
@@ -58,4 +59,53 @@ void BossEnemyIState::DrawArc(const Vector3& center, const Vector3& direction,
 
 	lineRenderer->DrawLine3D(center, firstP, Color::Red());
 	lineRenderer->DrawLine3D(center, lastP, Color::Red());
+}
+
+void BossEnemyIState::EmitTeleportParticle(const Vector3& translation) {
+
+	// 座標の設定
+	ParticleSystem::GetInstance()->SetTranslate("bossTeleportEmitter", translation);
+	// 発生、更新
+	ParticleSystem::GetInstance()->FrequencyEmit("bossTeleportEmitter");
+}
+
+void BossEnemyIState::UpdateParticleEmitter(BossEnemyState state) {
+
+	// 状態毎にparticleを更新する
+	switch (state) {
+	case BossEnemyState::Idle: {
+
+		break;
+	}
+	case BossEnemyState::Teleport: {
+
+		ParticleSystem::GetInstance()->UpdateEmitter("bossTeleportEmitter");
+		break;
+	}
+	case BossEnemyState::Stun: {
+
+		break;
+	}
+	case BossEnemyState::Falter: {
+
+		break;
+	}
+	case BossEnemyState::LightAttack: {
+
+		break;
+	}
+	case BossEnemyState::StrongAttack: {
+
+		break;
+	}
+	case BossEnemyState::ChargeAttack: {
+
+		break;
+	}
+	case BossEnemyState::RushAttack: {
+
+		ParticleSystem::GetInstance()->UpdateEmitter("bossTeleportEmitter");
+		break;
+	}
+	}
 }

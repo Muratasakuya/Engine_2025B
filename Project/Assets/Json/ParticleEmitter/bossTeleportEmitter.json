@@ -1,0 +1,6 @@
+{
+    "FileType": "ParticleEmitter",
+    "particleNames": {
+        "0": "bossTeleportEmitter_dispersion.json"
+    }
+}

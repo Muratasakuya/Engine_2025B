@@ -55,7 +55,13 @@ void BossEnemyStateController::Init(BossEnemy& owner) {
 	requested_ = BossEnemyState::Idle;
 	ChangeState(owner);
 
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+
 	disableTransitions_ = true;
+#else 
+
+	disableTransitions_ = false;
+#endif
 }
 
 void BossEnemyStateController::SetPlayer(const Player* player) {
@@ -92,6 +98,8 @@ void BossEnemyStateController::Update(BossEnemy& owner) {
 	if (BossEnemyIState* currentState = states_[current_].get()) {
 
 		currentState->Update(owner);
+		// particleは常に更新する
+		currentState->UpdateParticleEmitter(current_);
 	}
 }
 

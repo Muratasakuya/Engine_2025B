@@ -41,7 +41,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
-	void SetFollowCamera(const FollowCamera* followCamera);
+	void SetFollowCamera(FollowCamera* followCamera);
 
 	PlayerAttackCollision* GetAttackCollision() const { return playerAttackCollision_.get(); }
 	int GetDamage() const;

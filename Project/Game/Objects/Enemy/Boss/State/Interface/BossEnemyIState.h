@@ -29,6 +29,7 @@ public:
 
 	// 更新処理
 	virtual void Update(BossEnemy& bossEnemy) = 0;
+	void UpdateParticleEmitter(BossEnemyState state);
 
 	// 状態終了時
 	virtual void Exit(BossEnemy& bossEnemy) = 0;
@@ -68,4 +69,6 @@ protected:
 	// debug
 	void DrawArc(const Vector3& center, const Vector3& direction,
 		float radius, float halfAngle, const Color& color);
+
+	void EmitTeleportParticle(const Vector3& translation);
 };

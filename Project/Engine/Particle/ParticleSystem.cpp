@@ -67,7 +67,7 @@ void ParticleSystem::LoadEmitter(const std::string& emitterName, const std::stri
 
 		// typeがemitterじゃなければ作成できない、ここでの失敗はエラーにする
 		if (data.contains("FileType")) {
-			if (data["FileType"] == "Emitter") {
+			if (data["FileType"] == "ParticleEmitter") {
 
 				// 作成
 				gameEmitters_[emitterName]->Init(data, emitterName, asset_, device_);
@@ -245,6 +245,8 @@ void ParticleSystem::Rendering(bool debugEnable,
 
 void ParticleSystem::ImGui() {
 
+	ImGui::SetWindowFontScale(0.8f);
+
 	// 追加、選択、削除処理
 	emitterHandler_->ImGui(itemWidth_);
 
@@ -255,4 +257,5 @@ void ParticleSystem::ImGui() {
 		// emittterの操作
 		editorEmitters_[*selectEmitterName]->ImGui();
 	}
+	ImGui::SetWindowFontScale(1.0f);
 }

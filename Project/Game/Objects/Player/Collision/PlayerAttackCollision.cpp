@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
@@ -41,6 +42,8 @@ void PlayerAttackCollision::Init() {
 }
 
 void PlayerAttackCollision::Update(const Transform3DComponent& transform) {
+
+	transform_ = &transform;
 
 	// 攻撃中かどうか
 	const bool isAttack = currentParameter_
@@ -99,6 +102,12 @@ void PlayerAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody)
 
 		// 多段ヒットクールタイム設定
 		reHitTimer_ = currentParameter_->hitInterval;
+
+		// 座標を設定してparticleを発生
+		// 状態別で形状の値を設定
+		const auto& offset = std::get<CollisionShape::OBB>(bodyOffsets_.front());
+		ParticleSystem::GetInstance()->Emit("hitEffectEmitter");
+		ParticleSystem::GetInstance()->SetTranslate("hitEffectEmitter", transform_->translation + offset.center);
 	}
 }
 

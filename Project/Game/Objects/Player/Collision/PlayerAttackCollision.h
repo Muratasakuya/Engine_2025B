@@ -54,6 +54,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	CollisionBody* weaponBody_;
+	const Transform3DComponent* transform_;
 
 	std::unordered_map<PlayerState, AttackParameter> table_; // 状態毎の衝突
 	const AttackParameter* currentParameter_;                // 現在の状態の値

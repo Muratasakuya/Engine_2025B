@@ -89,7 +89,7 @@ void PlayerStateController::SetBossEnemy(const BossEnemy* bossEnemy) {
 	}
 }
 
-void PlayerStateController::SetFollowCamera(const FollowCamera* followCamera) {
+void PlayerStateController::SetFollowCamera(FollowCamera* followCamera) {
 
 	// 各状態にfollowCameraをセット
 	for (const auto& state : std::views::values(states_)) {

@@ -458,7 +458,7 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix, bool use
 
 void ParticleEmitter::UpdateAllParticle(bool useGame) {
 
-	if (useGame) {
+	if (useGame || !isAllEmit_) {
 		return;
 	}
 

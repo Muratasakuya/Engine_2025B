@@ -118,6 +118,11 @@ void BossEnemyRushAttackState::UpdateTeleport(BossEnemy& bossEnemy, float deltaT
 			currentState_ = State::Attack;
 			lerpTimer_ = 0.0f;
 		}
+	} else {
+
+		Vector3 emitPos = bossEnemy.GetTranslation();
+		emitPos.y = emitParticleOffsetY_;
+		EmitTeleportParticle(emitPos);
 	}
 }
 
@@ -184,6 +189,7 @@ void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy
 	ImGui::DragFloat("fadeOutTime", &fadeOutTime_, 0.01f);
 	ImGui::DragFloat("fadeInTime", &fadeInTime_, 0.01f);
 	ImGui::DragFloat("attackCoolTime", &attackCoolTime_, 0.01f);
+	ImGui::DragFloat("emitParticleOffsetY_", &emitParticleOffsetY_, 0.01f);
 	Easing::SelectEasingType(easingType_);
 
 	DrawArc(player_->GetTranslation(), followCamera_->GetTransform().GetForward(),
@@ -203,6 +209,7 @@ void BossEnemyRushAttackState::ApplyJson(const Json& data) {
 	attackCoolTime_ = JsonAdapter::GetValue<float>(data, "attackCoolTime_");
 	fadeOutTime_ = JsonAdapter::GetValue<float>(data, "fadeOutTime_");
 	fadeInTime_ = JsonAdapter::GetValue<float>(data, "fadeInTime_");
+	emitParticleOffsetY_ = JsonAdapter::GetValue<float>(data, "emitParticleOffsetY_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
 }
 
@@ -217,5 +224,6 @@ void BossEnemyRushAttackState::SaveJson(Json& data) {
 	data["attackCoolTime_"] = attackCoolTime_;
 	data["fadeOutTime_"] = fadeOutTime_;
 	data["fadeInTime_"] = fadeInTime_;
+	data["emitParticleOffsetY_"] = emitParticleOffsetY_;
 	data["easingType_"] = static_cast<int>(easingType_);
 }
