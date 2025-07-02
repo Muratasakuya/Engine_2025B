@@ -34,6 +34,8 @@ public:
 
 	void DrawGrid(int division, float gridSize, const Color& color);
 
+	//--------- shapes ------------------------------------------------------
+
 	void DrawSphere(int division, float radius, const Vector3& centerPos, const Color& color);
 
 	void DrawHemisphere(int division, float radius, const Vector3& centerPos,
@@ -47,6 +49,11 @@ public:
 
 	void DrawCone(int division, float baseRadius, float topRadius, float height,
 		const Vector3& centerPos, const Vector3& eulerRotate, const Color& color);
+
+	void DrawCircle(int division, float radius, const Vector3& center, const Color& color);
+
+	void DrawArc(int division, float radius, float halfAngle,
+		const Vector3& center, const Vector3& direction, const Color& color);
 
 	//--------- accessor -----------------------------------------------------
 

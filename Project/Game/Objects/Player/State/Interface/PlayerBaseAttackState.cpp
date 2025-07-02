@@ -73,24 +73,6 @@ void PlayerBaseAttackState::DrawAttackOffset(const Player& player) {
 	lineRenderer->DrawSphere(8, 2.0f, target, Color::Red());
 }
 
-void PlayerBaseAttackState::DrawAttackRangeCircle(const Player& player, float range) {
-
-	LineRenderer* lineRenderer = LineRenderer::GetInstance();
-	const Vector3 playerPos = player.GetTranslation();
-
-	const int segments = 32;
-	for (int i = 0; i < segments; ++i) {
-
-		float a0 = 2.0f * std::numbers::pi_v<float> *i / segments;
-		float a1 = 2.0f * std::numbers::pi_v<float> *(i + 1) / segments;
-
-		Vector3 p0(playerPos.x + range * std::cos(a0), 2.0f, playerPos.z + range * std::sin(a0));
-		Vector3 p1(playerPos.x + range * std::cos(a1), 2.0f, playerPos.z + range * std::sin(a1));
-
-		lineRenderer->DrawLine3D(p0, p1, Color::Red());
-	}
-}
-
 void PlayerBaseAttackState::ResetTarget() {
 
 	// 補間目標をリセット
@@ -108,8 +90,13 @@ void PlayerBaseAttackState::ImGui(const Player& player) {
 	Easing::SelectEasingType(attackPosEaseType_);
 
 	DrawAttackOffset(player);
-	DrawAttackRangeCircle(player, attackPosLerpCircleRange_);
-	DrawAttackRangeCircle(player, attackLookAtCircleRange_);
+
+	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+
+	Vector3 center = player.GetTranslation();
+	center.y = 4.0f;
+	lineRenderer->DrawCircle(8, attackPosLerpCircleRange_, center, Color::Red());
+	lineRenderer->DrawCircle(8, attackLookAtCircleRange_, center, Color::Blue());
 }
 
 void PlayerBaseAttackState::ApplyJson(const Json& data) {

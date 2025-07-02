@@ -55,5 +55,4 @@ protected:
 
 	// debug
 	void DrawAttackOffset(const Player& player);
-	void DrawAttackRangeCircle(const Player& player, float range);
 };

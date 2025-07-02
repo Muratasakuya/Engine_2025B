@@ -316,3 +316,54 @@ void LineRenderer::DrawCone(int division, float baseRadius, float topRadius, flo
 		DrawLine3D(baseA, topA, color);
 	}
 }
+
+void LineRenderer::DrawCircle(int division, float radius,
+	const Vector3& center, const Color& color) {
+
+	for (int i = 0; i < division; ++i) {
+
+		float a0 = 2.0f * pi * i / division;
+		float a1 = 2.0f * pi * (i + 1) / division;
+
+		Vector3 p0(center.x + radius * std::cos(a0), 2.0f, center.z + radius * std::sin(a0));
+		Vector3 p1(center.x + radius * std::cos(a1), 2.0f, center.z + radius * std::sin(a1));
+
+		DrawLine3D(p0, p1, color);
+	}
+}
+
+void LineRenderer::DrawArc(int division, float radius, float halfAngle,
+	const Vector3& center, const Vector3& direction, const Color& color) {
+
+	// XZ平面
+	const float baseYaw = Math::GetYawRadian(direction);
+	const float halfRadian = pi * halfAngle / 180.0f;
+
+	// 始点と終点
+	Vector3 firstPoint{};
+	Vector3 lastPoint{};
+	for (int i = 0; i < division; ++i) {
+
+		float t0 = static_cast<float>(i) / division;
+		float t1 = static_cast<float>(i + 1) / division;
+
+		float a0 = baseYaw - halfRadian + (halfRadian * 2.0f) * t0;
+		float a1 = baseYaw - halfRadian + (halfRadian * 2.0f) * t1;
+
+		Vector3 p0(center.x + radius * std::cos(a0), center.y, center.z + radius * std::sin(a0));
+		Vector3 p1(center.x + radius * std::cos(a1), center.y, center.z + radius * std::sin(a1));
+
+		// 孤の描画
+		DrawLine3D(p0, p1, color);
+
+		// 始点と終点を保存
+		if (i == 0) {
+			firstPoint = p0;
+		}
+		if (i == division - 1) {
+			lastPoint = p1;
+		}
+	}
+	DrawLine3D(center, firstPoint, color);
+	DrawLine3D(center, lastPoint, color);
+}

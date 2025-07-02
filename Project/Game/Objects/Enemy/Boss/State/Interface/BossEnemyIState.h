@@ -38,8 +38,8 @@ public:
 	virtual void ImGui(const BossEnemy& bossEnemy) = 0;
 
 	// json
-	virtual void ApplyJson([[maybe_unused]] const Json& data) = 0;
-	virtual void SaveJson([[maybe_unused]] Json& data) = 0;
+	virtual void ApplyJson(const Json& data) = 0;
+	virtual void SaveJson(Json& data) = 0;
 
 	//--------- accessor -----------------------------------------------------
 
@@ -65,10 +65,6 @@ protected:
 	//--------- functions ----------------------------------------------------
 
 	void LookTarget(BossEnemy& bossEnemy, const Vector3& target);
-
-	// debug
-	void DrawArc(const Vector3& center, const Vector3& direction,
-		float radius, float halfAngle, const Color& color);
 
 	void EmitTeleportParticle(const Vector3& translation);
 };

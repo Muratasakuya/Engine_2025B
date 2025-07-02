@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Camera/FollowCamera.h>
 #include <Game/Objects/Player/Entity/Player.h>
@@ -192,10 +193,12 @@ void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy
 	ImGui::DragFloat("emitParticleOffsetY_", &emitParticleOffsetY_, 0.01f);
 	Easing::SelectEasingType(easingType_);
 
-	DrawArc(player_->GetTranslation(), followCamera_->GetTransform().GetForward(),
-		farRadius_, halfAngle_, Color::Red());
-	DrawArc(player_->GetTranslation(), followCamera_->GetTransform().GetForward(),
-		nearRadius_, halfAngle_, Color::Blue());
+	Vector3 center = player_->GetTranslation();
+	center.y = 4.0f;
+	LineRenderer::GetInstance()->DrawArc(8, farRadius_, halfAngle_,
+		center, followCamera_->GetTransform().GetForward(), Color::Red());
+	LineRenderer::GetInstance()->DrawArc(8, nearRadius_, halfAngle_,
+		center, followCamera_->GetTransform().GetForward(), Color::Blue());
 }
 
 void BossEnemyRushAttackState::ApplyJson(const Json& data) {
