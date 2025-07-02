@@ -369,6 +369,13 @@ void AnimationComponent::SetParentJoint(const std::string& jointName) {
 	}
 }
 
+float AnimationComponent::GetAnimationDuration(const std::string& animationName) const {
+
+	// animationの再生時間を取得
+	float duration = animationData_.at(animationName).duration;
+	return duration;
+}
+
 const Transform3DComponent* AnimationComponent::FindJointTransform(const std::string& name) const {
 
 	auto it = skeleton_.jointMap.find(name);

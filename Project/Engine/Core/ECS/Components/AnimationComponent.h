@@ -47,9 +47,9 @@ public:
 	bool IsTransition() const { return inTransition_; }
 	bool IsAnimationFinished() const { return animationFinish_; }
 	int GetRepeatCount() const { return repeatCount_; }
+	float GetAnimationDuration(const std::string& animationName) const;
 
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
-
 	const Skeleton& GetSkeleton() const { return skeleton_; }
 
 	const Transform3DComponent* FindJointTransform(const std::string& name) const;

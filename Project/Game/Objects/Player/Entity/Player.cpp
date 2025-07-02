@@ -189,6 +189,7 @@ void Player::DerivedImGui() {
 			PlayerState editingState = static_cast<PlayerState>(editingStateIndex_);
 			ImGui::DragInt("Damage", &stats_.damages[editingState], 1, 0);
 			ImGui::DragInt("DamageRange", &stats_.damageRandomRange, 1, 0);
+			ImGui::DragInt("toughness", &stats_.toughness, 1, 0);
 
 			if (ImGui::Button("Reset HP")) {
 				stats_.currentHP = stats_.maxHP;
@@ -268,6 +269,7 @@ void Player::ApplyJson() {
 	}
 
 	stats_.damageRandomRange = JsonAdapter::GetValue<int>(data, "DamageRandomRange");
+	stats_.toughness = JsonAdapter::GetValue<int>(data, "toughness");
 }
 
 void Player::SaveJson() {
@@ -293,6 +295,7 @@ void Player::SaveJson() {
 		data["Damages"][std::to_string(static_cast<int>(state))] = value;
 	}
 	data["DamageRandomRange"] = stats_.damageRandomRange;
+	data["toughness"] = stats_.toughness;
 
 	JsonAdapter::Save("Player/initParameter.json", data);
 }

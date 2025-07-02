@@ -46,6 +46,7 @@ public:
 
 	void SetAlpha(float alpha);
 	void SetCastShadow(bool cast);
+	void SetDecreaseToughnessProgress(float progress);
 private:
 	//========================================================================
 	//	private Methods

@@ -41,7 +41,7 @@ void BossEnemyStateController::Init(BossEnemy& owner) {
 	// 各状態を初期化
 	states_.emplace(BossEnemyState::Idle, std::make_unique<BossEnemyIdleState>());
 	states_.emplace(BossEnemyState::Teleport, std::make_unique<BossEnemyTeleportationState>());
-	states_.emplace(BossEnemyState::Stun, std::make_unique<BossEnemyStunState>());
+	states_.emplace(BossEnemyState::Stun, std::make_unique<BossEnemyStunState>(owner));
 	states_.emplace(BossEnemyState::Falter, std::make_unique<BossEnemyFalterState>());
 	states_.emplace(BossEnemyState::LightAttack, std::make_unique<BossEnemyLightAttackState>());
 	states_.emplace(BossEnemyState::StrongAttack, std::make_unique<BossEnemyStrongAttackState>());
@@ -84,8 +84,9 @@ void BossEnemyStateController::SetFollowCamera(const FollowCamera* followCamera)
 
 void BossEnemyStateController::Update(BossEnemy& owner) {
 
-	// 現在のフェーズの更新処理
+	// 状態切り替えの設定処理
 	UpdatePhase();
+	CheckStunToughness();
 	UpdateStateTimer();
 
 	// 何か設定されて入れば状態遷移させる
@@ -138,6 +139,16 @@ void BossEnemyStateController::UpdatePhase() {
 	}
 }
 
+void BossEnemyStateController::CheckStunToughness() {
+
+	// 靭性値が最大になったらスタン状態にする
+	if (stats_.currentDestroyToughness == stats_.maxDestroyToughness) {
+
+		// 強制遷移先を設定
+		forcedState_ = BossEnemyState::Stun;
+	}
+}
+
 void BossEnemyStateController::UpdateStateTimer() {
 
 	// 現在のフェーズの時間を更新
@@ -151,9 +162,21 @@ void BossEnemyStateController::UpdateStateTimer() {
 		return;
 	}
 
+	if (forcedState_.has_value()) {
+
+		requested_ = *forcedState_;
+		forcedState_.reset();
+		currentComboSlot_ = 0;
+		currentComboIndex_ = 0;
+		prevComboIndex_ = 0;
+		currentSequenceIndex_ = 0;
+		stateTimer_ = 0.0f;
+		return;
+	}
+
 	// 遷移可能状態になったら時間を進めて遷移させる
 	if (state->GetCanExit()) {
-		
+
 		// 強制遷移先が設定されていればその状態に遷移させる
 		if (forcedState_.has_value()) {
 
@@ -544,7 +567,7 @@ void BossEnemyStateController::EditStateTable() {
 
 			ImGui::TableNextColumn();
 			ImGui::DragFloat("##value", &phase.nextStateDuration, 0.01f);
-			
+
 			//----------------------------------------------------------------
 			// 列1: AutoIdle
 			//----------------------------------------------------------------

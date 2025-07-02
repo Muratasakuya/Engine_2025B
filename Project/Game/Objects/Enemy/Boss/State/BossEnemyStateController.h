@@ -90,6 +90,7 @@ private:
 	// helper
 	void ChangeState(BossEnemy& owner);
 	void ChooseNextState(const BossEnemyPhase& phase);
+	void CheckStunToughness();
 	void SyncPhaseCount();
 	void DrawHighlighted(bool highlight, const ImVec4& col, const std::function<void()>& draw);
 };

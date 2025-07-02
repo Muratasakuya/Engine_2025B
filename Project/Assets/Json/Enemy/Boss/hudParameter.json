@@ -2,16 +2,16 @@
     "bossScreenPosOffsetY_": -256.0,
     "damageDisplayEasingType_": 16,
     "damageDisplayMaxSize_": {
-        "x": 160.0,
-        "y": 160.0
+        "x": 200.0,
+        "y": 200.0
     },
     "damageDisplayPosRandomRange_": {
         "x": 80.0,
         "y": 80.0
     },
     "damageDisplaySize_": {
-        "x": 64.0,
-        "y": 64.0
+        "x": 80.0,
+        "y": 80.0
     },
     "damageDisplayTime_": 0.30000001192092896,
     "damageNumSpacing_": -24.0,
@@ -51,7 +51,7 @@
             "y": 64.0
         }
     },
-    "maxDamageEmissive_": 1.0,
+    "maxDamageEmissive_": 8.0,
     "nameText": {
         "translation": {
             "x": 1814.0,

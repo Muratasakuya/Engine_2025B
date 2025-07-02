@@ -123,6 +123,13 @@ void BossEnemy::SetCastShadow(bool cast) {
 	weapon_->SetCastShadow(cast);
 }
 
+void BossEnemy::SetDecreaseToughnessProgress(float progress) {
+
+	// progressに応じて靭性値を下げる
+	stats_.currentDestroyToughness = std::clamp(static_cast<int>(std::lerp(stats_.maxDestroyToughness,
+		0, progress)), 0, stats_.maxDestroyToughness);
+}
+
 void BossEnemy::Update() {
 
 	// 閾値のリストの条件に誤りがないかチェック
@@ -153,7 +160,15 @@ void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {
 	if (collisionBody->GetType() == ColliderType::Type_PlayerWeapon) {
 
 		// ダメージを受ける
-		stats_.currentHP -= player_->GetDamage();
+		stats_.currentHP = (std::max)(0, stats_.currentHP - player_->GetDamage());
+
+		// スタン状態じゃないときのみ
+		if (stateController_->GetCurrentState() != BossEnemyState::Stun) {
+
+			// 靭性値を増やす
+			stats_.currentDestroyToughness = (std::min)(stats_.currentDestroyToughness + player_->GetToughness(),
+				stats_.maxDestroyToughness);
+		}
 
 		// HUDに通知
 		hudSprites_->SetDamage(player_->GetDamage());

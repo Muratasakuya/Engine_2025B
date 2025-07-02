@@ -45,6 +45,8 @@ public:
 
 	PlayerAttackCollision* GetAttackCollision() const { return playerAttackCollision_.get(); }
 	int GetDamage() const;
+
+	int GetToughness() const { return stats_.toughness; }
 private:
 	//========================================================================
 	//	private Methods

@@ -1,8 +1,5 @@
 {
     "ChargeAttack": {
-        "emitAttackParticleTime_": 2.0,
-        "emitAttackSpeed_": 32.0,
-        "emitParticleOffsetY_": 8.0,
         "exitTime_": 0.05999999865889549,
         "nextAnimDuration_": 0.1599999964237213,
         "rotationLerpRate_": 14.0
@@ -28,8 +25,6 @@
     "RushAttack": {
         "attackCoolTime_": 1.399999976158142,
         "easingType_": 14,
-        "emitAttackParticleTime_": 2.0,
-        "emitAttackSpeed_": 32.0,
         "emitParticleOffsetY_": 8.0,
         "fadeInTime_": 0.07999999821186066,
         "fadeOutTime_": 0.11999999731779099,
@@ -49,9 +44,8 @@
         "rotationLerpRate_": 14.0
     },
     "Stun": {
-        "backStepSpeed_": 0.0,
-        "nextAnimDuration_": 0.0,
-        "rotationLerpRate_": 0.0
+        "maxAnimationCount_": 3,
+        "nextAnimDuration_": 0.4000000059604645
     },
     "Teleport": {
         "easingType_": 14,

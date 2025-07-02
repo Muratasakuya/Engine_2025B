@@ -34,6 +34,8 @@ struct PlayerStats {
 
 	std::unordered_map<PlayerState, int> damages; // 各攻撃のダメージ量
 	int damageRandomRange;                        // ダメージのランダム範囲
+
+	int toughness; // 攻撃した時に敵に入る靭性ダメージ量
 };
 
 // 遷移条件

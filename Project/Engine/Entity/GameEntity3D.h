@@ -65,6 +65,7 @@ public:
 	Vector3 GetJointWorldPos(const std::string& jointName) const;
 	bool IsAnimationFinished() const { return animation_->IsAnimationFinished(); }
 	int GetAnimationRepeatCount() const { return animation_->GetRepeatCount(); }
+	float GetAnimationDuration(const std::string& animationName) const { return animation_->GetAnimationDuration(animationName); }
 
 	/*---------- getter ----------*/
 
