@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	SceneView classMethods
@@ -18,6 +19,13 @@ void SceneView::InitCamera() {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugCamera_ = std::make_unique<DebugCamera>();
 	debugCamera_->Init();
+
+	// カメラを追加
+	AddSceneCamera("DebugCamera", debugCamera_.get());
+
+	// シーン視点はデフォルトでデバッグカメラを使用
+	activeSceneCamera_ = std::nullopt;
+	activeSceneCamera_ = debugCamera_.get();
 #endif
 }
 
@@ -90,12 +98,68 @@ void SceneView::ImGui() {
 
 void SceneView::EditCamera() {
 
-	if (ImGui::CollapsingHeader("ActiveCamera")) {
+	if (ImGui::CollapsingHeader("SceneCamera")) {
 
-		activeCamera3D_.value()->ImGui();
+		// カメラの選択・表示
+		std::vector<BaseCamera*>  cameraPtrs;
+		std::vector<std::string>  cameraLabels;
+		cameraPtrs.reserve(sceneCameras_.size());
+		cameraLabels.reserve(sceneCameras_.size());
+		for (auto& [groupName, cameras] : sceneCameras_) {
+			for (size_t i = 0; i < cameras.size(); ++i) {
 
+				cameraPtrs.push_back(cameras[i]);
+				std::string label = groupName;
+				if (cameras.size() > 1) {
+					label += " #" + std::to_string(i);
+				}
+				cameraLabels.push_back(label);
+			}
+		}
+
+		// カメラが設定されていなければ表示しない
+		if (cameraPtrs.empty()) {
+
+			ImGui::TextDisabled("scene cameras have been registered");
+		} else {
+
+			// 選択されていないカメラを追従させる
+			if (!activeSceneCamera_.has_value()) {
+
+				activeSceneCameraIndex_ = 0;
+				activeSceneCamera_ = cameraPtrs[0];
+			} else {
+				for (int i = 0; i < (int)cameraPtrs.size(); ++i) {
+					if (cameraPtrs[i] == activeSceneCamera_.value()) {
+
+						activeSceneCameraIndex_ = i;
+						break;
+					}
+				}
+			}
+
+			// カメラの選択
+			std::vector<const char*> itemsCamera{};
+			itemsCamera.reserve(cameraLabels.size());
+			for (auto& s : cameraLabels) { itemsCamera.push_back(s.c_str()); }
+
+			if (ImGui::Combo("ActiveSceneCamera", &activeSceneCameraIndex_,
+				itemsCamera.data(), static_cast<int>(itemsCamera.size()))) {
+
+				activeSceneCamera_ = cameraPtrs[activeSceneCameraIndex_];
+			}
+			ImGui::Separator();
+			if (activeSceneCamera_) {
+
+				activeSceneCamera_.value()->ImGui();
+			}
+		}
 	}
 
+	if (activeGameCamera3D_ && ImGui::CollapsingHeader("GameCamera")) {
+
+		activeGameCamera3D_.value()->ImGui();
+	}
 	if (ImGui::CollapsingHeader("DebugCamera")) {
 
 		debugCamera_->ImGui();
@@ -107,11 +171,21 @@ void SceneView::EditLight() {
 	punctualLight_.value()->ImGui();
 }
 
-void SceneView::SetCamera(BaseCamera* gameCamera) {
+void SceneView::SetGameCamera(BaseCamera* gameCamera) {
 
 	// カメラのセット
-	activeCamera3D_ = std::nullopt;
-	activeCamera3D_ = gameCamera;
+	activeGameCamera3D_ = std::nullopt;
+	activeGameCamera3D_ = gameCamera;
+}
+
+void SceneView::AddSceneCamera(const std::string& name, BaseCamera* sceneCamera) {
+
+	// すでに追加済みの場合追加できない
+	if (Algorithm::Find(sceneCameras_, name)) {
+		return;
+	}
+
+	sceneCameras_[name].emplace_back(sceneCamera);
 }
 
 void SceneView::SetLight(PunctualLight* gameLight) {

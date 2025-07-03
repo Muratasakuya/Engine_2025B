@@ -57,8 +57,8 @@ void SceneConstBuffer::Update(class SceneView* sceneView) {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	// camera
-	debugSceneViewProjectionBuffer_.TransferData(sceneView->GetDebugCamera()->GetViewProjectionMatrix());
-	debugSceneCameraPosBuffer_.TransferData(sceneView->GetDebugCamera()->GetTransform().translation);
+	debugSceneViewProjectionBuffer_.TransferData(sceneView->GetSceneCamera()->GetViewProjectionMatrix());
+	debugSceneCameraPosBuffer_.TransferData(sceneView->GetSceneCamera()->GetTransform().translation);
 #endif
 }
 

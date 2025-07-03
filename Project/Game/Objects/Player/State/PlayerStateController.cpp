@@ -44,7 +44,7 @@ void PlayerStateController::Init(Player& owner) {
 	// 入力クラスを初期化
 	Input* input = Input::GetInstance();
 	inputMapper_ = std::make_unique<PlayerInputMapper>();
-	inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>(input));
+	//inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>(input));
 	inputMapper_->AddDevice(std::make_unique<PlayerGamePadInput>(input));
 
 	// 各状態を初期化
@@ -390,8 +390,8 @@ void PlayerStateController::ImGui(const Player& owner) {
 				kStateNames,
 				IM_ARRAYSIZE(kStateNames));
 
-			PlayerState            st = static_cast<PlayerState>(comboIndex_);
-			PlayerStateCondition& cond = conditions_[st];
+			PlayerState state = static_cast<PlayerState>(comboIndex_);
+			PlayerStateCondition& cond = conditions_[state];
 
 			ImGui::DragFloat("CoolTime", &cond.coolTime, 0.01f, 0.0f);
 			ImGui::DragFloat("InputWindow", &cond.chainInputTime, 0.01f, 0.0f);

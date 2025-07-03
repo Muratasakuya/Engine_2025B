@@ -44,17 +44,17 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	// camera
-	void SetCamera(BaseCamera* gameCamera);
-
-	BaseCamera* GetCamera() const { return activeCamera3D_.value(); }
-	DebugCamera* GetDebugCamera() const { return debugCamera_.get(); }
-	Camera2D* GetCamera2D() const { return camera2D_.get(); }
-
+	void SetGameCamera(BaseCamera* gameCamera);
+	void AddSceneCamera(const std::string& name, BaseCamera* sceneCamera);
 	// light
 	void SetLight(PunctualLight* gameLight);
 
+	// camera
+	BaseCamera* GetCamera() const { return activeGameCamera3D_.value(); }
+	BaseCamera* GetSceneCamera() const { return activeSceneCamera_.value(); }
+	Camera2D* GetCamera2D() const { return camera2D_.get(); }
+	// light
 	PunctualLight* GetLight() const { return punctualLight_.value(); }
-
 	// dither
 	const DitherForGPU& GetDither() const { return dither_; }
 private:
@@ -66,8 +66,14 @@ private:
 
 	// camera
 	// 3Dシーン
-	std::optional<BaseCamera*> activeCamera3D_; // 使用されているカメラ
-	std::unique_ptr<DebugCamera> debugCamera_;  // デバッグ確認用
+	std::optional<BaseCamera*> activeGameCamera3D_; // ゲームで使用されているカメラ
+	std::optional<BaseCamera*> activeSceneCamera_;  // シーン視点のカメラ
+
+	// シーン視点のカメラの配列、この中からシーン視点のカメラを選択する
+	std::unordered_map<std::string, std::vector<BaseCamera*>> sceneCameras_;
+
+	// デバッグカメラ
+	std::unique_ptr<DebugCamera> debugCamera_;
 	// 2Dシーン
 	std::unique_ptr<Camera2D> camera2D_;
 
@@ -76,6 +82,9 @@ private:
 
 	// dither
 	DitherForGPU dither_;
+
+	// editor
+	int activeSceneCameraIndex_;
 
 	//--------- functions ----------------------------------------------------
 

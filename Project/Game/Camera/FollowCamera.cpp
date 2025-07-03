@@ -8,6 +8,7 @@
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/Adapter/RandomGenerator.h>
+#include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
 //	FollowCamera classMethods
@@ -64,7 +65,6 @@ void FollowCamera::FirstUpdate() {
 	Vector2 padStick = Input::GetInstance()->GetRightStickVal() * 1.0f / 32767.0f;
 
 	if (!isDebugMode_) {
-
 		if (inputType_ == InputType::Keyboard) {
 
 			// Y軸回転: 左右
@@ -98,23 +98,6 @@ void FollowCamera::FirstUpdate() {
 
 void FollowCamera::Move() {
 
-#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-
-	ImGui::Begin("Game", nullptr,
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoMove);
-
-	bool isActive = ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows);
-
-	ImGui::End();
-
-	// ウィンドウを触っていない時は操作不可
-	if (!isActive) {
-		return;
-	}
-#endif
-
 	Vector3 rotate{};
 	rotate.Init();
 
@@ -135,7 +118,6 @@ void FollowCamera::Move() {
 	}
 
 	if (!isDebugMode_) {
-
 		if (inputType_ == InputType::Keyboard) {
 
 			// Y軸回転: 左右
@@ -168,6 +150,7 @@ void FollowCamera::UpdateMatrix() {
 
 	// eulerを設定して更新する
 	transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
+	transform_.eulerRotate = eulerRotation_;
 
 	// 行列更新
 	transform_.UpdateMatrix();
@@ -193,23 +176,23 @@ void FollowCamera::UpdateScreenShake() {
 		float remainingTime = screenShakeDuration_ - screenShakeTimer_;
 		if (remainingTime > 0.0f) {
 
-			float dampingFactor = remainingTime / screenShakeDuration_;
-			float intensity = screenShakeIntensity_ * dampingFactor;
+			// 時間経過で減衰させる
+			float lerpT = 1.0f - remainingTime / screenShakeDuration_;
+			lerpT = EasedValue(screenShakeEasingType_, lerpT);
+			float intensity = std::lerp(screenShakeXZIntensity_, 0.0f, lerpT);
+			float offsetYIntensity = std::lerp(screenShakeOffsetYIntensity_, 0.0f, lerpT);
 
 			float offsetX = RandomGenerator::Generate(-1.0f, 1.0f) * intensity;
-			float offsetY = RandomGenerator::Generate(-1.0f, 1.0f) * intensity * 4.0f;
+			float offsetY = RandomGenerator::Generate(-1.0f, 1.0f) * (intensity + offsetYIntensity);
 			float offsetZ = RandomGenerator::Generate(-1.0f, 1.0f) * intensity;
 
 			Vector3 forward = Vector3(
 				std::cos(transform_.rotation.y) * cos(transform_.rotation.x),
 				std::sin(transform_.rotation.x),
-				std::sin(transform_.rotation.y) * cos(transform_.rotation.x)
-			);
+				std::sin(transform_.rotation.y) * cos(transform_.rotation.x));
 
-			Vector3 right = Vector3(
-				std::cos(transform_.rotation.y + std::numbers::pi_v<float> / 2.0f),
-				0,
-				std::sin(transform_.rotation.y + std::numbers::pi_v<float> / 2.0f));
+			Vector3 right = Vector3(std::cos(transform_.rotation.y + pi / 2.0f),
+				0, std::sin(transform_.rotation.y + pi / 2.0f));
 
 			transform_.translation = transform_.translation + forward * offsetZ + right * offsetX;
 			transform_.translation.y += offsetY;
@@ -251,6 +234,13 @@ void FollowCamera::ImGui() {
 	ImGui::DragFloat("eulerRotateClampPlusX", &eulerRotateClampPlusX_, 0.001f);
 	ImGui::DragFloat("eulerRotateClampMinusX", &eulerRotateClampMinusX_, 0.001f);
 
+	ImGui::Checkbox("isScreenShake", &isScreenShake_);
+	ImGui::DragFloat("screenShakeXZIntensity", &screenShakeXZIntensity_, 0.01f);
+	ImGui::DragFloat("screenShakeOffsetYIntensity", &screenShakeOffsetYIntensity_, 0.01f);
+	ImGui::DragFloat("screenShakeDuration", &screenShakeDuration_, 0.01f);
+	ImGui::DragFloat("screenShakeTimer", &screenShakeTimer_, 0.01f);
+	Easing::SelectEasingType(screenShakeEasingType_);
+
 	ImGui::PopItemWidth();
 }
 
@@ -273,6 +263,12 @@ void FollowCamera::ApplyJson() {
 	padSensitivity_ = JsonAdapter::ToObject<Vector2>(data["padSensitivity_"]);
 	eulerRotateClampPlusX_ = JsonAdapter::GetValue<float>(data, "eulerRotateClampPlusX_");
 	eulerRotateClampMinusX_ = JsonAdapter::GetValue<float>(data, "eulerRotateClampMinusX_");
+
+	screenShakeXZIntensity_ = JsonAdapter::GetValue<float>(data, "screenShakeXZIntensity_");
+	screenShakeOffsetYIntensity_ = JsonAdapter::GetValue<float>(data, "screenShakeOffsetYIntensity_");
+	screenShakeDuration_ = JsonAdapter::GetValue<float>(data, "screenShakeDuration_");
+	screenShakeEasingType_ = static_cast<EasingType>(
+		JsonAdapter::GetValue<int>(data, "screenShakeEasingType_"));
 }
 
 void FollowCamera::SaveJson() {
@@ -289,6 +285,10 @@ void FollowCamera::SaveJson() {
 	data["padSensitivity_"] = JsonAdapter::FromObject<Vector2>(padSensitivity_);
 	data["eulerRotateClampPlusX_"] = eulerRotateClampPlusX_;
 	data["eulerRotateClampMinusX_"] = eulerRotateClampMinusX_;
+	data["screenShakeXZIntensity_"] = screenShakeXZIntensity_;
+	data["screenShakeOffsetYIntensity_"] = screenShakeOffsetYIntensity_;
+	data["screenShakeDuration_"] = screenShakeDuration_;
+	data["screenShakeEasingType_"] = static_cast<int>(screenShakeEasingType_);
 
 	JsonAdapter::Save("Camera/followCamera.json", data);
 }

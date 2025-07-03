@@ -7,8 +7,7 @@
 #include <Engine/Scene/Light/PunctualLight.h>
 
 // camera
-#include <Game/Camera/GameCamera.h>
-#include <Game/Camera/FollowCamera.h>
+#include <Game/Camera/Manager/CameraManager.h>
 
 // object
 #include <Game/Objects/Player/Entity/Player.h>
@@ -44,7 +43,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// camera
-	std::unique_ptr<FollowCamera> followCamera_;
+	std::unique_ptr<CameraManager> cameraManager_;
 	// light
 	std::unique_ptr<PunctualLight> gameLight_;
 

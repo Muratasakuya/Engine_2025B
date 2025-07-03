@@ -36,16 +36,16 @@ public:
 	/*-------- collision ----------*/
 
 	// 衝突コールバック関数
-	void OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) override;
+	void OnCollisionEnter(const CollisionBody* collisionBody) override;
 
 	//--------- accessor -----------------------------------------------------
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
 	void SetFollowCamera(FollowCamera* followCamera);
 
+	PlayerState GetCurrentState() const { return stateController_->GetCurrentState(); }
 	PlayerAttackCollision* GetAttackCollision() const { return playerAttackCollision_.get(); }
 	int GetDamage() const;
-
 	int GetToughness() const { return stats_.toughness; }
 private:
 	//========================================================================

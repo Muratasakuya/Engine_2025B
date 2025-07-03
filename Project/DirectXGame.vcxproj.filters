@@ -128,9 +128,6 @@
     <ClCompile Include="Engine\Scene\Camera\BaseCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Camera\GameCamera.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -518,6 +515,9 @@
     <ClCompile Include="Game\Objects\Base\GameDisplayDamage.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Camera\Manager\CameraManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -563,7 +563,6 @@
     <ClInclude Include="Lib\MathUtils\Vector4.h" />
     <ClInclude Include="Engine\Collision\Collider.h" />
     <ClInclude Include="Engine\Scene\Camera\BaseCamera.h" />
-    <ClInclude Include="Game\Camera\GameCamera.h" />
     <ClInclude Include="Engine\Scene\Camera\LightViewCamera.h" />
     <ClInclude Include="Engine\Scene\Light\PunctualLight.h" />
     <ClInclude Include="Engine\Scene\Manager\SceneManager.h" />
@@ -703,6 +702,7 @@
     <ClInclude Include="Game\Objects\Player\Collision\PlayerAttackCollision.h" />
     <ClInclude Include="Game\Objects\Result\GameResult.h" />
     <ClInclude Include="Game\Objects\Base\GameDisplayDamage.h" />
+    <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

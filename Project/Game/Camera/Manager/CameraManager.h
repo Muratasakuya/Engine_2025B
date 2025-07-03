@@ -3,24 +3,38 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Scene/Methods/IScene.h>
+#include <Engine/Editor/Base/IGameEditor.h>
+
+// cameras
+#include <Game/Camera/FollowCamera.h>
+// front
+class Player;
+class SceneView;
 
 //============================================================================
-//	TitleScene class
+//	CameraManager class
 //============================================================================
-class TitleScene :
-	public IScene {
+class CameraManager :
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	TitleScene() = default;
-	~TitleScene() = default;
+	CameraManager() :IGameEditor("CameraManager") {};
+	~CameraManager() = default;
 
-	void Init() override;
+	void Init(SceneView* sceneView);
 
-	void Update() override;
+	void Update();
+
+	void ImGui() override;
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetTarget(const Player* Player);
+
+	FollowCamera* GetFollowCamera() const { return followCamera_.get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -28,5 +42,9 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	SceneView* sceneView_;
+	const Player* player_;
 
+	// 追従カメラ
+	std::unique_ptr<FollowCamera> followCamera_;
 };

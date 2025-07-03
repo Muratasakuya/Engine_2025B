@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Input/InputStructures.h>
 #include <Engine/Scene/Camera/BaseCamera.h>
+#include <Lib/Adapter/Easing.h>
 
 //============================================================================
 //	FollowCamera class
@@ -41,8 +42,7 @@ private:
 	// 現在の入力状態
 	InputType inputType_;
 
-	const Transform3DComponent* target_;
-	float aspectRatio_;
+	const Transform3DComponent* target_; // 追従対象
 
 	// parameter
 	Vector3 offsetTranslation_;    // 追従相手との距離
@@ -55,9 +55,11 @@ private:
 	Vector2 padSensitivity_; // パッド操作の感度
 
 	bool isScreenShake_;                // 画面シェイク中かどうか
-	float screenShakeIntensity_ = 0.4f; // 画面シェイクの強度
-	float screenShakeDuration_ = 0.16f; // 画面シェイクの持続時間
-	float screenShakeTimer_ = 0.0f;     // シェイクの経過時間
+	float screenShakeXZIntensity_;      // 画面シェイクのXZ強度
+	float screenShakeOffsetYIntensity_; // 画面シェイクのオフセットY強度
+	float screenShakeDuration_;         // 画面シェイクの持続時間
+	float screenShakeTimer_;            // シェイクの経過時間
+	EasingType screenShakeEasingType_;  // シェイクのイージングタイプ
 	
 	// editor
 	bool isDebugMode_;

@@ -185,7 +185,7 @@ void ParticleSystem::UpdateEmitter() {
 	}
 
 	// 各emitterの更新
-	Matrix4x4 billboardMatrix = sceneView_->GetDebugCamera()->GetBillboardMatrix();
+	Matrix4x4 billboardMatrix = sceneView_->GetSceneCamera()->GetBillboardMatrix();
 	for (const auto& emitter : std::views::values(editorEmitters_)) {
 
 		emitter->Update(billboardMatrix, false);

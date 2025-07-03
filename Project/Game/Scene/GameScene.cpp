@@ -10,7 +10,7 @@
 #include <Engine/Asset/Asset.h>
 
 //============================================================================
-//	TitleScene classMethods
+//	GameScene classMethods
 //============================================================================
 
 void GameScene::Load() {
@@ -138,10 +138,8 @@ void GameScene::Init() {
 	//========================================================================
 
 	// camera
-	followCamera_ = std::make_unique<FollowCamera>();
-	followCamera_->Init();
-
-	sceneView_->SetCamera(followCamera_.get());
+	cameraManager_ = std::make_unique<CameraManager>();
+	cameraManager_->Init(sceneView_);
 
 	// light
 	gameLight_ = std::make_unique<PunctualLight>();
@@ -163,8 +161,7 @@ void GameScene::Init() {
 	player_->Init("player", "player", "Player", "player_idle");
 
 	// 追従先を設定する: player
-	followCamera_->SetTarget(player_->GetTransform());
-	followCamera_->FirstUpdate();
+	cameraManager_->SetTarget(player_.get());
 
 	//========================================================================
 	//	editor
@@ -186,10 +183,10 @@ void GameScene::Init() {
 
 	// player、カメラをセット
 	bossEnemy_->SetPlayer(player_.get());
-	bossEnemy_->SetFollowCamera(followCamera_.get());
+	bossEnemy_->SetFollowCamera(cameraManager_->GetFollowCamera());
 	// bossEnemy、カメラをセット
 	player_->SetBossEnemy(bossEnemy_.get());
-	player_->SetFollowCamera(followCamera_.get());
+	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
 }
 
 void GameScene::Update() {
@@ -198,7 +195,7 @@ void GameScene::Update() {
 	//	sceneObject
 	//========================================================================
 
-	followCamera_->Update();
+	cameraManager_->Update();
 
 	//========================================================================
 	//	entity

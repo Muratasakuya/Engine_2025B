@@ -52,6 +52,7 @@ protected:
 	float fovY_;
 	float nearClip_;
 	float farClip_;
+	float aspectRatio_;
 
 	Transform3DComponent transform_;
 	Vector3 eulerRotation_;

@@ -77,7 +77,7 @@ void LineRenderer::ExecuteLine(bool debugEnable) {
 		commandList_->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	} else {
 
-		debugSceneViewProjectionBuffer_.TransferData(sceneView_->GetDebugCamera()->GetViewProjectionMatrix());
+		debugSceneViewProjectionBuffer_.TransferData(sceneView_->GetSceneCamera()->GetViewProjectionMatrix());
 		commandList_->SetGraphicsRootConstantBufferView(0, debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	}
 

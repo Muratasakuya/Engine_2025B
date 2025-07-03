@@ -2,8 +2,8 @@
     "eulerRotateClampMinusX_": -0.04800000041723251,
     "eulerRotateClampPlusX_": 0.7020000219345093,
     "eulerRotation_": {
-        "x": 0.142722949385643,
-        "y": 18.421749114990234,
+        "x": 0.0670035183429718,
+        "y": 4.432559013366699,
         "z": 0.0
     },
     "farClip_": 2048.0,
@@ -19,6 +19,10 @@
         "x": 0.03200000151991844,
         "y": 0.03999999910593033
     },
+    "screenShakeDuration_": 1.600000023841858,
+    "screenShakeEasingType_": 14,
+    "screenShakeOffsetYIntensity_": 6.389999866485596,
+    "screenShakeXZIntensity_": 0.20000000298023224,
     "sensitivity_": {
         "x": 0.0010000000474974513,
         "y": 0.004000000189989805
