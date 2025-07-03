@@ -3,48 +3,50 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
 
-// cameras
-#include <Game/Camera/Follow/FollowCamera.h>
-// front
-class Player;
-class SceneView;
+// state
+#include <Game/Camera/Follow/State/FollowCameraStateController.h>
 
 //============================================================================
-//	CameraManager class
+//	FollowCamera class
 //============================================================================
-class CameraManager :
-	public IGameEditor {
+class FollowCamera :
+	public BaseCamera {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	CameraManager() :IGameEditor("CameraManager") {};
-	~CameraManager() = default;
+	FollowCamera() = default;
+	~FollowCamera() = default;
 
-	void Init(SceneView* sceneView);
+	void Init() override;
 
-	void Update();
+	void Update() override;
 
 	void ImGui() override;
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetTarget(const Player* Player);
-
-	FollowCamera* GetFollowCamera() const { return followCamera_.get(); }
+	void StartScreenShake(bool isShake);
+	void SetTarget(const Transform3DComponent& target);
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+	
+	// 状態の管理
+	std::unique_ptr<FollowCameraStateController> stateController_;
 
-	SceneView* sceneView_;
-	const Player* player_;
+	//--------- functions ----------------------------------------------------
 
-	// 追従カメラ
-	std::unique_ptr<FollowCamera> followCamera_;
+	// update
+	void UpdateMatrix();
+
+	// json
+	void ApplyJson();
+	void SaveJson();
 };

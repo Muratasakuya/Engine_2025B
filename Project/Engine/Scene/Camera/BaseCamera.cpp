@@ -3,11 +3,21 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Config.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
 //	BaseCamera classMethods
 //============================================================================
+
+BaseCamera::BaseCamera() {
+
+	// 初期値設定
+	aspectRatio_ = Config::kWindowWidthf / Config::kWindowHeightf;
+
+	// transformを一回初期化
+	transform_.Init();
+}
 
 void BaseCamera::CalBillboardMatrix() {
 

@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
-#include <Game/Camera/FollowCamera.h>
+#include <Game/Camera/Follow/FollowCamera.h>
 
 //============================================================================
 //	PlayerWalkState classMethods

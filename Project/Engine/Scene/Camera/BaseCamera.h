@@ -17,7 +17,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	BaseCamera() = default;
+	BaseCamera();
 	virtual ~BaseCamera() = default;
 
 	virtual void Init() = 0;
@@ -29,6 +29,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetParent(const Transform3DComponent* parent) { transform_.parent = parent; };
+	void SetTranslation(const Vector3& translation) { transform_.translation = translation; }
+	void SetEulerRotation(const Vector3& eulerRotation) { transform_.eulerRotate = eulerRotation; }
 
 	float GetFovY() const { return fovY_; }
 	float GetNearClip() const { return nearClip_; }

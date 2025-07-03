@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
-#include <Game/Camera/FollowCamera.h>
+#include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Objects/Player/Entity/Player.h>
 
 //============================================================================

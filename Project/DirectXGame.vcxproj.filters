@@ -251,7 +251,7 @@
     <ClCompile Include="Engine\Utility\SimpleAnimation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Camera\FollowCamera.cpp">
+    <ClCompile Include="Game\Camera\Follow\FollowCamera.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utility\KeyframeAnimation.cpp">
@@ -518,6 +518,36 @@
     <ClCompile Include="Game\Camera\Manager\CameraManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\FollowCameraStateController.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraFollowState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraSwitchAllyState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraReturnState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraStunAttackState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\Input\Interface\FollowCameraIInputDevice.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\Input\FollowCameraInputMapper.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\Input\Device\FollowCameraKeyInput.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\Input\Device\FollowCameraGamePadInput.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraShakeState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -607,7 +637,7 @@
     <ClInclude Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.h" />
     <ClInclude Include="Engine\Utility\UVHelper.h" />
     <ClInclude Include="Engine\Utility\SimpleAnimation.h" />
-    <ClInclude Include="Game\Camera\FollowCamera.h" />
+    <ClInclude Include="Game\Camera\Follow\FollowCamera.h" />
     <ClInclude Include="Engine\Utility\KeyframeAnimation.h" />
     <ClInclude Include="Engine\Asset\AssetEditor.h" />
     <ClInclude Include="Engine\Core\ECS\Core\ComponentPool.h" />
@@ -703,6 +733,19 @@
     <ClInclude Include="Game\Objects\Result\GameResult.h" />
     <ClInclude Include="Game\Objects\Base\GameDisplayDamage.h" />
     <ClInclude Include="Game\Camera\Manager\CameraManager.h" />
+    <ClInclude Include="Game\Camera\Follow\State\Interface\FollowCameraIState.h" />
+    <ClInclude Include="Game\Camera\Follow\State\FollowCameraStateController.h" />
+    <ClInclude Include="Game\Camera\Follow\Structures\FollowCameraStructures.h" />
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraFollowState.h" />
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraSwitchAllyState.h" />
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraReturnState.h" />
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraStunAttackState.h" />
+    <ClInclude Include="Game\Camera\Follow\Input\Interface\FollowCameraIInputDevice.h" />
+    <ClInclude Include="Game\Camera\Follow\Input\Structures\FollowCameraAction.h" />
+    <ClInclude Include="Game\Camera\Follow\Input\FollowCameraInputMapper.h" />
+    <ClInclude Include="Game\Camera\Follow\Input\Device\FollowCameraKeyInput.h" />
+    <ClInclude Include="Game\Camera\Follow\Input\Device\FollowCameraGamePadInput.h" />
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraShakeState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

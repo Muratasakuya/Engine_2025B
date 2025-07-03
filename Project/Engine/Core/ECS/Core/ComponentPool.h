@@ -17,7 +17,7 @@
 #include <imgui.h>
 
 // componentBitSize
-constexpr const size_t kMaxComponentTypes = 128;
+constexpr const size_t kMaxComponentTypes = 64;
 using Archetype = std::bitset<kMaxComponentTypes>;
 
 //============================================================================

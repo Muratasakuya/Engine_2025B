@@ -3,38 +3,33 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
-
-// cameras
-#include <Game/Camera/Follow/FollowCamera.h>
-// front
-class Player;
-class SceneView;
+#include <Game/Camera/Follow/State/Interface/FollowCameraIState.h>
 
 //============================================================================
-//	CameraManager class
+//	FollowCameraSwitchAllyState class
 //============================================================================
-class CameraManager :
-	public IGameEditor {
+class FollowCameraSwitchAllyState :
+	public FollowCameraIState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	CameraManager() :IGameEditor("CameraManager") {};
-	~CameraManager() = default;
+	FollowCameraSwitchAllyState() = default;
+	~FollowCameraSwitchAllyState() = default;
 
-	void Init(SceneView* sceneView);
+	void Enter() override;
 
-	void Update();
+	void Update(FollowCamera& followCamera)  override;
 
-	void ImGui() override;
+	void Exit()  override;
 
-	//--------- accessor -----------------------------------------------------
+	// imgui
+	void ImGui(const FollowCamera& followCamera) override;
 
-	void SetTarget(const Player* Player);
-
-	FollowCamera* GetFollowCamera() const { return followCamera_.get(); }
+	// json
+	void ApplyJson(const Json& data) override;
+	void SaveJson(Json& data)  override;
 private:
 	//========================================================================
 	//	private Methods
@@ -42,9 +37,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	SceneView* sceneView_;
-	const Player* player_;
 
-	// 追従カメラ
-	std::unique_ptr<FollowCamera> followCamera_;
+
+	//--------- functions ----------------------------------------------------
+
 };

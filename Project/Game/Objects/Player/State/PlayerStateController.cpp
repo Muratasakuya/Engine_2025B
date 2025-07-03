@@ -103,7 +103,7 @@ void PlayerStateController::Update(Player& owner) {
 	// 入力に応じた状態の遷移
 	UpdateInputState();
 
-	// 何か設定されて入れば状態遷移させる
+	// 何か予約設定されて入れば状態遷移させる
 	if (queued_) {
 		if (states_[current_]->GetCanExit() && CanTransition(*queued_, true)) {
 

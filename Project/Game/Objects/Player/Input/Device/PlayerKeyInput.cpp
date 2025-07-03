@@ -33,7 +33,7 @@ float PlayerKeyInput::GetVector(PlayerAction axis) const {
 		}
 		return vector;
 	}
-	return 0.0f;
+	return vector;
 }
 
 bool PlayerKeyInput::IsPressed(PlayerAction button) const {

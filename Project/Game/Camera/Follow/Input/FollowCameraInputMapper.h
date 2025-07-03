@@ -3,38 +3,34 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
+#include <Game/Camera/Follow/Input/Interface/FollowCameraIInputDevice.h>
 
-// cameras
-#include <Game/Camera/Follow/FollowCamera.h>
-// front
-class Player;
-class SceneView;
+// c++
+#include <memory>
+#include <vector>
+#include <algorithm>
 
 //============================================================================
-//	CameraManager class
+//	FollowCameraInputMapper class
 //============================================================================
-class CameraManager :
-	public IGameEditor {
+class FollowCameraInputMapper {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	CameraManager() :IGameEditor("CameraManager") {};
-	~CameraManager() = default;
+	FollowCameraInputMapper() = default;
+	~FollowCameraInputMapper() = default;
 
-	void Init(SceneView* sceneView);
-
-	void Update();
-
-	void ImGui() override;
+	// 使用する入力デバイスを追加
+	void AddDevice(std::unique_ptr<FollowCameraIInputDevice> device);
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetTarget(const Player* Player);
+	float GetVector(FollowCameraAction action) const;
 
-	FollowCamera* GetFollowCamera() const { return followCamera_.get(); }
+	bool IsPressed(FollowCameraAction button) const;
+	bool IsTriggered(FollowCameraAction button) const;
 private:
 	//========================================================================
 	//	private Methods
@@ -42,9 +38,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	SceneView* sceneView_;
-	const Player* player_;
-
-	// 追従カメラ
-	std::unique_ptr<FollowCamera> followCamera_;
+	// 使用する入力デバイス
+	std::vector<std::unique_ptr<FollowCameraIInputDevice>> devices_;
 };

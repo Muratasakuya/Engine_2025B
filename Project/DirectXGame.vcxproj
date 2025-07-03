@@ -499,11 +499,51 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Camera\FollowCamera.cpp">
+    <ClCompile Include="Game\Camera\Follow\FollowCamera.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="Engine\Scene\Camera\LightViewCamera.cpp" />
+    <ClCompile Include="Game\Camera\Follow\Input\Device\FollowCameraGamePadInput.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\Input\Device\FollowCameraKeyInput.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\Input\FollowCameraInputMapper.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\Input\Interface\FollowCameraIInputDevice.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\FollowCameraStateController.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraFollowState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraReturnState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraShakeState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraStunAttackState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraSwitchAllyState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Camera\Manager\CameraManager.cpp">
       <SubType>
       </SubType>
@@ -995,12 +1035,64 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Camera\FollowCamera.h">
+    <ClInclude Include="Game\Camera\Follow\FollowCamera.h">
       <SubType>
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Scene\Camera\LightViewCamera.h" />
     <ClInclude Include="Engine\Scene\Light\PunctualLight.h" />
+    <ClInclude Include="Game\Camera\Follow\Input\Device\FollowCameraGamePadInput.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\Input\Device\FollowCameraKeyInput.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\Input\FollowCameraInputMapper.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\Input\Interface\FollowCameraIInputDevice.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\Input\Structures\FollowCameraAction.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\State\FollowCameraStateController.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\State\Interface\FollowCameraIState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraFollowState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraReturnState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraShakeState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraStunAttackState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraSwitchAllyState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\Structures\FollowCameraStructures.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Camera\Manager\CameraManager.h">
       <SubType>
       </SubType>

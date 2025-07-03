@@ -3,48 +3,37 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
+#include <Game/Camera/Follow/Input/Structures/FollowCameraAction.h>
 
-// cameras
-#include <Game/Camera/Follow/FollowCamera.h>
 // front
-class Player;
-class SceneView;
+class Input;
 
 //============================================================================
-//	CameraManager class
+//	FollowCameraIInputDevice class
 //============================================================================
-class CameraManager :
-	public IGameEditor {
+class FollowCameraIInputDevice {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	CameraManager() :IGameEditor("CameraManager") {};
-	~CameraManager() = default;
-
-	void Init(SceneView* sceneView);
-
-	void Update();
-
-	void ImGui() override;
+	FollowCameraIInputDevice() = default;
+	virtual ~FollowCameraIInputDevice() = default;
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetTarget(const Player* Player);
+	// 連続入力
+	virtual float GetVector(FollowCameraAction axis)  const = 0;
 
-	FollowCamera* GetFollowCamera() const { return followCamera_.get(); }
-private:
+	// 単入力
+	virtual bool IsPressed(FollowCameraAction button) const = 0;
+	virtual bool IsTriggered(FollowCameraAction button) const = 0;
+protected:
 	//========================================================================
-	//	private Methods
+	//	protected Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-	SceneView* sceneView_;
-	const Player* player_;
-
-	// 追従カメラ
-	std::unique_ptr<FollowCamera> followCamera_;
+	Input* input_;
 };

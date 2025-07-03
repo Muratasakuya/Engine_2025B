@@ -1,0 +1,35 @@
+{
+    "Follow": {
+        "inputLerpRate_": 0.1599999964237213,
+        "lerpRate_": 0.23999999463558197,
+        "mouseSensitivity_": {
+            "x": 0.009999999776482582,
+            "y": 0.009999999776482582
+        },
+        "offsetTranslation_": {
+            "x": 0.0,
+            "y": 6.400000095367432,
+            "z": -54.0
+        },
+        "offsetZLerpRate_": 0.800000011920929,
+        "padSensitivity_": {
+            "x": 0.03200000151991844,
+            "y": 0.04800000041723251
+        },
+        "rotateClampMinusX_": -0.18000000715255737,
+        "rotateClampPlusX_": 0.699999988079071,
+        "rotateMinusParam_.clampThreshold": 0.14000000059604645,
+        "rotateMinusParam_.offsetZNear": -32.0,
+        "rotatePlusParam_.clampThreshold": 0.3199999928474426,
+        "rotatePlusParam_.offsetZNear": -38.0
+    },
+    "Return": null,
+    "Shake": {
+        "shakeEasingType_": 14,
+        "shakeOffsetYIntensity_": 6.400000095367432,
+        "shakeTime_": 1.600000023841858,
+        "shakeXZIntensity_": 0.23999999463558197
+    },
+    "StunAttack": null,
+    "SwitchAlly": null
+}
