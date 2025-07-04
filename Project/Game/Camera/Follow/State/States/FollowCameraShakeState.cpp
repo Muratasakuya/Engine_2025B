@@ -26,29 +26,28 @@ void FollowCameraShakeState::Update(FollowCamera& followCamera) {
 	const Transform3DComponent& transform = followCamera.GetTransform();
 
 	// シェイクの残り時間を計算
-	float remainingTime = shakeTime_ / shakeTimer_;
-	if (remainingTime > 0.0f) {
-
-		// 時間経過で減衰させる
-		float lerpT = 1.0f - remainingTime / shakeTime_;
-		lerpT = EasedValue(shakeEasingType_, lerpT);
-		float intensity = std::lerp(shakeXZIntensity_, 0.0f, lerpT);
-		float offsetYIntensity = std::lerp(shakeOffsetYIntensity_, 0.0f, lerpT);
-
-		float offsetX = RandomGenerator::Generate(-1.0f, 1.0f) * intensity;
-		float offsetY = RandomGenerator::Generate(-1.0f, 1.0f) * (intensity + offsetYIntensity);
-		float offsetZ = RandomGenerator::Generate(-1.0f, 1.0f) * intensity;
-
-		Vector3 forward = transform.GetForward();
-		Vector3 right = transform.GetRight();
-
-		Vector3 translation = transform.translation + (forward * offsetZ) + (right * offsetX);
-		translation.y += offsetY;
-	} else {
-
-		// シェイク終了
+	if (shakeTimer_ >= shakeTime_) {
 		canExit_ = true;
+		return;
 	}
+	// 時間経過で減衰させる
+	float lerpT = shakeTimer_ / shakeTime_;
+	lerpT = EasedValue(shakeEasingType_, lerpT);
+	float intensity = std::lerp(shakeXZIntensity_, 0.0f, lerpT);
+	float offsetYIntensity = std::lerp(shakeOffsetYIntensity_, 0.0f, lerpT);
+
+	float offsetX = RandomGenerator::Generate(-1.0f, 1.0f) * intensity;
+	float offsetY = RandomGenerator::Generate(-1.0f, 1.0f) * (intensity + offsetYIntensity);
+	float offsetZ = RandomGenerator::Generate(-1.0f, 1.0f) * intensity;
+
+	Vector3 forward = transform.GetForward();
+	Vector3 right = transform.GetRight();
+
+	Vector3 translation = transform.translation + (forward * offsetZ) + (right * offsetX);
+	translation.y += offsetY;
+
+	// 座標を設定
+	followCamera.SetTranslation(translation);
 }
 
 void FollowCameraShakeState::Exit() {
@@ -60,6 +59,8 @@ void FollowCameraShakeState::Exit() {
 
 void FollowCameraShakeState::ImGui([[maybe_unused]] const FollowCamera& followCamera) {
 
+	ImGui::Text(std::format("canExit: {}", canExit_).c_str());
+	ImGui::Text(std::format("shakeTimer: {}", shakeTimer_).c_str());
 	ImGui::DragFloat("shakeXZIntensity", &shakeXZIntensity_, 0.01f);
 	ImGui::DragFloat("shakeOffsetYIntensity", &shakeOffsetYIntensity_, 0.01f);
 	ImGui::DragFloat("shakeTime", &shakeTime_, 0.01f);

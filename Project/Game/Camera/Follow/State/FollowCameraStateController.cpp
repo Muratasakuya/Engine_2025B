@@ -28,7 +28,10 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"Follow","Shake","SwitchAlly","Return","StunAttack"
+		"Follow","SwitchAlly","Return","StunAttack"
+	};
+	const char* kOverlayStateNames[] = {
+		"Shake"
 	};
 
 	// jsonを保存するパス
@@ -45,10 +48,10 @@ void FollowCameraStateController::Init() {
 
 	// 各状態を初期化
 	states_.emplace(FollowCameraState::Follow, std::make_unique<FollowCameraFollowState>());
-	states_.emplace(FollowCameraState::Shake, std::make_unique<FollowCameraShakeState>());
 	states_.emplace(FollowCameraState::SwitchAlly, std::make_unique<FollowCameraSwitchAllyState>());
 	states_.emplace(FollowCameraState::Return, std::make_unique<FollowCameraReturnState>());
 	states_.emplace(FollowCameraState::StunAttack, std::make_unique<FollowCameraStunAttackState>());
+	overlayStates_.emplace(FollowCameraOverlayState::Shake, std::make_unique<FollowCameraShakeState>());
 	// inputを設定
 	SetInputMapper();
 
@@ -70,6 +73,19 @@ void  FollowCameraStateController::SetTarget(const Transform3DComponent& target)
 	}
 }
 
+void FollowCameraStateController::SetOverlayState(FollowCameraOverlayState state) {
+
+	// 依頼された状態を設定
+	overlayState_ = state;
+
+	// 再生中なら終わりにしてリセットさせる
+	if (!overlayStates_[state]->GetCanExit()) {
+
+		overlayStates_[state]->Exit();
+	}
+	overlayStates_[state]->Enter();
+}
+
 void FollowCameraStateController::SetInputMapper() {
 
 	// 各状態にinputをセット
@@ -79,15 +95,10 @@ void FollowCameraStateController::SetInputMapper() {
 	}
 }
 
-void FollowCameraStateController::UpdateState() {
-
-
-}
-
 void FollowCameraStateController::Update(FollowCamera& owner) {
 
-	// 状態遷移のリクエストを更新
-	UpdateState();
+	// 遷移状況の確認
+	CheckExitOverlayState();
 
 	// 何か設定されていれば遷移させる
 	if (requested_.has_value()) {
@@ -99,6 +110,10 @@ void FollowCameraStateController::Update(FollowCamera& owner) {
 	if (FollowCameraIState* state = states_[current_].get()) {
 
 		state->Update(owner);
+	}
+	if (overlayState_.has_value()) {
+
+		overlayStates_[overlayState_.value()]->Update(owner);
 	}
 }
 
@@ -141,14 +156,40 @@ void FollowCameraStateController::ChangeState() {
 	}
 }
 
+void FollowCameraStateController::CheckExitOverlayState() {
+
+	// 何も設定されていなければ処理しない
+	if (!overlayState_.has_value()) {
+		return;
+	}
+
+	// 状態が終了したら更新させないようにする
+	if (overlayStates_[overlayState_.value()]->GetCanExit()) {
+
+		overlayStates_[overlayState_.value()]->Exit();
+		overlayState_ = std::nullopt;
+	}
+}
+
 void FollowCameraStateController::ImGui(const FollowCamera& owner) {
 
 	if (ImGui::Button("Save##StateJson")) {
 		SaveJson();
 	}
 
+	ImGui::SeparatorText("State");
 	ImGui::Combo("##StateCombo", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
 	states_[static_cast<FollowCameraState>(editingStateIndex_)]->ImGui(owner);
+
+	ImGui::SeparatorText("OverlayState");
+	ImGui::Combo("##OverlayStateCombo", &editingOverlayStateIndex_, kOverlayStateNames, IM_ARRAYSIZE(kOverlayStateNames));
+	FollowCameraOverlayState overlayState = static_cast<FollowCameraOverlayState>(editingOverlayStateIndex_);
+	ImGui::Text(std::format("overlayHasValue: {}", overlayState_.has_value()).c_str());
+	overlayStates_[overlayState]->ImGui(owner);
+	if (ImGui::Button("Apply OverlayState")) {
+
+		SetOverlayState(overlayState);
+	}
 }
 
 void FollowCameraStateController::ApplyJson() {
@@ -158,18 +199,26 @@ void FollowCameraStateController::ApplyJson() {
 		return;
 	}
 
-	for (auto& [state, ptr] : states_) {
+	for (const auto& [state, ptr] : states_) {
 
 		ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
+	}
+	for (const auto& [state, ptr] : overlayStates_) {
+
+		ptr->ApplyJson(data[kOverlayStateNames[static_cast<int>(state)]]);
 	}
 }
 
 void FollowCameraStateController::SaveJson() {
 
 	Json data;
-	for (auto& [state, ptr] : states_) {
+	for (const auto& [state, ptr] : states_) {
 
 		ptr->SaveJson(data[kStateNames[static_cast<int>(state)]]);
+	}
+	for (const auto& [state, ptr] : overlayStates_) {
+
+		ptr->SaveJson(data[kOverlayStateNames[static_cast<int>(state)]]);
 	}
 
 	JsonAdapter::Save(kStateJsonPath, data);

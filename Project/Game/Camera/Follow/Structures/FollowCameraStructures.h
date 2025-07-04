@@ -12,8 +12,13 @@
 enum class FollowCameraState {
 
 	Follow,     // 通常追従状態
-	Shake,      // 画面シェイク処理
 	SwitchAlly, // プレイヤーが味方を切り替えるかチェック中
 	Return,     // 切り替えなかったので元の位置にカメラを戻す
 	StunAttack, // 味方を切り替えて攻撃中
+};
+
+// 現在の状態の次に設定されていれば行う処理
+enum class FollowCameraOverlayState {
+
+	Shake, // 画面シェイク処理
 };

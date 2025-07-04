@@ -95,11 +95,6 @@ void BossEnemyStateController::Update(BossEnemy& owner) {
 		ChangeState(owner);
 	}
 
-	// 遷移不可なら更新もしない
-	if (!disableTransitions_) {
-		return;
-	}
-
 	// 現在の状態を更新
 	if (BossEnemyIState* currentState = states_[current_].get()) {
 

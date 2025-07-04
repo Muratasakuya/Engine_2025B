@@ -35,6 +35,7 @@ void PlayerAttack_3rdState::Update(Player& player) {
 			emitEffect_ = true;
 		}
 
+		// 画面シェイクを行わせる
 		followCamera_->StartScreenShake(true);
 	}
 

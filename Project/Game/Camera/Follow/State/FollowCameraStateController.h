@@ -34,6 +34,7 @@ public:
 
 	void SetTarget(const Transform3DComponent& target);
 	void SetState(FollowCameraState state) { requested_ = state; }
+	void SetOverlayState(FollowCameraOverlayState state);
 private:
 	//========================================================================
 	//	private Methods
@@ -45,12 +46,17 @@ private:
 	std::unique_ptr<FollowCameraInputMapper> inputMapper_;
 
 	std::unordered_map<FollowCameraState, std::unique_ptr<FollowCameraIState>> states_;
+	std::unordered_map<FollowCameraOverlayState, std::unique_ptr<FollowCameraIState>> overlayStates_;
 
 	FollowCameraState current_;                  // 現在の状態
 	std::optional<FollowCameraState> requested_; // 次の状態
 
+	// 上から被せる形で行う処理
+	std::optional<FollowCameraOverlayState>  overlayState_;
+
 	// editor
 	int editingStateIndex_;
+	int editingOverlayStateIndex_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -60,7 +66,7 @@ private:
 
 	// helper
 	void SetInputMapper();
-	void UpdateState();
 	bool Request(FollowCameraState state);
 	void ChangeState();
+	void CheckExitOverlayState();
 };

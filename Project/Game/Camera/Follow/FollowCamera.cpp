@@ -30,7 +30,7 @@ void FollowCamera::StartScreenShake(bool isShake) {
 	if (isShake) {
 
 		// 状態を設定する
-		stateController_->SetState(FollowCameraState::Shake);
+		stateController_->SetOverlayState(FollowCameraOverlayState::Shake);
 	}
 }
 
