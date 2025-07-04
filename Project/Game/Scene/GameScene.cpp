@@ -28,6 +28,8 @@ void GameScene::Load() {
 	asset_->LoadTexture("gradationLine_1");
 	asset_->LoadTexture("groundEffect");
 	asset_->LoadTexture("redCircle");
+	asset_->LoadTexture("horaizontalRedCircle");
+	asset_->LoadTexture("verticalRedCircle");
 	asset_->LoadTexture("smallCircle");
 	asset_->LoadTexture("flashLlight");
 	asset_->LoadTexture("noise");
@@ -35,6 +37,8 @@ void GameScene::Load() {
 	asset_->LoadTexture("noise2");
 
 	asset_->LoadModel("billboardPlane");
+	asset_->LoadModel("billboardHorizontalPlane");
+	asset_->LoadModel("billboardVerticalPlane");
 	asset_->LoadModel("bottomLocalbillboardPlane");
 	asset_->LoadModel("topLocalbillboardPlane");
 	asset_->LoadModel("crossPlane");

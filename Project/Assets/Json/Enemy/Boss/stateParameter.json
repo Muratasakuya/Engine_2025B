@@ -10,7 +10,7 @@
         "rotationLerpRate_": 0.0
     },
     "Idle": {
-        "backStepSpeed_": 0.0,
+        "backStepSpeed_": -1.600000023841858,
         "nextAnimDuration_": 0.3199999928474426,
         "rotationLerpRate_": 8.0
     },

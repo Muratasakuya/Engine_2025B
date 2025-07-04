@@ -47,6 +47,8 @@ public:
 	void SetAlpha(float alpha);
 	void SetCastShadow(bool cast);
 	void SetDecreaseToughnessProgress(float progress);
+
+	Vector3 GetWeaponTranslation() const;
 private:
 	//========================================================================
 	//	private Methods

@@ -130,6 +130,11 @@ void BossEnemy::SetDecreaseToughnessProgress(float progress) {
 		0, progress)), 0, stats_.maxDestroyToughness);
 }
 
+Vector3 BossEnemy::GetWeaponTranslation() const {
+
+	return weapon_->GetTransform().GetWorldPos();
+}
+
 void BossEnemy::Update() {
 
 	// 閾値のリストの条件に誤りがないかチェック

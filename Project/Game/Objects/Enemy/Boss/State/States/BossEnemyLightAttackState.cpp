@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>

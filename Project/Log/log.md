@@ -11,12 +11,16 @@ EngineInformation:     load texture: gradationLine_0
 EngineInformation:     load texture: gradationLine_1
 EngineInformation:     load texture: groundEffect
 EngineInformation:     load texture: redCircle
+EngineInformation:     load texture: horaizontalRedCircle
+EngineInformation:     load texture: verticalRedCircle
 EngineInformation:     load texture: smallCircle
 EngineInformation:     load texture: flashLlight
 EngineInformation:     load texture: noise
 EngineInformation:     load texture: noise1
 EngineInformation:     load texture: noise2
 EngineInformation:     load model: billboardPlane
+EngineInformation:     load model: billboardHorizontalPlane
+EngineInformation:     load model: billboardVerticalPlane
 EngineInformation:     load model: bottomLocalbillboardPlane
 EngineInformation:     load model: topLocalbillboardPlane
 EngineInformation:     load model: crossPlane
