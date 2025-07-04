@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Camera/Follow/FollowCamera.h>
@@ -58,6 +59,10 @@ void PlayerDashState::UpdateDash(Player& player) {
 	Vector3 translation = player.GetTranslation();
 	translation.x += move_.x;
 	translation.z += move_.z;
+	// 座標を制限する
+	float clampSize = moveClampSize_ / 2.0f;
+	translation.x = std::clamp(translation.x, -clampSize, clampSize);
+	translation.z = std::clamp(translation.z, -clampSize, clampSize);.
 	player.SetTranslation(translation);
 }
 
@@ -82,14 +87,19 @@ void PlayerDashState::ImGui([[maybe_unused]] const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate_", &rotationLerpRate_, 0.001f);
+	ImGui::DragFloat("moveClampSize", &moveClampSize_, 1.0f);
 
 	speedLerpValue_->ImGui("speedLerpValue");
+
+	LineRenderer::GetInstance()->DrawSquare(moveClampSize_,
+		Vector3(0.0f, 4.0f, 0.0f), Color::Red());
 }
 
 void PlayerDashState::ApplyJson(const Json& data) {
 
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
+	moveClampSize_ = JsonAdapter::GetValue<float>(data, "moveClampSize_");
 
 	speedLerpValue_ = std::make_unique<SimpleAnimation<float>>();
 	if (data.contains("speedLerpValue_")) {
@@ -101,5 +111,6 @@ void PlayerDashState::SaveJson(Json& data) {
 
 	data["nextAnimDuration_"] = nextAnimDuration_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
+	data["moveClampSize_"] = moveClampSize_;
 	speedLerpValue_->ToJson(data["speedLerpValue_"]);
 }

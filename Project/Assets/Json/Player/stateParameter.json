@@ -112,6 +112,7 @@
         }
     },
     "Dash": {
+        "moveClampSize_": 220.0,
         "nextAnimDuration_": 0.04800000041723251,
         "rotationLerpRate_": 0.18000000715255737,
         "speedLerpValue_": {
@@ -147,6 +148,7 @@
         "nextAnimDuration_": 0.25999999046325684
     },
     "Walk": {
+        "moveClampSize_": 220.0,
         "moveDecay_": 0.4399999976158142,
         "moveSpeed_": 0.4000000059604645,
         "nextAnimDuration_": 0.1599999964237213,

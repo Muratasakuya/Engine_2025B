@@ -367,3 +367,20 @@ void LineRenderer::DrawArc(int division, float radius, float halfAngle,
 	DrawLine3D(center, firstPoint, color);
 	DrawLine3D(center, lastPoint, color);
 }
+
+void LineRenderer::DrawSquare(float length, const Vector3& center, const Color& color) {
+
+	float half = length * 0.5f;
+
+	// 四隅の点
+	Vector3 p0(center.x - half, center.y, center.z - half);
+	Vector3 p1(center.x - half, center.y, center.z + half);
+	Vector3 p2(center.x + half, center.y, center.z + half);
+	Vector3 p3(center.x + half, center.y, center.z - half);
+
+	// 線描画
+	DrawLine3D(p0, p1, color);
+	DrawLine3D(p1, p2, color);
+	DrawLine3D(p2, p3, color);
+	DrawLine3D(p3, p0, color);
+}

@@ -55,6 +55,8 @@ public:
 	void DrawArc(int division, float radius, float halfAngle,
 		const Vector3& center, const Vector3& direction, const Color& color);
 
+	void DrawSquare(float length, const Vector3& center, const Color& color);
+
 	//--------- accessor -----------------------------------------------------
 
 	// singleton

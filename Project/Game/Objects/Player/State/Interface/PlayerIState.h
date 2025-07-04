@@ -64,6 +64,7 @@ protected:
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
 	bool canExit_ = true;    // 遷移可能かどうか
 	float rotationLerpRate_; // 回転補間割合
+	float moveClampSize_;    // 移動できる範囲の制限
 
 	//--------- functions ----------------------------------------------------
 

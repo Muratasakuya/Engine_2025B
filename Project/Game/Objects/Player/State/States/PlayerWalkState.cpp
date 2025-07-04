@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Camera/Follow/FollowCamera.h>
@@ -56,6 +57,10 @@ void PlayerWalkState::UpdateWalk(Player& player) {
 	Vector3 translation = player.GetTranslation();
 	translation.x += move_.x;
 	translation.z += move_.z;
+	// 座標を制限する
+	float clampSize = moveClampSize_ / 2.0f;
+	translation.x = std::clamp(translation.x, -clampSize, clampSize);
+	translation.z = std::clamp(translation.z, -clampSize, clampSize);
 	player.SetTranslation(translation);
 }
 
@@ -68,6 +73,10 @@ void PlayerWalkState::ImGui([[maybe_unused]] const Player& player) {
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
 	ImGui::DragFloat("moveSpeed", &moveSpeed_, 0.01f);
 	ImGui::DragFloat("moveDecay", &moveDecay_, 0.01f);
+	ImGui::DragFloat("moveClampSize", &moveClampSize_, 1.0f);
+
+	LineRenderer::GetInstance()->DrawSquare(moveClampSize_,
+		Vector3(0.0f, 4.0f, 0.0f), Color::Red());
 }
 
 void PlayerWalkState::ApplyJson(const Json& data) {
@@ -76,6 +85,7 @@ void PlayerWalkState::ApplyJson(const Json& data) {
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 	moveSpeed_ = JsonAdapter::GetValue<float>(data, "moveSpeed_");
 	moveDecay_ = JsonAdapter::GetValue<float>(data, "moveDecay_");
+	moveClampSize_ = JsonAdapter::GetValue<float>(data, "moveClampSize_");
 }
 
 void PlayerWalkState::SaveJson(Json& data) {
@@ -84,4 +94,5 @@ void PlayerWalkState::SaveJson(Json& data) {
 	data["rotationLerpRate_"] = rotationLerpRate_;
 	data["moveSpeed_"] = moveSpeed_;
 	data["moveDecay_"] = moveDecay_;
+	data["moveClampSize_"] = moveClampSize_;
 }
