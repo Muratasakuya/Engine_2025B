@@ -62,7 +62,7 @@ void PlayerDashState::UpdateDash(Player& player) {
 	// 座標を制限する
 	float clampSize = moveClampSize_ / 2.0f;
 	translation.x = std::clamp(translation.x, -clampSize, clampSize);
-	translation.z = std::clamp(translation.z, -clampSize, clampSize);.
+	translation.z = std::clamp(translation.z, -clampSize, clampSize);
 	player.SetTranslation(translation);
 }
 

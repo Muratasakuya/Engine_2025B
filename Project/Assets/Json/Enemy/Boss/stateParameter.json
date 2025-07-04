@@ -10,7 +10,7 @@
         "rotationLerpRate_": 0.0
     },
     "Idle": {
-        "backStepSpeed_": -1.600000023841858,
+        "backStepSpeed_": 0.0,
         "nextAnimDuration_": 0.3199999928474426,
         "rotationLerpRate_": 8.0
     },
@@ -31,6 +31,7 @@
         "farRadius_": 80.0,
         "halfAngle_": 36.0,
         "lerpTime_": 0.7200000286102295,
+        "moveClampSize_": 210.0,
         "nearRadius_": 20.0,
         "nextAnimDuration_": 0.03999999910593033,
         "rotationLerpRate_": 14.0
@@ -55,6 +56,7 @@
         "farRadius_": 54.0,
         "halfAngle_": 35.900001525878906,
         "lerpTime_": 0.800000011920929,
+        "moveClampSize_": 210.0,
         "nearRadius_": 40.20000076293945,
         "nextAnimDuration_": 0.03999999910593033,
         "rotationLerpRate_": 8.0

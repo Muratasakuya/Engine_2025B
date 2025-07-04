@@ -31,7 +31,8 @@ void BossEnemyRushAttackState::Enter(BossEnemy& bossEnemy) {
 	const Vector3 center = player_->GetTranslation();
 	const Vector3 forward = followCamera_->GetTransform().GetForward();
 	startPos_ = bossEnemy.GetTranslation();
-	targetPos_ = Math::RandomPointOnArc(center, forward, farRadius_, halfAngle_);
+	targetPos_ = Math::RandomPointOnArcInSquare(center, forward,
+		farRadius_, halfAngle_, Vector3::AnyInit(0.0f), moveClampSize_ / 2.0f);
 
 	currentAlpha_ = 1.0f;
 	bossEnemy.SetAlpha(currentAlpha_);
@@ -156,7 +157,8 @@ void BossEnemyRushAttackState::UpdateCooldown(BossEnemy& bossEnemy, float deltaT
 		const Vector3 center = player_->GetTranslation();
 		const Vector3 forward = followCamera_->GetTransform().GetForward();
 		startPos_ = bossEnemy.GetTranslation();
-		targetPos_ = Math::RandomPointOnArc(center, forward, farRadius_, halfAngle_);
+		targetPos_ = Math::RandomPointOnArcInSquare(center, forward,
+			farRadius_, halfAngle_, Vector3::AnyInit(0.0f), moveClampSize_ / 2.0f);
 
 		// playerの方を向かせる
 		LookTarget(bossEnemy, player_->GetTranslation());
@@ -186,6 +188,7 @@ void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy
 	ImGui::DragFloat("farRadius:Red", &farRadius_, 0.1f);
 	ImGui::DragFloat("nearRadius:Blue", &nearRadius_, 0.1f);
 	ImGui::DragFloat("halfAngle", &halfAngle_, 0.1f);
+	ImGui::DragFloat("moveClampSize", &moveClampSize_, 1.0f);
 	ImGui::DragFloat("lerpTime", &lerpTime_, 0.01f);
 	ImGui::DragFloat("fadeOutTime", &fadeOutTime_, 0.01f);
 	ImGui::DragFloat("fadeInTime", &fadeInTime_, 0.01f);
@@ -199,6 +202,9 @@ void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy
 		center, followCamera_->GetTransform().GetForward(), Color::Red());
 	LineRenderer::GetInstance()->DrawArc(8, nearRadius_, halfAngle_,
 		center, followCamera_->GetTransform().GetForward(), Color::Blue());
+
+	LineRenderer::GetInstance()->DrawSquare(moveClampSize_,
+		Vector3(0.0f, 4.0f, 0.0f), Color::Red());
 }
 
 void BossEnemyRushAttackState::ApplyJson(const Json& data) {
@@ -208,6 +214,7 @@ void BossEnemyRushAttackState::ApplyJson(const Json& data) {
 	farRadius_ = JsonAdapter::GetValue<float>(data, "farRadius_");
 	nearRadius_ = JsonAdapter::GetValue<float>(data, "nearRadius_");
 	halfAngle_ = JsonAdapter::GetValue<float>(data, "halfAngle_");
+	moveClampSize_ = JsonAdapter::GetValue<float>(data, "moveClampSize_");
 	lerpTime_ = JsonAdapter::GetValue<float>(data, "lerpTime_");
 	attackCoolTime_ = JsonAdapter::GetValue<float>(data, "attackCoolTime_");
 	fadeOutTime_ = JsonAdapter::GetValue<float>(data, "fadeOutTime_");
@@ -223,6 +230,7 @@ void BossEnemyRushAttackState::SaveJson(Json& data) {
 	data["farRadius_"] = farRadius_;
 	data["nearRadius_"] = nearRadius_;
 	data["halfAngle_"] = halfAngle_;
+	data["moveClampSize_"] = moveClampSize_;
 	data["lerpTime_"] = lerpTime_;
 	data["attackCoolTime_"] = attackCoolTime_;
 	data["fadeOutTime_"] = fadeOutTime_;

@@ -25,4 +25,8 @@ namespace Math {
 
 	Vector3 RandomPointOnArc(const Vector3& center, const Vector3& direction,
 		float radius, float halfAngle);
+
+	Vector3 RandomPointOnArcInSquare(const Vector3& arcCenter, const Vector3& direction,
+		float radius, float halfAngle, const Vector3& squareCenter,
+		float clampHalfSize, int tryCount = 12);
 }
