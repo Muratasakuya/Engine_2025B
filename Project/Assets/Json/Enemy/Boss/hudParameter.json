@@ -57,5 +57,7 @@
             "x": 1814.0,
             "y": 82.0
         }
-    }
+    },
+    "returnAlphaEasingType_": 10,
+    "returnAlphaTime_": 0.4000000059604645
 }

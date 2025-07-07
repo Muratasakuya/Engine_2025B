@@ -82,6 +82,14 @@ void GameDigitDisplay::SetPostProcessEnable(bool apply) {
 	}
 }
 
+void GameDigitDisplay::SetAlpha(float alpha) {
+
+	for (uint32_t index = 0; index < digitSprites_.size(); ++index) {
+
+		digitSprites_[index]->SetAlpha(alpha);
+	}
+}
+
 void GameDigitDisplay::SetEmissive(uint32_t digitIndex, float emissive) {
 
 	if (digitIndex < digitSprites_.size()) {

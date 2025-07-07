@@ -32,6 +32,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
+	void SetDisable();
+	void SetValid();
 private:
 	//========================================================================
 	//	private Methods
@@ -60,6 +62,8 @@ private:
 
 		void SetSize(const Vector2& staticSpriteSize,
 			const Vector2& dynamicSpriteSize_);
+
+		void SetAlpha(InputType type, float alpha);
 	};
 
 	//--------- variables ----------------------------------------------------
@@ -68,6 +72,7 @@ private:
 	PlayerStats stats_;
 	// 現在の入力状態
 	InputType inputType_;
+	InputType preInputType_;
 
 	//----------- stats ------------------------//
 
@@ -100,6 +105,12 @@ private:
 	// それぞれのspriteのサイズ
 	Vector2 staticSpriteSize_;
 	Vector2 dynamicSpriteSize_;
+	float returnAlphaTimer_; // alpha値を元に戻すときの経過時間
+	float returnAlphaTime_;  // alpha値を元に戻すときの時間
+	EasingType returnAlphaEasingType_;
+
+	bool isDisable_;   // 無効状態かどうか
+	bool returnVaild_; // 再度有効にする
 
 	//--------- functions ----------------------------------------------------
 
@@ -112,6 +123,7 @@ private:
 
 	// update
 	void UpdateSprite();
+	void UpdateAlpha();
 
 	// helper
 	void ChangeAllOperateSprite();

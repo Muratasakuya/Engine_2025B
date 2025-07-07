@@ -39,6 +39,14 @@ void GameDisplayDamage::SetDamage(int damage) {
 	receivedDamages_.push_back(std::clamp(damage, 0, 9999));
 }
 
+void GameDisplayDamage::SetAlpha(float alpha) {
+
+	for (uint32_t index = 0; index < damageDisplayMaxNum_; ++index) {
+
+		damagePopups_[index].digits->SetAlpha(alpha);
+	}
+}
+
 void GameDisplayDamage::Update(const GameEntity3D& entity, const BaseCamera& camera) {
 
 	const float deltaTime = GameTimer::GetDeltaTime();

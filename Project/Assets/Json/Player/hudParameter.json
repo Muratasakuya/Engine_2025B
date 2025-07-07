@@ -27,6 +27,8 @@
         }
     },
     "operateSpriteSpancingX": 140.85000610351563,
+    "returnAlphaEasingType_": 10,
+    "returnAlphaTime_": 0.4000000059604645,
     "skilBar": {
         "translation": {
             "x": 456.0,

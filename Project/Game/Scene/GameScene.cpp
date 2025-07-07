@@ -84,6 +84,8 @@ void GameScene::Load() {
 	asset_->LoadTexture("enemyDestroyBar");
 	asset_->LoadTexture("toughnessNumber");
 	asset_->LoadTexture("damageNumber");
+	asset_->LoadTexture("timeNumber");
+	asset_->LoadTexture("timeSymbol");
 	asset_->LoadTexture("bossName");
 
 	// model
@@ -108,6 +110,7 @@ void GameScene::Load() {
 	// mouse
 	asset_->LoadTexture("leftMouseClick");
 	asset_->LoadTexture("rightMouseClick");
+	asset_->LoadTexture("centerMouseClick");
 	asset_->LoadTexture("EButton");
 	asset_->LoadTexture("QButton");
 	// gamePad
@@ -115,6 +118,15 @@ void GameScene::Load() {
 	asset_->LoadTexture("AButton");
 	asset_->LoadTexture("YButton");
 	asset_->LoadTexture("RTButton");
+	asset_->LoadTexture("RBButton");
+	asset_->LoadTexture("LBButton");
+	// stun
+	asset_->LoadTexture("stunProgressBarBackground");
+	asset_->LoadTexture("stunProgressBar");
+	asset_->LoadTexture("CHAINATTACK");
+	asset_->LoadTexture("chainPlayerIcon");
+	asset_->LoadTexture("mouseCancel");
+	asset_->LoadTexture("gamepadCancel");
 
 	// player
 	asset_->LoadModel("player");

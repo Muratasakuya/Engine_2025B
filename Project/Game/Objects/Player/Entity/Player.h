@@ -13,6 +13,7 @@
 #include <Game/Objects/Player/Collision/PlayerAttackCollision.h>
 // HUD
 #include <Game/Objects/Player/HUD/PlayerHUD.h>
+#include <Game/Objects/Player/HUD/PlayerStunHUD.h>
 
 //============================================================================
 //	Player class
@@ -67,6 +68,7 @@ private:
 
 	// HUD
 	std::unique_ptr<PlayerHUD> hudSprites_;
+	std::unique_ptr<PlayerStunHUD> stunHudSprites_;
 
 	// parameters
 	Transform3DComponent initTransform_; // 初期化時の値

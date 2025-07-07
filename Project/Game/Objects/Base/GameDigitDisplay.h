@@ -31,6 +31,7 @@ public:
 	void SetDigitSize(uint32_t digitIndex, const Vector2& size);
 
 	void SetPostProcessEnable(bool apply);
+	void SetAlpha(float alpha);
 	void SetEmissive(uint32_t digitIndex, float emissive);
 private:
 	//========================================================================

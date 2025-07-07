@@ -86,6 +86,9 @@ void Player::InitHUD() {
 	// HUDの初期化
 	hudSprites_ = std::make_unique<PlayerHUD>();
 	hudSprites_->Init();
+
+	stunHudSprites_ = std::make_unique<PlayerStunHUD>();
+	stunHudSprites_->Init();
 }
 
 void Player::SetInitTransform() {
@@ -157,6 +160,7 @@ void Player::Update() {
 	// HUDの更新
 	hudSprites_->SetStatas(stats_);
 	hudSprites_->Update();
+	stunHudSprites_->Update();
 
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
@@ -233,6 +237,10 @@ void Player::DerivedImGui() {
 		// ---- HUD -----------------------------------------------------
 		if (ImGui::BeginTabItem("HUD")) {
 			hudSprites_->ImGui();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("StunHUD")) {
+			stunHudSprites_->ImGui();
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();

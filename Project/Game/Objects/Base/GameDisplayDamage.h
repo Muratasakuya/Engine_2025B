@@ -34,6 +34,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetDamage(int damage);
+	void SetAlpha(float alpha);
 private:
 	//========================================================================
 	//	private Methods

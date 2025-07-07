@@ -50,6 +50,16 @@ void PlayerHUD::InitSprite() {
 	dynamicTextures[InputType::Keyboard] = "QButton";
 	dynamicTextures[InputType::GamePad] = "RTButton";
 	special_.Init(3, "specialIcon", dynamicTextures);
+
+	// input状態を取得
+	inputType_ = Input::GetInstance()->GetType();
+	preInputType_ = inputType_;
+
+	// 妻女の表示状態を設定
+	attack_.ChangeDynamicSprite(inputType_);
+	dash_.ChangeDynamicSprite(inputType_);
+	skil_.ChangeDynamicSprite(inputType_);
+	special_.ChangeDynamicSprite(inputType_);
 }
 
 void PlayerHUD::Init() {
@@ -61,6 +71,27 @@ void PlayerHUD::Init() {
 	ApplyJson();
 }
 
+void PlayerHUD::SetDisable() {
+
+	isDisable_ = true;
+
+	// 全てのα値を0.0fにし、表示を消す
+	hpBackground_->SetAlpha(0.0f);
+	hpBar_->SetAlpha(0.0f);
+	skilBar_->SetAlpha(0.0f);
+	nameText_->SetAlpha(0.0f);
+	attack_.SetAlpha(inputType_, 0.0f);
+	dash_.SetAlpha(inputType_, 0.0f);
+	skil_.SetAlpha(inputType_, 0.0f);
+	special_.SetAlpha(inputType_, 0.0f);
+}
+
+void PlayerHUD::SetValid() {
+
+	// 再度表示
+	returnVaild_ = true;
+}
+
 void PlayerHUD::Update() {
 
 	// input状態を取得
@@ -68,6 +99,9 @@ void PlayerHUD::Update() {
 
 	// sprite更新
 	UpdateSprite();
+
+	// alpha値を表示切替で更新
+	UpdateAlpha();
 }
 
 void PlayerHUD::UpdateSprite() {
@@ -81,12 +115,61 @@ void PlayerHUD::UpdateSprite() {
 	ChangeAllOperateSprite();
 }
 
+void PlayerHUD::UpdateAlpha() {
+
+	// 無効状態でない(表示中)、元に戻す必要がないときは処理しない
+	if (!isDisable_ || !returnVaild_) {
+		return;
+	}
+
+	// 時間を進める
+	returnAlphaTimer_ += GameTimer::GetDeltaTime();
+	float alpha = returnAlphaTimer_ / returnAlphaTime_;
+	alpha = EasedValue(returnAlphaEasingType_, alpha);
+	alpha = std::clamp(alpha, 0.0f, 1.0f);
+
+	// alpha値を補間して設定
+	hpBackground_->SetAlpha(alpha);
+	hpBar_->SetAlpha(alpha);
+	skilBar_->SetAlpha(alpha);
+	nameText_->SetAlpha(alpha);
+	attack_.SetAlpha(inputType_, alpha);
+	dash_.SetAlpha(inputType_, alpha);
+	skil_.SetAlpha(inputType_, alpha);
+	special_.SetAlpha(inputType_, alpha);
+
+	if (returnAlphaTime_ < returnAlphaTimer_) {
+
+		// 念のため1.0fに固定
+		hpBackground_->SetAlpha(1.0f);
+		hpBar_->SetAlpha(1.0f);
+		skilBar_->SetAlpha(1.0f);
+		nameText_->SetAlpha(1.0f);
+		attack_.SetAlpha(inputType_, 1.0f);
+		dash_.SetAlpha(inputType_, 1.0f);
+		skil_.SetAlpha(inputType_, 1.0f);
+		special_.SetAlpha(inputType_, 1.0f);
+
+		// 元に戻ったので処理終了
+		returnAlphaTimer_ = 0.0f;
+
+		isDisable_ = false;
+		returnVaild_ = false;
+	}
+}
+
 void PlayerHUD::ChangeAllOperateSprite() {
+
+	if (preInputType_ == inputType_) {
+		return;
+	}
 
 	attack_.ChangeDynamicSprite(inputType_);
 	dash_.ChangeDynamicSprite(inputType_);
 	skil_.ChangeDynamicSprite(inputType_);
 	special_.ChangeDynamicSprite(inputType_);
+
+	preInputType_ = inputType_;
 }
 
 void PlayerHUD::SetAllOperateTranslation() {
@@ -142,11 +225,26 @@ void PlayerHUD::ImGui() {
 
 	ImGui::Separator();
 
+	if (isDisable_) {
+		if (ImGui::Button("Vaild")) {
+
+			SetValid();
+		}
+	} else {
+		if (ImGui::Button("Disable")) {
+
+			SetDisable();
+		}
+	}
+	ImGui::Text("returnAlphaTimer / returnAlphaTime: %f", returnAlphaTimer_ / returnAlphaTime_);
+
 	bool edit = false;
 
 	edit |= ImGui::DragFloat2("leftSpriteTranslation", &leftSpriteTranslation_.x, 1.0f);
 	edit |= ImGui::DragFloat("dynamicSpriteOffsetY", &dynamicSpriteOffsetY_, 1.0f);
 	edit |= ImGui::DragFloat("operateSpriteSpancingX", &operateSpriteSpancingX_, 1.0f);
+	ImGui::DragFloat("returnAlphaTime", &returnAlphaTime_, 0.01f);
+	Easing::SelectEasingType(returnAlphaEasingType_);
 
 	if (edit) {
 
@@ -186,6 +284,9 @@ void PlayerHUD::ApplyJson() {
 	dynamicSpriteSize_ = leftSpriteTranslation_.FromJson(data["dynamicSpriteSize"]);
 	dynamicSpriteOffsetY_ = JsonAdapter::GetValue<float>(data, "dynamicSpriteOffsetY");
 	operateSpriteSpancingX_ = JsonAdapter::GetValue<float>(data, "operateSpriteSpancingX");
+	returnAlphaTime_ = JsonAdapter::GetValue<float>(data, "returnAlphaTime_");
+	returnAlphaEasingType_ = static_cast<EasingType>(
+		JsonAdapter::GetValue<int>(data, "returnAlphaEasingType_"));
 
 	SetAllOperateTranslation();
 	SetAllOperateSize();
@@ -205,6 +306,8 @@ void PlayerHUD::SaveJson() {
 	data["dynamicSpriteSize"] = dynamicSpriteSize_.ToJson();
 	data["dynamicSpriteOffsetY"] = dynamicSpriteOffsetY_;
 	data["operateSpriteSpancingX"] = operateSpriteSpancingX_;
+	data["returnAlphaTime_"] = returnAlphaTime_;
+	data["returnAlphaEasingType_"] = static_cast<int>(returnAlphaEasingType_);
 
 	JsonAdapter::Save("Player/hudParameter.json", data);
 }
@@ -262,4 +365,11 @@ void PlayerHUD::InputStateSprite::SetSize(const Vector2& staticSpriteSize,
 	staticSprite->SetSize(staticSpriteSize);
 	dynamicSprites[InputType::Keyboard]->SetSize(dynamicSpriteSize_);
 	dynamicSprites[InputType::GamePad]->SetSize(dynamicSpriteSize_);
+}
+
+void PlayerHUD::InputStateSprite::SetAlpha(InputType type, float alpha) {
+
+	// サイズ設定
+	staticSprite->SetAlpha(alpha);
+	dynamicSprites[type]->SetAlpha(alpha);
 }

@@ -570,6 +570,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Base\GameTimerDisplay.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Enemy\Boss\Entity\BossEnemy.cpp" />
     <ClCompile Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.cpp" />
     <ClCompile Include="Game\Objects\Player\Collision\PlayerAttackCollision.cpp">
@@ -604,6 +608,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Objects\Player\HUD\PlayerHUD.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\HUD\PlayerStunHUD.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -1128,6 +1136,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Base\GameTimerDisplay.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Base\ITransition.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Entity\BossEnemyWeapon.h" />
@@ -1160,6 +1172,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\Player\HUD\PlayerHUD.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\HUD\PlayerStunHUD.h">
       <SubType>
       </SubType>
     </ClInclude>

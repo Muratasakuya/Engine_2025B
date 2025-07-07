@@ -37,6 +37,8 @@ public:
 	void SetStatas(const BossEnemyStats& stats) { stats_ = stats; }
 	void SetDamage(int damage);
 	void SetFollowCamera(const FollowCamera* followCamera) { followCamera_ = followCamera; }
+	void SetDisable();
+	void SetValid();
 private:
 	//========================================================================
 	//	private Methods
@@ -69,6 +71,14 @@ private:
 	// ダメージ表示
 	std::unique_ptr<GameDisplayDamage> damageDisplay_;
 
+	// parameters
+	float returnAlphaTimer_; // alpha値を元に戻すときの経過時間
+	float returnAlphaTime_;  // alpha値を元に戻すときの時間
+	EasingType returnAlphaEasingType_;
+
+	bool isDisable_;   // 無効状態かどうか
+	bool returnVaild_; // 再度有効にする
+
 	//--------- functions ----------------------------------------------------
 
 	// json
@@ -80,4 +90,5 @@ private:
 
 	// update
 	void UpdateSprite(const BossEnemy& bossEnemy);
+	void UpdateAlpha();
 };

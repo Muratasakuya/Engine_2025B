@@ -55,10 +55,32 @@ void BossEnemyHUD::SetDamage(int damage) {
 	damageDisplay_->SetDamage(damage);
 }
 
+void BossEnemyHUD::SetDisable() {
+
+	isDisable_ = true;
+
+	// 全てのα値を0.0fにし、表示を消す
+	hpBackground_->SetAlpha(0.0f);
+	hpBar_->SetAlpha(0.0f);
+	destroyBar_->SetAlpha(0.0f);
+	destroyNumDisplay_->SetAlpha(0.0f);
+	nameText_->SetAlpha(0.0f);
+	damageDisplay_->SetAlpha(0.0f);
+}
+
+void BossEnemyHUD::SetValid() {
+
+	// 再度表示
+	returnVaild_ = true;
+}
+
 void BossEnemyHUD::Update(const BossEnemy& bossEnemy) {
 
 	// sprite更新
 	UpdateSprite(bossEnemy);
+
+	// alpha値を表示切替で更新
+	UpdateAlpha();
 }
 
 void BossEnemyHUD::UpdateSprite(const BossEnemy& bossEnemy) {
@@ -73,6 +95,44 @@ void BossEnemyHUD::UpdateSprite(const BossEnemy& bossEnemy) {
 
 	// ダメージ表記の更新
 	damageDisplay_->Update(bossEnemy, *followCamera_);
+}
+
+void BossEnemyHUD::UpdateAlpha() {
+
+	if (!isDisable_ || !returnVaild_) {
+		return;
+	}
+
+	// 時間を進める
+	returnAlphaTimer_ += GameTimer::GetDeltaTime();
+	float alpha = returnAlphaTimer_ / returnAlphaTime_;
+	alpha = EasedValue(returnAlphaEasingType_, alpha);
+	alpha = std::clamp(alpha, 0.0f, 1.0f);
+
+	// alpha値を補間して設定
+	hpBackground_->SetAlpha(alpha);
+	hpBar_->SetAlpha(alpha);
+	destroyBar_->SetAlpha(alpha);
+	destroyNumDisplay_->SetAlpha(alpha);
+	nameText_->SetAlpha(alpha);
+	damageDisplay_->SetAlpha(alpha);
+
+	if (returnAlphaTime_ < returnAlphaTimer_) {
+
+		// 念のため1.0fに固定
+		hpBackground_->SetAlpha(1.0f);
+		hpBar_->SetAlpha(1.0f);
+		destroyBar_->SetAlpha(1.0f);
+		destroyNumDisplay_->SetAlpha(1.0f);
+		nameText_->SetAlpha(1.0f);
+		damageDisplay_->SetAlpha(1.0f);
+
+		// 元に戻ったので処理終了
+		returnAlphaTimer_ = 0.0f;
+
+		isDisable_ = false;
+		returnVaild_ = false;
+	}
 }
 
 void BossEnemyHUD::ImGui() {
@@ -114,6 +174,21 @@ void BossEnemyHUD::ImGui() {
 			ImGui::EndTabItem();
 		}
 
+		if (isDisable_) {
+			if (ImGui::Button("Vaild")) {
+
+				SetValid();
+			}
+		} else {
+			if (ImGui::Button("Disable")) {
+
+				SetDisable();
+			}
+		}
+		ImGui::Text("returnAlphaTimer / returnAlphaTime: %f", returnAlphaTimer_ / returnAlphaTime_);
+		ImGui::DragFloat("returnAlphaTime", &returnAlphaTime_, 0.01f);
+		Easing::SelectEasingType(returnAlphaEasingType_);
+
 		if (ImGui::BeginTabItem("Damage##HUD")) {
 
 			damageDisplay_->ImGui();
@@ -148,6 +223,10 @@ void BossEnemyHUD::ApplyJson() {
 	nameTextParameter_.ApplyJson(data["nameText"]);
 	GameCommon::SetInitParameter(*nameText_, nameTextParameter_);
 
+	returnAlphaTime_ = JsonAdapter::GetValue<float>(data, "returnAlphaTime_");
+	returnAlphaEasingType_ = static_cast<EasingType>(
+		JsonAdapter::GetValue<int>(data, "returnAlphaEasingType_"));
+
 	damageDisplay_->ApplyJson(data);
 }
 
@@ -162,6 +241,8 @@ void BossEnemyHUD::SaveJson() {
 	data["destroyNum"]["numOffset"] = destroyNumOffset_.ToJson();
 	data["destroyNum"]["numSize"] = destroyNumSize_.ToJson();
 	nameTextParameter_.SaveJson(data["nameText"]);
+	data["returnAlphaTime_"] = returnAlphaTime_;
+	data["returnAlphaEasingType_"] = static_cast<int>(returnAlphaEasingType_);
 
 	damageDisplay_->SaveJson(data);
 
