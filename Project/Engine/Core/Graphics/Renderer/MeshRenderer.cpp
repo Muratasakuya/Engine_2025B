@@ -57,7 +57,7 @@ void MeshRenderer::UpdateRayScene(DxCommand* dxCommand) {
 	// TLAS更新処理
 	std::vector<IMesh*> meshPtrs;
 	meshPtrs.reserve(meshes.size());
-	for (auto& [_, mesh] : meshes) {
+	for (const auto& mesh : std::views::values(meshes)) {
 
 		meshPtrs.emplace_back(mesh.get());
 
@@ -87,8 +87,6 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
 	const auto& skyBoxSystem = ECSManager::GetInstance()->GetSystem<SkyboxRenderSystem>();
-
-	// 作成されていなかったら早期リターン
 	if (skyBoxSystem->IsCreated()) {
 
 		// skybox描画
@@ -177,7 +175,6 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 			// 描画処理
 			commandContext.DispatchMesh(commandList,
 				instancingBuffers[name].numInstance, meshIndex, mesh.get());
-
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 			if (debugEnable) {
 

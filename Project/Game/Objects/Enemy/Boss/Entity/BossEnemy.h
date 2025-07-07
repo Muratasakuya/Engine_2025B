@@ -49,6 +49,7 @@ public:
 	void SetDecreaseToughnessProgress(float progress);
 
 	Vector3 GetWeaponTranslation() const;
+	bool IsCurrentStunState() const;
 private:
 	//========================================================================
 	//	private Methods

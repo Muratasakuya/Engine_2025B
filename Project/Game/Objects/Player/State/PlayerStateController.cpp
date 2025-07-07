@@ -111,6 +111,36 @@ void PlayerStateController::SetPostProcessSystem(PostProcessSystem* postProcessS
 	}
 }
 
+void PlayerStateController::SetForcedState(Player& owner, PlayerState state) {
+
+	// 同じ状態へは遷移不可
+	if (current_ == state) {
+		return;
+	}
+
+	// 全ての行動を削除
+	queued_.reset();
+	requested_.reset();
+
+	// 現在の行動を強制終了
+	if (auto* currentState = states_[current_].get()) {
+
+		currentState->Exit(owner);
+	}
+
+	// 次の状態を設定
+	current_ = state;
+
+	if (auto* currentState = states_[current_].get()) {
+
+		currentState->Enter(owner);
+	}
+
+	currentEnterTime_ = GameTimer::GetTotalTime();
+	lastEnterTime_[current_] = currentEnterTime_;
+	owner.GetAttackCollision()->SetEnterState(current_);
+}
+
 void PlayerStateController::Update(Player& owner) {
 
 	// 入力に応じた状態の遷移

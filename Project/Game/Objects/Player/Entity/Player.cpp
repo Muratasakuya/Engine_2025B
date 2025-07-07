@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Particle/ParticleSystem.h>
+#include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================
@@ -122,6 +123,9 @@ void Player::DerivedInit() {
 
 void Player::SetBossEnemy(const BossEnemy* bossEnemy) {
 
+	bossEnemy_ = nullptr;
+	bossEnemy_ = bossEnemy;
+
 	stateController_->SetBossEnemy(bossEnemy);
 }
 
@@ -169,6 +173,21 @@ void Player::Update() {
 	// particle更新
 	ParticleSystem::GetInstance()->UpdateEmitter("hitEffectEmitter");
 	ParticleSystem::GetInstance()->UpdateEmitter("groundEffectEmitter");
+}
+
+void Player::CheckBossEnemyStun() {
+
+	// 敵がスタン状態になったかチェックする
+	if (!bossEnemy_->IsCurrentStunState()) {
+		return;
+	}
+
+	// スタン状態になったら状態を切り替え状態に遷移させる
+	stateController_->SetForcedState(*this, PlayerState::SwitchAlly);
+
+	// HPなどの表示を消してスタン状態用のHUDを表示する
+	hudSprites_->SetDisable();
+	stunHudSprites_->SetVaild();
 }
 
 void Player::OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {

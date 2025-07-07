@@ -56,6 +56,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	const BossEnemy* bossEnemy_;
+
 	// 使用する武器
 	std::unique_ptr<PlayerWeapon> rightWeapon_; // 右手
 	std::unique_ptr<PlayerWeapon> leftWeapon_;  // 左手
@@ -92,4 +94,5 @@ private:
 
 	// helper
 	void SetInitTransform();
+	void CheckBossEnemyStun();
 };

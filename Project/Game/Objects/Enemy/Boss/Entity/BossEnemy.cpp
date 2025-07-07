@@ -135,6 +135,11 @@ Vector3 BossEnemy::GetWeaponTranslation() const {
 	return weapon_->GetTransform().GetWorldPos();
 }
 
+bool BossEnemy::IsCurrentStunState() const {
+
+	return stateController_->GetCurrentState() == BossEnemyState::Stun;
+}
+
 void BossEnemy::Update() {
 
 	// 閾値のリストの条件に誤りがないかチェック
@@ -173,6 +178,12 @@ void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {
 			// 靭性値を増やす
 			stats_.currentDestroyToughness = (std::min)(stats_.currentDestroyToughness + player_->GetToughness(),
 				stats_.maxDestroyToughness);
+
+			// 靭性値が最大にまで行ったらHUDの表示を消す
+			if (stats_.currentDestroyToughness == stats_.maxDestroyToughness) {
+
+				hudSprites_->SetDisable();
+			}
 		}
 
 		// HUDに通知

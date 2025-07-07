@@ -147,6 +147,14 @@ void GameTimerDisplay::SetSymbolSize(const Vector2& size) {
 	}
 }
 
+void GameTimerDisplay::SetAlpha(float alpha) {
+
+	for (size_t i = 0; i < elements_.size(); ++i) {
+
+		elements_[i].sprite->SetAlpha(alpha);
+	}
+}
+
 void GameTimerDisplay::GetDigitSize(const std::string& name) {
 
 	// 仮作成して画像サイズを取得して破棄する

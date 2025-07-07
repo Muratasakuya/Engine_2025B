@@ -37,6 +37,8 @@ public:
 	void SetElementSize(uint32_t index, const Vector2& size);
 	void SetTimerSize(const Vector2& size);
 	void SetSymbolSize(const Vector2& size);
+
+	void SetAlpha(float alpha);
 private:
 	//========================================================================
 	//	private Methods

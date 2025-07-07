@@ -91,6 +91,7 @@ EngineInformation:     load texture: stunProgressBarBackground
 EngineInformation:     load texture: stunProgressBar
 EngineInformation:     load texture: CHAINATTACK
 EngineInformation:     load texture: chainPlayerIcon
+EngineInformation:     load texture: chainPlayerIconRing
 EngineInformation:     load texture: mouseCancel
 EngineInformation:     load texture: gamepadCancel
 EngineInformation:     load texture: white

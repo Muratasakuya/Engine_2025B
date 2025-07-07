@@ -224,7 +224,7 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 
 	renderEngine_->Rendering(RenderEngine::ViewType::Debug);
 
-	// bloom処理を行う
+	// bloom処理のみを行う
 	postProcessSystem_->ExecuteDebugScene(renderEngine_->GetRenderTexture(
 		RenderEngine::ViewType::Debug)->GetSRVGPUHandle(), dxCommand);
 #endif

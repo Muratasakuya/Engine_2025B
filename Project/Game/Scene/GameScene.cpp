@@ -125,6 +125,7 @@ void GameScene::Load() {
 	asset_->LoadTexture("stunProgressBar");
 	asset_->LoadTexture("CHAINATTACK");
 	asset_->LoadTexture("chainPlayerIcon");
+	asset_->LoadTexture("chainPlayerIconRing");
 	asset_->LoadTexture("mouseCancel");
 	asset_->LoadTexture("gamepadCancel");
 
@@ -228,9 +229,8 @@ void GameScene::Update() {
 	//	entity
 	//========================================================================
 
-	player_->Update();
-
 	bossEnemy_->Update();
+	player_->Update();
 
 	//========================================================================
 	//	editor

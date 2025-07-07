@@ -39,6 +39,7 @@ public:
 	void SetPostProcessSystem(PostProcessSystem* postProcessSystem);
 
 	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
+	void SetForcedState(Player& owner, PlayerState state);
 
 	PlayerState GetCurrentState() const { return current_; }
 private:
@@ -77,7 +78,7 @@ private:
 	// json
 	void ApplyJson();
 	void SaveJson();
-	
+
 	// update
 	void UpdateInputState();
 

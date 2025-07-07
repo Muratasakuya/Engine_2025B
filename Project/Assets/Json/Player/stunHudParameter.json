@@ -1,10 +1,16 @@
 {
     "barTranslationY_": 909.0,
+    "beginAlphaBlinkingCount_": 8,
+    "beginAnimationEasingType_": 10,
+    "beginAnimationTime_": 0.2800000011920929,
+    "cancelEasingType_": 6,
     "cancelInputSize_": {
         "x": 360.0,
         "y": 39.0
     },
+    "cancelTime_": 0.4000000059604645,
     "cancelTranslationY_": 1012.0,
+    "cancelUnderOffsetY_": 200.0,
     "chainAttackTextSize_": {
         "x": 540.0,
         "y": 48.0
@@ -14,6 +20,17 @@
         "y": 80.0
     },
     "endOffsetX_": 460.0,
+    "iconRingColor_": {
+        "a": 1.0,
+        "b": 0.007756826467812061,
+        "g": 0.10436838865280151,
+        "r": 0.5548197031021118
+    },
+    "iconRingEmissive_": 4.0,
+    "iconRingSize_": {
+        "x": 3840.0,
+        "y": 3840.0
+    },
     "iconSize_": {
         "x": 144.0,
         "y": 144.0
@@ -26,6 +43,7 @@
         "x": 720.0,
         "y": 24.0
     },
+    "restAlphaBlinkingCount_": 16,
     "restTime_": 2.5,
     "timerOffsetX_": -4.0,
     "timerSize_": {
