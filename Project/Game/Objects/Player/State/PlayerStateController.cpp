@@ -22,6 +22,8 @@
 #include <Game/Objects/Player/State/States/PlayerSkilAttackState.h>
 #include <Game/Objects/Player/State/States/PlayerSpecialAttackState.h>
 #include <Game/Objects/Player/State/States/PlayerParryState.h>
+#include <Game/Objects/Player/State/States/PlayerSwitchAllyState.h>
+#include <Game/Objects/Player/State/States/PlayerStunAttackState.h>
 
 //============================================================================
 //	PlayerStateController classMethods
@@ -32,7 +34,7 @@ namespace {
 	// 各状態の名前
 	const char* kStateNames[] = {
 		"Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
-		"SkilAttack","SpecialAttack","Parry",
+		"SkilAttack","SpecialAttack","Parry","SwitchAlly","StunAttack",
 	};
 
 	// jsonを保存するパス
@@ -57,6 +59,8 @@ void PlayerStateController::Init(Player& owner) {
 	states_.emplace(PlayerState::SkilAttack, std::make_unique<PlayerSkilAttackState>());
 	states_.emplace(PlayerState::SpecialAttack, std::make_unique<PlayerSpecialAttackState>());
 	states_.emplace(PlayerState::Parry, std::make_unique<PlayerParryState>());
+	states_.emplace(PlayerState::SwitchAlly, std::make_unique<PlayerSwitchAllyState>());
+	states_.emplace(PlayerState::StunAttack, std::make_unique<PlayerStunAttackState>());
 	// inputを設定
 	SetInputMapper();
 
@@ -95,6 +99,15 @@ void PlayerStateController::SetFollowCamera(FollowCamera* followCamera) {
 	for (const auto& state : std::views::values(states_)) {
 
 		state->SetFollowCamera(followCamera);
+	}
+}
+
+void PlayerStateController::SetPostProcessSystem(PostProcessSystem* postProcessSystem) {
+
+	// 各状態にpostProcessSystemをセット
+	for (const auto& state : std::views::values(states_)) {
+
+		state->SetPostProcessSystem(postProcessSystem);
 	}
 }
 

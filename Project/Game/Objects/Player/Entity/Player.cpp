@@ -15,7 +15,7 @@ namespace {
 	// 各状態の名前
 	const char* kStateNames[] = {
 		"Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
-		"SkilAttack","SpecialAttack","Parry",
+		"SkilAttack","SpecialAttack","Parry","SwitchAlly","StunAttack",
 	};
 }
 
@@ -53,6 +53,7 @@ void Player::InitAnimations() {
 	animation_->SetAnimationData("player_attack_2nd");
 	animation_->SetAnimationData("player_attack_3rd");
 	animation_->SetAnimationData("player_skilAttack");
+	animation_->SetAnimationData("player_stunAttack");
 
 	// 両手を親として更新させる
 	animation_->SetParentJoint("rightHand");
@@ -124,6 +125,11 @@ void Player::SetBossEnemy(const BossEnemy* bossEnemy) {
 void Player::SetFollowCamera(FollowCamera* followCamera) {
 
 	stateController_->SetFollowCamera(followCamera);
+}
+
+void Player::SetPostProcessSystem(PostProcessSystem* postProcessSystem) {
+
+	stateController_->SetPostProcessSystem(postProcessSystem);
 }
 
 int Player::GetDamage() const {

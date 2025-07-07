@@ -28,6 +28,12 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	if (pixelPos.x >= width || pixelPos.y >= height) {
 		return;
 	}
+	// サンプリング回数が0ならそのままの色で返す
+	if (gBlur.numSamples == 0) {
+
+		gOutputTexture[pixelPos] = gTexture.Load(int3(pixelPos, 0));
+		return;
+	}
 
 	// UV座標計算
 	float2 uv = (float2(pixelPos) + 0.5f) / float2(width, height);

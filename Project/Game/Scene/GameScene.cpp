@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
+#include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBufferSize.h>
 #include <Engine/Core/ECS/Core/ECSManager.h>
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Scene/SceneView.h>
@@ -117,6 +118,7 @@ void GameScene::Load() {
 
 	// player
 	asset_->LoadModel("player");
+	asset_->LoadModel("cube");
 	asset_->LoadModel("playerRightWeapon");
 	asset_->LoadModel("playerLeftWeapon");
 	asset_->LoadAnimation("player", "player");
@@ -134,8 +136,16 @@ void GameScene::Init() {
 	//	postProcess
 	//========================================================================
 
-	postProcessSystem_->Create({ PostProcessType::Bloom });
+	postProcessSystem_->Create({ PostProcessType::RadialBlur,PostProcessType::Bloom });
+	postProcessSystem_->AddProcess(PostProcessType::RadialBlur);
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
+
+	// ブラーの値を0.0fで初期化
+	RadialBlurForGPU radialBlurParam{};
+	radialBlurParam.center = Vector2(0.5f, 0.5f);
+	radialBlurParam.numSamples = 0;
+	radialBlurParam.width = 0.0f;
+	postProcessSystem_->SetParameter(radialBlurParam, PostProcessType::RadialBlur);
 
 	//========================================================================
 	//	sceneObject
@@ -188,9 +198,10 @@ void GameScene::Init() {
 	// player、カメラをセット
 	bossEnemy_->SetPlayer(player_.get());
 	bossEnemy_->SetFollowCamera(cameraManager_->GetFollowCamera());
-	// bossEnemy、カメラをセット
+	// bossEnemy、カメラ、postProcessをセット
 	player_->SetBossEnemy(bossEnemy_.get());
 	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
+	player_->SetPostProcessSystem(postProcessSystem_);
 }
 
 void GameScene::Update() {

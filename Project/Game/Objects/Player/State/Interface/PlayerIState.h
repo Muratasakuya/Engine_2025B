@@ -10,6 +10,7 @@ class Player;
 class PlayerInputMapper;
 class BossEnemy;
 class FollowCamera;
+class PostProcessSystem;
 
 //============================================================================
 //	PlayerIState class
@@ -44,6 +45,7 @@ public:
 	void SetInputMapper(const PlayerInputMapper* inputMapper) { inputMapper_ = inputMapper; }
 	void SetBossEnemy(const BossEnemy* bossEnemy) { bossEnemy_ = bossEnemy; }
 	void SetFollowCamera(FollowCamera* followCamera) { followCamera_ = followCamera; }
+	void SetPostProcessSystem(PostProcessSystem* postProcessSystem) { postProcessSystem_ = postProcessSystem; }
 	void SetCanExit(bool canExit) { canExit_ = canExit; }
 
 	virtual bool GetCanExit() const { return canExit_; }
@@ -57,6 +59,7 @@ protected:
 	const PlayerInputMapper* inputMapper_;
 	const BossEnemy* bossEnemy_;
 	FollowCamera* followCamera_;
+	PostProcessSystem* postProcessSystem_;
 
 	// 共通parameters
 	const float epsilon_ = std::numeric_limits<float>::epsilon();

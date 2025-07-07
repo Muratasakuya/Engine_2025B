@@ -84,6 +84,8 @@ EngineInformation:     load texture: YButton
 EngineInformation:     load texture: RTButton
 EngineInformation:     load texture: white
 EngineInformation:     load model: player
+EngineInformation:     load texture: BaseColor_Cube
+EngineInformation:     load model: cube
 EngineInformation:     load model: playerRightWeapon
 EngineInformation:     load model: playerLeftWeapon
 EngineInformation:     load animation: player_attack_1st
@@ -92,6 +94,7 @@ EngineInformation:     load animation: player_attack_3rd
 EngineInformation:     load animation: player_dash
 EngineInformation:     load animation: player_idle
 EngineInformation:     load animation: player_skilAttack
+EngineInformation:     load animation: player_stunAttack
 EngineInformation:     load animation: player_walk
 EngineInformation:     load texture: folder
 EngineInformation:     load texture: texture

@@ -42,6 +42,7 @@ public:
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
 	void SetFollowCamera(FollowCamera* followCamera);
+	void SetPostProcessSystem(PostProcessSystem* postProcessSystem);
 
 	PlayerState GetCurrentState() const { return stateController_->GetCurrentState(); }
 	PlayerAttackCollision* GetAttackCollision() const { return playerAttackCollision_.get(); }

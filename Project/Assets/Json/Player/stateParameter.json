@@ -147,6 +147,26 @@
     "SpecialAttack": {
         "nextAnimDuration_": 0.25999999046325684
     },
+    "StunAttack": {
+        "enemyDistance_": 24.0,
+        "entryEasingType_": 16,
+        "entryTime_": 0.20000000298023224,
+        "nextAnimDuration_": 0.1599999964237213,
+        "rushEasingType_": 14,
+        "rushTime_": 0.4000000059604645,
+        "targetTranslationY_": 4.0
+    },
+    "SwitchAlly": {
+        "blurEasingType_": 10,
+        "blurTime_": 0.1599999964237213,
+        "deltaTimeScaleEasingType_": 0,
+        "deltaTimeScaleTime_": 0.20000000298023224,
+        "deltaTimeScale_": 0.07999999821186066,
+        "switchAllyTime_": 3.0,
+        "targetRadialBlur_.center.y": 0.800000011920929,
+        "targetRadialBlur_.numSamples": 8,
+        "targetRadialBlur_.width": 0.23999999463558197
+    },
     "Walk": {
         "moveClampSize_": 220.0,
         "moveDecay_": 0.4399999976158142,

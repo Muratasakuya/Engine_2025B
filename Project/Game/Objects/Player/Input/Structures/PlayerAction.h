@@ -20,5 +20,7 @@ enum class PlayerAction :
 	Attack,  // 通常攻撃
 	Skill,   // スキル攻撃
 	Special, // 必殺攻撃
+	Switching,    // 切り替える
+	NotSwitching, // 切り替えない
 	Count,   // アクションの数
 };

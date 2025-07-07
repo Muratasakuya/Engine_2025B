@@ -66,9 +66,9 @@ void GameTimer::ImGui() {
 	ImGui::Text("scaledDeltaTime: %.3f s", GetScaledDeltaTime());        //* ScaledΔTime
 	ImGui::Text("totalTime:       %.3f s", GetTotalTime());              //* 合計時間
 
-	ImGui::Text("frameTime:       %.2f ms", GetSmoothedFrameTime());   // ループにかかった時間
+	ImGui::Text("frameTime:       %.2f ms", GetSmoothedFrameTime());  // ループにかかった時間
 	ImGui::Text("updateTime:      %.2f ms", GetSmoothedUpdateTime()); // 更新処理にかかった時間
-	ImGui::Text("drawTime:        %.2f ms", GetSmoothedDrawTime());    // 描画処理にかかった時間
+	ImGui::Text("drawTime:        %.2f ms", GetSmoothedDrawTime());   // 描画処理にかかった時間
 }
 
 void GameTimer::BeginFrameCount() {

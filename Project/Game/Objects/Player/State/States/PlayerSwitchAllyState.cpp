@@ -1,0 +1,156 @@
+#include "PlayerSwitchAllyState.h"
+
+//============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
+#include <Engine/Utility/GameTimer.h>
+#include <Game/Objects/Player/Input/PlayerInputMapper.h>
+#include <Lib/Adapter/JsonAdapter.h>
+
+// imgui
+#include <imgui.h>
+
+//============================================================================
+//	PlayerSwitchAllyState classMethods
+//============================================================================
+
+PlayerSwitchAllyState::PlayerSwitchAllyState() {
+
+	// 変更しない値(中心)
+	radialBlur_.center.x = 0.5f;
+	canExit_ = false;
+}
+
+void PlayerSwitchAllyState::Enter([[maybe_unused]] Player& player) {
+
+	// 選択リセット
+	isSwitched_ = std::nullopt;
+
+	// deltaTimeをスケーリングしても元の値に戻らないようにする
+	GameTimer::SetReturnScaleEnable(false);
+}
+
+void PlayerSwitchAllyState::Update([[maybe_unused]] Player& player) {
+
+	// 選択状態に入れるためにdeltaTimeを0.0f近くまで下げる
+	deltaTimeScaleTimer_ += GameTimer::GetScaledDeltaTime();
+	float lerpT = deltaTimeScaleTimer_ / deltaTimeScaleTime_;
+	lerpT = EasedValue(deltaTimeScaleEasingType_, lerpT);
+	float deltaScale = std::lerp(1.0f, deltaTimeScale_, lerpT);
+	// スケーリング値を設定
+	GameTimer::SetTimeScale(std::clamp(deltaScale, 0.0f, 1.0f));
+
+	// 入力受付待ち
+	switchAllyTimer_ += GameTimer::GetDeltaTime();
+	float t = switchAllyTimer_ / switchAllyTime_;
+
+	// ブラー更新
+	UpdateBlur();
+
+	// 入力状態の確認
+	CheckInput(t);
+}
+
+void PlayerSwitchAllyState::UpdateBlur() {
+
+	// ブラー更新
+	blurTimer_ += GameTimer::GetDeltaTime();
+	float lerpT = blurTimer_ / blurTime_;
+	lerpT = EasedValue(blurEasingType_, lerpT);
+
+	// 各値を補間
+	radialBlur_.center.y = std::lerp(0.5f, targetRadialBlur_.center.y, lerpT);
+	radialBlur_.numSamples = static_cast<int>(std::lerp(0, targetRadialBlur_.numSamples, lerpT));
+	radialBlur_.width = std::lerp(0.0f, targetRadialBlur_.width, lerpT);
+
+	// 値を設定
+	postProcessSystem_->SetParameter(radialBlur_, PostProcessType::RadialBlur);
+}
+
+void PlayerSwitchAllyState::CheckInput(float t) {
+
+	// 切り替えた
+	if (inputMapper_->IsTriggered(PlayerAction::Switching)) {
+
+		isSwitched_ = true;
+		canExit_ = true;
+		return;
+	}
+	// 切り替え無し
+	if (inputMapper_->IsTriggered(PlayerAction::NotSwitching)) {
+
+		isSwitched_ = false;
+		canExit_ = true;
+		return;
+	}
+
+	// 入力時間切れ
+	if (1.0f < t) {
+
+		// 切り替えなし
+		isSwitched_ = false;
+		canExit_ = true;
+	}
+}
+
+void PlayerSwitchAllyState::Exit([[maybe_unused]] Player& player) {
+
+	// deltaTimeを元の値に戻るようにする
+	GameTimer::SetReturnScaleEnable(true);
+
+	// リセット
+	deltaTimeScaleTimer_ = 0.0f;
+	switchAllyTimer_ = 0.0f;
+	canExit_ = false;
+}
+
+void PlayerSwitchAllyState::ImGui([[maybe_unused]] const Player& player) {
+
+	ImGui::Text(std::format("canExit: {}", canExit_).c_str());
+	ImGui::DragFloat("deltaTimeScaleTime", &deltaTimeScaleTime_, 0.01f);
+	ImGui::DragFloat("switchAllyTime", &switchAllyTime_, 0.01f);
+	ImGui::DragFloat("deltaTimeScale", &deltaTimeScale_, 0.01f);
+	ImGui::DragFloat("blurTime", &blurTime_, 0.01f);
+	ImGui::DragFloat("targetRadialBlurCenterY", &targetRadialBlur_.center.y, 0.01f);
+	ImGui::DragInt("targetRadialBlurNumSamples", &targetRadialBlur_.numSamples, 1);
+	ImGui::DragFloat("targetRadialBlurWidth", &targetRadialBlur_.width, 0.1f);
+	Easing::SelectEasingType(blurEasingType_);
+}
+
+void PlayerSwitchAllyState::ApplyJson(const Json& data) {
+
+	deltaTimeScaleTime_ = JsonAdapter::GetValue<float>(data, "deltaTimeScaleTime_");
+	switchAllyTime_ = JsonAdapter::GetValue<float>(data, "switchAllyTime_");
+	deltaTimeScale_ = JsonAdapter::GetValue<float>(data, "deltaTimeScale_");
+	deltaTimeScaleEasingType_ = static_cast<EasingType>(
+		JsonAdapter::GetValue<int>(data, "deltaTimeScaleEasingType_"));
+	blurTime_ = JsonAdapter::GetValue<float>(data, "blurTime_");
+	blurEasingType_ = static_cast<EasingType>(
+		JsonAdapter::GetValue<int>(data, "blurEasingType_"));
+	targetRadialBlur_.center.y = JsonAdapter::GetValue<float>(data, "targetRadialBlur_.center.y");
+	targetRadialBlur_.numSamples = JsonAdapter::GetValue<int>(data, "targetRadialBlur_.numSamples");
+	targetRadialBlur_.width = JsonAdapter::GetValue<float>(data, "targetRadialBlur_.width");
+}
+
+void PlayerSwitchAllyState::SaveJson(Json& data) {
+
+	data["deltaTimeScaleTime_"] = deltaTimeScaleTime_;
+	data["switchAllyTime_"] = switchAllyTime_;
+	data["deltaTimeScale_"] = deltaTimeScale_;
+	data["deltaTimeScaleEasingType_"] = static_cast<int>(deltaTimeScaleEasingType_);
+	data["blurTime_"] = blurTime_;
+	data["blurEasingType_"] = static_cast<int>(blurEasingType_);
+	data["targetRadialBlur_.center.y"] = targetRadialBlur_.center.y;
+	data["targetRadialBlur_.numSamples"] = targetRadialBlur_.numSamples;
+	data["targetRadialBlur_.width"] = targetRadialBlur_.width;
+}
+
+bool PlayerSwitchAllyState::GetIsSwitched() {
+
+	// 値を渡して値を消す、この状態に応じて各状態遷移を行う
+	bool isSwitched = isSwitched_.value();
+	isSwitched_ = std::nullopt;
+
+	return isSwitched;
+}

@@ -646,6 +646,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\Player\State\States\PlayerParryState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\States\PlayerSkilAttackState.cpp" />
     <ClCompile Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.cpp" />
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerStunAttackState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Player\State\States\PlayerSwitchAllyState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Player\State\States\PlayerWalkState.cpp" />
     <ClCompile Include="Game\Objects\Player\Structures\PlayerStructures.cpp">
       <SubType>
@@ -1198,6 +1206,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\Player\State\States\PlayerParryState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerSkilAttackState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.h" />
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerStunAttackState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\Player\State\States\PlayerSwitchAllyState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Player\State\States\PlayerWalkState.h" />
     <ClInclude Include="Game\Objects\Player\Structures\PlayerStructures.h">
       <SubType>
