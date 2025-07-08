@@ -35,6 +35,7 @@ public:
 	void SetTarget(FollowCameraTargetType type, const Transform3DComponent& target);
 	void SetState(FollowCameraState state) { requested_ = state; }
 	void SetOverlayState(FollowCameraOverlayState state);
+	void ExitOverlayState(FollowCameraOverlayState state);
 
 	FollowCameraState GetCurrentState() const { return current_; }
 private:

@@ -136,6 +136,8 @@
         }
     },
     "Idle": {
+        "blurEasingType_": 10,
+        "blurTime_": 0.18000000715255737,
         "nextAnimDuration_": 0.20000000298023224
     },
     "Parry": {
@@ -155,12 +157,14 @@
         "nextAnimDuration_": 0.25999999046325684
     },
     "StunAttack": {
-        "enemyDistance_": 24.0,
+        "blurEasingType_": 10,
+        "blurTime_": 0.1599999964237213,
+        "enemyDistance_": -48.0,
         "entryEasingType_": 16,
-        "entryTime_": 0.20000000298023224,
+        "entryTime_": 0.3199999928474426,
         "nextAnimDuration_": 0.1599999964237213,
         "rushEasingType_": 14,
-        "rushTime_": 0.4000000059604645,
+        "rushTime_": 0.4399999976158142,
         "targetTranslationY_": 4.0
     },
     "SwitchAlly": {

@@ -527,9 +527,6 @@
     <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraSwitchAllyState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraReturnState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraStunAttackState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -756,7 +753,6 @@
     <ClInclude Include="Game\Camera\Follow\Structures\FollowCameraStructures.h" />
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraFollowState.h" />
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraSwitchAllyState.h" />
-    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraReturnState.h" />
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraStunAttackState.h" />
     <ClInclude Include="Game\Camera\Follow\Input\Interface\FollowCameraIInputDevice.h" />
     <ClInclude Include="Game\Camera\Follow\Input\Structures\FollowCameraAction.h" />

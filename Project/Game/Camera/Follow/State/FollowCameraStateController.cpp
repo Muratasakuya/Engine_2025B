@@ -15,7 +15,6 @@
 #include <Game/Camera/Follow/State/States/FollowCameraFollowState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraShakeState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraSwitchAllyState.h>
-#include <Game/Camera/Follow/State/States/FollowCameraReturnState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraAllyAttackState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraStunAttackState.h>
 
@@ -30,7 +29,7 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"Follow","SwitchAlly","Return","AllyAttack","StunAttack"
+		"Follow","SwitchAlly","AllyAttack","StunAttack"
 	};
 	const char* kOverlayStateNames[] = {
 		"Shake"
@@ -49,9 +48,8 @@ void FollowCameraStateController::Init(FollowCamera& owner) {
 	inputMapper_->AddDevice(std::make_unique<FollowCameraGamePadInput>(input));
 
 	// 各状態を初期化
-	states_.emplace(FollowCameraState::Follow, std::make_unique<FollowCameraFollowState>());
+	states_.emplace(FollowCameraState::Follow, std::make_unique<FollowCameraFollowState>(owner.GetFovY()));
 	states_.emplace(FollowCameraState::SwitchAlly, std::make_unique<FollowCameraSwitchAllyState>());
-	states_.emplace(FollowCameraState::Return, std::make_unique<FollowCameraReturnState>(owner.GetFovY()));
 	states_.emplace(FollowCameraState::AllyAttack, std::make_unique<FollowCameraAllyAttackState>(owner.GetFovY()));
 	states_.emplace(FollowCameraState::StunAttack, std::make_unique<FollowCameraStunAttackState>());
 	overlayStates_.emplace(FollowCameraOverlayState::Shake, std::make_unique<FollowCameraShakeState>());
@@ -87,6 +85,13 @@ void FollowCameraStateController::SetOverlayState(FollowCameraOverlayState state
 		overlayStates_[state]->Exit();
 	}
 	overlayStates_[state]->Enter();
+}
+
+void FollowCameraStateController::ExitOverlayState(FollowCameraOverlayState state) {
+
+	// 強制終了
+	overlayState_ = std::nullopt;
+	overlayStates_[state]->Exit();
 }
 
 void FollowCameraStateController::SetInputMapper() {

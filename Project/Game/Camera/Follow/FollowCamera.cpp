@@ -25,12 +25,16 @@ void FollowCamera::Init() {
 	UpdateMatrix();
 }
 
-void FollowCamera::StartScreenShake(bool isShake) {
+void FollowCamera::SetScreenShake(bool isShake) {
 
 	if (isShake) {
 
 		// 状態を設定する
 		stateController_->SetOverlayState(FollowCameraOverlayState::Shake);
+	} else {
+
+		// shakeを止める
+		stateController_->ExitOverlayState(FollowCameraOverlayState::Shake);
 	}
 }
 

@@ -22,6 +22,10 @@ void FollowCameraFollowState::Update(FollowCamera& followCamera) {
 	Vector3 translation = followCamera.GetTransform().translation;
 	Vector3 offset{};
 
+	// 画角を常に元に戻しておく
+	float fovY = std::lerp(followCamera.GetFovY(), defaultFovY_, lerpRate_);
+	followCamera.SetFovY(fovY);
+
 	// 補間先の座標を補完割合に応じて補間する
 	interTarget_ = Vector3::Lerp(interTarget_, targets_[FollowCameraTargetType::Player]->GetWorldPos(), lerpRate_);
 

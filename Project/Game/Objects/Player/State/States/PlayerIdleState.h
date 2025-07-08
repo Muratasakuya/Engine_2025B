@@ -3,7 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBufferSize.h>
 #include <Game/Objects/Player/State/Interface/PlayerIState.h>
+#include <Lib/Adapter/Easing.h>
 
 //============================================================================
 //	PlayerIdleState class
@@ -15,7 +17,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	PlayerIdleState() = default;
+	PlayerIdleState();
 	~PlayerIdleState() = default;
 
 	void Enter(Player& player) override;
@@ -30,4 +32,22 @@ public:
 	// json
 	void ApplyJson(const Json& data) override;
 	void SaveJson(Json& data) override;
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetBlurParam(RadialBlurForGPU blur) { startRadialBlur_ = blur; }
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	// postProcess
+	float blurTimer_; // ブラーの経過時間
+	float blurTime_;  // ブラーの時間
+	EasingType blurEasingType_;
+	RadialBlurForGPU radialBlur_;       // systemに渡す値
+	RadialBlurForGPU startRadialBlur_;  // 開始値
+	RadialBlurForGPU targetRadialBlur_; // 初期化値
 };

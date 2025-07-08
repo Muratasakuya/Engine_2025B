@@ -84,6 +84,7 @@ private:
 	void UpdateInputState();
 
 	// helper
+	void SetStateValue();
 	void SetInputMapper();
 	bool Request(PlayerState state);
 	void ChangeState(Player& owner);

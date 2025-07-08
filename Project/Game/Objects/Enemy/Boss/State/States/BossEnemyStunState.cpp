@@ -26,6 +26,9 @@ void BossEnemyStunState::Enter(BossEnemy& bossEnemy) {
 	// スタン状態を開始する
 	bossEnemy.SetNextAnimation("bossEnemy_stun", false, nextAnimDuration_);
 
+	// α値が透明になっているときがあるので1.0fに戻しておく
+	bossEnemy.SetAlpha(1.0f);
+
 	// 最初の状態を設定
 	currentState_ = State::Begin;
 }

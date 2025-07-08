@@ -29,7 +29,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void StartScreenShake(bool isShake);
+	void SetScreenShake(bool isShake);
 	void SetTarget(FollowCameraTargetType type, const Transform3DComponent& target);
 	void SetFovY(float fovY) { fovY_ = fovY; }
 	void SetState(FollowCameraState state);

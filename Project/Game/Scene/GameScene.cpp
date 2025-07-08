@@ -184,12 +184,6 @@ void GameScene::Init() {
 
 	ECSManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
 
-	player_ = std::make_unique<Player>();
-	player_->Init("player", "player", "Player", "player_idle");
-
-	// 追従先を設定する: player
-	cameraManager_->SetTarget(player_.get());
-
 	//========================================================================
 	//	editor
 	//========================================================================
@@ -204,6 +198,12 @@ void GameScene::Init() {
 	//========================================================================
 	//	frontObjects
 	//========================================================================
+
+	player_ = std::make_unique<Player>();
+	player_->Init("player", "player", "Player", "player_idle");
+
+	// 追従先を設定する: player
+	cameraManager_->SetTarget(player_.get());
 
 	bossEnemy_ = std::make_unique<BossEnemy>();
 	bossEnemy_->Init("bossEnemy", "bossEnemy", "Enemy", "bossEnemy_idle");

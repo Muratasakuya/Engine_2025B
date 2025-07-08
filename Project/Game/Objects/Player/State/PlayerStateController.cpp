@@ -61,11 +61,14 @@ void PlayerStateController::Init(Player& owner) {
 	states_.emplace(PlayerState::Parry, std::make_unique<PlayerParryState>());
 	states_.emplace(PlayerState::SwitchAlly, std::make_unique<PlayerSwitchAllyState>());
 	states_.emplace(PlayerState::StunAttack, std::make_unique<PlayerStunAttackState>(owner.GetAlly()));
-	// inputを設定
-	SetInputMapper();
 
 	// json適応
 	ApplyJson();
+
+	// inputを設定
+	SetInputMapper();
+	// 状態間の値の共有
+	SetStateValue();
 
 	// 初期状態を設定
 	current_ = PlayerState::Idle;
@@ -73,6 +76,16 @@ void PlayerStateController::Init(Player& owner) {
 	currentEnterTime_ = GameTimer::GetTotalTime();
 	lastEnterTime_[current_] = currentEnterTime_;
 	ChangeState(owner);
+}
+
+void PlayerStateController::SetStateValue() {
+
+	// 状態間の値の共有(値ずれを防ぐため)
+	static_cast<PlayerIdleState*>(states_.at(PlayerState::Idle).get())->SetBlurParam(
+		static_cast<PlayerSwitchAllyState*>(states_.at(PlayerState::SwitchAlly).get())->GetBlurParam());
+
+	static_cast<PlayerStunAttackState*>(states_.at(PlayerState::StunAttack).get())->SetBlurParam(
+		static_cast<PlayerSwitchAllyState*>(states_.at(PlayerState::SwitchAlly).get())->GetBlurParam());
 }
 
 void PlayerStateController::SetInputMapper() {
@@ -129,13 +142,17 @@ void PlayerStateController::SetForcedState(Player& owner, PlayerState state) {
 	}
 
 	// 次の状態を設定
+	PlayerState preState = current_;
 	current_ = state;
 
+	// 遷移入り
 	if (auto* currentState = states_[current_].get()) {
 
+		currentState->SetPreState(preState);
 		currentState->Enter(owner);
 	}
 
+	// 現在の時間を記録
 	currentEnterTime_ = GameTimer::GetTotalTime();
 	lastEnterTime_[current_] = currentEnterTime_;
 	owner.GetAttackCollision()->SetEnterState(current_);
@@ -143,6 +160,7 @@ void PlayerStateController::SetForcedState(Player& owner, PlayerState state) {
 
 PlayerState PlayerStateController::GetSwitchSelectState() const {
 
+	// SwitchAlly状態の時になにをplayerが選択したのか取得する
 	return static_cast<PlayerSwitchAllyState*>(states_.at(PlayerState::SwitchAlly).get())->GetSelectState();
 }
 
@@ -153,6 +171,7 @@ void PlayerStateController::Update(Player& owner) {
 
 	// 何か予約設定されて入れば状態遷移させる
 	if (queued_) {
+		// 遷移可能状態かチェック
 		if (states_[current_]->GetCanExit() && CanTransition(*queued_, true)) {
 
 			requested_ = queued_;
@@ -171,14 +190,14 @@ void PlayerStateController::Update(Player& owner) {
 		ChangeState(owner);
 	}
 
+	// 敵がスタン中の状態遷移処理
+	HandleStunTransition(owner);
+
 	// 現在の状態を更新
 	if (PlayerIState* currentState = states_[current_].get()) {
 
 		currentState->Update(owner);
 	}
-
-	// 敵がスタン中の状態遷移処理
-	HandleStunTransition(owner);
 }
 
 void PlayerStateController::UpdateInputState() {
@@ -303,11 +322,13 @@ void PlayerStateController::ChangeState(Player& owner) {
 	}
 
 	// 次の状態を設定する
+	PlayerState preState = current_;
 	current_ = requested_.value();
 
 	// 次の状態を初期化する
 	if (auto* currentState = states_[current_].get()) {
 
+		currentState->SetPreState(preState);
 		currentState->Enter(owner);
 	}
 
@@ -324,8 +345,8 @@ void PlayerStateController::HandleStunTransition(Player& owner) {
 	if (current_ == PlayerState::SwitchAlly &&
 		states_[current_]->GetCanExit()) {
 
-		PlayerState next = GetSwitchSelectState();
-		SetForcedState(owner, next);
+		// 選択した状態へ遷移させる
+		SetForcedState(owner, GetSwitchSelectState());
 		return;
 	}
 
@@ -333,6 +354,7 @@ void PlayerStateController::HandleStunTransition(Player& owner) {
 	if (current_ == PlayerState::StunAttack &&
 		states_[current_]->GetCanExit()) {
 
+		// 攻撃が終わったらアイドル状態に戻す
 		SetForcedState(owner, PlayerState::Idle);
 		return;
 	}

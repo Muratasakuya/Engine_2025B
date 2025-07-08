@@ -282,6 +282,7 @@ void PlayerStunHUD::UpdateCancel() {
 
 		currentState_ = State::Begin;
 		cancelTimer_ = 0.0f;
+		restTimer_ = restTime_;
 
 		// 座標を元の座標に戻す
 		UpdateLayout();

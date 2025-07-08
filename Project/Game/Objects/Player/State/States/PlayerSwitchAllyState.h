@@ -37,6 +37,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	PlayerState GetSelectState() const { return selectState_; }
+
+	const RadialBlurForGPU& GetBlurParam() const { return targetRadialBlur_; }
 private:
 	//========================================================================
 	//	private Methods

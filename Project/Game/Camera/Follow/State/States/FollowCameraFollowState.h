@@ -15,7 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	FollowCameraFollowState() = default;
+	FollowCameraFollowState(float defaultFovY) :defaultFovY_(defaultFovY) {}
 	~FollowCameraFollowState() = default;
 
 	void Enter() override;
@@ -47,6 +47,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	Vector2 smoothedInput_; // 入力の値補間用
+	float defaultFovY_;
 
 	// parameters
 	Vector3 offsetTranslation_; // 追従相手との距離

@@ -13,7 +13,6 @@ enum class FollowCameraState {
 
 	Follow,     // 通常追従状態
 	SwitchAlly, // プレイヤーが味方を切り替えるかチェック中
-	Return,     // 切り替えなかったので元の位置にカメラを戻す
 	AllyAttack, // 味方の攻撃中
 	StunAttack, // プレイヤーの攻撃
 };

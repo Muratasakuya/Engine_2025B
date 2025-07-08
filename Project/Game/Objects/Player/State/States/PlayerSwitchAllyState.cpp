@@ -27,9 +27,9 @@ PlayerSwitchAllyState::PlayerSwitchAllyState() {
 	selectState_ = PlayerState::None;
 }
 
-void PlayerSwitchAllyState::Enter([[maybe_unused]] Player& player) {
+void PlayerSwitchAllyState::Enter(Player& player) {
 
-	// NONEで初期化
+	// Noneで初期化
 	selectState_ = PlayerState::None;
 
 	// deltaTimeをスケーリングしても元の値に戻らないようにする
@@ -37,6 +37,12 @@ void PlayerSwitchAllyState::Enter([[maybe_unused]] Player& player) {
 
 	// カメラの状態を切り替え待ち状態にする
 	followCamera_->SetState(FollowCameraState::SwitchAlly);
+	// 画面シェイクを止める
+	followCamera_->SetScreenShake(false);
+
+	// HPなどの表示を消してスタン用のHUDを出す
+	player.GetHUD()->SetDisable();
+	player.GetStunHUD()->SetVaild();
 }
 
 void PlayerSwitchAllyState::Update(Player& player) {
@@ -59,7 +65,7 @@ void PlayerSwitchAllyState::Update(Player& player) {
 	// 入力状態の確認
 	CheckInput(t);
 
-	// 遷移可能になったらHUDを元に戻す
+	// 遷移可能(何かを選択した)になったらHUDを元に戻す
 	if (canExit_) {
 
 		player.GetHUD()->SetValid();
@@ -73,7 +79,7 @@ void PlayerSwitchAllyState::UpdateBlur() {
 	blurTimer_ += GameTimer::GetDeltaTime();
 
 	// 補間終了
-	if (blurTimer_ >= blurTime_) {
+	if (blurTime_ <= blurTimer_) {
 
 		postProcessSystem_->SetParameter(targetRadialBlur_, PostProcessType::RadialBlur);
 		return;
@@ -107,7 +113,7 @@ void PlayerSwitchAllyState::CheckInput(float t) {
 		canExit_ = true;
 
 		// カメラの状態を元に戻させる
-		followCamera_->SetState(FollowCameraState::Return);
+		followCamera_->SetState(FollowCameraState::Follow);
 		return;
 	}
 
@@ -119,7 +125,7 @@ void PlayerSwitchAllyState::CheckInput(float t) {
 		canExit_ = true;
 
 		// カメラの状態を元に戻させる
-		followCamera_->SetState(FollowCameraState::Return);
+		followCamera_->SetState(FollowCameraState::Follow);
 	}
 }
 
@@ -131,6 +137,7 @@ void PlayerSwitchAllyState::Exit([[maybe_unused]] Player& player) {
 	// リセット
 	deltaTimeScaleTimer_ = 0.0f;
 	switchAllyTimer_ = 0.0f;
+	blurTimer_ = 0.0f;
 	canExit_ = false;
 }
 

@@ -1,9 +1,9 @@
 {
     "FileType": "ParticleEmitter",
     "particleNames": {
-        "0": "groundEffectEmitter_groundEffect.json",
-        "1": "groundEffectEmitter_dispersionFrontParticle.json",
-        "2": "groundEffectEmitter_spreadEffect.json",
-        "3": "groundEffectEmitter_spreadCircle.json"
+        "0": "groundEffectEmitter.json_groundEffect.json",
+        "1": "groundEffectEmitter.json_dispersionFrontParticle.json",
+        "2": "groundEffectEmitter.json_spreadEffect.json",
+        "3": "groundEffectEmitter.json_spreadCircle.json"
     }
 }

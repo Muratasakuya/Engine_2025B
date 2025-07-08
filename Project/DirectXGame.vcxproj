@@ -536,10 +536,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraReturnState.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraShakeState.cpp">
       <SubType>
       </SubType>
@@ -1098,10 +1094,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraFollowState.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraReturnState.h">
       <SubType>
       </SubType>
     </ClInclude>

@@ -55,13 +55,15 @@ void BossEnemyStateController::Init(BossEnemy& owner) {
 	requested_ = BossEnemyState::Idle;
 	ChangeState(owner);
 
-#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-
-	disableTransitions_ = true;
-#else 
+//#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+//
+//	disableTransitions_ = true;
+//#else 
+//
+//	disableTransitions_ = false;
+//#endif
 
 	disableTransitions_ = false;
-#endif
 }
 
 void BossEnemyStateController::SetPlayer(const Player* player) {

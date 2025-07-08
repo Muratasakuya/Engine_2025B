@@ -36,7 +36,7 @@ void PlayerAttack_3rdState::Update(Player& player) {
 		}
 
 		// 画面シェイクを行わせる
-		followCamera_->StartScreenShake(true);
+		followCamera_->SetScreenShake(true);
 	}
 
 	// 座標、回転補間

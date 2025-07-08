@@ -67,6 +67,7 @@ void Player::InitAnimations() {
 
 void Player::InitCollision() {
 
+	// OBBで設定
 	CollisionBody* body = bodies_.emplace_back(Collider::AddCollider(CollisionShape::OBB().Default()));
 	bodyOffsets_.emplace_back(CollisionShape::OBB().Default());
 
@@ -74,7 +75,7 @@ void Player::InitCollision() {
 	body->SetType(ColliderType::Type_Player);
 	body->SetTargetType(ColliderType::Type_BossEnemy);
 
-	// 攻撃の衝突
+	// 衝突を管理するクラスを初期化
 	playerAttackCollision_ = std::make_unique<PlayerAttackCollision>();
 	playerAttackCollision_->Init();
 }
@@ -147,6 +148,8 @@ int Player::GetDamage() const {
 
 	// 現在の状態に応じたダメージを取得
 	PlayerState currentState = stateController_->GetCurrentState();
+
+	// ダメージを与えられる状態か確認してから設定
 	if (Algorithm::Find(stats_.damages, currentState)) {
 
 		int damage = stats_.damages.at(currentState);
@@ -155,7 +158,6 @@ int Player::GetDamage() const {
 			damage + stats_.damageRandomRange);
 		return damage;
 	}
-	
 	return 0;
 }
 
@@ -197,19 +199,15 @@ void Player::CheckBossEnemyStun() {
 		return;
 	}
 
-	// 敵がスタン状態になったかチェックする
+	// 敵がスタン状態かどうか
 	if (!bossEnemy_->IsCurrentStunState()) {
 		return;
 	}
 
-	isStunUpdate_ = true;
 
 	// スタン状態になったら状態を切り替え状態に強制的に遷移させる
+	isStunUpdate_ = true;
 	stateController_->SetForcedState(*this, PlayerState::SwitchAlly);
-
-	// HPなどの表示を消してスタン状態用のHUDを表示する
-	hudSprites_->SetDisable();
-	stunHudSprites_->SetVaild();
 }
 
 void Player::OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {
