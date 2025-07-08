@@ -18,32 +18,26 @@ void BossEnemyHUD::InitSprite() {
 	// HP背景
 	hpBackground_ = std::make_unique<GameEntity2D>();
 	hpBackground_->Init("enemyHPBackground", "hpBackground", "BossEnemyHUD");
-	hpBackground_->SetPostProcessEnable(false);
 
 	// HP残量
 	hpBar_ = std::make_unique<GameHPBar>();
 	hpBar_->Init("enemyHPBar", "whiteAlphaGradation_0", "hpBar", "BossEnemyHUD");
-	hpBar_->SetPostProcessEnable(false);
 
 	// 撃破靭性値
 	destroyBar_ = std::make_unique<GameHPBar>();
 	destroyBar_->Init("enemyDestroyBar", "whiteAlphaGradation_0", "destroyBar", "BossEnemyHUD");
-	destroyBar_->SetPostProcessEnable(false);
 
 	// 撃破靭性値の数字表示
 	destroyNumDisplay_ = std::make_unique<GameDigitDisplay>();
 	destroyNumDisplay_->Init(2, "toughnessNumber", "destroyNum", "BossEnemyHUD");
-	destroyNumDisplay_->SetPostProcessEnable(false);
 
 	// 名前文字表示
 	nameText_ = std::make_unique<GameEntity2D>();
 	nameText_->Init("bossName", "bossName", "BossEnemyHUD");
-	nameText_->SetPostProcessEnable(false);
 
 	// ダメージ表示
 	damageDisplay_ = std::make_unique<GameDisplayDamage>();
 	damageDisplay_->Init("damageNumber", "BossEnemyHUD", 8, 4);
-	damageDisplay_->SetPostProcessEnable(false);
 }
 
 void BossEnemyHUD::Init() {

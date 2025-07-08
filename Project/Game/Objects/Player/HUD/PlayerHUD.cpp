@@ -15,22 +15,18 @@ void PlayerHUD::InitSprite() {
 	// HP背景
 	hpBackground_ = std::make_unique<GameEntity2D>();
 	hpBackground_->Init("playerHPBackground", "hpBackground", "PlayerHUD");
-	hpBackground_->SetPostProcessEnable(false);
 
 	// HP残量
 	hpBar_ = std::make_unique<GameHPBar>();
 	hpBar_->Init("playerHPBar", "whiteAlphaGradation_1", "hpBar", "PlayerHUD");
-	hpBar_->SetPostProcessEnable(false);
 
 	// スキル値
 	skilBar_ = std::make_unique<GameHPBar>();
 	skilBar_->Init("playerSkilBar", "whiteAlphaGradation_1", "destroyBar", "PlayerHUD");
-	skilBar_->SetPostProcessEnable(false);
 
 	// 名前文字表示
 	nameText_ = std::make_unique<GameEntity2D>();
 	nameText_->Init("playerName", "playerName", "PlayerHUD");
-	nameText_->SetPostProcessEnable(false);
 
 	// キーボード操作とパッド操作のtextureの名前を格納する
 	std::unordered_map<InputType, std::string> dynamicTextures{};
@@ -324,14 +320,12 @@ void PlayerHUD::InputStateSprite::Init(uint32_t spriteIndex, const std::string& 
 	// 変化しないspriteの初期化
 	staticSprite = std::make_unique<GameEntity2D>();
 	staticSprite->Init(staticSpriteTextureName, staticSpriteTextureName, groupName);
-	staticSprite->SetPostProcessEnable(false);
 
 	// 変化するspriteをタイプごとに初期化
 	for (auto& [type, texture] : dynamicSpritesTextureName) {
 
 		dynamicSprites[type] = std::make_unique<GameEntity2D>();
 		dynamicSprites[type]->Init(texture, texture, groupName);
-		dynamicSprites[type]->SetPostProcessEnable(false);
 	}
 }
 
