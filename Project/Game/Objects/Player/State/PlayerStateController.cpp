@@ -33,7 +33,7 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
+		"None","Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
 		"SkilAttack","SpecialAttack","Parry","SwitchAlly","StunAttack",
 	};
 
@@ -60,7 +60,7 @@ void PlayerStateController::Init(Player& owner) {
 	states_.emplace(PlayerState::SpecialAttack, std::make_unique<PlayerSpecialAttackState>());
 	states_.emplace(PlayerState::Parry, std::make_unique<PlayerParryState>());
 	states_.emplace(PlayerState::SwitchAlly, std::make_unique<PlayerSwitchAllyState>());
-	states_.emplace(PlayerState::StunAttack, std::make_unique<PlayerStunAttackState>());
+	states_.emplace(PlayerState::StunAttack, std::make_unique<PlayerStunAttackState>(owner.GetAlly()));
 	// inputを設定
 	SetInputMapper();
 
@@ -141,6 +141,11 @@ void PlayerStateController::SetForcedState(Player& owner, PlayerState state) {
 	owner.GetAttackCollision()->SetEnterState(current_);
 }
 
+PlayerState PlayerStateController::GetSwitchSelectState() const {
+
+	return static_cast<PlayerSwitchAllyState*>(states_.at(PlayerState::SwitchAlly).get())->GetSelectState();
+}
+
 void PlayerStateController::Update(Player& owner) {
 
 	// 入力に応じた状態の遷移
@@ -171,9 +176,17 @@ void PlayerStateController::Update(Player& owner) {
 
 		currentState->Update(owner);
 	}
+
+	// 敵がスタン中の状態遷移処理
+	HandleStunTransition(owner);
 }
 
 void PlayerStateController::UpdateInputState() {
+
+	// スタン処理中は状態遷移不可
+	if (IsStunProcessing()) {
+		return;
+	}
 
 	// コンボ中は判定をスキップする
 	const bool inCombat = IsCombatState(current_);
@@ -305,6 +318,26 @@ void PlayerStateController::ChangeState(Player& owner) {
 	owner.GetAttackCollision()->SetEnterState(current_);
 }
 
+void PlayerStateController::HandleStunTransition(Player& owner) {
+
+	// 切り替え処理
+	if (current_ == PlayerState::SwitchAlly &&
+		states_[current_]->GetCanExit()) {
+
+		PlayerState next = GetSwitchSelectState();
+		SetForcedState(owner, next);
+		return;
+	}
+
+	// スタン攻撃の終了判定
+	if (current_ == PlayerState::StunAttack &&
+		states_[current_]->GetCanExit()) {
+
+		SetForcedState(owner, PlayerState::Idle);
+		return;
+	}
+}
+
 bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const {
 
 	const auto it = conditions_.find(next);
@@ -382,6 +415,12 @@ bool PlayerStateController::IsInChain() const {
 
 	const float elapsed = GameTimer::GetTotalTime() - currentEnterTime_;
 	return (it->second.chainInputTime > 0.0f) && (elapsed <= it->second.chainInputTime);
+}
+
+bool PlayerStateController::IsStunProcessing() const {
+
+	return current_ == PlayerState::SwitchAlly ||
+		current_ == PlayerState::StunAttack;
 }
 
 void PlayerStateController::ImGui(const Player& owner) {
@@ -500,6 +539,9 @@ void PlayerStateController::ApplyJson() {
 	}
 
 	for (auto& [state, ptr] : states_) {
+		if (state == PlayerState::None) {
+			continue;
+		}
 
 		ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
 	}
@@ -509,6 +551,9 @@ void PlayerStateController::ApplyJson() {
 	}
 	const Json& condRoot = data["Conditions"];
 	for (auto& [state, ptr] : states_) {
+		if (state == PlayerState::None) {
+			continue;
+		}
 
 		const char* key = kStateNames[static_cast<int>(state)];
 		if (!condRoot.contains(key)) {
@@ -525,12 +570,18 @@ void PlayerStateController::SaveJson() {
 
 	Json data;
 	for (auto& [state, ptr] : states_) {
+		if (state == PlayerState::None) {
+			continue;
+		}
 
 		ptr->SaveJson(data[kStateNames[static_cast<int>(state)]]);
 	}
 
 	Json& condRoot = data["Conditions"];
 	for (auto& [state, cond] : conditions_) {
+		if (state == PlayerState::None) {
+			continue;
+		}
 
 		cond.ToJson(condRoot[kStateNames[static_cast<int>(state)]]);
 	}

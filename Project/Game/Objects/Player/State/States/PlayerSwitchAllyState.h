@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBufferSize.h>
 #include <Game/Objects/Player/State/Interface/PlayerIState.h>
+#include <Game/Objects/Player/Structures/PlayerStructures.h>
 #include <Lib/Adapter/Easing.h>
 
 //============================================================================
@@ -35,7 +36,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	bool GetIsSwitched();
+	PlayerState GetSelectState() const { return selectState_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -59,7 +60,7 @@ private:
 	RadialBlurForGPU targetRadialBlur_; // 補間先の値
 
 	// 切り替えたかどうかのフラグ
-	std::optional<bool> isSwitched_;
+	PlayerState selectState_;
 
 	//--------- functions----------------------------------------------------
 

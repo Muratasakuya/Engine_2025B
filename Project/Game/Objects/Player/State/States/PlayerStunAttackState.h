@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBufferSize.h>
 #include <Engine/Entity/GameEntity3D.h>
 #include <Game/Objects/Player/State/Interface/PlayerBaseAttackState.h>
 #include <Lib/Adapter/Easing.h>
@@ -17,7 +18,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	PlayerStunAttackState();
+	PlayerStunAttackState(GameEntity3D* ally);
 	~PlayerStunAttackState() = default;
 
 	void Enter(Player& player) override;
@@ -52,7 +53,7 @@ private:
 	State currentState_;
 
 	// 味方
-	std::unique_ptr<GameEntity3D> ally_; // 突進するだけ
+	GameEntity3D* ally_; // 突進するだけ
 	// 登場(これに合わせてplayerの表示を消す)
 	float entryTimer_; // 登場経過時間
 	float entryTime_;  // 登場時間

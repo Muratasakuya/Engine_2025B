@@ -30,7 +30,11 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void StartScreenShake(bool isShake);
-	void SetTarget(const Transform3DComponent& target);
+	void SetTarget(FollowCameraTargetType type, const Transform3DComponent& target);
+	void SetFovY(float fovY) { fovY_ = fovY; }
+	void SetState(FollowCameraState state);
+
+	float GetFovY() const { return fovY_; }
 private:
 	//========================================================================
 	//	private Methods

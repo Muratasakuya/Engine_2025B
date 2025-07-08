@@ -12,6 +12,7 @@
 // 状態の種類
 enum class PlayerState {
 
+	None,          // 無状態、ここに状態は作成しない
 	Idle,          // 何もしない
 	Walk,          // 歩き...       WASD/左スティック入力
 	Dash,          // ダッシュ...    右クリック/Aボタン

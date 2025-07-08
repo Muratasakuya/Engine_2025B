@@ -7,21 +7,21 @@
 #include <Lib/Adapter/Easing.h>
 
 //============================================================================
-//	FollowCameraSwitchAllyState class
+//	FollowCameraAllyAttackState class
 //============================================================================
-class FollowCameraSwitchAllyState :
+class FollowCameraAllyAttackState :
 	public FollowCameraIState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	FollowCameraSwitchAllyState() = default;
-	~FollowCameraSwitchAllyState() = default;
+	FollowCameraAllyAttackState(float targetFovY);
+	~FollowCameraAllyAttackState() = default;
 
 	void Enter() override;
 
-	void Update(FollowCamera& followCamera)  override;
+	void Update(FollowCamera& followCamera) override;
 
 	void Exit() override;
 
@@ -37,15 +37,15 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
-	
-	// parameters
-	float lerpTimer_; // 遷移経過時間
-	float lerpTime_;  // 遷移時間
-	EasingType lerpEasingType_;
 
+	// parameters
 	Vector3 offsetTranslation_; // 追従相手との距離
 	Vector3 interTarget_;       // 追従中間target位置
 	float lerpRate_;            // 補間割合
+
+	float fovYLerpTimer_; // 画角遷移経過時間
+	float fovYLerpTime_;  // 画角遷移時間
+	EasingType fovYLerpEasingType_;
 
 	std::optional<float> startFovY_; // 開始画角
 	float targetFovY_;               // 目標画角

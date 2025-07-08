@@ -34,7 +34,8 @@ void CameraManager::SetTarget(const Player* Player) {
 	player_ = Player;
 
 	// 追従先を設定する: player
-	followCamera_->SetTarget(player_->GetTransform());
+	followCamera_->SetTarget(FollowCameraTargetType::Player, player_->GetTransform());
+	followCamera_->SetTarget(FollowCameraTargetType::PlayerAlly, player_->GetAlly()->GetTransform());
 }
 
 void CameraManager::Update() {

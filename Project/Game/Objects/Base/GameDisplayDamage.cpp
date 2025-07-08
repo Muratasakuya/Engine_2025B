@@ -47,6 +47,14 @@ void GameDisplayDamage::SetAlpha(float alpha) {
 	}
 }
 
+void GameDisplayDamage::SetPostProcessEnable(bool enable) {
+
+	for (uint32_t index = 0; index < damageDisplayMaxNum_; ++index) {
+
+		damagePopups_[index].digits->SetPostProcessEnable(enable);
+	}
+}
+
 void GameDisplayDamage::Update(const GameEntity3D& entity, const BaseCamera& camera) {
 
 	const float deltaTime = GameTimer::GetDeltaTime();

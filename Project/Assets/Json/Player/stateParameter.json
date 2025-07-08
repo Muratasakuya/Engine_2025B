@@ -39,27 +39,14 @@
             "coolTime": 1.0,
             "interruptableBy": [
                 8,
-                7,
-                0,
                 1,
-                2
+                2,
+                3,
+                9
             ],
             "requireSkillPoint": 0
         },
         "Attack_2nd": {
-            "allowedPreState": [
-                3
-            ],
-            "chainInputTime": 0.6399999856948853,
-            "coolTime": 0.0,
-            "interruptableBy": [
-                3,
-                8,
-                7
-            ],
-            "requireSkillPoint": 0
-        },
-        "Attack_3rd": {
             "allowedPreState": [
                 4
             ],
@@ -68,7 +55,20 @@
             "interruptableBy": [
                 8,
                 4,
-                7
+                9
+            ],
+            "requireSkillPoint": 0
+        },
+        "Attack_3rd": {
+            "allowedPreState": [
+                5
+            ],
+            "chainInputTime": 0.6399999856948853,
+            "coolTime": 0.0,
+            "interruptableBy": [
+                8,
+                5,
+                9
             ],
             "requireSkillPoint": 0
         },
@@ -86,6 +86,13 @@
             "interruptableBy": [],
             "requireSkillPoint": 0
         },
+        "Parry": {
+            "allowedPreState": [],
+            "chainInputTime": 0.0,
+            "coolTime": 0.0,
+            "interruptableBy": [],
+            "requireSkillPoint": 0
+        },
         "SkilAttack": {
             "allowedPreState": [],
             "chainInputTime": 0.0,
@@ -94,12 +101,12 @@
                 8,
                 9,
                 7,
-                0,
                 1,
                 2,
                 3,
                 4,
-                6
+                5,
+                10
             ],
             "requireSkillPoint": 50
         },
@@ -165,7 +172,7 @@
         "switchAllyTime_": 3.0,
         "targetRadialBlur_.center.y": 0.800000011920929,
         "targetRadialBlur_.numSamples": 8,
-        "targetRadialBlur_.width": 0.23999999463558197
+        "targetRadialBlur_.width": 0.014000000432133675
     },
     "Walk": {
         "moveClampSize_": 220.0,

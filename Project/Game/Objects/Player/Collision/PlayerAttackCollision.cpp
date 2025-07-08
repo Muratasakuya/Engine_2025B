@@ -20,8 +20,8 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
-		"SkilAttack","SpecialAttack","Parry",
+		"None","Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
+		"SkilAttack","SpecialAttack","Parry","SwitchAlly","StunAttack",
 	};
 	const char* kCollisionNames[] = {
 		"None","Test","Player","PlayerWeapon","BossEnemy","BossWeapon",
@@ -143,6 +143,9 @@ void PlayerAttackCollision::ApplyJson(const Json& data) {
 	for (const auto& [key, value] : data.items()) {
 
 		PlayerState state = GetPlayerStateFromName(key);
+		if (state == PlayerState::None) {
+			continue;
+		}
 		AttackParameter parameter;
 
 		parameter.centerOffset = JsonAdapter::ToObject<Vector3>(value["centerOffset"]);
@@ -158,6 +161,9 @@ void PlayerAttackCollision::ApplyJson(const Json& data) {
 void PlayerAttackCollision::SaveJson(Json& data) {
 
 	for (auto& [state, parameter] : table_) {
+		if (state == PlayerState::None) {
+			continue;
+		}
 
 		Json& value = data[kStateNames[static_cast<int>(state)]];
 		value["centerOffset"] = JsonAdapter::FromObject(parameter.centerOffset);
@@ -170,11 +176,11 @@ void PlayerAttackCollision::SaveJson(Json& data) {
 
 PlayerState PlayerAttackCollision::GetPlayerStateFromName(const std::string& name) {
 
-	for (int i = 0; i < static_cast<int>(PlayerState::Parry) + 1; ++i) {
+	for (int i = 0; i < static_cast<int>(PlayerState::StunAttack) + 1; ++i) {
 		if (name == kStateNames[i]) {
 
 			return static_cast<PlayerState>(i);
 		}
 	}
-	return PlayerState::Idle;
+	return PlayerState::None;
 }

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Input/Input.h>
+#include <Game/Camera/Follow/FollowCamera.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 // inputDevice
@@ -15,6 +16,7 @@
 #include <Game/Camera/Follow/State/States/FollowCameraShakeState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraSwitchAllyState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraReturnState.h>
+#include <Game/Camera/Follow/State/States/FollowCameraAllyAttackState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraStunAttackState.h>
 
 // imgui
@@ -28,7 +30,7 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"Follow","SwitchAlly","Return","StunAttack"
+		"Follow","SwitchAlly","Return","AllyAttack","StunAttack"
 	};
 	const char* kOverlayStateNames[] = {
 		"Shake"
@@ -38,7 +40,7 @@ namespace {
 	const std::string kStateJsonPath = "FollowCamera/stateParameter.json";
 }
 
-void FollowCameraStateController::Init() {
+void FollowCameraStateController::Init(FollowCamera& owner) {
 
 	// 入力クラスを初期化
 	Input* input = Input::GetInstance();
@@ -49,7 +51,8 @@ void FollowCameraStateController::Init() {
 	// 各状態を初期化
 	states_.emplace(FollowCameraState::Follow, std::make_unique<FollowCameraFollowState>());
 	states_.emplace(FollowCameraState::SwitchAlly, std::make_unique<FollowCameraSwitchAllyState>());
-	states_.emplace(FollowCameraState::Return, std::make_unique<FollowCameraReturnState>());
+	states_.emplace(FollowCameraState::Return, std::make_unique<FollowCameraReturnState>(owner.GetFovY()));
+	states_.emplace(FollowCameraState::AllyAttack, std::make_unique<FollowCameraAllyAttackState>(owner.GetFovY()));
 	states_.emplace(FollowCameraState::StunAttack, std::make_unique<FollowCameraStunAttackState>());
 	overlayStates_.emplace(FollowCameraOverlayState::Shake, std::make_unique<FollowCameraShakeState>());
 	// inputを設定
@@ -64,12 +67,12 @@ void FollowCameraStateController::Init() {
 	ChangeState();
 }
 
-void  FollowCameraStateController::SetTarget(const Transform3DComponent& target) {
+void FollowCameraStateController::SetTarget(FollowCameraTargetType type, const Transform3DComponent& target) {
 
 	// 各状態にtargetをセット
 	for (const auto& state : std::views::values(states_)) {
 
-		state->SetTarget(target);
+		state->SetTarget(type, target);
 	}
 }
 
@@ -171,7 +174,7 @@ void FollowCameraStateController::CheckExitOverlayState() {
 	}
 }
 
-void FollowCameraStateController::ImGui(const FollowCamera& owner) {
+void FollowCameraStateController::ImGui(FollowCamera& owner) {
 
 	if (ImGui::Button("Save##StateJson")) {
 		SaveJson();

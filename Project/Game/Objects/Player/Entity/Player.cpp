@@ -15,7 +15,7 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
+		"None","Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
 		"SkilAttack","SpecialAttack","Parry","SwitchAlly","StunAttack",
 	};
 }
@@ -40,6 +40,10 @@ void Player::InitWeapon() {
 
 		leftWeapon_->SetParent(*hand);
 	}
+
+	// 味方
+	ally_ = std::make_unique<GameEntity3D>();
+	ally_->Init("cube", "playerAlly", "Player");
 }
 
 void Player::InitAnimations() {
@@ -143,15 +147,22 @@ int Player::GetDamage() const {
 
 	// 現在の状態に応じたダメージを取得
 	PlayerState currentState = stateController_->GetCurrentState();
-	int damage = stats_.damages.at(currentState);
-	// ランダムでダメージを設定
-	damage = RandomGenerator::Generate(damage - stats_.damageRandomRange,
-		damage + stats_.damageRandomRange);
+	if (Algorithm::Find(stats_.damages, currentState)) {
 
-	return damage;
+		int damage = stats_.damages.at(currentState);
+		// ランダムでダメージを設定
+		damage = RandomGenerator::Generate(damage - stats_.damageRandomRange,
+			damage + stats_.damageRandomRange);
+		return damage;
+	}
+	
+	return 0;
 }
 
 void Player::Update() {
+
+	// スタン状態のチェック
+	CheckBossEnemyStun();
 
 	// 状態の更新
 	stateController_->SetStatas(stats_);
@@ -177,12 +188,23 @@ void Player::Update() {
 
 void Player::CheckBossEnemyStun() {
 
+	// スタン中に敵がスタン状態じゃなくなったら更新終了
+	if (isStunUpdate_) {
+		if (!bossEnemy_->IsCurrentStunState()) {
+
+			isStunUpdate_ = false;
+		}
+		return;
+	}
+
 	// 敵がスタン状態になったかチェックする
 	if (!bossEnemy_->IsCurrentStunState()) {
 		return;
 	}
 
-	// スタン状態になったら状態を切り替え状態に遷移させる
+	isStunUpdate_ = true;
+
+	// スタン状態になったら状態を切り替え状態に強制的に遷移させる
 	stateController_->SetForcedState(*this, PlayerState::SwitchAlly);
 
 	// HPなどの表示を消してスタン状態用のHUDを表示する
@@ -202,6 +224,8 @@ void Player::DerivedImGui() {
 
 		// ---- Stats ---------------------------------------------------
 		if (ImGui::BeginTabItem("Stats")) {
+
+			ImGui::Text(std::format("isStunUpdate: {}", isStunUpdate_).c_str());
 
 			ImGui::Text("HP : %d / %d", stats_.currentHP, stats_.maxHP);
 			ImGui::Text("SP : %d / %d", stats_.currentSkilPoint, stats_.maxSkilPoint);

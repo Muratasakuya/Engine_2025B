@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Game/Camera/Follow/Structures/FollowCameraStructures.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 // front
@@ -41,7 +42,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetInputMapper(const FollowCameraInputMapper* inputMapper) { inputMapper_ = inputMapper; }
-	void SetTarget(const Transform3DComponent& target) { target_ = &target; }
+	void SetTarget(FollowCameraTargetType type, const Transform3DComponent& target);
 	void SetCanExit(bool canExit) { canExit_ = canExit; }
 
 	virtual bool GetCanExit() const { return canExit_; }
@@ -53,7 +54,7 @@ protected:
 	//--------- variables ----------------------------------------------------
 
 	const FollowCameraInputMapper* inputMapper_;
-	const Transform3DComponent* target_;
+	std::unordered_map<FollowCameraTargetType, const Transform3DComponent*> targets_;
 
 	// 共通parameters
 	bool canExit_ = true; // 遷移可能かどうか

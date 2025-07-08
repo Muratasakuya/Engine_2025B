@@ -64,7 +64,7 @@ void FollowCameraShakeState::ImGui([[maybe_unused]] const FollowCamera& followCa
 	ImGui::DragFloat("shakeXZIntensity", &shakeXZIntensity_, 0.01f);
 	ImGui::DragFloat("shakeOffsetYIntensity", &shakeOffsetYIntensity_, 0.01f);
 	ImGui::DragFloat("shakeTime", &shakeTime_, 0.01f);
-	Easing::SelectEasingType(shakeEasingType_);
+	Easing::SelectEasingType(shakeEasingType_, "shakeEasingType_");
 }
 
 void FollowCameraShakeState::ApplyJson(const Json& data) {

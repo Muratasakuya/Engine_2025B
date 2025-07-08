@@ -5,7 +5,9 @@
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Utility/GameTimer.h>
+#include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Objects/Player/Input/PlayerInputMapper.h>
+#include <Game/Objects/Player/Entity/Player.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
@@ -20,18 +22,24 @@ PlayerSwitchAllyState::PlayerSwitchAllyState() {
 	// 変更しない値(中心)
 	radialBlur_.center.x = 0.5f;
 	canExit_ = false;
+
+	// NONEで初期化
+	selectState_ = PlayerState::None;
 }
 
 void PlayerSwitchAllyState::Enter([[maybe_unused]] Player& player) {
 
-	// 選択リセット
-	isSwitched_ = std::nullopt;
+	// NONEで初期化
+	selectState_ = PlayerState::None;
 
 	// deltaTimeをスケーリングしても元の値に戻らないようにする
 	GameTimer::SetReturnScaleEnable(false);
+
+	// カメラの状態を切り替え待ち状態にする
+	followCamera_->SetState(FollowCameraState::SwitchAlly);
 }
 
-void PlayerSwitchAllyState::Update([[maybe_unused]] Player& player) {
+void PlayerSwitchAllyState::Update(Player& player) {
 
 	// 選択状態に入れるためにdeltaTimeを0.0f近くまで下げる
 	deltaTimeScaleTimer_ += GameTimer::GetScaledDeltaTime();
@@ -50,18 +58,33 @@ void PlayerSwitchAllyState::Update([[maybe_unused]] Player& player) {
 
 	// 入力状態の確認
 	CheckInput(t);
+
+	// 遷移可能になったらHUDを元に戻す
+	if (canExit_) {
+
+		player.GetHUD()->SetValid();
+		player.GetStunHUD()->SetCancel();
+	}
 }
 
 void PlayerSwitchAllyState::UpdateBlur() {
 
 	// ブラー更新
 	blurTimer_ += GameTimer::GetDeltaTime();
-	float lerpT = blurTimer_ / blurTime_;
+
+	// 補間終了
+	if (blurTimer_ >= blurTime_) {
+
+		postProcessSystem_->SetParameter(targetRadialBlur_, PostProcessType::RadialBlur);
+		return;
+	}
+	float lerpT = std::clamp(blurTimer_ / blurTime_, 0.0f, 1.0f);
 	lerpT = EasedValue(blurEasingType_, lerpT);
 
 	// 各値を補間
 	radialBlur_.center.y = std::lerp(0.5f, targetRadialBlur_.center.y, lerpT);
-	radialBlur_.numSamples = static_cast<int>(std::lerp(0, targetRadialBlur_.numSamples, lerpT));
+	radialBlur_.numSamples = static_cast<int>(std::round(std::lerp(
+		0.0f, static_cast<float>(targetRadialBlur_.numSamples), lerpT)));
 	radialBlur_.width = std::lerp(0.0f, targetRadialBlur_.width, lerpT);
 
 	// 値を設定
@@ -73,15 +96,18 @@ void PlayerSwitchAllyState::CheckInput(float t) {
 	// 切り替えた
 	if (inputMapper_->IsTriggered(PlayerAction::Switching)) {
 
-		isSwitched_ = true;
+		selectState_ = PlayerState::StunAttack;
 		canExit_ = true;
 		return;
 	}
 	// 切り替え無し
 	if (inputMapper_->IsTriggered(PlayerAction::NotSwitching)) {
 
-		isSwitched_ = false;
+		selectState_ = PlayerState::Idle;
 		canExit_ = true;
+
+		// カメラの状態を元に戻させる
+		followCamera_->SetState(FollowCameraState::Return);
 		return;
 	}
 
@@ -89,8 +115,11 @@ void PlayerSwitchAllyState::CheckInput(float t) {
 	if (1.0f < t) {
 
 		// 切り替えなし
-		isSwitched_ = false;
+		selectState_ = PlayerState::Idle;
 		canExit_ = true;
+
+		// カメラの状態を元に戻させる
+		followCamera_->SetState(FollowCameraState::Return);
 	}
 }
 
@@ -144,13 +173,4 @@ void PlayerSwitchAllyState::SaveJson(Json& data) {
 	data["targetRadialBlur_.center.y"] = targetRadialBlur_.center.y;
 	data["targetRadialBlur_.numSamples"] = targetRadialBlur_.numSamples;
 	data["targetRadialBlur_.width"] = targetRadialBlur_.width;
-}
-
-bool PlayerSwitchAllyState::GetIsSwitched() {
-
-	// 値を渡して値を消す、この状態に応じて各状態遷移を行う
-	bool isSwitched = isSwitched_.value();
-	isSwitched_ = std::nullopt;
-
-	return isSwitched;
 }

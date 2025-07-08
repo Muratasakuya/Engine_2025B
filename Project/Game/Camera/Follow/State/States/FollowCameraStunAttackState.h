@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Camera/Follow/State/Interface/FollowCameraIState.h>
+#include <Lib/Adapter/Easing.h>
 
 //============================================================================
 //	FollowCameraStunAttackState class
@@ -20,9 +21,9 @@ public:
 
 	void Enter() override;
 
-	void Update(FollowCamera& followCamera)  override;
+	void Update(FollowCamera& followCamera) override;
 
-	void Exit()  override;
+	void Exit() override;
 
 	// imgui
 	void ImGui(const FollowCamera& followCamera) override;
@@ -37,8 +38,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
-
-	//--------- functions ----------------------------------------------------
-
+	// parameters
+	Vector3 offsetTranslation_; // 追従相手との距離
+	Vector3 interTarget_;       // 追従中間target位置
+	float lerpRate_;            // 補間割合
 };

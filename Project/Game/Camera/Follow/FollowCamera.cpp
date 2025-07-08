@@ -15,11 +15,11 @@
 
 void FollowCamera::Init() {
 
-	stateController_ = std::make_unique<FollowCameraStateController>();
-	stateController_->Init();
-
 	// json適応
 	ApplyJson();
+
+	stateController_ = std::make_unique<FollowCameraStateController>();
+	stateController_->Init(*this);
 
 	// 行列更新
 	UpdateMatrix();
@@ -34,9 +34,14 @@ void FollowCamera::StartScreenShake(bool isShake) {
 	}
 }
 
-void FollowCamera::SetTarget(const Transform3DComponent& target) {
+void FollowCamera::SetTarget(FollowCameraTargetType type, const Transform3DComponent& target) {
 
-	stateController_->SetTarget(target);
+	stateController_->SetTarget(type, target);
+}
+
+void FollowCamera::SetState(FollowCameraState state) {
+
+	stateController_->SetState(state);
 }
 
 void FollowCamera::Update() {

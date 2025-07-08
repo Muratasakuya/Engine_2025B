@@ -154,6 +154,13 @@ void GameTimerDisplay::SetAlpha(float alpha) {
 		elements_[i].sprite->SetAlpha(alpha);
 	}
 }
+void GameTimerDisplay::SetPostProcessEnable(bool enable) {
+
+	for (size_t i = 0; i < elements_.size(); ++i) {
+
+		elements_[i].sprite->SetPostProcessEnable(enable);
+	}
+}
 
 void GameTimerDisplay::GetDigitSize(const std::string& name) {
 

@@ -14,23 +14,28 @@ void PlayerStunHUD::Init() {
 	progressBarBackground_ = std::make_unique<GameEntity2D>();
 	progressBarBackground_->Init("stunProgressBarBackground",
 		"stunProgressBarBackground", "PlayerStunHUD");
+	progressBarBackground_->SetPostProcessEnable(false);
 
 	// 経過率
 	progressBar_ = std::make_unique<GameEntity2D>();
 	progressBar_->Init("stunProgressBar", "stunProgressBar", "PlayerStunHUD");
+	progressBar_->SetPostProcessEnable(false);
 
 	// 経過率文字
 	chainAttackText_ = std::make_unique<GameEntity2D>();
 	chainAttackText_->Init("CHAINATTACK", "CHAINATTACK", "PlayerStunHUD");
+	chainAttackText_->SetPostProcessEnable(false);
 
 	// アイコン
 	for (uint32_t index = 0; index < iconCount_; ++index) {
 
 		stunChainIcon_[index] = std::make_unique<GameEntity2D>();
 		stunChainIcon_[index]->Init("chainPlayerIcon", "chainPlayerIcon", "PlayerStunHUD");
+		stunChainIcon_[index]->SetPostProcessEnable(false);
 
 		stunChainIconRing_[index] = std::make_unique<GameEntity2D>();
 		stunChainIconRing_[index]->Init("chainPlayerIconRing", "chainPlayerIconRing", "PlayerStunHUD");
+		stunChainIconRing_[index]->SetPostProcessEnable(false);
 	}
 
 	// 入力
@@ -40,6 +45,7 @@ void PlayerStunHUD::Init() {
 	// タイマー
 	restTimerDisplay_ = std::make_unique<GameTimerDisplay>();
 	restTimerDisplay_->Init("dd:dd:dd", "timeNumber", "timeSymbol", "restTimer", "PlayerStunHUD");
+	restTimerDisplay_->SetPostProcessEnable(false);
 
 	isVaild_ = false;
 	isCountFinished_ = false;
@@ -170,6 +176,16 @@ void PlayerStunHUD::SetVaild() {
 	isVaild_ = true;
 }
 
+void PlayerStunHUD::SetCancel() {
+
+	// キャンセル状態に強制遷移させる
+	currentState_ = State::Cancel;
+	restTimer_ = 0.0f;
+
+	// 経過時間表示の更新処理
+	restTimerDisplay_->Update(restTimer_);
+}
+
 void PlayerStunHUD::Update() {
 
 	// 状態の更新
@@ -245,9 +261,6 @@ void PlayerStunHUD::UpdateCount() {
 
 	// 時間経過した == 選択無し
 	if (restTimer_ < 0.0f) {
-
-		// これがtrueになったらplayerの状態をReturnにする
-		isCountFinished_ = true;
 
 		// キャンセル状態にする
 		currentState_ = State::Cancel;
@@ -501,12 +514,15 @@ void PlayerStunHUD::ChainInput::Init(const std::string& rightTex, const std::str
 
 	rightChain = std::make_unique<GameEntity2D>();
 	rightChain->Init(rightTex, rightTex, "PlayerStunHUD");
+	rightChain->SetPostProcessEnable(false);
 
 	leftChain = std::make_unique<GameEntity2D>();
 	leftChain->Init(leftTex, leftTex, "PlayerStunHUD");
+	leftChain->SetPostProcessEnable(false);
 
 	cancel = std::make_unique<GameEntity2D>();
 	cancel->Init(cancelTex, cancelTex, "PlayerStunHUD");
+	cancel->SetPostProcessEnable(false);
 }
 
 void PlayerStunHUD::ChainInput::SetSize(const Vector2& size) {

@@ -46,7 +46,12 @@ public:
 	void SetPostProcessSystem(PostProcessSystem* postProcessSystem);
 
 	PlayerState GetCurrentState() const { return stateController_->GetCurrentState(); }
+
 	PlayerAttackCollision* GetAttackCollision() const { return playerAttackCollision_.get(); }
+	GameEntity3D* GetAlly() const { return ally_.get(); }
+	PlayerHUD* GetHUD() const { return hudSprites_.get(); }
+	PlayerStunHUD* GetStunHUD() const { return stunHudSprites_.get(); }
+
 	int GetDamage() const;
 	int GetToughness() const { return stats_.toughness; }
 private:
@@ -61,6 +66,8 @@ private:
 	// 使用する武器
 	std::unique_ptr<PlayerWeapon> rightWeapon_; // 右手
 	std::unique_ptr<PlayerWeapon> leftWeapon_;  // 左手
+	// 味方
+	std::unique_ptr<GameEntity3D> ally_;
 
 	// 状態の管理
 	std::unique_ptr<PlayerStateController> stateController_;
@@ -75,6 +82,9 @@ private:
 	// parameters
 	Transform3DComponent initTransform_; // 初期化時の値
 	PlayerStats stats_; // ステータス
+
+	// 敵のスタン中の更新になったか
+	bool isStunUpdate_;
 
 	// editor
 	int editingStateIndex_;

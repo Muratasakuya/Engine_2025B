@@ -42,6 +42,7 @@ public:
 	void SetForcedState(Player& owner, PlayerState state);
 
 	PlayerState GetCurrentState() const { return current_; }
+	PlayerState GetSwitchSelectState() const;
 private:
 	//========================================================================
 	//	private Methods
@@ -86,7 +87,9 @@ private:
 	void SetInputMapper();
 	bool Request(PlayerState state);
 	void ChangeState(Player& owner);
+	void HandleStunTransition(Player& owner);
 	bool CanTransition(PlayerState next, bool viaQueue) const;
 	bool IsCombatState(PlayerState state) const;
 	bool IsInChain() const;
+	bool IsStunProcessing() const;
 };

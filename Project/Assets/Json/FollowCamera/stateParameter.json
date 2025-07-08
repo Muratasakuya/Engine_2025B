@@ -1,4 +1,14 @@
 {
+    "AllyAttack": {
+        "fovYLerpEasingType_": 10,
+        "fovYLerpTime_": 0.4000000059604645,
+        "lerpRate_": 0.23999999463558197,
+        "offsetTranslation_": {
+            "x": 0.0,
+            "y": 6.400000095367432,
+            "z": -54.0
+        }
+    },
     "Follow": {
         "inputLerpRate_": 0.1599999964237213,
         "lerpRate_": 0.23999999463558197,
@@ -8,7 +18,7 @@
         },
         "offsetTranslation_": {
             "x": 0.0,
-            "y": 9.0,
+            "y": 6.400000095367432,
             "z": -54.0
         },
         "offsetZLerpRate_": 0.800000011920929,
@@ -23,13 +33,40 @@
         "rotatePlusParam_.clampThreshold": 0.3199999928474426,
         "rotatePlusParam_.offsetZNear": -38.0
     },
-    "Return": null,
+    "Return": {
+        "lerpEasingType_": 10,
+        "lerpRate_": 0.6399999856948853,
+        "lerpTime_": 0.10000000149011612,
+        "offsetTranslation_": {
+            "x": 0.0,
+            "y": 9.0,
+            "z": -54.0
+        },
+        "targetFovY_": 0.47999998927116394
+    },
     "Shake": {
         "shakeEasingType_": 14,
         "shakeOffsetYIntensity_": 6.400000095367432,
         "shakeTime_": 1.600000023841858,
         "shakeXZIntensity_": 0.23999999463558197
     },
-    "StunAttack": null,
-    "SwitchAlly": null
+    "StunAttack": {
+        "lerpRate_": 0.23999999463558197,
+        "offsetTranslation_": {
+            "x": 0.0,
+            "y": 9.0,
+            "z": -54.0
+        }
+    },
+    "SwitchAlly": {
+        "lerpEasingType_": 10,
+        "lerpRate_": 0.47999998927116394,
+        "lerpTime_": 0.08799999952316284,
+        "offsetTranslation_": {
+            "x": 0.0,
+            "y": 5.400000095367432,
+            "z": -54.0
+        },
+        "targetFovY_": 0.2199999988079071
+    }
 }

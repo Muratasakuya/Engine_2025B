@@ -12,11 +12,11 @@
 //	PlayerStunAttackState classMethods
 //============================================================================
 
-PlayerStunAttackState::PlayerStunAttackState() {
+PlayerStunAttackState::PlayerStunAttackState(GameEntity3D* ally) {
 
-	// 味方を作成
-	ally_ = std::make_unique<GameEntity3D>();
-	ally_->Init("cube", "playerAlly", "Player");
+	// 味方を設定
+	ally_ = nullptr;
+	ally_ = ally;
 
 	canExit_ = false;
 }
@@ -35,6 +35,9 @@ void PlayerStunAttackState::Enter([[maybe_unused]] Player& player) {
 	// 目標座標は敵の座標
 	rushTargetAllyTranslation_ = enemyPos;
 	rushTargetAllyTranslation_.y = targetTranslationY_;
+
+	// カメラの状態を味方攻撃に切り替える
+	followCamera_->SetState(FollowCameraState::AllyAttack);
 }
 
 void PlayerStunAttackState::Update(Player& player) {
@@ -106,6 +109,9 @@ void PlayerStunAttackState::UpdateAllyRushAttack(Player& player) {
 
 		// 一瞬スローモーションにするためにdeltaTimeをスケーリングさせる
 		GameTimer::SetTimeScale(0.0f);
+
+		// カメラの状態をプレイヤー攻撃に切り替える
+		followCamera_->SetState(FollowCameraState::StunAttack);
 	}
 }
 
@@ -123,6 +129,9 @@ void PlayerStunAttackState::UpdatePlayerAttack(Player& player) {
 	if (player.IsAnimationFinished()) {
 
 		canExit_ = true;
+
+		// カメラの状態を元の操作状態に戻す
+		followCamera_->SetState(FollowCameraState::Follow);
 	}
 }
 

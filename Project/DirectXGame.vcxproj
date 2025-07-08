@@ -524,6 +524,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\Interface\FollowCameraIState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraAllyAttackState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraFollowState.cpp">
       <SubType>
       </SubType>
@@ -1082,6 +1090,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Camera\Follow\State\Interface\FollowCameraIState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraAllyAttackState.h">
       <SubType>
       </SubType>
     </ClInclude>

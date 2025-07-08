@@ -24,17 +24,19 @@ public:
 	FollowCameraStateController() = default;
 	~FollowCameraStateController() = default;
 
-	void Init();
+	void Init(FollowCamera& owner);
 
 	void Update(FollowCamera& owner);
 
-	void ImGui(const FollowCamera& owner);
+	void ImGui(FollowCamera& owner);
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetTarget(const Transform3DComponent& target);
+	void SetTarget(FollowCameraTargetType type, const Transform3DComponent& target);
 	void SetState(FollowCameraState state) { requested_ = state; }
 	void SetOverlayState(FollowCameraOverlayState state);
+
+	FollowCameraState GetCurrentState() const { return current_; }
 private:
 	//========================================================================
 	//	private Methods

@@ -23,7 +23,7 @@ void FollowCameraFollowState::Update(FollowCamera& followCamera) {
 	Vector3 offset{};
 
 	// 補間先の座標を補完割合に応じて補間する
-	interTarget_ = Vector3::Lerp(interTarget_, target_->GetWorldPos(), lerpRate_);
+	interTarget_ = Vector3::Lerp(interTarget_, targets_[FollowCameraTargetType::Player]->GetWorldPos(), lerpRate_);
 
 	// 入力から移動量を取得する
 	Vector2 rawInput(inputMapper_->GetVector(FollowCameraAction::RotateX),

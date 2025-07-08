@@ -48,6 +48,8 @@ public:
 	void SetCastShadow(bool cast);
 	void SetDecreaseToughnessProgress(float progress);
 
+	BossEnemyHUD* GetHUD() const { return hudSprites_.get(); }
+
 	Vector3 GetWeaponTranslation() const;
 	bool IsCurrentStunState() const;
 private:
