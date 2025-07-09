@@ -29,6 +29,16 @@ void BossEnemyLightAttackState::Enter(BossEnemy& bossEnemy) {
 
 void BossEnemyLightAttackState::Update(BossEnemy& bossEnemy) {
 
+	// 警告を出す
+	if (bossEnemy.IsEventKey(0) || bossEnemy.IsEventKey(2)) {
+
+		// 座標を設定して発生
+		ParticleSystem::GetInstance()->SetTranslate("bossWarningAttackEmitter", bossEnemy.GetWeaponTranslation());
+		ParticleSystem::GetInstance()->Emit("bossWarningAttackEmitter");
+
+		++emitCount_;
+	}
+
 	lerpTimer_ += GameTimer::GetScaledDeltaTime();
 	float lerpT = std::clamp(lerpTimer_ / lerpTime_, 0.0f, 1.0f);
 	lerpT = EasedValue(easingType_, lerpT);
@@ -64,6 +74,8 @@ void BossEnemyLightAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 	playAnimation_ = false;
 	lerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
+
+	emitCount_ = 0;
 }
 
 void BossEnemyLightAttackState::ImGui(const BossEnemy& bossEnemy) {
@@ -76,6 +88,7 @@ void BossEnemyLightAttackState::ImGui(const BossEnemy& bossEnemy) {
 	ImGui::DragFloat("lerpTime", &lerpTime_, 0.01f);
 
 	ImGui::Text(std::format("canExit: {}", canExit_).c_str());
+	ImGui::Text(std::format("emitCount: {}", emitCount_).c_str());
 	ImGui::Text("exitTimer: %.3f", exitTimer_);
 	ImGui::Text("lerpTime:  %.3f", lerpTime_);
 	Easing::SelectEasingType(easingType_);

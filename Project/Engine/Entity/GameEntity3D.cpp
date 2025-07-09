@@ -58,6 +58,12 @@ void GameEntity3D::ImGui() {
 			ImGui::EndTabItem();
 		}
 
+		if (ImGui::BeginTabItem("Collision")) {
+
+			Collider::ImGui(itemWidth_);
+			ImGui::EndTabItem();
+		}
+
 		if (ImGui::BeginTabItem("Derived")) {
 
 			// 継承先のimgui実装

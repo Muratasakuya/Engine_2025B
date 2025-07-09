@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Lib/Adapter/JsonAdapter.h>
@@ -40,6 +41,9 @@ void BossEnemy::InitAnimations() {
 
 	// 右手を親として更新させる
 	animation_->SetParentJoint("rightHand");
+
+	// keyEventを設定
+	animation_->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
 }
 
 void BossEnemy::InitCollision() {
@@ -162,6 +166,9 @@ void BossEnemy::Update() {
 
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
+
+	// particle更新
+	ParticleSystem::GetInstance()->UpdateEmitter("bossWarningAttackEmitter");
 }
 
 void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {
@@ -216,6 +223,14 @@ void BossEnemy::DerivedImGui() {
 
 		// 靭性値をリセットする
 		stats_.currentDestroyToughness = 0;
+	}
+
+	ImGui::SeparatorText("ReloadData");
+
+	if (ImGui::Button("Reload keyEvent")) {
+
+		// keyEventを設定
+		animation_->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
 	}
 
 	ImGui::Separator();

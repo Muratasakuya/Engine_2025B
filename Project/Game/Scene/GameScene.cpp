@@ -55,6 +55,7 @@ void GameScene::Load() {
 	ParticleSystem::GetInstance()->LoadEmitter("bossTeleportEmitter", "bossTeleportEmitter");
 	ParticleSystem::GetInstance()->LoadEmitter("hitEffectEmitter", "hitEffectEmitter");
 	ParticleSystem::GetInstance()->LoadEmitter("groundEffectEmitter", "groundEffectEmitter");
+	ParticleSystem::GetInstance()->LoadEmitter("bossWarningAttackEmitter", "bossWarningAttackEmitter");
 
 	//========================================================================
 	//	environment

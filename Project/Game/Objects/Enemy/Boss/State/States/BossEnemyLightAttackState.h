@@ -53,4 +53,7 @@ private:
 
 	float exitTimer_; // 遷移可能にするまでの経過時間
 	float exitTime_;  // 遷移可能にするまでの時間
+
+	// debug
+	uint32_t emitCount_;
 };

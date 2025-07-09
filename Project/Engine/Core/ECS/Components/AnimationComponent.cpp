@@ -22,6 +22,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 
 	// 初期値
 	transitionDuration_ = 0.4f;
+	prevFrameIndex_ = -1;
 	currentAnimationName_ = animationName;
 
 	// 骨の情報とクラスターを渡す
@@ -400,6 +401,9 @@ void AnimationComponent::SetKeyframeEvent(const std::string& fileName) {
 		return;
 	}
 
+	// リセット
+	eventKeyTables_.clear();
+
 	// animationの名前の前のmodelの名前を取得
 	std::string prefix = Algorithm::RemoveAfterUnderscore(currentAnimationName_);
 	prefix += "_";
@@ -438,6 +442,8 @@ void AnimationComponent::SwitchAnimation(const std::string& nextAnimName,
 		return;
 	}
 
+	prevFrameIndex_ = -1;
+
 	// 現在のAnimationを設定
 	oldAnimationName_ = currentAnimationName_;
 	oldAnimationTimer_ = currentAnimationTimer_;
@@ -467,22 +473,31 @@ void AnimationComponent::SetParentJoint(const std::string& jointName) {
 	}
 }
 
-bool AnimationComponent::IsHitEffectKey(uint32_t frameIndex) const {
+bool AnimationComponent::IsEventKey(uint32_t frameIndex) {
 
-	// frameIndex番目の時間に到達したか判定
 	auto it = eventKeyTables_.find(currentAnimationName_);
 	if (it == eventKeyTables_.end()) {
 		return false;
 	}
 
 	const auto& frames = it->second;
-	// 範囲外アクセス防止
-	if (frames.size() <= frameIndex) {
+	if (frameIndex >= frames.size()) {
 		return false;
 	}
-	int currentFrame = CurrentFrameIndex();
 
-	return currentFrame == frames[frameIndex];
+	// 現在のフレームを取得
+	const int current = CurrentFrameIndex();
+	const int target = frames[frameIndex];
+
+	// 現在のフレームが比較値と同じかどうか
+	const bool result = (current == target && prevFrameIndex_ != target);
+	if (result) {
+
+		// 前フレームの値を保存
+		prevFrameIndex_ = current;
+	}
+
+	return result;
 }
 
 float AnimationComponent::GetAnimationDuration(const std::string& animationName) const {

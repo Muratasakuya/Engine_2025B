@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
@@ -25,6 +26,14 @@ void BossEnemyChargeAttackState::Enter(BossEnemy& bossEnemy) {
 }
 
 void BossEnemyChargeAttackState::Update(BossEnemy& bossEnemy) {
+
+	// 警告を出す
+	if (bossEnemy.IsEventKey(0)) {
+
+		// 座標を設定して発生
+		ParticleSystem::GetInstance()->SetTranslate("bossWarningAttackEmitter", bossEnemy.GetWeaponTranslation());
+		ParticleSystem::GetInstance()->Emit("bossWarningAttackEmitter");
+	}
 
 	if (bossEnemy.IsAnimationFinished()) {
 

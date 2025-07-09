@@ -80,7 +80,7 @@ void Collider::UpdateOBBBody(CollisionBody* body, const Transform3DComponent& tr
 	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
 	Vector3 center = bodyTranslation + offset.center;
 
-	Vector3 size = transform.scale * offset.size;
+	Vector3 size = transform.scale + offset.size;
 
 	// 子か親かで回転を変える
 	Quaternion bodyRotation = isChild_ ? Quaternion::FromRotationMatrix(transform.matrix.world) : transform.rotation;

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
@@ -27,6 +28,14 @@ void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
 }
 
 void BossEnemyStrongAttackState::Update(BossEnemy& bossEnemy) {
+
+	// 警告を出す
+	if (bossEnemy.IsEventKey(0)) {
+
+		// 座標を設定して発生
+		ParticleSystem::GetInstance()->SetTranslate("bossWarningAttackEmitter", bossEnemy.GetWeaponTranslation());
+		ParticleSystem::GetInstance()->Emit("bossWarningAttackEmitter");
+	}
 
 	lerpTimer_ += GameTimer::GetScaledDeltaTime();
 	float lerpT = std::clamp(lerpTimer_ / lerpTime_, 0.0f, 1.0f);

@@ -49,7 +49,7 @@ public:
 
 	bool IsTransition() const { return inTransition_; }
 	bool IsAnimationFinished() const { return animationFinish_; }
-	bool IsHitEffectKey(uint32_t frameIndex) const;
+	bool IsEventKey(uint32_t frameIndex);
 	int GetRepeatCount() const { return repeatCount_; }
 	float GetAnimationDuration(const std::string& animationName) const;
 
@@ -75,6 +75,7 @@ private:
 
 	// keyframeイベント
 	std::unordered_map<std::string, std::vector<int>> eventKeyTables_;
+	int prevFrameIndex_;
 
 	std::string currentAnimationName_; // 現在のAnimationの名前
 	float currentAnimationTimer_;      // 現在のAnimation経過時間
