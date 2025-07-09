@@ -63,6 +63,9 @@ void Player::InitAnimations() {
 	// 両手を親として更新させる
 	animation_->SetParentJoint("rightHand");
 	animation_->SetParentJoint("leftHand");
+
+	// keyEventを設定
+	animation_->SetKeyframeEvent("Player/animationEffectKey.json");
 }
 
 void Player::InitCollision() {

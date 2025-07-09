@@ -27,7 +27,7 @@ public:
 	LevelEditor() :IGameEditor("LevelEditor") {};
 	~LevelEditor() = default;
 
-	void Init(const std::optional<std::string>& initSceneFile);
+	void Init(const std::string& initSceneFile);
 
 	void Update();
 

@@ -32,7 +32,10 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	// 新しいanimationの設定
 	void SetAnimationData(const std::string& animationName);
+	// animationのkeyframeのイベント位置
+	void SetKeyframeEvent(const std::string& fileName);
 
 	// animation再生
 	void SetPlayAnimation(const std::string& animationName, bool roopAnimation);
@@ -46,6 +49,7 @@ public:
 
 	bool IsTransition() const { return inTransition_; }
 	bool IsAnimationFinished() const { return animationFinish_; }
+	bool IsHitEffectKey(uint32_t frameIndex) const;
 	int GetRepeatCount() const { return repeatCount_; }
 	float GetAnimationDuration(const std::string& animationName) const;
 
@@ -68,6 +72,9 @@ private:
 	std::unordered_map<std::string, std::vector<const NodeAnimation*>> jointAnimationTracks_;
 	Skeleton skeleton_;
 	SkinCluster skinCluster_;
+
+	// keyframeイベント
+	std::unordered_map<std::string, std::vector<int>> eventKeyTables_;
 
 	std::string currentAnimationName_; // 現在のAnimationの名前
 	float currentAnimationTimer_;      // 現在のAnimation経過時間
@@ -101,4 +108,9 @@ private:
 	void BlendAnimation(Skeleton& skeleton,
 		const AnimationData& oldAnimationData, float oldAnimTime,
 		const AnimationData& nextAnimationData, float nextAnimTime, float alpha);
+
+	// helper
+	int CurrentFrameIndex() const;
+	void DrawEventTimeline(const std::vector<int>& frames, int currentFrame,
+		int totalFrames, float barWidth, float barHeight);
 };

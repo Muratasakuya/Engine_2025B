@@ -258,14 +258,14 @@
                         0.0,
                         0.0
                     ],
-                    "selfType": "CrossMarkWall",
+                    "selfType": "None",
                     "targetTypes": [
                         "Player"
                     ],
                     "size": [
-                        2.0,
-                        2.0,
-                        2.0
+                        3.200000047683716,
+                        1.399999976158142,
+                        1.399999976158142
                     ],
                     "rotate": [
                         1.0,
@@ -308,14 +308,14 @@
                         0.0,
                         0.0
                     ],
-                    "selfType": "CrossMarkWall",
+                    "selfType": "None",
                     "targetTypes": [
                         "Player"
                     ],
                     "size": [
-                        2.0,
-                        2.0,
-                        2.0
+                        3.200000047683716,
+                        1.399999976158142,
+                        1.399999976158142
                     ],
                     "rotate": [
                         1.0,
@@ -352,20 +352,26 @@
             },
             "collision": [
                 {
-                    "shape": "AABB",
+                    "shape": "OBB",
                     "center": [
                         0.0,
                         0.0,
                         0.0
                     ],
-                    "selfType": "CrossMarkWall",
+                    "selfType": "None",
                     "targetTypes": [
                         "Player"
                     ],
-                    "extent": [
+                    "size": [
+                        4.0,
+                        1.399999976158142,
+                        1.399999976158142
+                    ],
+                    "rotate": [
                         1.0,
-                        1.0,
-                        1.0
+                        0.0,
+                        0.0,
+                        0.0
                     ]
                 }
             ]
@@ -396,20 +402,26 @@
             },
             "collision": [
                 {
-                    "shape": "AABB",
+                    "shape": "OBB",
                     "center": [
                         0.0,
                         0.0,
                         0.0
                     ],
-                    "selfType": "CrossMarkWall",
+                    "selfType": "None",
                     "targetTypes": [
                         "Player"
                     ],
-                    "extent": [
+                    "size": [
+                        3.200000047683716,
+                        1.399999976158142,
+                        1.399999976158142
+                    ],
+                    "rotate": [
                         1.0,
-                        1.0,
-                        1.0
+                        0.0,
+                        0.0,
+                        0.0
                     ]
                 }
             ]
@@ -436,131 +448,6 @@
                     4.0,
                     4.0,
                     12.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "立方体",
-            "entity_flag": false,
-            "entity_type": "None",
-            "modelName": "立方体",
-            "transform": {
-                "translation": [
-                    0.0,
-                    -16.0,
-                    1.600000023841858
-                ],
-                "rotation_quaternion": [
-                    3.0908619663705394e-08,
-                    0.7071067690849304,
-                    0.7071067690849304,
-                    3.0908619663705394e-08
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "Sphere.001",
-            "entity_flag": false,
-            "entity_type": "None",
-            "modelName": "Sphere.",
-            "transform": {
-                "translation": [
-                    1.072849988937378,
-                    -16.0,
-                    1.4650685787200928
-                ],
-                "rotation_quaternion": [
-                    3.0908619663705394e-08,
-                    0.7071067690849304,
-                    0.7071067690849304,
-                    3.0908619663705394e-08
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "Sphere.002",
-            "entity_flag": false,
-            "entity_type": "None",
-            "modelName": "Sphere.",
-            "transform": {
-                "translation": [
-                    -1.072849988937378,
-                    -16.0,
-                    1.4650685787200928
-                ],
-                "rotation_quaternion": [
-                    3.0908619663705394e-08,
-                    0.7071067690849304,
-                    0.7071067690849304,
-                    3.0908619663705394e-08
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "平面.003",
-            "entity_flag": false,
-            "entity_type": "None",
-            "modelName": "平面.",
-            "transform": {
-                "translation": [
-                    1.9282509088516235,
-                    -16.0,
-                    2.1580851078033447
-                ],
-                "rotation_quaternion": [
-                    3.0908619663705394e-08,
-                    0.7071067690849304,
-                    0.7071067690849304,
-                    3.0908619663705394e-08
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "平面.001",
-            "entity_flag": false,
-            "entity_type": "None",
-            "modelName": "平面.",
-            "transform": {
-                "translation": [
-                    -1.9318541288375854,
-                    -16.0,
-                    2.1580851078033447
-                ],
-                "rotation_quaternion": [
-                    3.0908619663705394e-08,
-                    0.7071067690849304,
-                    0.7071067690849304,
-                    3.0908619663705394e-08
-                ],
-                "scaling": [
-                    1.0,
-                    1.0,
-                    1.0
                 ]
             }
         },

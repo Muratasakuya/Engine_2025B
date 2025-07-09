@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Utility/GameTimer.h>
+#include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // imgui
@@ -130,39 +131,68 @@ void AnimationComponent::ImGui(float itemSize) {
 
 	ImGui::PushItemWidth(itemSize);
 
-	ImGui::Checkbox("roopAnimation", &roopAnimation_);
-	ImGui::SameLine();
-	if (ImGui::Button("Restart")) {
-		currentAnimationTimer_ = 0.0f;
+	// ループ再生・リスタート
+	if (ImGui::CollapsingHeader("Playback", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		ImGui::Checkbox("Loop", &roopAnimation_);
+		ImGui::SameLine();
+		if (ImGui::Button("Restart")) {
+			currentAnimationTimer_ = 0.0f;
+			repeatCount_ = 0;
+		}
+		ImGui::Text("RepeatCount: %d", repeatCount_);
 	}
-	ImGui::Text("Repeat Count: %d", repeatCount_);
+	ImGui::Separator();
 
-	ImGui::Text("currentAnimationTime: %4.3f", currentAnimationTimer_);
-	float animationProgress = currentAnimationTimer_ / animationData_[currentAnimationName_].duration;
-	ImGui::Text("Animation Progress ");
-	ImGui::ProgressBar(animationProgress);
+	if (ImGui::CollapsingHeader("Status", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		const float duration = animationData_[currentAnimationName_].duration;
+		const float prog = currentAnimationTimer_ / duration;
+		const float transProg = transitionDuration_ > 0.0f ? transitionTimer_ / transitionDuration_ : 0.0f;
+
+		ImGui::Text("Time       : %5.3f / %5.3f", currentAnimationTimer_, duration);
+		ImGui::ProgressBar(prog, ImVec2(-FLT_MIN, 4));
+		ImGui::Text("Transition : %5.2f %%", transProg * 100.0f);
+		ImGui::ProgressBar(transProg, ImVec2(-FLT_MIN, 4));
+	}
 
 	ImGui::Separator();
 
-	float transitionProgress = transitionTimer_ / transitionDuration_;
-	ImGui::Text("Transition Progress ");
-	ImGui::ProgressBar(transitionProgress);
+	if (ImGui::CollapsingHeader("Animation Select", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+		static std::vector<const char*> animNames;
+		animNames.clear();
+		for (const auto& [name, _] : animationData_) {
+
+			animNames.push_back(name.c_str());
+		}
+		int currentIndex = 0;
+		for (size_t i = 0; i < animNames.size(); ++i) {
+			if (currentAnimationName_ == animNames[i]) {
+
+				currentIndex = static_cast<int>(i);
+				break;
+			}
+		}
+
+		if (ImGui::Combo("##AnimCombo", &currentIndex, animNames.data(),
+			static_cast<int>(animNames.size()))) {
+
+			SwitchAnimation(animNames[currentIndex], true, transitionDuration_);
+		}
+	}
 
 	ImGui::Separator();
 
-	// 全てのanimationを選択して遷移できるようにする
-	ImGui::Text(("currentAnimationName:" + currentAnimationName_).c_str());
-	for (const auto& [name, animation] : animationData_) {
+	if (auto it = eventKeyTables_.find(currentAnimationName_);
+		it != eventKeyTables_.end()) {
 
-		// 同じ名前のanimationは選択肢から外す
-		if (name == currentAnimationName_) {
-			continue;
-		}
+		const auto& frames = it->second;
+		int currentFrame = CurrentFrameIndex();
+		int totalFrames = static_cast<int>(animationData_[currentAnimationName_].duration * 30.0f);
 
-		if (ImGui::Button(("current -> " + name).c_str(), ImVec2(400.0f, 32.0f))) {
-
-			SwitchAnimation(name, true, transitionDuration_);
-		}
+		ImGui::Text("Key Timeline");
+		DrawEventTimeline(frames, currentFrame, totalFrames, itemSize * 2.0f, 10.0f);
 	}
 
 	ImGui::PopItemWidth();
@@ -294,6 +324,53 @@ void AnimationComponent::BlendAnimation(Skeleton& skeleton, const AnimationData&
 	}
 }
 
+int AnimationComponent::CurrentFrameIndex() const {
+
+	// blenderの再生FPS
+	constexpr float kFps = 30.0f;
+	return static_cast<int>((std::max)(0.0f, currentAnimationTimer_ * kFps + 0.5f));
+}
+
+void AnimationComponent::DrawEventTimeline(const std::vector<int>& frames,
+	int currentFrame, int totalFrames, float barWidth, float barHeight) {
+
+	if (frames.empty() || totalFrames <= 0) {
+		return;
+	}
+
+	// レイアウト領域を確保
+	ImGui::Dummy(ImVec2(barWidth, barHeight * 2.0f));
+	ImVec2 p0 = ImGui::GetItemRectMin();
+	ImVec2 p1 = ImGui::GetItemRectMax();
+	ImDrawList* dl = ImGui::GetWindowDrawList();
+
+	// 背景バー
+	dl->AddRectFilled(p0, p1, IM_COL32(80, 80, 80, 255), barHeight * 0.5f);
+
+	// 経過バー
+	float progT = static_cast<float>(currentFrame) / static_cast<float>(totalFrames);
+	progT = std::clamp(progT, 0.0f, 1.0f);
+	ImVec2 pProg = ImVec2(std::lerp(p0.x, p1.x, progT), p1.y);
+	dl->AddRectFilled(p0, pProg, IM_COL32(240, 200, 0, 255), barHeight * 0.5f);
+
+	// キー・マーカー
+	const float yCenter = (p0.y + p1.y) * 0.5f;
+	const float radius = barHeight * 0.64f;
+
+	for (size_t i = 0; i < frames.size(); ++i) {
+
+		float t = static_cast<float>(frames[i]) / static_cast<float>(totalFrames);
+		float x = std::lerp(p0.x, p1.x, t);
+
+		// 通過済み => 緑 / 未来 => 灰
+		ImU32 col = (currentFrame >= frames[i])
+			? IM_COL32(50, 220, 50, 255)
+			: IM_COL32(180, 180, 180, 255);
+
+		dl->AddCircleFilled(ImVec2(x, yCenter), radius, col);
+	}
+}
+
 void AnimationComponent::SetAnimationData(const std::string& animationName) {
 
 	// 登録済みの場合は処理しない
@@ -313,6 +390,27 @@ void AnimationComponent::SetAnimationData(const std::string& animationName) {
 
 			tracks[j.index] = &it->second;
 		}
+	}
+}
+
+void AnimationComponent::SetKeyframeEvent(const std::string& fileName) {
+
+	Json data;
+	if (!JsonAdapter::LoadCheck(fileName, data)) {
+		return;
+	}
+
+	// animationの名前の前のmodelの名前を取得
+	std::string prefix = Algorithm::RemoveAfterUnderscore(currentAnimationName_);
+	prefix += "_";
+
+	for (const auto& animJson : data["animations"]) {
+
+		const std::string& action = animJson["action"].get<std::string>();
+		std::string fullName = prefix + action;
+
+		auto& table = eventKeyTables_[fullName];
+		table = animJson["emitEffectFrames"].get<std::vector<int>>();
 	}
 }
 
@@ -367,6 +465,24 @@ void AnimationComponent::SetParentJoint(const std::string& jointName) {
 			return;
 		}
 	}
+}
+
+bool AnimationComponent::IsHitEffectKey(uint32_t frameIndex) const {
+
+	// frameIndex番目の時間に到達したか判定
+	auto it = eventKeyTables_.find(currentAnimationName_);
+	if (it == eventKeyTables_.end()) {
+		return false;
+	}
+
+	const auto& frames = it->second;
+	// 範囲外アクセス防止
+	if (frames.size() <= frameIndex) {
+		return false;
+	}
+	int currentFrame = CurrentFrameIndex();
+
+	return currentFrame == frames[frameIndex];
 }
 
 float AnimationComponent::GetAnimationDuration(const std::string& animationName) const {

@@ -8,18 +8,15 @@
 //	LevelEditor classMethods
 //============================================================================
 
-void LevelEditor::Init(const std::optional<std::string>& initSceneFile) {
+void LevelEditor::Init(const std::string& initSceneFile) {
 
 	sceneBuilder_ = std::make_unique<SceneBuilder>();
 	sceneBuilder_->Init(jsonPath_);
 
-	if (initSceneFile.has_value()) {
+	sceneBuilder_->SetFile(initSceneFile);
 
-		sceneBuilder_->SetFile(initSceneFile.value());
-
-		// entityの作成
-		BuildEntities();
-	}
+	// entityの作成
+	BuildEntities();
 
 	rightChildSize_ = ImVec2(384.0f, 320.0f);
 	buttonSize_ = ImVec2(256.0f, 32.0f);

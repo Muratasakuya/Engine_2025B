@@ -1,0 +1,38 @@
+{
+    "animations": [
+        {
+            "object": "playerArmature",
+            "action": "attack_1st",
+            "emitEffectFrames": [
+                3,
+                5
+            ]
+        },
+        {
+            "object": "playerArmature",
+            "action": "attack_2nd",
+            "emitEffectFrames": [
+                1,
+                2,
+                5
+            ]
+        },
+        {
+            "object": "<unlinked>",
+            "action": "attack_3rd",
+            "emitEffectFrames": [
+                1,
+                8,
+                20,
+                30
+            ]
+        },
+        {
+            "object": "<unlinked>",
+            "action": "skilAttack",
+            "emitEffectFrames": [
+                1
+            ]
+        }
+    ]
+}

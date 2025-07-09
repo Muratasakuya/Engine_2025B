@@ -294,7 +294,7 @@ bool Collider::SetShapeParamFromJson(const std::string& shapeName, const Json& d
 		}
 		if (data.contains("size")) {
 
-			obb.size = JsonAdapter::ToObject<Vector3>(data["size"]) / 2.0f;
+			obb.size = JsonAdapter::ToObject<Vector3>(data["size"]);
 		}
 		if (data.contains("rotate")) {
 
