@@ -45,6 +45,7 @@ public:
 
 	void SetPlayer(const Player* player) { player_ = player; }
 	void SetFollowCamera(const FollowCamera* followCamera) { followCamera_ = followCamera; }
+	void SetMoveClampSize(float size) { moveClampSize_ = size; }
 
 	virtual bool GetCanExit() const { return canExit_; }
 protected:

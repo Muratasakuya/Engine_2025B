@@ -49,6 +49,7 @@ public:
 	void SetPostProcessSystem(PostProcessSystem* postProcessSystem) { postProcessSystem_ = postProcessSystem; }
 	void SetCanExit(bool canExit) { canExit_ = canExit; }
 	void SetPreState(PlayerState preState) { preState_ = preState; }
+	void SetMoveClampSize(float size) { moveClampSize_ = size; }
 
 	virtual bool GetCanExit() const { return canExit_; }
 protected:

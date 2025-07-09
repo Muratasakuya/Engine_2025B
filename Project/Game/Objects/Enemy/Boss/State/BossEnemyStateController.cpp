@@ -55,13 +55,13 @@ void BossEnemyStateController::Init(BossEnemy& owner) {
 	requested_ = BossEnemyState::Idle;
 	ChangeState(owner);
 
-//#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-//
-//	disableTransitions_ = true;
-//#else 
-//
-//	disableTransitions_ = false;
-//#endif
+	//#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+	//
+	//	disableTransitions_ = true;
+	//#else 
+	//
+	//	disableTransitions_ = false;
+	//#endif
 
 	disableTransitions_ = false;
 }
@@ -651,13 +651,11 @@ void BossEnemyStateController::ApplyJson() {
 	// state
 	{
 		Json data;
-		if (!JsonAdapter::LoadCheck(kStateJsonPath, data)) {
-			return;
-		}
+		if (JsonAdapter::LoadCheck(kStateJsonPath, data)) {
+			for (auto& [state, ptr] : states_) {
 
-		for (auto& [state, ptr] : states_) {
-
-			ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
+				ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
+			}
 		}
 	}
 
@@ -678,6 +676,20 @@ void BossEnemyStateController::ApplyJson() {
 			BossEnemyPhase phase;
 			phase.comboIndices.emplace_back(0);
 			stateTable_.phases.push_back(phase);
+		}
+	}
+
+	// config
+	{
+		Json data;
+		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", data)) {
+
+			float clampSize = JsonAdapter::GetValue<float>(data["playableArea"], "length");
+
+			for (const auto& state : std::views::values(states_)) {
+
+				state->SetMoveClampSize(clampSize);
+			}
 		}
 	}
 }

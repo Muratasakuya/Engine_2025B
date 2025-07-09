@@ -555,36 +555,53 @@ void PlayerStateController::ImGui(const Player& owner) {
 
 void PlayerStateController::ApplyJson() {
 
-	Json data;
-	if (!JsonAdapter::LoadCheck(kStateJsonPath, data)) {
-		return;
-	}
-
-	for (auto& [state, ptr] : states_) {
-		if (state == PlayerState::None) {
-			continue;
+	// state
+	{
+		Json data;
+		if (!JsonAdapter::LoadCheck(kStateJsonPath, data)) {
+			return;
 		}
 
-		ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
-	}
+		for (auto& [state, ptr] : states_) {
+			if (state == PlayerState::None) {
+				continue;
+			}
 
-	if (!data.contains("Conditions")) {
-		return;
-	}
-	const Json& condRoot = data["Conditions"];
-	for (auto& [state, ptr] : states_) {
-		if (state == PlayerState::None) {
-			continue;
+			ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
 		}
 
-		const char* key = kStateNames[static_cast<int>(state)];
-		if (!condRoot.contains(key)) {
-			continue;
+		if (!data.contains("Conditions")) {
+			return;
 		}
+		const Json& condRoot = data["Conditions"];
+		for (auto& [state, ptr] : states_) {
+			if (state == PlayerState::None) {
+				continue;
+			}
 
-		PlayerStateCondition condition;
-		condition.FromJson(condRoot[key]);
-		conditions_[state] = std::move(condition);
+			const char* key = kStateNames[static_cast<int>(state)];
+			if (!condRoot.contains(key)) {
+				continue;
+			}
+
+			PlayerStateCondition condition;
+			condition.FromJson(condRoot[key]);
+			conditions_[state] = std::move(condition);
+		}
+	}
+
+	// config
+	{
+		Json data;
+		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", data)) {
+
+			float clampSize = JsonAdapter::GetValue<float>(data["playableArea"], "length");
+
+			for (const auto& state : std::views::values(states_)) {
+
+				state->SetMoveClampSize(clampSize);
+			}
+		}
 	}
 }
 

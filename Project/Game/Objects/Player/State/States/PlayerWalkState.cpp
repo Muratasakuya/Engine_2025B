@@ -73,10 +73,6 @@ void PlayerWalkState::ImGui([[maybe_unused]] const Player& player) {
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
 	ImGui::DragFloat("moveSpeed", &moveSpeed_, 0.01f);
 	ImGui::DragFloat("moveDecay", &moveDecay_, 0.01f);
-	ImGui::DragFloat("moveClampSize", &moveClampSize_, 1.0f);
-
-	LineRenderer::GetInstance()->DrawSquare(moveClampSize_,
-		Vector3(0.0f, 4.0f, 0.0f), Color::Red());
 }
 
 void PlayerWalkState::ApplyJson(const Json& data) {
@@ -85,7 +81,6 @@ void PlayerWalkState::ApplyJson(const Json& data) {
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 	moveSpeed_ = JsonAdapter::GetValue<float>(data, "moveSpeed_");
 	moveDecay_ = JsonAdapter::GetValue<float>(data, "moveDecay_");
-	moveClampSize_ = JsonAdapter::GetValue<float>(data, "moveClampSize_");
 }
 
 void PlayerWalkState::SaveJson(Json& data) {
@@ -94,5 +89,4 @@ void PlayerWalkState::SaveJson(Json& data) {
 	data["rotationLerpRate_"] = rotationLerpRate_;
 	data["moveSpeed_"] = moveSpeed_;
 	data["moveDecay_"] = moveDecay_;
-	data["moveClampSize_"] = moveClampSize_;
 }

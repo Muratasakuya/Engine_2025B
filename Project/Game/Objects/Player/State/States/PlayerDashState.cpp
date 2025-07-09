@@ -87,19 +87,14 @@ void PlayerDashState::ImGui([[maybe_unused]] const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate_", &rotationLerpRate_, 0.001f);
-	ImGui::DragFloat("moveClampSize", &moveClampSize_, 1.0f);
 
 	speedLerpValue_->ImGui("speedLerpValue");
-
-	LineRenderer::GetInstance()->DrawSquare(moveClampSize_,
-		Vector3(0.0f, 4.0f, 0.0f), Color::Red());
 }
 
 void PlayerDashState::ApplyJson(const Json& data) {
 
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
-	moveClampSize_ = JsonAdapter::GetValue<float>(data, "moveClampSize_");
 
 	speedLerpValue_ = std::make_unique<SimpleAnimation<float>>();
 	if (data.contains("speedLerpValue_")) {
@@ -111,6 +106,5 @@ void PlayerDashState::SaveJson(Json& data) {
 
 	data["nextAnimDuration_"] = nextAnimDuration_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
-	data["moveClampSize_"] = moveClampSize_;
 	speedLerpValue_->ToJson(data["speedLerpValue_"]);
 }
