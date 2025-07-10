@@ -67,3 +67,9 @@ Vector3 Math::RandomPointOnArcInSquare(const Vector3& arcCenter, const Vector3& 
 		arcCenter.y,
 		std::clamp(arcCenter.z, minZ, maxZ) };
 }
+
+Vector3 Math::RotateY(const Vector3& v, float rad) {
+
+	Matrix4x4 rotate = Matrix4x4::MakeYawMatrix(rad);
+	return Vector3::Transform(v, rotate).Normalize();
+}

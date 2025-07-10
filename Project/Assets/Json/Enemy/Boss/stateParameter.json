@@ -23,18 +23,20 @@
         "rotationLerpRate_": 14.0
     },
     "RushAttack": {
-        "attackCoolTime_": 1.399999976158142,
+        "attackCoolTime_": 0.8799999952316284,
+        "divisionBladeMoveSpeed_": 80.0,
+        "divisionOffsetAngle_": 7.199999809265137,
         "easingType_": 14,
         "emitParticleOffsetY_": 8.0,
         "fadeInTime_": 0.07999999821186066,
         "fadeOutTime_": 0.11999999731779099,
-        "farRadius_": 80.0,
-        "halfAngle_": 36.0,
-        "lerpTime_": 0.7200000286102295,
-        "moveClampSize_": 210.0,
+        "farRadius_": 130.0,
+        "halfAngle_": 23.200000762939453,
+        "lerpTime_": 0.6399999856948853,
         "nearRadius_": 20.0,
         "nextAnimDuration_": 0.03999999910593033,
-        "rotationLerpRate_": 14.0
+        "rotationLerpRate_": 14.0,
+        "singleBladeMoveSpeed_": 64.0
     },
     "StrongAttack": {
         "attackOffsetTranslation_": -20.0,
@@ -56,7 +58,6 @@
         "farRadius_": 54.0,
         "halfAngle_": 35.900001525878906,
         "lerpTime_": 0.800000011920929,
-        "moveClampSize_": 210.0,
         "nearRadius_": 40.20000076293945,
         "nextAnimDuration_": 0.03999999910593033,
         "rotationLerpRate_": 8.0

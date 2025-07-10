@@ -4,6 +4,10 @@
 //	include
 //============================================================================
 #include <Game/Objects/Enemy/Boss/State/Interface/BossEnemyIState.h>
+#include <Game/Objects/Enemy/Boss/Collision/BossEnemyBladeCollision.h>
+
+// c++
+#include <array>
 
 // memo
 // 計n回テレポートし、その都度設定された攻撃を行う
@@ -95,10 +99,31 @@ private:
 
 	float emitParticleOffsetY_; // particleの発生位置のオフセット
 
+	// 3本の刃
+	static const uint32_t bladeMaxCount_ = 3;
+	std::array<std::unique_ptr<BossEnemyBladeCollision>, bladeMaxCount_> divisionBlades_;
+	float divisionBladeMoveSpeed_; // 刃の進む速度
+	float divisionOffsetAngle_;    // 刃の角度(0: -angle,1: 0.0f,2: +angle)
+
+	// 1本の刃
+	std::unique_ptr<BossEnemyBladeCollision> singleBlade_;
+	float singleBladeMoveSpeed_; // 刃の進む速度
+
 	//--------- functions ----------------------------------------------------
+
+	// init
+	void InitBlade();
 
 	// 各状態の更新
 	void UpdateTeleport(BossEnemy& bossEnemy, float deltaTime);
 	void UpdateAttack(BossEnemy& bossEnemy);
 	void UpdateCooldown(BossEnemy& bossEnemy, float deltaTime);
+
+	void UpdateBlade(const BossEnemy& bossEnemy);
+
+	// helper
+	Vector3 CalcBaseDir(const BossEnemy& bossEnemy) const;
+	Vector3 CalcDivisionBladeDir(const BossEnemy& bossEnemy, uint32_t idx) const;
+	void EmitDivisionBlades(const BossEnemy& bossEnemy);
+	void EmitSingleBlade(const BossEnemy& bossEnemy);
 };

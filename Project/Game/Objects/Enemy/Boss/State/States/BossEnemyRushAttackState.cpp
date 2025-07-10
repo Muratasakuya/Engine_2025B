@@ -13,10 +13,27 @@
 //	BossEnemyRushAttackState classMethods
 //============================================================================
 
+void BossEnemyRushAttackState::InitBlade() {
+
+	// 3本の刃
+	for (uint32_t index = 0; index < bladeMaxCount_; ++index) {
+
+		divisionBlades_[index] = std::make_unique<BossEnemyBladeCollision>();
+		divisionBlades_[index]->Init("divisionBlade");
+	}
+
+	// 1本の刃
+	singleBlade_ = std::make_unique<BossEnemyBladeCollision>();
+	singleBlade_->Init("singleBlade");
+}
+
 BossEnemyRushAttackState::BossEnemyRushAttackState() {
 
 	// 最大攻撃回数を設定
 	maxAttackCount_ = static_cast<int>(pattern_.size());
+
+	// 刃を初期化
+	InitBlade();
 }
 
 void BossEnemyRushAttackState::Enter(BossEnemy& bossEnemy) {
@@ -44,10 +61,6 @@ void BossEnemyRushAttackState::Enter(BossEnemy& bossEnemy) {
 
 void BossEnemyRushAttackState::Update(BossEnemy& bossEnemy) {
 
-	// 1回目の攻撃animation: bossEnemy_rushAttack
-	// 2回目の攻撃animation: bossEnemy_rushAttack
-	// 3回目の攻撃animation: bossEnemy_chargeAttack
-
 	const float deltaTime = GameTimer::GetScaledDeltaTime();
 	switch (currentState_) {
 	case State::Teleport: {
@@ -69,6 +82,9 @@ void BossEnemyRushAttackState::Update(BossEnemy& bossEnemy) {
 		break;
 	}
 	}
+
+	// 衝突、刃の更新処理
+	UpdateBlade(bossEnemy);
 
 	// 攻撃回数が最大を超えたら遷移可能状態にする
 	if (maxAttackCount_ <= currentAttackCount_) {
@@ -165,6 +181,65 @@ void BossEnemyRushAttackState::UpdateCooldown(BossEnemy& bossEnemy, float deltaT
 	}
 }
 
+void BossEnemyRushAttackState::UpdateBlade(const BossEnemy& bossEnemy) {
+
+	if (currentAttackCount_ == maxAttackCount_) {
+		return;
+	}
+
+	// 最後の攻撃か判定
+	bool isLastAttack = (currentAttackCount_ == maxAttackCount_ - 1);
+
+	if (isLastAttack) {
+		if (bossEnemy.IsEventKey(1)) {
+
+			EmitSingleBlade(bossEnemy);
+		}
+	} else {
+		if (bossEnemy.IsEventKey(0)) {
+
+			EmitDivisionBlades(bossEnemy);
+		}
+	}
+
+	// 衝突更新
+	for (const auto& divisionBlade : divisionBlades_) {
+
+		divisionBlade->Update();
+	}
+	singleBlade_->Update();
+}
+
+Vector3 BossEnemyRushAttackState::CalcBaseDir(const BossEnemy& bossEnemy) const {
+
+	return (player_->GetTranslation() - bossEnemy.GetTranslation()).Normalize();
+}
+
+Vector3 BossEnemyRushAttackState::CalcDivisionBladeDir(const BossEnemy& bossEnemy, uint32_t index) const {
+
+	const float offset[bladeMaxCount_] = { -divisionOffsetAngle_, 0.0f, divisionOffsetAngle_ };
+	return Math::RotateY(CalcBaseDir(bossEnemy), offset[index] * pi / 180.0f);
+}
+
+void BossEnemyRushAttackState::EmitDivisionBlades(const BossEnemy& bossEnemy) {
+
+	// 発生処理
+	const Vector3 pos = bossEnemy.GetTranslation();
+	for (uint32_t i = 0; i < bladeMaxCount_; ++i) {
+
+		const Vector3 velocity = CalcDivisionBladeDir(bossEnemy, i) * divisionBladeMoveSpeed_;
+		divisionBlades_[i]->EmitEffect(pos, velocity);
+	}
+}
+
+void BossEnemyRushAttackState::EmitSingleBlade(const BossEnemy& bossEnemy) {
+
+	// 発生処理
+	const Vector3 pos = bossEnemy.GetTranslation();
+	const Vector3 velocity = CalcBaseDir(bossEnemy) * singleBladeMoveSpeed_;
+	singleBlade_->EmitEffect(pos, velocity);
+}
+
 void BossEnemyRushAttackState::Exit(BossEnemy& bossEnemy) {
 
 	// リセット
@@ -179,28 +254,77 @@ void BossEnemyRushAttackState::Exit(BossEnemy& bossEnemy) {
 
 void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
 
-	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
-	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
+	if (ImGui::CollapsingHeader("RushAttackState")) {
 
-	ImGui::Text(std::format("canExit: {}", canExit_).c_str());
-	ImGui::Text("currentAttack: %d / %d", currentAttackCount_, maxAttackCount_);
-	ImGui::Text("attackCoolTime: %.3f / %.3f", attackCoolTimer_, attackCoolTime_);
-	ImGui::DragFloat("farRadius:Red", &farRadius_, 0.1f);
-	ImGui::DragFloat("nearRadius:Blue", &nearRadius_, 0.1f);
-	ImGui::DragFloat("halfAngle", &halfAngle_, 0.1f);
-	ImGui::DragFloat("lerpTime", &lerpTime_, 0.01f);
-	ImGui::DragFloat("fadeOutTime", &fadeOutTime_, 0.01f);
-	ImGui::DragFloat("fadeInTime", &fadeInTime_, 0.01f);
-	ImGui::DragFloat("attackCoolTime", &attackCoolTime_, 0.01f);
-	ImGui::DragFloat("emitParticleOffsetY_", &emitParticleOffsetY_, 0.01f);
-	Easing::SelectEasingType(easingType_);
+		ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
+		ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
 
-	Vector3 center = player_->GetTranslation();
-	center.y = 4.0f;
-	LineRenderer::GetInstance()->DrawArc(8, farRadius_, halfAngle_,
-		center, followCamera_->GetTransform().GetForward(), Color::Red());
-	LineRenderer::GetInstance()->DrawArc(8, nearRadius_, halfAngle_,
-		center, followCamera_->GetTransform().GetForward(), Color::Blue());
+		ImGui::Text(std::format("canExit: {}", canExit_).c_str());
+		ImGui::Text("currentAttack: %d / %d", currentAttackCount_, maxAttackCount_);
+		ImGui::Text("attackCoolTime: %.3f / %.3f", attackCoolTimer_, attackCoolTime_);
+		ImGui::DragFloat("farRadius:Red", &farRadius_, 0.1f);
+		ImGui::DragFloat("nearRadius:Blue", &nearRadius_, 0.1f);
+		ImGui::DragFloat("halfAngle", &halfAngle_, 0.1f);
+		ImGui::DragFloat("lerpTime", &lerpTime_, 0.01f);
+		ImGui::DragFloat("fadeOutTime", &fadeOutTime_, 0.01f);
+		ImGui::DragFloat("fadeInTime", &fadeInTime_, 0.01f);
+		ImGui::DragFloat("attackCoolTime", &attackCoolTime_, 0.01f);
+		ImGui::DragFloat("emitParticleOffsetY_", &emitParticleOffsetY_, 0.01f);
+		ImGui::DragFloat("divisionOffsetAngle_", &divisionOffsetAngle_, 0.01f);
+		ImGui::DragFloat("divisionBladeMoveSpeed", &divisionBladeMoveSpeed_, 0.1f);
+		ImGui::DragFloat("singleBladeMoveSpeed", &singleBladeMoveSpeed_, 0.1f);
+		Easing::SelectEasingType(easingType_);
+
+		{
+			const Vector3 bossPos = bossEnemy.GetTranslation();
+			const Vector3 toPlayer = (player_->GetTranslation() - bossPos).Normalize();
+			const float   baseYaw = divisionOffsetAngle_ * (pi / 180.0f);
+			const float   angles[bladeMaxCount_] = { -baseYaw, 0.0f, baseYaw };
+
+			for (uint32_t i = 0; i < bladeMaxCount_; ++i) {
+				Vector3 dir = Math::RotateY(toPlayer, angles[i]);
+				Vector3 lineStart = bossPos + Vector3(0.0f, 4.0f, 0.0f);
+				Vector3 lineEnd = lineStart + dir * 128.0f;
+
+				LineRenderer::GetInstance()->DrawLine3D(lineStart, lineEnd, Color::Red());
+			}
+		}
+
+		{
+			Vector3 center = player_->GetTranslation();
+			center.y = 4.0f;
+			LineRenderer::GetInstance()->DrawArc(8, farRadius_, halfAngle_,
+				center, followCamera_->GetTransform().GetForward(), Color::Red());
+			LineRenderer::GetInstance()->DrawArc(8, nearRadius_, halfAngle_,
+				center, followCamera_->GetTransform().GetForward(), Color::Blue());
+		}
+	}
+
+	if (ImGui::CollapsingHeader("Blade")) {
+
+		// 発生させる
+		if (ImGui::Button("Emit DivisionBlade")) {
+
+			EmitDivisionBlades(bossEnemy);
+		}
+		if (ImGui::Button("Emit SingleBlade")) {
+
+			EmitSingleBlade(bossEnemy);
+		}
+
+		ImGui::Separator();
+
+		// 真ん中
+		divisionBlades_[1]->ImGui();
+		singleBlade_->ImGui();
+
+		// 衝突更新
+		for (const auto& divisionBlade : divisionBlades_) {
+
+			divisionBlade->Update();
+		}
+		singleBlade_->Update();
+	}
 }
 
 void BossEnemyRushAttackState::ApplyJson(const Json& data) {
@@ -215,6 +339,9 @@ void BossEnemyRushAttackState::ApplyJson(const Json& data) {
 	fadeOutTime_ = JsonAdapter::GetValue<float>(data, "fadeOutTime_");
 	fadeInTime_ = JsonAdapter::GetValue<float>(data, "fadeInTime_");
 	emitParticleOffsetY_ = JsonAdapter::GetValue<float>(data, "emitParticleOffsetY_");
+	divisionOffsetAngle_ = JsonAdapter::GetValue<float>(data, "divisionOffsetAngle_");
+	divisionBladeMoveSpeed_ = JsonAdapter::GetValue<float>(data, "divisionBladeMoveSpeed_");
+	singleBladeMoveSpeed_ = JsonAdapter::GetValue<float>(data, "singleBladeMoveSpeed_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
 }
 
@@ -230,5 +357,8 @@ void BossEnemyRushAttackState::SaveJson(Json& data) {
 	data["fadeOutTime_"] = fadeOutTime_;
 	data["fadeInTime_"] = fadeInTime_;
 	data["emitParticleOffsetY_"] = emitParticleOffsetY_;
+	data["divisionOffsetAngle_"] = divisionOffsetAngle_;
+	data["divisionBladeMoveSpeed_"] = divisionBladeMoveSpeed_;
+	data["singleBladeMoveSpeed_"] = singleBladeMoveSpeed_;
 	data["easingType_"] = static_cast<int>(easingType_);
 }
