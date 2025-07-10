@@ -53,7 +53,7 @@ void DxDepthRaster::Create(const Json& json,
 			depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
 		} else if (depthFuncStr == "GREATER_EQUAL") {
 			depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_GREATER_EQUAL;
-		} else {
+		} else if (depthFuncStr == "COMPARISON_FUNC_ALWAYS") {
 			depthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_ALWAYS;
 		}
 

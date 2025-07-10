@@ -69,6 +69,12 @@ private:
 
 	//--------- structure ----------------------------------------------------
 
+	enum class LineType {
+
+		None,        // 通常描画
+		DepthIgonre, // 深度値無視
+	};
+
 	// 頂点情報
 	struct LineVertex {
 
