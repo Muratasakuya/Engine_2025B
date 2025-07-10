@@ -32,14 +32,14 @@ PSOutput main(MSOutput input) {
 	
 		float4 edgeColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
 		if (ApplyNoiseDiscardAndEdge(id, transformUV, edgeColor)) {
-		
+
 			output.color = edgeColor;
 			// emissionˆ—
 			// ”­ŒõF
 			float3 emission = material.edgeEmissionColor * material.edgeEmissiveIntensity;
 			// emission‚ğ‰ÁZ
 			output.color.rgb += emission;
-		
+
 			return output;
 		}
 	}
