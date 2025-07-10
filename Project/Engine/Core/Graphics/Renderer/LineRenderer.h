@@ -12,6 +12,8 @@
 #include <memory>
 // front
 class SceneView;
+class SRVDescriptor;
+class DxShaderCompiler;
 
 //============================================================================
 //	LineRenderer class
@@ -23,12 +25,14 @@ public:
 	//========================================================================
 
 	void Init(ID3D12Device8* device, ID3D12GraphicsCommandList* commandList,
-		class SRVDescriptor* srvDescriptor, class DxShaderCompiler* shaderCompiler,
+		SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler,
 		SceneView* sceneView);
 
 	void DrawLine3D(const Vector3& pointA, const Vector3& pointB, const Color& color);
+	void DrawDepthIgonreLine3D(const Vector3& pointA, const Vector3& pointB, const Color& color);
 
 	void ExecuteLine(bool debugEnable);
+	void ExecuteDepthIgonreLine(bool debugEnable);
 
 	void ResetLine();
 
@@ -37,6 +41,7 @@ public:
 	//--------- shapes ------------------------------------------------------
 
 	void DrawSphere(int division, float radius, const Vector3& centerPos, const Color& color);
+	void DrawDepthIgonreSphere(int division, float radius, const Vector3& centerPos, const Color& color);
 
 	void DrawHemisphere(int division, float radius, const Vector3& centerPos,
 		const Vector3& eulerRotate, const Color& color);
@@ -69,17 +74,30 @@ private:
 
 	//--------- structure ----------------------------------------------------
 
-	enum class LineType {
-
-		None,        // 通常描画
-		DepthIgonre, // 深度値無視
-	};
-
 	// 頂点情報
 	struct LineVertex {
 
 		Vector4 pos;
 		Color color;
+	};
+
+	// 線の種類
+	enum class LineType {
+
+		None,        // 通常描画
+		DepthIgnore, // 深度値無視
+	};
+
+	// 描画に使うデータ
+	struct RenderStructure {
+
+		std::unique_ptr<PipelineState> pipeline;
+
+		std::vector<LineVertex> lineVertices;
+		DxConstBuffer<LineVertex> vertexBuffer;
+
+		void Init(const std::string& pipelineFile, ID3D12Device8* device,
+			SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler);
 	};
 
 	//--------- variables ----------------------------------------------------
@@ -94,13 +112,13 @@ private:
 	// 線分の頂点数
 	static constexpr const uint32_t kVertexCountLine_ = 2;
 
-	std::unique_ptr<PipelineState> pipeline_;
-
-	std::vector<LineVertex> lineVertices_;
-	DxConstBuffer<LineVertex> vertexBuffer_;
-
+	// カメラ視点
 	DxConstBuffer<Matrix4x4> viewProjectionBuffer_;
 	DxConstBuffer<Matrix4x4> debugSceneViewProjectionBuffer_;
+
+	// 描画情報(buffer)
+	std::unordered_map<LineType, RenderStructure> renderData_;
+
 	//--------- functions ----------------------------------------------------
 
 	LineRenderer() = default;

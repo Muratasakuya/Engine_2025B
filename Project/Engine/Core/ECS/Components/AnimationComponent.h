@@ -98,6 +98,9 @@ private:
 	// animationの経過率
 	float animationProgress_;
 
+	// 骨の線描画を行うかどうか
+	bool isDisplayBone_;
+
 	//--------- variables ----------------------------------------------------
 
 	// joint更新
@@ -114,4 +117,5 @@ private:
 	int CurrentFrameIndex() const;
 	void DrawEventTimeline(const std::vector<int>& frames, int currentFrame,
 		int totalFrames, float barWidth, float barHeight);
+	void DebugDrawBone(const Matrix4x4& worldMatrix);
 };

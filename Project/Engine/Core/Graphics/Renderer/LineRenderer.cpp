@@ -38,10 +38,9 @@ void LineRenderer::Init(ID3D12Device8* device, ID3D12GraphicsCommandList* comman
 	sceneView_ = nullptr;
 	sceneView_ = sceneView;
 
-	pipeline_ = std::make_unique<PipelineState>();
-	pipeline_->Create("PrimitiveLine.json", device, srvDescriptor, shaderCompiler);
-
-	vertexBuffer_.CreateVertexBuffer(device, kMaxLineCount_ * kVertexCountLine_);
+	// 各描画情報を初期化
+	renderData_[LineType::None].Init("PrimitiveLine.json", device, srvDescriptor, shaderCompiler);
+	renderData_[LineType::DepthIgnore].Init("DepthIgnorePrimitiveLine.json", device, srvDescriptor, shaderCompiler);
 
 	viewProjectionBuffer_.CreateConstBuffer(device);
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
@@ -49,27 +48,49 @@ void LineRenderer::Init(ID3D12Device8* device, ID3D12GraphicsCommandList* comman
 #endif
 }
 
+void LineRenderer::RenderStructure::Init(const std::string& pipelineFile, ID3D12Device8* device,
+	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler) {
+
+	pipeline = std::make_unique<PipelineState>();
+	pipeline->Create(pipelineFile, device, srvDescriptor, shaderCompiler);
+
+	vertexBuffer.CreateVertexBuffer(device, kMaxLineCount_ * kVertexCountLine_);
+}
+
 void LineRenderer::DrawLine3D(const Vector3& pointA, const Vector3& pointB, const Color& color) {
 
-	ASSERT(lineVertices_.size() < kMaxLineCount_ * kVertexCountLine_, "exceeded the upper limit line");
+	auto& lineVertices = renderData_[LineType::None].lineVertices;
+	ASSERT(lineVertices.size() < kMaxLineCount_ * kVertexCountLine_, "exceeded the upper limit line");
 
 	// 頂点追加
-	lineVertices_.emplace_back(Vector4(pointA.x, pointA.y, pointA.z, 1.0f), color);
-	lineVertices_.emplace_back(Vector4(pointB.x, pointB.y, pointB.z, 1.0f), color);
+	lineVertices.emplace_back(Vector4(pointA.x, pointA.y, pointA.z, 1.0f), color);
+	lineVertices.emplace_back(Vector4(pointB.x, pointB.y, pointB.z, 1.0f), color);
+}
+
+void LineRenderer::DrawDepthIgonreLine3D(const Vector3& pointA, const Vector3& pointB, const Color& color) {
+
+	auto& lineVertices = renderData_[LineType::DepthIgnore].lineVertices;
+	ASSERT(lineVertices.size() < kMaxLineCount_ * kVertexCountLine_, "exceeded the upper limit line");
+
+	// 頂点追加
+	lineVertices.emplace_back(Vector4(pointA.x, pointA.y, pointA.z, 1.0f), color);
+	lineVertices.emplace_back(Vector4(pointB.x, pointB.y, pointB.z, 1.0f), color);
 }
 
 void LineRenderer::ExecuteLine(bool debugEnable) {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
-	if (lineVertices_.empty()) {
+
+	auto& renderData = renderData_[LineType::None];
+	if (renderData.lineVertices.empty()) {
 		return;
 	}
 
-	commandList_->SetGraphicsRootSignature(pipeline_->GetRootSignature());
-	commandList_->SetPipelineState(pipeline_->GetGraphicsPipeline());
+	commandList_->SetGraphicsRootSignature(renderData.pipeline->GetRootSignature());
+	commandList_->SetPipelineState(renderData.pipeline->GetGraphicsPipeline());
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
-	vertexBuffer_.TransferVectorData(lineVertices_);
-	commandList_->IASetVertexBuffers(0, 1, &vertexBuffer_.GetVertexBuffer());
+	renderData.vertexBuffer.TransferVectorData(renderData.lineVertices);
+	commandList_->IASetVertexBuffers(0, 1, &renderData.vertexBuffer.GetVertexBuffer());
 
 	if (!debugEnable) {
 
@@ -81,13 +102,44 @@ void LineRenderer::ExecuteLine(bool debugEnable) {
 		commandList_->SetGraphicsRootConstantBufferView(0, debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
 	}
 
-	commandList_->DrawInstanced(static_cast<UINT>(lineVertices_.size()), 1, 0, 0);
+	commandList_->DrawInstanced(static_cast<UINT>(renderData.lineVertices.size()), 1, 0, 0);
+#endif
+}
+
+void LineRenderer::ExecuteDepthIgonreLine(bool debugEnable) {
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+
+	auto& renderData = renderData_[LineType::DepthIgnore];
+	if (renderData.lineVertices.empty()) {
+		return;
+	}
+
+	commandList_->SetGraphicsRootSignature(renderData.pipeline->GetRootSignature());
+	commandList_->SetPipelineState(renderData.pipeline->GetGraphicsPipeline());
+	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	renderData.vertexBuffer.TransferVectorData(renderData.lineVertices);
+	commandList_->IASetVertexBuffers(0, 1, &renderData.vertexBuffer.GetVertexBuffer());
+
+	if (!debugEnable) {
+
+		viewProjectionBuffer_.TransferData(sceneView_->GetCamera()->GetViewProjectionMatrix());
+		commandList_->SetGraphicsRootConstantBufferView(0, viewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+	} else {
+
+		debugSceneViewProjectionBuffer_.TransferData(sceneView_->GetSceneCamera()->GetViewProjectionMatrix());
+		commandList_->SetGraphicsRootConstantBufferView(0, debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+	}
+
+	commandList_->DrawInstanced(static_cast<UINT>(renderData.lineVertices.size()), 1, 0, 0);
 #endif
 }
 
 void LineRenderer::ResetLine() {
 
-	lineVertices_.clear();
+	renderData_[LineType::None].lineVertices.clear();
+	renderData_[LineType::DepthIgnore].lineVertices.clear();
 }
 
 void LineRenderer::DrawGrid(int division, float gridSize, const Color& color) {
@@ -135,6 +187,36 @@ void LineRenderer::DrawSphere(int division, float radius, const Vector3& centerP
 
 			DrawLine3D(pointA + centerPos, pointB + centerPos, color);
 			DrawLine3D(pointA + centerPos, pointC + centerPos, color);
+		}
+	}
+}
+
+void LineRenderer::DrawDepthIgonreSphere(int division, float radius,
+	const Vector3& centerPos, const Color& color) {
+
+	const float kLatEvery = pi / division;        // 緯度
+	const float kLonEvery = 2.0f * pi / division; // 経度
+
+	auto calculatePoint = [&](float lat, float lon) -> Vector3 {
+		return {
+			radius * std::cos(lat) * std::cos(lon),
+			radius * std::sin(lat),
+			radius * std::cos(lat) * std::sin(lon)
+		};
+		};
+
+	for (int latIndex = 0; latIndex < division; ++latIndex) {
+
+		float lat = -pi / 2.0f + kLatEvery * latIndex;
+		for (int lonIndex = 0; lonIndex < division; ++lonIndex) {
+			float lon = lonIndex * kLonEvery;
+
+			Vector3 pointA = calculatePoint(lat, lon);
+			Vector3 pointB = calculatePoint(lat + kLatEvery, lon);
+			Vector3 pointC = calculatePoint(lat, lon + kLonEvery);
+
+			DrawDepthIgonreLine3D(pointA + centerPos, pointB + centerPos, color);
+			DrawDepthIgonreLine3D(pointA + centerPos, pointC + centerPos, color);
 		}
 	}
 }

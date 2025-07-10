@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
@@ -19,6 +20,8 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 
 	asset_ = nullptr;
 	asset_ = asset;
+
+	isDisplayBone_ = false;
 
 	// 初期値
 	transitionDuration_ = 0.4f;
@@ -126,6 +129,12 @@ void AnimationComponent::Update(const Matrix4x4& worldMatrix) {
 			currentAnimationTimer_ = nextAnimationTimer_;
 		}
 	}
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+
+	// 骨の描画
+	DebugDrawBone(worldMatrix);
+#endif
 }
 
 void AnimationComponent::ImGui(float itemSize) {
@@ -135,6 +144,7 @@ void AnimationComponent::ImGui(float itemSize) {
 	// ループ再生・リスタート
 	if (ImGui::CollapsingHeader("Playback", ImGuiTreeNodeFlags_DefaultOpen)) {
 
+		ImGui::Checkbox("isDisplayBone", &isDisplayBone_);
 		ImGui::Checkbox("Loop", &roopAnimation_);
 		ImGui::SameLine();
 		if (ImGui::Button("Restart")) {
@@ -369,6 +379,36 @@ void AnimationComponent::DrawEventTimeline(const std::vector<int>& frames,
 			: IM_COL32(180, 180, 180, 255);
 
 		dl->AddCircleFilled(ImVec2(x, yCenter), radius, col);
+	}
+}
+
+void AnimationComponent::DebugDrawBone(const Matrix4x4& worldMatrix) {
+
+	if (!isDisplayBone_) {
+		return;
+	}
+
+	const int kDiv = 6;          // 球分割数
+	const float kRadius = 0.32f; // 球半径
+	const Color kColor = Color::White();
+
+	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+
+	for (const Joint& joint : skeleton_.joints) {
+
+		// ワールド座標の取得
+		Vector3 jointPosW = Vector3::Transform(Vector3::AnyInit(0.0f),
+			joint.skeletonSpaceMatrix * worldMatrix);
+
+		// 親と子のjointを結ぶ
+		if (joint.parent) {
+
+			const Joint& parent = skeleton_.joints[*joint.parent];
+			Vector3 parentWorldPos = Vector3::Transform(Vector3::AnyInit(0.0f),
+				parent.skeletonSpaceMatrix * worldMatrix);
+			lineRenderer->DrawDepthIgonreLine3D(parentWorldPos, jointPosW, kColor);
+		}
+		lineRenderer->DrawDepthIgonreSphere(kDiv, kRadius, jointPosW, kColor);
 	}
 }
 

@@ -184,6 +184,9 @@ void RenderEngine::Renderers(ViewType type) {
 	ParticleSystem::GetInstance()->Rendering(static_cast<bool>(type),
 		sceneBuffer_.get(), dxCommand_->GetCommandList());
 
+	// line描画実行、depth無効
+	LineRenderer::GetInstance()->ExecuteDepthIgonreLine(static_cast<bool>(type));
+
 	// sprite描画、postPrecess適用
 	// model描画後
 	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PostModel, sceneBuffer_.get(), dxCommand_);
