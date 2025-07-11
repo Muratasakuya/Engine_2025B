@@ -157,7 +157,7 @@ void CollisionManager::Update() {
 	preCollisions_ = currentCollisions;
 
 	// colliderの描画
-	DrawCollider();
+	//DrawCollider();
 }
 
 bool CollisionManager::IsColliding(CollisionBody* colliderA, CollisionBody* colliderB) {
