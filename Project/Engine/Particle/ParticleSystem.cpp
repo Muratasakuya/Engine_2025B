@@ -8,6 +8,7 @@
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Scene/SceneView.h>
+#include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
 //	ParticleSystem classMethods
@@ -176,6 +177,15 @@ void ParticleSystem::ResetParticleData() {
 
 	// renderDataをクリア
 	renderParticleData_.clear();
+}
+
+void ParticleSystem::ResetParticleData(const std::string& emitterName) {
+
+	if (!Algorithm::Find(gameEmitters_, emitterName)) {
+		return;
+	}
+
+	gameEmitters_[emitterName]->ResetParticle();
 }
 
 void ParticleSystem::UpdateEmitter() {

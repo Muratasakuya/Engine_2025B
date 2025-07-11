@@ -56,6 +56,7 @@ void GameScene::Load() {
 	ParticleSystem::GetInstance()->LoadEmitter("hitEffectEmitter", "hitEffectEmitter");
 	ParticleSystem::GetInstance()->LoadEmitter("groundEffectEmitter", "groundEffectEmitter");
 	ParticleSystem::GetInstance()->LoadEmitter("bossWarningAttackEmitter", "bossWarningAttackEmitter");
+	ParticleSystem::GetInstance()->LoadEmitter("bossHandFireEmitter", "bossHandFireEmitter");
 
 	//========================================================================
 	//	environment
@@ -186,9 +187,9 @@ void GameScene::Init() {
 	// light
 	gameLight_ = std::make_unique<PunctualLight>();
 	gameLight_->Init();
-	gameLight_->directional.direction.x = -0.381f;
-	gameLight_->directional.direction.y = -0.604f;
-	gameLight_->directional.direction.z = -0.699f;
+	gameLight_->directional.direction.x = 0.558f;
+	gameLight_->directional.direction.y = -0.476f;
+	gameLight_->directional.direction.z = -0.68f;
 	gameLight_->directional.color = Color::Convert(0xadceffff);
 
 	sceneView_->SetLight(gameLight_.get());

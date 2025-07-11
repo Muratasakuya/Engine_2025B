@@ -46,4 +46,11 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 		commandList->Dispatch(threadGroupCountX, threadGroupCountY, 1);
 		break;
 	}
+
+	// UAVバリアを貼る
+	D3D12_RESOURCE_BARRIER uavBarrier{};
+	uavBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	uavBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	uavBarrier.UAV.pResource = processor->GetOutputTextureResource();
+	commandList->ResourceBarrier(1, &uavBarrier);
 }

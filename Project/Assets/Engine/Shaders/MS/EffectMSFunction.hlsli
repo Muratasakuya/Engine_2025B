@@ -10,12 +10,12 @@
 
 struct Material {
 
-	// color
-	float4 color;
-	
 	// texture
 	uint textureIndex;
 	uint noiseTextureIndex;
+	
+	// color
+	float4 color;
 	
 	// flags
 	uint useNoiseTexture;

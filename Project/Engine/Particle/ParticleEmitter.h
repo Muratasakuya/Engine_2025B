@@ -23,12 +23,12 @@
 // bufferデータ
 struct EffectMaterial {
 
-	//色
-	Color color;
-
 	// texure
 	uint32_t textureIndex;
 	uint32_t noiseTextureIndex;
+
+	//色
+	Color color;
 
 	// flags
 	int32_t useNoiseTexture; // noiseTextureを使うか
@@ -157,6 +157,8 @@ public:
 	void Update(const Matrix4x4& billboardMatrix, bool useGame);
 
 	void ImGui();
+
+	void ResetParticle();
 
 	// 発生処理
 	void Emit();

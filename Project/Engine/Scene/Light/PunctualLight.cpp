@@ -15,7 +15,7 @@ void DirectionalLight::Init() {
 
 	color = Color::White();
 	direction = { 0.0f,-1.0f,0.0f };
-	intensity = 0.8f;
+	intensity = 1.4f;
 }
 
 void DirectionalLight::ImGui(float itemWidth) {

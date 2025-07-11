@@ -278,6 +278,15 @@ void ParticleEmitter::UpdateFrequencyEmit() {
 	}
 }
 
+void ParticleEmitter::ResetParticle() {
+
+	// particleをすべて消す
+	for (auto& particleGroup : particleGroups_) {
+
+		particleGroup.particles.clear();
+	}
+}
+
 void ParticleEmitter::SetTranslate(const Vector3& translate) {
 
 	// emitterの形状別で回転を設定

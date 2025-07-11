@@ -35,6 +35,7 @@ public:
 	void ImGui() override;
 
 	void ResetParticleData();
+	void ResetParticleData(const std::string& emitterName);
 
 	// Game: user
 	// emitter読み込み処理(初期化、作成)

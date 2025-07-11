@@ -23,7 +23,7 @@ void GraphicsPlatform::InitDXDevice() {
 		debugController->EnableDebugLayer();
 
 		// さらにGPU側でもチェックを行うようにする
-		debugController->SetEnableGPUBasedValidation(TRUE);
+		debugController->SetEnableGPUBasedValidation(FALSE);
 	}
 #endif
 

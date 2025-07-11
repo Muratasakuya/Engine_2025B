@@ -133,12 +133,7 @@ void DxShaderCompiler::CompileShader(
 
 	LPCWSTR level = L"";
 	// shader最適化設定
-#if defined(_DEBUG)
-
-	level = L"-Od";
-#else
 	level = L"-O3";
-#endif
 
 	LPCWSTR arguments[] = {
 		filePath.c_str(),
