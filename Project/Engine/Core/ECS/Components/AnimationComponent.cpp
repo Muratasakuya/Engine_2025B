@@ -397,9 +397,9 @@ void AnimationComponent::DebugDrawBone(const Matrix4x4& worldMatrix) {
 		return;
 	}
 
-	constexpr int kDivision = 8;
+	constexpr int kDivision = 4;
 	constexpr float kRatioTop = 0.02f;
-	constexpr float kRatioBase = 0.06f;
+	constexpr float kRatioBase = 0.088f;
 
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
 

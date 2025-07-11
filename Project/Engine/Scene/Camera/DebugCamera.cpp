@@ -16,14 +16,14 @@ void DebugCamera::Init() {
 	panSpeed_ = 0.64f;
 
 	// 初期値設定
-	fovY_ = 0.45f;
+	fovY_ = 0.54f;
 	nearClip_ = 0.1f;
-	farClip_ = 1024.0f;
+	farClip_ = 3200.0f;
 
 	eulerRotation_ = Vector3(0.26f, 0.0f, 0.0f);
 	transform_.scale = Vector3::AnyInit(1.0f);
 	transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
-	transform_.translation = Vector3(0.0f, 22.0f, -80.0f);
+	transform_.translation = Vector3(0.0f, 30.733f, -112.363f);
 
 	// 行列更新
 	transform_.UpdateMatrix();
