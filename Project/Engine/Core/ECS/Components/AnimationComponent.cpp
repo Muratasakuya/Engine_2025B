@@ -21,7 +21,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 	asset_ = nullptr;
 	asset_ = asset;
 
-	isDisplayBone_ = true;
+	isDisplayBone_ = false;
 
 	// 初期値
 	transitionDuration_ = 0.4f;
@@ -46,7 +46,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 	}
 
 	// ループ再生状態にする
-	SetPlayAnimation(currentAnimationName_, false);
+	SetPlayAnimation(currentAnimationName_, true);
 }
 
 void AnimationComponent::Update(const Matrix4x4& worldMatrix) {
@@ -388,8 +388,8 @@ void AnimationComponent::DebugDrawBone(const Matrix4x4& worldMatrix) {
 		return;
 	}
 
-	const int kDiv = 6;          // 球分割数
-	const float kRadius = 0.32f; // 球半径
+	const int kDiv = 2;          // 球分割数
+	const float kRadius = 0.08f; // 球半径
 	const Color kColor = Color::White();
 
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();

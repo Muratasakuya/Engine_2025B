@@ -23,7 +23,7 @@
     ],
     "DepthStencil":[
         {
-            "DepthEnable": "FALSE",
+            "DepthEnable": "TRUE",
             "DepthWriteMask": "ZERO",
             "DepthFunc": "ALWAYS"
         }

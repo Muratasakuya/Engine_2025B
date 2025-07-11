@@ -79,6 +79,8 @@ EngineInformation:     load animation: bossEnemy_strongAttack
 EngineInformation:     load animation: bossEnemy_stun
 EngineInformation:     load animation: bossEnemy_stunUpdate
 EngineInformation:     load animation: bossEnemy_teleport
+EngineInformation:     load model: BrainStem
+EngineInformation:     load animation: BrainStem
 EngineInformation:     load texture: playerHPBackground
 EngineInformation:     load texture: playerHPBar
 EngineInformation:     load texture: playerSkilBar

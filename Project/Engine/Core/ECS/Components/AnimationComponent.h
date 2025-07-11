@@ -43,6 +43,8 @@ public:
 	void ResetAnimation();
 	// 切り替えAnimation
 	void SwitchAnimation(const std::string& nextAnimName, bool loopAnimation, float transitionDuration);
+	// 骨のデバッグ表示
+	void SetDebugViewBone(bool enable) { isDisplayBone_ = enable; }
 
 	// 親として更新するjointを設定
 	void SetParentJoint(const std::string& jointName);

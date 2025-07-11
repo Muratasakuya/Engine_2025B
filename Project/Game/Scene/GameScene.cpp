@@ -109,6 +109,9 @@ void GameScene::Load() {
 	asset_->LoadModel("bossEnemyWeapon");
 	asset_->LoadAnimation("bossEnemy", "bossEnemy");
 
+	asset_->LoadModel("BrainStem");
+	asset_->LoadAnimation("BrainStem", "BrainStem");
+
 	//========================================================================
 	//	player
 	//========================================================================
@@ -200,6 +203,14 @@ void GameScene::Init() {
 
 	ECSManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
 
+	viewAnimation_ = std::make_unique<GameEntity3D>();
+	viewAnimation_->Init("BrainStem", "BrainStem", "Animation", "BrainStem");
+
+	// 設定
+	viewAnimation_->SetScale(Vector3::AnyInit(8.0f));
+	viewAnimation_->SetTranslation(Vector3(0.0f, 0.0f, 48.0f));
+	viewAnimation_->SetDebugViewBone(true);
+
 	//========================================================================
 	//	editor
 	//========================================================================
@@ -241,7 +252,7 @@ void GameScene::Update() {
 
 	bossEnemy_->Update();
 	player_->Update();
-	
+
 	//========================================================================
 	//	sceneObject
 	//========================================================================

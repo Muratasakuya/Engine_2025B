@@ -61,6 +61,8 @@ public:
 
 	// animation
 	void SetNextAnimation(const std::string& nextAnimationName, bool loopAnimation, float transitionDuration);
+	void SetDebugViewBone(bool enable) { animation_->SetDebugViewBone(enable); }
+
 	void ResetAnimation();
 	Vector3 GetJointWorldPos(const std::string& jointName) const;
 	bool IsAnimationFinished() const { return animation_->IsAnimationFinished(); }
