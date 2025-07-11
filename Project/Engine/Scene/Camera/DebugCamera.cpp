@@ -12,8 +12,8 @@
 
 void DebugCamera::Init() {
 
-	zoomRate_ = 1.0f;
-	panSpeed_ = 0.1f;
+	zoomRate_ = 2.0f;
+	panSpeed_ = 0.64f;
 
 	// 初期値設定
 	fovY_ = 0.45f;

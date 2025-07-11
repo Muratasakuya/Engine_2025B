@@ -21,7 +21,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 	asset_ = nullptr;
 	asset_ = asset;
 
-	isDisplayBone_ = false;
+	isDisplayBone_ = true;
 
 	// 初期値
 	transitionDuration_ = 0.4f;

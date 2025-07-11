@@ -209,7 +209,6 @@ void GameScene::Init() {
 	// 設定
 	viewAnimation_->SetScale(Vector3::AnyInit(8.0f));
 	viewAnimation_->SetTranslation(Vector3(0.0f, 0.0f, 48.0f));
-	viewAnimation_->SetDebugViewBone(true);
 
 	//========================================================================
 	//	editor
