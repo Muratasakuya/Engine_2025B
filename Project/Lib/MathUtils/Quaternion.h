@@ -84,7 +84,11 @@ public:
 
 	static Quaternion LookAt(const Vector3& from, const Vector3& to, const Vector3& up);
 
+	static Quaternion FromToRotation(const Vector3& from, const Vector3& to);
+
 	static Quaternion FromRotationMatrix(const Matrix4x4& m);
+
+	static Quaternion FromToY(const Vector3& direction);
 
 	static Quaternion LookTarget(const Vector3& from, const Vector3& to, const Vector3& axis,
 		const Quaternion& rotation, float lerpRate);

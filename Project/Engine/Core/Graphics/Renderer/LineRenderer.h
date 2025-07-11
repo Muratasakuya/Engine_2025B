@@ -54,6 +54,8 @@ public:
 
 	void DrawCone(int division, float baseRadius, float topRadius, float height,
 		const Vector3& centerPos, const Vector3& eulerRotate, const Color& color);
+	void DrawDepthIgonreCone(int division, float baseRadius, float topRadius, float height,
+		const Vector3& centerPos, const Quaternion& rotation, const Color& color);
 
 	void DrawCircle(int division, float radius, const Vector3& center, const Color& color);
 

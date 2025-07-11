@@ -399,6 +399,40 @@ void LineRenderer::DrawCone(int division, float baseRadius, float topRadius, flo
 	}
 }
 
+void LineRenderer::DrawDepthIgonreCone(int division, float baseRadius, float topRadius,
+	float height, const Vector3& centerPos, const Quaternion& rotation, const Color& color) {
+
+	const float kAngleStep = 2.0f * std::numbers::pi_v<float> / division;
+
+	std::vector<Vector3> baseCircle;
+	std::vector<Vector3> topCircle;
+
+	// 基底円と上面円の計算
+	for (int i = 0; i <= division; ++i) {
+
+		float angle = i * kAngleStep;
+		baseCircle.emplace_back(baseRadius * std::cos(angle), 0.0f, baseRadius * std::sin(angle));
+		topCircle.emplace_back(topRadius * std::cos(angle), height, topRadius * std::sin(angle));
+	}
+
+	Matrix4x4 rotationMatrix = Quaternion::MakeRotateMatrix(rotation);
+
+	for (int i = 0; i < division; ++i) {
+		// 円周上の点を回転＆平行移動
+		Vector3 baseA = rotationMatrix.TransformPoint(baseCircle[i]) + centerPos;
+		Vector3 baseB = rotationMatrix.TransformPoint(baseCircle[i + 1]) + centerPos;
+		Vector3 topA = rotationMatrix.TransformPoint(topCircle[i]) + centerPos;
+		Vector3 topB = rotationMatrix.TransformPoint(topCircle[i + 1]) + centerPos;
+
+		// 円の描画
+		DrawDepthIgonreLine3D(baseA, baseB, color);
+		DrawDepthIgonreLine3D(topA, topB, color);
+
+		// 側面の描画
+		DrawDepthIgonreLine3D(baseA, topA, color);
+	}
+}
+
 void LineRenderer::DrawCircle(int division, float radius,
 	const Vector3& center, const Color& color) {
 

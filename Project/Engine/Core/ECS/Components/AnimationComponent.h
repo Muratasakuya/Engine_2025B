@@ -102,6 +102,7 @@ private:
 
 	// 骨の線描画を行うかどうか
 	bool isDisplayBone_;
+	std::vector<std::vector<int>> children_;
 
 	//--------- variables ----------------------------------------------------
 

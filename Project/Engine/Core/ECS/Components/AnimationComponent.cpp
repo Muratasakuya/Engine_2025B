@@ -45,6 +45,15 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 		}
 	}
 
+	// 子の値を設定
+	children_.assign(skeleton_.joints.size(), {});
+	for (size_t i = 0; i < skeleton_.joints.size(); ++i) {
+		if (skeleton_.joints[i].parent) {
+
+			children_[*skeleton_.joints[i].parent].push_back(static_cast<int>(i));
+		}
+	}
+
 	// ループ再生状態にする
 	SetPlayAnimation(currentAnimationName_, true);
 }
@@ -388,27 +397,45 @@ void AnimationComponent::DebugDrawBone(const Matrix4x4& worldMatrix) {
 		return;
 	}
 
-	const int kDiv = 2;          // 球分割数
-	const float kRadius = 0.08f; // 球半径
-	const Color kColor = Color::White();
+	constexpr int kDivision = 8;
+	constexpr float kRatioTop = 0.02f;
+	constexpr float kRatioBase = 0.06f;
 
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
 
-	for (const Joint& joint : skeleton_.joints) {
+	// jointの描画
+	std::vector<Vector3> worldPos(skeleton_.joints.size());
+	for (size_t i = 0; i < skeleton_.joints.size(); ++i) {
 
-		// ワールド座標の取得
-		Vector3 jointPosW = Vector3::Transform(Vector3::AnyInit(0.0f),
-			joint.skeletonSpaceMatrix * worldMatrix);
+		worldPos[i] = Vector3::Transform(Vector3::AnyInit(0.0f),
+			skeleton_.joints[i].skeletonSpaceMatrix * worldMatrix);
+		lineRenderer->DrawDepthIgonreSphere(kDivision, 0.32f, worldPos[i], Color::Green());
+	}
 
-		// 親と子のjointを結ぶ
-		if (joint.parent) {
+	// 親から子に向けて描画
+	for (size_t parent = 0; parent < skeleton_.joints.size(); ++parent) {
+		for (int children : children_[parent]) {
 
-			const Joint& parent = skeleton_.joints[*joint.parent];
-			Vector3 parentWorldPos = Vector3::Transform(Vector3::AnyInit(0.0f),
-				parent.skeletonSpaceMatrix * worldMatrix);
-			lineRenderer->DrawDepthIgonreLine3D(parentWorldPos, jointPosW, kColor);
+			Vector3 base = worldPos[parent];  // 親
+			Vector3 tip = worldPos[children]; // 子
+			Vector3 direction = tip - base;
+			float length = direction.Length();
+			if (length < 1e-4f) {
+				continue;
+			}
+
+			direction.x /= length;
+			direction.y /= length;
+			direction.z /= length;
+			Quaternion rotation = Quaternion::FromToY(direction);
+			rotation = rotation.Inverse(rotation);
+
+			float top = length * kRatioTop;
+			float bottom = length * kRatioBase;
+
+			lineRenderer->DrawDepthIgonreCone(kDivision, bottom, top,
+				length, base, rotation, Color::Convert(0xffff00ff));
 		}
-		lineRenderer->DrawDepthIgonreSphere(kDiv, kRadius, jointPosW, kColor);
 	}
 }
 

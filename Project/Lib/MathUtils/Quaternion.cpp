@@ -344,6 +344,52 @@ Quaternion Quaternion::LookAt(const Vector3& from, const Vector3& to, const Vect
 	return Quaternion::FromRotationMatrix(rotationMatrix);
 }
 
+Quaternion Quaternion::FromToY(const Vector3& direction) {
+
+	const Vector3 kY(0.0f, 1.0f, 0.0f);
+
+	float dot = Vector3::Dot(kY, direction);
+	// ほぼ同方向
+	if (dot > 0.9999f) {
+		return Quaternion::IdentityQuaternion();
+	}
+	// ほぼ逆方向
+	if (dot < -0.9999f) {
+		return Quaternion::MakeRotateAxisAngleQuaternion(Vector3(1.0f, 0.0f, 0.0f), pi);
+	}
+
+	Vector3 axis = Vector3::Normalize(Vector3::Cross(kY, direction));
+	float   ang = std::acos(std::clamp(dot, -1.0f, 1.0f));
+
+	return Quaternion::MakeRotateAxisAngleQuaternion(axis, ang);
+}
+
+Quaternion Quaternion::FromToRotation(const Vector3& from, const Vector3& to) {
+
+	Vector3 f = from.Normalize();
+	Vector3 t = to.Normalize();
+	float   dot = Vector3::Dot(f, t);
+
+	// ほぼ同じ向き
+	if (dot > 1.0f - 1e-6f) {
+		return IdentityQuaternion();
+	}
+	// ほぼ真逆 (180°) のときは任意の垂直軸で回す
+	if (dot < -1.0f + 1e-6f) {
+		Vector3 axis = Vector3::Cross(f, Vector3(1, 0, 0));
+		if (axis.Length() < 1e-6f) {
+			axis = Vector3::Cross(f, Vector3(0, 1, 0));
+		}
+		axis = axis.Normalize();
+		return MakeRotateAxisAngleQuaternion(axis, std::numbers::pi_v<float>);
+	}
+
+	// 一般ケース
+	Vector3 axis = Vector3::Cross(f, t).Normalize();
+	float   angle = std::acos(std::clamp(dot, -1.0f, 1.0f));
+	return MakeRotateAxisAngleQuaternion(axis, angle);
+}
+
 Quaternion Quaternion::FromRotationMatrix(const Matrix4x4& m) {
 
 	Quaternion q;
