@@ -71,9 +71,23 @@ void GameScene::Load() {
 	asset_->LoadModel("field");
 	asset_->LoadModel("fieldUnder");
 	asset_->LoadModel("fence");
-	asset_->LoadModel("loftNurbs");
-	asset_->LoadModel("rustyMetal");
 	asset_->LoadModel("wall");
+	asset_->LoadModel("antenna");
+	asset_->LoadModel("columnMetalSupport");
+	asset_->LoadModel("columnPipes");
+	asset_->LoadModel("lghtStreet");
+	asset_->LoadModel("lightSquare");
+	asset_->LoadModel("platformField");
+	asset_->LoadModel("platformRound");
+	asset_->LoadModel("propCable");
+	asset_->LoadModel("propCableLong");
+	asset_->LoadModel("propRailOrigin");
+	asset_->LoadModel("railLong");
+	asset_->LoadModel("signCorner");
+	asset_->LoadModel("steelbeams");
+	asset_->LoadModel("tiltedWarningWall");
+	asset_->LoadModel("wall");
+	asset_->LoadModel("warningWall");
 
 	//========================================================================
 	//	enemy

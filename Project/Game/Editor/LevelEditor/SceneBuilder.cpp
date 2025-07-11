@@ -185,8 +185,9 @@ void SceneBuilder::ApplyTransform(GameEntity3D& entity, const Json& obj) {
 	if (transform.contains("rotation_quaternion")) {
 
 		const auto& R = transform["rotation_quaternion"];
-		entity.SetRotation(Quaternion(R[0].get<float>(), -R[2].get<float>(),
-			-R[1].get<float>(), R[3].get<float>()).Normalize());
+		entity.SetRotation(
+			Quaternion(R[0].get<float>(), R[2].get<float>(),
+				-R[1].get<float>(), R[3].get<float>()).Normalize());
 	}
 }
 
