@@ -24,13 +24,14 @@ void LevelEditor::Init(const std::string& initSceneFile) {
 
 void LevelEditor::SaveEntity(GameEntity3D* entity) {
 
-	if (ImGui::Button(("Save Material..." + entity->GetIdentifier() + ".json").c_str())) {
+	const std::string& identifier = Algorithm::RemoveAfterUnderscore(entity->GetIdentifier());
+	if (ImGui::Button(("Save Material..." + identifier + ".json").c_str())) {
 
 		Json data;
 		// materialを保存
 		entity->SaveMaterial(data);
 
-		JsonAdapter::Save(jsonPath_ + entity->GetIdentifier() + ".json", data);
+		JsonAdapter::Save(jsonPath_ + identifier + ".json", data);
 	}
 }
 
@@ -94,8 +95,8 @@ void LevelEditor::ImGui() {
 void LevelEditor::SelectEntity() {
 
 	// entityType選択
-	const char* typeOptions[] = {
-		"None","CrossMarkWall",
+	const char* typeOptions[] = { 
+		"None","CrossMarkWall"
 	};
 
 	int typeIndex = static_cast<int>(currentSelectType_);
@@ -108,6 +109,7 @@ void LevelEditor::SelectEntity() {
 				typeIndex = i;
 				currentSelectType_ = static_cast<Level::EntityType>(i);
 				currentSelectIndex_.reset();
+				selectFilter_.Clear();
 			}
 			if (isSelected) ImGui::SetItemDefaultFocus();
 		}
@@ -120,21 +122,33 @@ void LevelEditor::SelectEntity() {
 		return;
 	}
 
+	// 検索ボックス 
+	selectFilter_.Draw("##SearchEntity", rightChildSize_.x - 16.0f);
 	ImGui::Separator();
 
+	// 一覧
 	const auto& entityVec = mapIt->second;
+	bool hasResult = false;
 	for (int i = 0; i < static_cast<int>(entityVec.size()); ++i) {
 
-		const std::string& name = entityVec[i]->GetTag().name + "_" + entityVec[i]->GetIdentifier();
-		bool selected = (currentSelectIndex_.has_value() && currentSelectIndex_.value() == i);
+		const std::string name = entityVec[i]->GetTag().name + "_" + entityVec[i]->GetIdentifier();
+		if (!selectFilter_.PassFilter(name.c_str())) { 
+			continue;
+		}
+
+		hasResult = true;
+		bool selected = (currentSelectIndex_ && *currentSelectIndex_ == i);
 		if (ImGui::Selectable(name.c_str(), selected)) {
 
 			currentSelectIndex_ = i;
 		}
-		if (selected) {
+		if (selected) ImGui::SetItemDefaultFocus();
+	}
 
-			ImGui::SetItemDefaultFocus();
-		}
+	// 検索に引っかからなかった場合
+	if (!hasResult) {
+
+		ImGui::TextDisabled("No matches...");
 	}
 }
 

@@ -1,7 +1,7 @@
 # Blender 4.4.0 MTL File: 'gameField.blend'
 # www.blender.org
 
-newmtl Grey.030
+newmtl Grey.009
 Ns 224.999985
 Ka 1.000000 1.000000 1.000000
 Kd 0.173351 0.173351 0.173351
@@ -11,7 +11,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl Light.001
+newmtl Light.004
 Ns 224.999985
 Ka 1.000000 1.000000 1.000000
 Kd 0.800000 0.800000 0.800000
@@ -21,7 +21,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 
-newmtl LightGrey.025
+newmtl LightGrey.008
 Ns 224.999985
 Ka 1.000000 1.000000 1.000000
 Kd 0.259796 0.259796 0.259796

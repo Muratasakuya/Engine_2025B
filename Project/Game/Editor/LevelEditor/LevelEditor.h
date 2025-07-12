@@ -54,8 +54,9 @@ private:
 	std::optional<int> currentSelectIndex_; // 選択インデックス
 
 	// editor
-	ImVec2 rightChildSize_; // 右側
-	ImVec2 buttonSize_;    // ボタンサイズ
+	ImVec2 rightChildSize_;        // 右側
+	ImVec2 buttonSize_;            // ボタンサイズ
+	ImGuiTextFilter selectFilter_; // 検索フィルター
 
 	//--------- functions ----------------------------------------------------
 

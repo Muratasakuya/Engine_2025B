@@ -19,6 +19,8 @@ SpriteComponent::SpriteComponent(ID3D12Device* device, Asset* asset,
 	asset_ = asset;
 
 	textureName_ = textureName;
+	preTextureName_ = textureName;
+	metadata_ = asset_->GetMetaData(textureName_);
 
 	layer_ = SpriteLayer::PostModel;
 	postProcessEnable_ = false;
@@ -37,15 +39,20 @@ void SpriteComponent::UpdateVertex(const Transform2DComponent& transform) {
 	float top = 0.0f - transform.anchorPoint.y;
 	float bottom = 1.0f - transform.anchorPoint.y;
 
-	// textureMetadataの取得
-	const DirectX::TexMetadata& metadata = asset_->GetMetaData(textureName_);
+	// textureに変更があったときのみ
+	if (preTextureName_ != textureName_) {
+
+		// metaData更新
+		metadata_ = asset_->GetMetaData(textureName_);
+		preTextureName_ = textureName_;
+	}
 
 	// 横
-	float texLeft = transform.textureLeftTop.x / static_cast<float>(metadata.width);
-	float texRight = (transform.textureLeftTop.x + transform.textureSize.x) / static_cast<float>(metadata.width);
+	float texLeft = transform.textureLeftTop.x / static_cast<float>(metadata_.width);
+	float texRight = (transform.textureLeftTop.x + transform.textureSize.x) / static_cast<float>(metadata_.width);
 	// 縦
-	float texTop = transform.textureLeftTop.y / static_cast<float>(metadata.height);
-	float texBottom = (transform.textureLeftTop.y + transform.textureSize.y) / static_cast<float>(metadata.height);
+	float texTop = transform.textureLeftTop.y / static_cast<float>(metadata_.height);
+	float texBottom = (transform.textureLeftTop.y + transform.textureSize.y) / static_cast<float>(metadata_.height);
 
 	// vertexデータの更新
 	// 左下

@@ -112,7 +112,8 @@ void SceneBuilder::BuildEntities(const Json& obj,
 Json SceneBuilder::LoadEntityFile(const std::string& identifier) {
 
 	Json data;
-	if (!JsonAdapter::LoadCheck(jsonPath_ + identifier + ".json", data)) {
+	const std::string& newIdentifier = Algorithm::RemoveAfterUnderscore(identifier);
+	if (!JsonAdapter::LoadCheck(jsonPath_ + newIdentifier + ".json", data)) {
 
 		// 読み込めなかった場合空のJsonを返す
 		return Json();

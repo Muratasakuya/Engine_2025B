@@ -61,9 +61,9 @@ void SceneView::UpdateLight() {
 	// pointLight、spotLightのデバッグ表示
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	// point
-	//DisplayPointLight();
+	DisplayPointLight();
 	// spot
-	//DisplaySpotLight();
+	DisplaySpotLight();
 #endif
 }
 
@@ -214,7 +214,7 @@ void SceneView::DisplayPointLight() {
 		sphereDivision,
 		sphereRadius,
 		light->point.pos,
-		sphereColor);
+		sphereColor, LineType::DepthIgnore);
 }
 
 void SceneView::DisplaySpotLight() {
@@ -245,7 +245,7 @@ void SceneView::DisplaySpotLight() {
 		Vector3 p2 = baseCenter + Vector3(cosf(theta2), 0, sinf(theta2)) * radius;
 
 		// coneの形状で描画
-		lineRenderer->DrawLine3D(p1, p2, coneColor);
-		lineRenderer->DrawLine3D(pos, p1, coneColor);
+		lineRenderer->DrawLine3D(p1, p2, coneColor, LineType::DepthIgnore);
+		lineRenderer->DrawLine3D(pos, p1, coneColor, LineType::DepthIgnore);
 	}
 }

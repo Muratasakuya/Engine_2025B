@@ -7,6 +7,8 @@
 #include <Engine/Core/ECS/Components/TransformComponent.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 
+// directX
+#include <Externals/DirectXTex/DirectXTex.h>
 // c++
 #include <string>
 // front
@@ -73,7 +75,9 @@ private:
 	Asset* asset_;
 
 	std::string textureName_;
+	std::string preTextureName_;
 	std::optional<std::string> alphaTextureName_;
+	DirectX::TexMetadata metadata_;
 
 	SpriteLayer layer_;
 	bool postProcessEnable_;
