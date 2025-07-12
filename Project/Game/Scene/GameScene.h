@@ -51,9 +51,6 @@ private:
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<BossEnemy> bossEnemy_;
 
-	// viewAnimation
-	std::unique_ptr<GameEntity3D> viewAnimation_;
-
 	// editor
 	std::unique_ptr<GameEntityEditor> entityEditor_;
 	std::unique_ptr<LevelEditor> levelEditor_;

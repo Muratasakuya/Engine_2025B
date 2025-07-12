@@ -157,7 +157,7 @@ void CollisionManager::Update() {
 	preCollisions_ = currentCollisions;
 
 	// colliderの描画
-	//DrawCollider();
+	DrawCollider();
 }
 
 bool CollisionManager::IsColliding(CollisionBody* colliderA, CollisionBody* colliderB) {
@@ -215,7 +215,7 @@ void CollisionManager::DrawCollider() {
 				lineRenderer->DrawAABB(shapeData.GetMin(), shapeData.GetMax(), color);
 			} else if constexpr (std::is_same_v<ShapeType, CollisionShape::OBB>) {
 
-				lineRenderer->DrawOBB(shapeData, color);
+				lineRenderer->DrawOBB(shapeData.center, shapeData.size, shapeData.rotate, color);
 			}
 			}, shape);
 	}

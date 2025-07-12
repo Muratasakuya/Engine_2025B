@@ -21,7 +21,7 @@ void AnimationComponent::Init(const std::string& animationName, Asset* asset) {
 	asset_ = nullptr;
 	asset_ = asset;
 
-	isDisplayBone_ = true;
+	isDisplayBone_ = false;
 
 	// 初期値
 	transitionDuration_ = 0.4f;
@@ -409,7 +409,7 @@ void AnimationComponent::DebugDrawBone(const Matrix4x4& worldMatrix) {
 
 		worldPos[i] = Vector3::Transform(Vector3::AnyInit(0.0f),
 			skeleton_.joints[i].skeletonSpaceMatrix * worldMatrix);
-		lineRenderer->DrawDepthIgonreSphere(kDivision, 0.32f, worldPos[i], Color::Green());
+		lineRenderer->DrawSphere(kDivision, 0.32f, worldPos[i], Color::Green(), LineType::DepthIgnore);
 	}
 
 	// 親から子に向けて描画
@@ -433,8 +433,8 @@ void AnimationComponent::DebugDrawBone(const Matrix4x4& worldMatrix) {
 			float top = length * kRatioTop;
 			float bottom = length * kRatioBase;
 
-			lineRenderer->DrawDepthIgonreCone(kDivision, bottom, top,
-				length, base, rotation, Color::Convert(0xffff00ff));
+			lineRenderer->DrawCone(kDivision, bottom, top,
+				length, base, rotation, Color::Convert(0xffff00ff), LineType::DepthIgnore);
 		}
 	}
 }

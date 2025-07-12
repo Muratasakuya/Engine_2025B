@@ -175,7 +175,7 @@ void RenderEngine::Renderers(ViewType type) {
 	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PreModel, sceneBuffer_.get(), dxCommand_);
 
 	// line描画実行
-	LineRenderer::GetInstance()->ExecuteLine(static_cast<bool>(type));
+	LineRenderer::GetInstance()->ExecuteLine(static_cast<bool>(type), LineType::None);
 
 	// 通常描画処理
 	meshRenderer_->Rendering(static_cast<bool>(type), sceneBuffer_.get(), dxCommand_);
@@ -185,7 +185,7 @@ void RenderEngine::Renderers(ViewType type) {
 		sceneBuffer_.get(), dxCommand_->GetCommandList());
 
 	// line描画実行、depth無効
-	LineRenderer::GetInstance()->ExecuteDepthIgonreLine(static_cast<bool>(type));
+	LineRenderer::GetInstance()->ExecuteLine(static_cast<bool>(type), LineType::DepthIgnore);
 
 	// sprite描画、postPrecess適用
 	// model描画後
