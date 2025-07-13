@@ -20,7 +20,6 @@
 #include <Game/Objects/Player/State/States/PlayerAttack_2ndState.h>
 #include <Game/Objects/Player/State/States/PlayerAttack_3rdState.h>
 #include <Game/Objects/Player/State/States/PlayerSkilAttackState.h>
-#include <Game/Objects/Player/State/States/PlayerSpecialAttackState.h>
 #include <Game/Objects/Player/State/States/PlayerParryState.h>
 #include <Game/Objects/Player/State/States/PlayerSwitchAllyState.h>
 #include <Game/Objects/Player/State/States/PlayerStunAttackState.h>
@@ -34,7 +33,7 @@ namespace {
 	// 各状態の名前
 	const char* kStateNames[] = {
 		"None","Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
-		"SkilAttack","SpecialAttack","Parry","SwitchAlly","StunAttack",
+		"SkilAttack","Parry","SwitchAlly","StunAttack",
 	};
 
 	// jsonを保存するパス
@@ -57,7 +56,6 @@ void PlayerStateController::Init(Player& owner) {
 	states_.emplace(PlayerState::Attack_2nd, std::make_unique<PlayerAttack_2ndState>());
 	states_.emplace(PlayerState::Attack_3rd, std::make_unique<PlayerAttack_3rdState>());
 	states_.emplace(PlayerState::SkilAttack, std::make_unique<PlayerSkilAttackState>());
-	states_.emplace(PlayerState::SpecialAttack, std::make_unique<PlayerSpecialAttackState>());
 	states_.emplace(PlayerState::Parry, std::make_unique<PlayerParryState>());
 	states_.emplace(PlayerState::SwitchAlly, std::make_unique<PlayerSwitchAllyState>());
 	states_.emplace(PlayerState::StunAttack, std::make_unique<PlayerStunAttackState>(owner.GetAlly()));
@@ -272,11 +270,6 @@ void PlayerStateController::UpdateInputState() {
 
 			Request(PlayerState::SkilAttack);
 		}
-		// 必殺
-		if (inputMapper_->IsTriggered(PlayerAction::Special)) {
-
-			Request(PlayerState::SpecialAttack);
-		}
 	}
 }
 
@@ -420,7 +413,6 @@ bool PlayerStateController::IsCombatState(PlayerState state) const {
 	case PlayerState::Attack_2nd:
 	case PlayerState::Attack_3rd:
 	case PlayerState::SkilAttack:
-	case PlayerState::SpecialAttack:
 	case PlayerState::Parry:
 		return true;
 	default:

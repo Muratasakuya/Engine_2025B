@@ -55,7 +55,7 @@ void PlayerHUD::InitSprite() {
 	inputType_ = Input::GetInstance()->GetType();
 	preInputType_ = inputType_;
 
-	// 妻女の表示状態を設定
+	// 最初の表示状態を設定
 	attack_.ChangeDynamicSprite(inputType_);
 	dash_.ChangeDynamicSprite(inputType_);
 	skil_.ChangeDynamicSprite(inputType_);

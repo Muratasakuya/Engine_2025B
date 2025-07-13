@@ -21,7 +21,7 @@ namespace {
 	// 各状態の名前
 	const char* kStateNames[] = {
 		"None","Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
-		"SkilAttack","SpecialAttack","Parry","SwitchAlly","StunAttack",
+		"SkilAttack","Parry","SwitchAlly","StunAttack",
 	};
 	const char* kCollisionNames[] = {
 		"None","Test","Player","PlayerWeapon","BossEnemy","BossWeapon",

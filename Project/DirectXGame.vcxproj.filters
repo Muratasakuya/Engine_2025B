@@ -464,9 +464,6 @@
     <ClCompile Include="Game\Objects\Player\State\States\PlayerSkilAttackState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Game\Objects\Player\State\States\PlayerWalkState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -734,7 +731,6 @@
     <ClInclude Include="Game\Objects\Player\State\States\PlayerIdleState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerParryState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerSkilAttackState.h" />
-    <ClInclude Include="Game\Objects\Player\State\States\PlayerSpecialAttackState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerDashState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_1stState.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerAttack_2ndState.h" />
