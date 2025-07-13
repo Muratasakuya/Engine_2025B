@@ -169,7 +169,6 @@ void BossEnemy::Update() {
 
 	// particle更新
 	ParticleSystem::GetInstance()->UpdateEmitter("bossWarningAttackEmitter");
-	ParticleSystem::GetInstance()->UpdateEmitter("bossHandFireEmitter");
 }
 
 void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {

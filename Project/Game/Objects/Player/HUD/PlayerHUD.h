@@ -94,9 +94,9 @@ private:
 
 	// 操作方法表示
 	InputStateSprite attack_;  // 攻撃
-	InputStateSprite dash_;    // ダッシュ
+	InputStateSprite dash_;    // ダッシュ/回避
 	InputStateSprite skil_;    // スキル
-	InputStateSprite special_; // 必殺
+	InputStateSprite parry_;   // パリィ
 
 	// parameters
 	Vector2 leftSpriteTranslation_; // 左端のsprite座標

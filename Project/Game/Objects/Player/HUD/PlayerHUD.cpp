@@ -46,10 +46,10 @@ void PlayerHUD::InitSprite() {
 	dynamicTextures[InputType::GamePad] = "YButton";
 	skil_.Init(2, "skilIcon", dynamicTextures);
 
-	// 必殺
-	dynamicTextures[InputType::Keyboard] = "QButton";
-	dynamicTextures[InputType::GamePad] = "RTButton";
-	special_.Init(3, "specialIcon", dynamicTextures);
+	// パリィ
+	dynamicTextures[InputType::Keyboard] = "spaceButton";
+	dynamicTextures[InputType::GamePad] = "LBAndRBButton";
+	parry_.Init(3, "parryIcon", dynamicTextures);
 
 	// input状態を取得
 	inputType_ = Input::GetInstance()->GetType();
@@ -59,7 +59,7 @@ void PlayerHUD::InitSprite() {
 	attack_.ChangeDynamicSprite(inputType_);
 	dash_.ChangeDynamicSprite(inputType_);
 	skil_.ChangeDynamicSprite(inputType_);
-	special_.ChangeDynamicSprite(inputType_);
+	parry_.ChangeDynamicSprite(inputType_);
 }
 
 void PlayerHUD::Init() {
@@ -83,7 +83,7 @@ void PlayerHUD::SetDisable() {
 	attack_.SetAlpha(inputType_, 0.0f);
 	dash_.SetAlpha(inputType_, 0.0f);
 	skil_.SetAlpha(inputType_, 0.0f);
-	special_.SetAlpha(inputType_, 0.0f);
+	parry_.SetAlpha(inputType_, 0.0f);
 }
 
 void PlayerHUD::SetValid() {
@@ -136,7 +136,7 @@ void PlayerHUD::UpdateAlpha() {
 	attack_.SetAlpha(inputType_, alpha);
 	dash_.SetAlpha(inputType_, alpha);
 	skil_.SetAlpha(inputType_, alpha);
-	special_.SetAlpha(inputType_, alpha);
+	parry_.SetAlpha(inputType_, alpha);
 
 	if (returnAlphaTime_ < returnAlphaTimer_) {
 
@@ -148,7 +148,7 @@ void PlayerHUD::UpdateAlpha() {
 		attack_.SetAlpha(inputType_, 1.0f);
 		dash_.SetAlpha(inputType_, 1.0f);
 		skil_.SetAlpha(inputType_, 1.0f);
-		special_.SetAlpha(inputType_, 1.0f);
+		parry_.SetAlpha(inputType_, 1.0f);
 
 		// 元に戻ったので処理終了
 		returnAlphaTimer_ = 0.0f;
@@ -167,7 +167,7 @@ void PlayerHUD::ChangeAllOperateSprite() {
 	attack_.ChangeDynamicSprite(inputType_);
 	dash_.ChangeDynamicSprite(inputType_);
 	skil_.ChangeDynamicSprite(inputType_);
-	special_.ChangeDynamicSprite(inputType_);
+	parry_.ChangeDynamicSprite(inputType_);
 
 	preInputType_ = inputType_;
 }
@@ -183,7 +183,7 @@ void PlayerHUD::SetAllOperateTranslation() {
 	skil_.SetTranslation(leftSpriteTranslation_,
 		dynamicSpriteOffsetY_, operateSpriteSpancingX_);
 
-	special_.SetTranslation(leftSpriteTranslation_,
+	parry_.SetTranslation(leftSpriteTranslation_,
 		dynamicSpriteOffsetY_, operateSpriteSpancingX_);
 }
 
@@ -192,7 +192,9 @@ void PlayerHUD::SetAllOperateSize() {
 	attack_.SetSize(staticSpriteSize_, dynamicSpriteSize_);
 	dash_.SetSize(staticSpriteSize_, dynamicSpriteSize_);
 	skil_.SetSize(staticSpriteSize_, dynamicSpriteSize_);
-	special_.SetSize(staticSpriteSize_, dynamicSpriteSize_);
+
+	// 入力画像は2倍する
+	parry_.SetSize(staticSpriteSize_, Vector2(dynamicSpriteSize_.x * 2.0f, dynamicSpriteSize_.y));
 }
 
 void PlayerHUD::ImGui() {

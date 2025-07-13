@@ -56,7 +56,6 @@ void GameScene::Load() {
 	ParticleSystem::GetInstance()->LoadEmitter("hitEffectEmitter", "hitEffectEmitter");
 	ParticleSystem::GetInstance()->LoadEmitter("groundEffectEmitter", "groundEffectEmitter");
 	ParticleSystem::GetInstance()->LoadEmitter("bossWarningAttackEmitter", "bossWarningAttackEmitter");
-	ParticleSystem::GetInstance()->LoadEmitter("bossHandFireEmitter", "bossHandFireEmitter");
 
 	//========================================================================
 	//	environment
@@ -125,7 +124,7 @@ void GameScene::Load() {
 	asset_->LoadTexture("attackIcon");
 	asset_->LoadTexture("dashIcon");
 	asset_->LoadTexture("skilIcon");
-	asset_->LoadTexture("specialIcon");
+	asset_->LoadTexture("parryIcon");
 	// mouse
 	asset_->LoadTexture("leftMouseClick");
 	asset_->LoadTexture("rightMouseClick");
@@ -139,6 +138,8 @@ void GameScene::Load() {
 	asset_->LoadTexture("RTButton");
 	asset_->LoadTexture("RBButton");
 	asset_->LoadTexture("LBButton");
+	asset_->LoadTexture("spaceButton");
+	asset_->LoadTexture("LBAndRBButton");
 	// stun
 	asset_->LoadTexture("stunProgressBarBackground");
 	asset_->LoadTexture("stunProgressBar");

@@ -31,10 +31,6 @@ void BossEnemyIdleState::Update(BossEnemy& bossEnemy) {
 	Vector3 backStepVelocity = bossEnemy.GetTransform().GetBack() * backStepSpeed_ * GameTimer::GetDeltaTime();
 	bossEnemy.SetTranslation(bossPos + backStepVelocity);
 
-	// 左手からparticleを発生させる
-	ParticleSystem::GetInstance()->SetTranslate("bossHandFireEmitter", bossEnemy.GetJointWorldPos("leftHand"));
-	ParticleSystem::GetInstance()->FrequencyEmit("bossHandFireEmitter");
-
 	// animationが終了したら遷移可能にする
 	if (bossEnemy.GetAnimationRepeatCount() != 0) {
 
@@ -47,9 +43,6 @@ void BossEnemyIdleState::Exit(BossEnemy& bossEnemy) {
 	canExit_ = false;
 	// animationをリセットする
 	bossEnemy.ResetAnimation();
-
-	// particleを全て削除
-	ParticleSystem::GetInstance()->ResetParticleData("bossHandFireEmitter");
 }
 
 void BossEnemyIdleState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {

@@ -88,7 +88,7 @@ EngineInformation:     load texture: playerName
 EngineInformation:     load texture: attackIcon
 EngineInformation:     load texture: dashIcon
 EngineInformation:     load texture: skilIcon
-EngineInformation:     load texture: specialIcon
+EngineInformation:     load texture: parryIcon
 EngineInformation:     load texture: leftMouseClick
 EngineInformation:     load texture: rightMouseClick
 EngineInformation:     load texture: centerMouseClick
@@ -100,6 +100,8 @@ EngineInformation:     load texture: YButton
 EngineInformation:     load texture: RTButton
 EngineInformation:     load texture: RBButton
 EngineInformation:     load texture: LBButton
+EngineInformation:     load texture: spaceButton
+EngineInformation:     load texture: LBAndRBButton
 EngineInformation:     load texture: stunProgressBarBackground
 EngineInformation:     load texture: stunProgressBar
 EngineInformation:     load texture: CHAINATTACK
