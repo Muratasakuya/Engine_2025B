@@ -17,9 +17,9 @@ enum class PlayerAction :
 	MoveX,   // X移動
 	MoveZ,   // Z移動
 	Dash,    // ダッシュ
+	Avoid,   // 回避
 	Attack,  // 通常攻撃
 	Skill,   // スキル攻撃
-	Special, // 必殺攻撃
 	Switching,    // 切り替える
 	NotSwitching, // 切り替えない
 	Count,   // アクションの数

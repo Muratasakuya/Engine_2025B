@@ -16,6 +16,7 @@
 #include <Game/Objects/Player/State/States/PlayerIdleState.h>
 #include <Game/Objects/Player/State/States/PlayerWalkState.h>
 #include <Game/Objects/Player/State/States/PlayerDashState.h>
+#include <Game/Objects/Player/State/States/PlayerAvoidSatate.h>
 #include <Game/Objects/Player/State/States/PlayerAttack_1stState.h>
 #include <Game/Objects/Player/State/States/PlayerAttack_2ndState.h>
 #include <Game/Objects/Player/State/States/PlayerAttack_3rdState.h>
@@ -32,7 +33,7 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"None","Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
+		"None","Idle","Walk","Dash","Avoid","Attack_1st","Attack_2nd","Attack_3rd",
 		"SkilAttack","Parry","SwitchAlly","StunAttack",
 	};
 
@@ -52,6 +53,7 @@ void PlayerStateController::Init(Player& owner) {
 	states_.emplace(PlayerState::Idle, std::make_unique<PlayerIdleState>());
 	states_.emplace(PlayerState::Walk, std::make_unique<PlayerWalkState>());
 	states_.emplace(PlayerState::Dash, std::make_unique<PlayerDashState>());
+	states_.emplace(PlayerState::Avoid, std::make_unique<PlayerAvoidSatate>());
 	states_.emplace(PlayerState::Attack_1st, std::make_unique<PlayerAttack_1stState>());
 	states_.emplace(PlayerState::Attack_2nd, std::make_unique<PlayerAttack_2ndState>());
 	states_.emplace(PlayerState::Attack_3rd, std::make_unique<PlayerAttack_3rdState>());
@@ -169,15 +171,16 @@ void PlayerStateController::Update(Player& owner) {
 
 	// 何か予約設定されて入れば状態遷移させる
 	if (queued_) {
-		// 遷移可能状態かチェック
-		if (states_[current_]->GetCanExit() && CanTransition(*queued_, true)) {
+		bool canInterrupt = false;
+		if (auto it = conditions_.find(*queued_); it != conditions_.end()) {
+
+			canInterrupt = it->second.CheckInterruptableByState(current_);
+		}
+
+		if ((states_[current_]->GetCanExit() || canInterrupt) &&
+			CanTransition(*queued_, !canInterrupt)) {
 
 			requested_ = queued_;
-			queued_.reset();
-		}
-		// 条件外の場合はリセットする
-		else if (states_[current_]->GetCanExit()) {
-
 			queued_.reset();
 		}
 	}
@@ -227,6 +230,13 @@ void PlayerStateController::UpdateInputState() {
 			} else {
 
 				Request(PlayerState::Idle);
+
+				// 移動していないときに回避を押したら回避に遷移させる
+				if (inputMapper_->IsTriggered(PlayerAction::Avoid)) {
+
+					Request(PlayerState::Avoid);
+					return;
+				}
 			}
 		}
 	}
@@ -276,7 +286,7 @@ void PlayerStateController::UpdateInputState() {
 bool PlayerStateController::Request(PlayerState state) {
 
 	// 現在の状態と同じなら何もしない
-	if (state == current_ && !states_.at(current_)->GetCanExit()) {
+	if (state == current_) {
 		return false;
 	}
 	if (queued_ && *queued_ == state) {
@@ -289,8 +299,15 @@ bool PlayerStateController::Request(PlayerState state) {
 		return false;
 	}
 
+	// 強制遷移可能先かチェックする
+	bool canInterrupt = false;
+	if (auto it = conditions_.find(state); it != conditions_.end()) {
+
+		canInterrupt = it->second.CheckInterruptableByState(current_);
+	}
+
 	// 遷移可能か、現在の状態が終了可能かチェック
-	if (!states_.at(current_)->GetCanExit()) {
+	if (!states_.at(current_)->GetCanExit() && !canInterrupt) {
 
 		queued_ = state;
 	} else {
@@ -368,10 +385,6 @@ bool PlayerStateController::CanTransition(PlayerState next, bool viaQueue) const
 	// クールタイムが終わっていなければ遷移不可
 	if (itTime != lastEnterTime_.end() && totalTime - itTime->second < condition.coolTime) {
 
-		return false;
-	}
-	// SP比較
-	if (stats_.currentSkilPoint < condition.requireSkillPoint) {
 		return false;
 	}
 
@@ -491,7 +504,6 @@ void PlayerStateController::ImGui(const Player& owner) {
 
 			ImGui::DragFloat("CoolTime", &cond.coolTime, 0.01f, 0.0f);
 			ImGui::DragFloat("InputWindow", &cond.chainInputTime, 0.01f, 0.0f);
-			ImGui::DragInt("Need SP", &cond.requireSkillPoint, 1, 0);
 
 			// Allowed / Interruptable をテーブルで
 			if (ImGui::BeginTable("CondTable", 3, ImGuiTableFlags_Borders)) {

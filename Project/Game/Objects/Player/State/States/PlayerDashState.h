@@ -40,15 +40,30 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	enum class State {
+
+		Accel,   // 加速
+		Sustain, // 待ち
+		Decel    // 減速
+	};
+
 	//--------- variables ----------------------------------------------------
+
+	State currentState_;
 
 	Vector3 move_;    // 移動量
 	float moveSpeed_; // 移動速度
+	float sustainTimer_; // 最高速を維持する時間経過
+	float sustainTime_;  // 最高速を維持する時間
 
 	// ダッシュの速度補間
-	std::unique_ptr<SimpleAnimation<float>> speedLerpValue_;
+	std::unique_ptr<SimpleAnimation<float>> accelLerp_;
+	std::unique_ptr<SimpleAnimation<float>> decelLerp_;
 
 	//--------- functions ----------------------------------------------------
 
+	void UpdateState();
 	void UpdateDash(Player& player);
 };

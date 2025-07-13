@@ -499,15 +499,12 @@ void AnimationComponent::ResetAnimation() {
 
 	// animationリセット
 	repeatCount_ = 0;
+	currentAnimationTimer_ = 0.0f;
 	animationFinish_ = false;
 }
 
 void AnimationComponent::SwitchAnimation(const std::string& nextAnimName,
 	bool loopAnimation, float transitionDuration) {
-
-	if (currentAnimationName_ == nextAnimName) {
-		return;
-	}
 
 	prevFrameIndex_ = -1;
 

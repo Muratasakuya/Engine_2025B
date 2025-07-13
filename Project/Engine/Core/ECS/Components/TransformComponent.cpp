@@ -74,6 +74,24 @@ void BaseTransform::ImGui(float itemSize) {
 	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
 		rotation.x, rotation.y, rotation.z, rotation.w);
 	ImGui::DragFloat3("scale", &scale.x, 0.01f);
+
+	ImGui::SeparatorText("World Matrix");
+	if (ImGui::BeginTable("WorldMatrix", 4,
+		ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit)) {
+
+		const Matrix4x4& world = matrix.world;
+		for (int row = 0; row < 4; ++row) {
+
+			ImGui::TableNextRow();
+			for (int col = 0; col < 4; ++col) {
+
+				ImGui::TableSetColumnIndex(col);
+				ImGui::Text("%.3f", world.m[row][col]);
+			}
+		}
+		ImGui::EndTable();
+	}
+
 	ImGui::PopItemWidth();
 }
 

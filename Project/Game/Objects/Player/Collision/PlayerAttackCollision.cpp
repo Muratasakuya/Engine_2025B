@@ -20,7 +20,7 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"None","Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
+		"None","Idle","Walk","Dash","Avoid","Attack_1st","Attack_2nd","Attack_3rd",
 		"SkilAttack","Parry","SwitchAlly","StunAttack",
 	};
 	const char* kCollisionNames[] = {
@@ -97,6 +97,10 @@ void PlayerAttackCollision::SetEnterState(PlayerState state) {
 }
 
 void PlayerAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody) {
+
+	if (currentParameter_ == NULL) {
+		return;
+	}
 
 	if (collisionBody->GetType() == ColliderType::Type_BossEnemy) {
 

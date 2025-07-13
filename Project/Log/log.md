@@ -118,8 +118,10 @@ EngineInformation:     load model: playerLeftWeapon
 EngineInformation:     load animation: player_attack_1st
 EngineInformation:     load animation: player_attack_2nd
 EngineInformation:     load animation: player_attack_3rd
+EngineInformation:     load animation: player_avoid
 EngineInformation:     load animation: player_dash
 EngineInformation:     load animation: player_idle
+EngineInformation:     load animation: player_parry
 EngineInformation:     load animation: player_skilAttack
 EngineInformation:     load animation: player_stunAttack
 EngineInformation:     load animation: player_walk

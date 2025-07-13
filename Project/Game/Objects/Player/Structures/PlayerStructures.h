@@ -14,13 +14,14 @@ enum class PlayerState {
 
 	None,          // 無状態、ここに状態は作成しない
 	Idle,          // 何もしない
-	Walk,          // 歩き...       WASD/左スティック入力
-	Dash,          // ダッシュ...    右クリック/Aボタン
-	Attack_1st,    // 通常攻撃1段目...左クリック/Xボタン
-	Attack_2nd,    // 通常攻撃2段目...左クリック/Xボタン(1段目攻撃中にのみ入力受付)
-	Attack_3rd,    // 通常攻撃3段目...左クリック/Xボタン(2段目攻撃中にのみ入力受付)
-	SkilAttack,    // スキル攻撃...   E/Yボタン
-	Parry,         // 攻撃カウンター...Space/ショルダーボタン
+	Walk,          // 歩き...          WASD/左スティック入力
+	Dash,          // ダッシュ(回避)... 移動中に右クリック/Aボタン
+	Avoid,         // 回避...          静止中OR攻撃中に右クリック/Aボタン
+	Attack_1st,    // 通常攻撃1段目...  左クリック/Xボタン
+	Attack_2nd,    // 通常攻撃2段目...  左クリック/Xボタン(1段目攻撃中にのみ入力受付)
+	Attack_3rd,    // 通常攻撃3段目...  左クリック/Xボタン(2段目攻撃中にのみ入力受付)
+	SkilAttack,    // スキル攻撃...     E/Yボタン
+	Parry,         // 攻撃カウンター...  Space/ショルダーボタン
 	SwitchAlly,    // 味方を切り替えるか入力(Idle or StunAttack)
 	StunAttack,    // スタン攻撃、自動で行う
 };
@@ -45,10 +46,12 @@ struct PlayerStateCondition {
 
 	float coolTime;                           // 次に入るまでのクールタイム
 	std::vector<PlayerState> allowedPreState; // 遷移元を制限
-	int requireSkillPoint;                    // 必要SP
 	float chainInputTime;                     // 受付猶予
 	std::vector<PlayerState> interruptableBy; // 強制キャンセルできる遷移相手
 
 	void FromJson(const Json& data);
 	void ToJson(Json& data);
+
+	// helper
+	bool CheckInterruptableByState(PlayerState current);
 };

@@ -15,7 +15,7 @@ namespace {
 
 	// 各状態の名前
 	const char* kStateNames[] = {
-		"None","Idle","Walk","Dash","Attack_1st","Attack_2nd","Attack_3rd",
+		"None","Idle","Walk","Dash","Avoid","Attack_1st","Attack_2nd","Attack_3rd",
 		"SkilAttack","Parry","SwitchAlly","StunAttack",
 	};
 }
@@ -54,11 +54,13 @@ void Player::InitAnimations() {
 	// animationのデータを設定
 	animation_->SetAnimationData("player_walk");
 	animation_->SetAnimationData("player_dash");
+	animation_->SetAnimationData("player_avoid");
 	animation_->SetAnimationData("player_attack_1st");
 	animation_->SetAnimationData("player_attack_2nd");
 	animation_->SetAnimationData("player_attack_3rd");
 	animation_->SetAnimationData("player_skilAttack");
 	animation_->SetAnimationData("player_stunAttack");
+	animation_->SetAnimationData("player_parry");
 
 	// 両手を親として更新させる
 	animation_->SetParentJoint("rightHand");

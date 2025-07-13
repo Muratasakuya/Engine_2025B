@@ -12,7 +12,6 @@
 void PlayerStateCondition::FromJson(const Json& data) {
 
 	coolTime = JsonAdapter::GetValue<float>(data, "coolTime");
-	requireSkillPoint = JsonAdapter::GetValue<int>(data, "requireSkillPoint");
 	chainInputTime = JsonAdapter::GetValue<float>(data, "chainInputTime");
 
 	auto intsToStates = [](const Json& array) {
@@ -29,7 +28,6 @@ void PlayerStateCondition::FromJson(const Json& data) {
 void PlayerStateCondition::ToJson(Json& data) {
 
 	data["coolTime"] = coolTime;
-	data["requireSkillPoint"] = requireSkillPoint;
 	data["chainInputTime"] = chainInputTime;
 
 	auto statesToInts = [](const std::vector<PlayerState>& vector) {
@@ -40,4 +38,11 @@ void PlayerStateCondition::ToJson(Json& data) {
 		};
 	data["allowedPreState"] = JsonAdapter::FromVector<int>(statesToInts(allowedPreState));
 	data["interruptableBy"] = JsonAdapter::FromVector<int>(statesToInts(interruptableBy));
+}
+
+bool PlayerStateCondition::CheckInterruptableByState(PlayerState current) {
+
+	// 含まれているかチェック
+	return !interruptableBy.empty() &&
+		std::ranges::find(interruptableBy, current) != interruptableBy.end();
 }

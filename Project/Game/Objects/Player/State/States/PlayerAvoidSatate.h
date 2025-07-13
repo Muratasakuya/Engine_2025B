@@ -3,33 +3,34 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Objects/Enemy/Boss/State/Interface/BossEnemyIState.h>
+#include <Game/Objects/Player/State/Interface/PlayerIState.h>
+#include <Lib/Adapter/Easing.h>
 
 //============================================================================
-//	BossEnemyIdleState class
+//	PlayerAvoidSatate class
 //============================================================================
-class BossEnemyIdleState :
-	public BossEnemyIState {
+class PlayerAvoidSatate :
+	public PlayerIState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemyIdleState() = default;
-	~BossEnemyIdleState() = default;
+	PlayerAvoidSatate() = default;
+	~PlayerAvoidSatate() = default;
 
-	void Enter(BossEnemy& bossEnemy) override;
+	void Enter(Player& player) override;
 
-	void Update(BossEnemy& bossEnemy) override;
+	void Update(Player& player) override;
 
-	void Exit(BossEnemy& bossEnemy) override;
+	void Exit(Player& player) override;
 
 	// imgui
-	void ImGui(const BossEnemy& bossEnemy) override;
+	void ImGui(const Player& player) override;
 
 	// json
-	void ApplyJson([[maybe_unused]] const Json& data) override;
-	void SaveJson([[maybe_unused]] Json& data) override;
+	void ApplyJson(const Json& data) override;
+	void SaveJson(Json& data) override;
 private:
 	//========================================================================
 	//	private Methods
@@ -38,8 +39,11 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// parameters
-	float backStepSpeed_; // 後ずさりするときの速度
+	float lerpTimer_; // 補間時間
+	float lerpTime_;  // 補間にかける時間
+	EasingType easingType_;
+	float moveDistance_; // 移動距離
 
-	//--------- functions ----------------------------------------------------
-
+	Vector3 startPos_;  // 開始座標
+	Vector3 targetPos_; // 目標座標
 };
