@@ -60,6 +60,10 @@ protected:
 	std::vector<CollisionShape::Shapes> bodyOffsets_;
 
 	bool isChild_; // 子の場合は行列を使用して更新する
+
+	//--------- functions ----------------------------------------------------
+
+	int ToIndexType(ColliderType type);
 private:
 	//========================================================================
 	//	private Methods

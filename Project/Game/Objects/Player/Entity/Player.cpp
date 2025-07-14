@@ -81,8 +81,8 @@ void Player::InitCollision() {
 	body->SetTargetType(ColliderType::Type_BossEnemy);
 
 	// 衝突を管理するクラスを初期化
-	playerAttackCollision_ = std::make_unique<PlayerAttackCollision>();
-	playerAttackCollision_->Init();
+	attackCollision_ = std::make_unique<PlayerAttackCollision>();
+	attackCollision_->Init();
 }
 
 void Player::InitState() {
@@ -186,7 +186,7 @@ void Player::Update() {
 
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
-	playerAttackCollision_->Update(*transform_);
+	attackCollision_->Update(*transform_);
 
 	// particle更新
 	ParticleSystem::GetInstance()->UpdateEmitter("hitEffectEmitter");
@@ -276,7 +276,7 @@ void Player::DerivedImGui() {
 		}
 
 		if (ImGui::BeginTabItem("AttackCollision")) {
-			playerAttackCollision_->ImGui();
+			attackCollision_->ImGui();
 			ImGui::EndTabItem();
 		}
 
@@ -314,7 +314,7 @@ void Player::ApplyJson() {
 	leftWeapon_->ApplyJson(data["LeftWeapon"]);
 
 	// 衝突
-	playerAttackCollision_->ApplyJson(data["AttackCollision"]);
+	attackCollision_->ApplyJson(data["AttackCollision"]);
 
 	stats_.maxHP = JsonAdapter::GetValue<int>(data, "maxHP");
 	stats_.maxSkilPoint = JsonAdapter::GetValue<int>(data, "maxSkilPoint");
@@ -345,7 +345,7 @@ void Player::SaveJson() {
 	leftWeapon_->SaveJson(data["LeftWeapon"]);
 
 	// 衝突
-	playerAttackCollision_->SaveJson(data["AttackCollision"]);
+	attackCollision_->SaveJson(data["AttackCollision"]);
 
 	data["maxHP"] = stats_.maxHP;
 	data["maxSkilPoint"] = stats_.maxSkilPoint;

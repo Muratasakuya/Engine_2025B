@@ -54,6 +54,10 @@ void BossEnemy::InitCollision() {
 	// タイプ設定
 	body->SetType(ColliderType::Type_BossEnemy);
 	body->SetTargetType(ColliderType::Type_PlayerWeapon);
+
+	// 衝突を管理するクラスを初期化
+	attackCollision_ = std::make_unique<BossEnemyAttackCollision>();
+	attackCollision_->Init();
 }
 
 void BossEnemy::InitState() {
@@ -166,6 +170,7 @@ void BossEnemy::Update() {
 
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
+	attackCollision_->Update(*transform_);
 
 	// particle更新
 	ParticleSystem::GetInstance()->UpdateEmitter("bossWarningAttackEmitter");
@@ -279,6 +284,12 @@ void BossEnemy::DerivedImGui() {
 			ImGui::EndTabItem();
 		}
 
+		if (ImGui::BeginTabItem("AttackCollision")) {
+
+			attackCollision_->ImGui();
+			ImGui::EndTabItem();
+		}
+
 		if (ImGui::BeginTabItem("StateParam")) {
 
 			stateController_->ImGui(*this);
@@ -317,6 +328,9 @@ void BossEnemy::ApplyJson() {
 	GameEntity3D::ApplyMaterial(data);
 	Collider::ApplyBodyOffset(data);
 
+	// 衝突
+	attackCollision_->ApplyJson(data["AttackCollision"]);
+
 	stats_.maxHP = JsonAdapter::GetValue<int>(data, "maxHP");
 	stats_.maxDestroyToughness = JsonAdapter::GetValue<int>(data, "maxDestroyToughness");
 	// 初期化時は最大と同じ値にする
@@ -332,6 +346,9 @@ void BossEnemy::SaveJson() {
 	initTransform_.ToJson(data["Transform"]);
 	GameEntity3D::SaveMaterial(data);
 	Collider::SaveBodyOffset(data);
+
+	// 衝突
+	attackCollision_->SaveJson(data["AttackCollision"]);
 
 	data["maxHP"] = stats_.maxHP;
 	data["maxDestroyToughness"] = stats_.maxDestroyToughness;

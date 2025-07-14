@@ -117,7 +117,7 @@ void PlayerAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody)
 
 void PlayerAttackCollision::ImGui() {
 
-	ImGui::Text("currentType: %s", kCollisionNames[static_cast<int>(weaponBody_->GetType())]);
+	ImGui::Text("currentType: %s", kCollisionNames[Collider::ToIndexType(weaponBody_->GetType())]);
 
 	ImGui::Combo("State", &editingIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
 	PlayerState state = static_cast<PlayerState>(editingIndex_);

@@ -1,4 +1,76 @@
 {
+    "AttackCollision": {
+        "Idle": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "hitWindows": [],
+            "parryWindows": [],
+            "size": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            }
+        },
+        "LightAttack": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 4.0,
+                "z": -12.0
+            },
+            "hitWindows": [
+                {
+                    "offTime": 1.7200000286102295,
+                    "onTime": 1.2599999904632568
+                },
+                {
+                    "offTime": 2.319999933242798,
+                    "onTime": 2.0999999046325684
+                }
+            ],
+            "parryWindows": [
+                {
+                    "offTime": 1.6399999856948853,
+                    "onTime": 0.9599999785423279
+                },
+                {
+                    "offTime": 2.200000047683716,
+                    "onTime": 1.8600000143051147
+                }
+            ],
+            "size": {
+                "x": 4.0,
+                "y": 4.0,
+                "z": 4.0
+            }
+        },
+        "StrongAttack": {
+            "centerOffset": {
+                "x": 0.0,
+                "y": 4.0,
+                "z": -12.0
+            },
+            "hitWindows": [
+                {
+                    "offTime": 1.399999976158142,
+                    "onTime": 0.9599999785423279
+                }
+            ],
+            "parryWindows": [
+                {
+                    "offTime": 1.3200000524520874,
+                    "onTime": 0.23999999463558197
+                }
+            ],
+            "size": {
+                "x": 8.0,
+                "y": 4.0,
+                "z": 5.0
+            }
+        }
+    },
     "CollisionBody0": {
         "OBB": {
             "center": {

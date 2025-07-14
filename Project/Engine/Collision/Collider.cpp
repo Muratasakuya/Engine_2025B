@@ -54,6 +54,14 @@ void Collider::UpdateAllBodies(const Transform3DComponent& transform) {
 	}
 }
 
+int Collider::ToIndexType(ColliderType type) {
+
+	if (type == ColliderType::Type_None) {
+		return 0;
+	}
+	return std::countr_zero(static_cast<std::make_unsigned_t<std::underlying_type_t<ColliderType>>>(type)) + 1;
+}
+
 void Collider::UpdateSphereBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::Sphere& offset) {
 
 	// 子か親かで座標を変える

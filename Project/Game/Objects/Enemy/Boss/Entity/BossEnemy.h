@@ -9,6 +9,8 @@
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemyWeapon.h>
 // state
 #include <Game/Objects/Enemy/Boss/State/BossEnemyStateController.h>
+// collision
+#include <Game/Objects/Enemy/Boss/Collision/BossEnemyAttackCollision.h>
 // HUD
 #include <Game/Objects/Enemy/Boss/HUD/BossEnemyHUD.h>
 
@@ -48,6 +50,7 @@ public:
 	void SetCastShadow(bool cast);
 	void SetDecreaseToughnessProgress(float progress);
 
+	BossEnemyAttackCollision* GetAttackCollision() const { return attackCollision_.get(); }
 	BossEnemyHUD* GetHUD() const { return hudSprites_.get(); }
 
 	Vector3 GetWeaponTranslation() const;
@@ -66,6 +69,9 @@ private:
 
 	// 状態の管理
 	std::unique_ptr<BossEnemyStateController> stateController_;
+
+	// 攻撃の衝突
+	std::unique_ptr<BossEnemyAttackCollision>  attackCollision_;
 
 	// HUD
 	std::unique_ptr<BossEnemyHUD> hudSprites_;

@@ -47,7 +47,7 @@ public:
 
 	PlayerState GetCurrentState() const { return stateController_->GetCurrentState(); }
 
-	PlayerAttackCollision* GetAttackCollision() const { return playerAttackCollision_.get(); }
+	PlayerAttackCollision* GetAttackCollision() const { return attackCollision_.get(); }
 	GameEntity3D* GetAlly() const { return ally_.get(); }
 	PlayerHUD* GetHUD() const { return hudSprites_.get(); }
 	PlayerStunHUD* GetStunHUD() const { return stunHudSprites_.get(); }
@@ -73,7 +73,7 @@ private:
 	std::unique_ptr<PlayerStateController> stateController_;
 
 	// 攻撃の衝突
-	std::unique_ptr<PlayerAttackCollision> playerAttackCollision_;
+	std::unique_ptr<PlayerAttackCollision> attackCollision_;
 
 	// HUD
 	std::unique_ptr<PlayerHUD> hudSprites_;

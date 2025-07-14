@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Utility/GameTimer.h>
+#include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 #include <Lib/Adapter/RandomGenerator.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
@@ -251,6 +252,8 @@ void BossEnemyStateController::ChangeState(BossEnemy& owner) {
 
 		currentState->Enter(owner);
 	}
+
+	owner.GetAttackCollision()->SetEnterState(current_);
 }
 
 void BossEnemyStateController::ChooseNextState(const BossEnemyPhase& phase) {
