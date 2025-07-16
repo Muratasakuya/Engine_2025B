@@ -20,8 +20,9 @@ enum class FollowCameraState {
 // 現在の状態の次に設定されていれば行う処理
 enum class FollowCameraOverlayState {
 
-	Shake, // 画面シェイク処理
-	Parry, // パリィ処理
+	Shake,       // 画面シェイク処理
+	Parry,       // パリィ処理
+	ParryAttack, // パリィ攻撃処理
 };
 
 // 追従先

@@ -109,6 +109,10 @@ void BossEnemyStateController::Update(BossEnemy& owner) {
 
 void BossEnemyStateController::UpdatePhase() {
 
+	if (stats_.maxHP == 0) {
+		return;
+	}
+
 	// 現在のHP割合
 	uint32_t hpRate = (stats_.currentHP * 100) / stats_.maxHP;
 

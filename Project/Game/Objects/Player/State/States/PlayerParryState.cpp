@@ -120,6 +120,10 @@ void PlayerParryState::UpdateAnimation(Player& player) {
 
 		request_ = RequestState::AttackAnimation;
 
+		// カメラをパリィ攻撃用に遷移
+		followCamera_->SetParry(false);
+		followCamera_->SetParryAttack(true);
+
 		// 元に戻す
 		player.SetReverseWeapon(false, PlayerWeaponType::Left);
 		break;

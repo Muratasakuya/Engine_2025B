@@ -7,17 +7,17 @@
 #include <Lib/Adapter/Easing.h>
 
 //============================================================================
-//	FollowCameraParryState class
+//	FollowCameraParryAttackState class
 //============================================================================
-class FollowCameraParryState :
+class FollowCameraParryAttackState :
 	public FollowCameraIState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	FollowCameraParryState(float startFovY) :startFovY_(startFovY) {};
-	~FollowCameraParryState() = default;
+	FollowCameraParryAttackState() = default;
+	~FollowCameraParryAttackState() = default;
 
 	void Enter(FollowCamera& followCamera) override;
 
@@ -47,8 +47,6 @@ private:
 	// parameters
 	float lerpTimer_; // 補間経過時間
 	float lerpTime_;  // 補間時間
-	float waitTimer_; // 補間終了後の待ち経過時間
-	float waitTime_;  // 補間終了後の待ち時間
 	float lerpRate_;  // 補間割合
 
 	Vector3 startOffsetTranslation_;  // 追従相手との距離開始値

@@ -53,6 +53,19 @@ void FollowCamera::SetParry(bool isParry) {
 	}
 }
 
+void FollowCamera::SetParryAttack(bool isParry) {
+
+	if (isParry) {
+
+		// 状態を設定する
+		stateController_->SetOverlayState(*this, FollowCameraOverlayState::ParryAttack);
+	} else {
+
+		// parryを止める
+		stateController_->ExitOverlayState(FollowCameraOverlayState::ParryAttack);
+	}
+}
+
 void FollowCamera::SetTarget(FollowCameraTargetType type, const Transform3DComponent& target) {
 
 	stateController_->SetTarget(type, target);
