@@ -93,6 +93,20 @@ Color Color::Blue(float alpha) {
 
 	return Color(0.0f, 0.0f, 1.0f, alpha);
 }
+Color Color::Yellow(float alpha) {
+
+	return Color(1.0f, 1.0f, 0.0f, alpha);
+}
+
+Color Color::Cyan(float alpha) {
+
+	return Color(0.0f, 1.0f, 1.0f, alpha);
+}
+
+Color Color::Magenta(float alpha) {
+
+	return Color(1.0f, 0.0f, 1.0f, alpha);
+}
 
 Color Color::Lerp(const Color& color0, const Color& color1, float t) {
 

@@ -142,6 +142,7 @@ void Player::SetBossEnemy(const BossEnemy* bossEnemy) {
 void Player::SetFollowCamera(FollowCamera* followCamera) {
 
 	stateController_->SetFollowCamera(followCamera);
+	hudSprites_->SetFollowCamera(followCamera);
 }
 
 void Player::SetPostProcessSystem(PostProcessSystem* postProcessSystem) {
@@ -181,7 +182,7 @@ void Player::Update() {
 
 	// HUDの更新
 	hudSprites_->SetStatas(stats_);
-	hudSprites_->Update();
+	hudSprites_->Update(*this);
 	stunHudSprites_->Update();
 
 	// 衝突情報更新
@@ -215,7 +216,19 @@ void Player::CheckBossEnemyStun() {
 	stateController_->SetForcedState(*this, PlayerState::SwitchAlly);
 }
 
-void Player::OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {
+void Player::OnCollisionEnter(const CollisionBody* collisionBody) {
+
+	// 敵から攻撃を受けた時のみ
+	if ((collisionBody->GetType() & (ColliderType::Type_BossWeapon | ColliderType::Type_BossBlade))
+		!= ColliderType::Type_None) {
+
+		// ダメージを受ける
+		const int damage = bossEnemy_->GetDamage();
+		stats_.currentHP = (std::max)(0, stats_.currentHP - bossEnemy_->GetDamage());
+
+		// HUDに通知
+		hudSprites_->SetDamage(damage);
+	}
 }
 
 void Player::DerivedImGui() {

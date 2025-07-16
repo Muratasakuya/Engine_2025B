@@ -11,7 +11,7 @@
 //	FollowCameraSwitchAllyState classMethods
 //============================================================================
 
-void FollowCameraSwitchAllyState::Enter() {
+void FollowCameraSwitchAllyState::Enter([[maybe_unused]] FollowCamera& followCamera) {
 
 	startFovY_ = std::nullopt;
 }

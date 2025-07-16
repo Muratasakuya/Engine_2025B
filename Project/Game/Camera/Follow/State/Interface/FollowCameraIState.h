@@ -24,7 +24,7 @@ public:
 	virtual ~FollowCameraIState() = default;
 
 	// 状態遷移時
-	virtual void Enter() = 0;
+	virtual void Enter(FollowCamera& followCamera) = 0;
 
 	// 更新処理
 	virtual void Update(FollowCamera& followCamera) = 0;

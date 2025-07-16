@@ -17,7 +17,7 @@ FollowCameraShakeState::FollowCameraShakeState() {
 	canExit_ = false;
 }
 
-void FollowCameraShakeState::Enter() {
+void FollowCameraShakeState::Enter([[maybe_unused]] FollowCamera& followCamera) {
 }
 
 void FollowCameraShakeState::Update(FollowCamera& followCamera) {

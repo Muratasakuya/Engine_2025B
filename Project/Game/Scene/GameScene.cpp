@@ -98,7 +98,8 @@ void GameScene::Load() {
 	asset_->LoadTexture("enemyHPBar");
 	asset_->LoadTexture("enemyDestroyBar");
 	asset_->LoadTexture("toughnessNumber");
-	asset_->LoadTexture("damageNumber");
+	asset_->LoadTexture("enemyDamageNumber");
+	asset_->LoadTexture("playerDamageNumber");
 	asset_->LoadTexture("timeNumber");
 	asset_->LoadTexture("timeSymbol");
 	asset_->LoadTexture("bossName");
@@ -169,8 +170,12 @@ void GameScene::Init() {
 	//	postProcess
 	//========================================================================
 
-	postProcessSystem_->Create({ PostProcessType::RadialBlur,PostProcessType::Bloom });
+	postProcessSystem_->Create({
+		PostProcessType::RadialBlur,
+		PostProcessType::Vignette,
+		PostProcessType::Bloom });
 	postProcessSystem_->AddProcess(PostProcessType::RadialBlur);
+	postProcessSystem_->AddProcess(PostProcessType::Vignette);
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
 
 	// ブラーの値を0.0fで初期化

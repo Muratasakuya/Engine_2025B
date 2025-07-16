@@ -13,10 +13,11 @@
 
 // state
 #include <Game/Camera/Follow/State/States/FollowCameraFollowState.h>
-#include <Game/Camera/Follow/State/States/FollowCameraShakeState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraSwitchAllyState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraAllyAttackState.h>
 #include <Game/Camera/Follow/State/States/FollowCameraStunAttackState.h>
+#include <Game/Camera/Follow/State/States/FollowCameraShakeState.h>
+#include <Game/Camera/Follow/State/States/FollowCameraParryState.h>
 
 // imgui
 #include <imgui.h>
@@ -32,7 +33,7 @@ namespace {
 		"Follow","SwitchAlly","AllyAttack","StunAttack"
 	};
 	const char* kOverlayStateNames[] = {
-		"Shake"
+		"Shake","Parry"
 	};
 
 	// jsonを保存するパス
@@ -53,16 +54,20 @@ void FollowCameraStateController::Init(FollowCamera& owner) {
 	states_.emplace(FollowCameraState::AllyAttack, std::make_unique<FollowCameraAllyAttackState>(owner.GetFovY()));
 	states_.emplace(FollowCameraState::StunAttack, std::make_unique<FollowCameraStunAttackState>());
 	overlayStates_.emplace(FollowCameraOverlayState::Shake, std::make_unique<FollowCameraShakeState>());
-	// inputを設定
-	SetInputMapper();
+	overlayStates_.emplace(FollowCameraOverlayState::Parry, std::make_unique<FollowCameraParryState>(owner.GetFovY()));
 
 	// json適応
 	ApplyJson();
 
+	// inputを設定
+	SetInputMapper();
+	// 状態間の値の共有
+	SetStateValue();
+
 	// 最初の状態を設定
 	current_ = FollowCameraState::Follow;
 	requested_ = FollowCameraState::Follow;
-	ChangeState();
+	ChangeState(owner);
 }
 
 void FollowCameraStateController::SetTarget(FollowCameraTargetType type, const Transform3DComponent& target) {
@@ -72,9 +77,13 @@ void FollowCameraStateController::SetTarget(FollowCameraTargetType type, const T
 
 		state->SetTarget(type, target);
 	}
+	for (const auto& state : std::views::values(overlayStates_)) {
+
+		state->SetTarget(type, target);
+	}
 }
 
-void FollowCameraStateController::SetOverlayState(FollowCameraOverlayState state) {
+void FollowCameraStateController::SetOverlayState(FollowCamera& owner, FollowCameraOverlayState state) {
 
 	// 依頼された状態を設定
 	overlayState_ = state;
@@ -84,7 +93,7 @@ void FollowCameraStateController::SetOverlayState(FollowCameraOverlayState state
 
 		overlayStates_[state]->Exit();
 	}
-	overlayStates_[state]->Enter();
+	overlayStates_[state]->Enter(owner);
 }
 
 void FollowCameraStateController::ExitOverlayState(FollowCameraOverlayState state) {
@@ -92,6 +101,13 @@ void FollowCameraStateController::ExitOverlayState(FollowCameraOverlayState stat
 	// 強制終了
 	overlayState_ = std::nullopt;
 	overlayStates_[state]->Exit();
+}
+
+void FollowCameraStateController::SetStateValue() {
+
+	// 状態間の値の共有(値ずれを防ぐため)
+	static_cast<FollowCameraParryState*>(overlayStates_.at(FollowCameraOverlayState::Parry).get())->SetStartOffsetTranslation(
+		static_cast<FollowCameraFollowState*>(states_.at(FollowCameraState::Follow).get())->GetOffsetTranslation());
 }
 
 void FollowCameraStateController::SetInputMapper() {
@@ -111,7 +127,7 @@ void FollowCameraStateController::Update(FollowCamera& owner) {
 	// 何か設定されていれば遷移させる
 	if (requested_.has_value()) {
 
-		ChangeState();
+		ChangeState(owner);
 	}
 
 	// 現在の状態を更新
@@ -140,7 +156,7 @@ bool FollowCameraStateController::Request(FollowCameraState state) {
 	return true;
 }
 
-void FollowCameraStateController::ChangeState() {
+void FollowCameraStateController::ChangeState(FollowCamera& owner) {
 
 	// 同じ状態なら遷移させない
 	if (requested_.value() == current_) {
@@ -160,7 +176,7 @@ void FollowCameraStateController::ChangeState() {
 	// 次の状態を初期化する
 	if (auto* currentState = states_[current_].get()) {
 
-		currentState->Enter();
+		currentState->Enter(owner);
 	}
 }
 
@@ -196,7 +212,7 @@ void FollowCameraStateController::ImGui(FollowCamera& owner) {
 	overlayStates_[overlayState]->ImGui(owner);
 	if (ImGui::Button("Apply OverlayState")) {
 
-		SetOverlayState(overlayState);
+		SetOverlayState(owner, overlayState);
 	}
 }
 

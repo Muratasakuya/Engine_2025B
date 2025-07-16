@@ -10,7 +10,7 @@
 //	FollowCameraStunAttackState classMethods
 //============================================================================
 
-void FollowCameraStunAttackState::Enter() {
+void FollowCameraStunAttackState::Enter([[maybe_unused]] FollowCamera& followCamera) {
 }
 
 void FollowCameraStunAttackState::Update(FollowCamera& followCamera) {

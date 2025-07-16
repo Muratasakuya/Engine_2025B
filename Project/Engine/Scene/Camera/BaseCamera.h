@@ -25,6 +25,8 @@ public:
 	virtual void Update() = 0;
 
 	virtual void ImGui() = 0;
+	void EditFrustum();
+	void RenderFrustum();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -65,6 +67,10 @@ protected:
 	Matrix4x4 viewProjectionMatrix_;
 
 	Matrix4x4 billboardMatrix_;
+
+	// debug
+	float frustumScale_;
+	bool displayFrustum_;
 
 	//--------- functions ----------------------------------------------------
 

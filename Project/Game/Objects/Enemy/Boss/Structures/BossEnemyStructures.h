@@ -57,6 +57,9 @@ struct BossEnemyStats {
 	// indexNはindexN+1の値より必ず大きい(N=80、N+1=85にはならない)
 	std::vector<int> hpThresholds; // HP割合の閾値リスト
 
+	std::unordered_map<BossEnemyState, int> damages; // 各攻撃のダメージ量
+	int damageRandomRange;                           // ダメージのランダム範囲
+
 	int maxDestroyToughness;     // 撃破靭性値
 	int currentDestroyToughness; // 現在の撃破靭性値
 };

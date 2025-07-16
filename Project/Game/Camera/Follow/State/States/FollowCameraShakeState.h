@@ -19,7 +19,7 @@ public:
 	FollowCameraShakeState();
 	~FollowCameraShakeState() = default;
 
-	void Enter() override;
+	void Enter(FollowCamera& followCamera) override;
 
 	void Update(FollowCamera& followCamera)  override;
 

@@ -48,7 +48,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	if (pixelPos.x >= width || pixelPos.y >= height) {
 		return;
 	}
-	
+
 	// ƒTƒ“ƒvƒŠƒ“ƒOˆ—
 	float3 bloomAccum = 0.0f;
 	float weightSum = 0.0f;

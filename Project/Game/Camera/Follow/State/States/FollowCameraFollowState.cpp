@@ -12,7 +12,7 @@
 //	FollowCameraFollowState classMethods
 //============================================================================
 
-void FollowCameraFollowState::Enter() {
+void FollowCameraFollowState::Enter([[maybe_unused]] FollowCamera& followCamera) {
 }
 
 void FollowCameraFollowState::Update(FollowCamera& followCamera) {

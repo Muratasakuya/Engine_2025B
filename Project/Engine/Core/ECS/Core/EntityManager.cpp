@@ -81,7 +81,7 @@ void EntityManager::SetBit(uint32_t entity, bool enable) {
 
 	size_t id = GetTypeID<T>();
 
-	Archetype& arch = entityToArch_[entity];   // 旧アーキタイプ参照
+	Archetype& arch = entityToArch_[entity];
 	Archetype  old = arch;
 
 	arch.set(id, enable);
@@ -93,6 +93,7 @@ void EntityManager::SetBit(uint32_t entity, bool enable) {
 	// 新リスト追加
 	archToEntities_[arch].push_back(entity);
 }
+
 // 各componentを明示的にインスタンス化
 template void EntityManager::SetBit<class Transform3DComponent>(uint32_t, bool);
 template void EntityManager::SetBit<class Transform2DComponent>(uint32_t, bool);

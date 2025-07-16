@@ -569,6 +569,9 @@
     <ClCompile Include="Game\Objects\Enemy\Boss\Collision\BossEnemyAttackCollision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraParryState.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -773,6 +776,7 @@
     <ClInclude Include="Game\Objects\Enemy\Boss\Collision\BossEnemyBladeCollision.h" />
     <ClInclude Include="Game\Objects\Player\State\States\PlayerAvoidSatate.h" />
     <ClInclude Include="Game\Objects\Enemy\Boss\Collision\BossEnemyAttackCollision.h" />
+    <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraParryState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />

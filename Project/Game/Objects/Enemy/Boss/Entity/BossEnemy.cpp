@@ -12,6 +12,15 @@
 //	BossEnemy classMethods
 //============================================================================
 
+namespace {
+
+	// 各状態の名前
+	const char* kStateNames[] = {
+		"Idle","Teleport","Stun","Falter","LightAttack","StrongAttack",
+		"ChargeAttack","RushAttack",
+	};
+}
+
 void BossEnemy::InitWeapon() {
 
 	weapon_ = std::make_unique<BossEnemyWeapon>();
@@ -148,6 +157,22 @@ bool BossEnemy::IsCurrentStunState() const {
 	return stateController_->GetCurrentState() == BossEnemyState::Stun;
 }
 
+int  BossEnemy::GetDamage() const {
+
+	BossEnemyState currentState = stateController_->GetCurrentState();
+
+	// ダメージを与えられる状態か確認してから設定
+	if (Algorithm::Find(stats_.damages, currentState)) {
+
+		int damage = stats_.damages.at(currentState);
+		// ランダムでダメージを設定
+		damage = RandomGenerator::Generate(damage - stats_.damageRandomRange,
+			damage + stats_.damageRandomRange);
+		return damage;
+	}
+	return 0;
+}
+
 void BossEnemy::Update() {
 
 	// 閾値のリストの条件に誤りがないかチェック
@@ -182,7 +207,8 @@ void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {
 	if (collisionBody->GetType() == ColliderType::Type_PlayerWeapon) {
 
 		// ダメージを受ける
-		stats_.currentHP = (std::max)(0, stats_.currentHP - player_->GetDamage());
+		const int damage = player_->GetDamage();
+		stats_.currentHP = (std::max)(0, stats_.currentHP - damage);
 
 		// スタン状態じゃないときのみ
 		if (stateController_->GetCurrentState() != BossEnemyState::Stun) {
@@ -199,7 +225,7 @@ void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {
 		}
 
 		// HUDに通知
-		hudSprites_->SetDamage(player_->GetDamage());
+		hudSprites_->SetDamage(damage);
 	}
 }
 
@@ -229,6 +255,15 @@ void BossEnemy::DerivedImGui() {
 		// 靭性値をリセットする
 		stats_.currentDestroyToughness = 0;
 	}
+
+	ImGui::SeparatorText("Damage");
+
+	ImGui::Combo("EditDamage", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
+
+	ImGui::SeparatorText(kStateNames[editingStateIndex_]);
+	BossEnemyState editingState = static_cast<BossEnemyState>(editingStateIndex_);
+	ImGui::DragInt("Damage", &stats_.damages[editingState], 1, 0);
+	ImGui::DragInt("DamageRange", &stats_.damageRandomRange, 1, 0);
 
 	ImGui::SeparatorText("ReloadData");
 
@@ -337,6 +372,13 @@ void BossEnemy::ApplyJson() {
 	stats_.currentHP = stats_.maxHP;
 
 	stats_.hpThresholds = JsonAdapter::ToVector<int>(data["hpThresholds"]);
+
+	for (const auto& [key, value] : data["Damages"].items()) {
+
+		BossEnemyState state = static_cast<BossEnemyState>(std::stoi(key));
+		stats_.damages[state] = value.get<int>();
+	}
+	stats_.damageRandomRange = JsonAdapter::GetValue<int>(data, "DamageRandomRange");
 }
 
 void BossEnemy::SaveJson() {
@@ -354,6 +396,12 @@ void BossEnemy::SaveJson() {
 	data["maxDestroyToughness"] = stats_.maxDestroyToughness;
 
 	data["hpThresholds"] = JsonAdapter::FromVector<int>(stats_.hpThresholds);
+
+	for (const auto& [state, value] : stats_.damages) {
+
+		data["Damages"][std::to_string(static_cast<int>(state))] = value;
+	}
+	data["DamageRandomRange"] = stats_.damageRandomRange;
 
 	JsonAdapter::Save("Enemy/Boss/initParameter.json", data);
 }

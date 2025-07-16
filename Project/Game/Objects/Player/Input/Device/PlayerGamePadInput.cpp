@@ -54,6 +54,13 @@ bool PlayerGamePadInput::IsPressed(PlayerAction button) const {
 
 		return input_->PushGamepadButton(GamePadButtons::A);
 	}
+	case PlayerAction::Parry: {
+
+		return input_->PushGamepadButton(GamePadButtons::LEFT_SHOULDER) ||
+			input_->PushGamepadButton(GamePadButtons::RIGHT_SHOULDER) ||
+			input_->PushGamepadButton(GamePadButtons::LEFT_TRIGGER) ||
+			input_->PushGamepadButton(GamePadButtons::RIGHT_TRIGGER);
+	}
 	}
 	return false;
 }
@@ -85,6 +92,13 @@ bool PlayerGamePadInput::IsTriggered(PlayerAction button) const {
 	case PlayerAction::NotSwitching: {
 
 		return input_->TriggerGamepadButton(GamePadButtons::A);
+	}
+	case PlayerAction::Parry: {
+
+		return input_->TriggerGamepadButton(GamePadButtons::LEFT_SHOULDER) ||
+			input_->TriggerGamepadButton(GamePadButtons::RIGHT_SHOULDER) ||
+			input_->TriggerGamepadButton(GamePadButtons::LEFT_TRIGGER) ||
+			input_->TriggerGamepadButton(GamePadButtons::RIGHT_TRIGGER);
 	}
 	}
 	return false;

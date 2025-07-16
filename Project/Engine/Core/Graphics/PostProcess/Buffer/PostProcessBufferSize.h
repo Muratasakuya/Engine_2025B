@@ -110,8 +110,8 @@ public:
 
 	//--------- properties ---------------------------------------------------
 
-	float scale = 1.0f;
-	float power = 1.0f;
+	float scale = 24.0f;
+	float power = 0.0f;
 	float padding[2];
 	Vector3 color = Vector3::AnyInit(1.0f);
 };

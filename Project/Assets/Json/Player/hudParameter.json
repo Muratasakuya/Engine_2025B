@@ -1,4 +1,24 @@
 {
+    "bossScreenPosOffsetY_": -200.0,
+    "damageDisplayEasingType_": 16,
+    "damageDisplayMaxSize_": {
+        "x": 200.0,
+        "y": 200.0
+    },
+    "damageDisplayPosRandomRange_": {
+        "x": 80.0,
+        "y": 80.0
+    },
+    "damageDisplaySize_": {
+        "x": 80.0,
+        "y": 80.0
+    },
+    "damageDisplayTime_": 0.30000001192092896,
+    "damageNumSpacing_": -24.0,
+    "damageOutEasingType_": 5,
+    "damageOutTime_": 0.07999999821186066,
+    "damageStayTime_": 0.1599999964237213,
+    "digitDisplayInterval_": 0.029999999329447746,
     "dynamicSpriteOffsetY": 96.0,
     "dynamicSpriteSize": {
         "x": 64.0,
@@ -20,6 +40,7 @@
         "x": 1348.0,
         "y": 900.0
     },
+    "maxDamageEmissive_": 0.0,
     "nameText": {
         "translation": {
             "x": 88.0,

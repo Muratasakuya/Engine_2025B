@@ -63,6 +63,10 @@ bool PlayerKeyInput::IsPressed(PlayerAction button) const {
 
 		return input_->PushMouseCenter();
 	}
+	case PlayerAction::Parry: {
+
+		return input_->PushKey(DIK_SPACE);
+	}
 	}
 	return false;
 }
@@ -93,6 +97,10 @@ bool PlayerKeyInput::IsTriggered(PlayerAction button) const {
 	case PlayerAction::NotSwitching: {
 
 		return input_->TriggerMouseCenter();
+	}
+	case PlayerAction::Parry: {
+
+		return input_->TriggerKey(DIK_SPACE);
 	}
 	}
 	return false;

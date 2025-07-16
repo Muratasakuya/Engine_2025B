@@ -47,6 +47,10 @@ void SceneView::Update() {
 void SceneView::UpdateCamera() {
 
 	// 3Dカメラの更新は各sceneクラスで行う
+	if (activeGameCamera3D_.has_value()) {
+
+		activeGameCamera3D_.value()->RenderFrustum();
+	}
 
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugCamera_->Update();
@@ -158,6 +162,7 @@ void SceneView::EditCamera() {
 
 	if (activeGameCamera3D_ && ImGui::CollapsingHeader("GameCamera")) {
 
+		activeGameCamera3D_.value()->EditFrustum();
 		activeGameCamera3D_.value()->ImGui();
 	}
 	if (ImGui::CollapsingHeader("DebugCamera")) {

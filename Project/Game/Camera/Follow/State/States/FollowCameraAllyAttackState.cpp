@@ -17,7 +17,7 @@ FollowCameraAllyAttackState::FollowCameraAllyAttackState(float targetFovY) {
 	canExit_ = false;
 }
 
-void FollowCameraAllyAttackState::Enter() {
+void FollowCameraAllyAttackState::Enter([[maybe_unused]] FollowCamera& followCamera) {
 }
 
 void FollowCameraAllyAttackState::Update(FollowCamera& followCamera) {

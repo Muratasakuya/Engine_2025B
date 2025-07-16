@@ -64,7 +64,8 @@ EngineInformation:     load texture: enemyHPBackground
 EngineInformation:     load texture: enemyHPBar
 EngineInformation:     load texture: enemyDestroyBar
 EngineInformation:     load texture: toughnessNumber
-EngineInformation:     load texture: damageNumber
+EngineInformation:     load texture: enemyDamageNumber
+EngineInformation:     load texture: playerDamageNumber
 EngineInformation:     load texture: timeNumber
 EngineInformation:     load texture: timeSymbol
 EngineInformation:     load texture: bossName

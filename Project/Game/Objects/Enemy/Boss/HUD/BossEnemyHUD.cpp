@@ -37,7 +37,7 @@ void BossEnemyHUD::InitSprite() {
 
 	// ダメージ表示
 	damageDisplay_ = std::make_unique<GameDisplayDamage>();
-	damageDisplay_->Init("damageNumber", "BossEnemyHUD", 8, 4);
+	damageDisplay_->Init("enemyDamageNumber", "BossEnemyHUD", 8, 4);
 }
 
 void BossEnemyHUD::Init() {

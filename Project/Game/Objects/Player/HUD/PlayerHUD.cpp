@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Input/Input.h>
+#include <Game/Camera/Follow/FollowCamera.h>
+#include <Game/Objects/Player/Entity/Player.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
 //============================================================================
@@ -51,6 +53,10 @@ void PlayerHUD::InitSprite() {
 	dynamicTextures[InputType::GamePad] = "LBAndRBButton";
 	parry_.Init(3, "parryIcon", dynamicTextures);
 
+	// ダメージ表示
+	damageDisplay_ = std::make_unique<GameDisplayDamage>();
+	damageDisplay_->Init("playerDamageNumber", "BossEnemyHUD", 4, 3);
+
 	// input状態を取得
 	inputType_ = Input::GetInstance()->GetType();
 	preInputType_ = inputType_;
@@ -71,6 +77,12 @@ void PlayerHUD::Init() {
 	ApplyJson();
 }
 
+void PlayerHUD::SetDamage(int damage) {
+
+	// ダメージを設定
+	damageDisplay_->SetDamage(damage);
+}
+
 void PlayerHUD::SetDisable() {
 
 	isDisable_ = true;
@@ -84,6 +96,7 @@ void PlayerHUD::SetDisable() {
 	dash_.SetAlpha(inputType_, 0.0f);
 	skil_.SetAlpha(inputType_, 0.0f);
 	parry_.SetAlpha(inputType_, 0.0f);
+	damageDisplay_->SetAlpha(0.0f);
 }
 
 void PlayerHUD::SetValid() {
@@ -92,24 +105,27 @@ void PlayerHUD::SetValid() {
 	returnVaild_ = true;
 }
 
-void PlayerHUD::Update() {
+void PlayerHUD::Update(const Player& player) {
 
 	// input状態を取得
 	inputType_ = Input::GetInstance()->GetType();
 
 	// sprite更新
-	UpdateSprite();
+	UpdateSprite(player);
 
 	// alpha値を表示切替で更新
 	UpdateAlpha();
 }
 
-void PlayerHUD::UpdateSprite() {
+void PlayerHUD::UpdateSprite(const Player& player) {
 
 	// HP残量を更新
 	hpBar_->Update(stats_.currentHP, stats_.maxHP, true);
 	// スキル値を更新
 	skilBar_->Update(stats_.currentSkilPoint, stats_.maxSkilPoint, true);
+
+	// ダメージ表記の更新
+	damageDisplay_->Update(player, *followCamera_);
 
 	// 入力状態に応じて表示を切り替える
 	ChangeAllOperateSprite();
@@ -137,6 +153,7 @@ void PlayerHUD::UpdateAlpha() {
 	dash_.SetAlpha(inputType_, alpha);
 	skil_.SetAlpha(inputType_, alpha);
 	parry_.SetAlpha(inputType_, alpha);
+	damageDisplay_->SetAlpha(alpha);
 
 	if (returnAlphaTime_ < returnAlphaTimer_) {
 
@@ -149,6 +166,7 @@ void PlayerHUD::UpdateAlpha() {
 		dash_.SetAlpha(inputType_, 1.0f);
 		skil_.SetAlpha(inputType_, 1.0f);
 		parry_.SetAlpha(inputType_, 1.0f);
+		damageDisplay_->SetAlpha(1.0f);
 
 		// 元に戻ったので処理終了
 		returnAlphaTimer_ = 0.0f;
@@ -225,6 +243,8 @@ void PlayerHUD::ImGui() {
 		nameText_->SetTranslation(nameTextParameter_.translation);
 	}
 
+	damageDisplay_->ImGui();
+
 	ImGui::Separator();
 
 	if (isDisable_) {
@@ -281,6 +301,8 @@ void PlayerHUD::ApplyJson() {
 	nameTextParameter_.ApplyJson(data["nameText"]);
 	GameCommon::SetInitParameter(*nameText_, nameTextParameter_);
 
+	damageDisplay_->ApplyJson(data);
+
 	leftSpriteTranslation_ = leftSpriteTranslation_.FromJson(data["leftSpriteTranslation"]);
 	staticSpriteSize_ = leftSpriteTranslation_.FromJson(data["staticSpriteSize"]);
 	dynamicSpriteSize_ = leftSpriteTranslation_.FromJson(data["dynamicSpriteSize"]);
@@ -302,6 +324,8 @@ void PlayerHUD::SaveJson() {
 	hpBarParameter_.SaveJson(data["hpBar"]);
 	skilBarParameter_.SaveJson(data["skilBar"]);
 	nameTextParameter_.SaveJson(data["nameText"]);
+
+	damageDisplay_->SaveJson(data);
 
 	data["leftSpriteTranslation"] = leftSpriteTranslation_.ToJson();
 	data["staticSpriteSize"] = staticSpriteSize_.ToJson();

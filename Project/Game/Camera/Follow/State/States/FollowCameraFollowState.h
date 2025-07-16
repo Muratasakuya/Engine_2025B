@@ -18,7 +18,7 @@ public:
 	FollowCameraFollowState(float defaultFovY) :defaultFovY_(defaultFovY) {}
 	~FollowCameraFollowState() = default;
 
-	void Enter() override;
+	void Enter(FollowCamera& followCamera) override;
 
 	void Update(FollowCamera& followCamera)  override;
 
@@ -30,6 +30,10 @@ public:
 	// json
 	void ApplyJson(const Json& data) override;
 	void SaveJson(Json& data)  override;
+
+	//--------- accessor -----------------------------------------------------
+
+	const Vector3& GetOffsetTranslation() const { return offsetTranslation_; }
 private:
 	//========================================================================
 	//	private Methods

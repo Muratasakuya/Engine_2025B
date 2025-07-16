@@ -19,7 +19,7 @@
         "offsetTranslation_": {
             "x": 0.0,
             "y": 6.400000095367432,
-            "z": -54.0
+            "z": -41.42857360839844
         },
         "offsetZLerpRate_": 0.800000011920929,
         "padSensitivity_": {
@@ -33,16 +33,18 @@
         "rotatePlusParam_.clampThreshold": 0.3199999928474426,
         "rotatePlusParam_.offsetZNear": -38.0
     },
-    "Return": {
-        "lerpEasingType_": 10,
-        "lerpRate_": 0.6399999856948853,
-        "lerpTime_": 0.10000000149011612,
-        "offsetTranslation_": {
-            "x": 0.0,
-            "y": 9.0,
-            "z": -54.0
+    "Parry": {
+        "easingType_": 13,
+        "lerpRate_": 0.800000011920929,
+        "lerpTime_": 0.1899999976158142,
+        "targetFovY_": 1.159999966621399,
+        "targetOffsetTranslation_": {
+            "x": 4.800000190734863,
+            "y": 6.800000190734863,
+            "z": -14.0
         },
-        "targetFovY_": 0.47999998927116394
+        "targetRotateX_": -0.11999999731779099,
+        "waitTime_": 0.6000000238418579
     },
     "Shake": {
         "shakeEasingType_": 14,

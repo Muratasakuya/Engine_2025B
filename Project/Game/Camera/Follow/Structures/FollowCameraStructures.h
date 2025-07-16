@@ -21,6 +21,7 @@ enum class FollowCameraState {
 enum class FollowCameraOverlayState {
 
 	Shake, // 画面シェイク処理
+	Parry, // パリィ処理
 };
 
 // 追従先

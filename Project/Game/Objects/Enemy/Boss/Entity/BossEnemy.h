@@ -55,6 +55,8 @@ public:
 
 	Vector3 GetWeaponTranslation() const;
 	bool IsCurrentStunState() const;
+
+	int GetDamage() const;
 private:
 	//========================================================================
 	//	private Methods
@@ -82,6 +84,7 @@ private:
 
 	// editor
 	int selectedPhaseIndex_;
+	int editingStateIndex_;
 
 	//--------- functions ----------------------------------------------------
 

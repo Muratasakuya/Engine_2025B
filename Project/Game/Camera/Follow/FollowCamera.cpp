@@ -15,6 +15,8 @@
 
 void FollowCamera::Init() {
 
+	displayFrustum_ = true;
+
 	// json適応
 	ApplyJson();
 
@@ -30,7 +32,7 @@ void FollowCamera::SetScreenShake(bool isShake) {
 	if (isShake) {
 
 		// 状態を設定する
-		stateController_->SetOverlayState(FollowCameraOverlayState::Shake);
+		stateController_->SetOverlayState(*this, FollowCameraOverlayState::Shake);
 	} else {
 
 		// shakeを止める
@@ -82,7 +84,6 @@ void FollowCamera::ImGui() {
 
 	if (ImGui::BeginTabBar("FollowCameraTabs")) {
 		if (ImGui::BeginTabItem("Init")) {
-
 			if (ImGui::Button("Save Json", ImVec2(itemWidth_, 32.0f))) {
 
 				SaveJson();

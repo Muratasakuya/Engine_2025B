@@ -105,21 +105,6 @@
                 "z": 6.0
             }
         },
-        "SpecialAttack": {
-            "centerOffset": {
-                "x": 0.0,
-                "y": 4.0,
-                "z": 6.0
-            },
-            "hitInterval": 0.019999999552965164,
-            "offTime": 0.07999999821186066,
-            "onTime": 0.0,
-            "size": {
-                "x": 3.200000047683716,
-                "y": 3.200000047683716,
-                "z": 6.0
-            }
-        },
         "Walk": {
             "centerOffset": {
                 "x": 0.0,
@@ -704,7 +689,7 @@
             "z": -16.0
         }
     },
-    "maxHP": 100,
+    "maxHP": 12000,
     "maxSkilPoint": 100,
     "toughness": 1
 }

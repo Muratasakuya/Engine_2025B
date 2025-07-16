@@ -19,7 +19,7 @@ public:
 	FollowCameraSwitchAllyState() = default;
 	~FollowCameraSwitchAllyState() = default;
 
-	void Enter() override;
+	void Enter(FollowCamera& followCamera) override;
 
 	void Update(FollowCamera& followCamera)  override;
 

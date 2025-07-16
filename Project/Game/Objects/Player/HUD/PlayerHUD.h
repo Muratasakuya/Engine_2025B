@@ -4,12 +4,16 @@
 //	include
 //============================================================================
 #include <Game/Objects/Base/GameHPBar.h>
+#include <Game/Objects/Base/GameDisplayDamage.h>
 #include <Engine/Input/InputStructures.h>
 #include <Game/Objects/Base/GameCommonStructures.h>
 #include <Game/Objects/Player/Structures/PlayerStructures.h>
 
 // c++
 #include <utility>
+// front
+class Player;
+class FollowCamera;
 
 //============================================================================
 //	PlayerHUD class
@@ -25,13 +29,15 @@ public:
 
 	void Init();
 
-	void Update();
+	void Update(const Player& player);
 
 	void ImGui();
 
 	//--------- accessor -----------------------------------------------------
 
 	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
+	void SetDamage(int damage);
+	void SetFollowCamera(const FollowCamera* followCamera) { followCamera_ = followCamera; }
 	void SetDisable();
 	void SetValid();
 private:
@@ -68,6 +74,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	const FollowCamera* followCamera_;
+
 	// ステータス
 	PlayerStats stats_;
 	// 現在の入力状態
@@ -89,6 +97,9 @@ private:
 	// 名前文字表示
 	std::unique_ptr<GameEntity2D> nameText_;
 	GameCommon::HUDInitParameter nameTextParameter_;
+
+	// ダメージ表示
+	std::unique_ptr<GameDisplayDamage> damageDisplay_;
 
 	//----------- operate ----------------------//
 
@@ -122,7 +133,7 @@ private:
 	void InitSprite();
 
 	// update
-	void UpdateSprite();
+	void UpdateSprite(const Player& player);
 	void UpdateAlpha();
 
 	// helper

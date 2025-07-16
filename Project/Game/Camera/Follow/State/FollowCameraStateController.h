@@ -34,7 +34,7 @@ public:
 
 	void SetTarget(FollowCameraTargetType type, const Transform3DComponent& target);
 	void SetState(FollowCameraState state) { requested_ = state; }
-	void SetOverlayState(FollowCameraOverlayState state);
+	void SetOverlayState(FollowCamera& owner, FollowCameraOverlayState state);
 	void ExitOverlayState(FollowCameraOverlayState state);
 
 	FollowCameraState GetCurrentState() const { return current_; }
@@ -68,8 +68,9 @@ private:
 	void SaveJson();
 
 	// helper
+	void SetStateValue();
 	void SetInputMapper();
 	bool Request(FollowCameraState state);
-	void ChangeState();
+	void ChangeState(FollowCamera& owner);
 	void CheckExitOverlayState();
 };

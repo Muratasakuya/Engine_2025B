@@ -19,7 +19,7 @@ public:
 	FollowCameraAllyAttackState(float targetFovY);
 	~FollowCameraAllyAttackState() = default;
 
-	void Enter() override;
+	void Enter(FollowCamera& followCamera) override;
 
 	void Update(FollowCamera& followCamera) override;
 

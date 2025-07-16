@@ -75,6 +75,9 @@ public:
 	static	Color Red(float alpha = 1.0f);
 	static Color Green(float alpha = 1.0f);
 	static Color Blue(float alpha = 1.0f);
+	static Color Yellow(float alpha = 1.0f);
+	static Color Cyan(float alpha = 1.0f);
+	static Color Magenta(float alpha = 1.0f);
 
 	static Color Lerp(const Color& color0, const Color& color1, float t);
 };

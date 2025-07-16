@@ -22,5 +22,6 @@ enum class PlayerAction :
 	Skill,   // スキル攻撃
 	Switching,    // 切り替える
 	NotSwitching, // 切り替えない
+	Parry,        // パリィ
 	Count,   // アクションの数
 };
