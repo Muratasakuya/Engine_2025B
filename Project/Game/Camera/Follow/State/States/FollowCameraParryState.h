@@ -39,6 +39,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetStartOffsetTranslation(const Vector3& startOffsetTranslation);
+
+	const Vector3& GetCurrentOffset() const { return targetOffsetTranslation_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -57,8 +59,8 @@ private:
 	Vector3 targetOffsetTranslation_; // 追従相手との距離目標値
 	Vector3 interTarget_;
 
-	float startRotateX_;  // x軸回転の開始値
-	float targetRotateX_; // x軸回転の目標値
+	Vector3 startRotate_;  // 回転の開始値
+	Vector3 targetRotate_; // 回転の目標値
 
 	float startFovY_;  // 画角開始値
 	float targetFovY_; // 画角目標値

@@ -14,7 +14,7 @@
 void FollowCameraParryState::Enter(FollowCamera& followCamera) {
 
 	// 補間開始値を設定
-	startRotateX_ = followCamera.GetTransform().eulerRotate.x;
+	startRotate_ = followCamera.GetTransform().eulerRotate;
 
 	lerpTimer_ = 0.0f;
 	waitTimer_ = 0.0f;
@@ -45,8 +45,9 @@ void FollowCameraParryState::Update(FollowCamera& followCamera) {
 	// 距離
 	Vector3 offsetTranslation = Vector3::Lerp(
 		startOffsetTranslation_, targetOffsetTranslation_, lerpT);
-	// X軸回転
-	float rotationX = std::lerp(startRotateX_, targetRotateX_, lerpT);
+	// 回転
+	Vector3 rotation = Vector3::Lerp(
+		startRotate_, targetRotate_, lerpT);
 	// 画角
 	float fovY = std::lerp(startFovY_, targetFovY_, lerpT);
 
@@ -55,8 +56,6 @@ void FollowCameraParryState::Update(FollowCamera& followCamera) {
 	followCamera.SetFovY(fovY);
 
 	// 回転
-	Vector3 rotation = followCamera.GetTransform().eulerRotate;
-	rotation.x = rotationX;
 	followCamera.SetEulerRotation(rotation);
 
 	// 座標
@@ -87,11 +86,11 @@ void FollowCameraParryState::ImGui([[maybe_unused]] const FollowCamera& followCa
 	ImGui::Text(std::format("waitTimer: {}", waitTimer_).c_str());
 
 	ImGui::DragFloat3("targetOffsetTranslation", &targetOffsetTranslation_.x, 0.1f);
+	ImGui::DragFloat3("targetRotate", &targetRotate_.x, 0.01f);
 
 	ImGui::DragFloat("lerpTime", &lerpTime_, 0.01f);
 	ImGui::DragFloat("waitTime", &waitTime_, 0.01f);
 	ImGui::DragFloat("lerpRate##FollowCameraParryState", &lerpRate_, 0.1f);
-	ImGui::DragFloat("targetRotateX", &targetRotateX_, 0.01f);
 	ImGui::DragFloat("targetFovY", &targetFovY_, 0.01f);
 
 	Easing::SelectEasingType(easingType_);
@@ -100,10 +99,10 @@ void FollowCameraParryState::ImGui([[maybe_unused]] const FollowCamera& followCa
 void FollowCameraParryState::ApplyJson(const Json& data) {
 
 	targetOffsetTranslation_ = JsonAdapter::ToObject<Vector3>(data["targetOffsetTranslation_"]);
+	//targetRotate_ = JsonAdapter::ToObject<Vector3>(data["targetRotate_"]);
 	lerpTime_ = JsonAdapter::GetValue<float>(data, "lerpTime_");
 	waitTime_ = JsonAdapter::GetValue<float>(data, "waitTime_");
 	lerpRate_ = JsonAdapter::GetValue<float>(data, "lerpRate_");
-	targetRotateX_ = JsonAdapter::GetValue<float>(data, "targetRotateX_");
 	targetFovY_ = JsonAdapter::GetValue<float>(data, "targetFovY_");
 	easingType_ = JsonAdapter::GetValue<EasingType>(data, "easingType_");
 }
@@ -111,10 +110,10 @@ void FollowCameraParryState::ApplyJson(const Json& data) {
 void FollowCameraParryState::SaveJson(Json& data) {
 
 	data["targetOffsetTranslation_"] = JsonAdapter::FromObject<Vector3>(targetOffsetTranslation_);
+	data["targetRotate_"] = JsonAdapter::FromObject<Vector3>(targetRotate_);
 	data["lerpTime_"] = lerpTime_;
 	data["waitTime_"] = waitTime_;
 	data["lerpRate_"] = lerpRate_;
-	data["targetRotateX_"] = targetRotateX_;
 	data["targetFovY_"] = targetFovY_;
 	data["easingType_"] = static_cast<int>(easingType_);
 }

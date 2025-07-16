@@ -187,12 +187,23 @@ void FollowCameraStateController::CheckExitOverlayState() {
 		return;
 	}
 
-	// 状態が終了したら更新させないようにする
-	if (overlayStates_[overlayState_.value()]->GetCanExit()) {
-
-		overlayStates_[overlayState_.value()]->Exit();
-		overlayState_ = std::nullopt;
+	auto state = overlayState_.value();
+	if (!overlayStates_[state]->GetCanExit()) {
+		return;
 	}
+
+	// Parryが終わる時にオフセット距離をセットする
+	if (state == FollowCameraOverlayState::Parry) {
+
+		const auto& follow = static_cast<FollowCameraFollowState*>(
+			states_[FollowCameraState::Follow].get());
+		const auto& parry = static_cast<FollowCameraParryState*>(
+			overlayStates_[state].get());
+		follow->SetOffsetTranslation(parry->GetCurrentOffset());
+	}
+
+	overlayStates_[state]->Exit();
+	overlayState_.reset();
 }
 
 void FollowCameraStateController::ImGui(FollowCamera& owner) {

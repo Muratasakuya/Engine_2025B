@@ -10,6 +10,7 @@
         }
     },
     "Follow": {
+        "fovYLerpRate_": 0.11999999731779099,
         "inputLerpRate_": 0.1599999964237213,
         "lerpRate_": 0.23999999463558197,
         "mouseSensitivity_": {
@@ -18,10 +19,11 @@
         },
         "offsetTranslation_": {
             "x": 0.0,
-            "y": 6.400000095367432,
-            "z": -41.42857360839844
+            "y": 6.400003910064697,
+            "z": -31.999988555908203
         },
-        "offsetZLerpRate_": 0.800000011920929,
+        "offsetYLerpRate_": 0.10000000149011612,
+        "offsetZLerpRate_": 0.07999999821186066,
         "padSensitivity_": {
             "x": 0.03200000151991844,
             "y": 0.04800000041723251
@@ -31,20 +33,25 @@
         "rotateMinusParam_.clampThreshold": 0.14000000059604645,
         "rotateMinusParam_.offsetZNear": -32.0,
         "rotatePlusParam_.clampThreshold": 0.3199999928474426,
-        "rotatePlusParam_.offsetZNear": -38.0
+        "rotatePlusParam_.offsetZNear": -38.0,
+        "rotateZLerpRate_": 0.03999999910593033
     },
     "Parry": {
-        "easingType_": 13,
+        "easingType_": 14,
         "lerpRate_": 0.800000011920929,
-        "lerpTime_": 0.1899999976158142,
-        "targetFovY_": 1.159999966621399,
+        "lerpTime_": 0.14000000059604645,
+        "targetFovY_": 1.0,
         "targetOffsetTranslation_": {
-            "x": 4.800000190734863,
-            "y": 6.800000190734863,
-            "z": -14.0
+            "x": 0.0,
+            "y": 7.599999904632568,
+            "z": -16.0
         },
-        "targetRotateX_": -0.11999999731779099,
-        "waitTime_": 0.6000000238418579
+        "targetRotate_": {
+            "x": -0.23999999463558197,
+            "y": -0.6000000238418579,
+            "z": -0.07999999821186066
+        },
+        "waitTime_": 0.6399999856948853
     },
     "Shake": {
         "shakeEasingType_": 14,

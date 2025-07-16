@@ -23,7 +23,7 @@ void FollowCameraFollowState::Update(FollowCamera& followCamera) {
 	Vector3 offset{};
 
 	// 画角を常に元に戻しておく
-	float fovY = std::lerp(followCamera.GetFovY(), defaultFovY_, lerpRate_);
+	float fovY = std::lerp(followCamera.GetFovY(), defaultFovY_, fovYLerpRate_);
 	followCamera.SetFovY(fovY);
 
 	// 補間先の座標を補完割合に応じて補間する
@@ -51,6 +51,7 @@ void FollowCameraFollowState::Update(FollowCamera& followCamera) {
 	}
 	// 回転を制限する
 	rotation.x = std::clamp(rotation.x, rotateMinusParam_.rotateClampX, rotatePlusParam_.rotateClampX);
+	rotation.z = std::lerp(rotation.z, 0.0f, rotateZLerpRate_);
 	followCamera.SetEulerRotation(rotation);
 
 	// カメラ角度の距離を計算
@@ -69,8 +70,9 @@ void FollowCameraFollowState::Update(FollowCamera& followCamera) {
 		targetZ = std::lerp(defaultOffsetZ_, rotatePlusParam_.offsetZNear, t);
 	}
 
-	// zのみ補間
+	// yzのみ補間
 	offsetTranslation_.z = std::lerp(offsetTranslation_.z, targetZ, offsetZLerpRate_);
+	offsetTranslation_.y = std::lerp(offsetTranslation_.y, defaultOffsetY_, offsetYLerpRate_);
 
 	Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(rotation);
 	offset = Vector3::TransferNormal(offsetTranslation_, rotateMatrix);
@@ -93,7 +95,10 @@ void FollowCameraFollowState::ImGui([[maybe_unused]] const FollowCamera& followC
 	ImGui::DragFloat2("mouseSensitivity", &mouseSensitivity_.x, 0.001f);
 	ImGui::DragFloat2("padSensitivity", &padSensitivity_.x, 0.001f);
 
+	ImGui::DragFloat("fovYLerpRate", &fovYLerpRate_, 0.001f);
 	ImGui::DragFloat("offsetZLerpRate", &offsetZLerpRate_, 0.001f);
+	ImGui::DragFloat("offsetYLerpRate", &offsetYLerpRate_, 0.001f);
+	ImGui::DragFloat("rotateZLerpRate", &rotateZLerpRate_, 0.001f);
 	ImGui::DragFloat("rotatePlusParam.rotateClampX", &rotatePlusParam_.rotateClampX, 0.001f);
 	ImGui::DragFloat("rotatePlusParam.offsetZNear", &rotatePlusParam_.offsetZNear, 0.001f);
 	ImGui::DragFloat("rotatePlusParam.clampThreshold", &rotatePlusParam_.clampThreshold, 0.001f);
@@ -107,13 +112,17 @@ void FollowCameraFollowState::ApplyJson(const Json& data) {
 
 	offsetTranslation_ = JsonAdapter::ToObject<Vector3>(data["offsetTranslation_"]);
 	defaultOffsetZ_ = offsetTranslation_.z;
+	defaultOffsetY_ = offsetTranslation_.y;
 
 	lerpRate_ = JsonAdapter::GetValue<float>(data, "lerpRate_");
 	inputLerpRate_ = JsonAdapter::GetValue<float>(data, "inputLerpRate_");
 	mouseSensitivity_ = JsonAdapter::ToObject<Vector2>(data["mouseSensitivity_"]);
 	padSensitivity_ = JsonAdapter::ToObject<Vector2>(data["padSensitivity_"]);
 
+	fovYLerpRate_ = JsonAdapter::GetValue<float>(data, "fovYLerpRate_");
 	offsetZLerpRate_ = JsonAdapter::GetValue<float>(data, "offsetZLerpRate_");
+	offsetYLerpRate_ = JsonAdapter::GetValue<float>(data, "offsetYLerpRate_");
+	rotateZLerpRate_ = JsonAdapter::GetValue<float>(data, "rotateZLerpRate_");
 
 	rotatePlusParam_.rotateClampX = JsonAdapter::GetValue<float>(data, "rotateClampPlusX_");
 	rotatePlusParam_.offsetZNear = JsonAdapter::GetValue<float>(data, "rotatePlusParam_.offsetZNear");
@@ -132,7 +141,10 @@ void FollowCameraFollowState::SaveJson(Json& data) {
 	data["mouseSensitivity_"] = JsonAdapter::FromObject<Vector2>(mouseSensitivity_);
 	data["padSensitivity_"] = JsonAdapter::FromObject<Vector2>(padSensitivity_);
 
+	data["fovYLerpRate_"] = fovYLerpRate_;
 	data["offsetZLerpRate_"] = offsetZLerpRate_;
+	data["offsetYLerpRate_"] = offsetYLerpRate_;
+	data["rotateZLerpRate_"] = rotateZLerpRate_;
 
 	data["rotateClampPlusX_"] = rotatePlusParam_.rotateClampX;
 	data["rotatePlusParam_.offsetZNear"] = rotatePlusParam_.offsetZNear;
@@ -141,4 +153,10 @@ void FollowCameraFollowState::SaveJson(Json& data) {
 	data["rotateClampMinusX_"] = rotateMinusParam_.rotateClampX;
 	data["rotateMinusParam_.offsetZNear"] = rotateMinusParam_.offsetZNear;
 	data["rotateMinusParam_.clampThreshold"] = rotateMinusParam_.clampThreshold;
+}
+
+void FollowCameraFollowState::SetOffsetTranslation(const Vector3& translation) {
+
+	offsetTranslation_.y = translation.y;
+	offsetTranslation_.z = translation.z;
 }

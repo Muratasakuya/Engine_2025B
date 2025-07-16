@@ -33,6 +33,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetOffsetTranslation(const Vector3& translation);
+
 	const Vector3& GetOffsetTranslation() const { return offsetTranslation_; }
 private:
 	//========================================================================
@@ -52,6 +54,7 @@ private:
 
 	Vector2 smoothedInput_; // 入力の値補間用
 	float defaultFovY_;
+	float fovYLerpRate_; // fov補間割合
 
 	// parameters
 	Vector3 offsetTranslation_; // 追従相手との距離
@@ -64,7 +67,10 @@ private:
 
 	// 回転の設定
 	float defaultOffsetZ_;         // z初期値
+	float defaultOffsetY_;         // y初期値
 	float offsetZLerpRate_;        // z値補間割合
+	float offsetYLerpRate_;        // y値補間割合
+	float rotateZLerpRate_;        // z回転補間割合
 	RotateParam rotatePlusParam_;  // +
 	RotateParam rotateMinusParam_; // -
 };
