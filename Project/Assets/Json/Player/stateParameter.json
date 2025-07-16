@@ -158,7 +158,7 @@
         "deltaWaitTime_": 0.08399999886751175,
         "nextAnimDuration_": 0.019999999552965164,
         "parryLerp_.easingType": 14,
-        "parryLerp_.moveDistance": -46.0,
+        "parryLerp_.moveDistance": -50.0,
         "parryLerp_.time": 0.4000000059604645
     },
     "SkilAttack": {
