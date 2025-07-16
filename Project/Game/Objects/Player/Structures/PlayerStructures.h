@@ -26,6 +26,13 @@ enum class PlayerState {
 	StunAttack,    // スタン攻撃、自動で行う
 };
 
+// 武器の種類
+enum class PlayerWeaponType {
+
+	Left,
+	Right
+};
+
 // ステータス
 struct PlayerStats {
 

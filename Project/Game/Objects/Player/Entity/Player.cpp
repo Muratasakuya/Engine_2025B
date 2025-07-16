@@ -150,6 +150,32 @@ void Player::SetPostProcessSystem(PostProcessSystem* postProcessSystem) {
 	stateController_->SetPostProcessSystem(postProcessSystem);
 }
 
+void Player::SetReverseWeapon(bool isReverse, PlayerWeaponType type) {
+
+	// 剣の持ち方設定
+	if (isReverse) {
+		if (type == PlayerWeaponType::Left) {
+
+			leftWeapon_->SetRotation(Quaternion::MakeRotateAxisAngleQuaternion(
+				Vector3(1.0f, 0.0f, 0.0f), pi));
+		} else {
+
+			rightWeapon_->SetRotation(Quaternion::MakeRotateAxisAngleQuaternion(
+				Vector3(1.0f, 0.0f, 0.0f), pi));
+		}
+	} else {
+		if (type == PlayerWeaponType::Left) {
+
+			leftWeapon_->SetRotation(Quaternion::MakeRotateAxisAngleQuaternion(
+				Vector3(1.0f, 0.0f, 0.0f), 0.0f));
+		} else {
+
+			rightWeapon_->SetRotation(Quaternion::MakeRotateAxisAngleQuaternion(
+				Vector3(1.0f, 0.0f, 0.0f), 0.0f));
+		}
+	}
+}
+
 int Player::GetDamage() const {
 
 	// 現在の状態に応じたダメージを取得

@@ -151,6 +151,7 @@ void AnimationComponent::ImGui(float itemSize) {
 	ImGui::PushItemWidth(itemSize);
 
 	// ループ再生・リスタート
+	ImGui::Text("currentAnim: %s", currentAnimationName_.c_str());
 	if (ImGui::CollapsingHeader("Playback", ImGuiTreeNodeFlags_DefaultOpen)) {
 
 		ImGui::Checkbox("isDisplayBone", &isDisplayBone_);
@@ -499,7 +500,6 @@ void AnimationComponent::ResetAnimation() {
 
 	// animationリセット
 	repeatCount_ = 0;
-	currentAnimationTimer_ = 0.0f;
 	animationFinish_ = false;
 }
 

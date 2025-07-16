@@ -23,6 +23,8 @@ void PlayerParryState::Enter(Player& player) {
 
 	// 敵の方向を向かせる
 	player.SetRotation(Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f)));
+	// 左手の武器を反転
+	player.SetReverseWeapon(true, PlayerWeaponType::Left);
 
 	// deltaTimeをスケーリングしても元の値に戻らないようにする
 	GameTimer::SetReturnScaleEnable(false);
@@ -101,6 +103,8 @@ void PlayerParryState::UpdateAnimation(Player& player) {
 	if (!request_.has_value()) {
 
 		canExit_ = true;
+		// 元に戻す
+		player.SetReverseWeapon(false, PlayerWeaponType::Left);
 		return;
 	}
 
@@ -115,6 +119,9 @@ void PlayerParryState::UpdateAnimation(Player& player) {
 			player, attackLerp_.moveDistance, false);
 
 		request_ = RequestState::AttackAnimation;
+
+		// 元に戻す
+		player.SetReverseWeapon(false, PlayerWeaponType::Left);
 		break;
 	}
 	case RequestState::AttackAnimation: {

@@ -74,7 +74,6 @@ void BossEnemyLightAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 	playAnimation_ = false;
 	lerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
-
 	emitCount_ = 0;
 }
 
