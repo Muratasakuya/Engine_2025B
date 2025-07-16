@@ -70,9 +70,10 @@ void FollowCameraFollowState::Update(FollowCamera& followCamera) {
 		targetZ = std::lerp(defaultOffsetZ_, rotatePlusParam_.offsetZNear, t);
 	}
 
-	// yzのみ補間
+	// オフセット距離補間
 	offsetTranslation_.z = std::lerp(offsetTranslation_.z, targetZ, offsetZLerpRate_);
 	offsetTranslation_.y = std::lerp(offsetTranslation_.y, defaultOffsetY_, offsetYLerpRate_);
+	offsetTranslation_.x = std::lerp(offsetTranslation_.x, defaultOffsetX_, offsetXLerpRate_);
 
 	Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(rotation);
 	offset = Vector3::TransferNormal(offsetTranslation_, rotateMatrix);
@@ -98,6 +99,7 @@ void FollowCameraFollowState::ImGui([[maybe_unused]] const FollowCamera& followC
 	ImGui::DragFloat("fovYLerpRate", &fovYLerpRate_, 0.001f);
 	ImGui::DragFloat("offsetZLerpRate", &offsetZLerpRate_, 0.001f);
 	ImGui::DragFloat("offsetYLerpRate", &offsetYLerpRate_, 0.001f);
+	ImGui::DragFloat("offsetXLerpRate", &offsetXLerpRate_, 0.001f);
 	ImGui::DragFloat("rotateZLerpRate", &rotateZLerpRate_, 0.001f);
 	ImGui::DragFloat("rotatePlusParam.rotateClampX", &rotatePlusParam_.rotateClampX, 0.001f);
 	ImGui::DragFloat("rotatePlusParam.offsetZNear", &rotatePlusParam_.offsetZNear, 0.001f);
@@ -123,6 +125,7 @@ void FollowCameraFollowState::ApplyJson(const Json& data) {
 	offsetZLerpRate_ = JsonAdapter::GetValue<float>(data, "offsetZLerpRate_");
 	offsetYLerpRate_ = JsonAdapter::GetValue<float>(data, "offsetYLerpRate_");
 	rotateZLerpRate_ = JsonAdapter::GetValue<float>(data, "rotateZLerpRate_");
+	offsetXLerpRate_ = JsonAdapter::GetValue<float>(data, "offsetXLerpRate_");
 
 	rotatePlusParam_.rotateClampX = JsonAdapter::GetValue<float>(data, "rotateClampPlusX_");
 	rotatePlusParam_.offsetZNear = JsonAdapter::GetValue<float>(data, "rotatePlusParam_.offsetZNear");
@@ -145,6 +148,7 @@ void FollowCameraFollowState::SaveJson(Json& data) {
 	data["offsetZLerpRate_"] = offsetZLerpRate_;
 	data["offsetYLerpRate_"] = offsetYLerpRate_;
 	data["rotateZLerpRate_"] = rotateZLerpRate_;
+	data["offsetXLerpRate_"] = offsetXLerpRate_;
 
 	data["rotateClampPlusX_"] = rotatePlusParam_.rotateClampX;
 	data["rotatePlusParam_.offsetZNear"] = rotatePlusParam_.offsetZNear;
@@ -157,6 +161,5 @@ void FollowCameraFollowState::SaveJson(Json& data) {
 
 void FollowCameraFollowState::SetOffsetTranslation(const Vector3& translation) {
 
-	offsetTranslation_.y = translation.y;
-	offsetTranslation_.z = translation.z;
+	offsetTranslation_ = translation;
 }

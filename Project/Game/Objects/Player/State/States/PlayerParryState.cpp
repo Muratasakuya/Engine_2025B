@@ -28,6 +28,9 @@ void PlayerParryState::Enter(Player& player) {
 	GameTimer::SetReturnScaleEnable(false);
 	GameTimer::SetTimeScale(0.0f);
 
+	// カメラをパリィ状態に遷移させる
+	followCamera_->SetParry(true);
+
 	canExit_ = false;
 	request_ = std::nullopt;
 	parryLerp_.isFinised = false;

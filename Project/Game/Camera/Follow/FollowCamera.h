@@ -30,6 +30,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetScreenShake(bool isShake);
+	void SetParry(bool isParry);
 	void SetTarget(FollowCameraTargetType type, const Transform3DComponent& target);
 	void SetFovY(float fovY) { fovY_ = fovY; }
 	void SetState(FollowCameraState state);

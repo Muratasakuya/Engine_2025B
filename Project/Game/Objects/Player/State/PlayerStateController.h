@@ -43,6 +43,8 @@ public:
 
 	PlayerState GetCurrentState() const { return current_; }
 	PlayerState GetSwitchSelectState() const;
+
+	bool IsTriggerParry() const { return inputMapper_->IsTriggered(PlayerAction::Parry); }
 private:
 	//========================================================================
 	//	private Methods

@@ -55,11 +55,16 @@ void BossEnemyAttackCollision::Update(const Transform3DComponent& transform) {
 	if (it == table_.end()) {
 		return;
 	}
-	const AttackParameter& parameter = it->second;
+	AttackParameter& parameter = it->second;
 
 	// 攻撃中かどうか
 	bool isAttack = std::any_of(parameter.windows.begin(),
 		parameter.windows.end(),
+		[t = currentTimer_](const TimeWindow& window) {
+			return window.on <= t && t < window.off; });
+	// パリィ可能状態か判定
+	parameter.isParryPossible = std::any_of(parameter.parryWindows.begin(),
+		parameter.parryWindows.end(),
 		[t = currentTimer_](const TimeWindow& window) {
 			return window.on <= t && t < window.off; });
 
@@ -100,6 +105,17 @@ void BossEnemyAttackCollision::SetEnterState(BossEnemyState state) {
 	currentTimer_ = 0.0f;
 	// 無効状態を設定
 	weaponBody_->SetType(ColliderType::Type_None);
+}
+
+bool BossEnemyAttackCollision::CanParry() const {
+
+	// 存在しないテーブルの場合はfalse固定
+	if (!Algorithm::Find(table_, currentState_)) {
+		return false;
+	}
+
+	// 更新処理の結果を返す	
+	return table_.at(currentState_).isParryPossible;
 }
 
 void BossEnemyAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody) {

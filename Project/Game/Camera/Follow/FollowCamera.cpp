@@ -40,6 +40,19 @@ void FollowCamera::SetScreenShake(bool isShake) {
 	}
 }
 
+void FollowCamera::SetParry(bool isParry) {
+
+	if (isParry) {
+
+		// 状態を設定する
+		stateController_->SetOverlayState(*this, FollowCameraOverlayState::Parry);
+	} else {
+
+		// parryを止める
+		stateController_->ExitOverlayState(FollowCameraOverlayState::Parry);
+	}
+}
+
 void FollowCamera::SetTarget(FollowCameraTargetType type, const Transform3DComponent& target) {
 
 	stateController_->SetTarget(type, target);

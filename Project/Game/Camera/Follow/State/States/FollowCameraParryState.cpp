@@ -14,7 +14,10 @@
 void FollowCameraParryState::Enter(FollowCamera& followCamera) {
 
 	// 補間開始値を設定
-	startRotate_ = followCamera.GetTransform().eulerRotate;
+	const Vector3& cameraRotation = followCamera.GetTransform().eulerRotate;
+	startRotate_ = cameraRotation;
+	// Y軸回転は元の回転に合わせる
+	targetRotate_.y = cameraRotation.y;
 
 	lerpTimer_ = 0.0f;
 	waitTimer_ = 0.0f;
@@ -99,7 +102,7 @@ void FollowCameraParryState::ImGui([[maybe_unused]] const FollowCamera& followCa
 void FollowCameraParryState::ApplyJson(const Json& data) {
 
 	targetOffsetTranslation_ = JsonAdapter::ToObject<Vector3>(data["targetOffsetTranslation_"]);
-	//targetRotate_ = JsonAdapter::ToObject<Vector3>(data["targetRotate_"]);
+	targetRotate_ = JsonAdapter::ToObject<Vector3>(data["targetRotate_"]);
 	lerpTime_ = JsonAdapter::GetValue<float>(data, "lerpTime_");
 	waitTime_ = JsonAdapter::GetValue<float>(data, "waitTime_");
 	lerpRate_ = JsonAdapter::GetValue<float>(data, "lerpRate_");

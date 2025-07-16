@@ -224,10 +224,33 @@ void Player::OnCollisionEnter(const CollisionBody* collisionBody) {
 
 		// ダメージを受ける
 		const int damage = bossEnemy_->GetDamage();
-		stats_.currentHP = (std::max)(0, stats_.currentHP - bossEnemy_->GetDamage());
+		stats_.currentHP = (std::max)(0, stats_.currentHP - damage);
 
 		// HUDに通知
 		hudSprites_->SetDamage(damage);
+	}
+}
+
+void Player::OnCollisionStay(const CollisionBody* collisionBody) {
+
+	// すでにパリィ状態なら処理しない
+	if (stateController_->GetCurrentState() == PlayerState::Parry) {
+		return;
+	}
+
+	// 衝突しているときにパリィ可能状態でパリィを入力出来たらパリィ状態に強制遷移させる
+	if ((collisionBody->GetType() & (ColliderType::Type_BossWeapon)) != ColliderType::Type_None) {
+		// 可能状態でない
+		if (!bossEnemy_->CanParry()) {
+			return;
+		}
+
+		// パリィ入力判定
+		if (stateController_->IsTriggerParry()) {
+
+			// 入力出来たらパリィ状態に強制遷移させる
+			stateController_->SetForcedState(*this, PlayerState::Parry);
+		}
 	}
 }
 

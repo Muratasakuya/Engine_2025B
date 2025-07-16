@@ -55,6 +55,7 @@ public:
 
 	Vector3 GetWeaponTranslation() const;
 	bool IsCurrentStunState() const;
+	bool CanParry() const { return attackCollision_->CanParry(); }
 
 	int GetDamage() const;
 private:

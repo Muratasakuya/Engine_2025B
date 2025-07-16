@@ -35,6 +35,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetEnterState(BossEnemyState state);
+
+	bool CanParry() const;
 private:
 	//========================================================================
 	//	private Methods
@@ -56,7 +58,7 @@ private:
 
 		std::vector<TimeWindow> windows;
 		std::vector<TimeWindow> parryWindows;
-		bool  isParryPossible = false;
+		bool isParryPossible = false;
 	};
 
 	//--------- variables ----------------------------------------------------

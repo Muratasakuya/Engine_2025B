@@ -68,8 +68,10 @@ private:
 	// 回転の設定
 	float defaultOffsetZ_;         // z初期値
 	float defaultOffsetY_;         // y初期値
+	float defaultOffsetX_;         // x初期値
 	float offsetZLerpRate_;        // z値補間割合
 	float offsetYLerpRate_;        // y値補間割合
+	float offsetXLerpRate_;        // y値補間割合
 	float rotateZLerpRate_;        // z回転補間割合
 	RotateParam rotatePlusParam_;  // +
 	RotateParam rotateMinusParam_; // -
