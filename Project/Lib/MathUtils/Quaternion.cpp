@@ -142,7 +142,7 @@ Quaternion Quaternion::Multiply(const Quaternion& lhs, const Quaternion& rhs) {
 	return result;
 }
 
-Quaternion Quaternion::IdentityQuaternion() {
+Quaternion Quaternion::IdobjectQuaternion() {
 
 	return { 0.0f, 0.0f, 0.0f, 1.0f };
 }
@@ -351,7 +351,7 @@ Quaternion Quaternion::FromToY(const Vector3& direction) {
 	float dot = Vector3::Dot(kY, direction);
 	// ほぼ同方向
 	if (dot > 0.9999f) {
-		return Quaternion::IdentityQuaternion();
+		return Quaternion::IdobjectQuaternion();
 	}
 	// ほぼ逆方向
 	if (dot < -0.9999f) {
@@ -372,7 +372,7 @@ Quaternion Quaternion::FromToRotation(const Vector3& from, const Vector3& to) {
 
 	// ほぼ同じ向き
 	if (dot > 1.0f - 1e-6f) {
-		return IdentityQuaternion();
+		return IdobjectQuaternion();
 	}
 	// ほぼ真逆 (180°) のときは任意の垂直軸で回す
 	if (dot < -1.0f + 1e-6f) {

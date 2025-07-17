@@ -14,7 +14,7 @@
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 
 // editor
-#include <Game/Editor/GameEntityEditor.h>
+#include <Game/Editor/GameObjectEditor.h>
 #include <Game/Editor/LevelEditor/LevelEditor.h>
 
 //============================================================================
@@ -52,7 +52,7 @@ private:
 	std::unique_ptr<BossEnemy> bossEnemy_;
 
 	// editor
-	std::unique_ptr<GameEntityEditor> entityEditor_;
+	std::unique_ptr<GameObjectEditor> objectEditor_;
 	std::unique_ptr<LevelEditor> levelEditor_;
 
 	//--------- functions ----------------------------------------------------

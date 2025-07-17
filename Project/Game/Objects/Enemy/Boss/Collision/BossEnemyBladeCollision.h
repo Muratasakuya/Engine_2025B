@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Collision/Collider.h>
-#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Object/Data/Transform.h>
 
 //============================================================================
 //	BossEnemyBladeCollision class
@@ -41,7 +41,7 @@ private:
 	std::string fileName_;
 
 	// collisionに渡す値
-	Transform3DComponent transform_;
+	Transform3D transform_;
 
 	bool isEmit_;      // 発生させたかどうか
 	Vector3 velocity_; // 移動速度(方向も含む)

@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity3D.h>
+#include <Engine/Object/Base/GameObject3D.h>
 #include <Game/Editor/LevelEditor/LevelStructures.h>
 
 // c++
@@ -28,8 +28,8 @@ public:
 
 	void Init(const std::string& jsonPath);
 
-	void CreateEntitiesMap(std::unordered_map<Level::EntityType,
-		std::vector<std::unique_ptr<GameEntity3D>>>& entitiesMap);
+	void CreateObjectsMap(std::unordered_map<Level::ObjectType,
+		std::vector<std::unique_ptr<GameObject3D>>>& objectsMap);
 
 	void Reset();
 
@@ -62,28 +62,28 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// json
-	Json LoadEntityFile(const std::string& identifier);
+	Json LoadObjectFile(const std::string& identifier);
 	void RecieveFile();
 
 	// helper
-	void BuildEntities(const Json& obj, std::unordered_map<Level::EntityType,
-		std::vector<std::unique_ptr<GameEntity3D>>>& entitiesMap);
+	void BuildObjects(const Json& obj, std::unordered_map<Level::ObjectType,
+		std::vector<std::unique_ptr<GameObject3D>>>& objectsMap);
 
-	bool IsMeshEntityCreatable(const Json& obj) const;
+	bool IsMeshObjectCreatable(const Json& obj) const;
 	template<typename... Ts>
-	bool CheckCollisionValid(const GameEntity3D& entity);
+	bool CheckCollisionValid(const GameObject3D& object);
 
-	Level::EntityType GetEntityType(const std::string& entityTypeName);
+	Level::ObjectType GetObjectType(const std::string& objectTypeName);
 
-	std::unique_ptr<GameEntity3D> CreateEntity(const Json& obj, Level::EntityType entityType);
-	std::unique_ptr<GameEntity3D> CreateEntityPtr(Level::EntityType entityType);
+	std::unique_ptr<GameObject3D> CreateObject(const Json& obj, Level::ObjectType objectType);
+	std::unique_ptr<GameObject3D> CreateObjectPtr(Level::ObjectType objectType);
 
-	void HandleDuplicateEntity(std::vector<std::unique_ptr<GameEntity3D>>& entities,
+	void HandleDuplicateObject(std::vector<std::unique_ptr<GameObject3D>>& objects,
 		const std::string& identifier);
 
-	void ApplyTransform(GameEntity3D& entity, const Json& data);
-	void ApplyMaterial(GameEntity3D& entity, const Json& data);
-	void ApplyCollision(GameEntity3D& entity, const Json& data);
+	void ApplyTransform(GameObject3D& object, const Json& data);
+	void ApplyMaterial(GameObject3D& object, const Json& data);
+	void ApplyCollision(GameObject3D& object, const Json& data);
 };
 
 //============================================================================
@@ -91,7 +91,7 @@ private:
 //============================================================================
 
 template<typename... Ts>
-inline bool SceneBuilder::CheckCollisionValid(const GameEntity3D& entity) {
+inline bool SceneBuilder::CheckCollisionValid(const GameObject3D& object) {
 
-	return (... || (dynamic_cast<const Ts*>(&entity) != nullptr));
+	return (... || (dynamic_cast<const Ts*>(&object) != nullptr));
 }

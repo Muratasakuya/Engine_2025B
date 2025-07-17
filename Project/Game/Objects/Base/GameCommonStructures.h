@@ -8,7 +8,7 @@
 // c++
 #include <string>
 // front
-class GameEntity2D;
+class GameObject2D;
 
 //============================================================================
 //	GameCommonStructures class
@@ -29,5 +29,5 @@ namespace GameCommon {
 		void SaveJson(Json& data);
 	};
 
-	void SetInitParameter(GameEntity2D& sprite, const  GameCommon::HUDInitParameter& parameter);
+	void SetInitParameter(GameObject2D& sprite, const  GameCommon::HUDInitParameter& parameter);
 }

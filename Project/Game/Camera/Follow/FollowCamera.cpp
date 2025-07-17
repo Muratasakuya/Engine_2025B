@@ -66,7 +66,7 @@ void FollowCamera::SetParryAttack(bool isParry) {
 	}
 }
 
-void FollowCamera::SetTarget(FollowCameraTargetType type, const Transform3DComponent& target) {
+void FollowCamera::SetTarget(FollowCameraTargetType type, const Transform3D& target) {
 
 	stateController_->SetTarget(type, target);
 }

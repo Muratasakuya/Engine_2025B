@@ -36,12 +36,12 @@ void PlayerWeapon::ApplyJson(const Json& data) {
 	initTransform_.FromJson(data["InitTransform"]);
 	SetInitTransform();
 
-	GameEntity3D::ApplyMaterial(data);
+	GameObject3D::ApplyMaterial(data);
 }
 
 void PlayerWeapon::SaveJson(Json& data) {
 
-	GameEntity3D::SaveMaterial(data);
+	GameObject3D::SaveMaterial(data);
 	Collider::SaveBodyOffset(data);
 	initTransform_.ToJson(data["InitTransform"]);
 }

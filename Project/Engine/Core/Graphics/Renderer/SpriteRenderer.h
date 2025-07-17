@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Core/ECS/Components/SpriteComponent.h>
+#include <Engine/Object/Data/Sprite.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Lib/MathUtils/Matrix4x4.h>
 

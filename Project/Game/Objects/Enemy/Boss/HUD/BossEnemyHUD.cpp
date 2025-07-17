@@ -16,7 +16,7 @@
 void BossEnemyHUD::InitSprite() {
 
 	// HP背景
-	hpBackground_ = std::make_unique<GameEntity2D>();
+	hpBackground_ = std::make_unique<GameObject2D>();
 	hpBackground_->Init("enemyHPBackground", "hpBackground", "BossEnemyHUD");
 
 	// HP残量
@@ -32,7 +32,7 @@ void BossEnemyHUD::InitSprite() {
 	destroyNumDisplay_->Init(2, "toughnessNumber", "destroyNum", "BossEnemyHUD");
 
 	// 名前文字表示
-	nameText_ = std::make_unique<GameEntity2D>();
+	nameText_ = std::make_unique<GameObject2D>();
 	nameText_->Init("bossName", "bossName", "BossEnemyHUD");
 
 	// ダメージ表示

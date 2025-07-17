@@ -52,7 +52,7 @@ private:
 	BossEnemyStats stats_;
 
 	// HP背景
-	std::unique_ptr<GameEntity2D> hpBackground_;
+	std::unique_ptr<GameObject2D> hpBackground_;
 	GameCommon::HUDInitParameter hpBackgroundParameter_;
 	// HP残量
 	std::unique_ptr<GameHPBar> hpBar_;
@@ -66,7 +66,7 @@ private:
 	Vector2 destroyNumOffset_; // オフセット座標
 	Vector2 destroyNumSize_;   // サイズ
 	// 名前文字表示
-	std::unique_ptr<GameEntity2D> nameText_;
+	std::unique_ptr<GameObject2D> nameText_;
 	GameCommon::HUDInitParameter nameTextParameter_;
 	// ダメージ表示
 	std::unique_ptr<GameDisplayDamage> damageDisplay_;

@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Object/Data/Transform.h>
 
 // imgui
 #include <imgui.h>
@@ -61,7 +61,7 @@ void TransformationMatrix::Update(const BaseTransform* parent, const Vector3& sc
 	worldInverseTranspose = Matrix4x4::Transpose(Matrix4x4::Inverse(world));
 }
 
-void SpriteMaterial::Init() {
+void SpriteMaterialForGPU::Init() {
 
 	color = Color::White();
 	useVertexColor = false;
@@ -69,10 +69,10 @@ void SpriteMaterial::Init() {
 	emissiveIntensity = 0.0f;
 	alphaReference = 0.0f;
 	emissionColor = Vector3::AnyInit(1.0f);
-	uvTransform = Matrix4x4::MakeIdentity4x4();
+	uvTransform = Matrix4x4::MakeIdobject4x4();
 }
 
-void SpriteMaterial::ImGui() {
+void SpriteMaterialForGPU::ImGui() {
 
 	ImGui::ColorEdit4("color", &color.r);
 	ImGui::Text("R:%4.3f G:%4.3f B:%4.3f A:%4.3f",

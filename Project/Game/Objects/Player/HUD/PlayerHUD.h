@@ -50,8 +50,8 @@ private:
 	// 入力状態に応じて変化するsprite
 	struct InputStateSprite {
 
-		std::unique_ptr<GameEntity2D> staticSprite;
-		std::unordered_map<InputType, std::unique_ptr<GameEntity2D>> dynamicSprites;
+		std::unique_ptr<GameObject2D> staticSprite;
+		std::unordered_map<InputType, std::unique_ptr<GameObject2D>> dynamicSprites;
 
 		uint32_t index; // spriteを左から並べた時の順番
 
@@ -85,7 +85,7 @@ private:
 	//----------- stats ------------------------//
 
 	// HP背景
-	std::unique_ptr<GameEntity2D> hpBackground_;
+	std::unique_ptr<GameObject2D> hpBackground_;
 	GameCommon::HUDInitParameter hpBackgroundParameter_;
 	// HP残量
 	std::unique_ptr<GameHPBar> hpBar_;
@@ -95,7 +95,7 @@ private:
 	GameCommon::HUDInitParameter skilBarParameter_;
 
 	// 名前文字表示
-	std::unique_ptr<GameEntity2D> nameText_;
+	std::unique_ptr<GameObject2D> nameText_;
 	GameCommon::HUDInitParameter nameTextParameter_;
 
 	// ダメージ表示

@@ -5,9 +5,9 @@
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Engine/Core/ECS/Components/TransformComponent.h>
-#include <Engine/Core/ECS/Components/MaterialComponent.h>
-#include <Engine/Core/ECS/Components/AnimationComponent.h>
+#include <Engine/Object/Data/Transform.h>
+#include <Engine/Object/Data/Material.h>
+#include <Engine/Object/Data/Animation.h>
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
 
 // front
@@ -73,8 +73,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetUploadData(const std::string& name, const TransformationMatrix& matrix,
-		const std::vector<MaterialComponent>& materials,
-		const AnimationComponent& animation);
+		const std::vector<Material>& materials,
+		const SkinnedAnimation& animation);
 
 	const std::unordered_map<std::string, MeshInstancingData>& GetInstancingData() const { return meshGroups_; }
 private:

@@ -5,7 +5,7 @@
 //============================================================================
 
 void FollowCameraIState::SetTarget(FollowCameraTargetType type,
-	const Transform3DComponent& target) {
+	const Transform3D& target) {
 
 	targets_[type] = &target;
 }

@@ -15,21 +15,21 @@ void LevelEditor::Init(const std::string& initSceneFile) {
 
 	sceneBuilder_->SetFile(initSceneFile);
 
-	// entityの作成
-	BuildEntities();
+	// objectの作成
+	BuildObjects();
 
 	rightChildSize_ = ImVec2(384.0f, 320.0f);
 	buttonSize_ = ImVec2(256.0f, 32.0f);
 }
 
-void LevelEditor::SaveEntity(GameEntity3D* entity) {
+void LevelEditor::SaveObject(GameObject3D* object) {
 
-	const std::string& identifier = Algorithm::RemoveAfterUnderscore(entity->GetIdentifier());
+	const std::string& identifier = Algorithm::RemoveAfterUnderscore(object->GetIdentifier());
 	if (ImGui::Button(("Save Material..." + identifier + ".json").c_str())) {
 
 		Json data;
 		// materialを保存
-		entity->SaveMaterial(data);
+		object->SaveMaterial(data);
 
 		JsonAdapter::Save(jsonPath_ + identifier + ".json", data);
 	}
@@ -37,34 +37,34 @@ void LevelEditor::SaveEntity(GameEntity3D* entity) {
 
 void LevelEditor::Update() {
 
-	// entityの作成
-	BuildEntities();
+	// objectの作成
+	BuildObjects();
 
-	// entityの更新処理
-	UpdateEntities();
+	// objectの更新処理
+	UpdateObjects();
 }
 
-void LevelEditor::BuildEntities() {
+void LevelEditor::BuildObjects() {
 
 	// sceneを構築するかどうか
 	if (sceneBuilder_->IsCreate()) {
 
 		// .jsonを基に作成
-		sceneBuilder_->CreateEntitiesMap(entitiesMap_);
+		sceneBuilder_->CreateObjectsMap(objectsMap_);
 		// リセット
 		sceneBuilder_->Reset();
 	}
 }
 
-void LevelEditor::UpdateEntities() {
+void LevelEditor::UpdateObjects() {
 
-	if (entitiesMap_.empty()) {
+	if (objectsMap_.empty()) {
 		return;
 	}
 
 	// 種類ごとに全て更新
-	for (const auto& entityMap : std::views::values(entitiesMap_)) {
-		for (const auto& entities : entityMap) {
+	for (const auto& objectMap : std::views::values(objectsMap_)) {
+		for (const auto& entities : objectMap) {
 
 			entities->Update();
 		}
@@ -77,24 +77,24 @@ void LevelEditor::ImGui() {
 
 	// 選択処理
 	ImGui::BeginChild("SelectChild##SceneBuilder", rightChildSize_, true);
-	ImGui::SeparatorText("Select Entity");
+	ImGui::SeparatorText("Select object");
 
-	SelectEntity();
+	SelectObject();
 	ImGui::EndChild();
 
 	ImGui::BeginChild("EditChild##SceneBuilder");
-	ImGui::SeparatorText("Edit Entity");
+	ImGui::SeparatorText("Edit object");
 
 	// 操作処理
-	EditEntity();
+	EditObject();
 	ImGui::EndChild();
 
 	ImGui::EndGroup();
 }
 
-void LevelEditor::SelectEntity() {
+void LevelEditor::SelectObject() {
 
-	// entityType選択
+	// objectType選択
 	const char* typeOptions[] = { 
 		"None","CrossMarkWall"
 	};
@@ -107,7 +107,7 @@ void LevelEditor::SelectEntity() {
 			if (ImGui::Selectable(typeOptions[i], isSelected)) {
 
 				typeIndex = i;
-				currentSelectType_ = static_cast<Level::EntityType>(i);
+				currentSelectType_ = static_cast<Level::ObjectType>(i);
 				currentSelectIndex_.reset();
 				selectFilter_.Clear();
 			}
@@ -116,22 +116,22 @@ void LevelEditor::SelectEntity() {
 		ImGui::EndCombo();
 	}
 
-	auto mapIt = entitiesMap_.find(currentSelectType_);
-	if (mapIt == entitiesMap_.end() || mapIt->second.empty()) {
-		ImGui::TextDisabled("No Entity for this type...");
+	auto mapIt = objectsMap_.find(currentSelectType_);
+	if (mapIt == objectsMap_.end() || mapIt->second.empty()) {
+		ImGui::TextDisabled("No object for this type...");
 		return;
 	}
 
 	// 検索ボックス 
-	selectFilter_.Draw("##SearchEntity", rightChildSize_.x - 16.0f);
+	selectFilter_.Draw("##Searchobject", rightChildSize_.x - 16.0f);
 	ImGui::Separator();
 
 	// 一覧
-	const auto& entityVec = mapIt->second;
+	const auto& objectVec = mapIt->second;
 	bool hasResult = false;
-	for (int i = 0; i < static_cast<int>(entityVec.size()); ++i) {
+	for (int i = 0; i < static_cast<int>(objectVec.size()); ++i) {
 
-		const std::string name = entityVec[i]->GetTag().name + "_" + entityVec[i]->GetIdentifier();
+		const std::string name = objectVec[i]->GetTag().name + "_" + objectVec[i]->GetIdentifier();
 		if (!selectFilter_.PassFilter(name.c_str())) { 
 			continue;
 		}
@@ -152,23 +152,23 @@ void LevelEditor::SelectEntity() {
 	}
 }
 
-void LevelEditor::EditEntity() {
+void LevelEditor::EditObject() {
 
 	if (!currentSelectIndex_.has_value()) {
 		return;
 	}
 
-	auto mapIt = entitiesMap_.find(currentSelectType_);
-	if (mapIt == entitiesMap_.end()) {
+	auto mapIt = objectsMap_.find(currentSelectType_);
+	if (mapIt == objectsMap_.end()) {
 		return;
 	}
 
-	const auto& entityVec = mapIt->second;
+	const auto& objectVec = mapIt->second;
 	int index = currentSelectIndex_.value();
-	if (index < 0 || index >= static_cast<int>(entityVec.size())) {
+	if (index < 0 || index >= static_cast<int>(objectVec.size())) {
 		return;
 	}
 
-	SaveEntity(entityVec[index].get());
-	entityVec[index]->ImGui();
+	SaveObject(objectVec[index].get());
+	objectVec[index]->ImGui();
 }

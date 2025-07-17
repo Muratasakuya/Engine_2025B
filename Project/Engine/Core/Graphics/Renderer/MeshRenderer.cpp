@@ -14,9 +14,9 @@
 #include <Engine/Config.h>
 
 // ECS
-#include <Engine/Core/ECS/Core/ECSManager.h>
-#include <Engine/Core/ECS/System/Systems/InstancedMeshSystem.h>
-#include <Engine/Core/ECS/System/Systems/SkyboxRenderSystem.h>
+#include <Engine/Object/Core/ObjectManager.h>
+#include <Engine/Object/System/Systems/InstancedMeshSystem.h>
+#include <Engine/Object/System/Systems/SkyboxRenderSystem.h>
 
 //============================================================================
 //	MeshRenderer classMethods
@@ -45,7 +45,7 @@ void MeshRenderer::UpdateRayScene(DxCommand* dxCommand) {
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
 	// 描画情報取得
-	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
+	const auto& ecsSystem = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
 
 	const auto& meshes = ecsSystem->GetMeshes();
 	auto instancingBuffers = ecsSystem->GetInstancingData();
@@ -86,7 +86,7 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	// commandList取得
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
-	const auto& skyBoxSystem = ECSManager::GetInstance()->GetSystem<SkyboxRenderSystem>();
+	const auto& skyBoxSystem = ObjectManager::GetInstance()->GetSystem<SkyboxRenderSystem>();
 	if (skyBoxSystem->IsCreated()) {
 
 		// skybox描画
@@ -103,7 +103,7 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	}
 
 	// 描画情報取得
-	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<InstancedMeshSystem>();
+	const auto& ecsSystem = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
 	MeshCommandContext commandContext{};
 
 	const auto& meshes = ecsSystem->GetMeshes();

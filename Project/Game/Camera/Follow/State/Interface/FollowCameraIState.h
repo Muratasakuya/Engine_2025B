@@ -9,7 +9,7 @@
 // front
 class FollowCamera;
 class FollowCameraInputMapper;
-class Transform3DComponent;
+class Transform3D;
 
 //============================================================================
 //	FollowCameraIState class
@@ -42,7 +42,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetInputMapper(const FollowCameraInputMapper* inputMapper) { inputMapper_ = inputMapper; }
-	void SetTarget(FollowCameraTargetType type, const Transform3DComponent& target);
+	void SetTarget(FollowCameraTargetType type, const Transform3D& target);
 	void SetCanExit(bool canExit) { canExit_ = canExit; }
 
 	virtual bool GetCanExit() const { return canExit_; }
@@ -54,7 +54,7 @@ protected:
 	//--------- variables ----------------------------------------------------
 
 	const FollowCameraInputMapper* inputMapper_;
-	std::unordered_map<FollowCameraTargetType, const Transform3DComponent*> targets_;
+	std::unordered_map<FollowCameraTargetType, const Transform3D*> targets_;
 
 	// 共通parameters
 	bool canExit_ = true; // 遷移可能かどうか

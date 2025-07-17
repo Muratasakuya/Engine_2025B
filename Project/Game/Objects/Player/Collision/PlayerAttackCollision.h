@@ -21,7 +21,7 @@ public:
 
 	void Init();
 
-	void Update(const Transform3DComponent& transform);
+	void Update(const Transform3D& transform);
 
 	void ImGui();
 
@@ -54,7 +54,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	CollisionBody* weaponBody_;
-	const Transform3DComponent* transform_;
+	const Transform3D* transform_;
 
 	std::unordered_map<PlayerState, AttackParameter> table_; // 状態毎の衝突
 	const AttackParameter* currentParameter_;                // 現在の状態の値

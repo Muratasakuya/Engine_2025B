@@ -11,7 +11,7 @@
 namespace Level {
 
 	// エンティティの種類
-	enum class EntityType {
+	enum class ObjectType {
 
 		None,
 		CrossMarkWall,

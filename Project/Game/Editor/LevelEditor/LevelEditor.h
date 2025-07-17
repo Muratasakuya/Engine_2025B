@@ -42,15 +42,15 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	const std::string jsonPath_ = "Level/EntityData/";
+	const std::string jsonPath_ = "Level/ObjectData/";
 
-	// 全てのentityを管理
-	std::unordered_map<Level::EntityType, std::vector<std::unique_ptr<GameEntity3D>>> entitiesMap_;
+	// 全てのobjectを管理
+	std::unordered_map<Level::ObjectType, std::vector<std::unique_ptr<GameObject3D>>> objectsMap_;
 
 	// builder
 	std::unique_ptr<SceneBuilder> sceneBuilder_;
 
-	Level::EntityType currentSelectType_;   // 選択中のタイプ
+	Level::ObjectType currentSelectType_;   // 選択中のタイプ
 	std::optional<int> currentSelectIndex_; // 選択インデックス
 
 	// editor
@@ -61,13 +61,13 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// json
-	void SaveEntity(GameEntity3D* entity);
+	void SaveObject(GameObject3D* object);
 
 	// update
-	void BuildEntities();
-	void UpdateEntities();
+	void BuildObjects();
+	void UpdateObjects();
 
 	// editor
-	void SelectEntity();
-	void EditEntity();
+	void SelectObject();
+	void EditObject();
 };

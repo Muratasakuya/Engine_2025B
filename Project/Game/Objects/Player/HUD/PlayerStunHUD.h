@@ -39,9 +39,9 @@ private:
 
 	struct ChainInput {
 
-		std::unique_ptr<GameEntity2D> rightChain; // 切り替え入力: 右
-		std::unique_ptr<GameEntity2D> leftChain;  // 切り替え入力: 左
-		std::unique_ptr<GameEntity2D> cancel;     // キャンセル入力
+		std::unique_ptr<GameObject2D> rightChain; // 切り替え入力: 右
+		std::unique_ptr<GameObject2D> leftChain;  // 切り替え入力: 左
+		std::unique_ptr<GameObject2D> cancel;     // キャンセル入力
 
 		void Init(const std::string& rightTex, const std::string& leftTex,
 			const std::string& cancelTex);
@@ -64,17 +64,17 @@ private:
 
 	// 切り替え先アイコン表示
 	static const uint32_t iconCount_ = 2;
-	std::array<std::unique_ptr<GameEntity2D>, iconCount_> stunChainIcon_;
+	std::array<std::unique_ptr<GameObject2D>, iconCount_> stunChainIcon_;
 	// アイコンの周りの円
-	std::array<std::unique_ptr<GameEntity2D>, iconCount_>  stunChainIconRing_;
+	std::array<std::unique_ptr<GameObject2D>, iconCount_>  stunChainIconRing_;
 
 	// 入力表示
 	ChainInput keyInput_;     // キー表示
 	ChainInput gamepadInput_; // パッド表示
 
-	std::unique_ptr<GameEntity2D> progressBarBackground_; // 経過率背景
-	std::unique_ptr<GameEntity2D> progressBar_;           // 経過率
-	std::unique_ptr<GameEntity2D> chainAttackText_;       // 文字
+	std::unique_ptr<GameObject2D> progressBarBackground_; // 経過率背景
+	std::unique_ptr<GameObject2D> progressBar_;           // 経過率
+	std::unique_ptr<GameObject2D> chainAttackText_;       // 文字
 
 	float restTimer_; // 時間経過
 	float restTime_;  // スタン選択時間

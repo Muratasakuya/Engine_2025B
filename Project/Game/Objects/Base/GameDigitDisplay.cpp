@@ -16,7 +16,7 @@ void GameDigitDisplay::Init(uint32_t maxDigit, const std::string& textureName,
 	digitSprites_.reserve(maxDigit);
 
 	// 左端の数字
-	GameEntity2D* firstSprite = digitSprites_.emplace_back(std::make_unique<GameEntity2D>()).get();
+	GameObject2D* firstSprite = digitSprites_.emplace_back(std::make_unique<GameObject2D>()).get();
 	firstSprite->Init(textureName, name + "_0", groupName);
 
 	// 画像サイズ設定
@@ -28,7 +28,7 @@ void GameDigitDisplay::Init(uint32_t maxDigit, const std::string& textureName,
 	// 残りの桁を作成
 	for (uint32_t index = 1; index < maxDigit; ++index) {
 
-		GameEntity2D* sprite = digitSprites_.emplace_back(std::make_unique<GameEntity2D>()).get();
+		GameObject2D* sprite = digitSprites_.emplace_back(std::make_unique<GameObject2D>()).get();
 		sprite->Init(textureName, name + "_" + std::to_string(index), groupName);
 		sprite->SetTextureSize(digitSize_);
 		sprite->SetAnchor(Vector2::AnyInit(0.0f));

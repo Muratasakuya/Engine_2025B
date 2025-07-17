@@ -13,7 +13,7 @@
 //	PlayerStunAttackState classMethods
 //============================================================================
 
-PlayerStunAttackState::PlayerStunAttackState(GameEntity3D* ally) {
+PlayerStunAttackState::PlayerStunAttackState(GameObject3D* ally) {
 
 	// 味方を設定
 	ally_ = nullptr;
