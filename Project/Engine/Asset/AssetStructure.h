@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Object/Data/Transform.h>
 #include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
 #include <Engine/Core/Graphics/Lib/ComPtr.h>
 
@@ -49,7 +49,7 @@ struct MeshModelData {
 
 struct Node {
 
-	Transform3DComponent transform;
+	Transform3D transform;
 	Matrix4x4 localMatrix;
 	std::string name;
 	std::vector<Node> children;
@@ -122,7 +122,7 @@ struct AnimationData {
 };
 struct Joint {
 
-	Transform3DComponent transform;
+	Transform3D transform;
 	bool isParentTransform;
 
 	Matrix4x4 localMatrix;

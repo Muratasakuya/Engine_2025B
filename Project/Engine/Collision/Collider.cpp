@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Object/Data/Transform.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
@@ -27,7 +27,7 @@ Collider::~Collider() {
 	}
 }
 
-void Collider::UpdateAllBodies(const Transform3DComponent& transform) {
+void Collider::UpdateAllBodies(const Transform3D& transform) {
 
 	if (bodies_.empty()) {
 		return;
@@ -62,7 +62,7 @@ int Collider::ToIndexType(ColliderType type) {
 	return std::countr_zero(static_cast<std::make_unsigned_t<std::underlying_type_t<ColliderType>>>(type)) + 1;
 }
 
-void Collider::UpdateSphereBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::Sphere& offset) {
+void Collider::UpdateSphereBody(CollisionBody* body, const Transform3D& transform, const CollisionShape::Sphere& offset) {
 
 	// 子か親かで座標を変える
 	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
@@ -71,7 +71,7 @@ void Collider::UpdateSphereBody(CollisionBody* body, const Transform3DComponent&
 	body->UpdateSphere(CollisionShape::Sphere(center));
 }
 
-void Collider::UpdateAABBBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::AABB& offset) {
+void Collider::UpdateAABBBody(CollisionBody* body, const Transform3D& transform, const CollisionShape::AABB& offset) {
 
 	// 子か親かで座標を変える
 	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
@@ -82,7 +82,7 @@ void Collider::UpdateAABBBody(CollisionBody* body, const Transform3DComponent& t
 	body->UpdateAABB(CollisionShape::AABB(center, extent));
 }
 
-void Collider::UpdateOBBBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::OBB& offset) {
+void Collider::UpdateOBBBody(CollisionBody* body, const Transform3D& transform, const CollisionShape::OBB& offset) {
 
 	// 子か親かで座標を変える
 	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;

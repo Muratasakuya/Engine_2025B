@@ -66,7 +66,7 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 	meshGroup.wells.resize(meshNum);
 	meshGroup.influences.resize(meshNum);
 	meshGroup.skinningInformations.resize(meshNum);
-	// componentの数もここで決める
+	// dataの数もここで決める
 	meshGroup.wellUploadData.resize(meshNum);
 
 	//　bone、骨の数
@@ -163,8 +163,8 @@ void InstancedMeshBuffer::Create(IMesh* mesh,
 }
 
 void InstancedMeshBuffer::SetUploadData(const std::string& name,
-	const TransformationMatrix& matrix, const std::vector<MaterialComponent>& materials,
-	const AnimationComponent& animation) {
+	const TransformationMatrix& matrix, const std::vector<Material>& materials,
+	const SkinnedAnimation& animation) {
 
 	meshGroups_[name].matrixUploadData.emplace_back(matrix);
 
@@ -270,7 +270,7 @@ void InstancedMeshBuffer::Reset() {
 
 	for (auto& meshGroup : std::views::values(meshGroups_)) {
 
-		// componentクリア
+		// dataクリア
 		meshGroup.matrixUploadData.clear();
 
 		for (uint32_t meshIndex = 0; meshIndex < meshGroup.meshNum; ++meshIndex) {

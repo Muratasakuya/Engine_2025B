@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Object/Data/Transform.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
@@ -49,7 +49,7 @@ void BossEnemyAttackCollision::Init() {
 	table_.emplace(BossEnemyState::StrongAttack, attackParameter);
 }
 
-void BossEnemyAttackCollision::Update(const Transform3DComponent& transform) {
+void BossEnemyAttackCollision::Update(const Transform3D& transform) {
 
 	auto it = table_.find(currentState_);
 	if (it == table_.end()) {

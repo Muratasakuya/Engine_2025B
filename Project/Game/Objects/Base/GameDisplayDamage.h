@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity3D.h>
+#include <Engine/Object/Base/GameObject3D.h>
 #include <Game/Objects/Base/GameDigitDisplay.h>
 
 // c++
@@ -24,7 +24,7 @@ public:
 	void Init(const std::string& textureName, const std::string& groupName,
 		uint32_t damageDisplayMaxNum, uint32_t damageDigitMaxNum);
 
-	void Update(const GameEntity3D& entity, const BaseCamera& camera);
+	void Update(const GameObject3D& object, const BaseCamera& camera);
 
 	void ImGui();
 

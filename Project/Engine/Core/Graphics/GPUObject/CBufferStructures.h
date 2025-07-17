@@ -58,7 +58,7 @@ struct LightingForGPU {
 	float environmentCoefficient;
 };
 
-struct SpriteMaterial {
+struct SpriteMaterialForGPU {
 
 	Matrix4x4 uvTransform;
 	Color color;

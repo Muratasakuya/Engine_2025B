@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity3D.h>
+#include <Engine/Object/Base/GameObject3D.h>
 
 // weapon
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemyWeapon.h>
@@ -21,7 +21,7 @@ class Player;
 //	BossEnemy class
 //============================================================================
 class BossEnemy :
-	public GameEntity3D {
+	public GameObject3D {
 public:
 	//========================================================================
 	//	public Methods
@@ -80,7 +80,7 @@ private:
 	std::unique_ptr<BossEnemyHUD> hudSprites_;
 
 	// parameters
-	Transform3DComponent initTransform_; // 初期化時の値
+	Transform3D initTransform_; // 初期化時の値
 	BossEnemyStats stats_;               // ステータス
 
 	// editor

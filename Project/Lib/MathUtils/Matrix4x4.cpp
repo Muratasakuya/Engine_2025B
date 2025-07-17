@@ -232,7 +232,7 @@ Matrix4x4 Matrix4x4::Transpose(const Matrix4x4& m) {
 	return matrix;
 }
 
-Matrix4x4 Matrix4x4::MakeIdentity4x4() {
+Matrix4x4 Matrix4x4::MakeIdobject4x4() {
 
 	Matrix4x4 matrix{};
 	for (int i = 0; i < 4; i++) {

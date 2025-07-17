@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Object/Data/Transform.h>
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
@@ -41,7 +41,7 @@ void PlayerAttackCollision::Init() {
 	weaponBody_->SetTargetType(ColliderType::Type_BossEnemy);
 }
 
-void PlayerAttackCollision::Update(const Transform3DComponent& transform) {
+void PlayerAttackCollision::Update(const Transform3D& transform) {
 
 	transform_ = &transform;
 

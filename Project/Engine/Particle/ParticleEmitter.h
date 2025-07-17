@@ -8,7 +8,7 @@
 // emitter
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
-#include <Engine/Core/ECS/Components/TransformComponent.h>
+#include <Engine/Object/Data/Transform.h>
 
 // imgui
 #include <imgui.h>

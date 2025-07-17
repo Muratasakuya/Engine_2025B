@@ -120,7 +120,7 @@ bool Collision::AABBToOBB(const CollisionShape::AABB& aabb, const CollisionShape
 	CollisionShape::OBB obbA;
 	obbA.center = aabb.center;
 	obbA.size = aabb.extent;
-	obbA.rotate = Quaternion::IdentityQuaternion();
+	obbA.rotate = Quaternion::IdobjectQuaternion();
 
 	return OBBToOBB(obbA, obbB);
 }

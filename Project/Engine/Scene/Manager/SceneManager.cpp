@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/ImGuiEntityEditor.h>
+#include <Engine/Editor/ImGuiObjectEditor.h>
 
 //============================================================================
 //	SceneManager classMethods
@@ -70,5 +70,5 @@ void SceneManager::LoadScene(Scene scene) {
 	currentScene_->SetPtr(asset_, postProcessSystem_, sceneView_, this);
 
 	// imgui選択をリセット
-	ImGuiEntityEditor::GetInstance()->Reset();
+	ImGuiObjectEditor::GetInstance()->Reset();
 }

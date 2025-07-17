@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity3D.h>
+#include <Engine/Object/Base/GameObject3D.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
@@ -55,7 +55,7 @@ void GameDisplayDamage::SetPostProcessEnable(bool enable) {
 	}
 }
 
-void GameDisplayDamage::Update(const GameEntity3D& entity, const BaseCamera& camera) {
+void GameDisplayDamage::Update(const GameObject3D& object, const BaseCamera& camera) {
 
 	const float deltaTime = GameTimer::GetDeltaTime();
 
@@ -78,7 +78,7 @@ void GameDisplayDamage::Update(const GameEntity3D& entity, const BaseCamera& cam
 		it->outTimer = 0.0f;
 
 		// スクリーン座標を取得
-		Vector2 bossScreen = it->digits->ProjectToScreen(entity.GetTranslation(), camera);
+		Vector2 bossScreen = it->digits->ProjectToScreen(object.GetTranslation(), camera);
 		Vector2 randomOffset{
 			RandomGenerator::Generate(-damageDisplayPosRandomRange_.x,damageDisplayPosRandomRange_.x),
 			RandomGenerator::Generate(-damageDisplayPosRandomRange_.y,damageDisplayPosRandomRange_.y)

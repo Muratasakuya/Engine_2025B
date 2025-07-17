@@ -193,7 +193,8 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Engine\Asset\ModelLoader.cpp" />
     <ClCompile Include="Engine\Asset\TextureManager.cpp" />
-    <ClCompile Include="Engine\Core\ECS\Components\AnimationComponent.cpp">
+    <ClCompile Include="Engine\Object\Core\ObjectPoolManager.cpp" />
+    <ClCompile Include="Engine\Object\Data\Animation.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -205,55 +206,51 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\MaterialComponent.cpp">
+    <ClCompile Include="Engine\Object\Data\Material.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\SkyboxComponent.cpp">
+    <ClCompile Include="Engine\Object\Data\Skybox.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\SpriteComponent.cpp">
+    <ClCompile Include="Engine\Object\Data\Sprite.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Core\ECSManager.cpp">
+    <ClCompile Include="Engine\Object\Core\ObjectManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Core\EntityManager.cpp">
+    <ClCompile Include="Engine\Object\System\Manager\SystemManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Manager\SystemManager.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\AnimationSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\AnimationSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\InstancedMeshSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\InstancedMeshSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\MaterialSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\MaterialSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\SkyboxRenderSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\SkyboxRenderSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\SpriteBufferSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\SpriteBufferSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\TagSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\TagSystem.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\TransformSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\TransformSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -357,15 +354,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Entity\GameEntity2D.cpp">
+    <ClCompile Include="Engine\Object\Base\GameObject2D.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Entity\GameEntity3D.cpp">
+    <ClCompile Include="Engine\Object\Base\GameObject3D.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Entity\Interface\IGameEntity.cpp">
+    <ClCompile Include="Engine\Object\Base\Interface\IGameObject.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -435,7 +432,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\TransformComponent.cpp" />
+    <ClCompile Include="Engine\Object\Data\Transform.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GPUObject\InputAssembler.cpp" />
     <ClCompile Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.cpp" />
     <ClCompile Include="Engine\Core\Debug\Assert.cpp" />
@@ -467,7 +464,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Core\Graphics\Lib\DxUtils.cpp" />
     <ClCompile Include="Engine\Asset\Filesystem.cpp" />
     <ClCompile Include="Engine\Core\Window\WinApp.cpp" />
-    <ClCompile Include="Engine\Editor\ImGuiEntityEditor.cpp">
+    <ClCompile Include="Engine\Editor\ImGuiObjectEditor.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -560,7 +557,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Editor\GameEntityEditor.cpp">
+    <ClCompile Include="Game\Editor\GameObjectEditor.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -745,7 +742,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\Components\AnimationComponent.h">
+    <ClInclude Include="Engine\Object\Data\Animation.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -757,64 +754,64 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\Components\MaterialComponent.h">
+    <ClInclude Include="Engine\Object\Data\Material.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\Components\SkyboxComponent.h">
+    <ClInclude Include="Engine\Object\Data\Skybox.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\Components\SpriteComponent.h">
+    <ClInclude Include="Engine\Object\Data\Sprite.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\Components\TagComponent.h">
+    <ClInclude Include="Engine\Object\Data\ObjectTag.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\Core\ComponentPool.h" />
-    <ClInclude Include="Engine\Core\ECS\Core\ECSManager.h">
+    <ClInclude Include="Engine\Object\Core\ObjectPool.h" />
+    <ClInclude Include="Engine\Object\Core\ObjectManager.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\Core\EntityManager.h">
+    <ClInclude Include="Engine\Object\Core\ObjectPoolManager.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Base\ISystem.h">
+    <ClInclude Include="Engine\Object\System\Base\ISystem.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Manager\SystemManager.h">
+    <ClInclude Include="Engine\Object\System\Manager\SystemManager.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Systems\AnimationSystem.h">
+    <ClInclude Include="Engine\Object\System\Systems\AnimationSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Systems\InstancedMeshSystem.h">
+    <ClInclude Include="Engine\Object\System\Systems\InstancedMeshSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Systems\MaterialSystem.h">
+    <ClInclude Include="Engine\Object\System\Systems\MaterialSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Systems\SkyboxRenderSystem.h">
+    <ClInclude Include="Engine\Object\System\Systems\SkyboxRenderSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Systems\SpriteBufferSystem.h">
+    <ClInclude Include="Engine\Object\System\Systems\SpriteBufferSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Systems\TagSystem.h">
+    <ClInclude Include="Engine\Object\System\Systems\TagSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\System\Systems\TransformSystem.h">
+    <ClInclude Include="Engine\Object\System\Systems\TransformSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -926,15 +923,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Entity\GameEntity2D.h">
+    <ClInclude Include="Engine\Object\Base\GameObject2D.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Entity\GameEntity3D.h">
+    <ClInclude Include="Engine\Object\Base\GameObject3D.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Entity\Interface\IGameEntity.h">
+    <ClInclude Include="Engine\Object\Base\Interface\IGameObject.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -1008,7 +1005,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Core\ECS\Components\TransformComponent.h" />
+    <ClInclude Include="Engine\Object\Data\Transform.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InputAssembler.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.h" />
@@ -1043,7 +1040,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Core\Graphics\Lib\DxUtils.h" />
     <ClInclude Include="Engine\Asset\Filesystem.h" />
     <ClInclude Include="Engine\Core\Window\WinApp.h" />
-    <ClInclude Include="Engine\Editor\ImGuiEntityEditor.h">
+    <ClInclude Include="Engine\Editor\ImGuiObjectEditor.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -1144,7 +1141,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Editor\GameEntityEditor.h">
+    <ClInclude Include="Game\Editor\GameObjectEditor.h">
       <SubType>
       </SubType>
     </ClInclude>

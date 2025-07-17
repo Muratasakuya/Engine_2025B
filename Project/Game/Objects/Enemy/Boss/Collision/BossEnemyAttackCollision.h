@@ -21,7 +21,7 @@ public:
 
 	void Init();
 
-	void Update(const Transform3DComponent& transform);
+	void Update(const Transform3D& transform);
 
 	void ImGui();
 

@@ -23,7 +23,7 @@ void FollowCameraShakeState::Enter([[maybe_unused]] FollowCamera& followCamera) 
 void FollowCameraShakeState::Update(FollowCamera& followCamera) {
 
 	shakeTimer_ += GameTimer::GetScaledDeltaTime();
-	const Transform3DComponent& transform = followCamera.GetTransform();
+	const Transform3D& transform = followCamera.GetTransform();
 
 	// シェイクの残り時間を計算
 	if (shakeTimer_ >= shakeTime_) {

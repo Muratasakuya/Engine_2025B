@@ -7,8 +7,8 @@
 void GameHPBar::Init(const std::string& textureName, const std::string& alphaTextureName,
 	const std::string& name, const std::string& groupName) {
 
-	// entity初期化
-	GameEntity2D::Init(textureName, name, groupName);
+	// object初期化
+	GameObject2D::Init(textureName, name, groupName);
 
 	// alphaTexture設定
 	sprite_->SetAlphaTextureName(alphaTextureName);

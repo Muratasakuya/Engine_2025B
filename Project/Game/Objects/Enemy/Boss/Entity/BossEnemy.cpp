@@ -129,14 +129,14 @@ void BossEnemy::SetFollowCamera(const FollowCamera* followCamera) {
 void BossEnemy::SetAlpha(float alpha) {
 
 	// 武器も一緒に設定する
-	GameEntity3D::SetAlpha(alpha);
+	GameObject3D::SetAlpha(alpha);
 	weapon_->SetAlpha(alpha);
 }
 
 void BossEnemy::SetCastShadow(bool cast) {
 
 	// 武器も一緒に設定する
-	GameEntity3D::SetCastShadow(cast);
+	GameObject3D::SetCastShadow(cast);
 	weapon_->SetCastShadow(cast);
 }
 
@@ -360,7 +360,7 @@ void BossEnemy::ApplyJson() {
 	initTransform_.FromJson(data["Transform"]);
 	SetInitTransform();
 
-	GameEntity3D::ApplyMaterial(data);
+	GameObject3D::ApplyMaterial(data);
 	Collider::ApplyBodyOffset(data);
 
 	// 衝突
@@ -386,7 +386,7 @@ void BossEnemy::SaveJson() {
 	Json data;
 
 	initTransform_.ToJson(data["Transform"]);
-	GameEntity3D::SaveMaterial(data);
+	GameObject3D::SaveMaterial(data);
 	Collider::SaveBodyOffset(data);
 
 	// 衝突

@@ -9,7 +9,7 @@
 #include <string>
 #include <optional>
 // front
-class Transform3DComponent;
+class Transform3D;
 
 //============================================================================
 //	Collider class
@@ -23,7 +23,7 @@ public:
 	Collider() = default;
 	virtual ~Collider();
 
-	void UpdateAllBodies(const Transform3DComponent& transform);
+	void UpdateAllBodies(const Transform3D& transform);
 
 	// collision
 	CollisionBody* AddCollider(const CollisionShape::Shapes& shape);
@@ -72,9 +72,9 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// update
-	void UpdateSphereBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::Sphere& offset);
-	void UpdateAABBBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::AABB& offset);
-	void UpdateOBBBody(CollisionBody* body, const Transform3DComponent& transform, const CollisionShape::OBB& offset);
+	void UpdateSphereBody(CollisionBody* body, const Transform3D& transform, const CollisionShape::Sphere& offset);
+	void UpdateAABBBody(CollisionBody* body, const Transform3D& transform, const CollisionShape::AABB& offset);
+	void UpdateOBBBody(CollisionBody* body, const Transform3D& transform, const CollisionShape::OBB& offset);
 
 	bool SetShapeParamFromJson(const std::string& shapeName, const Json& data);
 	void SetTypeFromJson(CollisionBody& body, const Json& data);

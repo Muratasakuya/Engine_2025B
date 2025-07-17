@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBufferSize.h>
-#include <Engine/Core/ECS/Core/ECSManager.h>
+#include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Asset/Asset.h>
@@ -207,15 +207,15 @@ void GameScene::Init() {
 	//	backObjects
 	//========================================================================
 
-	ECSManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
+	ObjectManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
 
 	//========================================================================
 	//	editor
 	//========================================================================
 
 	// editor
-	entityEditor_ = std::make_unique<GameEntityEditor>();
-	entityEditor_->Init(asset_);
+	objectEditor_ = std::make_unique<GameObjectEditor>();
+	objectEditor_->Init(asset_);
 
 	levelEditor_ = std::make_unique<LevelEditor>();
 	levelEditor_->Init("levelEditor");
@@ -245,7 +245,7 @@ void GameScene::Init() {
 void GameScene::Update() {
 
 	//========================================================================
-	//	entity
+	//	object
 	//========================================================================
 
 	bossEnemy_->Update();
@@ -262,7 +262,7 @@ void GameScene::Update() {
 	//========================================================================
 
 	// editor
-	entityEditor_->Update();
+	objectEditor_->Update();
 	levelEditor_->Update();
 }
 

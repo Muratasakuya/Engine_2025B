@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity2D.h>
+#include <Engine/Object/Base/GameObject2D.h>
 
 // c++
 #include <unordered_map>
@@ -51,7 +51,7 @@ private:
 	// 各桁の表示
 	struct Element {
 
-		std::unique_ptr<GameEntity2D> sprite;
+		std::unique_ptr<GameObject2D> sprite;
 		bool isDigit;
 	};
 

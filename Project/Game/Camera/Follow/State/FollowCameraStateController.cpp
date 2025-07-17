@@ -72,7 +72,7 @@ void FollowCameraStateController::Init(FollowCamera& owner) {
 	ChangeState(owner);
 }
 
-void FollowCameraStateController::SetTarget(FollowCameraTargetType type, const Transform3DComponent& target) {
+void FollowCameraStateController::SetTarget(FollowCameraTargetType type, const Transform3D& target) {
 
 	// 各状態にtargetをセット
 	for (const auto& state : std::views::values(states_)) {

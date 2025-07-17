@@ -15,7 +15,7 @@
 void PlayerHUD::InitSprite() {
 
 	// HP背景
-	hpBackground_ = std::make_unique<GameEntity2D>();
+	hpBackground_ = std::make_unique<GameObject2D>();
 	hpBackground_->Init("playerHPBackground", "hpBackground", "PlayerHUD");
 
 	// HP残量
@@ -27,7 +27,7 @@ void PlayerHUD::InitSprite() {
 	skilBar_->Init("playerSkilBar", "whiteAlphaGradation_1", "destroyBar", "PlayerHUD");
 
 	// 名前文字表示
-	nameText_ = std::make_unique<GameEntity2D>();
+	nameText_ = std::make_unique<GameObject2D>();
 	nameText_->Init("playerName", "playerName", "PlayerHUD");
 
 	// キーボード操作とパッド操作のtextureの名前を格納する
@@ -344,13 +344,13 @@ void PlayerHUD::InputStateSprite::Init(uint32_t spriteIndex, const std::string& 
 	index = spriteIndex;
 
 	// 変化しないspriteの初期化
-	staticSprite = std::make_unique<GameEntity2D>();
+	staticSprite = std::make_unique<GameObject2D>();
 	staticSprite->Init(staticSpriteTextureName, staticSpriteTextureName, groupName);
 
 	// 変化するspriteをタイプごとに初期化
 	for (auto& [type, texture] : dynamicSpritesTextureName) {
 
-		dynamicSprites[type] = std::make_unique<GameEntity2D>();
+		dynamicSprites[type] = std::make_unique<GameObject2D>();
 		dynamicSprites[type]->Init(texture, texture, groupName);
 	}
 }

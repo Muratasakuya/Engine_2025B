@@ -6,7 +6,7 @@
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
-#include <Engine/Core/ECS/Core/ECSManager.h>
+#include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Config.h>
@@ -89,8 +89,8 @@ void RenderEngine::InitRenderer(ID3D12Device8* device, DxShaderCompiler* shaderC
 void RenderEngine::Init(WinApp* winApp, ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
 	DxCommand* dxCommand, IDXGIFactory7* factory) {
 
-	ecsManager_ = nullptr;
-	ecsManager_ = ECSManager::GetInstance();
+	ObjectManager_ = nullptr;
+	ObjectManager_ = ObjectManager::GetInstance();
 
 	dxCommand_ = nullptr;
 	dxCommand_ = dxCommand;
@@ -147,8 +147,8 @@ void RenderEngine::UpdateGPUBuffer(SceneView* sceneView) {
 	// skinningPipeline設定
 	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
 	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
-	// entityが持つbufferを更新
-	ecsManager_->UpdateBuffer();
+	// objectが持つbufferを更新
+	ObjectManager_->UpdateBuffer();
 
 	// TLASの更新処理
 	meshRenderer_->UpdateRayScene(dxCommand_);

@@ -6,7 +6,7 @@
 #include <Engine/Core/Debug/Logger.h>
 #include <Engine/Input/Input.h>
 #include <Engine/Asset/AssetEditor.h>
-#include <Engine/Core/ECS/Core/ECSManager.h>
+#include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
@@ -101,9 +101,9 @@ Framework::Framework() {
 		srvDescriptor, shaderCompiler, sceneView_.get());
 
 	//------------------------------------------------------------------------
-	// component機能初期化
+	// object機能初期化
 
-	ECSManager::GetInstance()->Init(device, asset_.get(), dxCommand);
+	ObjectManager::GetInstance()->Init(device, asset_.get(), dxCommand);
 
 	//------------------------------------------------------------------------
 	// scene管理クラス初期化
@@ -161,8 +161,8 @@ void Framework::UpdateScene() {
 	sceneManager_->Update();
 	sceneView_->Update();
 
-	// component更新
-	ECSManager::GetInstance()->UpdateComponent();
+	// data更新
+	ObjectManager::GetInstance()->UpdateData();
 	// particle更新
 	ParticleSystem::GetInstance()->Update();
 	// collision更新
@@ -258,7 +258,7 @@ void Framework::Finalize() {
 	sceneManager_.reset();
 
 	ParticleSystem::GetInstance()->Finalize();
-	ECSManager::GetInstance()->Finalize();
+	ObjectManager::GetInstance()->Finalize();
 
 	winApp_.reset();
 	asset_.reset();

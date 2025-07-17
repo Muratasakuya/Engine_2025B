@@ -20,7 +20,7 @@
 // front
 class SceneView;
 class WinApp;
-class ECSManager;
+class ObjectManager;
 class DxCommand;
 
 //============================================================================
@@ -80,7 +80,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	ECSManager* ecsManager_;
+	ObjectManager* ObjectManager_;
 	DxCommand* dxCommand_;
 
 	std::unique_ptr<DxSwapChain> dxSwapChain_;

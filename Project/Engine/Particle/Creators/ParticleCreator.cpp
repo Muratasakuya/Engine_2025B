@@ -141,7 +141,7 @@ void ParticleCreator::SetCommonData(ParticleData& particle, const ParticleParame
 Matrix4x4 ParticleCreator::CalRotateMatrix(const ParticleParameter& parameter) {
 
 	// game内で使うか使わないかで回転を分岐
-	Matrix4x4 result = Matrix4x4::MakeIdentity4x4();
+	Matrix4x4 result = Matrix4x4::MakeIdobject4x4();
 	if (parameter.IsUseGame()) {
 
 		// 回転行列を計算

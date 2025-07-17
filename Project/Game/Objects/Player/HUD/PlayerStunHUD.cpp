@@ -11,25 +11,25 @@
 void PlayerStunHUD::Init() {
 
 	// 経過率背景
-	progressBarBackground_ = std::make_unique<GameEntity2D>();
+	progressBarBackground_ = std::make_unique<GameObject2D>();
 	progressBarBackground_->Init("stunProgressBarBackground",
 		"stunProgressBarBackground", "PlayerStunHUD");
 
 	// 経過率
-	progressBar_ = std::make_unique<GameEntity2D>();
+	progressBar_ = std::make_unique<GameObject2D>();
 	progressBar_->Init("stunProgressBar", "stunProgressBar", "PlayerStunHUD");
 
 	// 経過率文字
-	chainAttackText_ = std::make_unique<GameEntity2D>();
+	chainAttackText_ = std::make_unique<GameObject2D>();
 	chainAttackText_->Init("CHAINATTACK", "CHAINATTACK", "PlayerStunHUD");
 
 	// アイコン
 	for (uint32_t index = 0; index < iconCount_; ++index) {
 
-		stunChainIcon_[index] = std::make_unique<GameEntity2D>();
+		stunChainIcon_[index] = std::make_unique<GameObject2D>();
 		stunChainIcon_[index]->Init("chainPlayerIcon", "chainPlayerIcon", "PlayerStunHUD");
 
-		stunChainIconRing_[index] = std::make_unique<GameEntity2D>();
+		stunChainIconRing_[index] = std::make_unique<GameObject2D>();
 		stunChainIconRing_[index]->Init("chainPlayerIconRing", "chainPlayerIconRing", "PlayerStunHUD");
 	}
 
@@ -507,13 +507,13 @@ void PlayerStunHUD::SaveJson() {
 void PlayerStunHUD::ChainInput::Init(const std::string& rightTex, const std::string& leftTex,
 	const std::string& cancelTex) {
 
-	rightChain = std::make_unique<GameEntity2D>();
+	rightChain = std::make_unique<GameObject2D>();
 	rightChain->Init(rightTex, rightTex, "PlayerStunHUD");
 
-	leftChain = std::make_unique<GameEntity2D>();
+	leftChain = std::make_unique<GameObject2D>();
 	leftChain->Init(leftTex, leftTex, "PlayerStunHUD");
 
-	cancel = std::make_unique<GameEntity2D>();
+	cancel = std::make_unique<GameObject2D>();
 	cancel->Init(cancelTex, cancelTex, "PlayerStunHUD");
 }
 

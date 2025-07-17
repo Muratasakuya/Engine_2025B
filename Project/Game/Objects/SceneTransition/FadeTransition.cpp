@@ -14,8 +14,8 @@
 //	// fade用のsprite
 //	fadeSpriteId_ = GameObjectHelper::CreateObject2D("white", "fadeTransition", "SceneTransition");
 //	// component取得
-//	Transform2DComponent* fadeTransform = Component::GetComponent<Transform2DComponent>(fadeSpriteId_);
-//	SpriteMaterial* fadeMaterial = Component::GetComponent<SpriteMaterial>(fadeSpriteId_);
+//	Transform2D* fadeTransform = Component::GetData<Transform2D>(fadeSpriteId_);
+//	SpriteMaterial* fadeMaterial = Component::GetData<SpriteMaterial>(fadeSpriteId_);
 //
 //	// windowSize
 //	Vector2 windowSize = Vector2(static_cast<float>(WinApp::GetWindowWidth()),
@@ -45,7 +45,7 @@
 //void FadeTransition::BeginUpdate() {
 //
 //	// component取得
-//	SpriteMaterial* fadeMaterial = Component::GetComponent<SpriteMaterial>(fadeSpriteId_);
+//	SpriteMaterial* fadeMaterial = Component::GetData<SpriteMaterial>(fadeSpriteId_);
 //
 //	beginTimer_.Update();
 //	fadeMaterial->color.a = std::lerp(0.0f, 1.0f, beginTimer_.easedT_);
@@ -75,7 +75,7 @@
 //void FadeTransition::EndUpdate() {
 //
 //	// component取得
-//	SpriteMaterial* fadeMaterial = Component::GetComponent<SpriteMaterial>(fadeSpriteId_);
+//	SpriteMaterial* fadeMaterial = Component::GetData<SpriteMaterial>(fadeSpriteId_);
 //
 //	endTimer_.Update();
 //	fadeMaterial->color.a = std::lerp(1.0f, 0.0f, endTimer_.easedT_);

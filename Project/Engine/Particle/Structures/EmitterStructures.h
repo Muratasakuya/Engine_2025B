@@ -36,7 +36,7 @@ struct EmitterHemisphere {
 	float radius = 0.2f;
 	Vector3 center = Vector3::AnyInit(0.0f);
 	Vector3 eulerRotate = Vector3::AnyInit(0.0f);
-	Quaternion rotation = Quaternion::IdentityQuaternion();
+	Quaternion rotation = Quaternion::IdobjectQuaternion();
 };
 // 箱(OBB)
 struct EmitterBox {
@@ -44,7 +44,7 @@ struct EmitterBox {
 	Vector3 center = Vector3::AnyInit(0.0f);
 	Vector3 size = Vector3::AnyInit(1.0f);
 	Vector3 eulerRotate = Vector3::AnyInit(0.0f);
-	Quaternion rotation = Quaternion::IdentityQuaternion();
+	Quaternion rotation = Quaternion::IdobjectQuaternion();
 };
 // コーン状
 struct EmitterCone {
@@ -54,7 +54,7 @@ struct EmitterCone {
 	float height = 1.0f;
 	Vector3 center = Vector3::AnyInit(0.0f);
 	Vector3 eulerRotate = Vector3::AnyInit(0.0f);
-	Quaternion rotation = Quaternion::IdentityQuaternion();
+	Quaternion rotation = Quaternion::IdobjectQuaternion();
 };
 namespace EmitterShape {
 

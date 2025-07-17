@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity2D.h>
+#include <Engine/Object/Base/GameObject2D.h>
 
 //============================================================================
 //	GameDigitDisplay class
@@ -41,7 +41,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// 各桁のsprite
-	std::vector<std::unique_ptr<GameEntity2D>> digitSprites_;
+	std::vector<std::unique_ptr<GameObject2D>> digitSprites_;
 
 	// 各桁のサイズ
 	Vector2 digitSize_;

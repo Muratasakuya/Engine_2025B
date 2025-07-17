@@ -42,7 +42,7 @@ void Player::InitWeapon() {
 	}
 
 	// 味方
-	ally_ = std::make_unique<GameEntity3D>();
+	ally_ = std::make_unique<GameObject3D>();
 	ally_->Init("cube", "playerAlly", "Player");
 }
 
@@ -368,7 +368,7 @@ void Player::ApplyJson() {
 	initTransform_.FromJson(data["Transform"]);
 	SetInitTransform();
 
-	GameEntity3D::ApplyMaterial(data);
+	GameObject3D::ApplyMaterial(data);
 	Collider::ApplyBodyOffset(data);
 
 	// 武器
@@ -399,7 +399,7 @@ void Player::SaveJson() {
 	Json data;
 
 	initTransform_.ToJson(data["Transform"]);
-	GameEntity3D::SaveMaterial(data);
+	GameObject3D::SaveMaterial(data);
 	Collider::SaveBodyOffset(data);
 
 	// 武器

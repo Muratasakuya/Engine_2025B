@@ -6,7 +6,7 @@
 #include <Engine/Asset/AssetEditor.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
-// entity
+// object
 #include <Game/Objects/Environment/FieldCrossMarkWall.h>
 
 //============================================================================
@@ -39,8 +39,8 @@ void SceneBuilder::ImGui() {
 	ImGui::SameLine();
 }
 
-void SceneBuilder::CreateEntitiesMap(std::unordered_map<Level::EntityType,
-	std::vector<std::unique_ptr<GameEntity3D>>>& entitiesMap) {
+void SceneBuilder::CreateObjectsMap(std::unordered_map<Level::ObjectType,
+	std::vector<std::unique_ptr<GameObject3D>>>& objectsMap) {
 
 	// ファイルを読み込んでjsonデータを取得
 	Json data = JsonAdapter::Load(fileName_.value());
@@ -56,60 +56,60 @@ void SceneBuilder::CreateEntitiesMap(std::unordered_map<Level::EntityType,
 	// 作成処理
 	for (const auto& obj : data["objects"]) {
 
-		BuildEntities(obj, entitiesMap);
+		BuildObjects(obj, objectsMap);
 	}
 }
 
-bool SceneBuilder::IsMeshEntityCreatable(const Json& obj) const {
+bool SceneBuilder::IsMeshObjectCreatable(const Json& obj) const {
 
 	return obj.value("type", "") == "MESH" && obj.value("entity_flag", false);
 }
 
-void SceneBuilder::BuildEntities(const Json& obj,
-	std::unordered_map<Level::EntityType,
-	std::vector<std::unique_ptr<GameEntity3D>>>& entitiesMap) {
+void SceneBuilder::BuildObjects(const Json& obj,
+	std::unordered_map<Level::ObjectType,
+	std::vector<std::unique_ptr<GameObject3D>>>& objectsMap) {
 
 	// "MESHかどうかチェック"
-	if (IsMeshEntityCreatable(obj)) {
+	if (IsMeshObjectCreatable(obj)) {
 
 		// 種類取得
-		const std::string entityTypeName = obj.value("entity_type", "None");
-		Level::EntityType entityType = GetEntityType(entityTypeName);
+		const std::string objectTypeName = obj.value("entity_type", "None");
+		Level::ObjectType objectType = GetObjectType(objectTypeName);
 
-		auto& entities = entitiesMap[entityType];
+		auto& entities = objectsMap[objectType];
 
 		// 同名削除処理
 		const std::string identifier = obj.value("name", "");
 		if (idDeleteOnSameName_) {
 
-			HandleDuplicateEntity(entities, identifier);
+			HandleDuplicateObject(entities, identifier);
 		}
 
 		// 生成処理
-		auto newEntity = CreateEntity(obj, entityType);
+		auto newobject = CreateObject(obj, objectType);
 
 		// transform反映
-		ApplyTransform(*newEntity, obj);
+		ApplyTransform(*newobject, obj);
 		// material反映
-		Json materialData = LoadEntityFile(identifier);
-		ApplyMaterial(*newEntity, materialData);
+		Json materialData = LoadObjectFile(identifier);
+		ApplyMaterial(*newobject, materialData);
 		// collision反映
-		ApplyCollision(*newEntity, obj);
+		ApplyCollision(*newobject, obj);
 
 		// 登録
-		entities.emplace_back(std::move(newEntity));
+		entities.emplace_back(std::move(newobject));
 	}
 
 	// 子を作成する
 	if (obj.contains("children")) {
 		for (const auto& child : obj["children"]) {
 
-			BuildEntities(child, entitiesMap);
+			BuildObjects(child, objectsMap);
 		}
 	}
 }
 
-Json SceneBuilder::LoadEntityFile(const std::string& identifier) {
+Json SceneBuilder::LoadObjectFile(const std::string& identifier) {
 
 	Json data;
 	const std::string& newIdentifier = Algorithm::RemoveAfterUnderscore(identifier);
@@ -122,36 +122,36 @@ Json SceneBuilder::LoadEntityFile(const std::string& identifier) {
 	return data;
 }
 
-void SceneBuilder::HandleDuplicateEntity(std::vector<std::unique_ptr<GameEntity3D>>& entities,
+void SceneBuilder::HandleDuplicateObject(std::vector<std::unique_ptr<GameObject3D>>& objects,
 	const std::string& identifier) {
 
-	entities.erase(std::remove_if(entities.begin(), entities.end(),
-		[&](const std::unique_ptr<GameEntity3D>& entity) {
-			return entity->GetIdentifier() == identifier; }),
-			entities.end());
+	objects.erase(std::remove_if(objects.begin(), objects.end(),
+		[&](const std::unique_ptr<GameObject3D>& object) {
+			return object->GetIdentifier() == identifier; }),
+			objects.end());
 }
 
-std::unique_ptr<GameEntity3D> SceneBuilder::CreateEntity(
-	const Json& obj, Level::EntityType entityType) {
+std::unique_ptr<GameObject3D> SceneBuilder::CreateObject(
+	const Json& obj, Level::ObjectType objectType) {
 
-	auto entity = CreateEntityPtr(entityType);
+	auto object = CreateObjectPtr(objectType);
 
 	const std::string modelName = obj.value("modelName", "");
 
-	entity->Init(modelName, modelName, "Scene");
-	entity->SetIdentifier(obj.value("name", ""));
+	object->Init(modelName, modelName, "Scene");
+	object->SetIdentifier(obj.value("name", ""));
 
-	return entity;
+	return object;
 }
 
-std::unique_ptr<GameEntity3D> SceneBuilder::CreateEntityPtr(Level::EntityType entityType) {
+std::unique_ptr<GameObject3D> SceneBuilder::CreateObjectPtr(Level::ObjectType objectType) {
 
-	switch (entityType) {
-	case Level::EntityType::None: {
+	switch (objectType) {
+	case Level::ObjectType::None: {
 
-		return std::make_unique<GameEntity3D>();
+		return std::make_unique<GameObject3D>();
 	}
-	case Level::EntityType::CrossMarkWall: {
+	case Level::ObjectType::CrossMarkWall: {
 
 		return std::make_unique<FieldCrossMarkWall>();
 	}
@@ -160,7 +160,7 @@ std::unique_ptr<GameEntity3D> SceneBuilder::CreateEntityPtr(Level::EntityType en
 	return nullptr;
 }
 
-void SceneBuilder::ApplyTransform(GameEntity3D& entity, const Json& obj) {
+void SceneBuilder::ApplyTransform(GameObject3D& object, const Json& obj) {
 
 	if (!obj.contains("transform")) {
 		return;
@@ -172,47 +172,47 @@ void SceneBuilder::ApplyTransform(GameEntity3D& entity, const Json& obj) {
 	if (transform.contains("translation")) {
 
 		const auto& T = transform["translation"];
-		entity.SetTranslation(Vector3(T[0].get<float>(), T[2].get<float>(), T[1].get<float>()));
+		object.SetTranslation(Vector3(T[0].get<float>(), T[2].get<float>(), T[1].get<float>()));
 	}
 
 	// スケール
 	if (transform.contains("scaling")) {
 
 		const auto& S = transform["scaling"];
-		entity.SetScale(Vector3(S[0].get<float>(), S[2].get<float>(), S[1].get<float>()));
+		object.SetScale(Vector3(S[0].get<float>(), S[2].get<float>(), S[1].get<float>()));
 	}
 
 	// 回転
 	if (transform.contains("rotation_quaternion")) {
 
 		const auto& R = transform["rotation_quaternion"];
-		entity.SetRotation(
+		object.SetRotation(
 			Quaternion(R[0].get<float>(), R[2].get<float>(),
 				-R[1].get<float>(), R[3].get<float>()).Normalize());
 	}
 }
 
-void SceneBuilder::ApplyMaterial(GameEntity3D& entity, const Json& data) {
+void SceneBuilder::ApplyMaterial(GameObject3D& object, const Json& data) {
 
 	// 空の場合処理しない
 	if (data.empty()) {
 		return;
 	}
 
-	entity.ApplyMaterial(data);
+	object.ApplyMaterial(data);
 }
 
-void SceneBuilder::ApplyCollision(GameEntity3D& entity, const Json& data) {
+void SceneBuilder::ApplyCollision(GameObject3D& object, const Json& data) {
 
 	if (!data.contains("collision")) {
 		return;
 	}
 
 	// 有効な型かチェックする
-	if (CheckCollisionValid<FieldCrossMarkWall>(entity)) {
+	if (CheckCollisionValid<FieldCrossMarkWall>(object)) {
 
 		// colliderを設定
-		entity.BuildBodies(data["collision"]);
+		object.BuildBodies(data["collision"]);
 	}
 }
 
@@ -255,17 +255,17 @@ void SceneBuilder::RecieveFile() {
 	}
 }
 
-Level::EntityType SceneBuilder::GetEntityType(const std::string& entityTypeName) {
+Level::ObjectType SceneBuilder::GetObjectType(const std::string& objectTypeName) {
 
-	Level::EntityType entityType = Level::EntityType::None;
+	Level::ObjectType objectType = Level::ObjectType::None;
 
-	if (entityTypeName == "None") {
+	if (objectTypeName == "None") {
 
-		entityType = Level::EntityType::None;
-	} else if (entityTypeName == "CrossMarkWall") {
+		objectType = Level::ObjectType::None;
+	} else if (objectTypeName == "CrossMarkWall") {
 
-		entityType = Level::EntityType::CrossMarkWall;
+		objectType = Level::ObjectType::CrossMarkWall;
 	}
 
-	return entityType;
+	return objectType;
 }

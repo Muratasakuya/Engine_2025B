@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Entity/GameEntity3D.h>
+#include <Engine/Object/Base/GameObject3D.h>
 
 // weapon
 #include <Game/Objects/Player/Entity/PlayerWeapon.h>
@@ -19,7 +19,7 @@
 //	Player class
 //============================================================================
 class Player :
-	public GameEntity3D {
+	public GameObject3D {
 public:
 	//========================================================================
 	//	public Methods
@@ -50,7 +50,7 @@ public:
 	PlayerState GetCurrentState() const { return stateController_->GetCurrentState(); }
 
 	PlayerAttackCollision* GetAttackCollision() const { return attackCollision_.get(); }
-	GameEntity3D* GetAlly() const { return ally_.get(); }
+	GameObject3D* GetAlly() const { return ally_.get(); }
 	PlayerHUD* GetHUD() const { return hudSprites_.get(); }
 	PlayerStunHUD* GetStunHUD() const { return stunHudSprites_.get(); }
 
@@ -69,7 +69,7 @@ private:
 	std::unique_ptr<PlayerWeapon> rightWeapon_; // 右手
 	std::unique_ptr<PlayerWeapon> leftWeapon_;  // 左手
 	// 味方
-	std::unique_ptr<GameEntity3D> ally_;
+	std::unique_ptr<GameObject3D> ally_;
 
 	// 状態の管理
 	std::unique_ptr<PlayerStateController> stateController_;
@@ -82,7 +82,7 @@ private:
 	std::unique_ptr<PlayerStunHUD> stunHudSprites_;
 
 	// parameters
-	Transform3DComponent initTransform_; // 初期化時の値
+	Transform3D initTransform_; // 初期化時の値
 	PlayerStats stats_; // ステータス
 
 	// 敵のスタン中の更新になったか

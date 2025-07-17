@@ -8,9 +8,9 @@
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 
 // ECS
-#include <Engine/Core/ECS/Core/ECSManager.h>
-#include <Engine/Core/ECS/Components/MaterialComponent.h>
-#include <Engine/Core/ECS/System/Systems/SpriteBufferSystem.h>
+#include <Engine/Object/Core/ObjectManager.h>
+#include <Engine/Object/Data/Material.h>
+#include <Engine/Object/System/Systems/SpriteBufferSystem.h>
 
 //============================================================================
 //	SpriteRenderer classMethods
@@ -33,7 +33,7 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 	SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// 描画情報取得
-	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<SpriteBufferSystem>();
+	const auto& ecsSystem = ObjectManager::GetInstance()->GetSystem<SpriteBufferSystem>();
 	const auto& spriteData = ecsSystem->GetSpriteData(layer);
 
 	if (spriteData.empty()) {
@@ -79,14 +79,14 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 		commandList->SetGraphicsRootConstantBufferView(4, buffer.material->GetBuffer().GetResource()->GetGPUVirtualAddress());
 
 		// 描画処理
-		commandList->DrawIndexedInstanced(SpriteComponent::GetIndexNum(), 1, 0, 0, 0);
+		commandList->DrawIndexedInstanced(Sprite::GetIndexNum(), 1, 0, 0, 0);
 	}
 }
 
 void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// 描画情報取得
-	const auto& ecsSystem = ECSManager::GetInstance()->GetSystem<SpriteBufferSystem>();
+	const auto& ecsSystem = ObjectManager::GetInstance()->GetSystem<SpriteBufferSystem>();
 	const auto& spriteData = ecsSystem->GetSpriteData(SpriteLayer::PostModel);
 
 	if (spriteData.empty()) {
@@ -132,6 +132,6 @@ void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxComman
 		commandList->SetGraphicsRootConstantBufferView(4, buffer.material->GetBuffer().GetResource()->GetGPUVirtualAddress());
 
 		// 描画処理
-		commandList->DrawIndexedInstanced(SpriteComponent::GetIndexNum(), 1, 0, 0, 0);
+		commandList->DrawIndexedInstanced(Sprite::GetIndexNum(), 1, 0, 0, 0);
 	}
 }

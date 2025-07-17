@@ -23,7 +23,7 @@
     <ClCompile Include="Engine\Asset\TextureManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\TransformComponent.cpp">
+    <ClCompile Include="Engine\Object\Data\Transform.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\GPUObject\InputAssembler.cpp">
@@ -158,7 +158,7 @@
     <ClCompile Include="Engine\Core\Graphics\Renderer\LineRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Editor\ImGuiEntityEditor.cpp">
+    <ClCompile Include="Engine\Editor\ImGuiObjectEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Collision\CollisionBody.cpp">
@@ -176,7 +176,7 @@
     <ClCompile Include="Engine\Core\Graphics\Renderer\SpriteRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\AnimationComponent.cpp">
+    <ClCompile Include="Engine\Object\Data\Animation.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Context\MeshCommandContext.cpp">
@@ -185,7 +185,7 @@
     <ClCompile Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\SpriteComponent.cpp">
+    <ClCompile Include="Engine\Object\Data\Sprite.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Scene\Camera\Camera2D.cpp">
@@ -233,7 +233,7 @@
     <ClCompile Include="Engine\Scene\Methods\SceneTransition.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\MaterialComponent.cpp">
+    <ClCompile Include="Engine\Object\Data\Material.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.cpp">
@@ -260,28 +260,25 @@
     <ClCompile Include="Engine\Asset\AssetEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Core\EntityManager.cpp">
+    <ClCompile Include="Engine\Object\System\Manager\SystemManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Manager\SystemManager.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\TransformSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\TransformSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\MaterialSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\MaterialSystem.cpp">
+    <ClCompile Include="Engine\Object\Core\ObjectManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Core\ECSManager.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\AnimationSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\AnimationSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\InstancedMeshSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\InstancedMeshSystem.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\TagSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\TagSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Particle\ParticleSystem.cpp">
@@ -329,19 +326,19 @@
     <ClCompile Include="Engine\Particle\Updater\ParticleUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\SpriteBufferSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\SpriteBufferSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Entity\Interface\IGameEntity.cpp">
+    <ClCompile Include="Engine\Object\Base\Interface\IGameObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Entity\GameEntity2D.cpp">
+    <ClCompile Include="Engine\Object\Base\GameObject2D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Entity\GameEntity3D.cpp">
+    <ClCompile Include="Engine\Object\Base\GameObject3D.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Editor\GameEntityEditor.cpp">
+    <ClCompile Include="Game\Editor\GameObjectEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Raytracing\RaytracingPipeline.cpp">
@@ -371,10 +368,10 @@
     <ClCompile Include="Engine\Core\Graphics\GraphicsPlatform.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\Components\SkyboxComponent.cpp">
+    <ClCompile Include="Engine\Object\Data\Skybox.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\ECS\System\Systems\SkyboxRenderSystem.cpp">
+    <ClCompile Include="Engine\Object\System\Systems\SkyboxRenderSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Editor\LevelEditor\LevelEditor.cpp">
@@ -575,6 +572,9 @@
     <ClCompile Include="Game\Camera\Follow\State\States\FollowCameraParryAttackState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Object\Core\ObjectPoolManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -582,7 +582,7 @@
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
     <ClInclude Include="Engine\Asset\ModelLoader.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
-    <ClInclude Include="Engine\Core\ECS\Components\TransformComponent.h" />
+    <ClInclude Include="Engine\Object\Data\Transform.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InputAssembler.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.h" />
@@ -632,16 +632,16 @@
     <ClInclude Include="Engine\Scene\Camera\DebugCamera.h" />
     <ClInclude Include="Engine\Core\Graphics\Renderer\LineRenderer.h" />
     <ClInclude Include="Lib\MathUtils\MathUtils.h" />
-    <ClInclude Include="Engine\Editor\ImGuiEntityEditor.h" />
+    <ClInclude Include="Engine\Editor\ImGuiObjectEditor.h" />
     <ClInclude Include="Engine\Collision\CollisionBody.h" />
     <ClInclude Include="Engine\Collision\CollisionManager.h" />
     <ClInclude Include="Engine\Collision\CollisionGeometry.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h" />
     <ClInclude Include="Engine\Core\Graphics\Renderer\SpriteRenderer.h" />
-    <ClInclude Include="Engine\Core\ECS\Components\AnimationComponent.h" />
+    <ClInclude Include="Engine\Object\Data\Animation.h" />
     <ClInclude Include="Engine\Core\Graphics\Context\MeshCommandContext.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\InstancedMeshBuffer.h" />
-    <ClInclude Include="Engine\Core\ECS\Components\SpriteComponent.h" />
+    <ClInclude Include="Engine\Object\Data\Sprite.h" />
     <ClInclude Include="Engine\Scene\Camera\Camera2D.h" />
     <ClInclude Include="Engine\Editor\Base\IGameEditor.h" />
     <ClInclude Include="Engine\Editor\Manager\GameEditorManager.h" />
@@ -659,7 +659,7 @@
     <ClInclude Include="Game\Scene\TitleScene.h" />
     <ClInclude Include="Game\Scene\GameScene.h" />
     <ClInclude Include="Engine\Scene\Methods\SceneTransition.h" />
-    <ClInclude Include="Engine\Core\ECS\Components\MaterialComponent.h" />
+    <ClInclude Include="Engine\Object\Data\Material.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.h" />
     <ClInclude Include="Engine\Utility\UVHelper.h" />
@@ -667,17 +667,17 @@
     <ClInclude Include="Game\Camera\Follow\FollowCamera.h" />
     <ClInclude Include="Engine\Utility\KeyframeAnimation.h" />
     <ClInclude Include="Engine\Asset\AssetEditor.h" />
-    <ClInclude Include="Engine\Core\ECS\Core\ComponentPool.h" />
-    <ClInclude Include="Engine\Core\ECS\Core\EntityManager.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Base\ISystem.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Manager\SystemManager.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Systems\TransformSystem.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Systems\MaterialSystem.h" />
-    <ClInclude Include="Engine\Core\ECS\Core\ECSManager.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Systems\AnimationSystem.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Systems\InstancedMeshSystem.h" />
-    <ClInclude Include="Engine\Core\ECS\Components\TagComponent.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Systems\TagSystem.h" />
+    <ClInclude Include="Engine\Object\Core\ObjectPool.h" />
+    <ClInclude Include="Engine\Object\Core\ObjectPoolManager.h" />
+    <ClInclude Include="Engine\Object\System\Base\ISystem.h" />
+    <ClInclude Include="Engine\Object\System\Manager\SystemManager.h" />
+    <ClInclude Include="Engine\Object\System\Systems\TransformSystem.h" />
+    <ClInclude Include="Engine\Object\System\Systems\MaterialSystem.h" />
+    <ClInclude Include="Engine\Object\Core\ObjectManager.h" />
+    <ClInclude Include="Engine\Object\System\Systems\AnimationSystem.h" />
+    <ClInclude Include="Engine\Object\System\Systems\InstancedMeshSystem.h" />
+    <ClInclude Include="Engine\Object\Data\ObjectTag.h" />
+    <ClInclude Include="Engine\Object\System\Systems\TagSystem.h" />
     <ClInclude Include="Engine\Config.h" />
     <ClInclude Include="Engine\Particle\ParticleSystem.h" />
     <ClInclude Include="Engine\Particle\ParticleLoader.h" />
@@ -693,11 +693,11 @@
     <ClInclude Include="Engine\Particle\Creators\ConeEmitterParticleCreator.h" />
     <ClInclude Include="Engine\Particle\ParticleUpdater.h" />
     <ClInclude Include="Engine\Particle\Updater\ParticleUpdater.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Systems\SpriteBufferSystem.h" />
-    <ClInclude Include="Engine\Entity\Interface\IGameEntity.h" />
-    <ClInclude Include="Engine\Entity\GameEntity3D.h" />
-    <ClInclude Include="Engine\Entity\GameEntity2D.h" />
-    <ClInclude Include="Game\Editor\GameEntityEditor.h" />
+    <ClInclude Include="Engine\Object\System\Systems\SpriteBufferSystem.h" />
+    <ClInclude Include="Engine\Object\Base\Interface\IGameObject.h" />
+    <ClInclude Include="Engine\Object\Base\GameObject3D.h" />
+    <ClInclude Include="Engine\Object\Base\GameObject2D.h" />
+    <ClInclude Include="Game\Editor\GameObjectEditor.h" />
     <ClInclude Include="Engine\Core\Graphics\Raytracing\RaytracingPipeline.h" />
     <ClInclude Include="Engine\Core\Graphics\Raytracing\AccelerationStructureBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\Raytracing\BottomLevelAS.h" />
@@ -708,8 +708,8 @@
     <ClInclude Include="Engine\Core\Graphics\RenderEngine.h" />
     <ClInclude Include="Engine\Scene\SceneView.h" />
     <ClInclude Include="Engine\Core\Graphics\GraphicsPlatform.h" />
-    <ClInclude Include="Engine\Core\ECS\Components\SkyboxComponent.h" />
-    <ClInclude Include="Engine\Core\ECS\System\Systems\SkyboxRenderSystem.h" />
+    <ClInclude Include="Engine\Object\Data\Skybox.h" />
+    <ClInclude Include="Engine\Object\System\Systems\SkyboxRenderSystem.h" />
     <ClInclude Include="Game\Editor\LevelEditor\LevelEditor.h" />
     <ClInclude Include="Game\Editor\LevelEditor\LevelStructures.h" />
     <ClInclude Include="Game\Editor\LevelEditor\SceneBuilder.h" />
