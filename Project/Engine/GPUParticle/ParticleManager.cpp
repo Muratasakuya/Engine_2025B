@@ -45,11 +45,15 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	pipelines_[ParticleShape::Ring] = std::make_unique<PipelineState>();
 	pipelines_[ParticleShape::Ring]->Create("EffectRing.json", device, srvDescriptor, shaderCompiler);
 
+	pipelines_[ParticleShape::Cylinder] = std::make_unique<PipelineState>();
+	pipelines_[ParticleShape::Cylinder]->Create("EffectCylinder.json", device, srvDescriptor, shaderCompiler);
+
 	const UINT kMaxInstanceCount = 4;
 
 	// buffer作成
 	planeBuffer_.CreateStructuredBuffer(device, kMaxInstanceCount);
 	ringBuffer_.CreateStructuredBuffer(device, kMaxInstanceCount);
+	cylinderBuffer_.CreateStructuredBuffer(device, kMaxInstanceCount);
 	materialBuffer_.CreateStructuredBuffer(device, kMaxInstanceCount);
 
 	PlaneForGPU plane{};
@@ -70,6 +74,17 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 
 	ringInstances_.emplace_back(ring);
 
+	CylinderForGPU cylinder{};
+	cylinderTransform_.Init();
+	cylinderTransform_.UpdateMatrix();
+	cylinder.topRadius = 4.0f;
+	cylinder.bottomRadius = 4.0f;
+	cylinder.height = 8.0f;
+	cylinder.divide = 8;
+	cylinder.world = cylinderTransform_.matrix.world;
+
+	cylinderInstances_.emplace_back(cylinder);
+
 	ParticleMaterial material{};
 	material.color = Color::White();
 	material.uvTransform = Matrix4x4::MakeIdentity4x4();
@@ -82,6 +97,7 @@ void ParticleManager::Update() {
 	// buffer転送
 	planeBuffer_.TransferVectorData(planeInstances_);
 	ringBuffer_.TransferVectorData(ringInstances_);
+	cylinderBuffer_.TransferVectorData(cylinderInstances_);
 	materialBuffer_.TransferVectorData(materialInstances_);
 }
 
@@ -89,6 +105,8 @@ void ParticleManager::Rendering(bool debugEnable,
 	SceneConstBuffer* sceneBuffer, ID3D12GraphicsCommandList6* commandList) {
 
 	D3D12_GPU_DESCRIPTOR_HANDLE textureGPUHandle = asset_->GetGPUHandle("uvChecker");
+	D3D12_GPU_DESCRIPTOR_HANDLE textureGPUHandle1 = asset_->GetGPUHandle("gradationLine_0");
+	D3D12_GPU_DESCRIPTOR_HANDLE textureGPUHandle2 = asset_->GetGPUHandle("gradationLine_1");
 
 	{
 		// plane描画
@@ -124,9 +142,28 @@ void ParticleManager::Rendering(bool debugEnable,
 		commandList->SetGraphicsRootShaderResourceView(2,
 			materialBuffer_.GetResource()->GetGPUVirtualAddress());
 		// texture
-		commandList->SetGraphicsRootDescriptorTable(3, textureGPUHandle);
+		commandList->SetGraphicsRootDescriptorTable(3, textureGPUHandle2);
 		// 描画
 		commandList->DispatchMesh(static_cast<UINT>(ringInstances_.size()), 1, 1);
+	}
+	{
+		// cylinder描画
+		// pipeline設定
+		commandList->SetGraphicsRootSignature(pipelines_[ParticleShape::Cylinder]->GetRootSignature());
+		commandList->SetPipelineState(pipelines_[ParticleShape::Cylinder]->GetGraphicsPipeline(kBlendModeAdd));
+
+		// cylinder
+		commandList->SetGraphicsRootShaderResourceView(0,
+			cylinderBuffer_.GetResource()->GetGPUVirtualAddress());
+		// viewPro
+		sceneBuffer->SetViewProCommand(debugEnable, commandList, 1);
+		// material
+		commandList->SetGraphicsRootShaderResourceView(2,
+			materialBuffer_.GetResource()->GetGPUVirtualAddress());
+		// texture
+		commandList->SetGraphicsRootDescriptorTable(3, textureGPUHandle1);
+		// 描画
+		commandList->DispatchMesh(static_cast<UINT>(cylinderInstances_.size()), 1, 1);
 	}
 }
 
@@ -151,8 +188,22 @@ void ParticleManager::ImGui() {
 	ringTransform_.UpdateMatrix();
 	ImGui::DragFloat("innerRadius##Ring", &ringInstances_[0].innerRadius, 0.01f);
 	ImGui::DragFloat("outerRadius##Ring", &ringInstances_[0].outerRadius, 0.01f);
-	ImGui::DragInt("divide##Ring", &ringInstances_[0].divide, 1.0f, 3, 64);
+	ImGui::DragInt("divide##Ring", &ringInstances_[0].divide, 1.0f, 3, 32);
 	ringInstances_[0].world = ringTransform_.matrix.world;
+
+	ImGui::PopID();
+
+	ImGui::SeparatorText("Cylinder");
+
+	ImGui::PushID("Cylinder");
+
+	cylinderTransform_.ImGui(224.0f);
+	cylinderTransform_.UpdateMatrix();
+	ImGui::DragFloat("topRadius##Cylinder", &cylinderInstances_[0].topRadius, 0.01f);
+	ImGui::DragFloat("bottomRadius##Cylinder", &cylinderInstances_[0].bottomRadius, 0.01f);
+	ImGui::DragFloat("height##Cylinder", &cylinderInstances_[0].height, 0.01f);
+	ImGui::DragInt("divide##Cylinder", &cylinderInstances_[0].divide, 1.0f, 3, 32);
+	cylinderInstances_[0].world = cylinderTransform_.matrix.world;
 
 	ImGui::PopID();
 }

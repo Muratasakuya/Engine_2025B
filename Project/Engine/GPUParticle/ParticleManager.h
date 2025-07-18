@@ -31,6 +31,14 @@ struct RingForGPU {
 	int divide;
 	Matrix4x4 world;
 };
+struct CylinderForGPU {
+
+	float topRadius;
+	float bottomRadius;
+	float height;
+	int divide;
+	Matrix4x4 world;
+};
 struct ParticleMaterial {
 
 	Color color;
@@ -42,6 +50,7 @@ enum class ParticleShape {
 
 	Plane,
 	Ring,
+	Cylinder,
 	Count
 };
 
@@ -88,11 +97,15 @@ private:
 	Transform3D planeTransform_;
 	std::vector<RingForGPU> ringInstances_;
 	Transform3D ringTransform_;
+	std::vector<CylinderForGPU> cylinderInstances_;
+	Transform3D cylinderTransform_;
+
 	std::vector<ParticleMaterial> materialInstances_;
 
 	// debug
 	DxConstBuffer<PlaneForGPU> planeBuffer_;
 	DxConstBuffer<RingForGPU> ringBuffer_;
+	DxConstBuffer<CylinderForGPU> cylinderBuffer_;
 	DxConstBuffer<ParticleMaterial> materialBuffer_;
 
 	//--------- functions ----------------------------------------------------
