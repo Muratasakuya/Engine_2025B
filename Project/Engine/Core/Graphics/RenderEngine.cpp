@@ -8,6 +8,7 @@
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Particle/ParticleSystem.h>
+#include <Engine/GPUParticle/ParticleManager.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Config.h>
 
@@ -182,6 +183,8 @@ void RenderEngine::Renderers(ViewType type) {
 
 	// particle描画
 	ParticleSystem::GetInstance()->Rendering(static_cast<bool>(type),
+		sceneBuffer_.get(), dxCommand_->GetCommandList());
+	ParticleManager::GetInstance()->Rendering(static_cast<bool>(type),
 		sceneBuffer_.get(), dxCommand_->GetCommandList());
 
 	// line描画実行、depth無効

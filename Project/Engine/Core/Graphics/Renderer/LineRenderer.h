@@ -154,7 +154,7 @@ inline void LineRenderer::DrawHemisphere(int division, float radius, const Vecto
 		};
 		};
 
-	Matrix4x4 rotationMatrix = Matrix4x4::MakeIdobject4x4();
+	Matrix4x4 rotationMatrix = Matrix4x4::MakeIdentity4x4();
 	if constexpr (std::is_same_v<T, Vector3>) {
 
 		rotationMatrix = Matrix4x4::MakeRotateMatrix(rotation);
@@ -188,7 +188,7 @@ inline void LineRenderer::DrawOBB(const Vector3& centerPos, const Vector3& size,
 
 	const uint32_t vertexNum = 8;
 
-	Matrix4x4 rotationMatrix = Matrix4x4::MakeIdobject4x4();
+	Matrix4x4 rotationMatrix = Matrix4x4::MakeIdentity4x4();
 	if constexpr (std::is_same_v<T, Vector3>) {
 
 		rotationMatrix = Matrix4x4::MakeRotateMatrix(rotation);
@@ -247,7 +247,7 @@ inline void LineRenderer::DrawCone(int division, float baseRadius, float topRadi
 		topCircle.emplace_back(topRadius * std::cos(angle), height, topRadius * std::sin(angle));
 	}
 
-	Matrix4x4 rotationMatrix = Matrix4x4::MakeIdobject4x4();
+	Matrix4x4 rotationMatrix = Matrix4x4::MakeIdentity4x4();
 	if constexpr (std::is_same_v<T, Vector3>) {
 
 		rotationMatrix = Matrix4x4::MakeRotateMatrix(rotation);

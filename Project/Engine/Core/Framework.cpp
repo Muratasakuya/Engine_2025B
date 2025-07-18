@@ -10,6 +10,7 @@
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
+#include <Engine/GPUParticle/ParticleManager.h>
 #include <Engine/Config.h>
 #include <Engine/Utility/GameTimer.h>
 
@@ -100,6 +101,9 @@ Framework::Framework() {
 	ParticleSystem::GetInstance()->Init(asset_.get(), device,
 		srvDescriptor, shaderCompiler, sceneView_.get());
 
+	ParticleManager::GetInstance()->Init(asset_.get(), device,
+		srvDescriptor, shaderCompiler, sceneView_.get());
+
 	//------------------------------------------------------------------------
 	// object機能初期化
 
@@ -165,6 +169,7 @@ void Framework::UpdateScene() {
 	ObjectManager::GetInstance()->UpdateData();
 	// particle更新
 	ParticleSystem::GetInstance()->Update();
+	ParticleManager::GetInstance()->Update();
 	// collision更新
 	CollisionManager::GetInstance()->Update();
 }
@@ -258,6 +263,7 @@ void Framework::Finalize() {
 	sceneManager_.reset();
 
 	ParticleSystem::GetInstance()->Finalize();
+	ParticleManager::GetInstance()->Finalize();
 	ObjectManager::GetInstance()->Finalize();
 
 	winApp_.reset();

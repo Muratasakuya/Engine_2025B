@@ -30,7 +30,7 @@ void Material::InitParameter() {
 	specularColor = Vector3(1.0f, 1.0f, 1.0f);
 	emissiveIntensity = 0.0f;
 	emissionColor = Vector3(1.0f, 1.0f, 1.0f);
-	uvMatrix = Matrix4x4::MakeIdobject4x4();
+	uvMatrix = Matrix4x4::MakeIdentity4x4();
 }
 
 void Material::Init(Asset* asset) {

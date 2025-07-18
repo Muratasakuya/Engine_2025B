@@ -143,7 +143,7 @@ int32_t AnimationManager::CreateJoint(const Node& node, const std::optional<int3
 	joint.name = node.name;
 	joint.isParentTransform = false;
 	joint.localMatrix = node.localMatrix;
-	joint.skeletonSpaceMatrix = Matrix4x4::MakeIdobject4x4();
+	joint.skeletonSpaceMatrix = Matrix4x4::MakeIdentity4x4();
 	joint.transform = node.transform;
 	// 現在登録されている数をIndexにする
 	joint.index = static_cast<int32_t>(joints.size());
@@ -171,7 +171,7 @@ SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, co
 	// inverseBindPoseMatrixを格納する場所を作成して単位行列で埋める
 	skinCluster.inverseBindPoseMatrices.resize(skeletons_[animationName].joints.size());
 	std::generate(skinCluster.inverseBindPoseMatrices.begin(), skinCluster.inverseBindPoseMatrices.end(),
-		[]() { return Matrix4x4::MakeIdobject4x4(); });
+		[]() { return Matrix4x4::MakeIdentity4x4(); });
 
 	// ModelDataを解析してInfluenceを埋める
 	for (const auto& jointWeight : modelLoader_->GetModelData(modelName).skinClusterData) {

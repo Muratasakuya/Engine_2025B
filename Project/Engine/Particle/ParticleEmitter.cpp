@@ -897,7 +897,7 @@ void EffectMaterial::Init() {
 	edgeColor = Color::White();
 	edgeEmissiveIntensity = 0.0f;
 	edgeEmissionColor = Vector3::AnyInit(1.0f);
-	uvTransform = Matrix4x4::MakeIdobject4x4();
+	uvTransform = Matrix4x4::MakeIdentity4x4();
 }
 
 void EffectMaterial::SetMaterial(const EffectMaterial& material) {

@@ -575,6 +575,9 @@
     <ClCompile Include="Engine\Object\Core\ObjectPoolManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GPUParticle\ParticleManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -781,6 +784,7 @@
     <ClInclude Include="Game\Objects\Enemy\Boss\Collision\BossEnemyAttackCollision.h" />
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraParryState.h" />
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraParryAttackState.h" />
+    <ClInclude Include="Engine\GPUParticle\ParticleManager.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
@@ -798,6 +802,7 @@
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRayQuery.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\MS\MeshStandard.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Lut.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\MS\NewEffectMesh.PS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />
@@ -806,5 +811,6 @@
     <None Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.hlsli" />
     <None Include="Assets\Engine\Shaders\DXR\ShadowRay.hlsli" />
     <None Include="Assets\Engine\Shaders\MS\Dither.hlsli" />
+    <None Include="Assets\Engine\Shaders\MS\NewEffectMeshFunction.hlsli" />
   </ItemGroup>
 </Project>
