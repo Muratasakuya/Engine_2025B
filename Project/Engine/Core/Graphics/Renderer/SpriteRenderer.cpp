@@ -53,7 +53,7 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 	// lightViewProjection
 	sceneBuffer->SetOrthoProCommand(commandList, 3);
 	// index
-	commandList->IASetIndexBuffer(&spriteData.front().sprite->GetIndexBuffer().GetIndexBuffer());
+	commandList->IASetIndexBuffer(&spriteData.front().sprite->GetIndexBuffer().GetIndexBufferView());
 
 	for (const auto& buffer : spriteData) {
 
@@ -64,7 +64,7 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 		}
 
 		// vertex
-		commandList->IASetVertexBuffers(0, 1, &buffer.sprite->GetVertexBuffer().GetVertexBuffer());
+		commandList->IASetVertexBuffers(0, 1, &buffer.sprite->GetVertexBuffer().GetVertexBufferView());
 
 		// texture
 		commandList->SetGraphicsRootDescriptorTable(0, buffer.sprite->GetTextureGPUHandle());
@@ -106,7 +106,7 @@ void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxComman
 	// lightViewProjection
 	sceneBuffer->SetOrthoProCommand(commandList, 3);
 	// index
-	commandList->IASetIndexBuffer(&spriteData.front().sprite->GetIndexBuffer().GetIndexBuffer());
+	commandList->IASetIndexBuffer(&spriteData.front().sprite->GetIndexBuffer().GetIndexBufferView());
 
 	for (const auto& buffer : spriteData) {
 
@@ -117,7 +117,7 @@ void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxComman
 		}
 
 		// vertex
-		commandList->IASetVertexBuffers(0, 1, &buffer.sprite->GetVertexBuffer().GetVertexBuffer());
+		commandList->IASetVertexBuffers(0, 1, &buffer.sprite->GetVertexBuffer().GetVertexBufferView());
 
 		// texture
 		commandList->SetGraphicsRootDescriptorTable(0, buffer.sprite->GetTextureGPUHandle());

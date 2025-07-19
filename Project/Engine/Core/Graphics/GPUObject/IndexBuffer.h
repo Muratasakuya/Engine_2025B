@@ -3,30 +3,33 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Asset/AssetStructure.h>
-#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/Lib/DxUtils.h>
+
+// c++
+#include <vector>
+#include <cassert>
 
 //============================================================================
-//	InputAssembler class
+//	IndexBuffer class
 //============================================================================
-class InputAssembler {
+class IndexBuffer {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	InputAssembler() = default;
-	~InputAssembler() = default;
+	IndexBuffer() = default;
+	virtual ~IndexBuffer() = default;
 
-	void Init(const MeshModelData& meshData, ID3D12Device* device);
+	void CreateBuffer(ID3D12Device* device, UINT indexCount);
+
+	void TransferData(const std::vector<uint32_t>& data);
 
 	//--------- accessor -----------------------------------------------------
 
-	const DxConstBuffer<MeshVertex>& GetVertexBuffer(uint32_t meshIndex) const { return vertices_[meshIndex]; }
-	const DxConstBuffer<uint32_t>& GetIndexBuffer(uint32_t meshIndex) const { return indices_[meshIndex]; }
+	const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const { return indexBufferView_; }
 
-	UINT GetVertexCount(uint32_t meshIndex) const { return vertexCounts_[meshIndex]; }
-	UINT GetIndexCount(uint32_t meshIndex) const { return indexCounts_[meshIndex]; }
+	ID3D12Resource* GetResource() const { return resource_.Get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -34,10 +37,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::vector<DxConstBuffer<MeshVertex>> vertices_;
+	ComPtr<ID3D12Resource> resource_;
+	uint32_t* mappedData_ = nullptr;
 
-	std::vector<DxConstBuffer<uint32_t>> indices_;
-
-	std::vector<UINT> vertexCounts_;
-	std::vector<UINT> indexCounts_;
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 };

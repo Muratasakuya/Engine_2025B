@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
-#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/DxStructuredBuffer.h>
 #include <Engine/Object/Data/Transform.h>
 #include <Engine/GPUParticle/Structures/ParticleShape.h>
 
@@ -86,10 +86,10 @@ private:
 	std::vector<ParticleMaterial> materialInstances_;
 
 	// meshShader、pixelShaderで使用
-	DxConstBuffer<PlaneForGPU> planeBuffer_;
-	DxConstBuffer<ParticleMaterial> materialBuffer_;
+	DxStructuredBuffer<PlaneForGPU> planeBuffer_;
+	DxStructuredBuffer<ParticleMaterial> materialBuffer_;
 	// computeShaderで使用
-	DxConstBuffer<ParticleForGPU> particleBuffer_;
+	DxStructuredBuffer<ParticleForGPU> particleBuffer_;
 
 	//--------- functions ----------------------------------------------------
 

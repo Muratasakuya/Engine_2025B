@@ -13,14 +13,14 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 
 	// buffer作成
 	// camera
-	viewProjectionBuffer_.CreateConstBuffer(device);
-	cameraPosBuffer_.CreateConstBuffer(device);
-	orthoProjectionBuffer_.CreateConstBuffer(device);
+	viewProjectionBuffer_.CreateBuffer(device);
+	cameraPosBuffer_.CreateBuffer(device);
+	orthoProjectionBuffer_.CreateBuffer(device);
 	// light
-	lightBuffer_.CreateConstBuffer(device);
+	lightBuffer_.CreateBuffer(device);
 
 	// rayScene
-	raySceneBuffer_.CreateConstBuffer(device);
+	raySceneBuffer_.CreateBuffer(device);
 
 	// rayScene
 	RaySceneForGPU rayScene{};
@@ -29,18 +29,18 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 	raySceneBuffer_.TransferData(rayScene);
 
 	// dither
-	ditherBuffer_.CreateConstBuffer(device);
+	ditherBuffer_.CreateBuffer(device);
 
 	// perView
-	perViewBuffer_.CreateConstBuffer(device);
-	debugScenePerViewBuffer_.CreateConstBuffer(device);
+	perViewBuffer_.CreateBuffer(device);
+	debugScenePerViewBuffer_.CreateBuffer(device);
 
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	// camera
-	debugSceneViewProjectionBuffer_.CreateConstBuffer(device);
-	debugSceneCameraPosBuffer_.CreateConstBuffer(device);
+	debugSceneViewProjectionBuffer_.CreateBuffer(device);
+	debugSceneCameraPosBuffer_.CreateBuffer(device);
 #endif
 }
 

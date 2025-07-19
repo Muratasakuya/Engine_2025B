@@ -21,15 +21,15 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
 
 void WinApp::Create() {
 
+	timeBeginPeriod(1);
 	RegisterWindowClass();
 
-	RECT wrc = {};
-	wrc.right = Config::kWindowWidth;
-	wrc.bottom = Config::kWindowHeight;
+	windowRect_.right = Config::kWindowWidth;
+	windowRect_.bottom = Config::kWindowHeight;
 
 	windowStyle_ = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
 
-	AdjustWindowRect(&wrc, windowStyle_, false);
+	AdjustWindowRect(&windowRect_, windowStyle_, false);
 
 	hwnd_ = CreateWindow(
 		L"WindowClass",
@@ -37,8 +37,8 @@ void WinApp::Create() {
 		windowStyle_,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		wrc.right - wrc.left,
-		wrc.bottom - wrc.top,
+		windowRect_.right - windowRect_.left,
+		windowRect_.bottom - windowRect_.top,
 		nullptr,
 		nullptr,
 		GetModuleHandle(nullptr),
@@ -48,7 +48,7 @@ void WinApp::Create() {
 
 	// 1920*1080にした時のウィンドウの座標
 	// ずれないように補正
-	if (wrc.right == 1920 && wrc.bottom == 1080) {
+	if (windowRect_.right == 1920 && windowRect_.bottom == 1080) {
 
 		SetWindowPos(hwnd_, nullptr, -8, -2, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
 	}
@@ -73,45 +73,55 @@ bool WinApp::ProcessMessage() {
 
 void WinApp::SetFullscreen(bool fullscreen) {
 
-	if (isFullscreen_ != fullscreen) {
-		if (fullscreen) {
+	if (fullscreen) {
 
-			// 元の状態を覚えておく
-			GetWindowRect(hwnd_, &windowRect_);
+		// 現在のウィンドウ情報を保存（復元用）
+		GetWindowRect(hwnd_, &windowRect_);
 
-			// 仮想フルスクリーン化
-			SetWindowLong(
-				hwnd_, GWL_STYLE,
-				windowStyle_ &
-				~(WS_CAPTION | WS_MAXIMIZEBOX | WS_MINIMIZEBOX | WS_SYSMENU | WS_THICKFRAME));
+		// ウィンドウがあるモニターの領域を取得
+		HMONITOR hMon = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
+		MONITORINFO mi{};
+		mi.cbSize = sizeof(MONITORINFO);
+		GetMonitorInfo(hMon, &mi);
 
-			RECT fullscreenRect{ 0 };
-			HMONITOR monitor = MonitorFromWindow(hwnd_, MONITOR_DEFAULTTONEAREST);
-			MONITORINFO info;
-			info.cbSize = sizeof(info);
-			GetMonitorInfo(monitor, &info);
-			fullscreenRect.right = info.rcMonitor.right - info.rcMonitor.left;
-			fullscreenRect.bottom = info.rcMonitor.bottom - info.rcMonitor.top;
+		// 境界線なしスタイルに変更
+		SetWindowLong(hwnd_, GWL_STYLE, WS_POPUP);
+		SetWindowLong(hwnd_, GWL_EXSTYLE, 0);
 
-			SetWindowPos(
-				hwnd_, HWND_TOPMOST, fullscreenRect.left, fullscreenRect.top, fullscreenRect.right,
-				fullscreenRect.bottom, SWP_FRAMECHANGED | SWP_NOACTIVATE);
-			ShowWindow(hwnd_, SW_MAXIMIZE);
+		// モニターサイズに合わせて最大化
+		SetWindowPos(
+			hwnd_,
+			HWND_TOP,
+			mi.rcMonitor.left,
+			mi.rcMonitor.top,
+			mi.rcMonitor.right - mi.rcMonitor.left,
+			mi.rcMonitor.bottom - mi.rcMonitor.top,
+			SWP_FRAMECHANGED | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_SHOWWINDOW
+		);
 
-		} else {
-			// 通常ウィンドウに戻す
-			SetWindowLong(hwnd_, GWL_STYLE, windowStyle_);
+		ShowWindow(hwnd_, SW_SHOWNORMAL);
+		SetForegroundWindow(hwnd_);
+		SetFocus(hwnd_);
+	} else {
 
-			SetWindowPos(
-				hwnd_, HWND_NOTOPMOST, windowRect_.left, windowRect_.top,
-				windowRect_.right - windowRect_.left, windowRect_.bottom - windowRect_.top,
-				SWP_FRAMECHANGED | SWP_NOACTIVATE);
+		// 通常のウィンドウスタイルに戻す
+		SetWindowLong(hwnd_, GWL_STYLE, WS_OVERLAPPEDWINDOW);
+		SetWindowLong(hwnd_, GWL_EXSTYLE, 0);
 
-			ShowWindow(hwnd_, SW_NORMAL);
-		}
+		// 保存していたウィンドウの位置とサイズに復元
+		SetWindowPos(
+			hwnd_,
+			HWND_NOTOPMOST,
+			windowRect_.left,
+			windowRect_.top,
+			windowRect_.right - windowRect_.left,
+			windowRect_.bottom - windowRect_.top,
+			SWP_FRAMECHANGED | SWP_NOOWNERZORDER | SWP_NOZORDER | SWP_SHOWWINDOW);
+
+		ShowWindow(hwnd_, SW_SHOWNORMAL);
+		SetForegroundWindow(hwnd_);
+		SetFocus(hwnd_);
 	}
-
-	isFullscreen_ = fullscreen;
 }
 
 LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam) {

@@ -5,7 +5,8 @@
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
 #include <Engine/Object/Data/Transform.h>
-#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/VertexBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/IndexBuffer.h>
 
 // directX
 #include <Externals/DirectXTex/DirectXTex.h>
@@ -57,8 +58,8 @@ public:
 	bool GetPostProcessEnable() const { return postProcessEnable_; }
 	bool UseAlphaTexture() const { return alphaTextureName_.has_value(); }
 
-	const DxConstBuffer<SpriteVertexData>& GetVertexBuffer() const { return vertexBuffer_; }
-	const DxConstBuffer<uint32_t>& GetIndexBuffer() const { return indexBuffer_; }
+	const VertexBuffer<SpriteVertexData>& GetVertexBuffer() const { return vertexBuffer_; }
+	const IndexBuffer& GetIndexBuffer() const { return indexBuffer_; }
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetTextureGPUHandle() const;
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetAlphaTextureGPUHandle() const;
@@ -86,8 +87,8 @@ private:
 	std::vector<SpriteVertexData> vertexData_;
 
 	// buffer
-	DxConstBuffer<SpriteVertexData> vertexBuffer_;
-	DxConstBuffer<uint32_t> indexBuffer_;
+	VertexBuffer<SpriteVertexData> vertexBuffer_;
+	IndexBuffer indexBuffer_;
 
 	//--------- functions ----------------------------------------------------
 

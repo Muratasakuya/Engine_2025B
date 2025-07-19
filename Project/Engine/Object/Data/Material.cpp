@@ -175,7 +175,7 @@ void SpriteMaterial::Init(ID3D12Device* device) {
 	prevUVTransform_.scale = Vector3::AnyInit(1.0f);
 
 	// buffer初期化
-	buffer_.CreateConstBuffer(device);
+	buffer_.CreateBuffer(device);
 }
 
 void SpriteMaterial::UpdateUVTransform() {

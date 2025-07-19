@@ -161,7 +161,7 @@ void Transform2D::Init(ID3D12Device* device) {
 	textureSize = Vector2::AnyInit(0.0f);
 
 	// buffer初期化
-	buffer_.CreateConstBuffer(device);
+	buffer_.CreateBuffer(device);
 }
 
 void Transform2D::UpdateMatrix() {

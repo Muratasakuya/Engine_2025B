@@ -95,6 +95,9 @@ Framework::Framework() {
 	// fullScreen設定
 	winApp_->SetFullscreen(fullscreenEnable_);
 
+	// srvDescriptorHeap設定、最初のみ設定
+	dxCommand->SetDescriptorHeaps({ srvDescriptor->GetDescriptorHeap() });
+
 	//------------------------------------------------------------------------
 	// particle機能初期化
 

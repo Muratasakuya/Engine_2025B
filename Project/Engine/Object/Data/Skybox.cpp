@@ -76,14 +76,14 @@ void Skybox::CreateVertexBuffer(ID3D12Device* device) {
 	};
 
 	// buffer作成
-	vertexBuffer_.CreateVertexBuffer(device, static_cast<UINT>(vertices.size()));
-	indexBuffer_.CreateIndexBuffer(device, static_cast<UINT>(indices.size()));
+	vertexBuffer_.CreateBuffer(device, static_cast<UINT>(vertices.size()));
+	indexBuffer_.CreateBuffer(device, static_cast<UINT>(indices.size()));
 	// index数設定
 	indexCount_ = static_cast<UINT>(indices.size());
 
 	// これ以上頂点の位置は変わらないのでbuffer転送
-	vertexBuffer_.TransferVectorData(vertices);
-	indexBuffer_.TransferVectorData(indices);
+	vertexBuffer_.TransferData(vertices);
+	indexBuffer_.TransferData(indices);
 }
 
 void Skybox::CreateCBuffer(ID3D12Device* device, uint32_t textureIndex) {
@@ -105,8 +105,8 @@ void Skybox::CreateCBuffer(ID3D12Device* device, uint32_t textureIndex) {
 		uvTransform_.scale, uvTransform_.rotate, uvTransform_.translation);
 
 	// buffer作成
-	matrixBuffer_.CreateConstBuffer(device);
-	materialBuffer_.CreateConstBuffer(device);
+	matrixBuffer_.CreateBuffer(device);
+	materialBuffer_.CreateBuffer(device);
 
 	// 1度bufferを転送する
 	matrixBuffer_.TransferData(transform_.matrix.world);

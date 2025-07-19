@@ -71,8 +71,8 @@ private:
 		// mesh情報
 		EffectMesh* mesh;
 		// structuredBuffer
-		DxConstBuffer<EffectMaterial> materialBuffer; // material
-		DxConstBuffer<Matrix4x4> worldMatrixBuffer;   // matrix
+		DxStructuredBuffer<EffectMaterial> materialBuffer; // material
+		DxStructuredBuffer<Matrix4x4> worldMatrixBuffer;   // matrix
 		// instance数
 		uint32_t numInstance;
 	};

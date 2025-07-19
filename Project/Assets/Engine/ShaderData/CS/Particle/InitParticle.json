@@ -6,6 +6,6 @@
         }
     ],
     "RootParameter": [
-        { "RootIndex": 0, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 0 }
+        { "RootIndex": 0, "Type": "TABLE", "Visibility": "COMPUTE","DescriptorRange": { "Type": "UAV", "BaseShaderRegister": 0 } }
     ]
 }

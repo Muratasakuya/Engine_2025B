@@ -8,6 +8,7 @@
 // emitter
 #include <Engine/Core/Graphics/Mesh/Mesh.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/DxStructuredBuffer.h>
 #include <Engine/Object/Data/Transform.h>
 
 // imgui
@@ -84,8 +85,8 @@ struct ParticleGroup {
 	// mesh情報
 	std::unique_ptr<EffectMesh> mesh;
 	// structuredBuffer
-	DxConstBuffer<EffectMaterial> materialBuffer; // material
-	DxConstBuffer<Matrix4x4> worldMatrixBuffer;   // matrix
+	DxStructuredBuffer<EffectMaterial> materialBuffer; // material
+	DxStructuredBuffer<Matrix4x4> worldMatrixBuffer;   // matrix
 	// instance数
 	uint32_t numInstance;
 

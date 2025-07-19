@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/VertexBuffer.h>
 #include <Engine/Collision/CollisionGeometry.h>
 #include <Lib/MathUtils/MathUtils.h>
 
@@ -102,7 +103,7 @@ private:
 		std::unique_ptr<PipelineState> pipeline;
 
 		std::vector<LineVertex> lineVertices;
-		DxConstBuffer<LineVertex> vertexBuffer;
+		VertexBuffer<LineVertex> vertexBuffer;
 
 		void Init(const std::string& pipelineFile, ID3D12Device8* device,
 			SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler);

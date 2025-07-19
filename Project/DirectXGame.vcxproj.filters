@@ -26,12 +26,6 @@
     <ClCompile Include="Engine\Object\Data\Transform.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\GPUObject\InputAssembler.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Debug\Assert.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -581,6 +575,9 @@
     <ClCompile Include="Engine\GPUParticle\GameEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\GPUObject\IndexBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -590,8 +587,6 @@
     <ClInclude Include="Engine\Asset\TextureManager.h" />
     <ClInclude Include="Engine\Object\Data\Transform.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
-    <ClInclude Include="Engine\Core\Graphics\GPUObject\InputAssembler.h" />
-    <ClInclude Include="Engine\Core\Graphics\GPUObject\IOVertexBuffer.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
     <ClInclude Include="Engine\Core\Debug\Logger.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.h" />
@@ -790,6 +785,9 @@
     <ClInclude Include="Engine\GPUParticle\ParticleManager.h" />
     <ClInclude Include="Engine\GPUParticle\Structures\ParticleShape.h" />
     <ClInclude Include="Engine\GPUParticle\GameEffect.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\DxStructuredBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\VertexBuffer.h" />
+    <ClInclude Include="Engine\Core\Graphics\GPUObject\IndexBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
@@ -809,6 +807,7 @@
     <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Lut.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\MS\NewEffectMesh.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\CS\Particle\InitParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\VS_PS\Particle\VertexEffect.VS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />

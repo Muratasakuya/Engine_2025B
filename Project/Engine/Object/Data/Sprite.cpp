@@ -73,14 +73,14 @@ void Sprite::UpdateVertex(const Transform2D& transform) {
 	vertexData_[3].color = Color::White();
 
 	// GPUデータ転送
-	vertexBuffer_.TransferVectorData(vertexData_);
+	vertexBuffer_.TransferData(vertexData_);
 }
 
 void Sprite::InitBuffer(ID3D12Device* device) {
 
 	// buffer作成
-	vertexBuffer_.CreateVertexBuffer(device, kVertexNum_);
-	indexBuffer_.CreateIndexBuffer(device, kIndexNum_);
+	vertexBuffer_.CreateBuffer(device, kVertexNum_);
+	indexBuffer_.CreateBuffer(device, kIndexNum_);
 
 	// vertexデータの初期化
 	vertexData_.resize(kVertexNum_);
@@ -96,7 +96,7 @@ void Sprite::InitBuffer(ID3D12Device* device) {
 	indexData[5] = 2;
 
 	// GPUデータ転送
-	indexBuffer_.TransferVectorData(indexData);
+	indexBuffer_.TransferData(indexData);
 }
 
 void Sprite::SetMetaDataTextureSize(Transform2D& transform) {

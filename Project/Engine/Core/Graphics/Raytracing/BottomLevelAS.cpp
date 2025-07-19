@@ -15,10 +15,10 @@ static void FillGeometryDesc(D3D12_RAYTRACING_GEOMETRY_DESC& geometryDesc, IMesh
 
 	// 頂点buffer取得
 	// skinnedかどうかで分岐させる
-	const DxConstBuffer<MeshVertex>& vertexBuffer = skinned
+	const DxStructuredBuffer<MeshVertex>& vertexBuffer = skinned
 		? static_cast<SkinnedMesh*>(mesh)->GetOutputVertexBuffer(meshIndex)
 		: static_cast<StaticMesh*> (mesh)->GetVertexBuffer(meshIndex);
-	const DxConstBuffer<uint32_t>& indexBuffer = mesh->GetIndexBuffer(meshIndex);
+	const IndexBuffer& indexBuffer = mesh->GetIndexBuffer(meshIndex);
 
 	// descの設定
 	geometryDesc = {};

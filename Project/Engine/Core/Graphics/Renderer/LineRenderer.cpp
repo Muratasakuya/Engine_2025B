@@ -42,9 +42,9 @@ void LineRenderer::Init(ID3D12Device8* device, ID3D12GraphicsCommandList* comman
 	renderData_[LineType::None].Init("PrimitiveLine.json", device, srvDescriptor, shaderCompiler);
 	renderData_[LineType::DepthIgnore].Init("DepthIgnorePrimitiveLine.json", device, srvDescriptor, shaderCompiler);
 
-	viewProjectionBuffer_.CreateConstBuffer(device);
+	viewProjectionBuffer_.CreateBuffer(device);
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
-	debugSceneViewProjectionBuffer_.CreateConstBuffer(device);
+	debugSceneViewProjectionBuffer_.CreateBuffer(device);
 #endif
 }
 
@@ -54,7 +54,7 @@ void LineRenderer::RenderStructure::Init(const std::string& pipelineFile, ID3D12
 	pipeline = std::make_unique<PipelineState>();
 	pipeline->Create(pipelineFile, device, srvDescriptor, shaderCompiler);
 
-	vertexBuffer.CreateVertexBuffer(device, kMaxLineCount_ * kVertexCountLine_);
+	vertexBuffer.CreateBuffer(device, kMaxLineCount_ * kVertexCountLine_);
 }
 
 void LineRenderer::DrawLine3D(const Vector3& pointA, const Vector3& pointB,
@@ -80,8 +80,8 @@ void LineRenderer::ExecuteLine(bool debugEnable, LineType type) {
 	commandList_->SetPipelineState(renderData.pipeline->GetGraphicsPipeline());
 	commandList_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_LINELIST);
 
-	renderData.vertexBuffer.TransferVectorData(renderData.lineVertices);
-	commandList_->IASetVertexBuffers(0, 1, &renderData.vertexBuffer.GetVertexBuffer());
+	renderData.vertexBuffer.TransferData(renderData.lineVertices);
+	commandList_->IASetVertexBuffers(0, 1, &renderData.vertexBuffer.GetVertexBufferView());
 
 	if (!debugEnable) {
 
