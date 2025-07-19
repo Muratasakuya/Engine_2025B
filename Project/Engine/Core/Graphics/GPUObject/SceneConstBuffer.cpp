@@ -31,6 +31,10 @@ void SceneConstBuffer::Create(ID3D12Device* device) {
 	// dither
 	ditherBuffer_.CreateConstBuffer(device);
 
+	// perView
+	perViewBuffer_.CreateConstBuffer(device);
+	debugScenePerViewBuffer_.CreateConstBuffer(device);
+
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
@@ -53,12 +57,22 @@ void SceneConstBuffer::Update(class SceneView* sceneView) {
 	// dither
 	ditherBuffer_.TransferData(sceneView->GetDither());
 
+	// perView
+	PerViewForGPU perView{};
+	perView.viewProjection = sceneView->GetCamera()->GetViewProjectionMatrix();
+	perView.billboardMatrix = sceneView->GetCamera()->GetBillboardMatrix();
+	perViewBuffer_.TransferData(perView);
+
 	// debug
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	// camera
 	debugSceneViewProjectionBuffer_.TransferData(sceneView->GetSceneCamera()->GetViewProjectionMatrix());
 	debugSceneCameraPosBuffer_.TransferData(sceneView->GetSceneCamera()->GetTransform().translation);
+
+	perView.viewProjection = sceneView->GetSceneCamera()->GetViewProjectionMatrix();
+	perView.billboardMatrix = sceneView->GetSceneCamera()->GetBillboardMatrix();
+	debugScenePerViewBuffer_.TransferData(perView);
 #endif
 }
 
@@ -106,6 +120,22 @@ void SceneConstBuffer::SetViewProCommand(bool debugEnable,
 		// viewProjection
 		commandList->SetGraphicsRootConstantBufferView(rootIndex,
 			debugSceneViewProjectionBuffer_.GetResource()->GetGPUVirtualAddress());
+	}
+}
+
+void SceneConstBuffer::SetPerViewCommand(bool debugEnable,
+	ID3D12GraphicsCommandList* commandList, UINT rootIndex) {
+
+	if (!debugEnable) {
+
+		// perView
+		commandList->SetGraphicsRootConstantBufferView(rootIndex,
+			perViewBuffer_.GetResource()->GetGPUVirtualAddress());
+	} else {
+
+		// perView
+		commandList->SetGraphicsRootConstantBufferView(rootIndex,
+			debugScenePerViewBuffer_.GetResource()->GetGPUVirtualAddress());
 	}
 }
 

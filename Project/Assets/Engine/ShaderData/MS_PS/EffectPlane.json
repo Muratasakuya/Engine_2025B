@@ -9,16 +9,17 @@
     ],
     "RootParameter": [
         { "RootIndex": 0, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 0 },
-        { "RootIndex": 1, "Type": "CBV", "Visibility": "MESH", "ShaderRegister": 0 },
-        { "RootIndex": 2, "Type": "SRV", "Visibility": "PIXEL", "ShaderRegister": 0 },
-        { "RootIndex": 3, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 1 } }
+        { "RootIndex": 1, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 1 },
+        { "RootIndex": 2, "Type": "CBV", "Visibility": "MESH", "ShaderRegister": 0 },
+        { "RootIndex": 3, "Type": "SRV", "Visibility": "PIXEL", "ShaderRegister": 0 },
+        { "RootIndex": 4, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 1 } }
     ],
     "StaticSampler": [
         { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER", "ShaderRegister": 0 }
     ],
     "Rasterizer":[
         {
-            "CullMode": "NONE",
+            "CullMode": "BACK",
             "FillMode": "SOLID",
             "DepthClipEnable": "FALSE",
             "AntialiasedLineEnable": "FALSE"

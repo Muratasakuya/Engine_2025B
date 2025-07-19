@@ -2,7 +2,7 @@
 //	include
 //============================================================================
 
-#include "NewEffectMeshFunction.hlsli"
+#include "EffectMesh.hlsli"
 
 //============================================================================
 //	Output
@@ -12,6 +12,29 @@ struct PSOutput {
 	
 	float4 color : SV_TARGET0;
 };
+
+//============================================================================
+//	structure
+//============================================================================
+
+struct Material {
+	
+	// color
+	float4 color;
+};
+
+//============================================================================
+//	buffer
+//============================================================================
+
+StructuredBuffer<Material> gMaterials : register(t0);
+
+//============================================================================
+//	texture Sampler
+//============================================================================
+
+Texture2D<float4> gTexture : register(t1);
+SamplerState gSampler : register(s0);
 
 //============================================================================
 //	Main
@@ -25,8 +48,7 @@ PSOutput main(MSOutput input) {
 	Material material = gMaterials[id];
 	
 	// uv
-	float4 transformUV = mul(float4(input.texcoord, 0.0f, 1.0f), material.uvTransform);
-	float4 textureColor = gTexture.Sample(gSampler, transformUV.xy);
+	float4 textureColor = gTexture.Sample(gSampler, input.texcoord);
 	
 	// êF
 	output.color.rgb = material.color.rgb * textureColor.rgb;

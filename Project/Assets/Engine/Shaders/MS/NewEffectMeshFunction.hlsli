@@ -12,9 +12,6 @@ struct Material {
 	
 	// color
 	float4 color;
-	
-	// uv
-	float4x4 uvTransform;
 };
 
 //============================================================================

@@ -14,7 +14,7 @@
 
 static const uint CYL_MAX_VERTS = (CYL_MAX_DIVIDE + 1) * 2;
 static const uint CYL_MAX_TRIS = CYL_MAX_DIVIDE * 2;
-static const float PI = 3.141592f;
+static const float PI = 3.141592653589793f;
 
 //============================================================================
 //	CBuffer

@@ -7,52 +7,14 @@
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Object/Data/Transform.h>
-#include <Lib/MathUtils/MathUtils.h>
+#include <Engine/GPUParticle/Structures/ParticleShape.h>
 
 // front
 class Asset;
 class SRVDescriptor;
 class DxShaderCompiler;
+class DxCommand;
 class SceneView;
-
-//============================================================================
-//	structures
-//============================================================================
-
-struct PlaneForGPU {
-
-	Vector2 size;
-	Matrix4x4 world;
-};
-struct RingForGPU {
-
-	float outerRadius;
-	float innerRadius;
-	int divide;
-	Matrix4x4 world;
-};
-struct CylinderForGPU {
-
-	float topRadius;
-	float bottomRadius;
-	float height;
-	int divide;
-	Matrix4x4 world;
-};
-struct ParticleMaterial {
-
-	Color color;
-	Matrix4x4 uvTransform;
-};
-
-// 形状
-enum class ParticleShape {
-
-	Plane,
-	Ring,
-	Cylinder,
-	Count
-};
 
 //============================================================================
 //	ParticleManager class
@@ -68,9 +30,11 @@ public:
 		SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler,
 		SceneView* sceneView);
 
+	void InitParticle(DxCommand* dxCommand);
+
 	void Update();
 
-	void Rendering(bool debugEnable, class SceneConstBuffer* sceneBuffer, ID3D12GraphicsCommandList6* commandList);
+	void Rendering(bool debugEnable, class SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 
 	void ImGui() override;
 
@@ -84,6 +48,25 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structures ----------------------------------------------------
+
+	// GPUParticleを理解するためにまずは実装する
+	struct ParticleMaterial {
+
+		Color color;
+	};
+
+	struct ParticleForGPU {
+
+		Vector3 translation;
+		Vector3 scale;
+
+		float lifeTime;
+		float currentTime;
+
+		Vector3 velocity;
+	};
+
 	//--------- variables ----------------------------------------------------
 
 	static ParticleManager* instance_;
@@ -91,22 +74,22 @@ private:
 	Asset* asset_;
 	SceneView* sceneView_;
 
-	std::unordered_map<ParticleShape, std::unique_ptr<PipelineState>> pipelines_;
+	const UINT kMaxInstanceCount_ = 1024;
+
+	// pipeline
+	// 計算
+	std::unique_ptr<PipelineState> initParticlePipeline_;
+	// 描画
+	std::unique_ptr<PipelineState> renderPipeline_;
 
 	std::vector<PlaneForGPU> planeInstances_;
-	Transform3D planeTransform_;
-	std::vector<RingForGPU> ringInstances_;
-	Transform3D ringTransform_;
-	std::vector<CylinderForGPU> cylinderInstances_;
-	Transform3D cylinderTransform_;
-
 	std::vector<ParticleMaterial> materialInstances_;
 
-	// debug
+	// meshShader、pixelShaderで使用
 	DxConstBuffer<PlaneForGPU> planeBuffer_;
-	DxConstBuffer<RingForGPU> ringBuffer_;
-	DxConstBuffer<CylinderForGPU> cylinderBuffer_;
 	DxConstBuffer<ParticleMaterial> materialBuffer_;
+	// computeShaderで使用
+	DxConstBuffer<ParticleForGPU> particleBuffer_;
 
 	//--------- functions ----------------------------------------------------
 

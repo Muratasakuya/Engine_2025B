@@ -185,7 +185,7 @@ void RenderEngine::Renderers(ViewType type) {
 	ParticleSystem::GetInstance()->Rendering(static_cast<bool>(type),
 		sceneBuffer_.get(), dxCommand_->GetCommandList());
 	ParticleManager::GetInstance()->Rendering(static_cast<bool>(type),
-		sceneBuffer_.get(), dxCommand_->GetCommandList());
+		sceneBuffer_.get(), dxCommand_);
 
 	// line描画実行、depth無効
 	LineRenderer::GetInstance()->ExecuteLine(static_cast<bool>(type), LineType::DepthIgnore);

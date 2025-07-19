@@ -578,6 +578,9 @@
     <ClCompile Include="Engine\GPUParticle\ParticleManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\GPUParticle\GameEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -785,6 +788,8 @@
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraParryState.h" />
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraParryAttackState.h" />
     <ClInclude Include="Engine\GPUParticle\ParticleManager.h" />
+    <ClInclude Include="Engine\GPUParticle\Structures\ParticleShape.h" />
+    <ClInclude Include="Engine\GPUParticle\GameEffect.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
@@ -803,6 +808,7 @@
     <FxCompile Include="Assets\Engine\Shaders\MS\MeshStandard.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Lut.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\MS\NewEffectMesh.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\CS\Particle\InitParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />

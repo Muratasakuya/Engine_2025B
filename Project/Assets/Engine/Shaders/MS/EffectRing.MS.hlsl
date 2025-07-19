@@ -14,7 +14,7 @@
 
 static const uint RING_MAX_VERTS = RING_MAX_DIVIDE * 4;
 static const uint RING_MAX_TRIS = RING_MAX_DIVIDE * 2;
-static const float PI = 3.141592f;
+static const float PI = 3.141592653589793f;
 
 //============================================================================
 //	CBuffer

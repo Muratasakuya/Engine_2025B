@@ -103,6 +103,7 @@ Framework::Framework() {
 
 	ParticleManager::GetInstance()->Init(asset_.get(), device,
 		srvDescriptor, shaderCompiler, sceneView_.get());
+	ParticleManager::GetInstance()->InitParticle(dxCommand);
 
 	//------------------------------------------------------------------------
 	// object機能初期化

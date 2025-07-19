@@ -1,0 +1,11 @@
+{
+    "ShaderPass":[
+        {
+            "Type": "Compute",
+            "ComputeShader": "InitParticle.CS.hlsl"
+        }
+    ],
+    "RootParameter": [
+        { "RootIndex": 0, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 0 }
+    ]
+}
