@@ -27,7 +27,8 @@ struct Particle {
 };
 
 RWStructuredBuffer<Particle> gParticles : register(u0);
-RWStructuredBuffer<int> gFreeCounter : register(u1);
+RWStructuredBuffer<int> gFreeListIndex : register(u1);
+RWStructuredBuffer<uint> gFreeList : register(u2);
 
 float Rand3DTo1D(float3 value, float3 dotDir = float3(12.9898f, 78.233f, 37.719f)) {
 	
@@ -65,22 +66,34 @@ class RandomGenerator {
 [numthreads(1, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
-	if (emit == 1) {
+	if (emit == 0) {
+		return;
+	}
+	
+	RandomGenerator generator;
+	generator.seed = (DTid + time) * time;
+	
+	for (uint i = 0; i < count; ++i) {
 		
-		RandomGenerator generator;
-		generator.seed = (DTid + time) * time;
-		for (uint countIndex = 0; countIndex < count; ++countIndex) {
+		int freeListIndex;
+		InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
 		
-			int particleIndex;
-			// gFreeCounter[0]‚É1‚ð‘«‚µA‘«‚·‘O‚Ì’l‚ðparticleIndex‚É“ü‚ê‚é
-			InterlockedAdd(gFreeCounter[0], 1, particleIndex);
+		if (0 <= freeListIndex && freeListIndex < kMaxParticles) {
 			
-			if (particleIndex < kMaxParticles) {
-				
-				gParticles[particleIndex].scale = generator.Generate3D();
-				gParticles[particleIndex].translation = generator.Generate3D();
-				gParticles[particleIndex].lifeTime = generator.Generate1D();
-			}
+			uint particleIndex = gFreeList[freeListIndex];
+			
+			Particle particle;
+			particle.translation = translation + generator.Generate3D() * radius;
+			particle.scale = float3(1.0f, 1.0f, 1.0f);
+			particle.velocity = normalize(generator.Generate3D() * 2.0f - 1.0f) * 3.0f;
+			particle.lifeTime = 5.0f;
+			particle.currentTime = 0.0f;
+			
+			gParticles[particleIndex] = particle;
+		} else {
+
+			InterlockedAdd(gFreeListIndex[0], 1);
+			break;
 		}
 	}
 }

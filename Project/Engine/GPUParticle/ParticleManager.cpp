@@ -47,6 +47,8 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	initParticlePipeline_->Create("InitParticle.json", device, srvDescriptor, shaderCompiler);
 	emitParticlePipeline_ = std::make_unique<PipelineState>();
 	emitParticlePipeline_->Create("EmitParticle.json", device, srvDescriptor, shaderCompiler);
+	updateParticlePipeline_ = std::make_unique<PipelineState>();
+	updateParticlePipeline_->Create("UpdateParticle.json", device, srvDescriptor, shaderCompiler);
 	// 描画
 	renderPipeline_ = std::make_unique<PipelineState>();
 	renderPipeline_->Create("EffectPlane.json", device, srvDescriptor, shaderCompiler);
@@ -55,7 +57,8 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	planeBuffer_.CreateSRVBuffer(device, kMaxInstanceCount_);
 	materialBuffer_.CreateSRVBuffer(device, kMaxInstanceCount_);
 	particleBuffer_.CreateUAVBuffer(device, kMaxInstanceCount_);
-	freeCounterBuffer_.CreateUAVBuffer(device, 1);
+	freeListIndexBuffer_.CreateUAVBuffer(device, 1);
+	freeListBuffer_.CreateUAVBuffer(device, kMaxInstanceCount_);
 	emitterSphereBuffer_.CreateBuffer(device);
 	perFrameBuffer_.CreateBuffer(device);
 	// SRV作成
@@ -82,9 +85,13 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	}
 	{
 		// UAVを作成する
-		srvDescriptor->CreateUAV(srvIndex, freeCounterBuffer_.GetResource(),
-			freeCounterBuffer_.GetUAVDesc(1));
-		freeCounterBuffer_.SetUAVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
+		srvDescriptor->CreateUAV(srvIndex, freeListIndexBuffer_.GetResource(),
+			freeListIndexBuffer_.GetUAVDesc(1));
+		freeListIndexBuffer_.SetUAVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
+
+		srvDescriptor->CreateUAV(srvIndex, freeListBuffer_.GetResource(),
+			freeListBuffer_.GetUAVDesc(kMaxInstanceCount_));
+		freeListBuffer_.SetUAVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
 	}
 
 	// 最大数分だけ用意
@@ -101,8 +108,8 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	}
 
 	// emitter
-	emitterSphere_.count = 10;
-	emitterSphere_.frequency = 1.0f;
+	emitterSphere_.count = 16;
+	emitterSphere_.frequency = 0.4f;
 	emitterSphere_.frequencyTime = 0.0f;
 	emitterSphere_.translation = Vector3::AnyInit(0.0f);
 	emitterSphere_.radius = 8.0f;
@@ -118,8 +125,10 @@ void ParticleManager::InitParticle(DxCommand* dxCommand) {
 
 	// particle
 	commandList->SetComputeRootDescriptorTable(0, particleBuffer_.GetUAVGPUHandle());
-	// freeCounter
-	commandList->SetComputeRootDescriptorTable(1, freeCounterBuffer_.GetUAVGPUHandle());
+	// freeListIndex
+	commandList->SetComputeRootDescriptorTable(1, freeListIndexBuffer_.GetUAVGPUHandle());
+	// freeList
+	commandList->SetComputeRootDescriptorTable(2, freeListBuffer_.GetUAVGPUHandle());
 
 	// 実行処理
 	commandList->Dispatch(1, 1, 1);
@@ -135,10 +144,32 @@ void ParticleManager::EmitParticle(DxCommand* dxCommand) {
 
 	// particle
 	commandList->SetComputeRootDescriptorTable(0, particleBuffer_.GetUAVGPUHandle());
-	// freeCounter
-	commandList->SetComputeRootDescriptorTable(1, freeCounterBuffer_.GetUAVGPUHandle());
+	// freeListIndex
+	commandList->SetComputeRootDescriptorTable(1, freeListIndexBuffer_.GetUAVGPUHandle());
+	// freeList
+	commandList->SetComputeRootDescriptorTable(2, freeListBuffer_.GetUAVGPUHandle());
 	// emitterSphere
-	commandList->SetComputeRootConstantBufferView(2, emitterSphereBuffer_.GetResource()->GetGPUVirtualAddress());
+	commandList->SetComputeRootConstantBufferView(3, emitterSphereBuffer_.GetResource()->GetGPUVirtualAddress());
+	// perFrame
+	commandList->SetComputeRootConstantBufferView(4, perFrameBuffer_.GetResource()->GetGPUVirtualAddress());
+
+	// 実行処理
+	commandList->Dispatch(1, 1, 1);
+}
+
+void ParticleManager::UpdateParticle(DxCommand* dxCommand) {
+
+	ID3D12GraphicsCommandList* commandList = dxCommand->GetCommandList();
+
+	// 更新用pipeline
+	commandList->SetComputeRootSignature(updateParticlePipeline_->GetRootSignature());
+	commandList->SetPipelineState(updateParticlePipeline_->GetComputePipeline());
+	// particle
+	commandList->SetComputeRootDescriptorTable(0, particleBuffer_.GetUAVGPUHandle());
+	// freeListIndex
+	commandList->SetComputeRootDescriptorTable(1, freeListIndexBuffer_.GetUAVGPUHandle());
+	// freeList
+	commandList->SetComputeRootDescriptorTable(2, freeListBuffer_.GetUAVGPUHandle());
 	// perFrame
 	commandList->SetComputeRootConstantBufferView(3, perFrameBuffer_.GetResource()->GetGPUVirtualAddress());
 
@@ -164,6 +195,15 @@ void ParticleManager::Update(DxCommand* dxCommand) {
 
 	UpdateEmitter();
 	EmitParticle(dxCommand);
+
+	// UAVバリア
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	barrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	barrier.UAV.pResource = particleBuffer_.GetResource();
+	dxCommand->GetCommandList()->ResourceBarrier(1, &barrier);
+
+	UpdateParticle(dxCommand);
 }
 
 void ParticleManager::UpdateEmitter() {

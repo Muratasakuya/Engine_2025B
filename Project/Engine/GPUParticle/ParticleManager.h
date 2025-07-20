@@ -96,6 +96,7 @@ private:
 	// 計算
 	std::unique_ptr<PipelineState> initParticlePipeline_;
 	std::unique_ptr<PipelineState> emitParticlePipeline_;
+	std::unique_ptr<PipelineState> updateParticlePipeline_;
 	// 描画
 	std::unique_ptr<PipelineState> renderPipeline_;
 
@@ -111,7 +112,8 @@ private:
 	DxStructuredBuffer<ParticleMaterial> materialBuffer_;
 	// computeShaderで使用
 	DxStructuredBuffer<ParticleForGPU> particleBuffer_;
-	DxStructuredBuffer<uint32_t> freeCounterBuffer_;
+	DxStructuredBuffer<uint32_t> freeListIndexBuffer_;
+	DxStructuredBuffer<uint32_t> freeListBuffer_;
 	DxConstBuffer<EmitterSphere> emitterSphereBuffer_;
 	DxConstBuffer<PerFrame> perFrameBuffer_;
 
@@ -120,6 +122,7 @@ private:
 	// update
 	void UpdateEmitter();
 	void EmitParticle(DxCommand* dxCommand);
+	void UpdateParticle(DxCommand* dxCommand);
 
 	ParticleManager() : IGameEditor("ParticleManager") {}
 	~ParticleManager() = default;
