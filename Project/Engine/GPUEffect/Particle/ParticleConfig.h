@@ -1,5 +1,7 @@
+#pragma once
+
 //============================================================================
-//	Constant
+//	ParticleConfig
 //============================================================================
 
-static const uint kMaxParticles = 1024;
+static const int kMaxParticles = 1024;

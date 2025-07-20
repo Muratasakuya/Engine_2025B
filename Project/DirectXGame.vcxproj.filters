@@ -826,6 +826,7 @@
     <ClInclude Include="Engine\GPUEffect\Trail\Core\GPUTrailEffectUpdater.h" />
     <ClInclude Include="Engine\GPUEffect\Trail\TrailEffect.h" />
     <ClInclude Include="Engine\GPUEffect\GameEffect.h" />
+    <ClInclude Include="Engine\GPUEffect\Particle\ParticleConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />
@@ -855,7 +856,6 @@
     <None Include="Assets\Engine\Shaders\Raytracing\ShadowRay.hlsli" />
     <None Include="Assets\Engine\Shaders\Standard\Dither.hlsli" />
     <None Include="Assets\Engine\Shaders\Math\Math.hlsli" />
-    <None Include="Assets\Engine\Shaders\Particle\ParticleConfig.hlsli" />
     <None Include="Assets\Engine\Shaders\Particle\ParticleCommonSturctures.hlsli" />
     <None Include="Assets\Engine\Shaders\Particle\ParticleEmitterStructures.hlsli" />
     <None Include="Assets\Engine\Shaders\Particle\ParticleOutput.hlsli" />

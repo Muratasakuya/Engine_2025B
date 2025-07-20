@@ -3,7 +3,7 @@
 //============================================================================
 
 #include "../ParticleCommonSturctures.hlsli"
-#include "../ParticleConfig.hlsli"
+#include "../../../../../Engine/GPUEffect/Particle/ParticleConfig.h"
 
 //============================================================================
 //	CBuffer

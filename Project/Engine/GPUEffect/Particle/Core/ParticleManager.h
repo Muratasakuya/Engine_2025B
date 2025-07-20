@@ -90,8 +90,6 @@ private:
 	Asset* asset_;
 	SceneView* sceneView_;
 
-	const UINT kMaxInstanceCount_ = 1024;
-
 	// pipeline
 	// 計算
 	std::unique_ptr<PipelineState> initParticlePipeline_;

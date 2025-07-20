@@ -6,6 +6,7 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
+#include <Engine/GPUEffect/Particle/ParticleConfig.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Utility/GameTimer.h>
 
@@ -54,33 +55,33 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	renderPipeline_->Create("EffectPlane.json", device, srvDescriptor, shaderCompiler);
 
 	// buffer作成
-	planeBuffer_.CreateSRVBuffer(device, kMaxInstanceCount_);
-	materialBuffer_.CreateSRVBuffer(device, kMaxInstanceCount_);
-	particleBuffer_.CreateUAVBuffer(device, kMaxInstanceCount_);
+	planeBuffer_.CreateSRVBuffer(device, kMaxParticles);
+	materialBuffer_.CreateSRVBuffer(device, kMaxParticles);
+	particleBuffer_.CreateUAVBuffer(device, kMaxParticles);
 	freeListIndexBuffer_.CreateUAVBuffer(device, 1);
-	freeListBuffer_.CreateUAVBuffer(device, kMaxInstanceCount_);
+	freeListBuffer_.CreateUAVBuffer(device, kMaxParticles);
 	emitterSphereBuffer_.CreateBuffer(device);
 	perFrameBuffer_.CreateBuffer(device);
 	// SRV作成
 	uint32_t srvIndex = 0;
 	{
 		srvDescriptor->CreateSRV(srvIndex, planeBuffer_.GetResource(),
-			planeBuffer_.GetSRVDesc(kMaxInstanceCount_));
+			planeBuffer_.GetSRVDesc(kMaxParticles));
 		planeBuffer_.SetSRVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
 	}
 	{
 		srvDescriptor->CreateSRV(srvIndex, materialBuffer_.GetResource(),
-			materialBuffer_.GetSRVDesc(kMaxInstanceCount_));
+			materialBuffer_.GetSRVDesc(kMaxParticles));
 		materialBuffer_.SetSRVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
 	}
 	{
 		srvDescriptor->CreateSRV(srvIndex, particleBuffer_.GetResource(),
-			particleBuffer_.GetSRVDesc(kMaxInstanceCount_));
+			particleBuffer_.GetSRVDesc(kMaxParticles));
 		particleBuffer_.SetSRVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
 
 		// UAVも作成する
 		srvDescriptor->CreateUAV(srvIndex, particleBuffer_.GetResource(),
-			particleBuffer_.GetUAVDesc(kMaxInstanceCount_));
+			particleBuffer_.GetUAVDesc(kMaxParticles));
 		particleBuffer_.SetUAVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
 	}
 	{
@@ -90,12 +91,12 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 		freeListIndexBuffer_.SetUAVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
 
 		srvDescriptor->CreateUAV(srvIndex, freeListBuffer_.GetResource(),
-			freeListBuffer_.GetUAVDesc(kMaxInstanceCount_));
+			freeListBuffer_.GetUAVDesc(kMaxParticles));
 		freeListBuffer_.SetUAVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
 	}
 
 	// 最大数分だけ用意
-	for (uint32_t index = 0; index < kMaxInstanceCount_; ++index) {
+	for (uint32_t index = 0; index < kMaxParticles; ++index) {
 
 		PlaneForGPU plane{};
 		plane.size = Vector2::AnyInit(4.0f);
@@ -242,7 +243,7 @@ void ParticleManager::Rendering(bool debugEnable,
 		// texture
 		commandList->SetGraphicsRootDescriptorTable(4, textureGPUHandle);
 		// 描画
-		commandList->DispatchMesh(kMaxInstanceCount_, 1, 1);
+		commandList->DispatchMesh(kMaxParticles, 1, 1);
 	}
 
 	if (debugEnable) {
