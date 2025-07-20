@@ -32,7 +32,7 @@ public:
 
 	void InitParticle(DxCommand* dxCommand);
 
-	void Update();
+	void Update(DxCommand* dxCommand);
 
 	void Rendering(bool debugEnable, class SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 
@@ -67,6 +67,22 @@ private:
 		Vector3 velocity;
 	};
 
+	struct EmitterSphere {
+
+		Vector3 translation;
+		float radius;
+		uint32_t count;
+		float frequency;
+		float frequencyTime;
+		uint32_t emit;
+	};
+
+	struct PerFrame {
+
+		float time;
+		float deltaTime;
+	};
+
 	//--------- variables ----------------------------------------------------
 
 	static ParticleManager* instance_;
@@ -79,19 +95,31 @@ private:
 	// pipeline
 	// 計算
 	std::unique_ptr<PipelineState> initParticlePipeline_;
+	std::unique_ptr<PipelineState> emitParticlePipeline_;
 	// 描画
 	std::unique_ptr<PipelineState> renderPipeline_;
 
 	std::vector<PlaneForGPU> planeInstances_;
 	std::vector<ParticleMaterial> materialInstances_;
 
+	// emitter
+	EmitterSphere emitterSphere_;
+	PerFrame perFrame_;
+
 	// meshShader、pixelShaderで使用
 	DxStructuredBuffer<PlaneForGPU> planeBuffer_;
 	DxStructuredBuffer<ParticleMaterial> materialBuffer_;
 	// computeShaderで使用
 	DxStructuredBuffer<ParticleForGPU> particleBuffer_;
+	DxStructuredBuffer<uint32_t> freeCounterBuffer_;
+	DxConstBuffer<EmitterSphere> emitterSphereBuffer_;
+	DxConstBuffer<PerFrame> perFrameBuffer_;
 
 	//--------- functions ----------------------------------------------------
+
+	// update
+	void UpdateEmitter();
+	void EmitParticle(DxCommand* dxCommand);
 
 	ParticleManager() : IGameEditor("ParticleManager") {}
 	~ParticleManager() = default;

@@ -7,6 +7,7 @@
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Scene/SceneView.h>
+#include <Engine/Utility/GameTimer.h>
 
 //============================================================================
 //	ParticleManager classMethods
@@ -44,6 +45,8 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	// 計算
 	initParticlePipeline_ = std::make_unique<PipelineState>();
 	initParticlePipeline_->Create("InitParticle.json", device, srvDescriptor, shaderCompiler);
+	emitParticlePipeline_ = std::make_unique<PipelineState>();
+	emitParticlePipeline_->Create("EmitParticle.json", device, srvDescriptor, shaderCompiler);
 	// 描画
 	renderPipeline_ = std::make_unique<PipelineState>();
 	renderPipeline_->Create("EffectPlane.json", device, srvDescriptor, shaderCompiler);
@@ -52,6 +55,9 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	planeBuffer_.CreateSRVBuffer(device, kMaxInstanceCount_);
 	materialBuffer_.CreateSRVBuffer(device, kMaxInstanceCount_);
 	particleBuffer_.CreateUAVBuffer(device, kMaxInstanceCount_);
+	freeCounterBuffer_.CreateUAVBuffer(device, 1);
+	emitterSphereBuffer_.CreateBuffer(device);
+	perFrameBuffer_.CreateBuffer(device);
 	// SRV作成
 	uint32_t srvIndex = 0;
 	{
@@ -74,6 +80,12 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 			particleBuffer_.GetUAVDesc(kMaxInstanceCount_));
 		particleBuffer_.SetUAVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
 	}
+	{
+		// UAVを作成する
+		srvDescriptor->CreateUAV(srvIndex, freeCounterBuffer_.GetResource(),
+			freeCounterBuffer_.GetUAVDesc(1));
+		freeCounterBuffer_.SetUAVGPUHandle(srvDescriptor->GetGPUHandle(srvIndex));
+	}
 
 	// 最大数分だけ用意
 	for (uint32_t index = 0; index < kMaxInstanceCount_; ++index) {
@@ -87,6 +99,13 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 
 		materialInstances_.emplace_back(material);
 	}
+
+	// emitter
+	emitterSphere_.count = 10;
+	emitterSphere_.frequency = 1.0f;
+	emitterSphere_.frequencyTime = 0.0f;
+	emitterSphere_.translation = Vector3::AnyInit(0.0f);
+	emitterSphere_.radius = 8.0f;
 }
 
 void ParticleManager::InitParticle(DxCommand* dxCommand) {
@@ -99,6 +118,29 @@ void ParticleManager::InitParticle(DxCommand* dxCommand) {
 
 	// particle
 	commandList->SetComputeRootDescriptorTable(0, particleBuffer_.GetUAVGPUHandle());
+	// freeCounter
+	commandList->SetComputeRootDescriptorTable(1, freeCounterBuffer_.GetUAVGPUHandle());
+
+	// 実行処理
+	commandList->Dispatch(1, 1, 1);
+}
+
+void ParticleManager::EmitParticle(DxCommand* dxCommand) {
+
+	ID3D12GraphicsCommandList* commandList = dxCommand->GetCommandList();
+
+	// 発生用pipeline
+	commandList->SetComputeRootSignature(emitParticlePipeline_->GetRootSignature());
+	commandList->SetPipelineState(emitParticlePipeline_->GetComputePipeline());
+
+	// particle
+	commandList->SetComputeRootDescriptorTable(0, particleBuffer_.GetUAVGPUHandle());
+	// freeCounter
+	commandList->SetComputeRootDescriptorTable(1, freeCounterBuffer_.GetUAVGPUHandle());
+	// emitterSphere
+	commandList->SetComputeRootConstantBufferView(2, emitterSphereBuffer_.GetResource()->GetGPUVirtualAddress());
+	// perFrame
+	commandList->SetComputeRootConstantBufferView(3, perFrameBuffer_.GetResource()->GetGPUVirtualAddress());
 
 	// 実行処理
 	commandList->Dispatch(1, 1, 1);
@@ -109,11 +151,32 @@ void ParticleManager::InitParticle(DxCommand* dxCommand) {
 		D3D12_RESOURCE_STATE_UNORDERED_ACCESS, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
 }
 
-void ParticleManager::Update() {
+void ParticleManager::Update(DxCommand* dxCommand) {
+
+	perFrame_.deltaTime = GameTimer::GetDeltaTime();
+	perFrame_.time += perFrame_.deltaTime;
 
 	// buffer転送
 	planeBuffer_.TransferData(planeInstances_);
 	materialBuffer_.TransferData(materialInstances_);
+	emitterSphereBuffer_.TransferData(emitterSphere_);
+	perFrameBuffer_.TransferData(perFrame_);
+
+	UpdateEmitter();
+	EmitParticle(dxCommand);
+}
+
+void ParticleManager::UpdateEmitter() {
+
+	emitterSphere_.frequencyTime += GameTimer::GetDeltaTime();
+	if (emitterSphere_.frequency <= emitterSphere_.frequencyTime) {
+
+		emitterSphere_.frequencyTime -= emitterSphere_.frequency;
+		emitterSphere_.emit = true;
+	} else {
+
+		emitterSphere_.emit = false;
+	}
 }
 
 void ParticleManager::Rendering(bool debugEnable,
@@ -140,6 +203,14 @@ void ParticleManager::Rendering(bool debugEnable,
 		commandList->SetGraphicsRootDescriptorTable(4, textureGPUHandle);
 		// 描画
 		commandList->DispatchMesh(kMaxInstanceCount_, 1, 1);
+	}
+
+	if (debugEnable) {
+
+		// バリア処理
+		// MeshShader -> ComputeShader
+		dxCommand->TransitionBarriers({ particleBuffer_.GetResource() },
+			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 	}
 }
 

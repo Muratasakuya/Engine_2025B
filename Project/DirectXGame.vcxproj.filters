@@ -808,6 +808,8 @@
     <FxCompile Include="Assets\Engine\Shaders\MS\NewEffectMesh.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\CS\Particle\InitParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Particle\VertexEffect.VS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\MS\EffectPlane.MS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\CS\Particle\EmitParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />
