@@ -8,7 +8,7 @@
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Particle/ParticleSystem.h>
-#include <Engine/GPUParticle/ParticleManager.h>
+#include <Engine/GPUEffect/Particle/Core/ParticleManager.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Config.h>
 

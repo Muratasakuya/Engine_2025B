@@ -569,13 +569,40 @@
     <ClCompile Include="Engine\Object\Core\ObjectPoolManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUParticle\ParticleManager.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\GPUParticle\GameEffect.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\GPUObject\IndexBuffer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Particle\Core\ParticleManager.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Particle\Core\ParticleRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Particle\ParticleEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Particle\Core\GPUParticleUpdater.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\EffectSystem.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Particle\Editor\ParticleEditor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Trail\Editor\TrailEffectEditor.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Trail\Core\TrailEffectRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Trail\Core\GPUTrailEffectUpdater.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\Trail\TrailEffect.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\GPUEffect\GameEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -782,43 +809,53 @@
     <ClInclude Include="Game\Objects\Enemy\Boss\Collision\BossEnemyAttackCollision.h" />
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraParryState.h" />
     <ClInclude Include="Game\Camera\Follow\State\States\FollowCameraParryAttackState.h" />
-    <ClInclude Include="Engine\GPUParticle\ParticleManager.h" />
-    <ClInclude Include="Engine\GPUParticle\Structures\ParticleShape.h" />
-    <ClInclude Include="Engine\GPUParticle\GameEffect.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxStructuredBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\VertexBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\IndexBuffer.h" />
+    <ClInclude Include="Engine\GPUEffect\Particle\Core\ParticleManager.h" />
+    <ClInclude Include="Engine\GPUEffect\Particle\Core\ParticleRenderer.h" />
+    <ClInclude Include="Engine\GPUEffect\Particle\ParticleEffect.h" />
+    <ClInclude Include="Engine\GPUEffect\Particle\Structures\ParticlePrimitiveStructures.h" />
+    <ClInclude Include="Engine\GPUEffect\Particle\Core\GPUParticleUpdater.h" />
+    <ClInclude Include="Engine\GPUEffect\Particle\Structures\ParticleEmitterStructures.h" />
+    <ClInclude Include="Engine\GPUEffect\EffectSystem.h" />
+    <ClInclude Include="Engine\GPUEffect\Particle\Editor\ParticleEditor.h" />
+    <ClInclude Include="Engine\GPUEffect\Trail\Editor\TrailEffectEditor.h" />
+    <ClInclude Include="Engine\GPUEffect\Trail\Structures\TrailEffectStructures.h" />
+    <ClInclude Include="Engine\GPUEffect\Trail\Core\TrailEffectRenderer.h" />
+    <ClInclude Include="Engine\GPUEffect\Trail\Core\GPUTrailEffectUpdater.h" />
+    <ClInclude Include="Engine\GPUEffect\Trail\TrailEffect.h" />
+    <ClInclude Include="Engine\GPUEffect\GameEffect.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.MS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\MS\Triangle.PS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\CopyTexture.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.VS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.PS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Bloom.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Skybox\Skybox.VS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Skybox\Skybox.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\PostProcess\Bloom\Bloom.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\CS\Object\Skinning.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_AnyHit.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_ClosestHit.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_Miss.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRay_RayGeneration.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\DXR\ShadowRayQuery.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\MS\MeshStandard.PS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\CS\PostProcess\Lut.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\MS\NewEffectMesh.PS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\CS\Particle\InitParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Standard\CS\Skinning.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Raytracing\ShadowRay_AnyHit.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Raytracing\ShadowRay_ClosestHit.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Raytracing\ShadowRay_Miss.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Raytracing\ShadowRay_RayGeneration.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Raytracing\ShadowRayQuery.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Standard\PS\MeshStandard.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\PostProcess\Lut\Lut.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\NewEffect\PS\NewEffectMesh.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\NewEffect\CS\InitParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Particle\VertexEffect.VS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\MS\EffectPlane.MS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\CS\Particle\EmitParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\CS\Particle\UpdateParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\NewEffect\Primitive\EffectPlane.MS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\NewEffect\CS\EmitParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\NewEffect\CS\UpdateParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\Engine\Shaders\MS\Triangle.hlsli" />
-    <None Include="Assets\Engine\Shaders\MS\StandardMSFunction.hlsli" />
-    <None Include="Assets\Engine\Shaders\MS\EffectMSFunction.hlsli" />
-    <None Include="Assets\Engine\Shaders\VS_PS\Object\Skybox.hlsli" />
-    <None Include="Assets\Engine\Shaders\DXR\ShadowRay.hlsli" />
-    <None Include="Assets\Engine\Shaders\MS\Dither.hlsli" />
-    <None Include="Assets\Engine\Shaders\MS\NewEffectMeshFunction.hlsli" />
+    <None Include="Assets\Engine\Shaders\Standard\StandardMSFunction.hlsli" />
+    <None Include="Assets\Engine\Shaders\OldEffect\EffectMSFunction.hlsli" />
+    <None Include="Assets\Engine\Shaders\Skybox\Skybox.hlsli" />
+    <None Include="Assets\Engine\Shaders\Raytracing\ShadowRay.hlsli" />
+    <None Include="Assets\Engine\Shaders\Standard\Dither.hlsli" />
+    <None Include="Assets\Engine\Shaders\NewEffect\NewEffectMeshFunction.hlsli" />
+    <None Include="Assets\Engine\Shaders\NewEffect\PrimitiveEffect.hlsli" />
+    <None Include="Assets\Engine\Shaders\Math\Math.hlsli" />
   </ItemGroup>
 </Project>
