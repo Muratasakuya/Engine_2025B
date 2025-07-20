@@ -89,7 +89,7 @@ private:
 	bool isStunUpdate_;
 
 	// editor
-	int editingStateIndex_;
+	PlayerState editingState_;
 
 	//--------- functions ----------------------------------------------------
 

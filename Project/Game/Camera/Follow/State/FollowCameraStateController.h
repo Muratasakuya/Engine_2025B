@@ -45,6 +45,9 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// jsonを保存するパス
+	const std::string kStateJsonPath_ = "FollowCamera/stateParameter.json";
+
 	// 入力
 	std::unique_ptr<FollowCameraInputMapper> inputMapper_;
 
@@ -58,8 +61,8 @@ private:
 	std::optional<FollowCameraOverlayState>  overlayState_;
 
 	// editor
-	int editingStateIndex_;
-	int editingOverlayStateIndex_;
+	FollowCameraState editingState_;
+	FollowCameraOverlayState editingOverlayState_;
 
 	//--------- functions ----------------------------------------------------
 

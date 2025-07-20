@@ -7,19 +7,11 @@
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Lib/Adapter/JsonAdapter.h>
+#include <Lib/Adapter/EnumAdapter.h>
 
 //============================================================================
 //	BossEnemy classMethods
 //============================================================================
-
-namespace {
-
-	// 各状態の名前
-	const char* kStateNames[] = {
-		"Idle","Teleport","Stun","Falter","LightAttack","StrongAttack",
-		"ChargeAttack","RushAttack",
-	};
-}
 
 void BossEnemy::InitWeapon() {
 
@@ -258,11 +250,9 @@ void BossEnemy::DerivedImGui() {
 
 	ImGui::SeparatorText("Damage");
 
-	ImGui::Combo("EditDamage", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
-
-	ImGui::SeparatorText(kStateNames[editingStateIndex_]);
-	BossEnemyState editingState = static_cast<BossEnemyState>(editingStateIndex_);
-	ImGui::DragInt("Damage", &stats_.damages[editingState], 1, 0);
+	EnumAdapter<BossEnemyState>::Combo("EditDamage", &editingState_);
+	ImGui::SeparatorText(EnumAdapter<BossEnemyState>::ToString(editingState_));
+	ImGui::DragInt("Damage", &stats_.damages[editingState_], 1, 0);
 	ImGui::DragInt("DamageRange", &stats_.damageRandomRange, 1, 0);
 
 	ImGui::SeparatorText("ReloadData");

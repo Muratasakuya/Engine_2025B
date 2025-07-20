@@ -7,6 +7,7 @@
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Lib/Adapter/JsonAdapter.h>
+#include <Lib/Adapter/EnumAdapter.h>
 
 // inputDevice
 #include <Game/Objects/Player/Input/Device/PlayerKeyInput.h>
@@ -28,18 +29,6 @@
 //============================================================================
 //	PlayerStateController classMethods
 //============================================================================
-
-namespace {
-
-	// 各状態の名前
-	const char* kStateNames[] = {
-		"None","Idle","Walk","Dash","Avoid","Attack_1st","Attack_2nd","Attack_3rd",
-		"SkilAttack","Parry","SwitchAlly","StunAttack",
-	};
-
-	// jsonを保存するパス
-	const std::string kStateJsonPath = "Player/stateParameter.json";
-}
 
 void PlayerStateController::Init(Player& owner) {
 
@@ -453,7 +442,7 @@ bool PlayerStateController::IsStunProcessing() const {
 void PlayerStateController::ImGui(const Player& owner) {
 
 	// tool
-	ImGui::Text("Current : %s", kStateNames[static_cast<int>(current_)]);
+	ImGui::Text("Current : %s", EnumAdapter<PlayerState>::ToString(current_));
 	ImGui::SameLine();
 	if (ImGui::Button("Save##StateJson")) {
 		SaveJson();
@@ -465,18 +454,19 @@ void PlayerStateController::ImGui(const Player& owner) {
 		// ---- Runtime -------------------------------------------------
 		if (ImGui::BeginTabItem("Runtime")) {
 			ImGui::Text("Enter Time   : %.2f", currentEnterTime_);
-			ImGui::Text("Queued State : %s",
-				queued_ ? kStateNames[static_cast<int>(*queued_)] : "None");
+			ImGui::Text("Queued State : %s", queued_ ? EnumAdapter<PlayerState>::ToString(*queued_) : "None");
 			ImGui::EndTabItem();
 		}
 
 		// ---- States --------------------------------------------------
 		if (ImGui::BeginTabItem("States")) {
 			ImGui::BeginChild("StateList", ImVec2(140, 0), true);
-			for (int i = 0; i < IM_ARRAYSIZE(kStateNames); ++i) {
-				bool selected = (editingStateIndex_ == i);
-				if (ImGui::Selectable(kStateNames[i], selected)) {
-					editingStateIndex_ = i;
+			for (uint32_t i = 0; i < EnumAdapter<PlayerState>::GetEnumCount(); ++i) {
+
+				bool selected = (editingStateIndex_ == static_cast<int>(i));
+				if (ImGui::Selectable(EnumAdapter<PlayerState>::GetEnumName(i), selected)) {
+
+					editingStateIndex_ = static_cast<int>(i);
 				}
 			}
 			ImGui::EndChild();
@@ -496,8 +486,8 @@ void PlayerStateController::ImGui(const Player& owner) {
 		if (ImGui::BeginTabItem("Conditions")) {
 			ImGui::Combo("Edit##cond-state",
 				&comboIndex_,
-				kStateNames,
-				IM_ARRAYSIZE(kStateNames));
+				EnumAdapter<PlayerState>::GetEnumArray().data(),
+				static_cast<int>(EnumAdapter<PlayerState>::GetEnumCount()));
 
 			PlayerState state = static_cast<PlayerState>(comboIndex_);
 			PlayerStateCondition& cond = conditions_[state];
@@ -512,12 +502,12 @@ void PlayerStateController::ImGui(const Player& owner) {
 				ImGui::TableSetupColumn("Interrupt");
 				ImGui::TableHeadersRow();
 
-				for (int i = 0; i < IM_ARRAYSIZE(kStateNames); ++i) {
+				for (int i = 0; i < EnumAdapter<PlayerState>::GetEnumCount(); ++i) {
 					PlayerState s = static_cast<PlayerState>(i);
 
 					ImGui::TableNextRow();
 					ImGui::TableNextColumn();
-					ImGui::TextUnformatted(kStateNames[i]);
+					ImGui::TextUnformatted(EnumAdapter<PlayerState>::GetEnumName(i));
 
 					// ---- Allowed 列 -------------------------------------------------
 					ImGui::TableNextColumn();
@@ -562,7 +552,7 @@ void PlayerStateController::ApplyJson() {
 	// state
 	{
 		Json data;
-		if (!JsonAdapter::LoadCheck(kStateJsonPath, data)) {
+		if (!JsonAdapter::LoadCheck(kStateJsonPath_, data)) {
 			return;
 		}
 
@@ -571,7 +561,7 @@ void PlayerStateController::ApplyJson() {
 				continue;
 			}
 
-			ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
+			ptr->ApplyJson(data[EnumAdapter<PlayerState>::ToString(state)]);
 		}
 
 		if (!data.contains("Conditions")) {
@@ -583,7 +573,7 @@ void PlayerStateController::ApplyJson() {
 				continue;
 			}
 
-			const char* key = kStateNames[static_cast<int>(state)];
+			const char* key = EnumAdapter<PlayerState>::ToString(state);
 			if (!condRoot.contains(key)) {
 				continue;
 			}
@@ -617,7 +607,7 @@ void PlayerStateController::SaveJson() {
 			continue;
 		}
 
-		ptr->SaveJson(data[kStateNames[static_cast<int>(state)]]);
+		ptr->SaveJson(data[EnumAdapter<PlayerState>::ToString(state)]);
 	}
 
 	Json& condRoot = data["Conditions"];
@@ -626,8 +616,8 @@ void PlayerStateController::SaveJson() {
 			continue;
 		}
 
-		cond.ToJson(condRoot[kStateNames[static_cast<int>(state)]]);
+		cond.ToJson(condRoot[EnumAdapter<PlayerState>::ToString(state)]);
 	}
 
-	JsonAdapter::Save(kStateJsonPath, data);
+	JsonAdapter::Save(kStateJsonPath_, data);
 }

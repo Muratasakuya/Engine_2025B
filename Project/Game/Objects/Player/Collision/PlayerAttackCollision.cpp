@@ -7,6 +7,7 @@
 #include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
+#include <Lib/Adapter/EnumAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // imgui
@@ -15,19 +16,6 @@
 //============================================================================
 //	PlayerAttackCollision classMethods
 //============================================================================
-
-namespace {
-
-	// 各状態の名前
-	const char* kStateNames[] = {
-		"None","Idle","Walk","Dash","Avoid","Attack_1st","Attack_2nd","Attack_3rd",
-		"SkilAttack","Parry","SwitchAlly","StunAttack",
-	};
-	const char* kCollisionNames[] = {
-		"None","Test","Player","PlayerWeapon","BossEnemy","BossWeapon",
-		"CrossMarkWall"
-	};
-}
 
 void PlayerAttackCollision::Init() {
 
@@ -117,11 +105,10 @@ void PlayerAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody)
 
 void PlayerAttackCollision::ImGui() {
 
-	ImGui::Text("currentType: %s", kCollisionNames[Collider::ToIndexType(weaponBody_->GetType())]);
+	ImGui::Text("currentType: %s", EnumAdapter<ColliderType>::ToString(weaponBody_->GetType()));
 
-	ImGui::Combo("State", &editingIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
-	PlayerState state = static_cast<PlayerState>(editingIndex_);
-	AttackParameter& parameter = table_[state];
+	EnumAdapter<PlayerState>::Combo("EditDamage", &editingState_);
+	AttackParameter& parameter = table_[editingState_];
 
 	ImGui::Separator();
 
@@ -169,7 +156,7 @@ void PlayerAttackCollision::SaveJson(Json& data) {
 			continue;
 		}
 
-		Json& value = data[kStateNames[static_cast<int>(state)]];
+		Json& value = data[EnumAdapter<PlayerState>::ToString(state)];
 		value["centerOffset"] = JsonAdapter::FromObject(parameter.centerOffset);
 		value["size"] = JsonAdapter::FromObject(parameter.size);
 		value["onTime"] = parameter.onTime;
@@ -181,7 +168,7 @@ void PlayerAttackCollision::SaveJson(Json& data) {
 PlayerState PlayerAttackCollision::GetPlayerStateFromName(const std::string& name) {
 
 	for (int i = 0; i < static_cast<int>(PlayerState::StunAttack) + 1; ++i) {
-		if (name == kStateNames[i]) {
+		if (name == EnumAdapter<PlayerState>::GetEnumName(i)) {
 
 			return static_cast<PlayerState>(i);
 		}

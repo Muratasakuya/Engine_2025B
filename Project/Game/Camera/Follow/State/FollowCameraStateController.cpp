@@ -6,6 +6,7 @@
 #include <Engine/Input/Input.h>
 #include <Game/Camera/Follow/FollowCamera.h>
 #include <Lib/Adapter/JsonAdapter.h>
+#include <Lib/Adapter/EnumAdapter.h>
 
 // inputDevice
 #include <Game/Camera/Follow/Input/Device/FollowCameraKeyInput.h>
@@ -26,20 +27,6 @@
 //============================================================================
 //	FollowCameraStateController classMethods
 //============================================================================
-
-namespace {
-
-	// 各状態の名前
-	const char* kStateNames[] = {
-		"Follow","SwitchAlly","AllyAttack","StunAttack"
-	};
-	const char* kOverlayStateNames[] = {
-		"Shake","Parry","ParryAttack"
-	};
-
-	// jsonを保存するパス
-	const std::string kStateJsonPath = "FollowCamera/stateParameter.json";
-}
 
 void FollowCameraStateController::Init(FollowCamera& owner) {
 
@@ -225,34 +212,33 @@ void FollowCameraStateController::ImGui(FollowCamera& owner) {
 	}
 
 	ImGui::SeparatorText("State");
-	ImGui::Combo("##StateCombo", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
-	states_[static_cast<FollowCameraState>(editingStateIndex_)]->ImGui(owner);
+	EnumAdapter<FollowCameraState>::Combo("##StateCombo", &editingState_);
+	states_[editingState_]->ImGui(owner);
 
 	ImGui::SeparatorText("OverlayState");
-	ImGui::Combo("##OverlayStateCombo", &editingOverlayStateIndex_, kOverlayStateNames, IM_ARRAYSIZE(kOverlayStateNames));
-	FollowCameraOverlayState overlayState = static_cast<FollowCameraOverlayState>(editingOverlayStateIndex_);
+	EnumAdapter<FollowCameraOverlayState>::Combo("##OverlayStateCombo", &editingOverlayState_);
 	ImGui::Text(std::format("overlayHasValue: {}", overlayState_.has_value()).c_str());
-	overlayStates_[overlayState]->ImGui(owner);
+	overlayStates_[editingOverlayState_]->ImGui(owner);
 	if (ImGui::Button("Apply OverlayState")) {
 
-		SetOverlayState(owner, overlayState);
+		SetOverlayState(owner, editingOverlayState_);
 	}
 }
 
 void FollowCameraStateController::ApplyJson() {
 
 	Json data;
-	if (!JsonAdapter::LoadCheck(kStateJsonPath, data)) {
+	if (!JsonAdapter::LoadCheck(kStateJsonPath_, data)) {
 		return;
 	}
 
 	for (const auto& [state, ptr] : states_) {
 
-		ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
+		ptr->ApplyJson(data[EnumAdapter<FollowCameraState>::ToString(state)]);
 	}
 	for (const auto& [state, ptr] : overlayStates_) {
 
-		ptr->ApplyJson(data[kOverlayStateNames[static_cast<int>(state)]]);
+		ptr->ApplyJson(data[EnumAdapter<FollowCameraOverlayState>::ToString(state)]);
 	}
 }
 
@@ -261,12 +247,12 @@ void FollowCameraStateController::SaveJson() {
 	Json data;
 	for (const auto& [state, ptr] : states_) {
 
-		ptr->SaveJson(data[kStateNames[static_cast<int>(state)]]);
+		ptr->SaveJson(data[EnumAdapter<FollowCameraState>::ToString(state)]);
 	}
 	for (const auto& [state, ptr] : overlayStates_) {
 
-		ptr->SaveJson(data[kOverlayStateNames[static_cast<int>(state)]]);
+		ptr->SaveJson(data[EnumAdapter<FollowCameraOverlayState>::ToString(state)]);
 	}
 
-	JsonAdapter::Save(kStateJsonPath, data);
+	JsonAdapter::Save(kStateJsonPath_, data);
 }

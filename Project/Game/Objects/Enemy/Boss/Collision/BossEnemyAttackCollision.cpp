@@ -6,6 +6,7 @@
 #include <Engine/Object/Data/Transform.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
+#include <Lib/Adapter/EnumAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // imgui
@@ -14,20 +15,6 @@
 //============================================================================
 //	BossEnemyAttackCollision classMethods
 //============================================================================
-
-namespace {
-
-	// 各状態の名前
-	const char* kStateNames[] = {
-		"Idle","Teleport","Stun","Falter","LightAttack","StrongAttack",
-		"ChargeAttack","RushAttack",
-	};
-
-	const char* kCollisionNames[] = {
-		"None","Test","Player","PlayerWeapon","BossEnemy","BossWeapon",
-		"CrossMarkWall"
-	};
-}
 
 void BossEnemyAttackCollision::Init() {
 
@@ -39,8 +26,6 @@ void BossEnemyAttackCollision::Init() {
 	// 最初は無効状態
 	weaponBody_->SetType(ColliderType::Type_None);
 	weaponBody_->SetTargetType(ColliderType::Type_Player);
-
-	editingIndex_ = static_cast<int>(BossEnemyState::Idle);
 
 	AttackParameter attackParameter{};
 	attackParameter.windows.emplace_back();
@@ -126,12 +111,11 @@ void BossEnemyAttackCollision::OnCollisionEnter(const CollisionBody* collisionBo
 
 void BossEnemyAttackCollision::ImGui() {
 
-	ImGui::Text("currentType: %s", kCollisionNames[Collider::ToIndexType(weaponBody_->GetType())]);
+	ImGui::Text("currentType: %s", EnumAdapter<ColliderType>::ToString(weaponBody_->GetType()));
 	ImGui::Text("currentTimer: %.3f", currentTimer_);
 
-	ImGui::Combo("State", &editingIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
-	BossEnemyState state = static_cast<BossEnemyState>(editingIndex_);
-	AttackParameter& parameter = table_[state];
+	EnumAdapter<BossEnemyState>::Combo("State", &editingState_);
+	AttackParameter& parameter = table_[editingState_];
 
 	ImGui::Separator();
 
@@ -186,7 +170,7 @@ void BossEnemyAttackCollision::SaveJson(Json& data) {
 
 	for (auto& [state, parameter] : table_) {
 
-		Json& value = data[kStateNames[static_cast<int>(state)]];
+		Json& value = data[EnumAdapter<BossEnemyState>::ToString(state)];
 		value["centerOffset"] = JsonAdapter::FromObject(parameter.centerOffset);
 		value["size"] = JsonAdapter::FromObject(parameter.size);
 
@@ -218,7 +202,7 @@ void BossEnemyAttackCollision::SaveJson(Json& data) {
 BossEnemyState BossEnemyAttackCollision::GetBossEnemyStateFromName(const std::string& name) {
 
 	for (int i = 0; i < static_cast<int>(BossEnemyState::RushAttack); ++i) {
-		if (name == kStateNames[i]) {
+		if (name == EnumAdapter<BossEnemyState>::GetEnumName(i)) {
 
 			return static_cast<BossEnemyState>(i);
 		}

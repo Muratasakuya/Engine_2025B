@@ -7,6 +7,7 @@
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 #include <Lib/Adapter/RandomGenerator.h>
 #include <Lib/Adapter/JsonAdapter.h>
+#include <Lib/Adapter/EnumAdapter.h>
 
 // state
 #include <Game/Objects/Enemy/Boss/State/States/BossEnemyIdleState.h>
@@ -21,21 +22,6 @@
 //============================================================================
 //	BossEnemyStateController classMethods
 //============================================================================
-
-namespace {
-
-	// 各状態の名前
-	const char* kStateNames[] = {
-		"Idle","Teleport","Stun","Falter","LightAttack","StrongAttack",
-		"ChargeAttack","RushAttack",
-	};
-	// テレポートの種類の名前
-	const char* kTeleportNames[] = { "Far","Near" };
-
-	// jsonを保存するパス
-	const std::string kStateJsonPath = "Enemy/Boss/stateParameter.json";
-	const std::string kStateTableJsonPath = "Enemy/Boss/stateTable.json";
-}
 
 void BossEnemyStateController::Init(BossEnemy& owner) {
 
@@ -341,10 +327,9 @@ void BossEnemyStateController::ImGui(const BossEnemy& bossEnemy) {
 	}
 
 	// 各stateの値を調整
-	ImGui::Combo("EditState", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
-	ImGui::SeparatorText(kStateNames[editingStateIndex_]);
-
-	if (const auto& state = states_[static_cast<BossEnemyState>(editingStateIndex_)].get()) {
+	EnumAdapter<BossEnemyState>::Combo("EditState", &editingState_);
+	ImGui::SeparatorText(EnumAdapter<BossEnemyState>::ToString(editingState_));
+	if (const auto& state = states_[editingState_].get()) {
 
 		state->ImGui(bossEnemy);
 	}
@@ -366,7 +351,7 @@ void BossEnemyStateController::EditStateTable() {
 	//--------------------------------------------------------------------
 
 	ImGui::Checkbox("disableTransitions", &disableTransitions_);
-	ImGui::Text("currentState: %s", kStateNames[static_cast<int>(current_)]);
+	ImGui::Text("currentState: %s", EnumAdapter<BossEnemyState>::GetEnumName(static_cast<uint32_t>(current_)));
 
 	if (ImGui::Button("SaveJson...stateParameter.json")) {
 
@@ -436,7 +421,7 @@ void BossEnemyStateController::EditStateTable() {
 
 				bool clicked = false;
 				DrawHighlighted(isCurrentState, kHighlight, [&] {
-					clicked = ImGui::Button(kStateNames[stateId], buttonSize); });
+					clicked = ImGui::Button(EnumAdapter<BossEnemyState>::GetEnumName(stateId), buttonSize); });
 				if (clicked) {
 
 					combo.sequence.erase(combo.sequence.begin() + seqIdx);
@@ -450,7 +435,7 @@ void BossEnemyStateController::EditStateTable() {
 
 						const int payload = static_cast<int>(seqIdx);
 						ImGui::SetDragDropPayload("SeqReorder", &payload, sizeof(int));
-						ImGui::Text("%s", kStateNames[stateId]);
+						ImGui::Text("%s", EnumAdapter<BossEnemyState>::GetEnumName(stateId));
 						ImGui::EndDragDropSource();
 					}
 					if (ImGui::BeginDragDropTarget()) {
@@ -491,11 +476,7 @@ void BossEnemyStateController::EditStateTable() {
 			ImGui::TableNextColumn();
 
 			ImGui::PushItemWidth(buttonSize.x);
-			int teleportIndex = (combo.teleportType == BossEnemyTeleportType::Far) ? 0 : 1;
-			if (ImGui::Combo("##TeleportType", &teleportIndex, kTeleportNames, IM_ARRAYSIZE(kTeleportNames))) {
-
-				combo.teleportType = (teleportIndex == 0) ? BossEnemyTeleportType::Far : BossEnemyTeleportType::Near;
-			}
+			EnumAdapter<BossEnemyTeleportType>::Combo("##TeleportType", &combo.teleportType);
 
 			ImGui::PopItemWidth();
 
@@ -506,9 +487,9 @@ void BossEnemyStateController::EditStateTable() {
 			{
 				ImGui::PushItemWidth(buttonSize.x);
 
-				static int selectedState = 0;
+				static BossEnemyState selectedState = BossEnemyState::Idle;
 				const std::string addLabel = "##" + std::to_string(comboIdx);
-				if (ImGui::Combo(addLabel.c_str(), &selectedState, kStateNames, IM_ARRAYSIZE(kStateNames))) {
+				if (EnumAdapter<BossEnemyState>::Combo(addLabel.c_str(), &selectedState)) {
 
 					const BossEnemyState newState = static_cast<BossEnemyState>(selectedState);
 					if (std::ranges::find(combo.sequence, newState) == combo.sequence.end()) {
@@ -658,10 +639,10 @@ void BossEnemyStateController::ApplyJson() {
 	// state
 	{
 		Json data;
-		if (JsonAdapter::LoadCheck(kStateJsonPath, data)) {
+		if (JsonAdapter::LoadCheck(kStateJsonPath_, data)) {
 			for (auto& [state, ptr] : states_) {
 
-				ptr->ApplyJson(data[kStateNames[static_cast<int>(state)]]);
+				ptr->ApplyJson(data[EnumAdapter<BossEnemyState>::ToString(state)]);
 			}
 		}
 	}
@@ -669,7 +650,7 @@ void BossEnemyStateController::ApplyJson() {
 	// tabel
 	{
 		Json data;
-		if (JsonAdapter::LoadCheck(kStateTableJsonPath, data)) {
+		if (JsonAdapter::LoadCheck(kStateTableJsonPath_, data)) {
 
 			stateTable_.FromJson(data);
 		} else {
@@ -708,10 +689,10 @@ void BossEnemyStateController::SaveJson() {
 		Json data;
 		for (auto& [state, ptr] : states_) {
 
-			ptr->SaveJson(data[kStateNames[static_cast<int>(state)]]);
+			ptr->SaveJson(data[EnumAdapter<BossEnemyState>::ToString(state)]);
 		}
 
-		JsonAdapter::Save(kStateJsonPath, data);
+		JsonAdapter::Save(kStateJsonPath_, data);
 	}
 
 	// table
@@ -719,6 +700,6 @@ void BossEnemyStateController::SaveJson() {
 		Json data;
 		stateTable_.ToJson(data);
 
-		JsonAdapter::Save(kStateTableJsonPath, data);
+		JsonAdapter::Save(kStateTableJsonPath_, data);
 	}
 }

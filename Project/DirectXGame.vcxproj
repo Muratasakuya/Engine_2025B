@@ -1412,6 +1412,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Engine\Utility\GameTimer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
+    <ClInclude Include="Lib\Adapter\EnumAdapter.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
     <ClInclude Include="Lib\Adapter\RandomGenerator.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h">

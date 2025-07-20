@@ -52,6 +52,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	const std::string kStateJsonPath_ = "Player/stateParameter.json";
+
 	// 入力
 	std::unique_ptr<PlayerInputMapper> inputMapper_;
 	// ステータス

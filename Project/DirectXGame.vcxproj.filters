@@ -827,6 +827,7 @@
     <ClInclude Include="Engine\GPUEffect\Trail\TrailEffect.h" />
     <ClInclude Include="Engine\GPUEffect\GameEffect.h" />
     <ClInclude Include="Engine\GPUEffect\Particle\ParticleConfig.h" />
+    <ClInclude Include="Lib\Adapter\EnumAdapter.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

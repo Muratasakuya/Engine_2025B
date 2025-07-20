@@ -6,20 +6,11 @@
 #include <Engine/Particle/ParticleSystem.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 #include <Lib/Adapter/RandomGenerator.h>
+#include <Lib/Adapter/EnumAdapter.h>
 
 //============================================================================
 //	Player classMethods
 //============================================================================
-
-namespace {
-
-	// 各状態の名前
-	const char* kStateNames[] = {
-		"None","Idle","Walk","Dash","Avoid","Attack_1st","Attack_2nd","Attack_3rd",
-		"SkilAttack","Parry","SwitchAlly","StunAttack",
-	};
-}
-
 
 void Player::InitWeapon() {
 
@@ -301,11 +292,10 @@ void Player::DerivedImGui() {
 			ImGui::DragInt("Cur SP", &stats_.currentSkilPoint, 1, 0, stats_.maxSkilPoint);
 
 			// 各stateダメージの値を調整
-			ImGui::Combo("EditDamage", &editingStateIndex_, kStateNames, IM_ARRAYSIZE(kStateNames));
+			EnumAdapter<PlayerState>::Combo("EditDamage", &editingState_);
 
-			ImGui::SeparatorText(kStateNames[editingStateIndex_]);
-			PlayerState editingState = static_cast<PlayerState>(editingStateIndex_);
-			ImGui::DragInt("Damage", &stats_.damages[editingState], 1, 0);
+			ImGui::SeparatorText(EnumAdapter<PlayerState>::ToString(editingState_));
+			ImGui::DragInt("Damage", &stats_.damages[editingState_], 1, 0);
 			ImGui::DragInt("DamageRange", &stats_.damageRandomRange, 1, 0);
 			ImGui::DragInt("toughness", &stats_.toughness, 1, 0);
 

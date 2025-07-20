@@ -63,7 +63,7 @@ private:
 	float reHitTimer_;   // 多段ヒット経過時間
 
 	// editor
-	int editingIndex_;
+	PlayerState editingState_;
 
 	//--------- functions ----------------------------------------------------
 

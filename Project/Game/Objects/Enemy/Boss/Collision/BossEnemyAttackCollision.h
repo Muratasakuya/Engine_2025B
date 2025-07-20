@@ -73,7 +73,7 @@ private:
 	float currentTimer_; // 現在の経過時間、全部共通
 
 	// editor
-	int editingIndex_;
+	BossEnemyState editingState_;
 
 	//--------- functions ----------------------------------------------------
 

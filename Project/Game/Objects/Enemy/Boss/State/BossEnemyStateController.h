@@ -51,6 +51,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+		// jsonを保存するパス
+	const std::string kStateJsonPath_ = "Enemy/Boss/stateParameter.json";
+	const std::string kStateTableJsonPath_ = "Enemy/Boss/stateTable.json";
+
 	// ステータス
 	BossEnemyStats stats_;
 	// 状態デーブル
@@ -73,7 +77,7 @@ private:
 	std::optional<BossEnemyState> forcedState_; // 状態の強制遷移
 
 	// editor
-	int editingStateIndex_;
+	BossEnemyState editingState_;
 	const ImVec4 kHighlight = ImVec4(1.0f, 0.85f, 0.2f, 1.0f);
 	bool disableTransitions_;
 

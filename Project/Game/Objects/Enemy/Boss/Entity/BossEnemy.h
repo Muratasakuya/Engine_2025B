@@ -85,7 +85,7 @@ private:
 
 	// editor
 	int selectedPhaseIndex_;
-	int editingStateIndex_;
+	BossEnemyState editingState_;
 
 	//--------- functions ----------------------------------------------------
 
