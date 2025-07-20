@@ -841,12 +841,12 @@
     <FxCompile Include="Assets\Engine\Shaders\Raytracing\ShadowRayQuery.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Standard\PS\MeshStandard.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Lut\Lut.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\NewEffect\PS\NewEffectMesh.PS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\NewEffect\CS\InitParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\PS\Particle.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\InitParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Particle\VertexEffect.VS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\NewEffect\Primitive\EffectPlane.MS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\NewEffect\CS\EmitParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\NewEffect\CS\UpdateParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\Primitive\PlaneParticle.MS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\EmitParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\UpdateParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\Standard\StandardMSFunction.hlsli" />
@@ -854,8 +854,11 @@
     <None Include="Assets\Engine\Shaders\Skybox\Skybox.hlsli" />
     <None Include="Assets\Engine\Shaders\Raytracing\ShadowRay.hlsli" />
     <None Include="Assets\Engine\Shaders\Standard\Dither.hlsli" />
-    <None Include="Assets\Engine\Shaders\NewEffect\NewEffectMeshFunction.hlsli" />
-    <None Include="Assets\Engine\Shaders\NewEffect\PrimitiveEffect.hlsli" />
     <None Include="Assets\Engine\Shaders\Math\Math.hlsli" />
+    <None Include="Assets\Engine\Shaders\Particle\ParticleConfig.hlsli" />
+    <None Include="Assets\Engine\Shaders\Particle\ParticleCommonSturctures.hlsli" />
+    <None Include="Assets\Engine\Shaders\Particle\ParticleEmitterStructures.hlsli" />
+    <None Include="Assets\Engine\Shaders\Particle\ParticleOutput.hlsli" />
+    <None Include="Assets\Engine\Shaders\Particle\ParticlePerView.hlsli" />
   </ItemGroup>
 </Project>

@@ -2,10 +2,19 @@
 //	include
 //============================================================================
 
-#include "PrimitiveEffect.hlsli"
+#include "../ParticleOutput.hlsli"
 
 //============================================================================
-//	structure
+//	Output
+//============================================================================
+
+struct PSOutput {
+	
+	float4 color : SV_TARGET0;
+};
+
+//============================================================================
+//	StructuredBuffer
 //============================================================================
 
 struct Material {
@@ -13,10 +22,6 @@ struct Material {
 	// color
 	float4 color;
 };
-
-//============================================================================
-//	buffer
-//============================================================================
 
 StructuredBuffer<Material> gMaterials : register(t0);
 
@@ -26,3 +31,25 @@ StructuredBuffer<Material> gMaterials : register(t0);
 
 Texture2D<float4> gTexture : register(t1);
 SamplerState gSampler : register(s0);
+
+//============================================================================
+//	Main
+//============================================================================
+PSOutput main(MSOutput input) {
+	
+	PSOutput output;
+	
+	// instanceIdÅApixelÇ≤Ç∆ÇÃèàóù
+	uint id = input.instanceID;
+	Material material = gMaterials[id];
+	
+	// uv
+	float4 textureColor = gTexture.Sample(gSampler, input.texcoord);
+	
+	// êF
+	output.color.rgb = material.color.rgb * textureColor.rgb;
+	// Éøíl
+	output.color.a = material.color.a * textureColor.a;
+	
+	return output;
+}

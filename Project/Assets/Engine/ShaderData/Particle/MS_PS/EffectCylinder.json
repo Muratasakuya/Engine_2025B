@@ -3,8 +3,8 @@
     "ShaderPass":[
         {
             "Type": "Graphics",
-            "MeshShader": "EffectPlane.MS.hlsl",
-            "PixelShader": "NewEffectMesh.PS.hlsl"
+            "MeshShader": "CylinderParticle.MS.hlsl",
+            "PixelShader": "Particle.PS.hlsl"
         }
     ],
     "RootParameter": [
@@ -19,7 +19,7 @@
     ],
     "Rasterizer":[
         {
-            "CullMode": "BACK",
+            "CullMode": "NONE",
             "FillMode": "SOLID",
             "DepthClipEnable": "FALSE",
             "AntialiasedLineEnable": "FALSE"

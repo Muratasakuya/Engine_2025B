@@ -2,7 +2,11 @@
 //	include
 //============================================================================
 
-#include "EffectMesh.hlsli"
+#include "../ParticleOutput.hlsli"
+#include "../ParticleCommonSturctures.hlsli"
+#include "../ParticlePerView.hlsli"
+
+#include "../../Math/Math.hlsli"
 
 //============================================================================
 // Constant
@@ -14,16 +18,12 @@
 
 static const uint RING_MAX_VERTS = RING_MAX_DIVIDE * 4;
 static const uint RING_MAX_TRIS = RING_MAX_DIVIDE * 2;
-static const float PI = 3.141592653589793f;
 
 //============================================================================
 //	CBuffer
 //============================================================================
 
-cbuffer CameraData : register(b0) {
-	
-	float4x4 viewProjection;
-};
+ConstantBuffer<PerView> gPerView : register(b0);
 
 //============================================================================
 //	StructuredBuffer
@@ -34,9 +34,10 @@ struct Ring {
 	float outerRadius;
 	float innerRadius;
 	uint divide;
-	float4x4 world;
 };
+
 StructuredBuffer<Ring> gRings : register(t0);
+StructuredBuffer<Particle> gParticles : register(t1);
 
 //============================================================================
 //	Main
@@ -48,20 +49,28 @@ out vertices MSOutput verts[RING_MAX_VERTS], out indices uint3 polys[RING_MAX_TR
 	
 	// dispatchMeshでの1次元グループID
 	uint instanceIndex = groupId;
-	Ring instance = gRings[instanceIndex];
+	Ring ring = gRings[instanceIndex];
+	Particle particle = gParticles[instanceIndex];
 	
 	// 下限、上限を超えないようにする
-	uint divide = max(3, min(instance.divide, (uint) RING_MAX_DIVIDE));
+	uint divide = max(3, min(ring.divide, (uint) RING_MAX_DIVIDE));
 	
 	// 頂点数、出力三角形数
 	uint vertexCount = divide * 4;
 	uint primitiveCount = divide * 2;
 	SetMeshOutputCounts(vertexCount, primitiveCount);
 	
+	// world行列を作成
+	float4x4 worldMatrix = gPerView.billboardMatrix;
+	worldMatrix[0] *= particle.scale.x;
+	worldMatrix[1] *= particle.scale.y;
+	worldMatrix[2] *= particle.scale.z;
+	worldMatrix[3].xyz = particle.translation;
+
 	// 行列計算
-	float4x4 wvp = mul(instance.world, viewProjection);
+	float4x4 wvp = mul(worldMatrix, gPerView.viewProjection);
 	 // 角度ステップ
-	float angleStep = PI * 2.0f / (float) divide;
+	float angleStep = PI2 / (float) divide;
 	
 	// ringを生成
 	[loop]
@@ -78,10 +87,10 @@ out vertices MSOutput verts[RING_MAX_VERTS], out indices uint3 polys[RING_MAX_TR
 
 		// ローカル位置、XY平面、+Z向き面
 		// 4頂点順序: outer0, outer1, inner0, inner1
-		float3 p0 = float3(s0 * instance.outerRadius, c0 * instance.outerRadius, 0.0f);
-		float3 p1 = float3(s1 * instance.outerRadius, c1 * instance.outerRadius, 0.0f);
-		float3 p2 = float3(s0 * instance.innerRadius, c0 * instance.innerRadius, 0.0f);
-		float3 p3 = float3(s1 * instance.innerRadius, c1 * instance.innerRadius, 0.0f);
+		float3 p0 = float3(s0 * ring.outerRadius, c0 * ring.outerRadius, 0.0f);
+		float3 p1 = float3(s1 * ring.outerRadius, c1 * ring.outerRadius, 0.0f);
+		float3 p2 = float3(s0 * ring.innerRadius, c0 * ring.innerRadius, 0.0f);
+		float3 p3 = float3(s1 * ring.innerRadius, c1 * ring.innerRadius, 0.0f);
 
 		// U: 座標は角度に比例
 		float u0 = (float) i / (float) divide;
@@ -104,7 +113,6 @@ out vertices MSOutput verts[RING_MAX_VERTS], out indices uint3 polys[RING_MAX_TR
 
 		// 頂点出力
 		MSOutput vertex;
-		vertex.instanceID = instanceIndex;
 
 		vertex.position = pos0;
 		vertex.texcoord = uv0;
@@ -118,6 +126,9 @@ out vertices MSOutput verts[RING_MAX_VERTS], out indices uint3 polys[RING_MAX_TR
 		vertex.position = pos3;
 		vertex.texcoord = uv3;
 		verts[vBase + 3] = vertex;
+		
+		vertex.instanceID = instanceIndex;
+		vertex.vertexColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		// 面
 		// outer0, outer1, inner0

@@ -2,17 +2,15 @@
 //	include
 //============================================================================
 
-#include "../PrimitiveEffect.hlsli"
+#include "../ParticleOutput.hlsli"
+#include "../ParticleCommonSturctures.hlsli"
+#include "../ParticlePerView.hlsli"
 
 //============================================================================
 //	CBuffer
 //============================================================================
 
-cbuffer PerView : register(b0) {
-	
-	float4x4 viewProjection;
-	float4x4 billboardMatrix;
-};
+ConstantBuffer<PerView> gPerView : register(b0);
 
 //============================================================================
 //	StructuredBuffer
@@ -21,15 +19,6 @@ cbuffer PerView : register(b0) {
 struct Plane {
 	
 	float2 size;
-};
-
-struct Particle {
-	
-	float3 translation;
-	float3 scale;
-	float lifeTime;
-	float currentTime;
-	float3 velocity;
 };
 
 StructuredBuffer<Plane> gPlanes : register(t0);
@@ -95,22 +84,22 @@ out vertices MSOutput verts[4], out indices uint3 polys[2]) {
 		}
 		
 		// world行列を作成
-		float4x4 worldMatrix = billboardMatrix;
+		float4x4 worldMatrix = gPerView.billboardMatrix;
 		worldMatrix[0] *= particle.scale.x;
 		worldMatrix[1] *= particle.scale.y;
 		worldMatrix[2] *= particle.scale.z;
 		worldMatrix[3].xyz = particle.translation;
 
 		// 行列計算
-		float4x4 wvp = mul(worldMatrix, viewProjection);
+		float4x4 wvp = mul(worldMatrix, gPerView.viewProjection);
 		float4 pos = mul(float4(localPos, 1.0f), wvp);
 
 		// 頂点情報を設定
 		MSOutput vertex;
 		vertex.position = pos;
 		vertex.texcoord = uv;
+
 		vertex.instanceID = instanceIndex;
-		
 		vertex.vertexColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		verts[groupThreadId] = vertex;

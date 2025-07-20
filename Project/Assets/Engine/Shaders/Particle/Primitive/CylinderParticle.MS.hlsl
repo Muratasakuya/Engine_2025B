@@ -2,7 +2,11 @@
 //	include
 //============================================================================
 
-#include "EffectMesh.hlsli"
+#include "../ParticleOutput.hlsli"
+#include "../ParticleCommonSturctures.hlsli"
+#include "../ParticlePerView.hlsli"
+
+#include "../../Math/Math.hlsli"
 
 //============================================================================
 // Constant
@@ -14,16 +18,12 @@
 
 static const uint CYL_MAX_VERTS = (CYL_MAX_DIVIDE + 1) * 2;
 static const uint CYL_MAX_TRIS = CYL_MAX_DIVIDE * 2;
-static const float PI = 3.141592653589793f;
 
 //============================================================================
 //	CBuffer
 //============================================================================
 
-cbuffer CameraData : register(b0) {
-	
-	float4x4 viewProjection;
-};
+ConstantBuffer<PerView> gPerView : register(b0);
 
 //============================================================================
 //	StructuredBuffer
@@ -35,9 +35,9 @@ struct Cylinder {
 	float bottomRadius;
 	float height;
 	uint divide;
-	float4x4 world;
 };
 StructuredBuffer<Cylinder> gCylinders : register(t0);
+StructuredBuffer<Particle> gParticles : register(t1);
 
 //============================================================================
 //	Main
@@ -49,16 +49,24 @@ out vertices MSOutput verts[CYL_MAX_VERTS], out indices uint3 polys[CYL_MAX_TRIS
 	
 	// dispatchMeshでの1次元グループID
 	uint instanceIndex = groupId;
-	Cylinder instance = gCylinders[instanceIndex];
+	Cylinder cylinder = gCylinders[instanceIndex];
+	Particle particle = gParticles[instanceIndex];
 	
 	// 下限、上限を超えないようにする
-	uint divide = clamp(instance.divide, 3, (uint) CYL_MAX_DIVIDE);
+	uint divide = clamp(cylinder.divide, 3, (uint) CYL_MAX_DIVIDE);
 	SetMeshOutputCounts((divide + 1) * 2, divide * 2);
 	
+	// world行列を作成
+	float4x4 worldMatrix = gPerView.billboardMatrix;
+	worldMatrix[0] *= particle.scale.x;
+	worldMatrix[1] *= particle.scale.y;
+	worldMatrix[2] *= particle.scale.z;
+	worldMatrix[3].xyz = particle.translation;
+
 	// 行列計算
-	float4x4 wvp = mul(instance.world, viewProjection);
+	float4x4 wvp = mul(worldMatrix, gPerView.viewProjection);
 	// 角度ステップ
-	float angleStep = PI * 2.0f / (float) divide;
+	float angleStep = PI2 / (float) divide;
 	
 	// cylinderを生成
 	// 頂点
@@ -69,8 +77,8 @@ out vertices MSOutput verts[CYL_MAX_VERTS], out indices uint3 polys[CYL_MAX_TRIS
 		float s = sin(a);
 		float c0 = cos(a);
 
-		float3 pTop = float3(s * instance.topRadius, instance.height, c0 * instance.topRadius);
-		float3 pBot = float3(s * instance.bottomRadius, 0.0f, c0 * instance.bottomRadius);
+		float3 pTop = float3(s * cylinder.topRadius, cylinder.height, c0 * cylinder.topRadius);
+		float3 pBot = float3(s * cylinder.bottomRadius, 0.0f, c0 * cylinder.bottomRadius);
 
 		float u = (float) i / (float) divide;
 
