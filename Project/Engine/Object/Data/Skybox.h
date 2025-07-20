@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/VertexBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/IndexBuffer.h>
 #include <Engine/Object/Data/Transform.h>
 #include <Engine/Object/Data/Material.h>
 #include <Lib/MathUtils/MathUtils.h>
@@ -46,8 +48,8 @@ public:
 	uint32_t GetTextureIndex() const { return material_.textureIndex; }
 
 	// buffers
-	const DxConstBuffer<Vector4>& GetVertexBuffer() const { return vertexBuffer_; }
-	const DxConstBuffer<uint32_t>& GetIndexBuffer() const { return indexBuffer_; }
+	const VertexBuffer<Vector4>& GetVertexBuffer() const { return vertexBuffer_; }
+	const IndexBuffer& GetIndexBuffer() const { return indexBuffer_; }
 
 	const DxConstBuffer<Matrix4x4>& GetMatrixBuffer() const { return matrixBuffer_; }
 	const DxConstBuffer<SkyboxMaterial>& GetMaterialBuffer() const { return materialBuffer_; }
@@ -59,9 +61,9 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// 頂点buffer
-	DxConstBuffer<Vector4> vertexBuffer_;
+	VertexBuffer<Vector4> vertexBuffer_;
 	// 頂点インデックスbuffer
-	DxConstBuffer<uint32_t> indexBuffer_;
+	IndexBuffer indexBuffer_;
 	uint32_t indexCount_;
 
 	BaseTransform transform_;

@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/DxStructuredBuffer.h>
 #include <Engine/Object/Data/Transform.h>
 #include <Engine/Object/Data/Material.h>
 #include <Engine/Object/Data/Animation.h>
@@ -34,13 +35,13 @@ struct MeshInstancingData {
 	std::vector<std::vector<WellForGPU>> wellUploadData;
 
 	// buffer
-	DxConstBuffer<TransformationMatrix> matrixBuffer;
-	std::vector<DxConstBuffer<MaterialForGPU>> materialsBuffer;
-	std::vector<DxConstBuffer<LightingForGPU>> lightingBuffer;
+	DxStructuredBuffer<TransformationMatrix> matrixBuffer;
+	std::vector<DxStructuredBuffer<MaterialForGPU>> materialsBuffer;
+	std::vector<DxStructuredBuffer<LightingForGPU>> lightingBuffer;
 	// skinnedMesh専用buffer
-	std::vector<DxConstBuffer<WellForGPU>> wells;
-	std::vector<DxConstBuffer<VertexInfluence>> influences;
 	std::vector<DxConstBuffer<SkinningInformation>> skinningInformations;
+	std::vector<DxStructuredBuffer<WellForGPU>> wells;
+	std::vector<DxStructuredBuffer<VertexInfluence>> influences;
 	// mesh情報
 	IMesh* skinnedMesh;
 	std::vector<UINT> vertexSizes;

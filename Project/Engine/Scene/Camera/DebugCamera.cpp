@@ -44,7 +44,7 @@ void DebugCamera::Update() {
 
 	// 行列更新
 	rotateMatrix_ = Matrix4x4::MakeRotateMatrix(eulerRotation_);
-	transform_.matrix.world = Matrix4x4::MakeIdobject4x4();
+	transform_.matrix.world = Matrix4x4::MakeIdentity4x4();
 
 	Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(transform_.translation);
 	Matrix4x4 scaleMatrix = Matrix4x4::MakeScaleMatrix(Vector3::AnyInit(1.0f));

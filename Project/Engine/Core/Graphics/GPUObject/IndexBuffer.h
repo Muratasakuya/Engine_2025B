@@ -3,29 +3,33 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Asset/AssetStructure.h>
-#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/Lib/DxUtils.h>
+
+// c++
+#include <vector>
+#include <cassert>
 
 //============================================================================
-//	IOVertexBuffer class
+//	IndexBuffer class
 //============================================================================
-class IOVertexBuffer :
-	public DxConstBuffer<MeshVertex> {
+class IndexBuffer {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	IOVertexBuffer() = default;
-	~IOVertexBuffer() = default;
+	IndexBuffer() = default;
+	virtual ~IndexBuffer() = default;
 
-	void Init(UINT vertexNum, ID3D12Resource* vertexResource,
-		ID3D12Device* device, class SRVDescriptor* srvDescriptor);
+	void CreateBuffer(ID3D12Device* device, UINT indexCount);
+
+	void TransferData(const std::vector<uint32_t>& data);
 
 	//--------- accessor -----------------------------------------------------
 
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetInputGPUHandle() const { return inputVertex_.srvHandle.second; }
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetOutputGPUHandle() const { return outputVertex_.uavHandle.second;}
+	const D3D12_INDEX_BUFFER_VIEW& GetIndexBufferView() const { return indexBufferView_; }
+
+	ID3D12Resource* GetResource() const { return resource_.Get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -33,6 +37,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	InputMeshVertex inputVertex_;
-	OutputMeshVertex outputVertex_;
+	ComPtr<ID3D12Resource> resource_;
+	uint32_t* mappedData_ = nullptr;
+
+	D3D12_INDEX_BUFFER_VIEW indexBufferView_;
 };

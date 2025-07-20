@@ -36,6 +36,7 @@ void GameScene::Load() {
 	asset_->LoadTexture("noise");
 	asset_->LoadTexture("noise1");
 	asset_->LoadTexture("noise2");
+	asset_->LoadTexture("uvChecker");
 
 	asset_->LoadModel("billboardPlane");
 	asset_->LoadModel("billboardHorizontalPlane");

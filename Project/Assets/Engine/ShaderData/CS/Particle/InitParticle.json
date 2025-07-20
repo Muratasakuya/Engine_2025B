@@ -1,0 +1,13 @@
+{
+    "ShaderPass":[
+        {
+            "Type": "Compute",
+            "ComputeShader": "InitParticle.CS.hlsl"
+        }
+    ],
+    "RootParameter": [
+        { "RootIndex": 0, "Type": "TABLE", "Visibility": "COMPUTE","DescriptorRange": { "Type": "UAV", "BaseShaderRegister": 0 } },
+        { "RootIndex": 1, "Type": "TABLE", "Visibility": "COMPUTE","DescriptorRange": { "Type": "UAV", "BaseShaderRegister": 1 } },
+        { "RootIndex": 2, "Type": "TABLE", "Visibility": "COMPUTE","DescriptorRange": { "Type": "UAV", "BaseShaderRegister": 2 } }
+    ]
+}

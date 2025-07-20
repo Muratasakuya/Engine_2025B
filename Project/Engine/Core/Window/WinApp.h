@@ -42,8 +42,6 @@ private:
 	UINT windowStyle_;
 	RECT windowRect_;
 
-	bool isFullscreen_;
-
 	//--------- functions ----------------------------------------------------
 
 	static LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam);

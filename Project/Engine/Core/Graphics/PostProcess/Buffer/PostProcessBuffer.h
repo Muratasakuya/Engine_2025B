@@ -85,7 +85,7 @@ inline void PostProcessBuffer<T>::Init(ID3D12Device* device, UINT rootIndex) {
 
 	rootIndex_ = rootIndex;
 
-	DxConstBuffer<T>::CreateConstBuffer(device);
+	DxConstBuffer<T>::CreateBuffer(device);
 }
 
 template<typename T>

@@ -40,8 +40,8 @@ void SkyboxRenderSystem::Render(ID3D12GraphicsCommandList* commandList) {
 
 	// buffer設定
 	// vertex
-	commandList->IASetVertexBuffers(0, 1, &data_->GetVertexBuffer().GetVertexBuffer());
-	commandList->IASetIndexBuffer(&data_->GetIndexBuffer().GetIndexBuffer());
+	commandList->IASetVertexBuffers(0, 1, &data_->GetVertexBuffer().GetVertexBufferView());
+	commandList->IASetIndexBuffer(&data_->GetIndexBuffer().GetIndexBufferView());
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 	// matrix
 	commandList->SetGraphicsRootConstantBufferView(0, data_->GetMatrixBuffer().GetResource()->GetGPUVirtualAddress());

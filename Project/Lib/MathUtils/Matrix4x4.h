@@ -42,7 +42,7 @@ public:
 
 	static Matrix4x4 Transpose(const Matrix4x4& m);
 
-	static Matrix4x4 MakeIdobject4x4();
+	static Matrix4x4 MakeIdentity4x4();
 
 	static Matrix4x4 MakeScaleMatrix(const Vector3& scale);
 

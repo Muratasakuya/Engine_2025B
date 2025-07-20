@@ -10,6 +10,7 @@
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
+#include <Engine/GPUParticle/ParticleManager.h>
 #include <Engine/Config.h>
 #include <Engine/Utility/GameTimer.h>
 
@@ -94,11 +95,18 @@ Framework::Framework() {
 	// fullScreen設定
 	winApp_->SetFullscreen(fullscreenEnable_);
 
+	// srvDescriptorHeap設定、最初のみ設定
+	dxCommand->SetDescriptorHeaps({ srvDescriptor->GetDescriptorHeap() });
+
 	//------------------------------------------------------------------------
 	// particle機能初期化
 
 	ParticleSystem::GetInstance()->Init(asset_.get(), device,
 		srvDescriptor, shaderCompiler, sceneView_.get());
+
+	ParticleManager::GetInstance()->Init(asset_.get(), device,
+		srvDescriptor, shaderCompiler, sceneView_.get());
+	ParticleManager::GetInstance()->InitParticle(dxCommand);
 
 	//------------------------------------------------------------------------
 	// object機能初期化
@@ -165,6 +173,7 @@ void Framework::UpdateScene() {
 	ObjectManager::GetInstance()->UpdateData();
 	// particle更新
 	ParticleSystem::GetInstance()->Update();
+	ParticleManager::GetInstance()->Update(graphicsPlatform_->GetDxCommand());
 	// collision更新
 	CollisionManager::GetInstance()->Update();
 }
@@ -258,6 +267,7 @@ void Framework::Finalize() {
 	sceneManager_.reset();
 
 	ParticleSystem::GetInstance()->Finalize();
+	ParticleManager::GetInstance()->Finalize();
 	ObjectManager::GetInstance()->Finalize();
 
 	winApp_.reset();

@@ -31,7 +31,7 @@ void InstancedMeshBuffer::CreateBuffers(const std::string& name) {
 
 	// transform
 	// buffer作成
-	meshGroup.matrixBuffer.CreateStructuredBuffer(device_, meshGroup.maxInstance);
+	meshGroup.matrixBuffer.CreateSRVBuffer(device_, meshGroup.maxInstance);
 
 	// material、lighting
 	// meshの数だけ作成する
@@ -44,8 +44,8 @@ void InstancedMeshBuffer::CreateBuffers(const std::string& name) {
 	for (uint32_t meshIndex = 0; meshIndex < meshNum; ++meshIndex) {
 
 		// buffer作成
-		meshGroup.materialsBuffer[meshIndex].CreateStructuredBuffer(device_, meshGroup.maxInstance);
-		meshGroup.lightingBuffer[meshIndex].CreateStructuredBuffer(device_, meshGroup.maxInstance);
+		meshGroup.materialsBuffer[meshIndex].CreateSRVBuffer(device_, meshGroup.maxInstance);
+		meshGroup.lightingBuffer[meshIndex].CreateSRVBuffer(device_, meshGroup.maxInstance);
 	}
 
 	// skinnedMeshなら専用bufferを作成する
@@ -81,15 +81,15 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 		meshGroup.vertexSizes.emplace_back(vertexSize);
 
 		// information
-		meshGroup.skinningInformations[meshIndex].CreateConstBuffer(device_);
+		meshGroup.skinningInformations[meshIndex].CreateBuffer(device_);
 
 		// well
 		// buffer作成
-		meshGroup.wells[meshIndex].CreateStructuredBuffer(device_, meshGroup.maxInstance * boneSize);
+		meshGroup.wells[meshIndex].CreateSRVBuffer(device_, meshGroup.maxInstance * boneSize);
 
 		// influence
 		// buffer作成
-		meshGroup.influences[meshIndex].CreateStructuredBuffer(device_, vertexSize);
+		meshGroup.influences[meshIndex].CreateSRVBuffer(device_, vertexSize);
 		// 0埋めしてweightを0にしておく
 		std::vector<VertexInfluence> influence(vertexSize, {});
 
@@ -132,7 +132,7 @@ void InstancedMeshBuffer::CreateSkinnedMeshBuffers(const std::string& name) {
 		}
 
 		// これ以上更新する予定がないので転送
-		meshGroup.influences[meshIndex].TransferVectorData(influence);
+		meshGroup.influences[meshIndex].TransferData(influence);
 		meshGroups_[name].skinningInformations[meshIndex].TransferData({
 			.numVertices = meshGroups_[name].vertexSizes[meshIndex],
 			.numBones = meshGroups_[name].boneSize });
@@ -228,16 +228,16 @@ void InstancedMeshBuffer::Update(DxCommand* dxCommand) {
 		}
 
 		// buffer転送
-		meshGroup.matrixBuffer.TransferVectorData(meshGroup.matrixUploadData);
+		meshGroup.matrixBuffer.TransferData(meshGroup.matrixUploadData);
 		for (uint32_t meshIndex = 0; meshIndex < meshGroup.meshNum; ++meshIndex) {
 
-			meshGroup.materialsBuffer[meshIndex].TransferVectorData(meshGroup.materialUploadData[meshIndex]);
-			meshGroup.lightingBuffer[meshIndex].TransferVectorData(meshGroup.lightingUploadData[meshIndex]);
+			meshGroup.materialsBuffer[meshIndex].TransferData(meshGroup.materialUploadData[meshIndex]);
+			meshGroup.lightingBuffer[meshIndex].TransferData(meshGroup.lightingUploadData[meshIndex]);
 
 			// skinnedMeshなら設定する
 			if (meshGroups_[name].isSkinned) {
 
-				meshGroups_[name].wells[meshIndex].TransferVectorData(meshGroups_[name].wellUploadData[meshIndex]);
+				meshGroups_[name].wells[meshIndex].TransferData(meshGroups_[name].wellUploadData[meshIndex]);
 
 				ID3D12GraphicsCommandList* commandList = dxCommand->GetCommandList();
 				SkinnedMesh* skinnedMesh = static_cast<SkinnedMesh*>(meshGroups_[name].skinnedMesh);

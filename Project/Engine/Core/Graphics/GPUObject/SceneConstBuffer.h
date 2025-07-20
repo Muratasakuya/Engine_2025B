@@ -28,12 +28,21 @@ public:
 
 	void SetMainPassCommands(bool debugEnable, ID3D12GraphicsCommandList* commandList);
 	void SetViewProCommand(bool debugEnable, ID3D12GraphicsCommandList* commandList, UINT rootIndex);
+	void SetPerViewCommand(bool debugEnable, ID3D12GraphicsCommandList* commandList, UINT rootIndex);
 	void SetOrthoProCommand(ID3D12GraphicsCommandList* commandList, UINT rootIndex);
 	void SetRaySceneCommand(ID3D12GraphicsCommandList* commandList, UINT rootIndex);
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
+
+	//--------- structres ----------------------------------------------------
+
+	struct PerViewForGPU {
+
+		Matrix4x4 viewProjection;
+		Matrix4x4 billboardMatrix;
+	};
 
 	//--------- variables ----------------------------------------------------
 
@@ -55,4 +64,8 @@ private:
 
 	// dither
 	DxConstBuffer<DitherForGPU> ditherBuffer_;
+
+	// perView
+	DxConstBuffer<PerViewForGPU> perViewBuffer_;
+	DxConstBuffer<PerViewForGPU> debugScenePerViewBuffer_;
 };

@@ -125,9 +125,9 @@ void ParticleEmitter::CreateParticle() {
 
 	// buffer作成
 	// matrix
-	group.worldMatrixBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum_);
+	group.worldMatrixBuffer.CreateSRVBuffer(device_, kMaxInstanceNum_);
 	// material
-	group.materialBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum_);
+	group.materialBuffer.CreateSRVBuffer(device_, kMaxInstanceNum_);
 
 	// 頂点、meshlet生成
 	const ResourceMesh resourceMesh = CreateMeshlet(addModelName_);
@@ -153,9 +153,9 @@ void ParticleEmitter::CreateParticle(const Json& data) {
 
 	// buffer作成
 	// matrix
-	group.worldMatrixBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum_);
+	group.worldMatrixBuffer.CreateSRVBuffer(device_, kMaxInstanceNum_);
 	// material
-	group.materialBuffer.CreateStructuredBuffer(device_, kMaxInstanceNum_);
+	group.materialBuffer.CreateSRVBuffer(device_, kMaxInstanceNum_);
 
 	// 頂点、meshlet生成
 	const ResourceMesh resourceMesh = CreateMeshlet(data["Private"]["modelName_"]);
@@ -460,8 +460,8 @@ void ParticleEmitter::UpdateParticles(const Matrix4x4& billboardMatrix, bool use
 		// instance数を更新
 		group.numInstance = static_cast<uint32_t>(group.particles.size());
 		// bufferを更新
-		group.materialBuffer.TransferVectorData(group.transferMaterials, group.numInstance);
-		group.worldMatrixBuffer.TransferVectorData(group.transferMatrices, group.numInstance);
+		group.materialBuffer.TransferData(group.transferMaterials, group.numInstance);
+		group.worldMatrixBuffer.TransferData(group.transferMatrices, group.numInstance);
 	}
 }
 
@@ -897,7 +897,7 @@ void EffectMaterial::Init() {
 	edgeColor = Color::White();
 	edgeEmissiveIntensity = 0.0f;
 	edgeEmissionColor = Vector3::AnyInit(1.0f);
-	uvTransform = Matrix4x4::MakeIdobject4x4();
+	uvTransform = Matrix4x4::MakeIdentity4x4();
 }
 
 void EffectMaterial::SetMaterial(const EffectMaterial& material) {

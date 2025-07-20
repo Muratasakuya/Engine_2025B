@@ -4,8 +4,9 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/DxStructuredBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/IndexBuffer.h>
 #include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
-#include <Engine/Core/Graphics/GPUObject/IOVertexBuffer.h>
 
 //============================================================================
 //	IMesh class
@@ -36,13 +37,13 @@ public:
 
 	const DxConstBuffer<MeshInstanceData>& GetMeshInstanceData(uint32_t meshIndex) const { return meshInstanceData_[meshIndex]; }
 
-	const DxConstBuffer<uint32_t>& GetUniqueVertexIndexBuffer(uint32_t meshIndex) const { return uniqueVertexIndices_[meshIndex]; }
+	const DxStructuredBuffer<uint32_t>& GetUniqueVertexIndexBuffer(uint32_t meshIndex) const { return uniqueVertexIndices_[meshIndex]; }
 
-	const DxConstBuffer<ResourcePrimitiveIndex>& GetPrimitiveIndexBuffer(uint32_t meshIndex) const { return primitiveIndices_[meshIndex]; }
+	const DxStructuredBuffer<ResourcePrimitiveIndex>& GetPrimitiveIndexBuffer(uint32_t meshIndex) const { return primitiveIndices_[meshIndex]; }
 
-	const DxConstBuffer<ResourceMeshlet>& GetMeshletBuffer(uint32_t meshIndex) const { return meshlets_[meshIndex]; }
+	const DxStructuredBuffer<ResourceMeshlet>& GetMeshletBuffer(uint32_t meshIndex) const { return meshlets_[meshIndex]; }
 
-	const DxConstBuffer<uint32_t>& GetIndexBuffer(uint32_t meshIndex) const { return indices_[meshIndex]; }
+	const IndexBuffer& GetIndexBuffer(uint32_t meshIndex) const { return indices_[meshIndex]; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -61,12 +62,12 @@ protected:
 
 	// buffers
 	std::vector<DxConstBuffer<MeshInstanceData>> meshInstanceData_;
-	std::vector<DxConstBuffer<uint32_t>> uniqueVertexIndices_;
-	std::vector<DxConstBuffer<ResourcePrimitiveIndex>> primitiveIndices_;
-	std::vector<DxConstBuffer<ResourceMeshlet>> meshlets_;
+	std::vector<DxStructuredBuffer<uint32_t>> uniqueVertexIndices_;
+	std::vector<DxStructuredBuffer<ResourcePrimitiveIndex>> primitiveIndices_;
+	std::vector<DxStructuredBuffer<ResourceMeshlet>> meshlets_;
 
 	// indexBuffer、描画には使わない
-	std::vector<DxConstBuffer<uint32_t>> indices_;
+	std::vector<IndexBuffer> indices_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -95,7 +96,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const DxConstBuffer<MeshVertex>& GetVertexBuffer(uint32_t meshIndex) const { return vertices_[meshIndex]; }
+	const DxStructuredBuffer<MeshVertex>& GetVertexBuffer(uint32_t meshIndex) const { return vertices_[meshIndex]; }
 private:
 	//========================================================================
 	//	private Methods
@@ -104,7 +105,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// vertexBuffer
-	std::vector<DxConstBuffer<MeshVertex>> vertices_;
+	std::vector<DxStructuredBuffer<MeshVertex>> vertices_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -128,8 +129,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const DxConstBuffer<MeshVertex>& GetInputVertexBuffer(uint32_t meshIndex) const { return inputVertices_[meshIndex]; }
-	const DxConstBuffer<MeshVertex>& GetOutputVertexBuffer(uint32_t meshIndex) const { return outputVertices_[meshIndex]; }
+	const DxStructuredBuffer<MeshVertex>& GetInputVertexBuffer(uint32_t meshIndex) const { return inputVertices_[meshIndex]; }
+	const DxStructuredBuffer<MeshVertex>& GetOutputVertexBuffer(uint32_t meshIndex) const { return outputVertices_[meshIndex]; }
 private:
 	//========================================================================
 	//	private Methods
@@ -138,8 +139,8 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// vertexBuffer
-	std::vector<DxConstBuffer<MeshVertex>> inputVertices_;
-	std::vector<DxConstBuffer<MeshVertex>> outputVertices_;
+	std::vector<DxStructuredBuffer<MeshVertex>> inputVertices_;
+	std::vector<DxStructuredBuffer<MeshVertex>> outputVertices_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -168,15 +169,15 @@ public:
 	uint32_t GetMeshletCount() const { return meshletCount_; }
 	uint32_t GetVertexCount() const { return vertexCount_; }
 
-	const DxConstBuffer<EffectMeshVertex>& GetVertexBuffer() const { return vertices_; }
-
 	const DxConstBuffer<EffectMeshInstanceData>& GetMeshInstanceData() const { return meshInstanceData_; }
 
-	const DxConstBuffer<uint32_t>& GetUniqueVertexIndexBuffer() const { return uniqueVertexIndices_; }
+	const DxStructuredBuffer<EffectMeshVertex>& GetVertexBuffer() const { return vertices_; }
 
-	const DxConstBuffer<ResourcePrimitiveIndex>& GetPrimitiveIndexBuffer() const { return primitiveIndices_; }
+	const DxStructuredBuffer<uint32_t>& GetUniqueVertexIndexBuffer() const { return uniqueVertexIndices_; }
 
-	const DxConstBuffer<ResourceMeshlet>& GetMeshletBuffer() const { return meshlets_; }
+	const DxStructuredBuffer<ResourcePrimitiveIndex>& GetPrimitiveIndexBuffer() const { return primitiveIndices_; }
+
+	const DxStructuredBuffer<ResourceMeshlet>& GetMeshletBuffer() const { return meshlets_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -190,11 +191,11 @@ private:
 	uint32_t vertexCount_;
 
 	// buffers
-	DxConstBuffer<EffectMeshVertex> vertices_;
 	DxConstBuffer<EffectMeshInstanceData> meshInstanceData_;
-	DxConstBuffer<uint32_t> uniqueVertexIndices_;
-	DxConstBuffer<ResourcePrimitiveIndex> primitiveIndices_;
-	DxConstBuffer<ResourceMeshlet> meshlets_;
+	DxStructuredBuffer<EffectMeshVertex> vertices_;
+	DxStructuredBuffer<uint32_t> uniqueVertexIndices_;
+	DxStructuredBuffer<ResourcePrimitiveIndex> primitiveIndices_;
+	DxStructuredBuffer<ResourceMeshlet> meshlets_;
 
 	//--------- functions ----------------------------------------------------
 

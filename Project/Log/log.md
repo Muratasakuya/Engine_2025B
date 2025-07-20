@@ -18,6 +18,7 @@ EngineInformation:     load texture: flashLlight
 EngineInformation:     load texture: noise
 EngineInformation:     load texture: noise1
 EngineInformation:     load texture: noise2
+EngineInformation:     load texture: uvChecker
 EngineInformation:     load model: billboardPlane
 EngineInformation:     load model: billboardHorizontalPlane
 EngineInformation:     load model: billboardVerticalPlane
