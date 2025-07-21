@@ -414,52 +414,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\BoxEmitterParticleCreator.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\ConeEmitterParticleCreator.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\ParticleCreator.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\SphereEmitterParticleCreator.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleEmitter.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleLoader.cpp" />
-    <ClCompile Include="Engine\Particle\ParticleParameter.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleEmitterHandler.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleSystem.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Structures\EmitterStructures.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Structures\ParticleValue.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Updater\ParticleUpdater.cpp" />
     <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
       <SubType>
       </SubType>
@@ -840,6 +794,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Structures\ParticleStructures.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Effect\Trail\Core\GPUTrailEffectUpdater.h">
       <SubType>
       </SubType>
@@ -1057,56 +1015,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Particle\Creators\BoxEmitterParticleCreator.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\Creators\ConeEmitterParticleCreator.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\Creators\ParticleCreator.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\Creators\SphereEmitterParticleCreator.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\ParticleEmitter.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\ParticleLoader.h" />
-    <ClInclude Include="Engine\Particle\ParticleParameter.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\ParticleEmitterHandler.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Engine\Particle\ParticleUpdater.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Particle\Structures\EmitterStructures.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\ParticleSystem.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\Structures\ParticleValue.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
-    <ClInclude Include="Engine\Particle\Updater\ParticleUpdater.h" />
     <ClInclude Include="Engine\Scene\SceneView.h">
       <SubType>
       </SubType>
@@ -1433,12 +1345,67 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Lib\MathUtils\Vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitBoxParticle.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitConeParticle.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitHemisphereParticle,CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitMeshParticle.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitSphereParticle.CS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">4.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </FxCompile>
     <FxCompile Include="Assets\Engine\Shaders\Standard\CS\Skinning.CS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\EmitParticle.CS.hlsl">
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Init\InitParticle.CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Compute</ShaderType>
@@ -1449,18 +1416,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\InitParticle.CS.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </FxCompile>
-    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\UpdateParticle.CS.hlsl">
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Update\UpdateParticle.CS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Compute</ShaderType>
@@ -1558,7 +1514,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">6.6</ShaderModel>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">6.6</ShaderModel>
     </FxCompile>
-    <FxCompile Include="Assets\Engine\Shaders\Particle\Primitive\PlaneParticle.MS.hlsl">
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\Primitive\PlaneParticle.MS.hlsl">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -1571,7 +1527,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </FxCompile>
-    <FxCompile Include="Assets\Engine\Shaders\Particle\PS\Particle.PS.hlsl">
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\PS\Particle.PS.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
@@ -1610,22 +1566,17 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="Assets\Engine\Shaders\Particle\ParticleOutput.hlsli">
+    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleOutput.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="Assets\Engine\Shaders\Particle\ParticleEmitterStructures.hlsli">
+    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleEmitterStructures.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </None>
-    <None Include="Assets\Engine\Shaders\Particle\ParticleCommonSturctures.hlsli">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
-    <None Include="Assets\Engine\Shaders\Particle\ParticlePerView.hlsli">
+    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleCommonSturctures.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
@@ -1639,11 +1590,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </None>
-    <None Include="Assets\Engine\Shaders\OldEffect\EffectMSFunction.hlsli">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Develop|x64'">true</ExcludedFromBuild>
     </None>
     <None Include="Assets\Engine\Shaders\Standard\StandardMSFunction.hlsli">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>

@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
-#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 
@@ -27,10 +26,12 @@ void BossEnemyIState::LookTarget(BossEnemy& bossEnemy, const Vector3& target) {
 
 void BossEnemyIState::EmitTeleportParticle(const Vector3& translation) {
 
+	translation;
+
 	// 座標の設定
-	ParticleSystem::GetInstance()->SetTranslate("bossTeleportEmitter", translation);
+	// システム変更で消えた
 	// 発生、更新
-	ParticleSystem::GetInstance()->FrequencyEmit("bossTeleportEmitter");
+	// システム変更で消えた
 }
 
 void BossEnemyIState::UpdateParticleEmitter(BossEnemyState state) {
@@ -43,7 +44,7 @@ void BossEnemyIState::UpdateParticleEmitter(BossEnemyState state) {
 	}
 	case BossEnemyState::Teleport: {
 
-		ParticleSystem::GetInstance()->UpdateEmitter("bossTeleportEmitter");
+		// システム変更で消えた
 		break;
 	}
 	case BossEnemyState::Stun: {
@@ -68,7 +69,7 @@ void BossEnemyIState::UpdateParticleEmitter(BossEnemyState state) {
 	}
 	case BossEnemyState::RushAttack: {
 
-		ParticleSystem::GetInstance()->UpdateEmitter("bossTeleportEmitter");
+		// システム変更で消えた
 		break;
 	}
 	}

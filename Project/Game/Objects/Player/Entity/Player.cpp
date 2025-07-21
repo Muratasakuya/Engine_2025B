@@ -3,7 +3,6 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Particle/ParticleSystem.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 #include <Lib/Adapter/RandomGenerator.h>
 #include <Lib/Adapter/EnumAdapter.h>
@@ -207,8 +206,7 @@ void Player::Update() {
 	attackCollision_->Update(*transform_);
 
 	// particle更新
-	ParticleSystem::GetInstance()->UpdateEmitter("hitEffectEmitter");
-	ParticleSystem::GetInstance()->UpdateEmitter("groundEffectEmitter");
+	// システム変更で消えた
 }
 
 void Player::CheckBossEnemyStun() {

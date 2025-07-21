@@ -1,0 +1,101 @@
+//============================================================================
+//	include
+//============================================================================
+
+#include "../../ParticleCommonSturctures.hlsli"
+#include "../../ParticleEmitterStructures.hlsli"
+#include "../../../../../../Engine/Effect/Particle/ParticleConfig.h"
+
+#include "../../../Math/Math.hlsli"
+
+//============================================================================
+//	CBuffer
+//============================================================================
+
+// Œ`ó
+struct EmitterSphere {
+	
+	float radius;
+	float3 translation;
+};
+
+ConstantBuffer<EmitterCommon> gEmitterCommon : register(b0);
+ConstantBuffer<EmitterSphere> gEmitterSphere : register(b1);
+ConstantBuffer<PerFrame> gPerFrame : register(b2);
+
+//============================================================================
+//	RWStructuredBuffer
+//============================================================================
+
+RWStructuredBuffer<Particle> gParticles : register(u0);
+RWStructuredBuffer<Transform> gTransform : register(u1);
+RWStructuredBuffer<Material> gMaterials : register(u2);
+
+RWStructuredBuffer<int> gFreeListIndex : register(u3);
+RWStructuredBuffer<uint> gFreeList : register(u4);
+
+//============================================================================
+//	Functions
+//============================================================================
+
+float3 GetRandomDirection(RandomGenerator generator) {
+	
+	float phi = generator.Generate(0.0f, PI2);
+	float z = generator.Generate(-1.0f, 1.0f);
+	float sqrtOneMinusZ2 = sqrt(1.0f - z * z);
+	float3 direction = float3(sqrtOneMinusZ2 * cos(phi), sqrtOneMinusZ2 * sin(phi), z);
+	
+	return normalize(direction);
+}
+
+//============================================================================
+//	Main
+//============================================================================
+[numthreads(1, 1, 1)]
+void main(uint3 DTid : SV_DispatchThreadID) {
+	
+	// ”­¶‹–‰Â‚ª‰º‚è‚Ä‚¢‚È‚¯‚ê‚Îˆ—‚µ‚È‚¢
+	if (gEmitterCommon.emit == 0) {
+		return;
+	}
+	
+	// —”¶¬
+	RandomGenerator generator;
+	generator.seed = (DTid + gPerFrame.time) * gPerFrame.time;
+
+	// ”­¶•ª‚¾‚¯ˆ—
+	for (uint i = 0; i < gEmitterCommon.count; ++i) {
+		
+		int freeListIndex;
+		InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
+		
+		if (0 <= freeListIndex && freeListIndex < kMaxParticles) {
+			
+			uint particleIndex = gFreeList[freeListIndex];
+			
+			Particle particle;
+			particle.currentTime = 0.0f;
+			particle.lifeTime = gEmitterCommon.lifeTime;
+			
+			// ‹…–Êã‚Öƒ‰ƒ“ƒ_ƒ€‚ÈŒü‚«‚ğİ’è
+			float3 direction = GetRandomDirection(generator);
+			particle.velocity = direction * generator.Generate3D();
+			
+			Transform transform;
+			transform.translation = gEmitterSphere.translation + direction * gEmitterSphere.radius;
+			transform.scale = gEmitterCommon.scale;
+			
+			Material material;
+			material.color = gEmitterCommon.color;
+			
+			// ’l‚ğİ’è
+			gParticles[particleIndex] = particle;
+			gTransform[particleIndex] = transform;
+			gMaterials[particleIndex] = material;
+		} else {
+
+			InterlockedAdd(gFreeListIndex[0], 1);
+			break;
+		}
+	}
+}

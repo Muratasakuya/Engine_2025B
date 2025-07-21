@@ -6,7 +6,6 @@
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBufferSize.h>
 #include <Engine/Object/Core/ObjectManager.h>
-#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Asset/Asset.h>
 
@@ -52,11 +51,6 @@ void GameScene::Load() {
 	asset_->LoadModel("verticalRing");
 	asset_->LoadModel("primitiveRing");
 	asset_->LoadModel("primitiveCylinder");
-
-	ParticleSystem::GetInstance()->LoadEmitter("bossTeleportEmitter", "bossTeleportEmitter");
-	ParticleSystem::GetInstance()->LoadEmitter("hitEffectEmitter", "hitEffectEmitter");
-	ParticleSystem::GetInstance()->LoadEmitter("groundEffectEmitter", "groundEffectEmitter");
-	ParticleSystem::GetInstance()->LoadEmitter("bossWarningAttackEmitter", "bossWarningAttackEmitter");
 
 	//========================================================================
 	//	environment

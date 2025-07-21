@@ -7,7 +7,6 @@
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Object/Core/ObjectManager.h>
-#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Effect/Particle/Core/ParticleManager.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Config.h>
@@ -182,8 +181,6 @@ void RenderEngine::Renderers(ViewType type) {
 	meshRenderer_->Rendering(static_cast<bool>(type), sceneBuffer_.get(), dxCommand_);
 
 	// particle描画
-	ParticleSystem::GetInstance()->Rendering(static_cast<bool>(type),
-		sceneBuffer_.get(), dxCommand_->GetCommandList());
 	ParticleManager::GetInstance()->Rendering(static_cast<bool>(type),
 		sceneBuffer_.get(), dxCommand_);
 

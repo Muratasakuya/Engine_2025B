@@ -3,7 +3,6 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Objects/Player/Entity/Player.h>
@@ -28,10 +27,7 @@ void PlayerAttack_3rdState::Update(Player& player) {
 		exitTimer_ += GameTimer::GetScaledDeltaTime();
 		if (!emitEffect_) {
 
-			Vector3 emitPos = player.GetTranslation();
-			emitPos.y = 1.0f;
-			ParticleSystem::GetInstance()->SetTranslate("groundEffectEmitter", emitPos);
-			ParticleSystem::GetInstance()->Emit("groundEffectEmitter");
+			// システム変更で消えた
 			emitEffect_ = true;
 		}
 

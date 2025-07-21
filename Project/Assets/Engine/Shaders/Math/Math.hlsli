@@ -80,4 +80,17 @@ class RandomGenerator {
 		seed = Rand3DTo3D(seed);
 		return seed;
 	}
+	
+	float Generate(float minValue, float maxValue) {
+		
+		return lerp(minValue, maxValue, Generate1D());
+	}
+	float2 Generate(float2 minValue, float2 maxValue) {
+		
+		return lerp(minValue, maxValue, Generate2D());
+	}
+	float3 Generate(float3 minValue, float3 maxValue) {
+		
+		return lerp(minValue, maxValue, Generate3D());
+	}
 };

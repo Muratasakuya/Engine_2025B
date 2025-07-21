@@ -9,7 +9,6 @@
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
-#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Effect/Particle/Core/ParticleManager.h>
 #include <Engine/Config.h>
 #include <Engine/Utility/GameTimer.h>
@@ -101,9 +100,6 @@ Framework::Framework() {
 	//------------------------------------------------------------------------
 	// particle機能初期化
 
-	ParticleSystem::GetInstance()->Init(asset_.get(), device,
-		srvDescriptor, shaderCompiler, sceneView_.get());
-
 	ParticleManager::GetInstance()->Init(asset_.get(), device,
 		srvDescriptor, shaderCompiler, sceneView_.get());
 	ParticleManager::GetInstance()->InitParticle(dxCommand);
@@ -172,7 +168,6 @@ void Framework::UpdateScene() {
 	// data更新
 	ObjectManager::GetInstance()->UpdateData();
 	// particle更新
-	ParticleSystem::GetInstance()->Update();
 	ParticleManager::GetInstance()->Update(graphicsPlatform_->GetDxCommand());
 	// collision更新
 	CollisionManager::GetInstance()->Update();
@@ -253,8 +248,6 @@ void Framework::EndRequest() {
 	sceneManager_->SwitchScene();
 	// lineReset
 	LineRenderer::GetInstance()->ResetLine();
-	// particleReset
-	ParticleSystem::GetInstance()->ResetParticleData();
 }
 
 void Framework::Finalize() {
@@ -266,7 +259,6 @@ void Framework::Finalize() {
 
 	sceneManager_.reset();
 
-	ParticleSystem::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
 	ObjectManager::GetInstance()->Finalize();
 

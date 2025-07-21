@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Engine/Object/Data/Transform.h>
-#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/Adapter/EnumAdapter.h>
@@ -97,9 +96,7 @@ void PlayerAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody)
 
 		// 座標を設定してparticleを発生
 		// 状態別で形状の値を設定
-		const auto& offset = std::get<CollisionShape::OBB>(bodyOffsets_.front());
-		ParticleSystem::GetInstance()->Emit("hitEffectEmitter");
-		ParticleSystem::GetInstance()->SetTranslate("hitEffectEmitter", transform_->translation + offset.center);
+		// システム変更で消えた
 	}
 }
 

@@ -3,11 +3,11 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Particle/ParticleSystem.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Game/Objects/Player/Entity/Player.h>
 #include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/Adapter/EnumAdapter.h>
+#include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================
 //	BossEnemy classMethods
@@ -190,7 +190,7 @@ void BossEnemy::Update() {
 	attackCollision_->Update(*transform_);
 
 	// particle更新
-	ParticleSystem::GetInstance()->UpdateEmitter("bossWarningAttackEmitter");
+	// システム変更で消えた
 }
 
 void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {

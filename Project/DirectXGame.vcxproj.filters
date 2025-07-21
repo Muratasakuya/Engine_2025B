@@ -275,49 +275,10 @@
     <ClCompile Include="Engine\Object\System\Systems\TagSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleSystem.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleLoader.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleEmitter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleParameter.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Lib\Adapter\RandomGenerator.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Particle\ParticleEmitterHandler.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Lib\DxStructures.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Structures\ParticleValue.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Structures\EmitterStructures.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\ParticleCreator.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\SphereEmitterParticleCreator.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\BoxEmitterParticleCreator.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Creators\ConeEmitterParticleCreator.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Particle\Updater\ParticleUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Object\System\Systems\SpriteBufferSystem.cpp">
@@ -707,20 +668,7 @@
     <ClInclude Include="Engine\Object\Data\ObjectTag.h" />
     <ClInclude Include="Engine\Object\System\Systems\TagSystem.h" />
     <ClInclude Include="Engine\Config.h" />
-    <ClInclude Include="Engine\Particle\ParticleSystem.h" />
-    <ClInclude Include="Engine\Particle\ParticleLoader.h" />
-    <ClInclude Include="Engine\Particle\Structures\EmitterStructures.h" />
-    <ClInclude Include="Engine\Particle\ParticleEmitter.h" />
-    <ClInclude Include="Engine\Particle\ParticleParameter.h" />
-    <ClInclude Include="Engine\Particle\Structures\ParticleValue.h" />
-    <ClInclude Include="Engine\Particle\ParticleEmitterHandler.h" />
-    <ClInclude Include="Engine\Particle\Creators\ParticleCreator.h" />
-    <ClInclude Include="Engine\Particle\Creators\SphereEmitterParticleCreator.h" />
-    <ClInclude Include="Engine\Particle\Creators\HemisphereEmitterParticleCreator.h" />
-    <ClInclude Include="Engine\Particle\Creators\BoxEmitterParticleCreator.h" />
-    <ClInclude Include="Engine\Particle\Creators\ConeEmitterParticleCreator.h" />
     <ClInclude Include="Engine\Particle\ParticleUpdater.h" />
-    <ClInclude Include="Engine\Particle\Updater\ParticleUpdater.h" />
     <ClInclude Include="Engine\Object\System\Systems\SpriteBufferSystem.h" />
     <ClInclude Include="Engine\Object\Base\Interface\IGameObject.h" />
     <ClInclude Include="Engine\Object\Base\GameObject3D.h" />
@@ -828,6 +776,7 @@
     <ClInclude Include="Engine\Effect\GameEffect.h" />
     <ClInclude Include="Engine\Effect\Particle\ParticleConfig.h" />
     <ClInclude Include="Lib\Adapter\EnumAdapter.h" />
+    <ClInclude Include="Engine\Effect\Particle\Structures\ParticleStructures.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />
@@ -843,23 +792,25 @@
     <FxCompile Include="Assets\Engine\Shaders\Raytracing\ShadowRayQuery.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Standard\PS\MeshStandard.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Lut\Lut.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\Particle\PS\Particle.PS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\InitParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\PS\Particle.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Init\InitParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Particle\VertexEffect.VS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\Particle\Primitive\PlaneParticle.MS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\EmitParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\Particle\CS\UpdateParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\Primitive\PlaneParticle.MS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Update\UpdateParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitSphereParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitHemisphereParticle,CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitBoxParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitConeParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitMeshParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\Standard\StandardMSFunction.hlsli" />
-    <None Include="Assets\Engine\Shaders\OldEffect\EffectMSFunction.hlsli" />
     <None Include="Assets\Engine\Shaders\Skybox\Skybox.hlsli" />
     <None Include="Assets\Engine\Shaders\Raytracing\ShadowRay.hlsli" />
     <None Include="Assets\Engine\Shaders\Standard\Dither.hlsli" />
     <None Include="Assets\Engine\Shaders\Math\Math.hlsli" />
-    <None Include="Assets\Engine\Shaders\Particle\ParticleCommonSturctures.hlsli" />
-    <None Include="Assets\Engine\Shaders\Particle\ParticleEmitterStructures.hlsli" />
-    <None Include="Assets\Engine\Shaders\Particle\ParticleOutput.hlsli" />
-    <None Include="Assets\Engine\Shaders\Particle\ParticlePerView.hlsli" />
+    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleCommonSturctures.hlsli" />
+    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleEmitterStructures.hlsli" />
+    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleOutput.hlsli" />
   </ItemGroup>
 </Project>
