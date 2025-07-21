@@ -197,47 +197,47 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\EffectSystem.cpp">
+    <ClCompile Include="Engine\Effect\EffectSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\GameEffect.cpp">
+    <ClCompile Include="Engine\Effect\GameEffect.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\Core\GPUParticleUpdater.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Core\GPUParticleUpdater.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\Core\ParticleManager.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Core\ParticleManager.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\Core\ParticleRenderer.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Core\ParticleRenderer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\Editor\ParticleEditor.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Editor\ParticleEditor.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\ParticleEffect.cpp">
+    <ClCompile Include="Engine\Effect\Particle\ParticleEffect.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Trail\Core\GPUTrailEffectUpdater.cpp">
+    <ClCompile Include="Engine\Effect\Trail\Core\GPUTrailEffectUpdater.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Trail\Core\TrailEffectRenderer.cpp">
+    <ClCompile Include="Engine\Effect\Trail\Core\TrailEffectRenderer.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Trail\Editor\TrailEffectEditor.cpp">
+    <ClCompile Include="Engine\Effect\Trail\Editor\TrailEffectEditor.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Trail\TrailEffect.cpp">
+    <ClCompile Include="Engine\Effect\Trail\TrailEffect.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -800,63 +800,63 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\EffectSystem.h">
+    <ClInclude Include="Engine\Effect\EffectSystem.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\GameEffect.h">
+    <ClInclude Include="Engine\Effect\GameEffect.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Particle\Core\GPUParticleUpdater.h">
+    <ClInclude Include="Engine\Effect\Particle\Core\GPUParticleUpdater.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Particle\Core\ParticleManager.h">
+    <ClInclude Include="Engine\Effect\Particle\Core\ParticleManager.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Particle\Core\ParticleRenderer.h">
+    <ClInclude Include="Engine\Effect\Particle\Core\ParticleRenderer.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Particle\Editor\ParticleEditor.h">
+    <ClInclude Include="Engine\Effect\Particle\Editor\ParticleEditor.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Particle\ParticleConfig.h">
+    <ClInclude Include="Engine\Effect\Particle\ParticleConfig.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Particle\ParticleEffect.h">
+    <ClInclude Include="Engine\Effect\Particle\ParticleEffect.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Particle\Structures\ParticleEmitterStructures.h">
+    <ClInclude Include="Engine\Effect\Particle\Structures\ParticleEmitterStructures.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Particle\Structures\ParticlePrimitiveStructures.h">
+    <ClInclude Include="Engine\Effect\Particle\Structures\ParticlePrimitiveStructures.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Trail\Core\GPUTrailEffectUpdater.h">
+    <ClInclude Include="Engine\Effect\Trail\Core\GPUTrailEffectUpdater.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Trail\Core\TrailEffectRenderer.h">
+    <ClInclude Include="Engine\Effect\Trail\Core\TrailEffectRenderer.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Trail\Editor\TrailEffectEditor.h">
+    <ClInclude Include="Engine\Effect\Trail\Editor\TrailEffectEditor.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Trail\Structures\TrailEffectStructures.h">
+    <ClInclude Include="Engine\Effect\Trail\Structures\TrailEffectStructures.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\GPUEffect\Trail\TrailEffect.h">
+    <ClInclude Include="Engine\Effect\Trail\TrailEffect.h">
       <SubType>
       </SubType>
     </ClInclude>

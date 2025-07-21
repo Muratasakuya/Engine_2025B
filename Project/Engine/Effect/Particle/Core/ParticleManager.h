@@ -7,7 +7,7 @@
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Core/Graphics/GPUObject/DxStructuredBuffer.h>
 #include <Engine/Object/Data/Transform.h>
-#include <Engine/GPUEffect/Particle/Structures/ParticlePrimitiveStructures.h>
+#include <Engine/Effect/Particle/Structures/ParticlePrimitiveStructures.h>
 
 // front
 class Asset;

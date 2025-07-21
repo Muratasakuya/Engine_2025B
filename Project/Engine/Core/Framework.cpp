@@ -10,7 +10,7 @@
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Particle/ParticleSystem.h>
-#include <Engine/GPUEffect/Particle/Core/ParticleManager.h>
+#include <Engine/Effect/Particle/Core/ParticleManager.h>
 #include <Engine/Config.h>
 #include <Engine/Utility/GameTimer.h>
 

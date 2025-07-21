@@ -6,7 +6,7 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
-#include <Engine/GPUEffect/Particle/ParticleConfig.h>
+#include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Utility/GameTimer.h>
 

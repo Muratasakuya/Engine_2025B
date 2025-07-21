@@ -51,6 +51,14 @@ public:
 
 	void DrawGrid(int division, float gridSize, const Color& color, LineType type = LineType::None);
 
+	void DrawSegment(int division, float radius, const Vector3& pointA,
+		const Vector3& pointB, const Color& color, LineType type = LineType::None);
+
+	// polygonCount <= 3
+	template <typename T>
+	void DrawPolygon(int polygonCount, const Vector3& centerPos, float scale,
+		const T& rotation, const Color& color, LineType type = LineType::None);
+
 	void DrawSphere(int division, float radius, const Vector3& centerPos,
 		const Color& color, LineType type = LineType::None);
 
@@ -139,6 +147,44 @@ private:
 //============================================================================
 //	LineRenderer templateMethods
 //============================================================================
+
+template<typename T>
+inline void LineRenderer::DrawPolygon(int polygonCount, const Vector3& centerPos,
+	float scale, const T& rotation, const Color& color, LineType type) {
+
+	if (polygonCount < 3 || polygonCount > 12) {
+		return;
+	}
+
+	std::vector<Vector3> vertices;
+	vertices.reserve(polygonCount);
+
+	// 回転
+	Matrix4x4 rotationMatrix = Matrix4x4::MakeIdentity4x4();
+	if constexpr (std::is_same_v<T, Vector3>) {
+
+		rotationMatrix = Matrix4x4::MakeRotateMatrix(rotation);
+	} else if constexpr (std::is_same_v<T, Quaternion>) {
+
+		rotationMatrix = Quaternion::MakeRotateMatrix(rotation);
+	}
+
+	// 各頂点を計算
+	for (int i = 0; i < polygonCount; ++i) {
+		float angle = 2.0f * pi * static_cast<float>(i) / static_cast<float>(polygonCount);
+		Vector3 localPos = { std::cos(angle) * scale, 0.0f, std::sin(angle) * scale };
+		Vector3 worldPos = rotationMatrix.TransformPoint(localPos) + centerPos;
+		vertices.push_back(worldPos);
+	}
+
+	// 線を描画
+	for (int i = 0; i < polygonCount; ++i) {
+
+		const Vector3& start = vertices[i];
+		const Vector3& end = vertices[(i + 1) % polygonCount];
+		DrawLine3D(start, end, color, type);
+	}
+}
 
 template<typename T>
 inline void LineRenderer::DrawHemisphere(int division, float radius, const Vector3& centerPos,

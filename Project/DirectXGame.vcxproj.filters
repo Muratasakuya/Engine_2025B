@@ -572,37 +572,37 @@
     <ClCompile Include="Engine\Core\Graphics\GPUObject\IndexBuffer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\Core\ParticleManager.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Core\ParticleManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\Core\ParticleRenderer.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Core\ParticleRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\ParticleEffect.cpp">
+    <ClCompile Include="Engine\Effect\Particle\ParticleEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\Core\GPUParticleUpdater.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Core\GPUParticleUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\EffectSystem.cpp">
+    <ClCompile Include="Engine\Effect\EffectSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Particle\Editor\ParticleEditor.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Editor\ParticleEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Trail\Editor\TrailEffectEditor.cpp">
+    <ClCompile Include="Engine\Effect\Trail\Editor\TrailEffectEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Trail\Core\TrailEffectRenderer.cpp">
+    <ClCompile Include="Engine\Effect\Trail\Core\TrailEffectRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Trail\Core\GPUTrailEffectUpdater.cpp">
+    <ClCompile Include="Engine\Effect\Trail\Core\GPUTrailEffectUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\Trail\TrailEffect.cpp">
+    <ClCompile Include="Engine\Effect\Trail\TrailEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\GPUEffect\GameEffect.cpp">
+    <ClCompile Include="Engine\Effect\GameEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -812,21 +812,21 @@
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxStructuredBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\VertexBuffer.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\IndexBuffer.h" />
-    <ClInclude Include="Engine\GPUEffect\Particle\Core\ParticleManager.h" />
-    <ClInclude Include="Engine\GPUEffect\Particle\Core\ParticleRenderer.h" />
-    <ClInclude Include="Engine\GPUEffect\Particle\ParticleEffect.h" />
-    <ClInclude Include="Engine\GPUEffect\Particle\Structures\ParticlePrimitiveStructures.h" />
-    <ClInclude Include="Engine\GPUEffect\Particle\Core\GPUParticleUpdater.h" />
-    <ClInclude Include="Engine\GPUEffect\Particle\Structures\ParticleEmitterStructures.h" />
-    <ClInclude Include="Engine\GPUEffect\EffectSystem.h" />
-    <ClInclude Include="Engine\GPUEffect\Particle\Editor\ParticleEditor.h" />
-    <ClInclude Include="Engine\GPUEffect\Trail\Editor\TrailEffectEditor.h" />
-    <ClInclude Include="Engine\GPUEffect\Trail\Structures\TrailEffectStructures.h" />
-    <ClInclude Include="Engine\GPUEffect\Trail\Core\TrailEffectRenderer.h" />
-    <ClInclude Include="Engine\GPUEffect\Trail\Core\GPUTrailEffectUpdater.h" />
-    <ClInclude Include="Engine\GPUEffect\Trail\TrailEffect.h" />
-    <ClInclude Include="Engine\GPUEffect\GameEffect.h" />
-    <ClInclude Include="Engine\GPUEffect\Particle\ParticleConfig.h" />
+    <ClInclude Include="Engine\Effect\Particle\Core\ParticleManager.h" />
+    <ClInclude Include="Engine\Effect\Particle\Core\ParticleRenderer.h" />
+    <ClInclude Include="Engine\Effect\Particle\ParticleEffect.h" />
+    <ClInclude Include="Engine\Effect\Particle\Structures\ParticlePrimitiveStructures.h" />
+    <ClInclude Include="Engine\Effect\Particle\Core\GPUParticleUpdater.h" />
+    <ClInclude Include="Engine\Effect\Particle\Structures\ParticleEmitterStructures.h" />
+    <ClInclude Include="Engine\Effect\EffectSystem.h" />
+    <ClInclude Include="Engine\Effect\Particle\Editor\ParticleEditor.h" />
+    <ClInclude Include="Engine\Effect\Trail\Editor\TrailEffectEditor.h" />
+    <ClInclude Include="Engine\Effect\Trail\Structures\TrailEffectStructures.h" />
+    <ClInclude Include="Engine\Effect\Trail\Core\TrailEffectRenderer.h" />
+    <ClInclude Include="Engine\Effect\Trail\Core\GPUTrailEffectUpdater.h" />
+    <ClInclude Include="Engine\Effect\Trail\TrailEffect.h" />
+    <ClInclude Include="Engine\Effect\GameEffect.h" />
+    <ClInclude Include="Engine\Effect\Particle\ParticleConfig.h" />
     <ClInclude Include="Lib\Adapter\EnumAdapter.h" />
   </ItemGroup>
   <ItemGroup>

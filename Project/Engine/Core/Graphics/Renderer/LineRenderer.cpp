@@ -123,6 +123,17 @@ void LineRenderer::DrawGrid(int division, float gridSize, const Color& color, Li
 	}
 }
 
+void LineRenderer::DrawSegment(int division, float radius, const Vector3& pointA,
+	const Vector3& pointB, const Color& color, LineType type) {
+
+	// 線分
+	DrawLine3D(pointA, pointB, color, type);
+
+	// AとBそれぞれに球
+	DrawSphere(division, radius, pointA, color, type);
+	DrawSphere(division, radius, pointB, color, type);
+}
+
 void LineRenderer::DrawSphere(int division, float radius, const Vector3& centerPos,
 	const Color& color, LineType type) {
 
