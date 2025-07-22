@@ -22,6 +22,11 @@ enum class ParticlePrimitiveType {
 struct PlaneForGPU {
 
 	Vector2 size;
+
+	void Init() {
+
+		size = Vector2::AnyInit(1.0f);
+	}
 };
 // リング
 struct RingForGPU {
@@ -29,6 +34,13 @@ struct RingForGPU {
 	float outerRadius;
 	float innerRadius;
 	int divide;
+
+	void Init() {
+
+		outerRadius = 16.0f;
+		innerRadius = 8.0f;
+		divide = 16;
+	}
 };
 // 円柱
 struct CylinderForGPU {
@@ -37,4 +49,12 @@ struct CylinderForGPU {
 	float bottomRadius;
 	float height;
 	int divide;
+
+	void Init() {
+
+		topRadius = 4.0f;
+		bottomRadius = 4.0f;
+		height = 4.0f;
+		divide = 32;
+	}
 };

@@ -14,6 +14,7 @@ class SRVDescriptor;
 class DxShaderCompiler;
 class DxCommand;
 class SceneConstBuffer;
+class GPUParticleGroup;
 
 //============================================================================
 //	ParticleRenderer class
@@ -34,6 +35,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetGPUGroup(const std::vector<GPUParticleGroup>& group);
 private:
 	//========================================================================
 	//	private Methods
@@ -45,6 +47,8 @@ private:
 	static const uint32_t kParticleTypeCount = static_cast<uint32_t>(ParticleType::Count);
 
 	std::array<std::array<std::unique_ptr<PipelineState>, kPrimitiveCount>, kParticleTypeCount> pipelines_;
+
+	std::vector<GPUParticleGroup> gpuGroups_;
 
 	//--------- functions ----------------------------------------------------
 

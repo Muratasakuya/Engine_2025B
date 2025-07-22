@@ -566,6 +566,12 @@
     <ClCompile Include="Engine\Effect\Particle\Data\ParticleParameter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Data\GPUParticleGroup.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Data\CPUParticleGroup.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -777,6 +783,9 @@
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleStructures.h" />
     <ClInclude Include="Engine\Effect\Particle\ParticleSystem.h" />
     <ClInclude Include="Engine\Effect\Particle\Data\ParticleParameter.h" />
+    <ClInclude Include="Engine\Effect\Particle\Structures\ParticleValue.h" />
+    <ClInclude Include="Engine\Effect\Particle\Data\GPUParticleGroup.h" />
+    <ClInclude Include="Engine\Effect\Particle\Data\CPUParticleGroup.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

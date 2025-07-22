@@ -29,6 +29,8 @@ namespace ParticleCommon {
 	// 描画情報
 	struct PrimitiveData {
 
+		ParticlePrimitiveType type;
+
 		// 平面
 		PlaneForGPU plane;
 		// リング
@@ -37,6 +39,8 @@ namespace ParticleCommon {
 		CylinderForGPU cylinder;
 	};
 	struct PrimitiveBufferData {
+
+		ParticlePrimitiveType type;
 
 		// 平面
 		DxStructuredBuffer<PlaneForGPU> plane;

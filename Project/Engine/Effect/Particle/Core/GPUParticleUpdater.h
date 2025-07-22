@@ -13,6 +13,7 @@
 class SRVDescriptor;
 class DxShaderCompiler;
 class DxCommand;
+class GPUParticleGroup;
 
 //============================================================================
 //	GPUParticleUpdater class
@@ -28,6 +29,13 @@ public:
 
 	void Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 		DxShaderCompiler* shaderCompiler);
+
+	// 初期化
+	void DispatchInit(const GPUParticleGroup& group, DxCommand* dxCommand);
+	// 発生
+	void DispatchEmit(const GPUParticleGroup& group, DxCommand* dxCommand);
+	// 更新
+	void DispatchUpdate(const GPUParticleGroup& group, DxCommand* dxCommand);
 
 	//--------- accessor -----------------------------------------------------
 

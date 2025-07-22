@@ -36,3 +36,20 @@ void GPUParticleUpdater::InitPipelines(ID3D12Device8* device,
 		pipeline->Create(jsonFile, device, srvDescriptor, shaderCompiler);
 	}
 }
+
+void GPUParticleUpdater::DispatchInit(
+	const GPUParticleGroup& group, DxCommand* dxCommand) {
+
+}
+
+void GPUParticleUpdater::DispatchEmit(
+	const GPUParticleGroup& group, DxCommand* dxCommand) {
+
+
+}
+
+void GPUParticleUpdater::DispatchUpdate(
+	const GPUParticleGroup& group, DxCommand* dxCommand) {
+
+
+}

@@ -33,6 +33,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	ID3D12Resource* GetResource() const { return resource_.Get(); }
+
+	bool IsCreatedResource() const { return isCreated_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -42,6 +44,8 @@ private:
 
 	ComPtr<ID3D12Resource> resource_;
 	T* mappedData_ = nullptr;
+
+	bool isCreated_ = false;
 };
 
 //============================================================================
@@ -56,6 +60,8 @@ inline void DxConstBuffer<T>::CreateBuffer(ID3D12Device* device) {
 	// マッピング
 	HRESULT hr = resource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData_));
 	assert(SUCCEEDED(hr));
+
+	isCreated_ = true;
 }
 
 template<typename T>

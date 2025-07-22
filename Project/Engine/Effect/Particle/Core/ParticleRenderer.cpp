@@ -3,6 +3,9 @@
 //============================================================================
 //	GPUParticleUpdater classMethods
 //============================================================================
+#include <Engine/Effect/Particle/Data/GPUParticleGroup.h>
+#include <Engine/Core/Graphics/DxObject/DxCommand.h>
+#include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Lib/Adapter/EnumAdapter.h>
 
 //============================================================================
@@ -40,8 +43,48 @@ void ParticleRenderer::InitPipelines(ID3D12Device8* device,
 void ParticleRenderer::Rendering(bool debugEnable,
 	SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
-	// 描画情報を流して描画
-	debugEnable;
-	sceneBuffer;
-	dxCommand;
+	// データがなければ描画しない
+	if (gpuGroups_.empty()) {
+		return;
+	}
+
+	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
+
+	const uint32_t typeIndex = static_cast<uint32_t>(ParticleType::GPU);
+	for (auto& group : gpuGroups_) {
+
+		const uint32_t primitiveIndex = static_cast<uint32_t>(group.GetPrimitiveType());
+
+		// pipeline設定
+		commandList->SetGraphicsRootSignature(pipelines_[typeIndex][primitiveIndex]->GetRootSignature());
+		commandList->SetPipelineState(pipelines_[typeIndex][primitiveIndex]->GetGraphicsPipeline(group.GetBlendMode()));
+
+		// primitive形状の型取得を描画形状から取得する
+		// textureの設定がまだない
+		// 発生タイマーの更新をまだやってない
+
+		// 形状
+		commandList->SetGraphicsRootShaderResourceView(0, group.GetPrimitiveBufferAdress());
+
+		// transform
+
+		// cBuffer
+
+		// material
+
+		// textureTable
+
+		// 描画
+		commandList->DispatchMesh(kMaxParticles, 1, 1);
+	}
+}
+
+void ParticleRenderer::SetGPUGroup(const std::vector<GPUParticleGroup>& group) {
+
+	if (group.empty()) {
+		return;
+	}
+
+	gpuGroups_.clear();
+	gpuGroups_ = group;
 }

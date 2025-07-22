@@ -39,6 +39,8 @@ public:
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC GetSRVDesc(UINT instanceCount) const;
 	D3D12_UNORDERED_ACCESS_VIEW_DESC GetUAVDesc(UINT instanceCount) const;
+
+	bool IsCreatedResource() const { return isCreated_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -51,6 +53,8 @@ private:
 
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGPUHandle_;
 	D3D12_GPU_DESCRIPTOR_HANDLE uavGPUHandle_;
+
+	bool isCreated_ = false;
 };
 
 //============================================================================
@@ -65,6 +69,8 @@ inline void DxStructuredBuffer<T>::CreateSRVBuffer(ID3D12Device* device, UINT in
 	// マッピング
 	HRESULT hr = resource_->Map(0, nullptr, reinterpret_cast<void**>(&mappedData_));
 	assert(SUCCEEDED(hr));
+
+	isCreated_ = true;
 }
 
 template<typename T>
@@ -72,6 +78,8 @@ inline void DxStructuredBuffer<T>::CreateUAVBuffer(ID3D12Device* device, UINT in
 
 	DxUtils::CreateUavBufferResource(device, resource_, sizeof(T) * instanceCount);
 	// マッピング処理は行わない
+
+	isCreated_ = true;
 }
 
 template<typename T>
