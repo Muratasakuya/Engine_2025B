@@ -35,8 +35,9 @@ struct Cylinder {
 	float height;
 	uint divide;
 };
+
 StructuredBuffer<Cylinder> gCylinders : register(t0);
-RWStructuredBuffer<Transform> gTransform : register(u1);
+StructuredBuffer<Transform> gTransform : register(t1);
 
 //============================================================================
 //	Main
@@ -57,10 +58,7 @@ out vertices MSOutput verts[CYL_MAX_VERTS], out indices uint3 polys[CYL_MAX_TRIS
 	SetMeshOutputCounts((divide + 1) * 2, divide * 2);
 	
 	// worlds—ñ‚ğì¬
-	float4x4 worldMatrix = gPerView.billboardMatrix;
-	worldMatrix[0] *= transform.scale.x;
-	worldMatrix[1] *= transform.scale.y;
-	worldMatrix[2] *= transform.scale.z;
+	float4x4 worldMatrix = MakeWorldMatrix(transform, gPerView.billboardMatrix, gPerView.cameraPos);
 	worldMatrix[3].xyz = transform.translation;
 
 	// s—ñŒvZ

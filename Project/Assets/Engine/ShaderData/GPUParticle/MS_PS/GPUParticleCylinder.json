@@ -3,16 +3,16 @@
     "ShaderPass":[
         {
             "Type": "Graphics",
-            "MeshShader": "RingParticle.MS.hlsl",
-            "PixelShader": "Particle.PS.hlsl"
+            "MeshShader": "CylinderParticle.MS.hlsl",
+            "PixelShader": "GPUParticle.PS.hlsl"
         }
     ],
     "RootParameter": [
-        { "RootIndex": 0, "Type": "TABLE", "Visibility": "MESH","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 0 } },
-        { "RootIndex": 1, "Type": "TABLE", "Visibility": "MESH","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 1 } },
+        { "RootIndex": 0, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 0 },
+        { "RootIndex": 1, "Type": "SRV", "Visibility": "MESH", "ShaderRegister": 1 },
         { "RootIndex": 2, "Type": "CBV", "Visibility": "MESH", "ShaderRegister": 0 },
-        { "RootIndex": 3, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 0 } },
-        { "RootIndex": 4, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 1 } }
+        { "RootIndex": 3, "Type": "SRV", "Visibility": "PIXEL", "ShaderRegister": 0 },
+        { "RootIndex": 4, "Type": "TABLE", "Visibility": "PIXEL","DescriptorRange": { "Type": "SRV", "BaseShaderRegister": 0 } }
     ],
     "StaticSampler": [
         { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER", "ShaderRegister": 0 }

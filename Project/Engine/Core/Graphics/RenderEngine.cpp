@@ -7,7 +7,6 @@
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Object/Core/ObjectManager.h>
-#include <Engine/Effect/Particle/Core/ParticleManager.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Config.h>
 
@@ -179,10 +178,6 @@ void RenderEngine::Renderers(ViewType type) {
 
 	// 通常描画処理
 	meshRenderer_->Rendering(static_cast<bool>(type), sceneBuffer_.get(), dxCommand_);
-
-	// particle描画
-	ParticleManager::GetInstance()->Rendering(static_cast<bool>(type),
-		sceneBuffer_.get(), dxCommand_);
 
 	// line描画実行、depth無効
 	LineRenderer::GetInstance()->ExecuteLine(static_cast<bool>(type), LineType::DepthIgnore);

@@ -1,6 +1,11 @@
 #include "ParticleRenderer.h"
 
 //============================================================================
+//	GPUParticleUpdater classMethods
+//============================================================================
+#include <Lib/Adapter/EnumAdapter.h>
+
+//============================================================================
 //	ParticleRenderer classMethods
 //============================================================================
 
@@ -14,18 +19,22 @@ void ParticleRenderer::Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 void ParticleRenderer::InitPipelines(ID3D12Device8* device,
 	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler) {
 
-	// 平面
-	primitivePipelines_[ParticlePrimitiveType::Plane] = std::make_unique<PipelineState>();
-	primitivePipelines_[ParticlePrimitiveType::Plane]->Create(
-		"EffectPlane.json", device, srvDescriptor, shaderCompiler);
-	// リング
-	primitivePipelines_[ParticlePrimitiveType::Ring] = std::make_unique<PipelineState>();
-	primitivePipelines_[ParticlePrimitiveType::Ring]->Create(
-		"EffectRing.json", device, srvDescriptor, shaderCompiler);
-	// 円柱
-	primitivePipelines_[ParticlePrimitiveType::Cylinder] = std::make_unique<PipelineState>();
-	primitivePipelines_[ParticlePrimitiveType::Cylinder]->Create(
-		"EffectCylinder.json", device, srvDescriptor, shaderCompiler);
+	for (uint32_t typeIndex = 0; typeIndex < kParticleTypeCount; ++typeIndex) {
+
+		// タイプの名前を取得
+		const char* typeName = EnumAdapter<ParticleType>::GetEnumName(typeIndex);
+		for (uint32_t primitiveIndex = 0; primitiveIndex < kPrimitiveCount; ++primitiveIndex) {
+
+			// 形状の名前を取得
+			const char* shapeName = EnumAdapter<ParticlePrimitiveType>::GetEnumName(primitiveIndex);
+			std::string jsonFile = std::string(typeName) + "Particle" + std::string(shapeName) + ".json";
+
+			// 作成
+			auto& pipeline = pipelines_[typeIndex][primitiveIndex];
+			pipeline = std::make_unique<PipelineState>();
+			pipeline->Create(jsonFile, device, srvDescriptor, shaderCompiler);
+		}
+	}
 }
 
 void ParticleRenderer::Rendering(bool debugEnable,

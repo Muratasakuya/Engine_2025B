@@ -58,7 +58,8 @@ void SceneConstBuffer::Update(class SceneView* sceneView) {
 	ditherBuffer_.TransferData(sceneView->GetDither());
 
 	// perView
-	PerViewForGPU perView{};
+	ParticleCommon::PerViewForGPU perView{};
+	perView.cameraPos = sceneView->GetCamera()->GetTransform().translation;
 	perView.viewProjection = sceneView->GetCamera()->GetViewProjectionMatrix();
 	perView.billboardMatrix = sceneView->GetCamera()->GetBillboardMatrix();
 	perViewBuffer_.TransferData(perView);
@@ -70,6 +71,7 @@ void SceneConstBuffer::Update(class SceneView* sceneView) {
 	debugSceneViewProjectionBuffer_.TransferData(sceneView->GetSceneCamera()->GetViewProjectionMatrix());
 	debugSceneCameraPosBuffer_.TransferData(sceneView->GetSceneCamera()->GetTransform().translation);
 
+	perView.cameraPos = sceneView->GetSceneCamera()->GetTransform().translation;
 	perView.viewProjection = sceneView->GetSceneCamera()->GetViewProjectionMatrix();
 	perView.billboardMatrix = sceneView->GetSceneCamera()->GetBillboardMatrix();
 	debugScenePerViewBuffer_.TransferData(perView);

@@ -21,7 +21,7 @@ struct Plane {
 };
 
 StructuredBuffer<Plane> gPlanes : register(t0);
-RWStructuredBuffer<Transform> gTransform : register(u1);
+StructuredBuffer<Transform> gTransform : register(t1);
 
 //============================================================================
 //	Main
@@ -84,10 +84,7 @@ out vertices MSOutput verts[4], out indices uint3 polys[2]) {
 		}
 		
 		// worlds—ñ‚ğì¬
-		float4x4 worldMatrix = gPerView.billboardMatrix;
-		worldMatrix[0] *= transform.scale.x;
-		worldMatrix[1] *= transform.scale.y;
-		worldMatrix[2] *= transform.scale.z;
+		float4x4 worldMatrix = MakeWorldMatrix(transform, gPerView.billboardMatrix, gPerView.cameraPos);
 		worldMatrix[3].xyz = transform.translation;
 
 		// s—ñŒvZ

@@ -5,7 +5,10 @@
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
 #include <Engine/Effect/Particle/Structures/ParticlePrimitiveStructures.h>
+#include <Engine/Effect/Particle/Structures/ParticleStructures.h>
 
+// c++
+#include <array>
 // front
 class SRVDescriptor;
 class DxShaderCompiler;
@@ -36,13 +39,12 @@ private:
 	//	private Methods
 	//========================================================================
 
-	//--------- structure ----------------------------------------------------
-
-	using PrimitivePipeline = std::unordered_map<ParticlePrimitiveType, std::unique_ptr<PipelineState>>;
-
 	//--------- variables ----------------------------------------------------
 
-	PrimitivePipeline primitivePipelines_;
+	static const uint32_t kPrimitiveCount = static_cast<uint32_t>(ParticlePrimitiveType::Count);
+	static const uint32_t kParticleTypeCount = static_cast<uint32_t>(ParticleType::Count);
+
+	std::array<std::array<std::unique_ptr<PipelineState>, kPrimitiveCount>, kParticleTypeCount> pipelines_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -36,7 +36,7 @@ struct Ring {
 };
 
 StructuredBuffer<Ring> gRings : register(t0);
-RWStructuredBuffer<Transform> gTransform : register(u1);
+StructuredBuffer<Transform> gTransform : register(t1);
 
 //============================================================================
 //	Main
@@ -61,10 +61,7 @@ out vertices MSOutput verts[RING_MAX_VERTS], out indices uint3 polys[RING_MAX_TR
 	SetMeshOutputCounts(vertexCount, primitiveCount);
 	
 	// worlds—ñ‚ğì¬
-	float4x4 worldMatrix = gPerView.billboardMatrix;
-	worldMatrix[0] *= transform.scale.x;
-	worldMatrix[1] *= transform.scale.y;
-	worldMatrix[2] *= transform.scale.z;
+	float4x4 worldMatrix = MakeWorldMatrix(transform, gPerView.billboardMatrix, gPerView.cameraPos);
 	worldMatrix[3].xyz = transform.translation;
 
 	// s—ñŒvZ

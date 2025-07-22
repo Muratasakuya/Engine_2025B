@@ -6,6 +6,7 @@
 #include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Core/Graphics/Raytracing/RaytracingStructures.h>
 #include <Engine/Core/Graphics/GPUObject/DitherStructures.h>
+#include <Engine/Effect/Particle/Structures/ParticleStructures.h>
 #include <Engine/Scene/Light/PunctualLight.h>
 #include <Lib/MathUtils/Vector3.h>
 #include <Lib/MathUtils/Matrix4x4.h>
@@ -36,14 +37,6 @@ private:
 	//	private Methods
 	//========================================================================
 
-	//--------- structres ----------------------------------------------------
-
-	struct PerViewForGPU {
-
-		Matrix4x4 viewProjection;
-		Matrix4x4 billboardMatrix;
-	};
-
 	//--------- variables ----------------------------------------------------
 
 	// camera3D
@@ -66,6 +59,6 @@ private:
 	DxConstBuffer<DitherForGPU> ditherBuffer_;
 
 	// perView
-	DxConstBuffer<PerViewForGPU> perViewBuffer_;
-	DxConstBuffer<PerViewForGPU> debugScenePerViewBuffer_;
+	DxConstBuffer<ParticleCommon::PerViewForGPU> perViewBuffer_;
+	DxConstBuffer<ParticleCommon::PerViewForGPU> debugScenePerViewBuffer_;
 };

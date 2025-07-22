@@ -9,6 +9,15 @@
 //	ParticleShape
 //============================================================================
 
+// 形状
+enum class ParticlePrimitiveType {
+
+	Plane,
+	Ring,
+	Cylinder,
+	Count
+};
+
 // 平面
 struct PlaneForGPU {
 
@@ -20,7 +29,6 @@ struct RingForGPU {
 	float outerRadius;
 	float innerRadius;
 	int divide;
-	Matrix4x4 world;
 };
 // 円柱
 struct CylinderForGPU {
@@ -29,14 +37,4 @@ struct CylinderForGPU {
 	float bottomRadius;
 	float height;
 	int divide;
-	Matrix4x4 world;
-};
-
-// 形状
-enum class ParticlePrimitiveType {
-
-	Plane,
-	Ring,
-	Cylinder,
-	Count
 };

@@ -1,5 +1,5 @@
-#include "ParticleEffect.h"
+#include "ParticleParameter.h"
 
 //============================================================================
-//	ParticleEffect classMethods
+//	ParticleParameter classMethods
 //============================================================================

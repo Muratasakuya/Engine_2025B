@@ -9,9 +9,8 @@
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
-#include <Engine/Effect/Particle/Core/ParticleManager.h>
-#include <Engine/Config.h>
 #include <Engine/Utility/GameTimer.h>
+#include <Engine/Config.h>
 
 //============================================================================
 //	Framework classMethods
@@ -98,13 +97,6 @@ Framework::Framework() {
 	dxCommand->SetDescriptorHeaps({ srvDescriptor->GetDescriptorHeap() });
 
 	//------------------------------------------------------------------------
-	// particle機能初期化
-
-	ParticleManager::GetInstance()->Init(asset_.get(), device,
-		srvDescriptor, shaderCompiler, sceneView_.get());
-	ParticleManager::GetInstance()->InitParticle(dxCommand);
-
-	//------------------------------------------------------------------------
 	// object機能初期化
 
 	ObjectManager::GetInstance()->Init(device, asset_.get(), dxCommand);
@@ -167,8 +159,6 @@ void Framework::UpdateScene() {
 
 	// data更新
 	ObjectManager::GetInstance()->UpdateData();
-	// particle更新
-	ParticleManager::GetInstance()->Update(graphicsPlatform_->GetDxCommand());
 	// collision更新
 	CollisionManager::GetInstance()->Update();
 }
@@ -259,7 +249,6 @@ void Framework::Finalize() {
 
 	sceneManager_.reset();
 
-	ParticleManager::GetInstance()->Finalize();
 	ObjectManager::GetInstance()->Finalize();
 
 	winApp_.reset();
