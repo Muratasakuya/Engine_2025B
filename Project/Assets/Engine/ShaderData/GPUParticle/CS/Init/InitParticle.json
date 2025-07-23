@@ -6,8 +6,10 @@
         }
     ],
     "RootParameter": [
-        { "RootIndex": 0, "Type": "TABLE", "Visibility": "COMPUTE","DescriptorRange": { "Type": "UAV", "BaseShaderRegister": 0 } },
-        { "RootIndex": 1, "Type": "TABLE", "Visibility": "COMPUTE","DescriptorRange": { "Type": "UAV", "BaseShaderRegister": 1 } },
-        { "RootIndex": 2, "Type": "TABLE", "Visibility": "COMPUTE","DescriptorRange": { "Type": "UAV", "BaseShaderRegister": 2 } }
+        { "RootIndex": 0, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 0 },
+        { "RootIndex": 1, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 1 },
+        { "RootIndex": 2, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 2 },
+        { "RootIndex": 3, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 3 },
+        { "RootIndex": 4, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 4 }
     ]
 }

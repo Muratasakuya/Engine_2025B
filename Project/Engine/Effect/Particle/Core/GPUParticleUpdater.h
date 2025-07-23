@@ -4,7 +4,9 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Pipeline/PipelineState.h>
+#include <Engine/Core/Graphics/GPUObject/DxConstBuffer.h>
 #include <Engine/Effect/Particle/Structures/ParticleEmitterStructures.h>
+#include <Engine/Effect/Particle/Structures/ParticleStructures.h>
 
 // c++
 #include <array>
@@ -30,15 +32,7 @@ public:
 	void Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 		DxShaderCompiler* shaderCompiler);
 
-	// 初期化
-	void DispatchInit(const GPUParticleGroup& group, DxCommand* dxCommand);
-	// 発生
-	void DispatchEmit(const GPUParticleGroup& group, DxCommand* dxCommand);
-	// 更新
-	void DispatchUpdate(const GPUParticleGroup& group, DxCommand* dxCommand);
-
-	//--------- accessor -----------------------------------------------------
-
+	void Update(const GPUParticleGroup& group, DxCommand* dxCommand);
 private:
 	//========================================================================
 	//	private Methods
@@ -55,8 +49,22 @@ private:
 	// 更新
 	std::unique_ptr<PipelineState> updatePipeline_;
 
+	// 共通buffer
+	ParticleCommon::PerFrameForGPU perFrame_;
+	DxConstBuffer<ParticleCommon::PerFrameForGPU> perFrameBuffer_;
+
 	//--------- functions ----------------------------------------------------
 
+	// init
 	void InitPipelines(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 		DxShaderCompiler* shaderCompiler);
+
+	void BeginUpdate();
+
+	// 初期化
+	void DispatchInit(const GPUParticleGroup& group, DxCommand* dxCommand);
+	// 発生
+	void DispatchEmit(const GPUParticleGroup& group, DxCommand* dxCommand);
+	// 更新
+	void DispatchUpdate(const GPUParticleGroup& group, DxCommand* dxCommand);
 };

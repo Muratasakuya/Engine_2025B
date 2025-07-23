@@ -44,7 +44,7 @@ void ParticleSystem::CreateGPUParticle() {
 void ParticleSystem::CreateCPUParticle() {
 
 	// 追加して作成
-	CPUParticleGroup& group = cpuParticleGroups_.emplace_back();
+	//CPUParticleGroup& group = cpuParticleGroups_.emplace_back();
 }
 
 void ParticleSystem::AddParticle() {

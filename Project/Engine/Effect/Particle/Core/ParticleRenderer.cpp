@@ -3,17 +3,22 @@
 //============================================================================
 //	GPUParticleUpdater classMethods
 //============================================================================
+#include <Engine/Asset/Asset.h>
 #include <Engine/Effect/Particle/Data/GPUParticleGroup.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
+#include <Engine/Scene/SceneView.h>
 #include <Lib/Adapter/EnumAdapter.h>
 
 //============================================================================
 //	ParticleRenderer classMethods
 //============================================================================
 
-void ParticleRenderer::Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
-	DxShaderCompiler* shaderCompiler) {
+void ParticleRenderer::Init(ID3D12Device8* device, Asset* asset,
+	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler) {
+
+	asset_ = nullptr;
+	asset_ = asset;
 
 	// 各pipeline初期化
 	InitPipelines(device, srvDescriptor, shaderCompiler);
@@ -40,51 +45,38 @@ void ParticleRenderer::InitPipelines(ID3D12Device8* device,
 	}
 }
 
-void ParticleRenderer::Rendering(bool debugEnable,
+void ParticleRenderer::Rendering(bool debugEnable, const GPUParticleGroup& group,
 	SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
-	// データがなければ描画しない
-	if (gpuGroups_.empty()) {
-		return;
-	}
-
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
-
 	const uint32_t typeIndex = static_cast<uint32_t>(ParticleType::GPU);
-	for (auto& group : gpuGroups_) {
+	const uint32_t primitiveIndex = static_cast<uint32_t>(group.GetPrimitiveType());
 
-		const uint32_t primitiveIndex = static_cast<uint32_t>(group.GetPrimitiveType());
+	// pipeline設定
+	commandList->SetGraphicsRootSignature(pipelines_[typeIndex][primitiveIndex]->GetRootSignature());
+	commandList->SetPipelineState(pipelines_[typeIndex][primitiveIndex]->GetGraphicsPipeline(group.GetBlendMode()));
 
-		// pipeline設定
-		commandList->SetGraphicsRootSignature(pipelines_[typeIndex][primitiveIndex]->GetRootSignature());
-		commandList->SetPipelineState(pipelines_[typeIndex][primitiveIndex]->GetGraphicsPipeline(group.GetBlendMode()));
+	// 形状
+	commandList->SetGraphicsRootShaderResourceView(0, group.GetPrimitiveBufferAdress());
+	// transform
+	commandList->SetGraphicsRootShaderResourceView(1, group.GetTransformBuffer().GetResource()->GetGPUVirtualAddress());
+	// perView
+	sceneBuffer->SetPerViewCommand(debugEnable, commandList, 2);
+	// material
+	commandList->SetGraphicsRootShaderResourceView(3, group.GetMaterialBuffer().GetResource()->GetGPUVirtualAddress());
+	// textureTable
+	commandList->SetGraphicsRootDescriptorTable(4, asset_->GetGPUHandle(group.GetTextureName()));
+	// 描画
+	commandList->DispatchMesh(kMaxParticles, 1, 1);
 
-		// primitive形状の型取得を描画形状から取得する
-		// textureの設定がまだない
-		// 発生タイマーの更新をまだやってない
+	//============================================================================
+	// バリア遷移処理
 
-		// 形状
-		commandList->SetGraphicsRootShaderResourceView(0, group.GetPrimitiveBufferAdress());
+	// MeshShader -> ComputeShader
+	dxCommand->TransitionBarriers({ group.GetTransformBuffer().GetResource() },
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
-		// transform
-
-		// cBuffer
-
-		// material
-
-		// textureTable
-
-		// 描画
-		commandList->DispatchMesh(kMaxParticles, 1, 1);
-	}
-}
-
-void ParticleRenderer::SetGPUGroup(const std::vector<GPUParticleGroup>& group) {
-
-	if (group.empty()) {
-		return;
-	}
-
-	gpuGroups_.clear();
-	gpuGroups_ = group;
+	// PixelShader -> ComputeShader
+	dxCommand->TransitionBarriers({ group.GetMaterialBuffer().GetResource() },
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 }

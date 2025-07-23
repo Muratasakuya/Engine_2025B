@@ -10,6 +10,7 @@
 // c++
 #include <array>
 // front
+class Asset;
 class SRVDescriptor;
 class DxShaderCompiler;
 class DxCommand;
@@ -28,14 +29,11 @@ public:
 	ParticleRenderer() = default;
 	~ParticleRenderer() = default;
 
-	void Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
-		DxShaderCompiler* shaderCompiler);
+	void Init(ID3D12Device8* device, Asset* asset,
+		SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler);
 
-	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
-
-	//--------- accessor -----------------------------------------------------
-
-	void SetGPUGroup(const std::vector<GPUParticleGroup>& group);
+	void Rendering(bool debugEnable, const GPUParticleGroup& group,
+		SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 private:
 	//========================================================================
 	//	private Methods
@@ -43,12 +41,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	Asset* asset_;
+
 	static const uint32_t kPrimitiveCount = static_cast<uint32_t>(ParticlePrimitiveType::Count);
 	static const uint32_t kParticleTypeCount = static_cast<uint32_t>(ParticleType::Count);
 
 	std::array<std::array<std::unique_ptr<PipelineState>, kPrimitiveCount>, kParticleTypeCount> pipelines_;
-
-	std::vector<GPUParticleGroup> gpuGroups_;
 
 	//--------- functions ----------------------------------------------------
 

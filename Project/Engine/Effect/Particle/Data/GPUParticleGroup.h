@@ -27,11 +27,18 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	ParticlePrimitiveType GetPrimitiveType() const { return primitiveBuffer_.type; }
+	ParticleEmitterShape GetEmitterShape() const { return emitter_.shape; }
 	BlendMode GetBlendMode() const { return blendMode_; }
+	const std::string& GetTextureName() const { return textureName_; }
 
-	const D3D12_GPU_VIRTUAL_ADDRESS& GetPrimitiveBufferAdress() const;
+	D3D12_GPU_VIRTUAL_ADDRESS GetPrimitiveBufferAdress() const;
+	D3D12_GPU_VIRTUAL_ADDRESS GetEmitterShapeBufferAdress() const;
+	const DxConstBuffer<ParticleEmitterCommon>& GetEmitterCommonBuffer() const { return emitterBuffer_.common; }
 	const DxStructuredBuffer<ParticleCommon::TransformForGPU>& GetTransformBuffer() const { return transformBuffer_; }
 	const DxStructuredBuffer<GPUParticle::MaterialForGPU>& GetMaterialBuffer() const { return materialBuffer_; }
+	const DxStructuredBuffer<GPUParticle::ParticleForGPU>& GetParticleBuffer() const { return particleBuffer_; }
+	const DxStructuredBuffer<uint32_t>& GetFreeListIndexBuffer() const { return freeListIndexBuffer_; }
+	const DxStructuredBuffer<uint32_t>& GetFreeListBuffer() const { return freeListBuffer_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -59,6 +66,7 @@ private:
 
 	// 描画情報
 	BlendMode blendMode_;
+	std::string textureName_;
 
 	//--------- functions ----------------------------------------------------
 

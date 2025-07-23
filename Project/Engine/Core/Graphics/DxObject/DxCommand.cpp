@@ -218,6 +218,14 @@ void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources
 	commandList_->ResourceBarrier(static_cast<UINT>(barriers.size()), barriers.data());
 }
 
+void DxCommand::UAVBarrierAll() {
+
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	barrier.UAV.pResource = nullptr;
+	commandList_->ResourceBarrier(1, &barrier);
+}
+
 void DxCommand::CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,
 	ID3D12Resource* srcResource, D3D12_RESOURCE_STATES srcState) {
 

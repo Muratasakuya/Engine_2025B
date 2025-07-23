@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/ParticleConfig.h>
+#include <Engine/Core/Debug/Assert.h>
+#include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/EnumAdapter.h>
 
 // imgui
@@ -61,6 +63,8 @@ void GPUParticleGroup::Create(ID3D12Device* device, ParticlePrimitiveType primit
 
 	frequency_ = 0.4f;
 	frequencyTime_ = 0.0f;
+	// 今はとりあえず実装したいのでcircle
+	textureName_ = "circle";
 
 	// buffer作成
 	CreatePrimitiveBuffer(device, primitiveType);
@@ -87,6 +91,18 @@ void GPUParticleGroup::Update() {
 }
 
 void GPUParticleGroup::UpdateEmitter() {
+
+	// 時間を進める
+	frequencyTime_ += GameTimer::GetDeltaTime();
+	// 発生間隔を過ぎたら発生させる
+	if (frequency_ <= frequencyTime_) {
+
+		frequencyTime_ -= frequency_;
+		emitter_.common.emit = true;
+	} else {
+
+		emitter_.common.emit = false;
+	}
 
 	// 回転の更新
 	switch (emitter_.shape) {
@@ -125,7 +141,7 @@ void GPUParticleGroup::ImGui(ID3D12Device* device) {
 	EditEmitter();
 }
 
-const D3D12_GPU_VIRTUAL_ADDRESS& GPUParticleGroup::GetPrimitiveBufferAdress() const {
+D3D12_GPU_VIRTUAL_ADDRESS GPUParticleGroup::GetPrimitiveBufferAdress() const {
 
 	switch (primitiveBuffer_.type) {
 	case ParticlePrimitiveType::Plane: {
@@ -142,14 +158,45 @@ const D3D12_GPU_VIRTUAL_ADDRESS& GPUParticleGroup::GetPrimitiveBufferAdress() co
 	}
 	case ParticlePrimitiveType::Count: {
 
-		assert(false, " ParticlePrimitiveType::Count is not buffer");
+		ASSERT(false, "ParticlePrimitiveType::Count is not buffer");
 		return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
 	}
 	}
 
 	// フォロースルー
-	assert(false);
+	ASSERT(false, "ParticlePrimitiveType::Count is not buffer");
 	return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS GPUParticleGroup::GetEmitterShapeBufferAdress() const {
+
+	switch (emitter_.shape) {
+	case ParticleEmitterShape::Sphere: {
+
+		return emitterBuffer_.sphere.GetResource()->GetGPUVirtualAddress();
+	}
+	case ParticleEmitterShape::Hemisphere: {
+
+		return emitterBuffer_.hemisphere.GetResource()->GetGPUVirtualAddress();
+	}
+	case ParticleEmitterShape::Box: {
+
+		return emitterBuffer_.box.GetResource()->GetGPUVirtualAddress();
+	}
+	case ParticleEmitterShape::Cone: {
+
+		return emitterBuffer_.cone.GetResource()->GetGPUVirtualAddress();
+	}
+	case ParticleEmitterShape::Count: {
+
+		ASSERT(false, "ParticleEmitterType::Count is not buffer");
+		return emitterBuffer_.sphere.GetResource()->GetGPUVirtualAddress();
+	}
+	}
+
+	// フォロースルー
+	ASSERT(false, "ParticleEmitterType::Count is not buffer");
+	return emitterBuffer_.sphere.GetResource()->GetGPUVirtualAddress();
 }
 
 void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
