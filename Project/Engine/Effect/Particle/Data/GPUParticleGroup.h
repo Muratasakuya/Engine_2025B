@@ -33,6 +33,7 @@ public:
 	ParticleEmitterShape GetEmitterShape() const { return emitter_.shape; }
 	BlendMode GetBlendMode() const { return blendMode_; }
 	const std::string& GetTextureName() const { return textureName_; }
+	uint32_t GetEmitCount() const { return emitter_.common.count; }
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetPrimitiveBufferAdress() const;
 	D3D12_GPU_VIRTUAL_ADDRESS GetEmitterShapeBufferAdress() const;

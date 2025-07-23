@@ -222,7 +222,7 @@ void GPUParticleGroup::DrawEmitter() {
 
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
 
-	const uint32_t division = 4;
+	const uint32_t division = 8;
 	const Color color = Color::Red(0.6f);
 
 	// まだbufferが作成されていなければ作成する
@@ -294,21 +294,21 @@ void GPUParticleGroup::EditEmitter() {
 	case ParticleEmitterShape::Sphere: {
 
 		ImGui::DragFloat("radius", &emitter_.sphere.radius, 0.01f);
-		ImGui::DragFloat3("translation", &emitter_.sphere.translation.x, 0.1f);
+		ImGui::DragFloat3("translation", &emitter_.sphere.translation.x, 0.05f);
 		break;
 	}
 	case ParticleEmitterShape::Hemisphere: {
 
 		ImGui::DragFloat("radius", &emitter_.hemisphere.radius, 0.01f);
-		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.1f);
-		ImGui::DragFloat3("translation", &emitter_.hemisphere.translation.x, 0.1f);
+		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
+		ImGui::DragFloat3("translation", &emitter_.hemisphere.translation.x, 0.05f);
 		break;
 	}
 	case ParticleEmitterShape::Box: {
 
 		ImGui::DragFloat3("size", &emitter_.box.size.x, 0.1f);
-		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.1f);
-		ImGui::DragFloat3("translation", &emitter_.box.translation.x, 0.1f);
+		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
+		ImGui::DragFloat3("translation", &emitter_.box.translation.x, 0.05f);
 		break;
 	}
 	case ParticleEmitterShape::Cone: {
@@ -316,8 +316,8 @@ void GPUParticleGroup::EditEmitter() {
 		ImGui::DragFloat("baseRadius", &emitter_.cone.baseRadius, 0.01f);
 		ImGui::DragFloat("topRadius", &emitter_.cone.topRadius, 0.01f);
 		ImGui::DragFloat("height", &emitter_.cone.height, 0.01f);
-		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.1f);
-		ImGui::DragFloat3("translation", &emitter_.cone.translation.x, 0.1f);
+		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
+		ImGui::DragFloat3("translation", &emitter_.cone.translation.x, 0.05f);
 		break;
 	}
 	}

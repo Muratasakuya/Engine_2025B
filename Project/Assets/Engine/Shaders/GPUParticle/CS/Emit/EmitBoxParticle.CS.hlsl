@@ -48,11 +48,12 @@ float3 GetRandomPoint(RandomGenerator generator) {
 //============================================================================
 //	Main
 //============================================================================
-[numthreads(1, 1, 1)]
+[numthreads(THREAD_EMIT_GROUP, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	// ”­¶‹–‰Â‚ª‰º‚è‚Ä‚¢‚È‚¯‚ê‚Îˆ—‚µ‚È‚¢
-	if (gEmitterCommon.emit == 0) {
+	if (gEmitterCommon.emit == 0 ||
+		gEmitterCommon.count <= DTid.x) {
 		return;
 	}
 	
@@ -60,40 +61,35 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	RandomGenerator generator;
 	generator.seed = (DTid + gPerFrame.time) * gPerFrame.time;
 
-	// ”­¶•ª‚¾‚¯ˆ—
-	for (uint i = 0; i < gEmitterCommon.count; ++i) {
+	int freeListIndex;
+	InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
 		
-		int freeListIndex;
-		InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
-		
-		if (0 <= freeListIndex && freeListIndex < kMaxParticles) {
+	if (0 <= freeListIndex && freeListIndex < kMaxParticles) {
 			
-			uint particleIndex = gFreeList[freeListIndex];
+		uint particleIndex = gFreeList[freeListIndex];
 			
-			Particle particle;
-			particle.currentTime = 0.0f;
-			particle.lifeTime = gEmitterCommon.lifeTime;
+		Particle particle;
+		particle.currentTime = 0.0f;
+		particle.lifeTime = gEmitterCommon.lifeTime;
 			
-			// Œü‚¢‚Ä‚¢‚é•ûŒü(+Z)•ûŒü‚É”ò‚Î‚·
-			float3 worldForward = mul(float3(0.0f, 0.0f, 1.0f), (float3x3) gEmitterBox.rotationMatrix);
-			particle.velocity = normalize(worldForward) * generator.Generate3D();
+		// Œü‚¢‚Ä‚¢‚é•ûŒü(+Z)•ûŒü‚É”ò‚Î‚·
+		float3 worldForward = mul(float3(0.0f, 0.0f, 1.0f), (float3x3) gEmitterBox.rotationMatrix);
+		particle.velocity = normalize(worldForward) * generator.Generate3D();
 			
-			Transform transform = (Transform) 0;
-			transform.translation = gEmitterBox.translation + mul(
+		Transform transform = (Transform) 0;
+		transform.translation = gEmitterBox.translation + mul(
 			float4(GetRandomPoint(generator), 1.0f), gEmitterBox.rotationMatrix).xyz;
-			transform.scale = gEmitterCommon.scale;
+		transform.scale = gEmitterCommon.scale;
 			
-			Material material = (Material) 0;
-			material.color = gEmitterCommon.color;
+		Material material = (Material) 0;
+		material.color = gEmitterCommon.color;
 			
-			// ’l‚ğİ’è
-			gParticles[particleIndex] = particle;
-			gTransform[particleIndex] = transform;
-			gMaterials[particleIndex] = material;
-		} else {
+		// ’l‚ğİ’è
+		gParticles[particleIndex] = particle;
+		gTransform[particleIndex] = transform;
+		gMaterials[particleIndex] = material;
+	} else {
 
-			InterlockedAdd(gFreeListIndex[0], 1);
-			break;
-		}
+		InterlockedAdd(gFreeListIndex[0], 1);
 	}
 }

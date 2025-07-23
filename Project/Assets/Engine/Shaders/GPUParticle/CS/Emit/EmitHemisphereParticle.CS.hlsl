@@ -58,11 +58,12 @@ float3 GetRandomDirection(RandomGenerator generator) {
 //============================================================================
 //	Main
 //============================================================================
-[numthreads(1, 1, 1)]
+[numthreads(THREAD_EMIT_GROUP, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	// 発生許可が下りていなければ処理しない
-	if (gEmitterCommon.emit == 0) {
+	if (gEmitterCommon.emit == 0 ||
+		gEmitterCommon.count <= DTid.x) {
 		return;
 	}
 	
@@ -70,41 +71,36 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	RandomGenerator generator;
 	generator.seed = (DTid + gPerFrame.time) * gPerFrame.time;
 
-	// 発生分だけ処理
-	for (uint i = 0; i < gEmitterCommon.count; ++i) {
+	int freeListIndex;
+	InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
 		
-		int freeListIndex;
-		InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
-		
-		if (0 <= freeListIndex && freeListIndex < kMaxParticles) {
+	if (0 <= freeListIndex && freeListIndex < kMaxParticles) {
 			
-			uint particleIndex = gFreeList[freeListIndex];
+		uint particleIndex = gFreeList[freeListIndex];
 			
-			Particle particle;
-			particle.currentTime = 0.0f;
-			particle.lifeTime = gEmitterCommon.lifeTime;
+		Particle particle;
+		particle.currentTime = 0.0f;
+		particle.lifeTime = gEmitterCommon.lifeTime;
 			
-			// 球面上へランダムな向きを設定
-			float3 direction = GetRandomDirection(generator);
-			// 回転を適応
-			float3 rotatedDirection = mul(direction, (float3x3) gEmitterHemisphere.rotationMatrix);
-			particle.velocity = normalize(rotatedDirection) * generator.Generate3D();
+		// 球面上へランダムな向きを設定
+		float3 direction = GetRandomDirection(generator);
+		// 回転を適応
+		float3 rotatedDirection = mul(direction, (float3x3) gEmitterHemisphere.rotationMatrix);
+		particle.velocity = normalize(rotatedDirection) * generator.Generate3D();
 			
-			Transform transform = (Transform) 0;
-			transform.translation = gEmitterHemisphere.translation + direction * gEmitterHemisphere.radius;
-			transform.scale = gEmitterCommon.scale;
+		Transform transform = (Transform) 0;
+		transform.translation = gEmitterHemisphere.translation + direction * gEmitterHemisphere.radius;
+		transform.scale = gEmitterCommon.scale;
 			
-			Material material = (Material) 0;
-			material.color = gEmitterCommon.color;
+		Material material = (Material) 0;
+		material.color = gEmitterCommon.color;
 			
-			// 値を設定
-			gParticles[particleIndex] = particle;
-			gTransform[particleIndex] = transform;
-			gMaterials[particleIndex] = material;
-		} else {
+		// 値を設定
+		gParticles[particleIndex] = particle;
+		gTransform[particleIndex] = transform;
+		gMaterials[particleIndex] = material;
+	} else {
 
-			InterlockedAdd(gFreeListIndex[0], 1);
-			break;
-		}
+		InterlockedAdd(gFreeListIndex[0], 1);
 	}
 }

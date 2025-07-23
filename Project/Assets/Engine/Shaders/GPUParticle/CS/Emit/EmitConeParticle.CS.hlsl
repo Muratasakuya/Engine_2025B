@@ -53,11 +53,12 @@ float3 GetFacePoint(RandomGenerator generator, float radius, float height) {
 //============================================================================
 //	Main
 //============================================================================
-[numthreads(1, 1, 1)]
+[numthreads(THREAD_EMIT_GROUP, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	// 発生許可が下りていなければ処理しない
-	if (gEmitterCommon.emit == 0) {
+	if (gEmitterCommon.emit == 0 ||
+		gEmitterCommon.count <= DTid.x) {
 		return;
 	}
 	
@@ -65,46 +66,41 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	RandomGenerator generator;
 	generator.seed = (DTid + gPerFrame.time) * gPerFrame.time;
 
-	// 発生分だけ処理
-	for (uint i = 0; i < gEmitterCommon.count; ++i) {
+	int freeListIndex;
+	InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
 		
-		int freeListIndex;
-		InterlockedAdd(gFreeListIndex[0], -1, freeListIndex);
-		
-		if (0 <= freeListIndex && freeListIndex < kMaxParticles) {
+	if (0 <= freeListIndex && freeListIndex < kMaxParticles) {
 			
-			uint particleIndex = gFreeList[freeListIndex];
+		uint particleIndex = gFreeList[freeListIndex];
 			
-			Particle particle;
-			particle.currentTime = 0.0f;
-			particle.lifeTime = gEmitterCommon.lifeTime;
+		Particle particle;
+		particle.currentTime = 0.0f;
+		particle.lifeTime = gEmitterCommon.lifeTime;
 			
-			// 向いている方向(+Z)方向に飛ばす
-			// 上の面と下の面の座標取得
-			// ローカル
-			float3 baseLocal = GetFacePoint(generator, gEmitterCone.baseRadius, 0.0f);
-			float3 topLocal = GetFacePoint(generator, gEmitterCone.topRadius, gEmitterCone.height);
-			// ワールド
-			float3 baseWorld = gEmitterCone.translation + mul(float4(baseLocal, 1.0f), gEmitterCone.rotationMatrix).xyz;
-			float3 topWorld = gEmitterCone.translation + mul(float4(topLocal, 1.0f), gEmitterCone.rotationMatrix).xyz;
-			float3 direction = normalize(topWorld - baseWorld);
-			particle.velocity = direction * generator.Generate3D();
+		// 向いている方向(+Z)方向に飛ばす
+		// 上の面と下の面の座標取得
+		// ローカル
+		float3 baseLocal = GetFacePoint(generator, gEmitterCone.baseRadius, 0.0f);
+		float3 topLocal = GetFacePoint(generator, gEmitterCone.topRadius, gEmitterCone.height);
+		// ワールド
+		float3 baseWorld = gEmitterCone.translation + mul(float4(baseLocal, 1.0f), gEmitterCone.rotationMatrix).xyz;
+		float3 topWorld = gEmitterCone.translation + mul(float4(topLocal, 1.0f), gEmitterCone.rotationMatrix).xyz;
+		float3 direction = normalize(topWorld - baseWorld);
+		particle.velocity = direction * generator.Generate3D();
 			
-			Transform transform = (Transform) 0;
-			transform.translation = baseWorld;
-			transform.scale = gEmitterCommon.scale;
+		Transform transform = (Transform) 0;
+		transform.translation = baseWorld;
+		transform.scale = gEmitterCommon.scale;
 			
-			Material material = (Material) 0;
-			material.color = gEmitterCommon.color;
+		Material material = (Material) 0;
+		material.color = gEmitterCommon.color;
 			
-			// 値を設定
-			gParticles[particleIndex] = particle;
-			gTransform[particleIndex] = transform;
-			gMaterials[particleIndex] = material;
-		} else {
+		// 値を設定
+		gParticles[particleIndex] = particle;
+		gTransform[particleIndex] = transform;
+		gMaterials[particleIndex] = material;
+	} else {
 
-			InterlockedAdd(gFreeListIndex[0], 1);
-			break;
-		}
+		InterlockedAdd(gFreeListIndex[0], 1);
 	}
 }

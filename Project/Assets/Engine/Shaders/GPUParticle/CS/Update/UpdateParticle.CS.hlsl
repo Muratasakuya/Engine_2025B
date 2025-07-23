@@ -25,7 +25,7 @@ RWStructuredBuffer<uint> gFreeList : register(u4);
 //============================================================================
 //	Main
 //============================================================================
-[numthreads(1024, 1, 1)]
+[numthreads(THREAD_UPDATE_GROUP, 1, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	uint particleIndex = DTid.x;

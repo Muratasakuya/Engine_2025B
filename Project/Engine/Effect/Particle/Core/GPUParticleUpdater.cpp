@@ -3,8 +3,9 @@
 //============================================================================
 //	GPUParticleUpdater classMethods
 //============================================================================
-#include <Engine/Effect/Particle/Data/GPUParticleGroup.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
+#include <Engine/Effect/Particle/Data/GPUParticleGroup.h>
+#include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/EnumAdapter.h>
 
@@ -106,6 +107,10 @@ void GPUParticleUpdater::DispatchInit(GPUParticleGroup& group, DxCommand* dxComm
 
 void GPUParticleUpdater::DispatchEmit(const GPUParticleGroup& group, DxCommand* dxCommand) {
 
+	if (group.GetEmitCount() == 0) {
+		return;
+	}
+
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 	const uint32_t shapeIndex = static_cast<uint32_t>(group.GetEmitterShape());
 
@@ -131,7 +136,7 @@ void GPUParticleUpdater::DispatchEmit(const GPUParticleGroup& group, DxCommand* 
 	commandList->SetComputeRootConstantBufferView(7, perFrameBuffer_.GetResource()->GetGPUVirtualAddress());
 
 	// 実行
-	commandList->Dispatch(1, 1, 1);
+	commandList->Dispatch(DxUtils::RoundUp(group.GetEmitCount(), THREAD_EMIT_GROUP), 1, 1);
 
 	// 各バッファのUAVバリア
 	dxCommand->UAVBarrierAll();
