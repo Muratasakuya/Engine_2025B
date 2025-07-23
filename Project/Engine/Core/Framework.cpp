@@ -8,6 +8,7 @@
 #include <Engine/Asset/AssetEditor.h>
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Collision/CollisionManager.h>
+#include <Engine/Effect/Particle/Core/ParticleManager.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Engine/Config.h>
@@ -100,6 +101,12 @@ Framework::Framework() {
 	// object機能初期化
 
 	ObjectManager::GetInstance()->Init(device, asset_.get(), dxCommand);
+
+	//------------------------------------------------------------------------
+	// scene管理クラス初期化
+	
+	ParticleManager::GetInstance()->Init(asset_.get(),
+		device, srvDescriptor, shaderCompiler);
 
 	//------------------------------------------------------------------------
 	// scene管理クラス初期化
@@ -250,6 +257,7 @@ void Framework::Finalize() {
 	sceneManager_.reset();
 
 	ObjectManager::GetInstance()->Finalize();
+	ParticleManager::GetInstance()->Finalize();
 
 	winApp_.reset();
 	asset_.reset();

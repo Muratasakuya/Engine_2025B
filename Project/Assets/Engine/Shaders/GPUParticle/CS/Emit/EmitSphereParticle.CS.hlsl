@@ -81,11 +81,11 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			float3 direction = GetRandomDirection(generator);
 			particle.velocity = direction * generator.Generate3D();
 			
-			Transform transform;
+			Transform transform = (Transform) 0;
 			transform.translation = gEmitterSphere.translation + direction * gEmitterSphere.radius;
 			transform.scale = gEmitterCommon.scale;
 			
-			Material material;
+			Material material = (Material) 0;
 			material.color = gEmitterCommon.color;
 			
 			// ’l‚ğİ’è

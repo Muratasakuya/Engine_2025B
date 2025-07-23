@@ -90,11 +90,11 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			float3 direction = normalize(topWorld - baseWorld);
 			particle.velocity = direction * generator.Generate3D();
 			
-			Transform transform;
+			Transform transform = (Transform) 0;
 			transform.translation = baseWorld;
 			transform.scale = gEmitterCommon.scale;
 			
-			Material material;
+			Material material = (Material) 0;
 			material.color = gEmitterCommon.color;
 			
 			// ílÇê›íË

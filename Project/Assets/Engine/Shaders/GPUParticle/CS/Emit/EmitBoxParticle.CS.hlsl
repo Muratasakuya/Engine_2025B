@@ -78,12 +78,12 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			float3 worldForward = mul(float3(0.0f, 0.0f, 1.0f), (float3x3) gEmitterBox.rotationMatrix);
 			particle.velocity = normalize(worldForward) * generator.Generate3D();
 			
-			Transform transform;
+			Transform transform = (Transform) 0;
 			transform.translation = gEmitterBox.translation + mul(
 			float4(GetRandomPoint(generator), 1.0f), gEmitterBox.rotationMatrix).xyz;
 			transform.scale = gEmitterCommon.scale;
 			
-			Material material;
+			Material material = (Material) 0;
 			material.color = gEmitterCommon.color;
 			
 			// ílÇê›íË

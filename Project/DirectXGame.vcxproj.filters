@@ -807,7 +807,7 @@
     <FxCompile Include="Assets\Engine\Shaders\GPUParticle\Primitive\PlaneParticle.MS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Update\UpdateParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitSphereParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitHemisphereParticle,CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitHemisphereParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitBoxParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitConeParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitMeshParticle.CS.hlsl" />

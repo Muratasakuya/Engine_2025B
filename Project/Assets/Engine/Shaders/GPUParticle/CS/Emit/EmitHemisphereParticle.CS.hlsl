@@ -90,11 +90,11 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			float3 rotatedDirection = mul(direction, (float3x3) gEmitterHemisphere.rotationMatrix);
 			particle.velocity = normalize(rotatedDirection) * generator.Generate3D();
 			
-			Transform transform;
+			Transform transform = (Transform) 0;
 			transform.translation = gEmitterHemisphere.translation + direction * gEmitterHemisphere.radius;
 			transform.scale = gEmitterCommon.scale;
 			
-		Material material;
+			Material material = (Material) 0;
 			material.color = gEmitterCommon.color;
 			
 			// ílÇê›íË
