@@ -32,7 +32,7 @@ public:
 	void Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 		DxShaderCompiler* shaderCompiler);
 
-	void Update(const GPUParticleGroup& group, DxCommand* dxCommand);
+	void Update(GPUParticleGroup& group, DxCommand* dxCommand);
 private:
 	//========================================================================
 	//	private Methods
@@ -62,7 +62,7 @@ private:
 	void BeginUpdate();
 
 	// 初期化
-	void DispatchInit(const GPUParticleGroup& group, DxCommand* dxCommand);
+	void DispatchInit(GPUParticleGroup& group, DxCommand* dxCommand);
 	// 発生
 	void DispatchEmit(const GPUParticleGroup& group, DxCommand* dxCommand);
 	// 更新

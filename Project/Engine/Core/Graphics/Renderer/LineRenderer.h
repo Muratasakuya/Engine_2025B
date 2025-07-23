@@ -167,6 +167,9 @@ inline void LineRenderer::DrawPolygon(int polygonCount, const Vector3& centerPos
 	} else if constexpr (std::is_same_v<T, Quaternion>) {
 
 		rotationMatrix = Quaternion::MakeRotateMatrix(rotation);
+	} else if constexpr (std::is_same_v<T, Matrix4x4>) {
+
+		rotationMatrix = rotation;
 	}
 
 	// 各頂点を計算
@@ -208,6 +211,9 @@ inline void LineRenderer::DrawHemisphere(int division, float radius, const Vecto
 	} else if constexpr (std::is_same_v<T, Quaternion>) {
 
 		rotationMatrix = Quaternion::MakeRotateMatrix(rotation);
+	} else if constexpr (std::is_same_v<T, Matrix4x4>) {
+
+		rotationMatrix = rotation;
 	}
 
 	for (int latIndex = 0; latIndex < division; ++latIndex) {
@@ -242,6 +248,9 @@ inline void LineRenderer::DrawOBB(const Vector3& centerPos, const Vector3& size,
 	} else if constexpr (std::is_same_v<T, Quaternion>) {
 
 		rotationMatrix = Quaternion::MakeRotateMatrix(rotation);
+	} else if constexpr (std::is_same_v<T, Matrix4x4>) {
+
+		rotationMatrix = rotation;
 	}
 
 	Vector3 vertices[vertexNum];
@@ -301,6 +310,9 @@ inline void LineRenderer::DrawCone(int division, float baseRadius, float topRadi
 	} else if constexpr (std::is_same_v<T, Quaternion>) {
 
 		rotationMatrix = Quaternion::MakeRotateMatrix(rotation);
+	} else if constexpr (std::is_same_v<T, Matrix4x4>) {
+
+		rotationMatrix = rotation;
 	}
 
 	for (int i = 0; i < division; ++i) {

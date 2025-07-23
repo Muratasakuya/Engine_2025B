@@ -66,11 +66,13 @@ namespace ParticleCommon {
 
 		float time;
 		float deltaTime;
+		float pad0[2];
 	};
 
 	struct PerViewForGPU {
 
 		Vector3 cameraPos;
+		float pad0;
 
 		Matrix4x4 viewProjection;
 		Matrix4x4 billboardMatrix;

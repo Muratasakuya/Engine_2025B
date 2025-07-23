@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Utility/GameTimer.h>
@@ -63,6 +64,8 @@ void GPUParticleGroup::Create(ID3D12Device* device, ParticlePrimitiveType primit
 
 	frequency_ = 0.4f;
 	frequencyTime_ = 0.0f;
+	isInitialized_ = false;
+	blendMode_ = kBlendModeAdd;
 	// 今はとりあえず実装したいのでcircle
 	textureName_ = "circle";
 
@@ -84,10 +87,6 @@ void GPUParticleGroup::Update() {
 
 	// 現在使用中のエミッタを更新
 	UpdateEmitter();
-
-	// buffer転送
-	emitterBuffer_.common.TransferData(emitter_.common);
-	emitterBuffer_.sphere.TransferData(emitter_.sphere);
 }
 
 void GPUParticleGroup::UpdateEmitter() {
@@ -103,25 +102,45 @@ void GPUParticleGroup::UpdateEmitter() {
 
 		emitter_.common.emit = false;
 	}
+	// buffer転送
+	emitterBuffer_.common.TransferData(emitter_.common);
 
 	// 回転の更新
 	switch (emitter_.shape) {
+	case ParticleEmitterShape::Sphere: {
+
+		// buffer転送
+		emitterBuffer_.sphere.TransferData(emitter_.sphere);
+		break;
+	}
 	case ParticleEmitterShape::Hemisphere: {
 
-		emitter_.hemiSphere.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+		emitter_.hemisphere.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+
+		// buffer転送
+		emitterBuffer_.hemisphere.TransferData(emitter_.hemisphere);
 		break;
 	}
 	case ParticleEmitterShape::Box: {
 
 		emitter_.box.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+
+		// buffer転送
+		emitterBuffer_.box.TransferData(emitter_.box);
 		break;
 	}
 	case ParticleEmitterShape::Cone: {
 
 		emitter_.cone.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+
+		// buffer転送
+		emitterBuffer_.cone.TransferData(emitter_.cone);
 		break;
 	}
 	}
+
+	// emitterの描画
+	DrawEmitter();
 }
 
 void GPUParticleGroup::ImGui(ID3D12Device* device) {
@@ -134,7 +153,7 @@ void GPUParticleGroup::ImGui(ID3D12Device* device) {
 	ImGui::DragFloat("frequency", &frequency_, 0.01f);
 
 	ImGui::DragFloat3("scale", &emitter_.common.scale.x, 0.01f);
-	ImGui::ColorEdit4("color", &emitter_.common.color.a);
+	ImGui::ColorEdit4("color", &emitter_.common.color.r);
 
 	// エミッタ
 	SelectEmitter(device);
@@ -150,11 +169,11 @@ D3D12_GPU_VIRTUAL_ADDRESS GPUParticleGroup::GetPrimitiveBufferAdress() const {
 	}
 	case ParticlePrimitiveType::Ring: {
 
-		return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
+		return primitiveBuffer_.ring.GetResource()->GetGPUVirtualAddress();
 	}
 	case ParticlePrimitiveType::Cylinder: {
 
-		return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
+		return primitiveBuffer_.cylinder.GetResource()->GetGPUVirtualAddress();
 	}
 	case ParticlePrimitiveType::Count: {
 
@@ -199,6 +218,42 @@ D3D12_GPU_VIRTUAL_ADDRESS GPUParticleGroup::GetEmitterShapeBufferAdress() const 
 	return emitterBuffer_.sphere.GetResource()->GetGPUVirtualAddress();
 }
 
+void GPUParticleGroup::DrawEmitter() {
+
+	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+
+	const uint32_t division = 4;
+	const Color color = Color::Red(0.6f);
+
+	// まだbufferが作成されていなければ作成する
+	switch (emitter_.shape) {
+	case ParticleEmitterShape::Sphere: {
+
+		lineRenderer->DrawSphere(division, emitter_.sphere.radius,
+			emitter_.sphere.translation, color);
+		break;
+	}
+	case ParticleEmitterShape::Hemisphere: {
+
+		lineRenderer->DrawHemisphere(division, emitter_.hemisphere.radius,
+			emitter_.hemisphere.translation, emitter_.hemisphere.rotationMatrix, color);
+		break;
+	}
+	case ParticleEmitterShape::Box: {
+
+		lineRenderer->DrawOBB(emitter_.box.translation,
+			emitter_.box.size, emitter_.box.rotationMatrix, color);
+		break;
+	}
+	case ParticleEmitterShape::Cone: {
+
+		lineRenderer->DrawCone(division, emitter_.cone.baseRadius, emitter_.cone.topRadius,
+			emitter_.cone.height, emitter_.cone.translation, emitter_.cone.rotationMatrix, color);
+		break;
+	}
+	}
+}
+
 void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
 
 	if (EnumAdapter<ParticleEmitterShape>::Combo("emitterShape", &emitter_.shape)) {
@@ -208,7 +263,7 @@ void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
 		case ParticleEmitterShape::Hemisphere: {
 			if (!emitterBuffer_.hemisphere.IsCreatedResource()) {
 
-				emitter_.hemiSphere.Init();
+				emitter_.hemisphere.Init();
 				emitterBuffer_.hemisphere.CreateBuffer(device);
 			}
 			break;
@@ -244,9 +299,9 @@ void GPUParticleGroup::EditEmitter() {
 	}
 	case ParticleEmitterShape::Hemisphere: {
 
-		ImGui::DragFloat("radius", &emitter_.hemiSphere.radius, 0.01f);
+		ImGui::DragFloat("radius", &emitter_.hemisphere.radius, 0.01f);
 		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.1f);
-		ImGui::DragFloat3("translation", &emitter_.hemiSphere.translation.x, 0.1f);
+		ImGui::DragFloat3("translation", &emitter_.hemisphere.translation.x, 0.1f);
 		break;
 	}
 	case ParticleEmitterShape::Box: {

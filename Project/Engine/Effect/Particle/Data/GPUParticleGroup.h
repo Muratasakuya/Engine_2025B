@@ -26,6 +26,9 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetIsInitialized(bool isInitialized) { isInitialized_ = isInitialized; }
+	bool IsInitialized() const { return isInitialized_; }
+
 	ParticlePrimitiveType GetPrimitiveType() const { return primitiveBuffer_.type; }
 	ParticleEmitterShape GetEmitterShape() const { return emitter_.shape; }
 	BlendMode GetBlendMode() const { return blendMode_; }
@@ -53,6 +56,8 @@ private:
 	// 時間管理
 	float frequency_;
 	float frequencyTime_;
+	// 初期化したかどうか
+	bool isInitialized_;
 
 	// buffers
 	ParticleEmitterBufferData emitterBuffer_;
@@ -77,6 +82,7 @@ private:
 	void UpdateEmitter();
 
 	// editor
+	void DrawEmitter();
 	void SelectEmitter(ID3D12Device* device);
 	void EditEmitter();
 };

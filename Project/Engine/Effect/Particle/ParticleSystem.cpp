@@ -27,61 +27,105 @@ void ParticleSystem::Init(ID3D12Device* device,
 
 void ParticleSystem::Update() {
 
-	// 所持しているパーティクルの更新
-	for (auto& group : gpuParticleGroups_) {
+	if (gpuGroups_.empty()) {
+		return;
+	}
 
-		group.Update();
+	// 所持しているパーティクルの更新
+	for (auto& group : gpuGroups_) {
+
+		group.group.Update();
 	}
 }
 
-void ParticleSystem::CreateGPUParticle() {
+void ParticleSystem::AddGroup() {
 
-	// 追加して作成
-	GPUParticleGroup& group = gpuParticleGroups_.emplace_back();
-	group.Create(device_, primitiveType_);
+	// タイプに応じて作成
+	if (particleType_ == ParticleType::CPU) {
+
+		// 今は何もないよ～ん
+	} else if (particleType_ == ParticleType::GPU) {
+
+		// 追加
+		auto& group = gpuGroups_.emplace_back();
+		// 名前の設定
+		group.name = "particle" + std::to_string(++nextGroupId_);
+		// 作成
+		group.group.Create(device_, primitiveType_);
+	}
 }
 
-void ParticleSystem::CreateCPUParticle() {
+void ParticleSystem::RemoveGroup() {
 
-	// 追加して作成
-	//CPUParticleGroup& group = cpuParticleGroups_.emplace_back();
+	// 選択中のグループを削除
+	if (0 <= selectedGroup_ && selectedGroup_ < static_cast<int>(gpuGroups_.size())) {
+
+		gpuGroups_.erase(gpuGroups_.begin() + selectedGroup_);
+
+		// 未選択状態にする
+		selectedGroup_ = -1;
+		renamingGroup_ = -1;
+	}
 }
 
-void ParticleSystem::AddParticle() {
+void ParticleSystem::ImGui() {
+
+	ImGui::Columns(2, "##systemSplit", true);
 
 	// タイプ選択
 	EnumAdapter<ParticleType>::Combo("particleType", &particleType_);
 	EnumAdapter<ParticlePrimitiveType>::Combo("primitiveType", &primitiveType_);
 
-	if (ImGui::Button("Add Particle")) {
+	// groupの追加、削除
+	if (ImGui::Button("+##ParticleSystem")) {
 
-		// タイプ別で作成
-		if (particleType_ == ParticleType::GPU) {
+		AddGroup();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("-##ParticleSystem")) {
 
-			CreateGPUParticle();
-		} else if (particleType_ == ParticleType::CPU) {
+		RemoveGroup();
+	}
 
-			CreateCPUParticle();
+	for (int groupI = 0; groupI < gpuGroups_.size(); ++groupI) {
+
+		bool selected = (selectedGroup_ == groupI);
+		if (ImGui::Selectable(gpuGroups_[groupI].name.c_str(), selected,
+			ImGuiSelectableFlags_AllowDoubleClick)) {
+
+			selectedGroup_ = groupI;
+		}
+
+		// ダブルクリックで改名
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+
+			renamingGroup_ = groupI;
+			strncpy_s(renameBuffer_, sizeof(renameBuffer_), gpuGroups_[groupI].name.c_str(), _TRUNCATE);
+		}
+
+		// 改名中
+		if (renamingGroup_ == groupI) {
+			ImGui::SameLine();
+			if (ImGui::InputText("##renameGrp", renameBuffer_, sizeof(renameBuffer_),
+				ImGuiInputTextFlags_EnterReturnsTrue)) {
+
+				gpuGroups_[groupI].name = renameBuffer_;
+				renamingGroup_ = -1;
+			}
 		}
 	}
+
+	// group内処理
+	ImGui::NextColumn();
+	if (0 <= selectedGroup_ && selectedGroup_ < static_cast<int>(gpuGroups_.size())) {
+
+		gpuGroups_[selectedGroup_].group.ImGui(device_);
+	}
+	ImGui::Columns(1);
 }
 
-void ParticleSystem::SelectParticle() {
+void ParticleSystem::BeginRenameGroup(int index, const char* name) {
 
-
-}
-
-void ParticleSystem::EditParticle() {
-
-
-}
-
-void ParticleSystem::ImGui() {
-
-	// 追加処理
-	AddParticle();
-	// 選択処理
-	SelectParticle();
-	// 値の操作
-	EditParticle();
+	renamingGroup_ = index;
+	strncpy_s(renameBuffer_, sizeof(renameBuffer_), name, _TRUNCATE);
 }

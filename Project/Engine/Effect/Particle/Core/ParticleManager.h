@@ -41,13 +41,26 @@ private:
 
 	static ParticleManager* instance_;
 
+	Asset* asset_;
+	ID3D12Device8* device_;
+
 	// GPU
 	std::unique_ptr<GPUParticleUpdater> gpuUpdater_;
 	std::unique_ptr<ParticleRenderer> renderer_;
 
 	std::vector<std::unique_ptr<ParticleSystem>> systems_;
 
+	// editor
+	int nextSystemId_ = 0;       // システム添え字インデックス
+	int selectedSystem_ = -1;    // 現在選択しているシステム
+	int renamingSystem_ = -1;    // 改名中のシステムインデックス
+	char renameBuffer_[64] = {}; // 入力用バッファ
+
 	//--------- functions ----------------------------------------------------
+
+	// editor
+	void AddSystem();
+	void RemoveSystem();
 
 	ParticleManager() : IGameEditor("ParticleManager") {}
 	~ParticleManager() = default;

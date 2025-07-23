@@ -168,6 +168,8 @@ void Framework::UpdateScene() {
 	ObjectManager::GetInstance()->UpdateData();
 	// collision更新
 	CollisionManager::GetInstance()->Update();
+	// particle更新
+	ParticleManager::GetInstance()->Update(graphicsPlatform_->GetDxCommand());
 }
 
 void Framework::Draw() {

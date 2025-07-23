@@ -25,7 +25,7 @@ void GPUParticleUpdater::Init(ID3D12Device8* device,
 	InitPipelines(device, srvDescriptor, shaderCompiler);
 }
 
-void GPUParticleUpdater::Update(const GPUParticleGroup& group, DxCommand* dxCommand) {
+void GPUParticleUpdater::Update(GPUParticleGroup& group, DxCommand* dxCommand) {
 
 	// 時間の更新
 	BeginUpdate();
@@ -70,8 +70,12 @@ void GPUParticleUpdater::InitPipelines(ID3D12Device8* device,
 	}
 }
 
-void GPUParticleUpdater::DispatchInit(
-	const GPUParticleGroup& group, DxCommand* dxCommand) {
+void GPUParticleUpdater::DispatchInit(GPUParticleGroup& group, DxCommand* dxCommand) {
+
+	// 初期化済みの場合は処理しない
+	if (group.IsInitialized()) {
+		return;
+	}
 
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
@@ -95,10 +99,12 @@ void GPUParticleUpdater::DispatchInit(
 
 	// 各バッファのUAVバリア
 	dxCommand->UAVBarrierAll();
+
+	// 初期化済み
+	group.SetIsInitialized(true);
 }
 
-void GPUParticleUpdater::DispatchEmit(
-	const GPUParticleGroup& group, DxCommand* dxCommand) {
+void GPUParticleUpdater::DispatchEmit(const GPUParticleGroup& group, DxCommand* dxCommand) {
 
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 	const uint32_t shapeIndex = static_cast<uint32_t>(group.GetEmitterShape());
@@ -131,8 +137,7 @@ void GPUParticleUpdater::DispatchEmit(
 	dxCommand->UAVBarrierAll();
 }
 
-void GPUParticleUpdater::DispatchUpdate(
-	const GPUParticleGroup& group, DxCommand* dxCommand) {
+void GPUParticleUpdater::DispatchUpdate(const GPUParticleGroup& group, DxCommand* dxCommand) {
 
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 

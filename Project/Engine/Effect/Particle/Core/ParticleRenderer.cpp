@@ -72,6 +72,20 @@ void ParticleRenderer::Rendering(bool debugEnable, const GPUParticleGroup& group
 	//============================================================================
 	// バリア遷移処理
 
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+
+	if (debugEnable) {
+
+		// MeshShader -> ComputeShader
+		dxCommand->TransitionBarriers({ group.GetTransformBuffer().GetResource() },
+			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
+		// PixelShader -> ComputeShader
+		dxCommand->TransitionBarriers({ group.GetMaterialBuffer().GetResource() },
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+	}
+#else
+
 	// MeshShader -> ComputeShader
 	dxCommand->TransitionBarriers({ group.GetTransformBuffer().GetResource() },
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
@@ -79,4 +93,5 @@ void ParticleRenderer::Rendering(bool debugEnable, const GPUParticleGroup& group
 	// PixelShader -> ComputeShader
 	dxCommand->TransitionBarriers({ group.GetMaterialBuffer().GetResource() },
 		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+#endif
 }

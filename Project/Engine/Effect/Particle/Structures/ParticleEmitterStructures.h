@@ -25,8 +25,10 @@ struct ParticleEmitterCommon {
 	int32_t count;
 	int32_t emit;
 	float lifeTime;
+	float pad0;
 
 	Vector3 scale;
+	float pad1;
 
 	Color color;
 
@@ -46,7 +48,9 @@ struct ParticleEmitterCommon {
 struct ParticleEmitterSphere {
 
 	float radius;
+
 	Vector3 translation;
+	float pad0;
 
 	void Init() {
 
@@ -75,7 +79,11 @@ struct ParticleEmitterHemisphere {
 struct ParticleEmitterBox {
 
 	Vector3 size;
+	float pod0;
+
 	Vector3 translation;
+	float pod1;
+
 	Matrix4x4 rotationMatrix;
 
 	void Init() {
@@ -92,8 +100,11 @@ struct ParticleEmitterCone {
 	float baseRadius;
 	float topRadius;
 	float height;
+	float pod0;
 
 	Vector3 translation;
+	float pod1;
+
 	Matrix4x4 rotationMatrix;
 
 	void Init() {
@@ -117,7 +128,7 @@ struct ParticleEmitterData {
 	// 球
 	ParticleEmitterSphere sphere;
 	// 半球
-	ParticleEmitterHemisphere hemiSphere;
+	ParticleEmitterHemisphere hemisphere;
 	// 箱(OBB)
 	ParticleEmitterBox box;
 	// コーン状

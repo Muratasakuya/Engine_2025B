@@ -13,6 +13,19 @@ class Asset;
 //	ParticleSystem class
 //============================================================================
 class ParticleSystem {
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- structure ----------------------------------------------------
+
+	template <typename T>
+	struct NameGroup {
+
+		std::string name;
+		T group;
+	};
 public:
 	//========================================================================
 	//	public Methods
@@ -29,7 +42,15 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const std::vector<GPUParticleGroup>& GetGPUGroup() const { return gpuParticleGroups_; }
+	void SetName(const std::string& name) { name_ = name; }
+	void SetGroupName(uint32_t i, const std::string& name) { gpuGroups_[i].name = name; }
+	void SelectGroup(int index) { selectedGroup_ = index; }
+	void BeginRenameGroup(int index, const char* name);
+
+	const std::string& GetName() const { return name_; }
+	const std::string& GetGroupName(uint32_t i) const { return gpuGroups_[i].name; }
+
+	std::vector<NameGroup<GPUParticleGroup>>& GetGPUGroup() { return gpuGroups_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -44,22 +65,21 @@ private:
 	std::string name_;
 
 	// GPU
-	std::vector<GPUParticleGroup> gpuParticleGroups_;
+	std::vector<NameGroup<GPUParticleGroup>> gpuGroups_;
 	// CPU
-	std::vector<CPUParticleGroup> cpuParticleGroups_;
+	std::vector<NameGroup<CPUParticleGroup>> cpuGroups_;
 
 	// editor
 	ParticleType particleType_;
 	ParticlePrimitiveType primitiveType_;
+	int nextGroupId_ = 0;        // グループ添え字インデックス
+	int selectedGroup_ = -1;     // 現在選択しているグループ
+	int renamingGroup_ = -1;     // 改名中のグループインデックス
+	char renameBuffer_[64] = {}; // 入力用バッファ
 
 	//--------- functions ----------------------------------------------------
 
-	// GPU: create
-	void CreateGPUParticle();
-	void CreateCPUParticle();
-
 	// editor
-	void AddParticle();
-	void SelectParticle();
-	void EditParticle();
+	void AddGroup();
+	void RemoveGroup();
 };
