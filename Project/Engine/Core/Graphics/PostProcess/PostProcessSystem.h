@@ -102,6 +102,10 @@ private:
 	D3D12_GPU_DESCRIPTOR_HANDLE frameBufferGPUHandle_;
 	D3D12_GPU_DESCRIPTOR_HANDLE depthFrameBurferGPUHandle_;
 
+	// editor
+	int selectedProcessIndex_ = -1; // 選択されているactiveProcessesのインデックス
+	bool needSort_ = false;         // Drag&Drop完了フラグ
+
 	//--------- functions ----------------------------------------------------
 
 	void CreateCBuffer(PostProcessType type);

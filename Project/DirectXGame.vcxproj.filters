@@ -812,6 +812,7 @@
     <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitConeParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitMeshParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\CPUParticle\PS\CPUParticle.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\PostProcess\Glitch\Glitch.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\Standard\StandardMSFunction.hlsli" />

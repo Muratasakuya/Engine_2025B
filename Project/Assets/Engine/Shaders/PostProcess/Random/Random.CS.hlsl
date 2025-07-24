@@ -11,6 +11,7 @@
 struct RandomMaterial {
 	
 	float time;
+	uint enable;
 };
 ConstantBuffer<RandomMaterial> gMaterial : register(b0);
 
@@ -19,6 +20,7 @@ ConstantBuffer<RandomMaterial> gMaterial : register(b0);
 //============================================================================
 
 RWTexture2D<float4> gOutputTexture : register(u0);
+Texture2D<float4> gRenderTexture : register(t0);
 
 //============================================================================
 //	main
@@ -26,8 +28,25 @@ RWTexture2D<float4> gOutputTexture : register(u0);
 [numthreads(8, 8, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
-	// 乱数、時間で変化させる
-	float random = Rand2DTo1D(DTid.xy * gMaterial.time);
+	uint width, height;
+	gRenderTexture.GetDimensions(width, height);
 	
-	gOutputTexture[DTid.xy] = float4(random, random, random, 1.0f);
+	 // ピクセル位置
+	uint2 pixelPos = DTid.xy;
+
+	// 画像範囲外チェック
+	if (pixelPos.x >= width || pixelPos.y >= height) {
+		return;
+	}
+	
+	// 有効でないなら入力画像の色をそのまま返す
+	if (gMaterial.enable == 0) {
+		
+		gOutputTexture[pixelPos] = gRenderTexture.Load(int3(pixelPos, 0));
+		return;
+	}
+	
+	// 乱数、時間で変化させる
+	float random = Rand2DTo1D(pixelPos * gMaterial.time);
+	gOutputTexture[pixelPos] = float4(random, random, random, 1.0f);
 }

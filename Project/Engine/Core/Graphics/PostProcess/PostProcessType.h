@@ -28,6 +28,7 @@ enum class PostProcessType {
 	LuminanceBasedOutline,
 	DepthBasedOutline,
 	Lut,
+	Glitch,
 
 	Count
 };

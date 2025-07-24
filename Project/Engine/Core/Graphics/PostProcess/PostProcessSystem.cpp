@@ -11,6 +11,7 @@
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Asset/Asset.h>
 #include <Engine/Config.h>
+#include <Lib/Adapter/EnumAdapter.h>
 
 //============================================================================
 //	PostProcessSystem classMethods
@@ -225,11 +226,91 @@ void PostProcessSystem::RenderFrameBuffer(DxCommand* dxCommand) {
 
 void PostProcessSystem::ImGui() {
 
-	// 各bufferのimgui表示
-	for (const auto& buffer : std::views::values(buffers_)) {
+	ImGui::SetWindowFontScale(0.8f);
 
-		buffer->ImGui();
+	using EA = EnumAdapter<PostProcessType>;
+
+	if (ImGui::BeginChild("##checklist", ImVec2(240.0f, 0.0f), true)) {
+		ImGui::TextDisabled("Available");
+		for (auto process : initProcesses_) {
+
+			bool enabled = Algorithm::Find(activeProcesses_, process, true);
+			if (ImGui::Checkbox(EA::ToString(process), &enabled)) {
+
+				enabled ? AddProcess(process) : RemoveProcess(process);
+				// 選択インデックスの整合を取る
+				if (!enabled && selectedProcessIndex_ >= static_cast<int>(activeProcesses_.size())) {
+
+					selectedProcessIndex_ = -1;
+				}
+			}
+		}
 	}
+	ImGui::EndChild();
+
+	ImGui::SameLine();
+
+	if (ImGui::BeginChild("##activelist", ImVec2(240.0f, 0.0f), true)) {
+
+		ImGui::TextDisabled("ActiveProcessList");
+		for (int i = 0; i < activeProcesses_.size(); ++i) {
+
+			PostProcessType process = activeProcesses_[i];
+			bool isSel = (selectedProcessIndex_ == (int)i);
+
+			ImGui::Selectable(EA::ToString(process), isSel,
+				ImGuiSelectableFlags_DontClosePopups);
+
+			// 選択
+			if (ImGui::IsItemClicked()) {
+
+				selectedProcessIndex_ = i;
+			}
+
+			// Drag & Drop
+			if (ImGui::BeginDragDropSource()) {
+
+				ImGui::SetDragDropPayload("POST_PROCESS_IDX", &i, sizeof(int));
+				ImGui::TextUnformatted(EA::ToString(process));
+				ImGui::EndDragDropSource();
+			}
+			if (ImGui::BeginDragDropTarget()) {
+				if (const ImGuiPayload* pl = ImGui::AcceptDragDropPayload("POST_PROCESS_IDX")) {
+
+					size_t src = *static_cast<const size_t*>(pl->Data);
+					size_t dst = i;
+					if (src != dst) {
+
+						// 入れ替え処理
+						std::swap(activeProcesses_[src], activeProcesses_[dst]);
+						needSort_ = true;
+					}
+				}
+				ImGui::EndDragDropTarget();
+			}
+		}
+	}
+	ImGui::EndChild();
+
+	ImGui::SameLine();
+
+	// パラメータ操作
+	ImGui::BeginChild("##params", ImVec2(0.0f, 0.0f), true);
+	if (selectedProcessIndex_ >= 0 && selectedProcessIndex_ < static_cast<int>(activeProcesses_.size())) {
+
+		PostProcessType process = activeProcesses_[selectedProcessIndex_];
+		// buffer があるタイプだけ
+		if (auto it = buffers_.find(process); it != buffers_.end()) {
+
+			it->second->ImGui();
+		} else {
+
+			ImGui::TextDisabled("No parameters");
+		}
+	}
+	ImGui::EndChild();
+
+	ImGui::SetWindowFontScale(1.0f);
 }
 
 void PostProcessSystem::ToWrite(DxCommand* dxCommand) {
@@ -325,9 +406,9 @@ void PostProcessSystem::CreateCBuffer(PostProcessType type) {
 		break;
 	}
 	case PostProcessType::Random: {
-		
+
 		auto buffer = std::make_unique<PostProcessBuffer<RandomForGPU>>();
-		buffer->Init(device_, 1);
+		buffer->Init(device_, 2);
 
 		buffers_[type] = std::move(buffer);
 		break;
@@ -367,6 +448,14 @@ void PostProcessSystem::CreateCBuffer(PostProcessType type) {
 	case PostProcessType::Lut: {
 
 		auto buffer = std::make_unique<PostProcessBuffer<LutForGPU>>();
+		buffer->Init(device_, 3);
+
+		buffers_[type] = std::move(buffer);
+		break;
+	}
+	case PostProcessType::Glitch: {
+
+		auto buffer = std::make_unique<PostProcessBuffer<GlitchForGPU>>();
 		buffer->Init(device_, 3);
 
 		buffers_[type] = std::move(buffer);

@@ -21,10 +21,6 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 	// typeごとに処理
 	switch (type) {
 	case PostProcessType::Random:
-
-		commandList->SetComputeRootDescriptorTable(0, processor->GetUAVGPUHandle());
-		commandList->Dispatch(threadGroupCountX, threadGroupCountY, 1);
-		break;
 	case PostProcessType::Bloom:
 	case PostProcessType::Vignette:
 	case PostProcessType::Grayscale:
@@ -43,6 +39,7 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 	case PostProcessType::Dissolve:
 	case PostProcessType::DepthBasedOutline:
 	case PostProcessType::Lut:
+	case PostProcessType::Glitch:
 
 		commandList->SetComputeRootDescriptorTable(0, processor->GetUAVGPUHandle());
 		commandList->SetComputeRootDescriptorTable(1, inputTextureGPUHandle);

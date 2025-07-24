@@ -62,7 +62,7 @@ public:
 
 	//--------- properties ---------------------------------------------------
 
-	float sigma;
+	float sigma = 1.0f;
 };
 
 class LuminanceBasedOutlineForGPU {
@@ -230,4 +230,27 @@ public:
 	//--------- properties ---------------------------------------------------
 
 	float time = 0.001f;
+	int32_t enable = false;
+};
+
+class GlitchForGPU {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	GlitchForGPU() = default;
+	~GlitchForGPU() = default;
+
+	void ImGui();
+
+	//--------- properties ---------------------------------------------------
+
+	float time = 0.0f;        // 経過秒
+	float intensity = 0.0f;   // グリッチ全体の強さ
+	float blockSize = 32.0f;  // 横ずれブロックの太さ
+	float colorOffset = 4.0f; // RGBずれ距離
+
+	float noiseStrength = 0.2f; // ノイズ混合率
+	float lineSpeed = 1.5f;     // スキャンライン走査速度
 };

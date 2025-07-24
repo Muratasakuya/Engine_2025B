@@ -166,16 +166,29 @@ void GameScene::Init() {
 	//========================================================================
 
 	postProcessSystem_->Create({
-		PostProcessType::RadialBlur,
 		PostProcessType::Vignette,
+		PostProcessType::BoxFilter,
+		PostProcessType::GaussianFilter,
+		PostProcessType::LuminanceBasedOutline,
 		PostProcessType::DepthBasedOutline,
+		PostProcessType::RadialBlur,
+		PostProcessType::Dissolve,
 		PostProcessType::Random,
-		PostProcessType::Bloom });
-	postProcessSystem_->AddProcess(PostProcessType::RadialBlur);
+
+		// AddProcess
+		PostProcessType::Bloom,
+		PostProcessType::Glitch
+		});
 	postProcessSystem_->AddProcess(PostProcessType::Vignette);
+	postProcessSystem_->AddProcess(PostProcessType::BoxFilter);
+	postProcessSystem_->AddProcess(PostProcessType::GaussianFilter);
+	postProcessSystem_->AddProcess(PostProcessType::LuminanceBasedOutline);
 	postProcessSystem_->AddProcess(PostProcessType::DepthBasedOutline);
+	postProcessSystem_->AddProcess(PostProcessType::RadialBlur);
+	postProcessSystem_->AddProcess(PostProcessType::Dissolve);
 	postProcessSystem_->AddProcess(PostProcessType::Random);
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
+	postProcessSystem_->AddProcess(PostProcessType::Glitch);
 
 	// ブラーの値を0.0fで初期化
 	RadialBlurForGPU radialBlurParam{};
@@ -183,6 +196,9 @@ void GameScene::Init() {
 	radialBlurParam.numSamples = 0;
 	radialBlurParam.width = 0.0f;
 	postProcessSystem_->SetParameter(radialBlurParam, PostProcessType::RadialBlur);
+
+	postProcessSystem_->InputProcessTexture("noise", PostProcessType::Dissolve, asset_);
+	postProcessSystem_->InputProcessTexture("noise1", PostProcessType::Glitch, asset_);
 
 	//========================================================================
 	//	sceneObject

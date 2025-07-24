@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Utility/GameTimer.h>
 
 // imgui
 #include <imgui.h>
@@ -13,7 +14,7 @@
 
 namespace {
 
-	inline static constexpr const float itemWidth_ = 224.0f;
+	inline static constexpr const float itemWidth_ = 168.0f;
 }// namespace
 
 void BloomForGPU::ImGui() {
@@ -162,6 +163,25 @@ void RandomForGPU::ImGui() {
 	ImGui::Text("Random");
 
 	ImGui::PushItemWidth(itemWidth_);
-	ImGui::DragFloat("time##Random", &time, 0.001f);
+	ImGui::DragInt("enable##Random", &enable, 1, 0, 1);
+	ImGui::DragFloat("time##Random", &time, 0.001f, 0.001f, 128.0f);
+	ImGui::PopItemWidth();
+}
+
+void GlitchForGPU::ImGui() {
+
+	ImGui::Text("Glitch");
+
+	ImGui::PushItemWidth(itemWidth_);
+
+	time += GameTimer::GetDeltaTime();
+
+	ImGui::Text("currentTime: %.3f", time);
+	ImGui::DragFloat("intensity##GlitchForGPU", &intensity, 0.01f);
+	ImGui::DragFloat("blockSize##GlitchForGPU", &blockSize, 0.01f);
+	ImGui::DragFloat("colorOffset##GlitchForGPU", &colorOffset, 0.01f);
+	ImGui::DragFloat("strength##GlitchForGPU", &noiseStrength, 0.01f);
+	ImGui::DragFloat("lineSpeed##GlitchForGPU", &lineSpeed, 0.01f);
+
 	ImGui::PopItemWidth();
 }
