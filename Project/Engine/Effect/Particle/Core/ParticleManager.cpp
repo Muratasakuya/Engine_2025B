@@ -110,93 +110,127 @@ void ParticleManager::RemoveSystem() {
 
 void ParticleManager::ImGui() {
 
+	//EditLayout();
+
+	// 文字のサイズ設定
+	ImGui::SetWindowFontScale(0.72f);
+
+	// 左側の表示
+	DrawLeftChild();
+	// 右側の表示
+	DrawRightChild();
+
+	ImGui::SetWindowFontScale(1.0f);
+}
+
+void ParticleManager::DrawLeftChild() {
+
+	//============================================================================
 	// 左側の表示
 	ImGui::BeginChild("##LeftColumn",
 		ImVec2(leftColumnWidth_, 0.0f), ImGuiChildFlags_None);
 
+	//============================================================================
 	// 左上
-	ImGui::BeginChild("SystemAdd", leftUpChildSize_,
-		ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
-	ImGui::SeparatorText("Add System");
-	DrawSystemAdd();
+	{
+		ImGui::BeginChild("SystemAdd", leftUpChildSize_,
+			ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+		ImGui::SeparatorText("Add System");
+		DrawSystemAdd();
 
-	ImGui::EndChild();
-
+		ImGui::EndChild();
+	}
+	//============================================================================
 	// 左の真ん中
-	ImGui::BeginChild("GroupAdd", leftCenterChildSize_,
-		ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
-	ImGui::SeparatorText("Add Group");
+	{
+		ImGui::BeginChild("GroupAdd", leftCenterChildSize_,
+			ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+		ImGui::SeparatorText("Add Group");
 
-	// 作成されているかいないか
-	if (IsSystemSelected()) {
+		// 作成されているかいないか
+		if (IsSystemSelected()) {
 
-		systems_[selectedSystem_]->ImGuiGroupAdd();
-	} else {
+			systems_[selectedSystem_]->ImGuiGroupAdd();
+		} else {
 
-		ImGui::TextDisabled("not selected system");
+			ImGui::TextDisabled("not selected system");
+		}
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
-
+	//============================================================================
 	// 左下
-	ImGui::BeginChild("SystemParam", ImVec2(0.0f, 0.0f),
-		ImGuiChildFlags_Border);
-	ImGui::SeparatorText("System Patameter");
+	{
+		ImGui::BeginChild("SystemParam", ImVec2(0.0f, 0.0f),
+			ImGuiChildFlags_Border);
+		ImGui::SeparatorText("System Patameter");
 
-	// 作成されているかいないか
-	if (IsSystemSelected()) {
+		// 作成されているかいないか
+		if (IsSystemSelected()) {
 
-		systems_[selectedSystem_]->ImGuiSystemParameter();
-	} else {
+			systems_[selectedSystem_]->ImGuiSystemParameter();
+		} else {
 
-		ImGui::TextDisabled("not selected system");
+			ImGui::TextDisabled("not selected system");
+		}
+		ImGui::EndChild();
+
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
+}
 
-	ImGui::EndChild();
+void ParticleManager::DrawRightChild() {
 
+	//============================================================================
 	// 右側の表示
 	ImGui::SameLine();
 	ImGui::BeginChild("##RightColumn", ImVec2(0.0f, 0.0f), ImGuiChildFlags_None);
 
+	//============================================================================
 	// 右上
-	ImGui::BeginChild("SystemSelect", ImVec2(0.0f, rightUpChildSizeY_),
-		ImGuiChildFlags_Border);
-	ImGui::SeparatorText("Select System");
+	{
+		ImGui::BeginChild("SystemSelect", ImVec2(0.0f, rightUpChildSizeY_),
+			ImGuiChildFlags_Border);
+		ImGui::SeparatorText("Select System");
 
-	DrawSystemSelect();
-	ImGui::EndChild();
-
-	// 左の真ん中
-	ImGui::BeginChild("GroupSelect", ImVec2(0.0f, rightCenterChildSizeY_),
-		ImGuiChildFlags_Border);
-	ImGui::SeparatorText("Select Group");
-
-	// 作成されているかいないか
-	if (IsSystemSelected()) {
-
-		systems_[selectedSystem_]->ImGuiGroupSelect();
-	} else {
-
-		ImGui::TextDisabled("not selected system");
+		DrawSystemSelect();
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
+	//============================================================================
+	// 右の真ん中
+	{
+		ImGui::BeginChild("GroupSelect", ImVec2(0.0f, rightCenterChildSizeY_),
+			ImGuiChildFlags_Border);
+		ImGui::SeparatorText("Select Group");
 
+		// 作成されているかいないか
+		if (IsSystemSelected()) {
+
+			systems_[selectedSystem_]->ImGuiGroupSelect();
+		} else {
+
+			ImGui::TextDisabled("not selected system");
+		}
+		ImGui::EndChild();
+	}
+	//============================================================================
 	// 右下
-	ImGui::BeginChild("GroupParam", ImVec2(0.0f, 0.0f),
-		ImGuiChildFlags_Border);
-	ImGui::SeparatorText("Group Parameter");
+	{
+		ImGui::BeginChild("GroupParam", ImVec2(0.0f, 0.0f),
+			ImGuiChildFlags_Border);
+		ImGui::SeparatorText("Group Parameter");
 
-	// 作成されているかいないか
-	if (IsSystemSelected()) {
+		// 作成されているかいないか
+		if (IsSystemSelected()) {
 
-		systems_[selectedSystem_]->ImGuiSelectedGroupEditor();
-	} else {
+			systems_[selectedSystem_]->ImGuiSelectedGroupEditor();
+		} else {
 
-		ImGui::TextDisabled("not selected system");
+			ImGui::TextDisabled("not selected system");
+		}
+		ImGui::EndChild();
+
+		ImGui::EndChild();
 	}
-	ImGui::EndChild();
-
-	ImGui::EndChild();
 }
 
 void ParticleManager::DrawSystemAdd() {
@@ -268,6 +302,19 @@ void ParticleManager::DrawSystemSelect() {
 			ImGui::PopID();
 		}
 	}
+}
+
+void ParticleManager::EditLayout() {
+
+	ImGui::Begin("ParticleManager EditLayout");
+
+	ImGui::DragFloat("leftColumnWidth_", &leftColumnWidth_, 0.1f);
+	ImGui::DragFloat("leftUpChildSize_Y", &leftUpChildSize_.y, 0.1f);
+	ImGui::DragFloat("leftCenterChildSize_Y", &leftCenterChildSize_.y, 0.1f);
+	rightUpChildSizeY_ = leftUpChildSize_.y;
+	rightCenterChildSizeY_ = leftCenterChildSize_.y;
+
+	ImGui::End();
 }
 
 bool ParticleManager::IsSystemSelected() const {

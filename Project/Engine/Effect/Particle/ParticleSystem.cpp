@@ -70,16 +70,22 @@ void ParticleSystem::RemoveGroup() {
 
 void ParticleSystem::ImGuiGroupAdd() {
 
+	EditLayout();
+
+	ImGui::PushItemWidth(comboWidth_);
+
 	EnumAdapter<ParticleType>::Combo("Type", &particleType_);
 	EnumAdapter<ParticlePrimitiveType>::Combo("Primitive", &primitiveType_);
 
+	ImGui::PopItemWidth();
+
 	// 追加と削除
-	if (ImGui::Button("+Group")) {
+	if (ImGui::Button("+Group", buttonSize_)) {
 
 		AddGroup();
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("-Group")) {
+	if (ImGui::Button("-Group", buttonSize_)) {
 
 		RemoveGroup();
 	}
@@ -137,10 +143,25 @@ void ParticleSystem::ImGuiSystemParameter() {
 
 void ParticleSystem::ImGuiSelectedGroupEditor() {
 
+	ImGui::PushItemWidth(itemWidth_);
+
 	if (0 <= selectedGroup_ && selectedGroup_ < static_cast<int>(gpuGroups_.size())) {
 
 		gpuGroups_[selectedGroup_].group.ImGui(device_);
 	}
+
+	ImGui::PopItemWidth();
+}
+
+void ParticleSystem::EditLayout() {
+
+	ImGui::Begin("ParticleSystem");
+
+	ImGui::DragFloat("comboWidth_", &comboWidth_, 0.1f);
+	ImGui::DragFloat("itemWidth_", &itemWidth_, 0.1f);
+	ImGui::DragFloat2("buttonSize_", &buttonSize_.x, 0.1f);
+
+	ImGui::End();
 }
 
 void ParticleSystem::BeginRenameGroup(int index, const char* name) {

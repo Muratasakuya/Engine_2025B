@@ -6,6 +6,8 @@
 #include <Engine/Effect/Particle/Data/GPUParticleGroup.h>
 #include <Engine/Effect/Particle/Data/CPUParticleGroup.h>
 
+// imgui
+#include <imgui.h>
 // front
 class Asset;
 
@@ -80,10 +82,17 @@ private:
 	int selectedGroup_ = -1;      // 現在選択しているグループ
 	int renamingGroup_ = -1;      // 改名中のグループインデックス
 	char renameBuffer_[128] = {}; // 入力用バッファ
+	// layout
+	float comboWidth_ = 120.0f;
+	float itemWidth_ = 168.0f;
+	ImVec2 buttonSize_ = ImVec2(88.0f, 24.0f);
 
 	//--------- functions ----------------------------------------------------
 
 	// editor
 	void AddGroup();
 	void RemoveGroup();
+
+	// helper
+	void EditLayout();
 };

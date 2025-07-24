@@ -145,19 +145,38 @@ void GPUParticleGroup::UpdateEmitter() {
 
 void GPUParticleGroup::ImGui(ID3D12Device* device) {
 
-	EnumAdapter<BlendMode>::Combo("blendMode", &blendMode_);
+	ImGui::Text("kMaxParticle: %d", kMaxParticles);
+	if (ImGui::BeginTabBar("GPUParticleGroupTab")) {
+		if (ImGui::BeginTabItem("Render")) {
 
-	// 発生データ
-	ImGui::DragInt("count", &emitter_.common.count, 1, 0, kMaxParticles);
-	ImGui::DragFloat("lifeTime", &emitter_.common.lifeTime, 0.01f);
-	ImGui::DragFloat("frequency", &frequency_, 0.01f);
+			EnumAdapter<BlendMode>::Combo("blendMode", &blendMode_);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Common")) {
 
-	ImGui::DragFloat3("scale", &emitter_.common.scale.x, 0.01f);
-	ImGui::ColorEdit4("color", &emitter_.common.color.r);
+			ImGui::DragInt("count", &emitter_.common.count, 1, 0, kMaxParticles);
+			ImGui::DragFloat("lifeTime", &emitter_.common.lifeTime, 0.01f);
+			ImGui::DragFloat("frequency", &frequency_, 0.01f);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Emitter")) {
 
-	// エミッタ
-	SelectEmitter(device);
-	EditEmitter();
+			SelectEmitter(device);
+			EditEmitter();
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Transform")) {
+
+			ImGui::DragFloat3("scale", &emitter_.common.scale.x, 0.01f);
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Material")) {
+
+			ImGui::ColorEdit4("color", &emitter_.common.color.r);
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
+	}
 }
 
 D3D12_GPU_VIRTUAL_ADDRESS GPUParticleGroup::GetPrimitiveBufferAdress() const {

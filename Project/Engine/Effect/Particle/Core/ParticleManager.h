@@ -8,9 +8,6 @@
 #include <Engine/Effect/Particle/Core/ParticleRenderer.h>
 #include <Engine/Effect/Particle/ParticleSystem.h>
 
-// imgui
-#include <imgui.h>
-
 //============================================================================
 //	ParticleManager class
 //============================================================================
@@ -59,9 +56,9 @@ private:
 	int renamingSystem_ = -1;     // 改名中のシステムインデックス
 	char renameBuffer_[128] = {}; // 入力用バッファ
 	// layout
-	float leftColumnWidth_ = 280.0f;
-	ImVec2 leftUpChildSize_ = ImVec2(leftColumnWidth_, 128.0f);
-	ImVec2 leftCenterChildSize_ = ImVec2(leftColumnWidth_, 160.0f);
+	float leftColumnWidth_ = 220.0f;
+	ImVec2 leftUpChildSize_ = ImVec2(leftColumnWidth_, 120.0f);
+	ImVec2 leftCenterChildSize_ = ImVec2(leftColumnWidth_, 120.0f);
 	float rightUpChildSizeY_ = leftUpChildSize_.y;
 	float rightCenterChildSizeY_ = leftCenterChildSize_.y;
 
@@ -71,10 +68,14 @@ private:
 	void AddSystem();
 	void RemoveSystem();
 
+	void DrawLeftChild();
+	void DrawRightChild();
+
 	void DrawSystemAdd();
 	void DrawSystemSelect();
 
 	// helper
+	void EditLayout();
 	bool IsSystemSelected() const;
 
 	ParticleManager() : IGameEditor("ParticleManager") {}
