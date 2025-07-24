@@ -15,6 +15,7 @@
 #include <unordered_map>
 // front
 class SRVDescriptor;
+class SceneView;
 
 //============================================================================
 //	PostProcessSystem class
@@ -31,6 +32,8 @@ public:
 
 	void Init(ID3D12Device8* device, class DxShaderCompiler* shaderComplier,
 		SRVDescriptor* srvDescriptor);
+
+	void Update(SceneView* sceneView);
 
 	// postProcess作成
 	void Create(const std::vector<PostProcessType>& processes);
@@ -59,9 +62,9 @@ public:
 
 	template <typename T>
 	void SetParameter(const T& parameter, PostProcessType process);
+	void SetDepthFrameBufferGPUHandle(const D3D12_GPU_DESCRIPTOR_HANDLE& handle) { depthFrameBurferGPUHandle_ = handle; }
 
 	PostProcessPipeline* GetPipeline() const { return pipeline_.get(); }
-
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneGPUHandle() const { return debugSceneBloomProcessor_->GetSRVGPUHandle(); }
 private:
 	//========================================================================
@@ -97,6 +100,7 @@ private:
 
 	// frameBufferに描画するGPUHandle、最終的な結果
 	D3D12_GPU_DESCRIPTOR_HANDLE frameBufferGPUHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE depthFrameBurferGPUHandle_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -20,8 +20,12 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 
 	// typeごとに処理
 	switch (type) {
-	case PostProcessType::Bloom:
 	case PostProcessType::Random:
+
+		commandList->SetComputeRootDescriptorTable(0, processor->GetUAVGPUHandle());
+		commandList->Dispatch(threadGroupCountX, threadGroupCountY, 1);
+		break;
+	case PostProcessType::Bloom:
 	case PostProcessType::Vignette:
 	case PostProcessType::Grayscale:
 	case PostProcessType::SepiaTone:
@@ -46,11 +50,4 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 		commandList->Dispatch(threadGroupCountX, threadGroupCountY, 1);
 		break;
 	}
-
-	// UAVバリアを貼る
-	D3D12_RESOURCE_BARRIER uavBarrier{};
-	uavBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
-	uavBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-	uavBarrier.UAV.pResource = processor->GetOutputTextureResource();
-	commandList->ResourceBarrier(1, &uavBarrier);
 }

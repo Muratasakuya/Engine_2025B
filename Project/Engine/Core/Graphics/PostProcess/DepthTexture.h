@@ -46,7 +46,4 @@ private:
 	ComPtr<ID3D12Resource> resource_;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvCPUHandle_; // DSV
 	D3D12_GPU_DESCRIPTOR_HANDLE srvGPUHandle_; // SRV
-
-	//--------- functions ----------------------------------------------------
-
 };

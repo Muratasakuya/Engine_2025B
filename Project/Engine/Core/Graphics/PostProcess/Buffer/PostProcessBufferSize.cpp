@@ -58,6 +58,14 @@ void LuminanceBasedOutlineForGPU::ImGui() {
 }
 
 void DepthBasedOutlineForGPU::ImGui() {
+
+	ImGui::SeparatorText("DepthBasedOutline");
+
+	ImGui::PushItemWidth(itemWidth_);
+	ImGui::DragFloat("strength##DepthBasedOutline", &edgeScale, 0.01f);
+	ImGui::DragFloat("threshold##DepthBasedOutline", &threshold, 0.001f);
+	ImGui::ColorEdit3("color##DepthBasedOutline", &color.x);
+	ImGui::PopItemWidth();
 }
 
 void VignetteForGPU::ImGui() {
@@ -146,5 +154,14 @@ void LutForGPU::ImGui() {
 
 	ImGui::PushItemWidth(itemWidth_);
 	ImGui::DragFloat("lerpRate##Lut", &lerpRate, 0.001f, 0.0f, 1.0f);
+	ImGui::PopItemWidth();
+}
+
+void RandomForGPU::ImGui() {
+
+	ImGui::Text("Random");
+
+	ImGui::PushItemWidth(itemWidth_);
+	ImGui::DragFloat("time##Random", &time, 0.001f);
 	ImGui::PopItemWidth();
 }

@@ -86,6 +86,7 @@ Framework::Framework() {
 
 	postProcessSystem_ = std::make_unique<PostProcessSystem>();
 	postProcessSystem_->Init(device, shaderCompiler, srvDescriptor);
+	postProcessSystem_->SetDepthFrameBufferGPUHandle(renderEngine_->GetDepthGPUHandle());
 
 	// asset機能初期化
 	asset_ = std::make_unique<Asset>();
@@ -170,6 +171,8 @@ void Framework::UpdateScene() {
 	CollisionManager::GetInstance()->Update();
 	// particle更新
 	ParticleManager::GetInstance()->Update(graphicsPlatform_->GetDxCommand());
+	// postProcess更新
+	postProcessSystem_->Update(sceneView_.get());
 }
 
 void Framework::Draw() {
@@ -216,9 +219,13 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 
 	renderEngine_->Rendering(RenderEngine::ViewType::Main);
 
+	renderEngine_->BeginPostProcess();
+
 	// postProcess処理実行
 	postProcessSystem_->Execute(renderEngine_->GetRenderTexture(
 		RenderEngine::ViewType::Main)->GetSRVGPUHandle(), dxCommand);
+
+	renderEngine_->EndPostProcess();
 
 	//========================================================================
 	//	draw: debugViewRenderTexture

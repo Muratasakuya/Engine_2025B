@@ -60,6 +60,10 @@ public:
 	// viewごとの描画
 	void Rendering(ViewType type);
 
+	// postProcess処理
+	void BeginPostProcess();
+	void EndPostProcess();
+
 	// swapChain描画
 	void BeginRenderFrameBuffer();
 	void EndRenderFrameBuffer();
@@ -72,6 +76,7 @@ public:
 
 	RenderTexture* GetRenderTexture(ViewType type) const { return renderTextures_.at(type).get(); }
 
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDepthGPUHandle() const { return dsvDescriptor_->GetFrameGPUHandle(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetRenderTextureGPUHandle() const { return guiRenderTexture_->GetGPUHandle(); }
 private:
 	//========================================================================

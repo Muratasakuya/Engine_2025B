@@ -26,7 +26,11 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetFrameGPUHandle(const D3D12_GPU_DESCRIPTOR_HANDLE& handle) { dsvGPUHandle_ = handle; }
+
+	ID3D12Resource* GetResource() const { return resource_.Get(); }
 	const D3D12_CPU_DESCRIPTOR_HANDLE& GetFrameCPUHandle() const { return dsvCPUHandle_; }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetFrameGPUHandle() const { return dsvGPUHandle_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -36,6 +40,7 @@ private:
 
 	ComPtr<ID3D12Resource> resource_;
 	D3D12_CPU_DESCRIPTOR_HANDLE dsvCPUHandle_;
+	D3D12_GPU_DESCRIPTOR_HANDLE dsvGPUHandle_;
 
 	//--------- functions ----------------------------------------------------
 

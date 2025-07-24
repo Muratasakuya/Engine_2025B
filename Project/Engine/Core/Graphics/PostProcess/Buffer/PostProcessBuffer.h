@@ -66,6 +66,7 @@ public:
 	void SetParameter(void* parameter, size_t size) override;
 
 	ID3D12Resource* GetResource() const override;
+	T GetParameter() const { return parameter_; }
 private:
 	//========================================================================
 	//	private Methods

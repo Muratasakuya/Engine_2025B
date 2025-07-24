@@ -12,6 +12,7 @@
         { "RootIndex": 3, "Type": "CBV", "Visibility": "COMPUTE", "ShaderRegister": 0 }
     ],
     "StaticSampler": [
-        { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER","Visibility": "COMPUTE", "ShaderRegister": 0 }
+        { "SamplerIndex": 0, "Filter": "LINEAR", "AddressMode": "WRAP","ComparisonFunc": "NEVER","Visibility": "COMPUTE", "ShaderRegister": 0 },
+        { "SamplerIndex": 1, "Filter": "POINT", "AddressMode": "WRAP","ComparisonFunc": "NEVER","Visibility": "COMPUTE", "ShaderRegister": 1 }
     ]
 }

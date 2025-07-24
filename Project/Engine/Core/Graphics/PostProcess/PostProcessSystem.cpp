@@ -8,6 +8,7 @@
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>
 #include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBufferSize.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
+#include <Engine/Scene/SceneView.h>
 #include <Engine/Asset/Asset.h>
 #include <Engine/Config.h>
 
@@ -100,6 +101,32 @@ void PostProcessSystem::Create(const std::vector<PostProcessType>& processes) {
 			debugSceneBloomProcessor_->Init(device_, srvDescriptor_, width_, height_);
 		}
 #endif
+
+		if (process == PostProcessType::DepthBasedOutline) {
+
+			processors_[process]->SetProcessTexureGPUHandle(depthFrameBurferGPUHandle_);
+		}
+	}
+}
+
+void PostProcessSystem::Update(SceneView* sceneView) {
+
+	// scene情報が必要な場合のみ
+	if (Algorithm::Find(activeProcesses_, PostProcessType::DepthBasedOutline, true)) {
+
+		auto* buffer = static_cast<PostProcessBuffer<DepthBasedOutlineForGPU>*>(
+			buffers_[PostProcessType::DepthBasedOutline].get());
+
+		const auto& parameter = buffer->GetParameter();
+
+		// 渡す値の設定
+		DepthBasedOutlineForGPU parama{};
+		parama.projectionInverse = Matrix4x4::Inverse(sceneView->GetCamera()->GetProjectionMatrix());
+		parama.edgeScale = parameter.edgeScale;
+		parama.threshold = parameter.threshold;
+		parama.color = parameter.color;
+
+		buffer->SetParameter(&parama, sizeof(DepthBasedOutlineForGPU));
 	}
 }
 
@@ -298,7 +325,11 @@ void PostProcessSystem::CreateCBuffer(PostProcessType type) {
 		break;
 	}
 	case PostProcessType::Random: {
-		// bufferなし、未実装
+		
+		auto buffer = std::make_unique<PostProcessBuffer<RandomForGPU>>();
+		buffer->Init(device_, 1);
+
+		buffers_[type] = std::move(buffer);
 		break;
 	}
 	case PostProcessType::Vignette: {

@@ -24,11 +24,13 @@ void RenderEngine::InitDescriptor(ID3D12Device8* device) {
 	// DSV初期化
 	dsvDescriptor_ = std::make_unique<DSVDescriptor>();
 	dsvDescriptor_->Init(device, DescriptorType(D3D12_DESCRIPTOR_HEAP_TYPE_DSV, D3D12_DESCRIPTOR_HEAP_FLAG_NONE));
-	dsvDescriptor_->InitFrameBufferDSV();
 
 	// SRV初期化
 	srvDescriptor_ = std::make_unique<SRVDescriptor>();
 	srvDescriptor_->Init(device, DescriptorType(D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV, D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE));
+
+	// depthResourceの作成
+	dsvDescriptor_->InitFrameBufferDSV();
 }
 
 void RenderEngine::InitRenderTextrue(ID3D12Device8* device) {
@@ -70,6 +72,17 @@ void RenderEngine::InitRenderTextrue(ID3D12Device8* device) {
 		Config::kRenderTextureRTVFormat,
 		device, rtvDescriptor, srvDescriptor);
 #endif
+
+	// SRV作成
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+
+	uint32_t srvIndex = 0;
+	srvDescriptor_->CreateSRV(srvIndex, dsvDescriptor_->GetResource(), srvDesc);
+	dsvDescriptor_->SetFrameGPUHandle(srvDescriptor_->GetGPUHandle(srvIndex));
 }
 
 void RenderEngine::InitRenderer(ID3D12Device8* device, DxShaderCompiler* shaderCompiler) {
@@ -162,6 +175,20 @@ void RenderEngine::Rendering(ViewType type) {
 	Renderers(type);
 
 	EndRenderTarget(renderTextures_[type].get());
+}
+
+void RenderEngine::BeginPostProcess() {
+
+	// Write -> ComputeShader
+	dxCommand_->TransitionBarriers({ dsvDescriptor_->GetResource() },
+		D3D12_RESOURCE_STATE_DEPTH_WRITE, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+}
+
+void RenderEngine::EndPostProcess() {
+
+	// ComputeShader -> Write
+	dxCommand_->TransitionBarriers({ dsvDescriptor_->GetResource() },
+		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE);
 }
 
 void RenderEngine::Renderers(ViewType type) {

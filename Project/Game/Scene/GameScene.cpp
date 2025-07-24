@@ -168,9 +168,13 @@ void GameScene::Init() {
 	postProcessSystem_->Create({
 		PostProcessType::RadialBlur,
 		PostProcessType::Vignette,
+		PostProcessType::DepthBasedOutline,
+		PostProcessType::Random,
 		PostProcessType::Bloom });
 	postProcessSystem_->AddProcess(PostProcessType::RadialBlur);
 	postProcessSystem_->AddProcess(PostProcessType::Vignette);
+	postProcessSystem_->AddProcess(PostProcessType::DepthBasedOutline);
+	postProcessSystem_->AddProcess(PostProcessType::Random);
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
 
 	// ブラーの値を0.0fで初期化

@@ -92,9 +92,18 @@ public:
 
 	void ImGui();
 
+	void SetProjectionInverse(const Matrix4x4& projection) { projectionInverse = projection; }
+
 	//--------- properties ---------------------------------------------------
 
 	Matrix4x4 projectionInverse;
+
+	float edgeScale = 1.0f;
+	float threshold = 12.0f;
+	float pad0[2];
+
+	Vector3 color = Vector3::AnyInit(0.0f);
+	float pad1;
 };
 
 class VignetteForGPU {
@@ -205,4 +214,20 @@ public:
 
 	float lerpRate = 0.2f;
 	float lutSize = 33.0f;
+};
+
+class RandomForGPU {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	RandomForGPU() = default;
+	~RandomForGPU() = default;
+
+	void ImGui();
+
+	//--------- properties ---------------------------------------------------
+
+	float time = 0.001f;
 };
