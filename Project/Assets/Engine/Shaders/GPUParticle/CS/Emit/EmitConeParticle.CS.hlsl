@@ -86,7 +86,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 		float3 baseWorld = gEmitterCone.translation + mul(float4(baseLocal, 1.0f), gEmitterCone.rotationMatrix).xyz;
 		float3 topWorld = gEmitterCone.translation + mul(float4(topLocal, 1.0f), gEmitterCone.rotationMatrix).xyz;
 		float3 direction = normalize(topWorld - baseWorld);
-		particle.velocity = direction * generator.Generate3D();
+		particle.velocity = direction * generator.Generate3D() * gEmitterCommon.moveSpeed;
 			
 		Transform transform = (Transform) 0;
 		transform.translation = baseWorld;

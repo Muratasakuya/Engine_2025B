@@ -157,6 +157,7 @@ void GPUParticleGroup::ImGui(ID3D12Device* device) {
 			ImGui::DragInt("count", &emitter_.common.count, 1, 0, kMaxParticles);
 			ImGui::DragFloat("lifeTime", &emitter_.common.lifeTime, 0.01f);
 			ImGui::DragFloat("frequency", &frequency_, 0.01f);
+			ImGui::DragFloat("moveSpeed", &emitter_.common.moveSpeed, 0.01f);
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Emitter")) {
@@ -275,6 +276,7 @@ void GPUParticleGroup::DrawEmitter() {
 
 void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
 
+	ParticleEmitterShape preShape = emitter_.shape;
 	if (EnumAdapter<ParticleEmitterShape>::Combo("emitterShape", &emitter_.shape)) {
 
 		// まだbufferが作成されていなければ作成する
@@ -284,6 +286,21 @@ void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
 
 				emitter_.hemisphere.Init();
 				emitterBuffer_.hemisphere.CreateBuffer(device);
+
+				switch (preShape) {
+				case ParticleEmitterShape::Sphere:
+
+					emitter_.hemisphere.translation = emitter_.sphere.translation;
+					break;
+				case ParticleEmitterShape::Box:
+
+					emitter_.hemisphere.translation = emitter_.box.translation;
+					break;
+				case ParticleEmitterShape::Cone:
+
+					emitter_.hemisphere.translation = emitter_.cone.translation;
+					break;
+				}
 			}
 			break;
 		}
@@ -292,6 +309,21 @@ void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
 
 				emitter_.box.Init();
 				emitterBuffer_.box.CreateBuffer(device);
+
+				switch (preShape) {
+				case ParticleEmitterShape::Sphere:
+
+					emitter_.box.translation = emitter_.sphere.translation;
+					break;
+				case ParticleEmitterShape::Hemisphere:
+
+					emitter_.box.translation = emitter_.hemisphere.translation;
+					break;
+				case ParticleEmitterShape::Cone:
+
+					emitter_.box.translation = emitter_.cone.translation;
+					break;
+				}
 			}
 			break;
 		}
@@ -300,6 +332,21 @@ void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
 
 				emitter_.cone.Init();
 				emitterBuffer_.cone.CreateBuffer(device);
+
+				switch (preShape) {
+				case ParticleEmitterShape::Sphere:
+
+					emitter_.cone.translation = emitter_.sphere.translation;
+					break;
+				case ParticleEmitterShape::Hemisphere:
+
+					emitter_.cone.translation = emitter_.hemisphere.translation;
+					break;
+				case ParticleEmitterShape::Box:
+
+					emitter_.cone.translation = emitter_.box.translation;
+					break;
+				}
 			}
 			break;
 		}
@@ -314,6 +361,11 @@ void GPUParticleGroup::EditEmitter() {
 
 		ImGui::DragFloat("radius", &emitter_.sphere.radius, 0.01f);
 		ImGui::DragFloat3("translation", &emitter_.sphere.translation.x, 0.05f);
+
+		// 動いていない間も座標は共有する
+		emitter_.hemisphere.translation = emitter_.sphere.translation;
+		emitter_.box.translation = emitter_.sphere.translation;
+		emitter_.cone.translation = emitter_.sphere.translation;
 		break;
 	}
 	case ParticleEmitterShape::Hemisphere: {
@@ -321,6 +373,11 @@ void GPUParticleGroup::EditEmitter() {
 		ImGui::DragFloat("radius", &emitter_.hemisphere.radius, 0.01f);
 		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 		ImGui::DragFloat3("translation", &emitter_.hemisphere.translation.x, 0.05f);
+
+		// 動いていない間も座標は共有する
+		emitter_.sphere.translation = emitter_.hemisphere.translation;
+		emitter_.box.translation = emitter_.hemisphere.translation;
+		emitter_.cone.translation = emitter_.hemisphere.translation;
 		break;
 	}
 	case ParticleEmitterShape::Box: {
@@ -328,6 +385,11 @@ void GPUParticleGroup::EditEmitter() {
 		ImGui::DragFloat3("size", &emitter_.box.size.x, 0.1f);
 		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 		ImGui::DragFloat3("translation", &emitter_.box.translation.x, 0.05f);
+
+		// 動いていない間も座標は共有する
+		emitter_.sphere.translation = emitter_.box.translation;
+		emitter_.hemisphere.translation = emitter_.box.translation;
+		emitter_.cone.translation = emitter_.box.translation;
 		break;
 	}
 	case ParticleEmitterShape::Cone: {
@@ -337,6 +399,11 @@ void GPUParticleGroup::EditEmitter() {
 		ImGui::DragFloat("height", &emitter_.cone.height, 0.01f);
 		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 		ImGui::DragFloat3("translation", &emitter_.cone.translation.x, 0.05f);
+
+		// 動いていない間も座標は共有する
+		emitter_.sphere.translation = emitter_.cone.translation;
+		emitter_.hemisphere.translation = emitter_.cone.translation;
+		emitter_.box.translation = emitter_.cone.translation;
 		break;
 	}
 	}

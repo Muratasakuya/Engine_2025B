@@ -25,7 +25,7 @@ struct ParticleEmitterCommon {
 	int32_t count;
 	int32_t emit;
 	float lifeTime;
-	float pad0;
+	float moveSpeed;
 
 	Vector3 scale;
 	float pad1;
@@ -38,6 +38,7 @@ struct ParticleEmitterCommon {
 		count = 32;
 		emit = false;
 		lifeTime = 1.0f;
+		moveSpeed = 1.0f;
 
 		scale = Vector3::AnyInit(0.4f);
 		color = Color::White();

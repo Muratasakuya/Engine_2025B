@@ -74,7 +74,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 			
 		// Œü‚¢‚Ä‚¢‚é•ûŒü(+Z)•ûŒü‚É”ò‚Î‚·
 		float3 worldForward = mul(float3(0.0f, 0.0f, 1.0f), (float3x3) gEmitterBox.rotationMatrix);
-		particle.velocity = normalize(worldForward) * generator.Generate3D();
+		particle.velocity = normalize(worldForward) * generator.Generate3D() * gEmitterCommon.moveSpeed;
 			
 		Transform transform = (Transform) 0;
 		transform.translation = gEmitterBox.translation + mul(

@@ -86,7 +86,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 		float3 direction = GetRandomDirection(generator);
 		// ‰ñ“]‚ð“K‰ž
 		float3 rotatedDirection = mul(direction, (float3x3) gEmitterHemisphere.rotationMatrix);
-		particle.velocity = normalize(rotatedDirection) * generator.Generate3D();
+		particle.velocity = normalize(rotatedDirection) * generator.Generate3D() * gEmitterCommon.moveSpeed;
 			
 		Transform transform = (Transform) 0;
 		transform.translation = gEmitterHemisphere.translation + direction * gEmitterHemisphere.radius;
