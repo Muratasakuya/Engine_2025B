@@ -26,9 +26,6 @@ void GameDisplayDamage::Init(const std::string& textureName, const std::string& 
 		damagePopups_[index].digits->Init(damageDigitMaxNum_, textureName,
 			"damagePopup_" + std::to_string(index), groupName);
 
-		// postProcess適応
-		damagePopups_[index].digits->SetPostProcessEnable(true);
-
 		// 表示しない状態
 		damagePopups_[index].active = false;
 	}
