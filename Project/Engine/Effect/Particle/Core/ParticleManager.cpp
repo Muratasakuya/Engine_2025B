@@ -110,83 +110,167 @@ void ParticleManager::RemoveSystem() {
 
 void ParticleManager::ImGui() {
 
-	ImGui::Columns(2, "##split", true);
-	// 左側
-	{
-		// 追加・削除ボタン
-		if (ImGui::Button("+##ParticleManager")) {
+	// 左側の表示
+	ImGui::BeginChild("##LeftColumn",
+		ImVec2(leftColumnWidth_, 0.0f), ImGuiChildFlags_None);
 
-			AddSystem();
+	// 左上
+	ImGui::BeginChild("SystemAdd", leftUpChildSize_,
+		ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+	ImGui::SeparatorText("Add System");
+	DrawSystemAdd();
+
+	ImGui::EndChild();
+
+	// 左の真ん中
+	ImGui::BeginChild("GroupAdd", leftCenterChildSize_,
+		ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+	ImGui::SeparatorText("Add Group");
+
+	// 作成されているかいないか
+	if (IsSystemSelected()) {
+
+		systems_[selectedSystem_]->ImGuiGroupAdd();
+	} else {
+
+		ImGui::TextDisabled("not selected system");
+	}
+	ImGui::EndChild();
+
+	// 左下
+	ImGui::BeginChild("SystemParam", ImVec2(0.0f, 0.0f),
+		ImGuiChildFlags_Border);
+	ImGui::SeparatorText("System Patameter");
+
+	// 作成されているかいないか
+	if (IsSystemSelected()) {
+
+		systems_[selectedSystem_]->ImGuiSystemParameter();
+	} else {
+
+		ImGui::TextDisabled("not selected system");
+	}
+	ImGui::EndChild();
+
+	ImGui::EndChild();
+
+	// 右側の表示
+	ImGui::SameLine();
+	ImGui::BeginChild("##RightColumn", ImVec2(0.0f, 0.0f), ImGuiChildFlags_None);
+
+	// 右上
+	ImGui::BeginChild("SystemSelect", ImVec2(0.0f, rightUpChildSizeY_),
+		ImGuiChildFlags_Border);
+	ImGui::SeparatorText("Select System");
+
+	DrawSystemSelect();
+	ImGui::EndChild();
+
+	// 左の真ん中
+	ImGui::BeginChild("GroupSelect", ImVec2(0.0f, rightCenterChildSizeY_),
+		ImGuiChildFlags_Border);
+	ImGui::SeparatorText("Select Group");
+
+	// 作成されているかいないか
+	if (IsSystemSelected()) {
+
+		systems_[selectedSystem_]->ImGuiGroupSelect();
+	} else {
+
+		ImGui::TextDisabled("not selected system");
+	}
+	ImGui::EndChild();
+
+	// 右下
+	ImGui::BeginChild("GroupParam", ImVec2(0.0f, 0.0f),
+		ImGuiChildFlags_Border);
+	ImGui::SeparatorText("Group Parameter");
+
+	// 作成されているかいないか
+	if (IsSystemSelected()) {
+
+		systems_[selectedSystem_]->ImGuiSelectedGroupEditor();
+	} else {
+
+		ImGui::TextDisabled("not selected system");
+	}
+	ImGui::EndChild();
+
+	ImGui::EndChild();
+}
+
+void ParticleManager::DrawSystemAdd() {
+
+	// 追加・削除ボタン
+	if (ImGui::Button("+System")) {
+
+		AddSystem();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("-System")) {
+
+		RemoveSystem();
+	}
+}
+
+void ParticleManager::DrawSystemSelect() {
+
+	// ツリー表示
+	for (int systemI = 0; systemI < systems_.size(); ++systemI) {
+
+		ParticleSystem& system = *systems_[systemI];
+
+		ImGuiTreeNodeFlags flags =
+			ImGuiTreeNodeFlags_Leaf
+			| ImGuiTreeNodeFlags_NoTreePushOnOpen
+			| ImGuiTreeNodeFlags_OpenOnDoubleClick
+			| ImGuiTreeNodeFlags_SpanAvailWidth;
+		if (systemI == selectedSystem_) {
+			flags |= ImGuiTreeNodeFlags_Selected;
 		}
-		ImGui::SameLine();
-		if (ImGui::Button("-##ParticleManager")) {
+		ImGui::TreeNodeEx((void*)(intptr_t)systemI,
+			flags, "%s", system.GetName().c_str());
 
-			RemoveSystem();
+		// 選択後、ダブルクリックで改名
+		if (ImGui::IsItemClicked()) {
+
+			selectedSystem_ = systemI;
+		}
+		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+
+			renamingSystem_ = systemI;
+			strncpy_s(renameBuffer_, sizeof(renameBuffer_), system.GetName().c_str(), _TRUNCATE);
 		}
 
-		// ツリー表示
-		for (int sytemI = 0; sytemI < systems_.size(); ++sytemI) {
+		// 改名中ならInputTextを重ね描画
+		if (renamingSystem_ == systemI) {
 
-			ParticleSystem& system = *systems_[sytemI];
-			bool open = ImGui::TreeNodeEx((void*)(intptr_t)sytemI,
-				ImGuiTreeNodeFlags_DefaultOpen |
-				ImGuiTreeNodeFlags_OpenOnDoubleClick,
-				"%s", system.GetName().c_str());
+			ImGui::SameLine();
 
-			// 選択後、ダブルクリックで改名
-			if (ImGui::IsItemClicked()) {
+			ImGui::PushID(systemI);
+			ImGui::SetNextItemWidth(-FLT_MIN);
 
-				selectedSystem_ = sytemI;
-			}
-			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
+			ImGuiInputTextFlags itFlags =
+				ImGuiInputTextFlags_AutoSelectAll |
+				ImGuiInputTextFlags_EnterReturnsTrue;
+			bool done = ImGui::InputText("##rename", renameBuffer_,
+				sizeof(renameBuffer_), itFlags);
+			if (ImGui::IsItemActivated()) {
 
-				renamingSystem_ = sytemI;
-				strncpy_s(renameBuffer_, sizeof(renameBuffer_), system.GetName().c_str(), _TRUNCATE);
+				ImGui::SetKeyboardFocusHere(-1);
 			}
 
-			// 改名中ならInputTextを重ね描画
-			if (renamingSystem_ == sytemI) {
+			if (done || (!ImGui::IsItemActive() && ImGui::IsItemDeactivated())) {
 
-				ImGui::SameLine();
-				if (ImGui::InputText("##renameSystem", renameBuffer_, sizeof(renameBuffer_),
-					ImGuiInputTextFlags_EnterReturnsTrue)) {
-
-					system.SetName(renameBuffer_);
-					renamingSystem_ = -1;
-				}
+				system.SetName(renameBuffer_);
+				renamingSystem_ = -1;
 			}
-
-			// Group表示
-			if (open) {
-				for (int groupI = 0; groupI < system.GetGPUGroup().size(); ++groupI) {
-
-					auto nodeId = reinterpret_cast<void*>(static_cast<intptr_t>((sytemI << 16) | groupI));
-					const std::string& gname = system.GetGroupName(groupI);
-					ImGui::TreeNodeEx(nodeId,
-						ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen,
-						"%s", gname.c_str());
-
-					// Group選択、改名はSystem側で処理
-					if (ImGui::IsItemClicked()) {
-
-						selectedSystem_ = sytemI;
-						system.SelectGroup(groupI);
-					}
-					if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
-
-						system.BeginRenameGroup(groupI, gname.c_str());
-					}
-				}
-				ImGui::TreePop();
-			}
+			ImGui::PopID();
 		}
 	}
+}
 
-	// 右側
-	ImGui::NextColumn();
+bool ParticleManager::IsSystemSelected() const {
 
-	if (0 <= selectedSystem_ && selectedSystem_ < static_cast<int>(systems_.size())) {
-
-		systems_[selectedSystem_]->ImGui();
-	}
+	return 0 <= selectedSystem_ && selectedSystem_ < static_cast<int>(systems_.size());
 }

@@ -68,60 +68,79 @@ void ParticleSystem::RemoveGroup() {
 	}
 }
 
-void ParticleSystem::ImGui() {
+void ParticleSystem::ImGuiGroupAdd() {
 
-	ImGui::Columns(2, "##systemSplit", true);
+	EnumAdapter<ParticleType>::Combo("Type", &particleType_);
+	EnumAdapter<ParticlePrimitiveType>::Combo("Primitive", &primitiveType_);
 
-	// タイプ選択
-	EnumAdapter<ParticleType>::Combo("particleType", &particleType_);
-	EnumAdapter<ParticlePrimitiveType>::Combo("primitiveType", &primitiveType_);
-
-	// groupの追加、削除
-	if (ImGui::Button("+##ParticleSystem")) {
+	// 追加と削除
+	if (ImGui::Button("+Group")) {
 
 		AddGroup();
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("-##ParticleSystem")) {
+	if (ImGui::Button("-Group")) {
 
 		RemoveGroup();
 	}
+}
 
-	for (int groupI = 0; groupI < gpuGroups_.size(); ++groupI) {
+void ParticleSystem::ImGuiGroupSelect() {
 
-		bool selected = (selectedGroup_ == groupI);
-		if (ImGui::Selectable(gpuGroups_[groupI].name.c_str(), selected,
+	for (int i = 0; i < gpuGroups_.size(); ++i) {
+
+		bool selected = (selectedGroup_ == i);
+		if (ImGui::Selectable(gpuGroups_[i].name.c_str(), selected,
 			ImGuiSelectableFlags_AllowDoubleClick)) {
 
-			selectedGroup_ = groupI;
+			selectedGroup_ = i;
 		}
 
-		// ダブルクリックで改名
+		// ダブルクリックで改名開始
 		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
 
-			renamingGroup_ = groupI;
-			strncpy_s(renameBuffer_, sizeof(renameBuffer_), gpuGroups_[groupI].name.c_str(), _TRUNCATE);
+			BeginRenameGroup(i, gpuGroups_[i].name.c_str());
 		}
 
-		// 改名中
-		if (renamingGroup_ == groupI) {
-			ImGui::SameLine();
-			if (ImGui::InputText("##renameGrp", renameBuffer_, sizeof(renameBuffer_),
-				ImGuiInputTextFlags_EnterReturnsTrue)) {
+		// 改名入力
+		if (renamingGroup_ == i) {
 
-				gpuGroups_[groupI].name = renameBuffer_;
+			ImGui::SameLine();
+
+			ImGui::PushID(i);
+			ImGui::SetNextItemWidth(-FLT_MIN);
+
+			ImGuiInputTextFlags flags =
+				ImGuiInputTextFlags_AutoSelectAll |
+				ImGuiInputTextFlags_EnterReturnsTrue;
+			bool done = ImGui::InputText("##renameGrp", renameBuffer_,
+				sizeof(renameBuffer_), flags);
+			if (ImGui::IsItemActivated()) {
+
+				ImGui::SetKeyboardFocusHere(-1);
+			}
+
+			if (done || (!ImGui::IsItemActive() && ImGui::IsItemDeactivated())) {
+
+				gpuGroups_[i].name = renameBuffer_;
 				renamingGroup_ = -1;
 			}
+			ImGui::PopID();
 		}
 	}
+}
 
-	// group内処理
-	ImGui::NextColumn();
+void ParticleSystem::ImGuiSystemParameter() {
+
+	ImGui::TextDisabled("...");
+}
+
+void ParticleSystem::ImGuiSelectedGroupEditor() {
+
 	if (0 <= selectedGroup_ && selectedGroup_ < static_cast<int>(gpuGroups_.size())) {
 
 		gpuGroups_[selectedGroup_].group.ImGui(device_);
 	}
-	ImGui::Columns(1);
 }
 
 void ParticleSystem::BeginRenameGroup(int index, const char* name) {

@@ -8,6 +8,9 @@
 #include <Engine/Effect/Particle/Core/ParticleRenderer.h>
 #include <Engine/Effect/Particle/ParticleSystem.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
 //	ParticleManager class
 //============================================================================
@@ -51,16 +54,28 @@ private:
 	std::vector<std::unique_ptr<ParticleSystem>> systems_;
 
 	// editor
-	int nextSystemId_ = 0;       // システム添え字インデックス
-	int selectedSystem_ = -1;    // 現在選択しているシステム
-	int renamingSystem_ = -1;    // 改名中のシステムインデックス
-	char renameBuffer_[64] = {}; // 入力用バッファ
+	int nextSystemId_ = 0;        // システム添え字インデックス
+	int selectedSystem_ = -1;     // 現在選択しているシステム
+	int renamingSystem_ = -1;     // 改名中のシステムインデックス
+	char renameBuffer_[128] = {}; // 入力用バッファ
+	// layout
+	float leftColumnWidth_ = 280.0f;
+	ImVec2 leftUpChildSize_ = ImVec2(leftColumnWidth_, 128.0f);
+	ImVec2 leftCenterChildSize_ = ImVec2(leftColumnWidth_, 160.0f);
+	float rightUpChildSizeY_ = leftUpChildSize_.y;
+	float rightCenterChildSizeY_ = leftCenterChildSize_.y;
 
 	//--------- functions ----------------------------------------------------
 
 	// editor
 	void AddSystem();
 	void RemoveSystem();
+
+	void DrawSystemAdd();
+	void DrawSystemSelect();
+
+	// helper
+	bool IsSystemSelected() const;
 
 	ParticleManager() : IGameEditor("ParticleManager") {}
 	~ParticleManager() = default;

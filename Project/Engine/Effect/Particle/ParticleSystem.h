@@ -38,7 +38,11 @@ public:
 
 	void Update();
 
-	void ImGui();
+	// editor
+	void ImGuiSelectedGroupEditor();
+	void ImGuiGroupAdd();
+	void ImGuiGroupSelect();
+	void ImGuiSystemParameter();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -72,10 +76,10 @@ private:
 	// editor
 	ParticleType particleType_;
 	ParticlePrimitiveType primitiveType_;
-	int nextGroupId_ = 0;        // グループ添え字インデックス
-	int selectedGroup_ = -1;     // 現在選択しているグループ
-	int renamingGroup_ = -1;     // 改名中のグループインデックス
-	char renameBuffer_[64] = {}; // 入力用バッファ
+	int nextGroupId_ = 0;         // グループ添え字インデックス
+	int selectedGroup_ = -1;      // 現在選択しているグループ
+	int renamingGroup_ = -1;      // 改名中のグループインデックス
+	char renameBuffer_[128] = {}; // 入力用バッファ
 
 	//--------- functions ----------------------------------------------------
 
