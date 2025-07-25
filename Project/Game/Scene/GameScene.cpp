@@ -58,6 +58,7 @@ void GameScene::Load() {
 
 	// cubeMap、.dds
 	asset_->LoadTexture("overcast_soil_puresky_4k");
+	asset_->LoadLutTexture("lut_hot");
 
 	// common
 	asset_->LoadTexture("whiteAlphaGradation_0");
@@ -166,6 +167,8 @@ void GameScene::Init() {
 	//========================================================================
 
 	postProcessSystem_->Create({
+		PostProcessType::Grayscale,
+		PostProcessType::SepiaTone,
 		PostProcessType::Vignette,
 		PostProcessType::BoxFilter,
 		PostProcessType::GaussianFilter,
@@ -177,8 +180,11 @@ void GameScene::Init() {
 
 		// AddProcess
 		PostProcessType::Bloom,
-		PostProcessType::Glitch
+		PostProcessType::Glitch,
+		PostProcessType::Lut,
 		});
+	postProcessSystem_->AddProcess(PostProcessType::Grayscale);
+	postProcessSystem_->AddProcess(PostProcessType::SepiaTone);
 	postProcessSystem_->AddProcess(PostProcessType::Vignette);
 	postProcessSystem_->AddProcess(PostProcessType::BoxFilter);
 	postProcessSystem_->AddProcess(PostProcessType::GaussianFilter);
@@ -189,6 +195,7 @@ void GameScene::Init() {
 	postProcessSystem_->AddProcess(PostProcessType::Random);
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
 	postProcessSystem_->AddProcess(PostProcessType::Glitch);
+	postProcessSystem_->AddProcess(PostProcessType::Lut);
 
 	// ブラーの値を0.0fで初期化
 	RadialBlurForGPU radialBlurParam{};
@@ -199,6 +206,7 @@ void GameScene::Init() {
 
 	postProcessSystem_->InputProcessTexture("noise", PostProcessType::Dissolve, asset_);
 	postProcessSystem_->InputProcessTexture("noise1", PostProcessType::Glitch, asset_);
+	postProcessSystem_->InputProcessTexture("lut_hot", PostProcessType::Lut, asset_);
 
 	//========================================================================
 	//	sceneObject

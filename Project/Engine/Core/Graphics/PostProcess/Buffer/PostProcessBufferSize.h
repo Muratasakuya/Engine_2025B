@@ -46,7 +46,7 @@ public:
 
 	float threshold = 1.0f;
 	int radius = 2;
-	float sigma = 32.0f;
+	float sigma = 64.0f;
 };
 
 class GaussianFilterForGPU {
