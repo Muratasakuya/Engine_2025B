@@ -6,7 +6,7 @@
 #include <Engine/Editor/Base/IGameEditor.h>
 #include <Engine/Effect/Particle/Core/GPUParticleUpdater.h>
 #include <Engine/Effect/Particle/Core/ParticleRenderer.h>
-#include <Engine/Effect/Particle/ParticleSystem.h>
+#include <Engine/Effect/Particle/System/ParticleSystem.h>
 
 //============================================================================
 //	ParticleManager class

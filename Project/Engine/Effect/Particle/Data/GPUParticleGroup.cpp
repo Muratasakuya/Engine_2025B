@@ -3,7 +3,6 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Utility/GameTimer.h>
@@ -15,46 +14,6 @@
 //============================================================================
 //	GPUParticleGroup classMethods
 //============================================================================
-
-void GPUParticleGroup::CreatePrimitiveBuffer(
-	ID3D12Device* device, ParticlePrimitiveType primitiveType) {
-
-	primitiveBuffer_.type = primitiveType;
-
-	// 各形状で生成、この時点で転送してしまう
-	switch (primitiveType) {
-	case ParticlePrimitiveType::Plane: {
-
-		PlaneForGPU plane{};
-		plane.Init();
-
-		std::vector<PlaneForGPU> planes(kMaxParticles, plane);
-		primitiveBuffer_.plane.CreateSRVBuffer(device, kMaxParticles);
-		primitiveBuffer_.plane.TransferData(planes);
-		break;
-	}
-	case ParticlePrimitiveType::Ring: {
-
-		RingForGPU ring{};
-		ring.Init();
-
-		std::vector<RingForGPU> rings(kMaxParticles, ring);
-		primitiveBuffer_.ring.CreateSRVBuffer(device, kMaxParticles);
-		primitiveBuffer_.ring.TransferData(rings);
-		break;
-	}
-	case ParticlePrimitiveType::Cylinder: {
-
-		CylinderForGPU cylinder{};
-		cylinder.Init();
-
-		std::vector<CylinderForGPU> cylinders(kMaxParticles, cylinder);
-		primitiveBuffer_.cylinder.CreateSRVBuffer(device, kMaxParticles);
-		primitiveBuffer_.cylinder.TransferData(cylinders);
-		break;
-	}
-	}
-}
 
 void GPUParticleGroup::Create(ID3D12Device* device, ParticlePrimitiveType primitiveType) {
 
@@ -70,7 +29,7 @@ void GPUParticleGroup::Create(ID3D12Device* device, ParticlePrimitiveType primit
 	textureName_ = "circle";
 
 	// buffer作成
-	CreatePrimitiveBuffer(device, primitiveType);
+	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveType);
 	// 球でデフォルトで作成
 	emitterBuffer_.common.CreateBuffer(device);
 	emitterBuffer_.sphere.CreateBuffer(device);
@@ -140,7 +99,7 @@ void GPUParticleGroup::UpdateEmitter() {
 	}
 
 	// emitterの描画
-	DrawEmitter();
+	BaseParticleGroup::DrawEmitter();
 }
 
 void GPUParticleGroup::ImGui(ID3D12Device* device) {
@@ -163,7 +122,7 @@ void GPUParticleGroup::ImGui(ID3D12Device* device) {
 		if (ImGui::BeginTabItem("Emitter")) {
 
 			SelectEmitter(device);
-			EditEmitter();
+			BaseParticleGroup::EditEmitter();
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Transform")) {
@@ -236,42 +195,6 @@ D3D12_GPU_VIRTUAL_ADDRESS GPUParticleGroup::GetEmitterShapeBufferAdress() const 
 	// フォロースルー
 	ASSERT(false, "ParticleEmitterType::Count is not buffer");
 	return emitterBuffer_.sphere.GetResource()->GetGPUVirtualAddress();
-}
-
-void GPUParticleGroup::DrawEmitter() {
-
-	LineRenderer* lineRenderer = LineRenderer::GetInstance();
-
-	const uint32_t division = 8;
-	const Color color = Color::Red(0.6f);
-
-	// まだbufferが作成されていなければ作成する
-	switch (emitter_.shape) {
-	case ParticleEmitterShape::Sphere: {
-
-		lineRenderer->DrawSphere(division, emitter_.sphere.radius,
-			emitter_.sphere.translation, color);
-		break;
-	}
-	case ParticleEmitterShape::Hemisphere: {
-
-		lineRenderer->DrawHemisphere(division, emitter_.hemisphere.radius,
-			emitter_.hemisphere.translation, emitter_.hemisphere.rotationMatrix, color);
-		break;
-	}
-	case ParticleEmitterShape::Box: {
-
-		lineRenderer->DrawOBB(emitter_.box.translation,
-			emitter_.box.size, emitter_.box.rotationMatrix, color);
-		break;
-	}
-	case ParticleEmitterShape::Cone: {
-
-		lineRenderer->DrawCone(division, emitter_.cone.baseRadius, emitter_.cone.topRadius,
-			emitter_.cone.height, emitter_.cone.translation, emitter_.cone.rotationMatrix, color);
-		break;
-	}
-	}
 }
 
 void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
@@ -351,60 +274,5 @@ void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
 			break;
 		}
 		}
-	}
-}
-
-void GPUParticleGroup::EditEmitter() {
-
-	switch (emitter_.shape) {
-	case ParticleEmitterShape::Sphere: {
-
-		ImGui::DragFloat("radius", &emitter_.sphere.radius, 0.01f);
-		ImGui::DragFloat3("translation", &emitter_.sphere.translation.x, 0.05f);
-
-		// 動いていない間も座標は共有する
-		emitter_.hemisphere.translation = emitter_.sphere.translation;
-		emitter_.box.translation = emitter_.sphere.translation;
-		emitter_.cone.translation = emitter_.sphere.translation;
-		break;
-	}
-	case ParticleEmitterShape::Hemisphere: {
-
-		ImGui::DragFloat("radius", &emitter_.hemisphere.radius, 0.01f);
-		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
-		ImGui::DragFloat3("translation", &emitter_.hemisphere.translation.x, 0.05f);
-
-		// 動いていない間も座標は共有する
-		emitter_.sphere.translation = emitter_.hemisphere.translation;
-		emitter_.box.translation = emitter_.hemisphere.translation;
-		emitter_.cone.translation = emitter_.hemisphere.translation;
-		break;
-	}
-	case ParticleEmitterShape::Box: {
-
-		ImGui::DragFloat3("size", &emitter_.box.size.x, 0.1f);
-		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
-		ImGui::DragFloat3("translation", &emitter_.box.translation.x, 0.05f);
-
-		// 動いていない間も座標は共有する
-		emitter_.sphere.translation = emitter_.box.translation;
-		emitter_.hemisphere.translation = emitter_.box.translation;
-		emitter_.cone.translation = emitter_.box.translation;
-		break;
-	}
-	case ParticleEmitterShape::Cone: {
-
-		ImGui::DragFloat("baseRadius", &emitter_.cone.baseRadius, 0.01f);
-		ImGui::DragFloat("topRadius", &emitter_.cone.topRadius, 0.01f);
-		ImGui::DragFloat("height", &emitter_.cone.height, 0.01f);
-		ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
-		ImGui::DragFloat3("translation", &emitter_.cone.translation.x, 0.05f);
-
-		// 動いていない間も座標は共有する
-		emitter_.sphere.translation = emitter_.cone.translation;
-		emitter_.hemisphere.translation = emitter_.cone.translation;
-		emitter_.box.translation = emitter_.cone.translation;
-		break;
-	}
 	}
 }

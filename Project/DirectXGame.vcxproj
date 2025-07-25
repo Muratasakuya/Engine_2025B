@@ -217,6 +217,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Data\Base\BaseParticleGroup.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Effect\Particle\Data\CPUParticleGroup.cpp">
       <SubType>
       </SubType>
@@ -225,15 +229,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Effect\Particle\Data\ParticleParameter.cpp">
+    <ClCompile Include="Engine\Effect\Particle\Phase\ParticlePhase.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Effect\Particle\Editor\ParticleEditor.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
-    <ClCompile Include="Engine\Effect\Particle\ParticleSystem.cpp">
+    <ClCompile Include="Engine\Effect\Particle\System\ParticleSystem.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -782,6 +782,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Data\Base\BaseParticleGroup.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Effect\Particle\Data\CPUParticleGroup.h">
       <SubType>
       </SubType>
@@ -790,11 +794,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Effect\Particle\Data\ParticleParameter.h">
+    <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleSpawnModule.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Effect\Particle\Editor\ParticleEditor.h">
+    <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleUpdateModule.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -802,7 +810,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Effect\Particle\ParticleSystem.h">
+    <ClInclude Include="Engine\Effect\Particle\Phase\ParticlePhase.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\System\ParticleSystem.h">
       <SubType>
       </SubType>
     </ClInclude>

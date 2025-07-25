@@ -183,8 +183,6 @@ void GameScene::Init() {
 		PostProcessType::Glitch,
 		PostProcessType::Lut,
 		});
-	postProcessSystem_->AddProcess(PostProcessType::Grayscale);
-	postProcessSystem_->AddProcess(PostProcessType::SepiaTone);
 	postProcessSystem_->AddProcess(PostProcessType::Vignette);
 	postProcessSystem_->AddProcess(PostProcessType::BoxFilter);
 	postProcessSystem_->AddProcess(PostProcessType::GaussianFilter);
@@ -195,7 +193,6 @@ void GameScene::Init() {
 	postProcessSystem_->AddProcess(PostProcessType::Random);
 	postProcessSystem_->AddProcess(PostProcessType::Bloom);
 	postProcessSystem_->AddProcess(PostProcessType::Glitch);
-	postProcessSystem_->AddProcess(PostProcessType::Lut);
 
 	// ブラーの値を0.0fで初期化
 	RadialBlurForGPU radialBlurParam{};

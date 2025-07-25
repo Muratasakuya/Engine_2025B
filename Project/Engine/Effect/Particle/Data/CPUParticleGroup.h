@@ -3,13 +3,14 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Effect/Particle/Structures/ParticleStructures.h>
-#include <Engine/Effect/Particle/Structures/ParticleEmitterStructures.h>
+#include <Engine/Effect/Particle/Data/Base/BaseParticleGroup.h>
+#include <Engine/Effect/Particle/Phase/ParticlePhase.h>
 
 //============================================================================
 //	CPUParticleGroup class
 //============================================================================
-class CPUParticleGroup {
+class CPUParticleGroup :
+	public BaseParticleGroup {
 public:
 	//========================================================================
 	//	public Methods
@@ -17,6 +18,12 @@ public:
 
 	CPUParticleGroup() = default;
 	~CPUParticleGroup() = default;
+
+	void Create(ID3D12Device* device, ParticlePrimitiveType primitiveType);
+
+	void Update();
+
+	void ImGui();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -27,27 +34,33 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// emitter
-	Vector3 emitterRotation;     // 回転(すべて共通)
-	ParticleEmitterData emitter; // 各形状
-
 	// インスタンス数
-	uint32_t numInstance;
+	uint32_t numInstance_;
+
+	// フェーズ
+	std::vector<ParticlePhase> phases_;
 
 	// データ
-	std::list<CPUParticle::ParticleData> particles;
+	std::list<CPUParticle::ParticleData> particles_;
 	// 転送データ
-	std::vector<CPUParticle::MaterialForGPU> transferMaterials;
-	std::vector<CPUParticle::TextureInfoForGPU> transferTextureInfos;
-	std::vector<ParticleCommon::TransformForGPU> transferTransforms;
-	std::vector<ParticleCommon::PrimitiveData> transferPrimitives;
+	std::vector<CPUParticle::MaterialForGPU> transferMaterials_;
+	std::vector<CPUParticle::TextureInfoForGPU> transferTextureInfos_;
+	std::vector<ParticleCommon::TransformForGPU> transferTransforms_;
+	ParticleCommon::PrimitiveData<true> transferPrimitives_;
 
 	// buffers
-	ParticleCommon::PrimitiveBufferData primitiveBuffer;
-	DxStructuredBuffer<ParticleCommon::TransformForGPU> transformBuffer;
-	DxStructuredBuffer<CPUParticle::MaterialForGPU> materialBuffer;
-	DxStructuredBuffer<CPUParticle::TextureInfoForGPU> textureInfoBuffer;
+	DxStructuredBuffer<CPUParticle::MaterialForGPU> materialBuffer_;
+	DxStructuredBuffer<CPUParticle::TextureInfoForGPU> textureInfoBuffer_;
+
+	// 描画情報
+	BlendMode blendMode_;
+	std::string textureName_;
 
 	//--------- functions ----------------------------------------------------
 
+	// update
+	void UpdatePhase();
+	void UpdateTransferData(uint32_t particleIndex,
+		const CPUParticle::ParticleData& particle);
+	void TransferBuffer();
 };

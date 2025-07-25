@@ -11,18 +11,6 @@
 //	ParticleValue class
 //============================================================================
 
-// billboardの種類
-enum class ParticleBillboardType {
-
-	None,
-	All,
-	YAxis
-};
-namespace ParticleBillboard {
-
-	void SelectBillboardType(ParticleBillboardType& billboardType, const std::string& label = "label");
-}
-
 // 値の種類
 enum class ParticleValueType {
 

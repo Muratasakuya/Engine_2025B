@@ -134,6 +134,15 @@ struct ParticleEmitterData {
 	ParticleEmitterBox box;
 	// コーン状
 	ParticleEmitterCone cone;
+
+	void Init() {
+
+		// 全て初期化
+		sphere.Init();
+		hemisphere.Init();
+		box.Init();
+		cone.Init();
+	}
 };
 
 struct ParticleEmitterBufferData {

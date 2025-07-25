@@ -20,6 +20,14 @@ enum class ParticleType {
 	Count
 };
 
+// billboardの種類
+enum class ParticleBillboardType {
+
+	None,
+	All,
+	YAxis
+};
+
 //============================================================================
 //	Common
 //============================================================================
@@ -27,16 +35,17 @@ enum class ParticleType {
 namespace ParticleCommon {
 
 	// 描画情報
+	template<bool kMultiple = false>
 	struct PrimitiveData {
 
 		ParticlePrimitiveType type;
 
 		// 平面
-		PlaneForGPU plane;
+		std::conditional_t<kMultiple, std::vector<PlaneForGPU>, PlaneForGPU> plane;
 		// リング
-		RingForGPU ring;
+		std::conditional_t<kMultiple, std::vector<RingForGPU>, RingForGPU> ring;
 		// 円柱
-		CylinderForGPU cylinder;
+		std::conditional_t<kMultiple, std::vector<CylinderForGPU>, CylinderForGPU> cylinder;
 	};
 	struct PrimitiveBufferData {
 
@@ -152,6 +161,6 @@ namespace CPUParticle {
 		MaterialForGPU material;
 		TextureInfoForGPU textureInfo;
 		ParticleCommon::TransformForGPU transform;
-		ParticleCommon::PrimitiveData primitive;
+		ParticleCommon::PrimitiveData<false> primitive;
 	};
 }

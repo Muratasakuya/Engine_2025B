@@ -32,7 +32,13 @@ void ParticleSystem::Update() {
 	}
 
 	// 所持しているパーティクルの更新
+	// GPU、発生処理しか行わない
 	for (auto& group : gpuGroups_) {
+
+		group.group.Update();
+	}
+	// CPU
+	for (auto& group : cpuGroups_) {
 
 		group.group.Update();
 	}
@@ -43,7 +49,12 @@ void ParticleSystem::AddGroup() {
 	// タイプに応じて作成
 	if (particleType_ == ParticleType::CPU) {
 
-		// 今は何もないよ～ん
+		// 追加
+		//auto& group = cpuGroups_.emplace_back();
+		//// 名前の設定
+		//group.name = "particle" + std::to_string(++nextGroupId_);
+		//// 作成
+		//group.group.Create(device_, primitiveType_);
 	} else if (particleType_ == ParticleType::GPU) {
 
 		// 追加

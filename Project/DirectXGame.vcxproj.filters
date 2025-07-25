@@ -545,9 +545,6 @@
     <ClCompile Include="Engine\Effect\EffectSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Effect\Particle\Editor\ParticleEditor.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Effect\Trail\Editor\TrailEffectEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -560,16 +557,19 @@
     <ClCompile Include="Engine\Effect\GameEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Effect\Particle\ParticleSystem.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Effect\Particle\Data\ParticleParameter.cpp">
+    <ClCompile Include="Engine\Effect\Particle\System\ParticleSystem.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Effect\Particle\Data\GPUParticleGroup.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Effect\Particle\Data\CPUParticleGroup.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Data\Base\BaseParticleGroup.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Phase\ParticlePhase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -772,7 +772,6 @@
     <ClInclude Include="Engine\Effect\Particle\Core\GPUParticleUpdater.h" />
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleEmitterStructures.h" />
     <ClInclude Include="Engine\Effect\EffectSystem.h" />
-    <ClInclude Include="Engine\Effect\Particle\Editor\ParticleEditor.h" />
     <ClInclude Include="Engine\Effect\Trail\Editor\TrailEffectEditor.h" />
     <ClInclude Include="Engine\Effect\Trail\Structures\TrailEffectStructures.h" />
     <ClInclude Include="Engine\Effect\Trail\Core\TrailEffectRenderer.h" />
@@ -781,11 +780,15 @@
     <ClInclude Include="Engine\Effect\Particle\ParticleConfig.h" />
     <ClInclude Include="Lib\Adapter\EnumAdapter.h" />
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleStructures.h" />
-    <ClInclude Include="Engine\Effect\Particle\ParticleSystem.h" />
-    <ClInclude Include="Engine\Effect\Particle\Data\ParticleParameter.h" />
+    <ClInclude Include="Engine\Effect\Particle\System\ParticleSystem.h" />
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleValue.h" />
     <ClInclude Include="Engine\Effect\Particle\Data\GPUParticleGroup.h" />
     <ClInclude Include="Engine\Effect\Particle\Data\CPUParticleGroup.h" />
+    <ClInclude Include="Engine\Effect\Particle\Data\Base\BaseParticleGroup.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleSpawnModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleUpdateModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Phase\ParticlePhase.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

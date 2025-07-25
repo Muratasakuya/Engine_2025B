@@ -3,13 +3,13 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Effect/Particle/Structures/ParticleStructures.h>
-#include <Engine/Effect/Particle/Structures/ParticleEmitterStructures.h>
+#include <Engine/Effect/Particle/Data/Base/BaseParticleGroup.h>
 
 //============================================================================
 //	GPUParticleGroup class
 //============================================================================
-class GPUParticleGroup {
+class GPUParticleGroup :
+	public BaseParticleGroup {
 public:
 	//========================================================================
 	//	public Methods
@@ -50,10 +50,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// emitter
-	Vector3 emitterRotation_;     // 回転(すべて共通)
-	ParticleEmitterData emitter_; // 各形状
-
 	// 時間管理
 	float frequency_;
 	float frequencyTime_;
@@ -62,28 +58,17 @@ private:
 
 	// buffers
 	ParticleEmitterBufferData emitterBuffer_;
-	ParticleCommon::PrimitiveBufferData primitiveBuffer_;
-	DxStructuredBuffer<ParticleCommon::TransformForGPU> transformBuffer_;
 	DxStructuredBuffer<GPUParticle::MaterialForGPU> materialBuffer_;
 	DxStructuredBuffer<GPUParticle::ParticleForGPU> particleBuffer_;
 	// freeList
 	DxStructuredBuffer<uint32_t> freeListIndexBuffer_;
 	DxStructuredBuffer<uint32_t> freeListBuffer_;
 
-	// 描画情報
-	BlendMode blendMode_;
-	std::string textureName_;
-
 	//--------- functions ----------------------------------------------------
-
-	// create
-	void CreatePrimitiveBuffer(ID3D12Device* device, ParticlePrimitiveType primitiveType);
 
 	// update
 	void UpdateEmitter();
 
 	// editor
-	void DrawEmitter();
 	void SelectEmitter(ID3D12Device* device);
-	void EditEmitter();
 };

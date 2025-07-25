@@ -3,30 +3,23 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Effect/Particle/Module/Base/ICPUParticleModule.h>
+
+// c++
+#include <list>
 
 //============================================================================
-//	ParticleEditor class
+//	ICPUParticleSpawnModule class
 //============================================================================
-class ParticleEditor {
+class ICPUParticleSpawnModule :
+	public ICPUParticleModule {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ParticleEditor() = default;
-	~ParticleEditor() = default;
+	ICPUParticleSpawnModule() = default;
+	virtual ~ICPUParticleSpawnModule() = default;
 
-	//--------- accessor -----------------------------------------------------
-
-private:
-	//========================================================================
-	//	private Methods
-	//========================================================================
-
-	//--------- variables ----------------------------------------------------
-
-
-
-	//--------- functions ----------------------------------------------------
-
+	virtual void Execute(std::list<CPUParticle::ParticleData>& particles) = 0;
 };
