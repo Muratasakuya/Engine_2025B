@@ -1,4 +1,6 @@
-**main ブランチがデフォルトのブランチです**
+## Default Branch
+
+**main**
 
 ## Build Status (`main` branch)
 
