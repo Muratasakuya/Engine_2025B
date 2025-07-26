@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Debug/Logger.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 
 //============================================================================
 //	Assert classMethods
@@ -23,7 +23,7 @@ void Assert::DebugAssert(
 		std::string msg = oss.str();
 
 		// コンソール出力
-		Logger::Log(msg, Logger::LogLevel::ASSERT_ERROR);
+		SpdLogger::Log(msg, SpdLogger::LogLevel::ASSERT_ERROR);
 
 		// wstringに変換
 		std::wstring wmsg(msg.begin(), msg.end());
@@ -47,7 +47,7 @@ void Assert::ReleaseAssert(
 			<< "Function: " << function << "\n";
 
 		// エラーログ出力
-		Logger::Log(message, Logger::LogLevel::ASSERT_ERROR);
+		SpdLogger::Log(message, SpdLogger::LogLevel::ASSERT_ERROR);
 
 		// プログラム強制終了
 		exit(EXIT_FAILURE);

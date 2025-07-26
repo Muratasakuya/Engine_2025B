@@ -72,6 +72,11 @@ public:
 		return magic_enum::enum_name(value).data();
 	}
 
+	static constexpr const std::string_view& ToStringView(Enum value) noexcept {
+
+		return magic_enum::enum_name(value);
+	}
+
 	static constexpr std::optional<Enum> FromString(std::string_view name) noexcept {
 
 		return magic_enum::enum_cast<T>(name);

@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Core/Debug/Logger.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Asset/TextureManager.h>
 #include <Engine/Asset/Filesystem.h>
 #include <Lib/MathUtils/Algorithm.h>
@@ -25,7 +25,9 @@ void ModelLoader::Init(TextureManager* textureManager) {
 void ModelLoader::Load(const std::string& modelName) {
 
 	// モデルがすでにあれば読み込みは行わない
-	if (models_.find(modelName) != models_.end()) {
+	LOG_INFO("load mdoel begin: {}", modelName);
+	if (models_.contains(modelName)) {
+		LOG_INFO("load model cached: {}", modelName);
 		return;
 	}
 
@@ -45,10 +47,13 @@ void ModelLoader::Load(const std::string& modelName) {
 			}
 		}
 	}
-	ASSERT(found, "model not found in directory or its subdirectories: " + modelName);
+	if (!found) {
+
+		LOG_WARN("model not found → {}", modelName);
+	}
 
 	models_[modelName] = LoadModelFile(filePath.string());
-	Logger::Log("load model: " + modelName);
+	LOG_INFO("load mdoel ok: {}", modelName);
 }
 
 void ModelLoader::Make(const std::string& modelName,

@@ -13,6 +13,8 @@
 #include <directxpackedvector.h>
 // c++
 #include <string>
+#include <istream>
+#include <fstream>
 #include <unordered_map>
 #include <filesystem>
 // front

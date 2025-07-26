@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
+#include <Engine/Core/Debug/SpdLogger.h>
+#include <Lib/Adapter/EnumAdapter.h>
 
 #pragma comment(lib,"dInput8.lib")
 #pragma comment(lib,"dxguid.lib")
@@ -12,6 +14,84 @@
 //============================================================================
 //	Input classMethods
 //============================================================================
+
+namespace {
+
+	const char* kMouseNames[3] = { "MouseLeft", "MouseRight", "MouseCenter" };
+
+	std::string MakeCallerTag(const std::source_location& location, std::string_view label) {
+
+		std::string_view fn = location.function_name();
+
+		auto pos = fn.find(' ');
+		if (pos != std::string_view::npos) fn.remove_prefix(pos + 1);
+
+		constexpr std::string_view cdeclStr = "__cdecl ";
+		if (fn.starts_with(cdeclStr)) fn.remove_prefix(cdeclStr.size());
+
+		std::string tag;
+		tag.reserve(fn.size() + label.size() + 1);
+		tag.append(fn);
+		tag.push_back(':');
+		tag.append(label);
+		return tag;
+	}
+
+	const char* ToDikName(uint8_t dik) {
+
+		switch (dik) {
+		case DIK_W:   return "DIK_W";
+		case DIK_A:   return "DIK_A";
+		case DIK_S:   return "DIK_S";
+		case DIK_D:   return "DIK_D";
+		case DIK_R:   return "DIK_R";
+		case DIK_E:   return "DIK_E";
+		case DIK_Q:   return "DIK_Q";
+		case DIK_RETURN:   return "DIK_RETURN";
+		case DIK_UP:   return "DIK_UP";
+		case DIK_DOWN:   return "DIK_DOWN";
+		case DIK_RIGHT:   return "DIK_RIGHT";
+		case DIK_LEFT:   return "DIK_LEFT";
+		case DIK_SPACE: return "DIK_SPACE";
+		default:      break;
+		}
+		static char buf[8];
+		std::snprintf(buf, sizeof(buf), "0x%02X", dik);
+		return buf;
+	}
+
+	template<size_t N, class TAG_FUNC, class NAME_FUNC>
+	void LogEnterStayExit(bool now, bool prev,
+		size_t idx, std::array<std::chrono::steady_clock::time_point, N>& start,
+		std::array<bool, N>& stayDone, TAG_FUNC&& makeTag, NAME_FUNC&& toName) {
+
+		if (now) {
+			if (!prev) {
+
+				start[idx] = std::chrono::steady_clock::now();
+				stayDone[idx] = false;
+
+				LOG_INFO("{}  Enter {}", makeTag(), toName());
+			} else if (!stayDone[idx]) {
+
+				auto dur = std::chrono::steady_clock::now() - start[idx];
+
+				LOG_INFO("{}  Stay  {}  {:.1f}ms",
+					makeTag(), toName(),
+					std::chrono::duration<float, std::milli>(dur).count());
+
+				stayDone[idx] = true;
+			}
+		} else if (prev) {
+
+			auto dur = std::chrono::steady_clock::now() - start[idx];
+
+			LOG_INFO("{}  Exit  {}  {:.1f}ms",
+				makeTag(), toName(),
+				std::chrono::duration<float, std::milli>(dur).count());
+		}
+	}
+}
 
 Input* Input::instance_ = nullptr;
 
@@ -32,39 +112,87 @@ void Input::Finalize() {
 	}
 }
 
-bool Input::PushKey(BYTE keyNumber) {
+bool Input::PushKey(BYTE keyNumber, const std::source_location& location) {
 
-	// 指定キーを押していればtrue
-	if (key_[keyNumber]) {
+	const bool now = key_[keyNumber];
+	const bool prev = keyPre_[keyNumber];
 
-		return true;
+	if (now) {
+		if (!prev) {
+			keyStartTime_[keyNumber] = std::chrono::steady_clock::now();
+			keyStayLogged_[keyNumber] = false;
+
+			LOG_INFO("{}  Enter {}",
+				MakeCallerTag(location, "Key"),
+				ToDikName(keyNumber));
+		} else if (!keyStayLogged_[keyNumber]) {
+
+			auto dur = std::chrono::steady_clock::now() - keyStartTime_[keyNumber];
+
+			LOG_INFO("{}  Stay  {}  {:.1f}ms",
+				MakeCallerTag(location, "Key"),
+				ToDikName(keyNumber),
+				std::chrono::duration<float, std::milli>(dur).count());
+
+			keyStayLogged_[keyNumber] = true;
+		}
+	} else if (prev) {
+
+		auto dur = std::chrono::steady_clock::now() - keyStartTime_[keyNumber];
+
+		LOG_INFO("{}  Exit  {}  {:.1f}ms",
+			MakeCallerTag(location, "Key"),
+			ToDikName(keyNumber),
+			std::chrono::duration<float, std::milli>(dur).count());
 	}
 
-	return false;
+	return now;
 }
-bool Input::TriggerKey(BYTE keyNumber) {
+
+bool Input::TriggerKey(BYTE keyNumber, const std::source_location& location) {
 
 	// 現在のフレームで押されていて、前のフレームで押されていなかった場合にtrueを返す
 	if (key_[keyNumber] && !keyPre_[keyNumber]) {
 
+		LOG_INFO("{}", MakeCallerTag(location, "TriggerKey:" + std::string(ToDikName(keyNumber))));
 		return true;
 	}
 
 	return false;
 }
-bool Input::ReleaseKey(BYTE keyNumber) {
+bool Input::ReleaseKey(BYTE keyNumber, const std::source_location& location) {
+
 	if (!key_[keyNumber] && keyPre_[keyNumber]) {
+
+		LOG_INFO("{}", MakeCallerTag(location, "ReleaseKey:"+ std::string(ToDikName(keyNumber))));
 		return true;
 	}
 
 	return false;
 }
-bool Input::PushGamepadButton(GamePadButtons button) {
+bool Input::PushGamepadButton(GamePadButtons button, const std::source_location& location) {
 
-	return gamepadButtons_[static_cast<size_t>(button)];
+	const size_t index = static_cast<size_t>(button);
+	const bool now = gamepadButtons_[index];
+	const bool prev = gamepadButtonsPre_[index];
+
+	LogEnterStayExit(now, prev, index,
+		gpStartTime_, gpStayLogged_,
+		[&] { return MakeCallerTag(location, "GamePadButtons:"); },
+		[&] { return EnumAdapter<GamePadButtons>::ToString(button); });
+
+	return now;
 }
-bool Input::TriggerGamepadButton(GamePadButtons button) {
-	return gamepadButtons_[static_cast<size_t>(button)] && !gamepadButtonsPre_[static_cast<size_t>(button)];
+bool Input::TriggerGamepadButton(GamePadButtons button, const std::source_location& location) {
+
+	bool trigger = gamepadButtons_[static_cast<size_t>(button)] && !gamepadButtonsPre_[static_cast<size_t>(button)];
+	if (trigger) {
+
+		LOG_INFO("{}", MakeCallerTag(location,
+			"TriggerGamepadButton:" + std::string(EnumAdapter<GamePadButtons>::ToString(button))));
+	}
+
+	return trigger;
 }
 float Input::GetLeftTriggerValue() const {
 
@@ -103,29 +231,50 @@ float Input::GetMouseWheel() {
 
 	return wheelValue_;
 }
-bool Input::PushMouseLeft() const {
+bool Input::PushMouseButton(size_t index, const std::source_location& location) const {
 
-	return mouseButtons_[0];
+	const bool now = mouseButtons_[index];
+	const bool prev = mousePreButtons_[index];
+
+	auto& start = const_cast<Input*>(this)->mouseStartTime_;
+	auto& stayDone = const_cast<Input*>(this)->mouseStayLogged_;
+
+	LogEnterStayExit(now, prev, index,
+		start, stayDone,
+		[&] { return MakeCallerTag(location, "Mouse"); },
+		[&] { return kMouseNames[index]; });
+
+	return now;
 }
-bool Input::PushMouseRight() const {
+bool Input::TriggerMouseLeft(const std::source_location& location) const {
 
-	return mouseButtons_[1];
+	bool trigger = !mousePreButtons_[0] && mouseButtons_[0];
+	if (trigger) {
+
+		LOG_INFO("{}  mouseLeft=triggered", MakeCallerTag(location, "TriggerMouseLeft"));
+	}
+
+	return trigger;
 }
-bool Input::PushMouseCenter() const {
+bool Input::TriggerMouseRight(const std::source_location& location) const {
 
-	return mouseButtons_[2];
+	bool trigger = !mousePreButtons_[1] && mouseButtons_[1];
+	if (trigger) {
+
+		LOG_INFO("{}  mouseRight=triggered", MakeCallerTag(location, "TriggerMouseRight"));
+	}
+
+	return trigger;
 }
-bool Input::TriggerMouseLeft() const {
+bool Input::TriggerMouseCenter(const std::source_location& location) const {
 
-	return !mousePreButtons_[0] && mouseButtons_[0];
-}
-bool Input::TriggerMouseRight() const {
+	bool trigger = !mousePreButtons_[2] && mouseButtons_[2];
+	if (trigger) {
 
-	return !mousePreButtons_[1] && mouseButtons_[1];
-}
-bool Input::TriggerMouseCenter() const {
+		LOG_INFO("{}  mouseCenter=triggered", MakeCallerTag(location, "TriggerMouseCenter"));
+	}
 
-	return !mousePreButtons_[2] && mouseButtons_[2];
+	return trigger;
 }
 void Input::SetDeadZone(float deadZone) {
 

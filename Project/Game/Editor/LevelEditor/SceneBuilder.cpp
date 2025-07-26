@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Asset/AssetEditor.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
@@ -53,11 +54,15 @@ void SceneBuilder::CreateObjectsMap(std::unordered_map<Level::ObjectType,
 		return;
 	}
 
+	LOG_INFO("create sceneObjects...: {}", fileName_.value());
+
 	// 作成処理
 	for (const auto& obj : data["objects"]) {
 
 		BuildObjects(obj, objectsMap);
 	}
+
+	LOG_INFO("create sceneObjects finished: {}", fileName_.value());
 }
 
 bool SceneBuilder::IsMeshObjectCreatable(const Json& obj) const {

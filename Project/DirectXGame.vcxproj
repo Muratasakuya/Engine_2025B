@@ -193,6 +193,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Engine\Asset\ModelLoader.cpp" />
     <ClCompile Include="Engine\Asset\TextureManager.cpp" />
+    <ClCompile Include="Engine\Core\Debug\SpdLogger.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\GPUObject\IndexBuffer.cpp">
       <SubType>
       </SubType>
@@ -444,7 +448,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Engine\Object\Data\Transform.cpp" />
     <ClCompile Include="Engine\Core\Debug\Assert.cpp" />
-    <ClCompile Include="Engine\Core\Debug\Logger.cpp" />
     <ClCompile Include="Engine\Core\Framework.cpp" />
     <ClCompile Include="Engine\Core\Graphics\DxObject\DxCommand.cpp" />
     <ClCompile Include="Engine\Core\Graphics\DxObject\DxDevice.cpp" />
@@ -747,6 +750,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Asset\ModelLoader.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
     <ClInclude Include="Engine\Config.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Core\Debug\SpdLogger.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -1070,7 +1077,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Object\Data\Transform.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
-    <ClInclude Include="Engine\Core\Debug\Logger.h" />
     <ClInclude Include="Engine\Core\Framework.h" />
     <ClInclude Include="Engine\Core\Graphics\DxObject\DxCommand.h" />
     <ClInclude Include="Engine\Core\Graphics\DxObject\DxDevice.h" />

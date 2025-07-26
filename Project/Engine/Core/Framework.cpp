@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Debug/Logger.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Input/Input.h>
 #include <Engine/Asset/AssetEditor.h>
 #include <Engine/Object/Core/ObjectManager.h>
@@ -50,8 +50,11 @@ Framework::Framework() {
 	//	engineConfig
 	//========================================================================
 
-	Logger::EnableFileLogging();
-	Logger::Log("[StartLogginig]");
+	SpdLogger::Init();
+	SpdLogger::Log("[StartLogginig]\n");
+
+	LOG_INFO("\nconfigs\nwindowTitle: {}\nwindowSize: {}×{}\nmaxInstanceCount: {}\n\n",
+		Config::kWindowTitleName, Config::kWindowWidth, Config::kWindowHeight, Config::kMaxInstanceNum);
 
 	//========================================================================
 	//	init

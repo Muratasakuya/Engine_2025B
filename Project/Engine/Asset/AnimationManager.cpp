@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Core/Debug/Logger.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
 #include <Engine/Asset/ModelLoader.h>
@@ -32,7 +32,9 @@ void AnimationManager::Init(ID3D12Device* device, SRVDescriptor* srvDescriptor, 
 void AnimationManager::Load(const std::string& animationName, const std::string& modelName) {
 
 	// すでに読み込み済みの場合は処理しない
+	LOG_INFO("load animation begin: {}", animationName);
 	if (Algorithm::Find(animations_, animationName)) {
+		LOG_INFO("load animation cached: {}", animationName);
 		return;
 	}
 
@@ -51,13 +53,19 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 			}
 		}
 	}
-	ASSERT(found, "animation not found in directory or its subdirectories: " + animationName);
+	if (!found) {
+
+		LOG_WARN("animation not found → {}", animationName);
+	}
 
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath.string(), 0);
 
 	// アニメーションがない場合はエラー
-	assert(scene->mNumAnimations != 0);
+	if (scene->mNumAnimations == 0) {
+
+		LOG_WARN("numAnimations 0 → {}", animationName);
+	}
 
 	// すべてのアニメーションを処理
 	for (uint32_t animationIndex = 0; animationIndex < scene->mNumAnimations; ++animationIndex) {
@@ -115,12 +123,14 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 
 		// for分で回した分だけ取得
 		animations_[newAnimationName] = animation;
-		Logger::Log("load animation: " + newAnimationName);
+		SpdLogger::Log("load animation: " + newAnimationName);
 	}
 
 	// 骨とクラスターを作成する
 	skeletons_[animationName] = CreateSkeleton(modelLoader_->GetModelData(modelName).rootNode);
 	skinClusters_[animationName] = CreateSkinCluster(modelName, animationName);
+
+	LOG_INFO("load animation ok: {}", animationName);
 }
 
 Skeleton AnimationManager::CreateSkeleton(const Node& rootNode) {

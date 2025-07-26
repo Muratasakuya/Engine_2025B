@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Core/Debug/Logger.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Asset/Filesystem.h>
@@ -33,7 +33,9 @@ void TextureManager::Init(ID3D12Device* device, DxCommand* dxCommand,
 void TextureManager::Load(const std::string& textureName) {
 
 	// 読みこみ済みなら早期リターン
+	LOG_INFO("load texture begin: {}", textureName);
 	if (textures_.contains(textureName)) {
+		LOG_INFO("load texture cached: {}", textureName);
 		return;
 	}
 
@@ -55,7 +57,10 @@ void TextureManager::Load(const std::string& textureName) {
 			}
 		}
 	}
-	ASSERT(found, "texture not found in directory or its subdirectories: " + textureName);
+	if (!found) {
+
+		LOG_WARN("texture not found → {}", textureName);
+	}
 
 	std::string identifier = filePath.stem().string();
 	TextureData& texture = textures_[identifier];
@@ -102,7 +107,12 @@ void TextureManager::Load(const std::string& textureName) {
 
 	isCacheValid_ = false;
 
-	Logger::Log("load texture: " + identifier);
+	LOG_INFO("load texture ok: {} ({}×{} mip{} srv={})",
+		identifier,
+		texture.metadata.width,
+		texture.metadata.height,
+		texture.metadata.mipLevels,
+		texture.srvIndex);
 }
 
 void TextureManager::LoadLutTexture(const std::string& textureName) {
@@ -160,7 +170,7 @@ void TextureManager::LoadLutTexture(const std::string& textureName) {
 
 	isCacheValid_ = false;
 
-	Logger::Log("load texture: " + identifier);
+	SpdLogger::Log("load texture: " + identifier);
 }
 
 bool TextureManager::Search(const std::string& textureName) {

@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Debug/Logger.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 
 //============================================================================
 //	DxDevice classMethods
@@ -29,8 +29,8 @@ void DxDevice::Create() {
 
 		if (!(adapterDesc.Flags & DXGI_ADAPTER_FLAG3_SOFTWARE)) {
 
-			std::wstring adapterLog = std::format(L"Use Adapter:{}\n", adapterDesc.Description);
-			Logger::Log(WStringToString(adapterLog));
+			std::wstring adapterLog = std::format(L"Use Adapter: {}", adapterDesc.Description);
+			SpdLogger::Log(WStringToString(adapterLog));
 			break;
 		}
 		useAdapter_ = nullptr;
@@ -51,7 +51,8 @@ void DxDevice::Create() {
 
 		if (SUCCEEDED(hr)) {
 
-			Logger::Log(featuerLevelStrings[i]);
+			SpdLogger::Log("featuerLevel: "+ std::string(featuerLevelStrings[i]));
+			SpdLogger::Log("\n");
 			break;
 		}
 	}

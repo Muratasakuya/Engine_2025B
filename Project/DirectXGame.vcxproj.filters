@@ -29,9 +29,6 @@
     <ClCompile Include="Engine\Core\Debug\Assert.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Core\Debug\Logger.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -572,6 +569,9 @@
     <ClCompile Include="Engine\Effect\Particle\Phase\ParticlePhase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Debug\SpdLogger.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -582,7 +582,6 @@
     <ClInclude Include="Engine\Object\Data\Transform.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
-    <ClInclude Include="Engine\Core\Debug\Logger.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\DSVDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\RTVDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\SRVDescriptor.h" />
@@ -789,6 +788,7 @@
     <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleSpawnModule.h" />
     <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleUpdateModule.h" />
     <ClInclude Include="Engine\Effect\Particle\Phase\ParticlePhase.h" />
+    <ClInclude Include="Engine\Core\Debug\SpdLogger.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

@@ -13,9 +13,11 @@
 #include <XInput.h>
 // c++
 #include <cmath>
+#include <string_view>
 #include <cstdint>
 #include <array>
 #include <cassert>
+#include <source_location>
 // front
 class WinApp;
 
@@ -34,13 +36,13 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	// key
-	bool PushKey(BYTE keyNumber);
-	bool TriggerKey(BYTE keyNumber);
-	bool ReleaseKey(BYTE keyNumber);
+	bool PushKey(BYTE keyNumber, const std::source_location& location = std::source_location::current());
+	bool TriggerKey(BYTE keyNumber, const std::source_location& location = std::source_location::current());
+	bool ReleaseKey(BYTE keyNumber, const std::source_location& location = std::source_location::current());
 
 	// gamePad
-	bool PushGamepadButton(GamePadButtons button);
-	bool TriggerGamepadButton(GamePadButtons button);
+	bool PushGamepadButton(GamePadButtons button, const std::source_location& location = std::source_location::current());
+	bool TriggerGamepadButton(GamePadButtons button, const std::source_location& location = std::source_location::current());
 
 	Vector2 GetLeftStickVal() const;
 	Vector2 GetRightStickVal() const;
@@ -49,13 +51,13 @@ public:
 	float GetRightTriggerValue() const;
 
 	// mouse
-	bool PushMouseLeft() const;
-	bool PushMouseRight() const;
-	bool PushMouseCenter() const;
+	bool PushMouseLeft(const std::source_location& location = std::source_location::current()) const { return PushMouseButton(0, location); }
+	bool PushMouseRight(const std::source_location& location = std::source_location::current()) const { return PushMouseButton(1, location); }
+	bool PushMouseCenter(const std::source_location& location = std::source_location::current()) const { return PushMouseButton(2, location); }
 
-	bool TriggerMouseLeft() const;
-	bool TriggerMouseRight() const;
-	bool TriggerMouseCenter() const;
+	bool TriggerMouseLeft(const std::source_location& location = std::source_location::current()) const;
+	bool TriggerMouseRight(const std::source_location& location = std::source_location::current()) const;
+	bool TriggerMouseCenter(const std::source_location& location = std::source_location::current()) const;
 
 	Vector2 GetMousePos() const;
 	Vector2 GetMousePrePos() const;
@@ -98,6 +100,15 @@ private:
 	std::array<bool, static_cast<size_t>(GamePadButtons::Counts)> gamepadButtons_{};
 	std::array<bool, static_cast<size_t>(GamePadButtons::Counts)> gamepadButtonsPre_{};
 
+	std::array<std::chrono::steady_clock::time_point, 256> keyStartTime_{};
+	std::array<bool, 256> keyStayLogged_{};
+
+	std::array<std::chrono::steady_clock::time_point, static_cast<size_t>(GamePadButtons::Counts)> gpStartTime_{};
+	std::array<bool, static_cast<size_t>(GamePadButtons::Counts)> gpStayLogged_{};
+
+	std::array<std::chrono::steady_clock::time_point, 3> mouseStartTime_{};
+	std::array<bool, 3> mouseStayLogged_{};
+
 	float leftThumbX_;
 	float leftThumbY_;
 	float rightThumbX_;
@@ -124,6 +135,8 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	// helper
+	bool PushMouseButton(size_t index, const std::source_location& location) const;
 	float ApplyDeadZone(float value);
 
 	Input() = default;
