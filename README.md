@@ -6,6 +6,7 @@
 
 - Debug:   [![DebugBuild](https://github.com/Muratasakuya/Engine_2025/actions/workflows/DebugBuild.yml/badge.svg)](https://github.com/Muratasakuya/Engine_2025/actions/workflows/DebugBuild.yml)
 - Release: [![ReleaseBuild](https://github.com/Muratasakuya/Engine_2025/actions/workflows/ReleaseBuild.yml/badge.svg)](https://github.com/Muratasakuya/Engine_2025/actions/workflows/ReleaseBuild.yml)
+- Develop [![DevelopBuild](https://github.com/Muratasakuya/Engine_2025A/actions/workflows/DevelopBuild.yml/badge.svg)](https://github.com/Muratasakuya/Engine_2025A/actions/workflows/DevelopBuild.yml)
 
 - ## ⚠️ 注意事項
 
