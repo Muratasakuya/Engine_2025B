@@ -16,6 +16,7 @@
 // front
 class SRVDescriptor;
 class SceneView;
+class DxCommand;
 
 //============================================================================
 //	PostProcessSystem class
@@ -39,15 +40,16 @@ public:
 	void Create(const std::vector<PostProcessType>& processes);
 
 	// postProcess実行
-	void Execute(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, class DxCommand* dxCommand);
+	void Execute(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, DxCommand* dxCommand);
+	void ExecuteDebugScene(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle,DxCommand* dxCommand);
 
 	// 最終的なtextureをframeBufferに描画する
-	void RenderFrameBuffer(class DxCommand* dxCommand);
+	void RenderFrameBuffer(DxCommand* dxCommand);
 
 	// imgui
 	void ImGui() override;
 
-	void ToWrite(class DxCommand* dxCommand);
+	void ToWrite(DxCommand* dxCommand);
 
 	// processの追加、削除
 	void AddProcess(PostProcessType process);
@@ -64,6 +66,7 @@ public:
 	void SetDepthFrameBufferGPUHandle(const D3D12_GPU_DESCRIPTOR_HANDLE& handle) { depthFrameBurferGPUHandle_ = handle; }
 
 	PostProcessPipeline* GetPipeline() const { return pipeline_.get(); }
+	const D3D12_GPU_DESCRIPTOR_HANDLE& GetCopySRVGPUHandle() const { return copyTextureProcess_->GetSRVGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -78,8 +81,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	uint32_t bloomExecuteCount_;
-
 	// pipeline
 	std::unique_ptr<PostProcessPipeline> pipeline_;
 	std::unique_ptr<PipelineState> offscreenPipeline_;
@@ -93,6 +94,9 @@ private:
 	// buffers
 	std::unordered_map<PostProcessType, std::unique_ptr<IPostProcessBuffer>> buffers_;
 
+	// debugSceneのα値を調整するためのプロセス
+	std::unique_ptr<ComputePostProcessor> copyTextureProcess_;
+
 	// frameBufferに描画するGPUHandle、最終的な結果
 	D3D12_GPU_DESCRIPTOR_HANDLE frameBufferGPUHandle_;
 	D3D12_GPU_DESCRIPTOR_HANDLE depthFrameBurferGPUHandle_;
@@ -105,6 +109,8 @@ private:
 
 	void CreateCBuffer(PostProcessType type);
 	void ExecuteCBuffer(ID3D12GraphicsCommandList* commandList, PostProcessType type);
+
+	void BeginTransition(PostProcessType type, DxCommand* dxCommand);
 };
 
 //============================================================================

@@ -20,6 +20,7 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 
 	// typeごとに処理
 	switch (type) {
+	case PostProcessType::CopyTexture:
 	case PostProcessType::Random:
 	case PostProcessType::Bloom:
 	case PostProcessType::Vignette:

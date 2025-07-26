@@ -40,6 +40,7 @@ void PostProcessSystem::ClearProcess() {
 
 	// 全て削除
 	activeProcesses_.clear();
+	activeProcesses_.push_back(PostProcessType::CopyTexture);
 }
 
 void PostProcessSystem::InputProcessTexture(
@@ -71,6 +72,10 @@ void PostProcessSystem::Init(ID3D12Device8* device,
 	// offscreenPipeline初期化
 	offscreenPipeline_ = std::make_unique<PipelineState>();
 	offscreenPipeline_->Create("CopyTexture.json", device, srvDescriptor_, shaderComplier);
+
+	// copy用プロセス
+	copyTextureProcess_ = std::make_unique<ComputePostProcessor>();
+	copyTextureProcess_->Init(device_, srvDescriptor_, width_, height_);
 }
 
 void PostProcessSystem::Create(const std::vector<PostProcessType>& processes) {
@@ -81,6 +86,9 @@ void PostProcessSystem::Create(const std::vector<PostProcessType>& processes) {
 
 	// 使用可能なprocessを入れる
 	initProcesses_.assign(processes.begin(), processes.end());
+
+	initProcesses_.push_back(PostProcessType::CopyTexture);
+	activeProcesses_.push_back(PostProcessType::CopyTexture);
 
 	// 使用できるPostProcessを初期化する
 	for (const auto& process : initProcesses_) {
@@ -125,11 +133,10 @@ void PostProcessSystem::Update(SceneView* sceneView) {
 
 void PostProcessSystem::Execute(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, DxCommand* dxCommand) {
 
+	// なにもプロセスがない場合はα値がバグらないようにcopyを行う
 	if (activeProcesses_.empty()) {
 
-		// 使用するpostProcessがない場合はそのままinputTextureを返す
-		frameBufferGPUHandle_ = inputSRVGPUHandle;
-		return;
+		activeProcesses_.push_back(PostProcessType::CopyTexture);
 	}
 
 	auto commandList = dxCommand->GetCommandList();
@@ -148,20 +155,7 @@ void PostProcessSystem::Execute(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHa
 			// 実行
 			commandContext.Execute(process, commandList, processors_[process].get(), inputGPUHandle);
 
-			if (process == activeProcesses_.back()) {
-
-				// 最後の処理はframeBufferに描画するためにPixelShaderに遷移させる
-				// UnorderedAccess -> PixelShader
-				dxCommand->TransitionBarriers({ processors_[process]->GetOutputTextureResource() },
-					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-					D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-			} else {
-
-				// UnorderedAccess -> ComputeShader
-				dxCommand->TransitionBarriers({ processors_[process]->GetOutputTextureResource() },
-					D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-					D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
-			}
+			BeginTransition(process, dxCommand);
 
 			// 出力を次のpostProcessの入力にする
 			inputGPUHandle.ptr = NULL;
@@ -171,6 +165,41 @@ void PostProcessSystem::Execute(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHa
 
 	// 最終的なframeBufferに設定するGPUHandleの設定
 	frameBufferGPUHandle_ = inputGPUHandle;
+}
+
+void PostProcessSystem::BeginTransition(PostProcessType process, DxCommand* dxCommand) {
+
+	if (process == activeProcesses_.back()) {
+
+		// 最後の処理はframeBufferに描画するためにPixelShaderに遷移させる
+		// UnorderedAccess -> PixelShader
+		dxCommand->TransitionBarriers({ processors_[process]->GetOutputTextureResource() },
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	} else {
+
+		// UnorderedAccess -> ComputeShader
+		dxCommand->TransitionBarriers({ processors_[process]->GetOutputTextureResource() },
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+	}
+}
+
+void PostProcessSystem::ExecuteDebugScene(
+	const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, DxCommand* dxCommand) {
+
+	auto commandList = dxCommand->GetCommandList();
+	PostProcessCommandContext commandContext{};
+
+	// pipeline設定
+	pipeline_->SetPipeline(commandList, PostProcessType::CopyTexture);
+	// 実行
+	commandContext.Execute(PostProcessType::CopyTexture, commandList, copyTextureProcess_.get(), inputSRVGPUHandle);
+
+	// UnorderedAccess -> PixelShader
+	dxCommand->TransitionBarriers({ copyTextureProcess_->GetOutputTextureResource() },
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 }
 
 void PostProcessSystem::RenderFrameBuffer(DxCommand* dxCommand) {
@@ -189,6 +218,12 @@ void PostProcessSystem::RenderFrameBuffer(DxCommand* dxCommand) {
 
 void PostProcessSystem::ImGui() {
 
+	if (needSort_) {
+
+		std::sort(activeProcesses_.begin(), activeProcesses_.end());
+		needSort_ = false;
+	}
+
 	ImGui::SetWindowFontScale(0.8f);
 
 	using EA = EnumAdapter<PostProcessType>;
@@ -197,7 +232,7 @@ void PostProcessSystem::ImGui() {
 		ImGui::TextDisabled("Available");
 		for (auto process : initProcesses_) {
 
-			bool enabled = Algorithm::Find(activeProcesses_, process, true);
+			bool enabled = Algorithm::Find(activeProcesses_, process, false);
 			if (ImGui::Checkbox(EA::ToString(process), &enabled)) {
 
 				enabled ? AddProcess(process) : RemoveProcess(process);
@@ -300,8 +335,14 @@ void PostProcessSystem::ToWrite(DxCommand* dxCommand) {
 		}
 	}
 
-	// リセットする
-	bloomExecuteCount_ = 0;
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+
+	// PixelShader -> UnorderedAccess
+	dxCommand->TransitionBarriers(
+		{ copyTextureProcess_->GetOutputTextureResource() },
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+		D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+#endif
 }
 
 void PostProcessSystem::CreateCBuffer(PostProcessType type) {

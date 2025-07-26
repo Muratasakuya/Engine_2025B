@@ -14,6 +14,7 @@
 // postProcessの種類
 enum class PostProcessType {
 
+	CopyTexture,
 	Bloom,
 	HorizontalBlur,
 	VerticalBlur,

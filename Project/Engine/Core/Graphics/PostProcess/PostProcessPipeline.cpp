@@ -21,6 +21,7 @@ void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescript
 
 	// shaderDataFileName
 	fileNames_ = {
+		"CopySceneTexture.json",
 		"Bloom.json",
 		"HorizontalBlur.json",
 		"VerticalBlur.json",
@@ -42,13 +43,16 @@ void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescript
 
 		pipelines_[type] = std::make_unique<PipelineState>();
 	}
+
+	// copy用は最初に作成する
+	Create(PostProcessType::CopyTexture);
 }
 
 void PostProcessPipeline::Create(PostProcessType type) {
 
 	// pipelineの作成
-	pipelines_[static_cast<uint32_t>(type)]->Create(fileNames_[static_cast<uint32_t>(type)],
-		device_, srvDescriptor_, shaderCompiler_);
+	uint32_t processIndex = static_cast<uint32_t>(type);
+	pipelines_[processIndex]->Create(fileNames_[processIndex], device_, srvDescriptor_, shaderCompiler_);
 }
 
 void PostProcessPipeline::SetPipeline(ID3D12GraphicsCommandList* commandList, PostProcessType type) {

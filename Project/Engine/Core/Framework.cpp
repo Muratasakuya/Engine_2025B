@@ -105,7 +105,7 @@ Framework::Framework() {
 
 	//------------------------------------------------------------------------
 	// scene管理クラス初期化
-	
+
 	ParticleManager::GetInstance()->Init(asset_.get(),
 		device, srvDescriptor, shaderCompiler);
 
@@ -128,8 +128,8 @@ Framework::Framework() {
 
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
-	imguiEditor_->Init(renderEngine_->GetRenderTextureGPUHandle(), renderEngine_->GetRenderTexture(
-		RenderEngine::ViewType::Debug)->GetSRVGPUHandle());
+	imguiEditor_->Init(renderEngine_->GetRenderTextureGPUHandle(),
+		postProcessSystem_->GetCopySRVGPUHandle());
 #endif
 }
 
@@ -238,6 +238,9 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	renderEngine_->Rendering(RenderEngine::ViewType::Debug);
+
+	postProcessSystem_->ExecuteDebugScene(renderEngine_->GetRenderTexture(
+		RenderEngine::ViewType::Debug)->GetSRVGPUHandle(), dxCommand);
 #endif
 	//========================================================================
 	//	draw: frameBuffer
