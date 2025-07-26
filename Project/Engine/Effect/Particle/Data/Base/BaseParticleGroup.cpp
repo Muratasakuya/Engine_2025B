@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Engine/Core/Debug/Assert.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 
 // imgui
@@ -12,6 +13,33 @@
 //============================================================================
 //	BaseParticleGroup classMethods
 //============================================================================
+
+D3D12_GPU_VIRTUAL_ADDRESS BaseParticleGroup::GetPrimitiveBufferAdress() const {
+
+	switch (primitiveBuffer_.type) {
+	case ParticlePrimitiveType::Plane: {
+
+		return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
+	}
+	case ParticlePrimitiveType::Ring: {
+
+		return primitiveBuffer_.ring.GetResource()->GetGPUVirtualAddress();
+	}
+	case ParticlePrimitiveType::Cylinder: {
+
+		return primitiveBuffer_.cylinder.GetResource()->GetGPUVirtualAddress();
+	}
+	case ParticlePrimitiveType::Count: {
+
+		ASSERT(false, "ParticlePrimitiveType::Count is not buffer");
+		return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
+	}
+	}
+
+	// フォロースルー
+	ASSERT(false, "ParticlePrimitiveType::Count is not buffer");
+	return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
+}
 
 void BaseParticleGroup::CreatePrimitiveBuffer(
 	ID3D12Device* device, ParticlePrimitiveType primitiveType) {

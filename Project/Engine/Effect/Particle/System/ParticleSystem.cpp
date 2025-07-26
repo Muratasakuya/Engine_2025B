@@ -50,11 +50,11 @@ void ParticleSystem::AddGroup() {
 	if (particleType_ == ParticleType::CPU) {
 
 		// 追加
-		//auto& group = cpuGroups_.emplace_back();
-		//// 名前の設定
-		//group.name = "particle" + std::to_string(++nextGroupId_);
-		//// 作成
-		//group.group.Create(device_, primitiveType_);
+		auto& group = cpuGroups_.emplace_back();
+		// 名前の設定
+		group.name = "particle" + std::to_string(++nextGroupId_);
+		// 作成
+		group.group.Create(device_, primitiveType_);
 	} else if (particleType_ == ParticleType::GPU) {
 
 		// 追加
@@ -69,14 +69,21 @@ void ParticleSystem::AddGroup() {
 void ParticleSystem::RemoveGroup() {
 
 	// 選択中のグループを削除
-	if (0 <= selectedGroup_ && selectedGroup_ < static_cast<int>(gpuGroups_.size())) {
-
-		gpuGroups_.erase(gpuGroups_.begin() + selectedGroup_);
-
-		// 未選択状態にする
-		selectedGroup_ = -1;
-		renamingGroup_ = -1;
+	if (selected_.index < 0) {
+		return;
 	}
+
+	if (selected_.type == ParticleType::GPU) {
+
+		gpuGroups_.erase(gpuGroups_.begin() + selected_.index);
+	}
+	else if(selected_.type == ParticleType::CPU) {
+
+		cpuGroups_.erase(cpuGroups_.begin() + selected_.index);
+	}
+	// 未選択状態にする
+	selected_.index = -1;
+	renaming_.index = -1;
 }
 
 void ParticleSystem::ImGuiGroupAdd() {
@@ -104,47 +111,47 @@ void ParticleSystem::ImGuiGroupAdd() {
 
 void ParticleSystem::ImGuiGroupSelect() {
 
-	for (int i = 0; i < gpuGroups_.size(); ++i) {
+	int id = 0;
+	auto drawItem = [&](auto& vec, ParticleType type) {
+		for (int i = 0; i < static_cast<int>(vec.size()); ++i, ++id) {
 
-		bool selected = (selectedGroup_ == i);
-		if (ImGui::Selectable(gpuGroups_[i].name.c_str(), selected,
-			ImGuiSelectableFlags_AllowDoubleClick)) {
+			const bool isSelected = (selected_.type == type && selected_.index == i);
 
-			selectedGroup_ = i;
-		}
+			// 表示名
+			std::string label = std::format("[{}] {}", EnumAdapter<ParticleType>::ToString(type), vec[i].name);
+			ImGui::PushID(id);
+			if (ImGui::Selectable(label.c_str(), isSelected,
+				ImGuiSelectableFlags_AllowDoubleClick)) {
 
-		// ダブルクリックで改名開始
-		if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
-
-			BeginRenameGroup(i, gpuGroups_[i].name.c_str());
-		}
-
-		// 改名入力
-		if (renamingGroup_ == i) {
-
-			ImGui::SameLine();
-
-			ImGui::PushID(i);
-			ImGui::SetNextItemWidth(-FLT_MIN);
-
-			ImGuiInputTextFlags flags =
-				ImGuiInputTextFlags_AutoSelectAll |
-				ImGuiInputTextFlags_EnterReturnsTrue;
-			bool done = ImGui::InputText("##renameGrp", renameBuffer_,
-				sizeof(renameBuffer_), flags);
-			if (ImGui::IsItemActivated()) {
-
-				ImGui::SetKeyboardFocusHere(-1);
+				selected_ = { type, i };
 			}
 
-			if (done || (!ImGui::IsItemActive() && ImGui::IsItemDeactivated())) {
+			// ダブルクリックで改名開始
+			if (ImGui::IsItemHovered() && ImGui::IsMouseDoubleClicked(0)) {
 
-				gpuGroups_[i].name = renameBuffer_;
-				renamingGroup_ = -1;
+				renaming_ = { type, i };
+				strcpy_s(renameBuffer_, vec[i].name.c_str());
+			}
+
+			// 改名中
+			if (renaming_.type == type && renaming_.index == i) {
+
+				ImGui::SameLine();
+				ImGui::SetNextItemWidth(-FLT_MIN);
+				if (ImGui::InputText("##rename", renameBuffer_, sizeof(renameBuffer_),
+					ImGuiInputTextFlags_AutoSelectAll | ImGuiInputTextFlags_EnterReturnsTrue) ||
+					(!ImGui::IsItemActive() && ImGui::IsItemDeactivated())) {
+
+					vec[i].name = renameBuffer_;
+					renaming_ = { ParticleType::GPU, -1 };
+				}
 			}
 			ImGui::PopID();
 		}
-	}
+		};
+
+	drawItem(gpuGroups_, ParticleType::GPU);
+	drawItem(cpuGroups_, ParticleType::CPU);
 }
 
 void ParticleSystem::ImGuiSystemParameter() {
@@ -156,9 +163,14 @@ void ParticleSystem::ImGuiSelectedGroupEditor() {
 
 	ImGui::PushItemWidth(itemWidth_);
 
-	if (0 <= selectedGroup_ && selectedGroup_ < static_cast<int>(gpuGroups_.size())) {
+	if (0 <= selected_.index) {
+		if (selected_.type == ParticleType::GPU) {
 
-		gpuGroups_[selectedGroup_].group.ImGui(device_);
+			gpuGroups_[selected_.index].group.ImGui(device_);
+		} else if (selected_.type == ParticleType::CPU) {
+
+			cpuGroups_[selected_.index].group.ImGui();
+		}
 	}
 
 	ImGui::PopItemWidth();
@@ -173,10 +185,4 @@ void ParticleSystem::EditLayout() {
 	ImGui::DragFloat2("buttonSize_", &buttonSize_.x, 0.1f);
 
 	ImGui::End();
-}
-
-void ParticleSystem::BeginRenameGroup(int index, const char* name) {
-
-	renamingGroup_ = index;
-	strncpy_s(renameBuffer_, sizeof(renameBuffer_), name, _TRUNCATE);
 }

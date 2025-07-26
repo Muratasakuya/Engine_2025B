@@ -2,8 +2,8 @@
 //	include
 //============================================================================
 
-#include "../../ParticleCommonSturctures.hlsli"
-#include "../../../../../../Engine/Effect/Particle/ParticleConfig.h"
+#include "../../../Common/ParticleCommonSturctures.hlsli"
+#include "../../../../../../../Engine/Effect/Particle/ParticleConfig.h"
 
 //============================================================================
 //	RWStructuredBuffer

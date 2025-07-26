@@ -139,33 +139,6 @@ void GPUParticleGroup::ImGui(ID3D12Device* device) {
 	}
 }
 
-D3D12_GPU_VIRTUAL_ADDRESS GPUParticleGroup::GetPrimitiveBufferAdress() const {
-
-	switch (primitiveBuffer_.type) {
-	case ParticlePrimitiveType::Plane: {
-
-		return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
-	}
-	case ParticlePrimitiveType::Ring: {
-
-		return primitiveBuffer_.ring.GetResource()->GetGPUVirtualAddress();
-	}
-	case ParticlePrimitiveType::Cylinder: {
-
-		return primitiveBuffer_.cylinder.GetResource()->GetGPUVirtualAddress();
-	}
-	case ParticlePrimitiveType::Count: {
-
-		ASSERT(false, "ParticlePrimitiveType::Count is not buffer");
-		return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
-	}
-	}
-
-	// フォロースルー
-	ASSERT(false, "ParticlePrimitiveType::Count is not buffer");
-	return primitiveBuffer_.plane.GetResource()->GetGPUVirtualAddress();
-}
-
 D3D12_GPU_VIRTUAL_ADDRESS GPUParticleGroup::GetEmitterShapeBufferAdress() const {
 
 	switch (emitter_.shape) {

@@ -28,6 +28,13 @@ private:
 		std::string name;
 		T group;
 	};
+
+	struct GroupHandle {
+
+		ParticleType type;
+		int index; 
+	};
+
 public:
 	//========================================================================
 	//	public Methods
@@ -50,13 +57,13 @@ public:
 
 	void SetName(const std::string& name) { name_ = name; }
 	void SetGroupName(uint32_t i, const std::string& name) { gpuGroups_[i].name = name; }
-	void SelectGroup(int index) { selectedGroup_ = index; }
-	void BeginRenameGroup(int index, const char* name);
+	void SelectGroup(int index) { selected_.index = index; }
 
 	const std::string& GetName() const { return name_; }
 	const std::string& GetGroupName(uint32_t i) const { return gpuGroups_[i].name; }
 
 	std::vector<NameGroup<GPUParticleGroup>>& GetGPUGroup() { return gpuGroups_; }
+	std::vector<NameGroup<CPUParticleGroup>>& GetCPUGroup() { return cpuGroups_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -78,9 +85,9 @@ private:
 	// editor
 	ParticleType particleType_;
 	ParticlePrimitiveType primitiveType_;
+	GroupHandle selected_{ ParticleType::GPU, -1 };
+	GroupHandle renaming_{ ParticleType::GPU, -1 };
 	int nextGroupId_ = 0;         // グループ添え字インデックス
-	int selectedGroup_ = -1;      // 現在選択しているグループ
-	int renamingGroup_ = -1;      // 改名中のグループインデックス
 	char renameBuffer_[128] = {}; // 入力用バッファ
 	// layout
 	float comboWidth_ = 120.0f;

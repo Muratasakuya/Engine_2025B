@@ -804,17 +804,17 @@
     <FxCompile Include="Assets\Engine\Shaders\Raytracing\ShadowRayQuery.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Standard\PS\MeshStandard.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Lut\Lut.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\PS\GPUParticle.PS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Init\InitParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\PS\GPUParticle.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Init\InitParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Particle\VertexEffect.VS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\Primitive\PlaneParticle.MS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Update\UpdateParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitSphereParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitHemisphereParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitBoxParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitConeParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\GPUParticle\CS\Emit\EmitMeshParticle.CS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\CPUParticle\PS\CPUParticle.PS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\Common\Primitive\PlaneParticle.MS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Update\UpdateParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitSphereParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitHemisphereParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitBoxParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitConeParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitMeshParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\CPUParticle\PS\CPUParticle.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Glitch\Glitch.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
@@ -823,8 +823,8 @@
     <None Include="Assets\Engine\Shaders\Raytracing\ShadowRay.hlsli" />
     <None Include="Assets\Engine\Shaders\Standard\Dither.hlsli" />
     <None Include="Assets\Engine\Shaders\Math\Math.hlsli" />
-    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleCommonSturctures.hlsli" />
-    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleEmitterStructures.hlsli" />
-    <None Include="Assets\Engine\Shaders\GPUParticle\ParticleOutput.hlsli" />
+    <None Include="Assets\Engine\Shaders\Particle\Common\ParticleCommonSturctures.hlsli" />
+    <None Include="Assets\Engine\Shaders\Particle\GPUParticle\ParticleEmitterStructures.hlsli" />
+    <None Include="Assets\Engine\Shaders\Particle\Common\ParticleOutput.hlsli" />
   </ItemGroup>
 </Project>

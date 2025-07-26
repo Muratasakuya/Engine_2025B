@@ -2,11 +2,11 @@
 //	include
 //============================================================================
 
-#include "../../ParticleCommonSturctures.hlsli"
+#include "../../../Common/ParticleCommonSturctures.hlsli"
 #include "../../ParticleEmitterStructures.hlsli"
-#include "../../../../../../Engine/Effect/Particle/ParticleConfig.h"
+#include "../../../../../../../Engine/Effect/Particle/ParticleConfig.h"
 
-#include "../../../Math/Math.hlsli"
+#include "../../../../Math/Math.hlsli"
 
 //============================================================================
 //	CBuffer

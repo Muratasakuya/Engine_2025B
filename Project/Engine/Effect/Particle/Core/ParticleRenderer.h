@@ -16,6 +16,7 @@ class DxShaderCompiler;
 class DxCommand;
 class SceneConstBuffer;
 class GPUParticleGroup;
+class CPUParticleGroup;
 
 //============================================================================
 //	ParticleRenderer class
@@ -34,6 +35,8 @@ public:
 
 	void Rendering(bool debugEnable, const GPUParticleGroup& group,
 		SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
+	void Rendering(bool debugEnable, const CPUParticleGroup& group,
+		SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
 private:
 	//========================================================================
 	//	private Methods
@@ -42,6 +45,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	Asset* asset_;
+	SRVDescriptor* srvDescriptor_;
 
 	static const uint32_t kPrimitiveCount = static_cast<uint32_t>(ParticlePrimitiveType::Count);
 	static const uint32_t kParticleTypeCount = static_cast<uint32_t>(ParticleType::Count);
@@ -50,6 +54,12 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	// init
 	void InitPipelines(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
 		DxShaderCompiler* shaderCompiler);
+
+	// helper
+	void SetPipeline(uint32_t typeIndex, uint32_t primitiveIndex,
+		ID3D12GraphicsCommandList* commandList, BlendMode blendMode);
+	void ToCompute(bool debugEnable, const GPUParticleGroup& group, DxCommand* dxCommand);
 };

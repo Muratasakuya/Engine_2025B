@@ -20,6 +20,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	D3D12_GPU_VIRTUAL_ADDRESS GetPrimitiveBufferAdress() const;
 protected:
 	//========================================================================
 	//	protected Methods

@@ -2,8 +2,8 @@
 //	include
 //============================================================================
 
-#include "../ParticleCommonSturctures.hlsli"
-#include "../ParticleOutput.hlsli"
+#include "../../Common/ParticleCommonSturctures.hlsli"
+#include "../../Common/ParticleOutput.hlsli"
 
 //============================================================================
 //	Output

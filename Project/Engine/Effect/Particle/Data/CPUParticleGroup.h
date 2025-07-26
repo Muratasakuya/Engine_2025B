@@ -19,6 +19,13 @@ public:
 	CPUParticleGroup() = default;
 	~CPUParticleGroup() = default;
 
+	// コピー禁止
+	CPUParticleGroup(const CPUParticleGroup&) = delete;
+	CPUParticleGroup& operator=(const CPUParticleGroup&) = delete;
+	// ムーブ許可
+	CPUParticleGroup(CPUParticleGroup&&) noexcept = default;
+	CPUParticleGroup& operator=(CPUParticleGroup&&) noexcept = default;
+
 	void Create(ID3D12Device* device, ParticlePrimitiveType primitiveType);
 
 	void Update();
@@ -27,6 +34,13 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	ParticlePrimitiveType GetPrimitiveType() const { return primitiveBuffer_.type; }
+	BlendMode GetBlendMode() const { return blendMode_; }
+	uint32_t GetNumInstance() const { return numInstance_; }
+
+	const DxStructuredBuffer<ParticleCommon::TransformForGPU>& GetTransformBuffer() const { return transformBuffer_; }
+	const DxStructuredBuffer<CPUParticle::MaterialForGPU>& GetMaterialBuffer() const { return materialBuffer_; }
+	const DxStructuredBuffer<CPUParticle::TextureInfoForGPU>& GetTextureIsnfoBuffer() const { return textureInfoBuffer_; }
 private:
 	//========================================================================
 	//	private Methods

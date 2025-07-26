@@ -2,27 +2,29 @@
 //	include
 //============================================================================
 
-#include "../../ParticleCommonSturctures.hlsli"
+#include "../../../Common/ParticleCommonSturctures.hlsli"
 #include "../../ParticleEmitterStructures.hlsli"
-#include "../../../../../../Engine/Effect/Particle/ParticleConfig.h"
+#include "../../../../../../../Engine/Effect/Particle/ParticleConfig.h"
 
-#include "../../../Math/Math.hlsli"
+#include "../../../../Math/Math.hlsli"
 
 //============================================================================
 //	CBuffer
 //============================================================================
 
 // 形状
-struct EmitterHemisphere {
+struct EmitterCone {
 	
-	float radius;
+	float baseRadius;
+	float topRadius;
+	float height;
 	
 	float3 translation;
 	float4x4 rotationMatrix;
 };
 
 ConstantBuffer<EmitterCommon> gEmitterCommon : register(b0);
-ConstantBuffer<EmitterHemisphere> gEmitterHemisphere : register(b1);
+ConstantBuffer<EmitterCone> gEmitterCone : register(b1);
 ConstantBuffer<PerFrame> gPerFrame : register(b2);
 
 //============================================================================
@@ -40,19 +42,12 @@ RWStructuredBuffer<uint> gFreeList : register(u4);
 //	Functions
 //============================================================================
 
-float3 GetRandomDirection(RandomGenerator generator) {
+float3 GetFacePoint(RandomGenerator generator, float radius, float height) {
 	
-	float phi = generator.Generate(0.0f, PI2);
-	float z = generator.Generate(-1.0f, 1.0f);
-	float sqrtOneMinusZ2 = sqrt(1.0f - z * z);
-	float3 direction = float3(sqrtOneMinusZ2 * cos(phi), sqrtOneMinusZ2 * sin(phi), z);
-	
-	// 半球方向に限定する
-	if (direction.y < 0.0f) {
-		direction.y -= direction.y;
-	}
-	
-	return normalize(direction);
+	float angle = generator.Generate(0.0f, PI2);
+	float radiusRadom = generator.Generate(0.0f, radius);
+
+	return float3(radiusRadom * cos(angle), height, radiusRadom * sin(angle));
 }
 
 //============================================================================
@@ -82,14 +77,19 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 		particle.currentTime = 0.0f;
 		particle.lifeTime = gEmitterCommon.lifeTime;
 			
-		// 球面上へランダムな向きを設定
-		float3 direction = GetRandomDirection(generator);
-		// 回転を適応
-		float3 rotatedDirection = mul(direction, (float3x3) gEmitterHemisphere.rotationMatrix);
-		particle.velocity = normalize(rotatedDirection) * generator.Generate3D() * gEmitterCommon.moveSpeed;
+		// 向いている方向(+Z)方向に飛ばす
+		// 上の面と下の面の座標取得
+		// ローカル
+		float3 baseLocal = GetFacePoint(generator, gEmitterCone.baseRadius, 0.0f);
+		float3 topLocal = GetFacePoint(generator, gEmitterCone.topRadius, gEmitterCone.height);
+		// ワールド
+		float3 baseWorld = gEmitterCone.translation + mul(float4(baseLocal, 1.0f), gEmitterCone.rotationMatrix).xyz;
+		float3 topWorld = gEmitterCone.translation + mul(float4(topLocal, 1.0f), gEmitterCone.rotationMatrix).xyz;
+		float3 direction = normalize(topWorld - baseWorld);
+		particle.velocity = direction * generator.Generate3D() * gEmitterCommon.moveSpeed;
 			
 		Transform transform = (Transform) 0;
-		transform.translation = gEmitterHemisphere.translation + direction * gEmitterHemisphere.radius;
+		transform.translation = baseWorld;
 		transform.scale = gEmitterCommon.scale;
 			
 		Material material = (Material) 0;

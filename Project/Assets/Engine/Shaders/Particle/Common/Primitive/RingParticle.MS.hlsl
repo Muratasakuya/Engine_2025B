@@ -5,7 +5,7 @@
 #include "../ParticleOutput.hlsli"
 #include "../ParticleCommonSturctures.hlsli"
 
-#include "../../Math/Math.hlsli"
+#include "../../../Math/Math.hlsli"
 
 //============================================================================
 // Constant

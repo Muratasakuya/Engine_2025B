@@ -82,6 +82,11 @@ void ParticleManager::Rendering(bool debugEnable,
 			// 描画処理
 			renderer_->Rendering(debugEnable, group.group, sceneBuffer, dxCommand);
 		}
+		for (const auto& group : system->GetCPUGroup()) {
+
+			// 描画処理
+			renderer_->Rendering(debugEnable, group.group, sceneBuffer, dxCommand);
+		}
 	}
 }
 
