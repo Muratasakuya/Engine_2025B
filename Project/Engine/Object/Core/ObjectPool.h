@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Config.h>
 
 // c++
@@ -116,10 +115,8 @@ inline void ObjectPool<T, kMultiple>::Add(uint32_t object, Args && ...args) {
 	} else {
 
 		// capacityを超えたら
-		if (data_.size() < data_.capacity()) {
+		ASSERT(data_.size() < data_.capacity(), "ObjectPool capacity exceeded");
 
-			LOG_WARN("ObjectPool capacity exceeded");
-		}
 		index = data_.size();
 		data_.emplace_back(Storage{ std::forward<Args>(args)... });
 		indexToObject_.push_back(object);
