@@ -2,7 +2,7 @@ name: DebugBuild
 on:
   push:
       branches:
-        - master
+        - main
 env:
   # リポジトリのルートディレクトリを基点としたソリューションファイルパス
   SOLUTION_FILE_PATH: Project/DirectXGame.sln
