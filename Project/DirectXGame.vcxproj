@@ -86,7 +86,7 @@
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/magic_enum;$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/meshoptimizer/include;$(ProjectDir)/Externals/DirectXTex;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/spdlog;$(ProjectDir)/Externals/magic_enum;$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/meshoptimizer/include;$(ProjectDir)/Externals/DirectXTex;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -119,7 +119,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/magic_enum;$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/meshoptimizer/include;$(ProjectDir)/Externals/DirectXTex;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/spdlog;$(ProjectDir)/Externals/magic_enum;$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/meshoptimizer/include;$(ProjectDir)/Externals/DirectXTex;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,7 +154,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/magic_enum;$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/meshoptimizer/include;$(ProjectDir)/Externals/DirectXTex;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/Externals/spdlog;$(ProjectDir)/Externals/magic_enum;$(ProjectDir)/Externals/assimp/include;$(ProjectDir)/Externals/meshoptimizer/include;$(ProjectDir)/Externals/DirectXTex;$(ProjectDir)/Externals/imgui;$(ProjectDir)/</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

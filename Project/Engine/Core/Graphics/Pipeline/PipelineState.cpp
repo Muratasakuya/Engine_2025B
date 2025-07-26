@@ -46,24 +46,24 @@ void PipelineState::Create(const std::string& fileName, ID3D12Device8* device,
 
 	// rootSignatureの作成
 	DxRootSignature dxRootSignature;
-	dxRootSignature.Create(json, device, srvDescriptor, rootSignature_);
+	dxRootSignature.Create(fileName, json, device, srvDescriptor, rootSignature_);
 
 	// pipelineごとの分岐処理
 	// pipeline作成
 	switch (pipelineType) {
 	case PipelineState::PipelineType::VERTEX: {
 
-		CreateVertexPipeline(json, device, shaderBlobs);
+		CreateVertexPipeline(fileName, json, device, shaderBlobs);
 		break;
 	}
 	case PipelineState::PipelineType::MESH: {
 
-		CreateMeshPipeline(json, device, shaderBlobs);
+		CreateMeshPipeline(fileName, json, device, shaderBlobs);
 		break;
 	}
 	case PipelineState::PipelineType::COMPUTE: {
 
-		CreateComputePipeline(device, shaderBlobs);
+		CreateComputePipeline(fileName, device, shaderBlobs);
 		break;
 	}
 	}
@@ -95,7 +95,7 @@ Json PipelineState::LoadFile(const std::string& fileName) {
 	return json;
 }
 
-void PipelineState::CreateVertexPipeline(const Json& json, ID3D12Device8* device,
+void PipelineState::CreateVertexPipeline(const std::string& fileName, const Json& json, ID3D12Device8* device,
 	const std::vector<ComPtr<IDxcBlob>>& shaderBlobs) {
 
 	// inputLayoutの作成
@@ -187,7 +187,9 @@ void PipelineState::CreateVertexPipeline(const Json& json, ID3D12Device8* device
 				&pipelineDesc,
 				IID_PPV_ARGS(&graphicsPipelinepipelineStates_[blend]));
 			if (FAILED(hr)) {
-				ASSERT(FALSE, "assert createPipeline");
+
+				const std::string& file = "FileName: " + fileName + "\n";
+				ASSERT(FALSE, file + "Filed create Pipeline");
 			}
 		}
 	}
@@ -206,13 +208,15 @@ void PipelineState::CreateVertexPipeline(const Json& json, ID3D12Device8* device
 			&pipelineDesc,
 			IID_PPV_ARGS(&graphicsPipelinepipelineStates_[kBlendModeNormal]));
 		if (FAILED(hr)) {
-			ASSERT(FALSE, "assert createPipeline");
+
+			const std::string& file = "FileName: " + fileName + "\n";
+			ASSERT(FALSE, file + "Filed create Pipeline");
 		}
 	}
 }
 
 
-void PipelineState::CreateMeshPipeline(const Json& json, ID3D12Device8* device,
+void PipelineState::CreateMeshPipeline(const std::string& fileName, const Json& json, ID3D12Device8* device,
 	const std::vector<ComPtr<IDxcBlob>>& shaderBlobs) {
 
 	// depth、rasterizerの作成
@@ -291,7 +295,9 @@ void PipelineState::CreateMeshPipeline(const Json& json, ID3D12Device8* device,
 			HRESULT hr = device->CreatePipelineState(&streamDesc,
 				IID_PPV_ARGS(graphicsPipelinepipelineStates_[blend].GetAddressOf()));
 			if (FAILED(hr)) {
-				ASSERT(FALSE, "assert createPipeline");
+
+				const std::string& file = "FileName: " + fileName + "\n";
+				ASSERT(FALSE, file + "Filed create Pipeline");
 			}
 		}
 	}
@@ -319,12 +325,14 @@ void PipelineState::CreateMeshPipeline(const Json& json, ID3D12Device8* device,
 		HRESULT hr = device->CreatePipelineState(&streamDesc,
 			IID_PPV_ARGS(graphicsPipelinepipelineStates_[kBlendModeNormal].GetAddressOf()));
 		if (FAILED(hr)) {
-			ASSERT(FALSE, "assert createPipeline");
+
+			const std::string& file = "FileName: " + fileName + "\n";
+			ASSERT(FALSE, file + "Filed create Pipeline");
 		}
 	}
 }
 
-void PipelineState::CreateComputePipeline(ID3D12Device8* device,
+void PipelineState::CreateComputePipeline(const std::string& fileName, ID3D12Device8* device,
 	const std::vector<ComPtr<IDxcBlob>>& shaderBlobs) {
 
 	// pipelinsStateの作成
@@ -341,6 +349,8 @@ void PipelineState::CreateComputePipeline(ID3D12Device8* device,
 		&pipelineDesc,
 		IID_PPV_ARGS(&computePipelineState_));
 	if (FAILED(hr)) {
-		ASSERT(FALSE, "assert createPipeline");
+
+		const std::string& file = "FileName: " + fileName + "\n";
+		ASSERT(FALSE, file + "Filed create Pipeline");
 	}
 }

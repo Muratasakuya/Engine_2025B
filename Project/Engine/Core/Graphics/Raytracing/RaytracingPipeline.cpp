@@ -16,11 +16,11 @@ void RaytracingPipeline::Init(ID3D12Device5* device, DxShaderCompiler* shaderCom
 	// shaderのコンパイル処理
 
 	ComPtr<IDxcBlob> missShaderBlob;
-	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_Miss.hlsl", L"lib_6_6", missShaderBlob, L"MissShadow");
+	shaderCompiler->CompileShader("ShadowRay_Miss.hlsl", L"./Assets/Engine/Shaders/DXR/ShadowRay_Miss.hlsl", L"lib_6_6", missShaderBlob, L"MissShadow");
 	ComPtr<IDxcBlob> anyHitShaderBlob;
-	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_AnyHit.hlsl", L"lib_6_6", anyHitShaderBlob, L"AnyHitShadow");
+	shaderCompiler->CompileShader("ShadowRay_AnyHit.hlsl", L"./Assets/Engine/Shaders/DXR/ShadowRay_AnyHit.hlsl", L"lib_6_6", anyHitShaderBlob, L"AnyHitShadow");
 	ComPtr<IDxcBlob> rayGenerationShaderBlob;
-	shaderCompiler->CompileShader(L"./Assets/Engine/Shaders/DXR/ShadowRay_RayGeneration.hlsl", L"lib_6_6", rayGenerationShaderBlob, L"RayGeneration");
+	shaderCompiler->CompileShader("ShadowRay_RayGeneration.hlsl", L"./Assets/Engine/Shaders/DXR/ShadowRay_RayGeneration.hlsl", L"lib_6_6", rayGenerationShaderBlob, L"RayGeneration");
 
 	shaderCompiler->CompileShaderLibrary(L"./Assets/Engine/Shaders/DXR/ShadowRay_Miss.hlsl", L";", missShaderBlob);
 
