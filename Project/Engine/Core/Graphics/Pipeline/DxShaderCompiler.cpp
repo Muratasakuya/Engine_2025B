@@ -41,7 +41,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					std::string vertexShader = shaderPass["VertexShader"];
 					if (Filesystem::Found(basePath, vertexShader, fullPath)) {
 						ComPtr<IDxcBlob> vertexShaderBlob;
-						CompileShader(fullPath.wstring(), L"vs_6_0", vertexShaderBlob, L"main");
+						CompileShader(fullPath.string(), fullPath.wstring(), L"vs_6_0", vertexShaderBlob, L"main");
 						shaderBlobs.emplace_back(vertexShaderBlob);
 					} else {
 
@@ -56,7 +56,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					if (Filesystem::Found(basePath, meshShader, fullPath)) {
 
 						ComPtr<IDxcBlob> meshShaderBlob;
-						CompileShader(fullPath.wstring(), L"ms_6_5", meshShaderBlob, L"main");
+						CompileShader(fullPath.string(), fullPath.wstring(), L"ms_6_5", meshShaderBlob, L"main");
 						shaderBlobs.emplace_back(meshShaderBlob);
 					} else {
 
@@ -77,7 +77,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 					if (Filesystem::Found(basePath, pixelShader, fullPath)) {
 
 						ComPtr<IDxcBlob> pixelShaderBlob;
-						CompileShader(fullPath.wstring(), profile, pixelShaderBlob, L"main");
+						CompileShader(fullPath.string(), fullPath.wstring(), profile, pixelShaderBlob, L"main");
 						shaderBlobs.emplace_back(pixelShaderBlob);
 					} else {
 
@@ -91,7 +91,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 				if (Filesystem::Found(basePath, computeShader, fullPath)) {
 
 					ComPtr<IDxcBlob> computeShaderBlob;
-					CompileShader(fullPath.wstring(), L"cs_6_0", computeShaderBlob, L"main");
+					CompileShader(fullPath.string(), fullPath.wstring(), L"cs_6_0", computeShaderBlob, L"main");
 					shaderBlobs.push_back(computeShaderBlob);
 				} else {
 
@@ -104,7 +104,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 				if (Filesystem::Found(basePath, computeShader, fullPath)) {
 
 					ComPtr<IDxcBlob> computeShaderBlob;
-					CompileShader(fullPath.wstring(), L"cs_6_6", computeShaderBlob, L"main");
+					CompileShader(fullPath.string(), fullPath.wstring(), L"cs_6_6", computeShaderBlob, L"main");
 					shaderBlobs.push_back(computeShaderBlob);
 				} else {
 
@@ -116,6 +116,7 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 }
 
 void DxShaderCompiler::CompileShader(
+	const std::string& fileName,
 	const std::wstring& filePath, const wchar_t* profile,
 	ComPtr<IDxcBlob>& shaderBlob, const wchar_t* entry) {
 
@@ -123,7 +124,7 @@ void DxShaderCompiler::CompileShader(
 	IDxcBlobEncoding* shaderSouce = nullptr;
 	HRESULT hr = dxcUtils_->LoadFile(filePath.c_str(), nullptr, &shaderSouce);
 	// 読めなかったら止める
-	assert(SUCCEEDED(hr));
+	ASSERT(SUCCEEDED(hr), "Failed to load HLSL file: " + fileName);
 	// 読み込んだファイルの内容を設定する
 	DxcBuffer shaderSourceBuffer;
 	shaderSourceBuffer.Ptr = shaderSouce->GetBufferPointer();
@@ -162,7 +163,8 @@ void DxShaderCompiler::CompileShader(
 		// エラーの内容
 		const char* errorMessage = reinterpret_cast<const char*>(shaderError->GetBufferPointer());
 		errorMessage;
-		assert(false);
+
+		ASSERT(false , "Failed to compile HLSL file: " + std::string(errorMessage));
 	}
 
 	hr = shaderResult->GetOutput(DXC_OUT_OBJECT, IID_PPV_ARGS(&shaderBlob), nullptr);

@@ -33,6 +33,7 @@ public:
 	void Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
 
 	void CompileShader(
+		const std::string& fileName,
 		const std::wstring& filePath,
 		const wchar_t* profile,
 		ComPtr<IDxcBlob>& shaderBlob,

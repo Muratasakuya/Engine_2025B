@@ -10,8 +10,8 @@
 //	DxRootSignature classMethods
 //============================================================================
 
-void DxRootSignature::Create(const Json& json, ID3D12Device* device, SRVDescriptor* srvDescriptor,
-	ComPtr<ID3D12RootSignature>& rootSignature) {
+void DxRootSignature::Create(const std::string& fileName, const Json& json,
+	ID3D12Device* device, SRVDescriptor* srvDescriptor, ComPtr<ID3D12RootSignature>& rootSignature) {
 
 	D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
 
@@ -212,7 +212,9 @@ void DxRootSignature::Create(const Json& json, ID3D12Device* device, SRVDescript
 	if (FAILED(hr)) {
 
 		const char* errorMessage = reinterpret_cast<const char*>(errorBlob->GetBufferPointer());
-		ASSERT(false, errorMessage);
+
+		const std::string& file = "FileName: " + fileName + "\n";
+		ASSERT(false, file + "Failed to create rootSignature: " + std::string(errorMessage));
 	}
 	hr = device->CreateRootSignature(0, signatureBlob->GetBufferPointer(),
 		signatureBlob->GetBufferSize(), IID_PPV_ARGS(&rootSignature));

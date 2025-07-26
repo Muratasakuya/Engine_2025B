@@ -108,7 +108,7 @@ void ApplyEmissive(inout float3 color, float3 textureRGB, Material material) {
 //	Main
 //============================================================================
 PSOutput main(MSOutput input) {
-	
+		
 	PSOutput output;
 	
 	// instanceIdApixel‚²‚Æ‚Ìˆ—

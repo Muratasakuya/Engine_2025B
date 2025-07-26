@@ -70,12 +70,12 @@ private:
 
 	Json LoadFile(const std::string& fileName);
 
-	void CreateVertexPipeline(const Json& json, ID3D12Device8* device,
+	void CreateVertexPipeline(const std::string& fileName, const Json& json, ID3D12Device8* device,
 		const std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
 
-	void CreateMeshPipeline(const Json& json, ID3D12Device8* device,
+	void CreateMeshPipeline(const std::string& fileName, const Json& json, ID3D12Device8* device,
 		const std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
 
-	void CreateComputePipeline(ID3D12Device8* device,
+	void CreateComputePipeline(const std::string& fileName, ID3D12Device8* device,
 		const std::vector<ComPtr<IDxcBlob>>& shaderBlobs);
 };
