@@ -5,14 +5,14 @@
 - Debug:   [![DebugBuild](https://github.com/Muratasakuya/Engine_2025/actions/workflows/DebugBuild.yml/badge.svg)](https://github.com/Muratasakuya/Engine_2025/actions/workflows/DebugBuild.yml)
 - Release: [![ReleaseBuild](https://github.com/Muratasakuya/Engine_2025/actions/workflows/ReleaseBuild.yml/badge.svg)](https://github.com/Muratasakuya/Engine_2025/actions/workflows/ReleaseBuild.yml)
 
-- ## ⚠️ 注意事項（動作要件）
+- ## ⚠️ 注意事項
 
 このプロジェクトでは以下のGPU機能を使用しています：
 
 - **Mesh Shader**
 - **DXR 1.1（RayQuery）**
 
-そのため、以下の環境では正常に動作しません：
+そのため、以下の環境では動作しません：
 
 - **DirectX 12 Ultimate** 非対応のGPU
 - **NVIDIA GeForce GTXシリーズ（RTXではない）**
