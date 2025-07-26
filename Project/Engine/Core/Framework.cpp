@@ -128,7 +128,8 @@ Framework::Framework() {
 
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
-	imguiEditor_->Init(renderEngine_->GetRenderTextureGPUHandle(), postProcessSystem_->GetDebugSceneGPUHandle());
+	imguiEditor_->Init(renderEngine_->GetRenderTextureGPUHandle(), renderEngine_->GetRenderTexture(
+		RenderEngine::ViewType::Debug)->GetSRVGPUHandle());
 #endif
 }
 
@@ -143,6 +144,14 @@ void Framework::Update() {
 
 	// 描画前処理
 	renderEngine_->BeginFrame();
+
+	if (sceneManager_->IsSceneSwitching()) {
+
+		// postProcessをリセット
+		postProcessSystem_->ClearProcess();
+		sceneManager_->InitNextScene();
+	}
+
 	// imgui表示更新
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_->Display();
@@ -154,10 +163,6 @@ void Framework::Update() {
 }
 void Framework::UpdateScene() {
 
-	if (sceneManager_->IsSceneSwitching()) {
-
-		sceneManager_->InitNextScene();
-	}
 	GameTimer::Update();
 	Input::GetInstance()->Update();
 
@@ -233,10 +238,6 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	renderEngine_->Rendering(RenderEngine::ViewType::Debug);
-
-	// bloom処理のみを行う
-	postProcessSystem_->ExecuteDebugScene(renderEngine_->GetRenderTexture(
-		RenderEngine::ViewType::Debug)->GetSRVGPUHandle(), dxCommand);
 #endif
 	//========================================================================
 	//	draw: frameBuffer

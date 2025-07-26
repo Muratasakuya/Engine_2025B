@@ -4,13 +4,14 @@
 //	include
 //============================================================================
 #include <Engine/Editor/ImGuiObjectEditor.h>
+#include <Lib/Adapter/EnumAdapter.h>
 
 //============================================================================
 //	SceneManager classMethods
 //============================================================================
 
 SceneManager::SceneManager(Scene scene, Asset* asset,
-	PostProcessSystem* postProcessSystem, SceneView* sceneView) {
+	PostProcessSystem* postProcessSystem, SceneView* sceneView) :IGameEditor("SceneManager") {
 
 	asset_ = nullptr;
 	asset_ = asset;
@@ -46,7 +47,7 @@ void SceneManager::SwitchScene() {
 
 	if (isSceneSwitching_) {
 
-		LoadScene(nextScene_);
+		LoadScene(nextSceneType_);
 	}
 }
 
@@ -58,14 +59,31 @@ void SceneManager::InitNextScene() {
 
 void SceneManager::SetNextScene(Scene scene, std::unique_ptr<ITransition> transition) {
 
-	nextScene_ = scene;
+	nextSceneType_ = scene;
 	sceneTransition_->SetTransition(std::move(transition));
+}
+
+void SceneManager::ImGui() {
+
+	ImGui::Text("CurrentScene : %s", EnumAdapter<Scene>::ToString(currentSceneType_));
+
+	// 選択
+	static Scene selected = currentSceneType_;
+	if (EnumAdapter<Scene>::Combo("Select Scene", &selected)) {
+	}
+
+	if (ImGui::Button("Apply") && selected != currentSceneType_ && !isSceneSwitching_) {
+
+		isSceneSwitching_ = true;
+		nextSceneType_ = selected;
+	}
 }
 
 void SceneManager::LoadScene(Scene scene) {
 
 	currentScene_.reset();
 	// 次のSceneを作成
+	currentSceneType_ = scene;
 	currentScene_ = factory_->Create(scene);
 	currentScene_->SetPtr(asset_, postProcessSystem_, sceneView_, this);
 

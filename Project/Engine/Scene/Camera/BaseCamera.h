@@ -20,11 +20,12 @@ public:
 	BaseCamera();
 	virtual ~BaseCamera() = default;
 
-	virtual void Init() = 0;
+	virtual void Init() {};
 
-	virtual void Update() = 0;
+	virtual void Update() {};
+	void UpdateView();
 
-	virtual void ImGui() = 0;
+	virtual void ImGui();
 	void EditFrustum();
 	void RenderFrustum();
 

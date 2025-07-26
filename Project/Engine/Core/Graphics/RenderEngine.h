@@ -124,5 +124,5 @@ private:
 
 	// command
 	void BeginRenderTarget(RenderTexture* renderTexture);
-	void EndRenderTarget(RenderTexture* renderTexture);
+	void EndRenderTarget(ViewType type, RenderTexture* renderTexture);
 };

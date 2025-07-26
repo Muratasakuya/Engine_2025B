@@ -174,7 +174,7 @@ void RenderEngine::Rendering(ViewType type) {
 	// 描画処理
 	Renderers(type);
 
-	EndRenderTarget(renderTextures_[type].get());
+	EndRenderTarget(type, renderTextures_[type].get());
 }
 
 void RenderEngine::BeginPostProcess() {
@@ -245,9 +245,9 @@ void RenderEngine::EndRenderFrameBuffer() {
 	imguiManager_->End();
 	imguiManager_->Draw(dxCommand_->GetCommandList());
 
-	// ComputeShader -> RenderTarget
+	// PixelShader -> RenderTarget
 	dxCommand_->TransitionBarriers({ renderTextures_[ViewType::Debug]->GetResource() },
-		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
+		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET);
 #endif // _DEBUG
 
 	// ComputeShader -> RenderTarget
@@ -267,9 +267,17 @@ void RenderEngine::BeginRenderTarget(RenderTexture* renderTexture) {
 	dxCommand_->SetViewportAndScissor(renderTarget.width, renderTarget.height);
 }
 
-void RenderEngine::EndRenderTarget(RenderTexture* renderTexture) {
+void RenderEngine::EndRenderTarget(ViewType type, RenderTexture* renderTexture) {
 
-	// RenderTarget -> ComputeShader
-	dxCommand_->TransitionBarriers({ renderTexture->GetResource() },
-		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+	if (type == ViewType::Debug) {
+
+		// RenderTarget -> PixelShader
+		dxCommand_->TransitionBarriers({ renderTexture->GetResource() },
+			D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+	} else if (type == ViewType::Main) {
+
+		// RenderTarget -> ComputeShader
+		dxCommand_->TransitionBarriers({ renderTexture->GetResource() },
+			D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE);
+	}
 }

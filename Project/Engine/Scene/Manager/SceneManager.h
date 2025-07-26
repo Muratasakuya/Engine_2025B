@@ -6,6 +6,7 @@
 #include <Engine/Scene/Methods/IScene.h>
 #include <Engine/Scene/Methods/SceneFactory.h>
 #include <Engine/Scene/Methods/SceneTransition.h>
+#include <Engine/Editor/Base/IGameEditor.h>
 
 // c++
 #include <memory>
@@ -13,7 +14,8 @@
 //============================================================================
 //	SceneManager class
 //============================================================================
-class SceneManager {
+class SceneManager :
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
@@ -30,6 +32,8 @@ public:
 	void InitNextScene();
 
 	void SetNextScene(Scene scene, std::unique_ptr<ITransition> transition);
+
+	void ImGui() override;
 
 	//--------- accessor -----------------------------------------------------
 
@@ -51,7 +55,8 @@ private:
 
 	std::unique_ptr<SceneTransition> sceneTransition_;
 
-	Scene nextScene_;
+	Scene currentSceneType_;
+	Scene nextSceneType_;
 	bool isSceneSwitching_;
 
 	//--------- functions ----------------------------------------------------

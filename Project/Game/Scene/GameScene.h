@@ -4,10 +4,10 @@
 //	include
 //============================================================================
 #include <Engine/Scene/Methods/IScene.h>
-#include <Engine/Scene/Light/PunctualLight.h>
 
-// camera
+// scene
 #include <Game/Camera/Manager/CameraManager.h>
+#include <Engine/Scene/Light/PunctualLight.h>
 
 // object
 #include <Game/Objects/Player/Entity/Player.h>

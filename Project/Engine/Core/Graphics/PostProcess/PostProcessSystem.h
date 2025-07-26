@@ -40,7 +40,6 @@ public:
 
 	// postProcess実行
 	void Execute(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, class DxCommand* dxCommand);
-	void ExecuteDebugScene(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, class DxCommand* dxCommand);
 
 	// 最終的なtextureをframeBufferに描画する
 	void RenderFrameBuffer(class DxCommand* dxCommand);
@@ -65,7 +64,6 @@ public:
 	void SetDepthFrameBufferGPUHandle(const D3D12_GPU_DESCRIPTOR_HANDLE& handle) { depthFrameBurferGPUHandle_ = handle; }
 
 	PostProcessPipeline* GetPipeline() const { return pipeline_.get(); }
-	const D3D12_GPU_DESCRIPTOR_HANDLE& GetDebugSceneGPUHandle() const { return debugSceneBloomProcessor_->GetSRVGPUHandle(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -91,9 +89,6 @@ private:
 
 	// postProcess処理を行うmap
 	std::unordered_map<PostProcessType, std::unique_ptr<ComputePostProcessor>> processors_;
-
-	// debugScene用、bloomのみ
-	std::unique_ptr<ComputePostProcessor> debugSceneBloomProcessor_;
 
 	// buffers
 	std::unordered_map<PostProcessType, std::unique_ptr<IPostProcessBuffer>> buffers_;

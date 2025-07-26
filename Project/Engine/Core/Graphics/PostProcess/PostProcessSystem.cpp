@@ -95,14 +95,6 @@ void PostProcessSystem::Create(const std::vector<PostProcessType>& processes) {
 		// pipeline作成
 		pipeline_->Create(process);
 
-#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-		if (process == PostProcessType::Bloom) {
-
-			debugSceneBloomProcessor_ = std::make_unique<ComputePostProcessor>();
-			debugSceneBloomProcessor_->Init(device_, srvDescriptor_, width_, height_);
-		}
-#endif
-
 		if (process == PostProcessType::DepthBasedOutline) {
 
 			processors_[process]->SetProcessTexureGPUHandle(depthFrameBurferGPUHandle_);
@@ -113,7 +105,7 @@ void PostProcessSystem::Create(const std::vector<PostProcessType>& processes) {
 void PostProcessSystem::Update(SceneView* sceneView) {
 
 	// scene情報が必要な場合のみ
-	if (Algorithm::Find(activeProcesses_, PostProcessType::DepthBasedOutline, true)) {
+	if (Algorithm::Find(activeProcesses_, PostProcessType::DepthBasedOutline, false)) {
 
 		auto* buffer = static_cast<PostProcessBuffer<DepthBasedOutlineForGPU>*>(
 			buffers_[PostProcessType::DepthBasedOutline].get());
@@ -179,35 +171,6 @@ void PostProcessSystem::Execute(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHa
 
 	// 最終的なframeBufferに設定するGPUHandleの設定
 	frameBufferGPUHandle_ = inputGPUHandle;
-}
-
-void PostProcessSystem::ExecuteDebugScene(const D3D12_GPU_DESCRIPTOR_HANDLE& inputSRVGPUHandle, DxCommand* dxCommand) {
-
-#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-
-	if (activeProcesses_.empty()) {
-
-		// 使用するpostProcessがない場合は処理しない
-		return;
-	}
-
-	auto commandList = dxCommand->GetCommandList();
-	PostProcessCommandContext commandContext{};
-	// 入力画像のGPUHandle取得
-	D3D12_GPU_DESCRIPTOR_HANDLE inputGPUHandle = inputSRVGPUHandle;
-
-	// pipeline設定
-	pipeline_->SetPipeline(commandList, PostProcessType::Bloom);
-	// buffer設定
-	ExecuteCBuffer(commandList, PostProcessType::Bloom);
-	// 実行
-	commandContext.Execute(PostProcessType::Bloom, commandList, debugSceneBloomProcessor_.get(), inputGPUHandle);
-
-	// UnorderedAccess -> PixelShader
-	dxCommand->TransitionBarriers({ debugSceneBloomProcessor_->GetOutputTextureResource() },
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS,
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-#endif
 }
 
 void PostProcessSystem::RenderFrameBuffer(DxCommand* dxCommand) {
@@ -336,15 +299,6 @@ void PostProcessSystem::ToWrite(DxCommand* dxCommand) {
 				D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 		}
 	}
-
-#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-
-	// PixelShader -> UnorderedAccess
-	dxCommand->TransitionBarriers(
-		{ debugSceneBloomProcessor_->GetOutputTextureResource() },
-		D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-		D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-#endif
 
 	// リセットする
 	bloomExecuteCount_ = 0;

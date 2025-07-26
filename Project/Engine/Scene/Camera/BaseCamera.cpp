@@ -17,8 +17,45 @@ BaseCamera::BaseCamera() {
 	aspectRatio_ = Config::kWindowWidthf / Config::kWindowHeightf;
 	frustumScale_ = 0.004f;
 
+	fovY_ = 0.54f;
+	nearClip_ = 0.1f;
+	farClip_ = 3200.0f;
+
 	// transformを一回初期化
-	transform_.Init();
+	eulerRotation_ = Vector3(0.26f, 0.0f, 0.0f);
+	transform_.scale = Vector3::AnyInit(1.0f);
+	transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
+	transform_.translation = Vector3(0.0f, 30.733f, -112.363f);
+}
+
+void BaseCamera::UpdateView() {
+
+	transform_.UpdateMatrix();
+	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
+
+	// アスペクト比
+	float aspectRatio = Config::kWindowWidthf / Config::kWindowHeightf;
+	projectionMatrix_ =
+		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio, nearClip_, farClip_);
+
+	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
+
+	// billboardMatrixを計算
+	CalBillboardMatrix();
+}
+
+void BaseCamera::ImGui() {
+
+	ImGui::DragFloat3("translation##DebugCamera", &transform_.translation.x, 0.01f);
+	if (ImGui::DragFloat3("rotation##DebugCamera", &eulerRotation_.x, 0.01f)) {
+
+		transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
+	}
+	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
+		transform_.rotation.x, transform_.rotation.y, transform_.rotation.z, transform_.rotation.w);
+
+	ImGui::DragFloat("fovY##DebugCamera", &fovY_, 0.01f);
+	ImGui::DragFloat("farClip##DebugCamera", &farClip_, 1.0f);
 }
 
 void BaseCamera::EditFrustum() {

@@ -5,6 +5,10 @@
 //============================================================================
 #include <Engine/Scene/Methods/IScene.h>
 
+// scene
+#include <Engine/Scene/Camera/BaseCamera.h>
+#include <Engine/Scene/Light/PunctualLight.h>
+
 //============================================================================
 //	TitleScene class
 //============================================================================
@@ -28,5 +32,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	std::unique_ptr<BaseCamera> camera3D_;
+	std::unique_ptr<PunctualLight> light_;
 };

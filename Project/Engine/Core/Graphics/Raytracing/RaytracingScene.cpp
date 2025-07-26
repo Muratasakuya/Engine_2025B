@@ -52,6 +52,10 @@ void RaytracingScene::BuildTLAS(ID3D12GraphicsCommandList6* commandList,
 		first_ = false;
 	} else {
 
+		if (instances.size() == 0) {
+			return;
+		}
+
 		tlas_.Update(commandList, instances);
 	}
 }
