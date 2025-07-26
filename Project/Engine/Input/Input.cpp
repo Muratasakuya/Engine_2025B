@@ -47,12 +47,18 @@ namespace {
 		case DIK_R:   return "DIK_R";
 		case DIK_E:   return "DIK_E";
 		case DIK_Q:   return "DIK_Q";
-		case DIK_RETURN:   return "DIK_RETURN";
 		case DIK_UP:   return "DIK_UP";
 		case DIK_DOWN:   return "DIK_DOWN";
 		case DIK_RIGHT:   return "DIK_RIGHT";
 		case DIK_LEFT:   return "DIK_LEFT";
+		case DIK_F1: return "DIK_F1";
+		case DIK_F2: return "DIK_F2";
+		case DIK_F3: return "DIK_F3";
+		case DIK_F10: return "DIK_F10";
+		case DIK_F11: return "DIK_F11";
+		case DIK_RETURN:   return "DIK_RETURN";
 		case DIK_SPACE: return "DIK_SPACE";
+		case DIK_ESCAPE: return "DIK_ESCAPE";
 		default:      break;
 		}
 		static char buf[8];
