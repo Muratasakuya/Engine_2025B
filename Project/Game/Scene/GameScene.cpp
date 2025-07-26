@@ -58,7 +58,6 @@ void GameScene::Load() {
 
 	// cubeMap、.dds
 	asset_->LoadTexture("overcast_soil_puresky_4k");
-	asset_->LoadLutTexture("lut_hot");
 
 	// common
 	asset_->LoadTexture("whiteAlphaGradation_0");
