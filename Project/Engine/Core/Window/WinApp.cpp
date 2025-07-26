@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
-#include <Engine/Core/Debug/Logger.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Config.h>
 
 // imgui
