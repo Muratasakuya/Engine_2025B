@@ -22,6 +22,8 @@ public:
 
 	void Execute(std::list<CPUParticle::ParticleData>& particles) override;
 
+	void DrawEmitter() override;
+
 	void ImGui() override;
 
 	//--------- accessor -----------------------------------------------------

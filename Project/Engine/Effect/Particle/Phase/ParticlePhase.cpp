@@ -14,7 +14,7 @@ void ParticlePhase::Init(Asset* asset, ParticlePrimitiveType primitiveType) {
 	// 初期化値
 	duration_ = 0.8f;
 
-	// 必要なモジュールは設定
+	// 基本的なモジュールは設定
 	AddUpdater(ParticleUpdateModuleID::Velocity);
 	AddUpdater(ParticleUpdateModuleID::Rotation);
 	AddUpdater(ParticleUpdateModuleID::Scale);
@@ -35,13 +35,23 @@ void ParticlePhase::Emit(std::list<CPUParticle::ParticleData>& particles, float 
 	elapsed_ = 0.0f;
 }
 
-void ParticlePhase::Update(CPUParticle::ParticleData& particle, float deltaTime) {
+void ParticlePhase::UpdateParticle(CPUParticle::ParticleData& particle, float deltaTime) {
 
 	// 更新処理
 	for (const auto& updater : updaters_) {
 
 		updater->Execute(particle, deltaTime);
+	}	
+}
+
+void ParticlePhase::UpdateEmitter() {
+
+	// emitterの更新
+	if (!spawner_) {
+		return;
 	}
+	spawner_->UpdateEmitter();
+	spawner_->DrawEmitter();
 }
 
 void ParticlePhase::SetSpawner(ParticleSpawnModuleID id) {

@@ -26,7 +26,8 @@ public:
 
 	virtual void Execute(std::list<CPUParticle::ParticleData>& particles) = 0;
 
-	void ImGuiCommon();
+	virtual void UpdateEmitter() {}
+	virtual void DrawEmitter() {}
 
 	//--------- accessor -----------------------------------------------------
 
@@ -45,7 +46,7 @@ protected:
 	// Emit
 	ParticleValue<uint32_t> emitCount_; // 発生数
 	ParticleValue<float> lifeTime_;     // 生存時間
-	
+
 	// Material
 	ParticleCommon::EditLerpValue<Color> color_; // 色
 
@@ -60,10 +61,16 @@ protected:
 	// Primtive
 	ParticleCommon::PrimitiveData<false> primitive_;
 
+	// editor
+	const Color emitterLineColor = Color::Yellow(0.4f);
+
 	//--------- functions ----------------------------------------------------
 
 	// init
 	void InitCommonData();
+
+	// editor
+	void ImGuiCommon();
 
 	// helper
 	void SetCommonData(CPUParticle::ParticleData& particle);

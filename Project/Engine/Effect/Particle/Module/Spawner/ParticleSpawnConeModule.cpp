@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================
@@ -26,6 +27,12 @@ Vector3 ParticleSpawnConeModule::GetFacePoint(float radius, float height) const 
 		radiusRandom * std::sin(angle));
 
 	return point;
+}
+
+void ParticleSpawnConeModule::UpdateEmitter() {
+
+	// 回転を更新
+	emitter_.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
 }
 
 void ParticleSpawnConeModule::Execute(std::list<CPUParticle::ParticleData>& particles) {
@@ -66,4 +73,11 @@ void ParticleSpawnConeModule::ImGui() {
 	ImGui::DragFloat("topRadius", &emitter_.topRadius, 0.05f);
 	ImGui::DragFloat("height", &emitter_.height, 0.05f);
 	ImGui::DragFloat3("translation", &emitter_.translation.x, 0.05f);
+}
+
+void ParticleSpawnConeModule::DrawEmitter() {
+
+	LineRenderer::GetInstance()->DrawCone(
+		8, emitter_.baseRadius, emitter_.topRadius, emitter_.height,
+		emitter_.translation, emitter_.rotationMatrix, emitterLineColor);
 }

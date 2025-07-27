@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================
@@ -24,11 +25,15 @@ Vector3 ParticleSpawnBoxModule::GetRandomPoint() const {
 	return local;
 }
 
+void ParticleSpawnBoxModule::UpdateEmitter() {
+
+	// 回転を更新
+	emitter_.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+}
+
 void ParticleSpawnBoxModule::Execute(std::list<CPUParticle::ParticleData>& particles) {
 
 	uint32_t emitCount = emitCount_.GetValue();
-	emitter_.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
-	
 	// +Z方向に飛ばす
 	Vector3 forward = Vector3::Normalize(Vector3::TransferNormal(Vector3(0.0f, 0.0f, 1.0f), emitter_.rotationMatrix));
 	for (uint32_t index = 0; index < emitCount; ++index) {
@@ -55,4 +60,10 @@ void ParticleSpawnBoxModule::ImGui() {
 	ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 	ImGui::DragFloat3("size", &emitter_.size.x, 0.05f);
 	ImGui::DragFloat3("translation", &emitter_.translation.x, 0.05f);
+}
+
+void ParticleSpawnBoxModule::DrawEmitter() {
+
+	LineRenderer::GetInstance()->DrawOBB(emitter_.translation,
+		emitter_.size, emitter_.rotationMatrix, emitterLineColor);
 }

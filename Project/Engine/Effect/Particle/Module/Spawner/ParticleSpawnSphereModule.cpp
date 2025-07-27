@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================
@@ -52,4 +53,10 @@ void ParticleSpawnSphereModule::ImGui() {
 
 	ImGui::DragFloat("radius", &emitter_.radius, 0.1f);
 	ImGui::DragFloat3("translation", &emitter_.translation.x, 0.05f);
+}
+
+void ParticleSpawnSphereModule::DrawEmitter() {
+
+	LineRenderer::GetInstance()->DrawSphere(4, emitter_.radius,
+		emitter_.translation, emitterLineColor);
 }

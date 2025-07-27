@@ -1,6 +1,12 @@
 #include "ParticleSpawnHemisphereModule.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Lib/Adapter/RandomGenerator.h>
+
+//============================================================================
 //	ParticleSpawnHemisphereModule classMethods
 //============================================================================
 
@@ -24,6 +30,12 @@ Vector3 ParticleSpawnHemisphereModule::GetRandomDirection() const {
 	}
 
 	return Vector3::Normalize(direction);
+}
+
+void ParticleSpawnHemisphereModule::UpdateEmitter() {
+
+	// 回転を更新
+	emitter_.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
 }
 
 void ParticleSpawnHemisphereModule::Execute(std::list<CPUParticle::ParticleData>& particles) {
@@ -55,4 +67,10 @@ void ParticleSpawnHemisphereModule::ImGui() {
 	ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 	ImGui::DragFloat("size", &emitter_.radius, 0.05f);
 	ImGui::DragFloat3("translation", &emitter_.translation.x, 0.05f);
+}
+
+void ParticleSpawnHemisphereModule::DrawEmitter() {
+
+	LineRenderer::GetInstance()->DrawHemisphere(8, emitter_.radius,
+		emitter_.translation, emitter_.rotationMatrix, emitterLineColor);
 }

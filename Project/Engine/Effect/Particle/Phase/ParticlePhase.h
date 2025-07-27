@@ -30,8 +30,10 @@ public:
 	// 発生処理
 	void Emit(std::list<CPUParticle::ParticleData>& particles, float deltaTime);
 	// 更新処理
-	void Update(CPUParticle::ParticleData& particle, float deltaTime);
+	void UpdateParticle(CPUParticle::ParticleData& particle, float deltaTime);
+	void UpdateEmitter();
 
+	// editor
 	void ImGui();
 
 	// helpers

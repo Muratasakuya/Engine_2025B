@@ -193,8 +193,8 @@ template<typename T>
 inline void LineRenderer::DrawHemisphere(int division, float radius, const Vector3& centerPos,
 	const T& rotation, const Color& color, LineType type) {
 
-	const float kLatEvery = pi / (2 * division);  // 緯度
-	const float kLonEvery = pi / division;        // 経度
+	const float kLatEvery = (pi / 2.0f) / division; // 緯度
+	const float kLonEvery = 2.0f * pi / division;   // 経度
 
 	auto calculatePoint = [&](float lat, float lon) -> Vector3 {
 		return {
@@ -217,7 +217,7 @@ inline void LineRenderer::DrawHemisphere(int division, float radius, const Vecto
 	}
 
 	for (int latIndex = 0; latIndex < division; ++latIndex) {
-		float lat = 0.0f + kLatEvery * latIndex;
+		float lat = kLatEvery * latIndex;
 		for (int lonIndex = 0; lonIndex < division; ++lonIndex) {
 			float lon = lonIndex * kLonEvery;
 

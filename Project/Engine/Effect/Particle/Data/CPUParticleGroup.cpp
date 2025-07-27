@@ -42,6 +42,9 @@ void CPUParticleGroup::UpdatePhase() {
 
 	for (auto& phase : phases_) {
 
+		// emitterの更新
+		phase->UpdateEmitter();
+
 		// 発生処理
 		phase->Emit(particles_, deltaTime);
 
@@ -63,7 +66,7 @@ void CPUParticleGroup::UpdatePhase() {
 			}
 
 			// 更新処理
-			phase->Update(*it, deltaTime);
+			phase->UpdateParticle(*it, deltaTime);
 
 			// bufferに渡すデータの更新処理
 			UpdateTransferData(particleIndex, *it);
