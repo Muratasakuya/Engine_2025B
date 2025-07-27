@@ -46,6 +46,9 @@ void ParticlePhase::Update(CPUParticle::ParticleData& particle, float deltaTime)
 
 void ParticlePhase::SetSpawner(ParticleSpawnModuleID id) {
 
+	if (spawner_) {
+		spawner_.reset();
+	}
 	spawner_ = SpawnRegistry::GetInstance().Create(id);
 
 	// 必要なデータを設定

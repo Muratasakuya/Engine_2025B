@@ -62,6 +62,9 @@ void ParticleManager::RegisterModules() {
 	auto& sRegistry = SpawnModuleRegistry::GetInstance();
 
 	sRegistry.Register<ParticleSpawnSphereModule>();
+	sRegistry.Register<ParticleSpawnHemisphereModule>();
+	sRegistry.Register<ParticleSpawnBoxModule>();
+	sRegistry.Register<ParticleSpawnConeModule>();
 
 	//============================================================================
 	//	Updaters

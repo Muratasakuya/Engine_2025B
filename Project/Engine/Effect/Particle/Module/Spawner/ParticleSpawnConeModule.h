@@ -8,7 +8,8 @@
 //============================================================================
 //	ParticleSpawnConeModule class
 //============================================================================
-class ParticleSpawnConeModule {
+class ParticleSpawnConeModule :
+	public ICPUParticleSpawnModule {
 public:
 	//========================================================================
 	//	public Methods
@@ -17,7 +18,15 @@ public:
 	ParticleSpawnConeModule() = default;
 	~ParticleSpawnConeModule() = default;
 
+	void Init() override;
+
+	void Execute(std::list<CPUParticle::ParticleData>& particles) override;
+
+	void ImGui() override;
+
 	//--------- accessor -----------------------------------------------------
+
+	const char* GetName() const override { return "SpawnCone"; }
 
 	//-------- registryID ----------------------------------------------------
 
@@ -29,8 +38,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	Vector3 emitterRotation_;
+	ParticleEmitterCone emitter_;
 
 	//--------- functions ----------------------------------------------------
 
+	Vector3 GetFacePoint(float radius, float height) const;
 };

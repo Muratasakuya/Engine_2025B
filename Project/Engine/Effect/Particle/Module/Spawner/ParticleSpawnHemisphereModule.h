@@ -8,7 +8,8 @@
 //============================================================================
 //	ParticleSpawnHemisphereModule class
 //============================================================================
-class ParticleSpawnHemisphereModule {
+class ParticleSpawnHemisphereModule :
+	public ICPUParticleSpawnModule {
 public:
 	//========================================================================
 	//	public Methods
@@ -17,7 +18,15 @@ public:
 	ParticleSpawnHemisphereModule() = default;
 	~ParticleSpawnHemisphereModule() = default;
 
+	void Init() override;
+
+	void Execute(std::list<CPUParticle::ParticleData>& particles) override;
+
+	void ImGui() override;
+
 	//--------- accessor -----------------------------------------------------
+
+	const char* GetName() const override { return "SpawnHemisphere"; }
 
 	//-------- registryID ----------------------------------------------------
 
@@ -29,8 +38,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	Vector3 emitterRotation_;
+	ParticleEmitterHemisphere emitter_;
 
 	//--------- functions ----------------------------------------------------
 
+	Vector3 GetRandomDirection() const;
 };

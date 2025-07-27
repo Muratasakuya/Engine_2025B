@@ -8,7 +8,8 @@
 //============================================================================
 //	ParticleSpawnBoxModule class
 //============================================================================
-class ParticleSpawnBoxModule {
+class ParticleSpawnBoxModule :
+	public ICPUParticleSpawnModule {
 public:
 	//========================================================================
 	//	public Methods
@@ -17,7 +18,15 @@ public:
 	ParticleSpawnBoxModule() = default;
 	~ParticleSpawnBoxModule() = default;
 
+	void Init() override;
+
+	void Execute(std::list<CPUParticle::ParticleData>& particles) override;
+
+	void ImGui() override;
+
 	//--------- accessor -----------------------------------------------------
+
+	const char* GetName() const override { return "SpawnBox"; }
 
 	//-------- registryID ----------------------------------------------------
 
@@ -29,8 +38,10 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	Vector3 emitterRotation_;
+	ParticleEmitterBox emitter_;
 
 	//--------- functions ----------------------------------------------------
 
+	Vector3 GetRandomPoint() const;
 };

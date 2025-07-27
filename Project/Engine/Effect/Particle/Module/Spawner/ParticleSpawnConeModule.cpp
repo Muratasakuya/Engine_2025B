@@ -1,5 +1,69 @@
 #include "ParticleSpawnConeModule.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Lib/Adapter/RandomGenerator.h>
+
+//============================================================================
 //	ParticleSpawnConeModule classMethods
 //============================================================================
+
+void ParticleSpawnConeModule::Init() {
+
+	// 値の初期値
+	ICPUParticleSpawnModule::InitCommonData();
+	emitter_.Init();
+}
+
+Vector3 ParticleSpawnConeModule::GetFacePoint(float radius, float height) const {
+
+	float angle = RandomGenerator::Generate(0.0f, 2.0f * pi);
+	float radiusRandom = RandomGenerator::Generate(0.0f, radius);
+	Vector3 point = Vector3(
+		radiusRandom * std::cos(angle),
+		height,
+		radiusRandom * std::sin(angle));
+
+	return point;
+}
+
+void ParticleSpawnConeModule::Execute(std::list<CPUParticle::ParticleData>& particles) {
+
+	uint32_t emitCount = emitCount_.GetValue();
+	emitter_.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+
+	for (uint32_t index = 0; index < emitCount; ++index) {
+
+		CPUParticle::ParticleData particle{};
+
+		// 共通設定
+		ICPUParticleSpawnModule::SetCommonData(particle);
+
+		// 上部と下部の面の座標を取得
+		Vector3 basePoint = GetFacePoint(emitter_.baseRadius, 0.0f);
+		Vector3 topPoint = GetFacePoint(emitter_.topRadius, emitter_.height);
+		Vector3 rotatedBasePoint = emitter_.rotationMatrix.TransformPoint(basePoint) + emitter_.translation;
+		Vector3 rotatedTopPoint = emitter_.rotationMatrix.TransformPoint(topPoint) + emitter_.translation;
+
+		// 速度、発生位置
+		Vector3 direction = (rotatedTopPoint - rotatedBasePoint).Normalize();
+		particle.velocity = direction * moveSpeed_.GetValue();
+		particle.transform.translation = rotatedBasePoint;
+
+		// 追加
+		particles.push_back(particle);
+	}
+}
+
+void ParticleSpawnConeModule::ImGui() {
+
+	// 共通パラメータ
+	ICPUParticleSpawnModule::ImGuiCommon();
+
+	ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
+	ImGui::DragFloat("baseRadius", &emitter_.baseRadius, 0.05f);
+	ImGui::DragFloat("topRadius", &emitter_.topRadius, 0.05f);
+	ImGui::DragFloat("height", &emitter_.height, 0.05f);
+	ImGui::DragFloat3("translation", &emitter_.translation.x, 0.05f);
+}
