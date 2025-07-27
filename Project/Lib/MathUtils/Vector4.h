@@ -68,6 +68,7 @@ public:
 	//--------- functions ----------------------------------------------------
 
 	static Color Convert(int color);
+	Color ToLinear() const;
 
 	static Color White(float alpha = 1.0f);
 	static Color Black(float alpha = 1.0f);

@@ -16,6 +16,7 @@ class PostProcessSystem;
 
 enum class Scene {
 
+	Effect,
 	Title,
 	Game
 };

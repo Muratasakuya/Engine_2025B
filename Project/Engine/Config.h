@@ -30,7 +30,8 @@ namespace  Config {
 	const constexpr float kWindowHeightf = static_cast<float>(kWindowHeight);
 
 	// clearColor
-	const constexpr float kWindowClearColor[] = {0.016f, 0.016f, 0.08f, 1.0f};
+	const float kWindowClearColor[] = { Color::Convert(0x181818ff).r,
+		Color::Convert(0x181818ff).g, Color::Convert(0x181818ff).b, 1.0f };
 	// shadowMap...値が大きい方が精度が上がる
 	const constexpr uint32_t kShadowMapSize = 128;
 

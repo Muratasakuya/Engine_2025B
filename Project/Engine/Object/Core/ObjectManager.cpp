@@ -111,7 +111,7 @@ uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 		// bufferを作成
 		systemManager_->GetSystem<InstancedMeshSystem>()->CreateSkinnedMesh(modelName);
 
-		LOG_INFO("created object3D: name: [{}] skinnedMesh: [{}] animation: [{}]",name, modelName, animationName.value());
+		LOG_INFO("created object3D: name: [{}] skinnedMesh: [{}] animation: [{}]", name, modelName, animationName.value());
 	} else {
 
 		// bufferを作成
@@ -164,6 +164,17 @@ uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 void ObjectManager::Destroy(uint32_t object) {
 
 	ObjectPoolManager_->Destroy(object);
+}
+
+void ObjectManager::DestroyAll() {
+
+	// すべて走査して破棄
+	Archetype mask{};
+	auto objects = ObjectPoolManager_->View(mask);
+	for (uint32_t id : objects) {
+
+		ObjectPoolManager_->Destroy(id);
+	}
 }
 
 uint32_t ObjectManager::BuildEmptyobject(const std::string& name, const std::string& groupName) {

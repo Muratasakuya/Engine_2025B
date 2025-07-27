@@ -44,6 +44,7 @@ public:
 
 	// object削除
 	void Destroy(uint32_t object);
+	void DestroyAll();
 
 	//--------- accessor -----------------------------------------------------
 

@@ -29,6 +29,11 @@ void SkyboxRenderSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 		data_ = skybox;
 		isCreated_ = true;
 	}
+	// 存在していないので未作成として設定
+	if (view.empty()) {
+
+		isCreated_ = false;
+	}
 }
 
 void SkyboxRenderSystem::Render(ID3D12GraphicsCommandList* commandList) {

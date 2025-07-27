@@ -22,10 +22,10 @@ BaseCamera::BaseCamera() {
 	farClip_ = 3200.0f;
 
 	// transformを一回初期化
-	eulerRotation_ = Vector3(0.26f, 0.0f, 0.0f);
+	eulerRotation_ = Vector3(0.02f, 0.0f, 0.0f);
 	transform_.scale = Vector3::AnyInit(1.0f);
 	transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
-	transform_.translation = Vector3(0.0f, 30.733f, -112.363f);
+	transform_.translation = Vector3(0.0f, 1.8f, -24.0f);
 }
 
 void BaseCamera::UpdateView() {

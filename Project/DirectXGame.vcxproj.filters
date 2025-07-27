@@ -572,6 +572,9 @@
     <ClCompile Include="Engine\Core\Debug\SpdLogger.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Scene\EffectScene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -789,6 +792,7 @@
     <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleUpdateModule.h" />
     <ClInclude Include="Engine\Effect\Particle\Phase\ParticlePhase.h" />
     <ClInclude Include="Engine\Core\Debug\SpdLogger.h" />
+    <ClInclude Include="Game\Scene\EffectScene.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

@@ -1,6 +1,19 @@
 #include "Vector4.h"
 
 //============================================================================*/
+//	namespace
+//============================================================================*/
+
+namespace {
+
+	// 1ch分のsRGB → Linear
+	inline float SRGBToLinear(float c) {
+
+		return (c <= 0.04045f) ? (c / 12.92f) : powf((c + 0.055f) / 1.055f, 2.4f);
+	}
+}
+
+//============================================================================*/
 //	Vector4 classMethods
 //============================================================================*/
 
@@ -71,6 +84,11 @@ Color Color::Convert(int color) {
 	int a = color & 0xFF;
 
 	return Color(r / 255.0f, g / 255.0f, b / 255.0f, a / 255.0f);
+}
+
+Color Color::ToLinear() const {
+
+	return Color(SRGBToLinear(r), SRGBToLinear(g), SRGBToLinear(b), a);
 }
 
 Color Color::White(float alpha) {

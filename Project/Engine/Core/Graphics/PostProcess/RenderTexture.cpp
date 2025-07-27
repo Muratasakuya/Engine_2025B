@@ -61,10 +61,11 @@ void RenderTexture::Create(uint32_t width, uint32_t height, const Color& color,
 	// renderTargetの設定
 	renderTarget_.width = width;
 	renderTarget_.height = height;
-	renderTarget_.clearColor = color;
+	// リニア変換した値を設定
+	renderTarget_.clearColor = color.ToLinear();
 
 	// texture作成
-	CreateTextureResource(resource_, width, height, color, format, flags, device);
+	CreateTextureResource(resource_, width, height, renderTarget_.clearColor, format, flags, device);
 
 	// renderTargetとして使用するときのみ
 	const bool useRenderTarget =

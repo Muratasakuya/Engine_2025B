@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Editor/ImGuiObjectEditor.h>
+#include <Engine/Object/Core/ObjectManager.h>
 #include <Lib/Adapter/EnumAdapter.h>
 
 //============================================================================
@@ -89,4 +90,6 @@ void SceneManager::LoadScene(Scene scene) {
 
 	// imgui選択をリセット
 	ImGuiObjectEditor::GetInstance()->Reset();
+	// すべてのオブジェクトを破棄
+	ObjectManager::GetInstance()->DestroyAll();
 }
