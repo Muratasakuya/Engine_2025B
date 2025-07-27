@@ -26,7 +26,7 @@ public:
 	CPUParticleGroup(CPUParticleGroup&&) noexcept = default;
 	CPUParticleGroup& operator=(CPUParticleGroup&&) noexcept = default;
 
-	void Create(ID3D12Device* device, ParticlePrimitiveType primitiveType);
+	void Create(ID3D12Device* device, Asset* asset, ParticlePrimitiveType primitiveType);
 
 	void Update();
 
@@ -40,7 +40,7 @@ public:
 
 	const DxStructuredBuffer<ParticleCommon::TransformForGPU>& GetTransformBuffer() const { return transformBuffer_; }
 	const DxStructuredBuffer<CPUParticle::MaterialForGPU>& GetMaterialBuffer() const { return materialBuffer_; }
-	const DxStructuredBuffer<CPUParticle::TextureInfoForGPU>& GetTextureIsnfoBuffer() const { return textureInfoBuffer_; }
+	const DxStructuredBuffer<CPUParticle::TextureInfoForGPU>& GetTextureInfoBuffer() const { return textureInfoBuffer_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -48,11 +48,13 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	Asset* asset_;
+
 	// インスタンス数
 	uint32_t numInstance_;
 
 	// フェーズ
-	std::vector<ParticlePhase> phases_;
+	std::vector<std::unique_ptr<ParticlePhase>> phases_;
 
 	// データ
 	std::list<CPUParticle::ParticleData> particles_;
@@ -68,7 +70,9 @@ private:
 
 	// 描画情報
 	BlendMode blendMode_;
-	std::string textureName_;
+
+	// editor
+	int selectedPhase_ = -1;
 
 	//--------- functions ----------------------------------------------------
 
@@ -77,4 +81,8 @@ private:
 	void UpdateTransferData(uint32_t particleIndex,
 		const CPUParticle::ParticleData& particle);
 	void TransferBuffer();
+
+	// helper
+	void ResizeTransferData(uint32_t size);
+	void AddPhase();
 };

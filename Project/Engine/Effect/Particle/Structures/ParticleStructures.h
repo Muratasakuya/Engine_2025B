@@ -4,8 +4,10 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/Structures/ParticlePrimitiveStructures.h>
+#include <Engine/Effect/Particle/Structures/ParticleValue.h>
 #include <Engine/Core/Graphics/GPUObject/DxStructuredBuffer.h>
 #include <Engine/Core/Graphics/Lib/DxStructures.h>
+#include <Lib/Adapter/Easing.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
@@ -33,6 +35,13 @@ enum class ParticleBillboardType {
 //============================================================================
 
 namespace ParticleCommon {
+
+	// samplerの種類
+	enum class SamplerType {
+
+		WRAP,
+		CLMAP
+	};
 
 	// 描画情報
 	template<bool kMultiple = false>
@@ -86,6 +95,20 @@ namespace ParticleCommon {
 		Matrix4x4 viewProjection;
 		Matrix4x4 billboardMatrix;
 	};
+
+	template <typename T>
+	struct LerpValue {
+
+		T start;
+		T target;
+	};
+
+	template <typename T>
+	struct EditLerpValue {
+
+		ParticleValue<T> start;
+		ParticleValue<T> target;
+	};
 };
 
 //============================================================================
@@ -138,7 +161,7 @@ namespace CPUParticle {
 		// sampler
 		// 0...WRAP
 		// 1...CLAMP
-		uint32_t samplerType;
+		int32_t samplerType;
 
 		// flags
 		int32_t useNoiseTexture;
@@ -146,16 +169,22 @@ namespace CPUParticle {
 
 	struct ParticleData {
 
+		// 生存時間
+		float lifeTime;
+
 		// 経過時間
 		float currentTime;
 		float progress;
 
+		// bufferを更新するデータ
 		// 移動速度
 		Vector3 velocity;
-		Vector3 easedVelocity;
-
 		// 回転
 		Vector3 rotation;
+		// 拡縮
+		ParticleCommon::LerpValue<Vector3> scale;
+		// 色
+		ParticleCommon::LerpValue<Color> color;
 
 		// bufferに渡すデータ
 		MaterialForGPU material;

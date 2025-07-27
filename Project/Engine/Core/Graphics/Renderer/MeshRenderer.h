@@ -50,4 +50,9 @@ private:
 
 	// raytracing
 	std::unique_ptr<RaytracingScene> rayScene_;
+
+	//--------- functions ----------------------------------------------------
+
+	void BeginSkinnedTransition(bool debugEnable, uint32_t meshIndex, IMesh* mesh, DxCommand* dxCommand);
+	void EndSkinnedTransition(bool debugEnable, uint32_t meshIndex, IMesh* mesh, DxCommand* dxCommand);
 };

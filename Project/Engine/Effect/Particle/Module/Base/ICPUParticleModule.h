@@ -5,16 +5,33 @@
 //============================================================================
 #include <Engine/Effect/Particle/Structures/ParticleStructures.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
-//	eum class
+//	enum class
 //============================================================================
 
-// 処理に必要な値
-enum class ParticleModuleFlags {
+// 発生処理
+enum class ParticleSpawnModuleID {
 
-	NeedVelocity,
-	NeedRotation,
-	NeedParent,
+	Sphere,
+	Hemisphere,
+	Box,
+	Cone,
+	Count,
+};
+
+// 更新処理
+enum class ParticleUpdateModuleID {
+
+	Color,
+	Velocity,
+	Rotation,
+	Scale,
+	Gravity,
+	Parent,
+	Count,
 };
 
 //============================================================================
@@ -29,10 +46,11 @@ public:
 	ICPUParticleModule() = default;
 	virtual ~ICPUParticleModule() = default;
 
+	virtual void Init() = 0;
+
 	virtual void ImGui() = 0;
 
 	//--------- accessor -----------------------------------------------------
 
 	virtual const char* GetName() const = 0;
-	virtual ParticleModuleFlags GetFlags() const = 0;
 };

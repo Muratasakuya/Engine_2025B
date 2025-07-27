@@ -1,0 +1,55 @@
+#include "ParticleSpawnSphereModule.h"
+
+//============================================================================
+//	include
+//============================================================================
+#include <Lib/Adapter/RandomGenerator.h>
+
+//============================================================================
+//	ParticleSpawnSphereModule classMethods
+//============================================================================
+
+void ParticleSpawnSphereModule::Init() {
+
+	// 値の初期値
+	ICPUParticleSpawnModule::InitCommonData();
+	emitter_.Init();
+}
+
+Vector3 ParticleSpawnSphereModule::GetRandomDirection() const {
+
+	float phi = RandomGenerator::Generate(0.0f, pi * 2.0f);
+	float z = RandomGenerator::Generate(-1.0f, 1.0f);
+	float sqrtOneMinusZ2 = sqrt(1.0f - z * z);
+	Vector3 direction = Vector3(sqrtOneMinusZ2 * cos(phi), sqrtOneMinusZ2 * sin(phi), z);
+
+	return Vector3::Normalize(direction);
+}
+
+void ParticleSpawnSphereModule::Execute(std::list<CPUParticle::ParticleData>& particles) {
+
+	uint32_t emitCount = emitCount_.GetValue();
+	for (uint32_t index = 0; index < emitCount; ++index) {
+
+		CPUParticle::ParticleData particle{};
+
+		// 共通設定
+		ICPUParticleSpawnModule::SetCommonData(particle);
+
+		// 速度、発生位置
+		particle.velocity = GetRandomDirection() * moveSpeed_.GetValue();
+		particle.transform.translation = emitter_.translation * emitter_.radius;
+
+		// 追加
+		particles.push_back(particle);
+	}
+}
+
+void ParticleSpawnSphereModule::ImGui() {
+
+	// 共通パラメータ
+	ICPUParticleSpawnModule::ImGuiCommon();
+
+	ImGui::DragFloat("radius", &emitter_.radius, 0.1f);
+	ImGui::DragFloat3("translation", &emitter_.translation.x, 0.05f);
+}

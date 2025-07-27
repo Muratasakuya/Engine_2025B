@@ -10,6 +10,19 @@
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Utility/GameTimer.h>
 
+// modules
+// Spawner
+#include <Engine/Effect/Particle/Module/ParticleModuleRegistry.h>
+#include <Engine/Effect/Particle/Module/Spawner/ParticleSpawnSphereModule.h>
+#include <Engine/Effect/Particle/Module/Spawner/ParticleSpawnHemisphereModule.h>
+#include <Engine/Effect/Particle/Module/Spawner/ParticleSpawnBoxModule.h>
+#include <Engine/Effect/Particle/Module/Spawner/ParticleSpawnConeModule.h>
+// Updater
+#include <Engine/Effect/Particle/Module/Updater/ParticleUpdateColorModule.h>
+#include <Engine/Effect/Particle/Module/Updater/ParticleUpdateVelocityModule.h>
+#include <Engine/Effect/Particle/Module/Updater/ParticleUpdateRotationModule.h>
+#include <Engine/Effect/Particle/Module/Updater/ParticleUpdateScaleModule.h>
+
 //============================================================================
 //	ParticleManager classMethods
 //============================================================================
@@ -33,6 +46,35 @@ void ParticleManager::Finalize() {
 	}
 }
 
+//============================================================================
+//	Registry using
+//============================================================================
+
+using SpawnModuleRegistry = ParticleModuleRegistry<ICPUParticleSpawnModule, ParticleSpawnModuleID>;
+using UpdateModuleRegistry = ParticleModuleRegistry<ICPUParticleUpdateModule, ParticleUpdateModuleID>;
+
+void ParticleManager::RegisterModules() {
+
+	//============================================================================
+	//	Spawners
+	//============================================================================
+
+	auto& sRegistry = SpawnModuleRegistry::GetInstance();
+
+	sRegistry.Register<ParticleSpawnSphereModule>();
+
+	//============================================================================
+	//	Updaters
+	//============================================================================
+
+	auto& uRegistry = UpdateModuleRegistry::GetInstance();
+
+	uRegistry.Register<ParticleUpdateColorModule>();
+	uRegistry.Register<ParticleUpdateVelocityModule>();
+	uRegistry.Register<ParticleUpdateRotationModule>();
+	uRegistry.Register<ParticleUpdateScaleModule>();
+}
+
 void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler) {
 
@@ -48,6 +90,9 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 
 	renderer_ = std::make_unique<ParticleRenderer>();
 	renderer_->Init(device, asset, srvDescriptor, shaderCompiler);
+
+	// 発生、更新モジュールの登録
+	RegisterModules();
 }
 
 void ParticleManager::Update(DxCommand* dxCommand) {
@@ -58,12 +103,19 @@ void ParticleManager::Update(DxCommand* dxCommand) {
 
 	// すべてのシステムを更新
 	for (auto& system : systems_) {
+		// GPU
 		for (auto& group : system->GetGPUGroup()) {
 
 			// グループ更新
 			group.group.Update();
 			// GPU更新
 			gpuUpdater_->Update(group.group, dxCommand);
+		}
+		// CPU
+		for (auto& group : system->GetCPUGroup()) {
+
+			// グループ更新
+			group.group.Update();
 		}
 	}
 }

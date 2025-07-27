@@ -64,6 +64,9 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	// init
+	void RegisterModules();
+
 	// editor
 	void AddSystem();
 	void RemoveSystem();

@@ -7,6 +7,9 @@
 #include <Lib/Adapter/JsonAdapter.h>
 #include <Lib/MathUtils/MathUtils.h>
 
+// imgui
+#include <imgui.h>
+
 //============================================================================
 //	ParticleValue class
 //============================================================================

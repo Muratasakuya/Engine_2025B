@@ -233,6 +233,42 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Base\ICPUParticleSpawnModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnBoxModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnConeModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnHemisphereModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnSphereModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateColorModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateRotationModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateScaleModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateVelocityModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Effect\Particle\Phase\ParticlePhase.cpp">
       <SubType>
       </SubType>
@@ -814,6 +850,42 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Effect\Particle\Module\Base\ICPUParticleUpdateModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\ParticleModuleRegistry.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnBoxModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnConeModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnHemisphereModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnSphereModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateColorModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateRotationModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateScaleModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateVelocityModule.h">
       <SubType>
       </SubType>
     </ClInclude>

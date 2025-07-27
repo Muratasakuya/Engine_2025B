@@ -55,6 +55,6 @@ struct CylinderForGPU {
 		topRadius = 4.0f;
 		bottomRadius = 4.0f;
 		height = 4.0f;
-		divide = 32;
+		divide = 16;
 	}
 };

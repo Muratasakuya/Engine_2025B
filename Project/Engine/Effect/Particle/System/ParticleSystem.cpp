@@ -54,7 +54,7 @@ void ParticleSystem::AddGroup() {
 		// 名前の設定
 		group.name = "particle" + std::to_string(++nextGroupId_);
 		// 作成
-		group.group.Create(device_, primitiveType_);
+		group.group.Create(device_, asset_, primitiveType_);
 	} else if (particleType_ == ParticleType::GPU) {
 
 		// 追加
@@ -76,8 +76,7 @@ void ParticleSystem::RemoveGroup() {
 	if (selected_.type == ParticleType::GPU) {
 
 		gpuGroups_.erase(gpuGroups_.begin() + selected_.index);
-	}
-	else if(selected_.type == ParticleType::CPU) {
+	} else if (selected_.type == ParticleType::CPU) {
 
 		cpuGroups_.erase(cpuGroups_.begin() + selected_.index);
 	}

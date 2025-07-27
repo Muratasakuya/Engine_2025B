@@ -149,50 +149,63 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 			commandList->SetGraphicsRootShaderResourceView(10,
 				instancingBuffers[name].lightingBuffer[meshIndex].GetResource()->GetGPUVirtualAddress());
 
-#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-			if (!debugEnable) {
-
-				// skinnedMeshなら頂点を読める状態にする
-				if (mesh->IsSkinned()) {
-
-					dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
-						D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
-						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-				}
-			}
-#else
-			// skinnedMeshなら頂点を読める状態にする
-			if (mesh->IsSkinned()) {
-
-				dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
-					D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
-					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
-			}
-#endif
+			// 状態遷移前処理
+			BeginSkinnedTransition(debugEnable, meshIndex, mesh.get(), dxCommand);
 
 			// 描画処理
-			commandContext.DispatchMesh(commandList,
-				instancingBuffers[name].numInstance, meshIndex, mesh.get());
-#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-			if (debugEnable) {
+			commandContext.DispatchMesh(commandList, instancingBuffers[name].numInstance, meshIndex, mesh.get());
 
-				// skinnedMeshなら頂点を書き込み状態に戻す
-				if (mesh->IsSkinned()) {
-
-					dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
-						D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-						D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-				}
-			}
-#else
-			// skinnedMeshなら頂点を書き込み状態に戻す
-			if (mesh->IsSkinned()) {
-
-				dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh.get())->GetOutputVertexBuffer(meshIndex).GetResource() },
-					D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
-					D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-			}
-#endif
+			// 状態遷移後処理
+			EndSkinnedTransition(debugEnable, meshIndex, mesh.get(), dxCommand);
 		}
 	}
+}
+
+void MeshRenderer::BeginSkinnedTransition(bool debugEnable, uint32_t meshIndex, IMesh* mesh, DxCommand* dxCommand) {
+
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+	if (!debugEnable) {
+
+		// skinnedMeshなら頂点を読める状態にする
+		if (mesh->IsSkinned()) {
+
+			dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh)->GetOutputVertexBuffer(meshIndex).GetResource() },
+				D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+				D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+		}
+	}
+#else
+	// skinnedMeshなら頂点を読める状態にする
+	if (mesh->IsSkinned()) {
+
+		dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh)->GetOutputVertexBuffer(meshIndex).GetResource() },
+			D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE,
+			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER);
+	}
+#endif
+}
+
+void MeshRenderer::EndSkinnedTransition(bool debugEnable, uint32_t meshIndex, IMesh* mesh, DxCommand* dxCommand) {
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+	if (debugEnable) {
+
+		// skinnedMeshなら頂点を書き込み状態に戻す
+		if (mesh->IsSkinned()) {
+
+			dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh)->GetOutputVertexBuffer(meshIndex).GetResource() },
+				D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+				D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+		}
+	}
+#else
+	// skinnedMeshなら頂点を書き込み状態に戻す
+	if (mesh->IsSkinned()) {
+
+		dxCommand->TransitionBarriers({ static_cast<SkinnedMesh*>(mesh)->GetOutputVertexBuffer(meshIndex).GetResource() },
+			D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER,
+			D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+	}
+#endif
 }

@@ -18,5 +18,7 @@ public:
 	ICPUParticleUpdateModule() = default;
 	~ICPUParticleUpdateModule() = default;
 
+	void Init() override {}
+
 	virtual void Execute(CPUParticle::ParticleData& particle, float deltaTime) = 0;
 };

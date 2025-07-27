@@ -121,7 +121,7 @@ void ParticleRenderer::Rendering(bool debugEnable, const CPUParticleGroup& group
 	}
 
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
-	const uint32_t typeIndex = static_cast<uint32_t>(ParticleType::GPU);
+	const uint32_t typeIndex = static_cast<uint32_t>(ParticleType::CPU);
 	const uint32_t primitiveIndex = static_cast<uint32_t>(group.GetPrimitiveType());
 
 	// pipeline設定
@@ -136,7 +136,7 @@ void ParticleRenderer::Rendering(bool debugEnable, const CPUParticleGroup& group
 	// material
 	commandList->SetGraphicsRootShaderResourceView(3, group.GetMaterialBuffer().GetResource()->GetGPUVirtualAddress());
 	// textureInfo
-	commandList->SetGraphicsRootShaderResourceView(4, group.GetTextureIsnfoBuffer().GetResource()->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootShaderResourceView(4, group.GetTextureInfoBuffer().GetResource()->GetGPUVirtualAddress());
 	// texture(bindless)
 	commandList->SetGraphicsRootDescriptorTable(5, srvDescriptor_->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 

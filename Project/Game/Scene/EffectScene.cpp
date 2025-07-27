@@ -14,10 +14,13 @@
 
 void EffectScene::Load() {
 
-
+	asset_->LoadTexture("circle");
+	asset_->LoadTexture("noise");
 }
 
 void EffectScene::Init() {
+
+	Load();
 
 	//========================================================================
 	//	postProcess

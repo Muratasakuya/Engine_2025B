@@ -575,6 +575,33 @@
     <ClCompile Include="Game\Scene\EffectScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnSphereModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnHemisphereModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnBoxModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnConeModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateVelocityModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateColorModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Base\ICPUParticleSpawnModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateRotationModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateScaleModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -793,6 +820,15 @@
     <ClInclude Include="Engine\Effect\Particle\Phase\ParticlePhase.h" />
     <ClInclude Include="Engine\Core\Debug\SpdLogger.h" />
     <ClInclude Include="Game\Scene\EffectScene.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnSphereModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnHemisphereModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnBoxModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnConeModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\ParticleModuleRegistry.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateVelocityModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateColorModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateRotationModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateScaleModule.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />
