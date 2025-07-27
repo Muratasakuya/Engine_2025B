@@ -32,6 +32,9 @@ void TextureManager::Init(ID3D12Device* device, DxCommand* dxCommand,
 
 void TextureManager::Load(const std::string& textureName) {
 
+	// 時間経過カウント開始
+	auto start = std::chrono::high_resolution_clock::now();
+
 	// 読みこみ済みなら早期リターン
 	LOG_INFO("load texture begin: {}", textureName);
 	if (textures_.contains(textureName)) {
@@ -60,6 +63,7 @@ void TextureManager::Load(const std::string& textureName) {
 	if (!found) {
 
 		LOG_WARN("texture not found → {}", textureName);
+		ASSERT(FALSE, "texture not found:" + textureName);
 	}
 
 	std::string identifier = filePath.stem().string();
@@ -107,12 +111,16 @@ void TextureManager::Load(const std::string& textureName) {
 
 	isCacheValid_ = false;
 
-	LOG_INFO("load texture ok: {} ({}×{} mip{} srv={})",
+	auto end = std::chrono::high_resolution_clock::now();
+	auto duration = duration_cast<std::chrono::milliseconds>(end - start).count();
+
+	LOG_INFO("load texture ok: {} ({}×{} mip{} srv={}) load time: {} ms",
 		identifier,
 		texture.metadata.width,
 		texture.metadata.height,
 		texture.metadata.mipLevels,
-		texture.srvIndex);
+		texture.srvIndex,
+		duration);
 }
 
 void TextureManager::LoadLutTexture(const std::string& textureName) {
@@ -423,6 +431,8 @@ const D3D12_GPU_DESCRIPTOR_HANDLE& TextureManager::GetGPUHandle(const std::strin
 
 	auto it = textures_.find(textureName);
 	if (it == textures_.end()) {
+
+		LOG_WARN("texture not found → {}", textureName);
 		ASSERT(FALSE, "not found texture" + textureName);
 	}
 	return it->second.gpuHandle;
@@ -432,6 +442,8 @@ uint32_t TextureManager::GetTextureGPUIndex(const std::string& textureName) cons
 
 	auto it = textures_.find(textureName);
 	if (it == textures_.end()) {
+
+		LOG_WARN("texture not found → {}", textureName);
 		ASSERT(FALSE, "not found texture" + textureName);
 	}
 	return it->second.srvIndex;
@@ -441,6 +453,8 @@ const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string textur
 
 	auto it = textures_.find(textureName);
 	if (it == textures_.end()) {
+
+		LOG_WARN("texture not found → {}", textureName);
 		ASSERT(FALSE, "not found texture" + textureName);
 	}
 	TextureData textureData = it->second;

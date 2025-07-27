@@ -50,6 +50,7 @@ void ModelLoader::Load(const std::string& modelName) {
 	if (!found) {
 
 		LOG_WARN("model not found → {}", modelName);
+		ASSERT(FALSE, "model not found:" + modelName);
 	}
 
 	models_[modelName] = LoadModelFile(filePath.string());
@@ -133,7 +134,12 @@ bool ModelLoader::Search(const std::string& modelName) {
 
 const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
 
-	ASSERT(models_.find(modelName) != models_.end(), "not found model" + modelName);
+	bool find = models_.find(modelName) != models_.end();
+
+	if (!find) {
+		LOG_WARN("model not found → {}", modelName);
+	}
+	ASSERT(find, "not found model" + modelName);
 	return models_.at(modelName);
 }
 

@@ -56,6 +56,7 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 	if (!found) {
 
 		LOG_WARN("animation not found → {}", animationName);
+		ASSERT(FALSE, "animation not found:" + animationName);
 	}
 
 	Assimp::Importer importer;
@@ -65,6 +66,7 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 	if (scene->mNumAnimations == 0) {
 
 		LOG_WARN("numAnimations 0 → {}", animationName);
+		ASSERT(FALSE, "numAnimations 0:" + animationName);
 	}
 
 	// すべてのアニメーションを処理
@@ -202,18 +204,33 @@ SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, co
 
 const AnimationData& AnimationManager::GetAnimationData(const std::string& animationName) const {
 
-	ASSERT(animations_.find(animationName) != animations_.end(), "not found animation" + animationName);
+	bool find = animations_.find(animationName) != animations_.end();
+
+	if (!find) {
+		LOG_WARN("animation not found → {}", animationName);
+	}
+	ASSERT(find, "not found animation" + animationName);
 	return animations_.at(animationName);
 }
 
 const Skeleton& AnimationManager::GetSkeletonData(const std::string& animationName) const {
 
-	ASSERT(skeletons_.find(animationName) != skeletons_.end(), "not found animation" + animationName);
+	bool find = skeletons_.find(animationName) != skeletons_.end();
+
+	if (!find) {
+		LOG_WARN("animation not found → {}", animationName);
+	}
+	ASSERT(find, "not found animation" + animationName);
 	return skeletons_.at(animationName);
 }
 
 const SkinCluster& AnimationManager::GetSkinClusterData(const std::string& animationName) const {
 
-	ASSERT(skinClusters_.find(animationName) != skinClusters_.end(), "not found animation" + animationName);
+	bool find = skinClusters_.find(animationName) != skinClusters_.end();
+
+	if (!find) {
+		LOG_WARN("animation not found → {}", animationName);
+	}
+	ASSERT(find, "not found animation" + animationName);
 	return skinClusters_.at(animationName);
 }
