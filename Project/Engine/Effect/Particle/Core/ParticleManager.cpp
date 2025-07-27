@@ -170,7 +170,7 @@ void ParticleManager::RemoveSystem() {
 
 void ParticleManager::ImGui() {
 
-	//EditLayout();
+	EditLayout();
 
 	// 文字のサイズ設定
 	ImGui::SetWindowFontScale(0.72f);

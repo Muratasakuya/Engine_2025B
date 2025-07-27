@@ -52,7 +52,7 @@ void ParticleSpawnHemisphereModule::Execute(std::list<CPUParticle::ParticleData>
 		// 速度、発生位置
 		Vector3 rotatedDirection = emitter_.rotationMatrix.TransformPoint(GetRandomDirection());
 		particle.velocity = rotatedDirection * moveSpeed_.GetValue();
-		particle.transform.translation = emitter_.translation * emitter_.radius;
+		particle.transform.translation = emitter_.translation + rotatedDirection * emitter_.radius;
 
 		// 追加
 		particles.push_back(particle);
@@ -60,9 +60,6 @@ void ParticleSpawnHemisphereModule::Execute(std::list<CPUParticle::ParticleData>
 }
 
 void ParticleSpawnHemisphereModule::ImGui() {
-
-	// 共通パラメータ
-	ICPUParticleSpawnModule::ImGuiCommon();
 
 	ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 	ImGui::DragFloat("size", &emitter_.radius, 0.05f);

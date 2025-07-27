@@ -188,7 +188,7 @@ void CPUParticleGroup::ImGui() {
 	ImGui::SeparatorText("Phases");
 
 	// 追加ボタン
-	if (ImGui::Button("+ Add Phase")) {
+	if (ImGui::Button("Add Phase")) {
 
 		AddPhase();
 	}
@@ -209,7 +209,7 @@ void CPUParticleGroup::ImGui() {
 		}
 
 		ImGui::SameLine();
-		if (ImGui::SmallButton("X")) {
+		if (ImGui::SmallButton("[X]")) {
 
 			eraseIndex = static_cast<int>(i);
 		}

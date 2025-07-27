@@ -65,9 +65,6 @@ void ParticleSpawnConeModule::Execute(std::list<CPUParticle::ParticleData>& part
 
 void ParticleSpawnConeModule::ImGui() {
 
-	// 共通パラメータ
-	ICPUParticleSpawnModule::ImGuiCommon();
-
 	ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 	ImGui::DragFloat("baseRadius", &emitter_.baseRadius, 0.05f);
 	ImGui::DragFloat("topRadius", &emitter_.topRadius, 0.05f);

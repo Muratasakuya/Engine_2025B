@@ -21,7 +21,7 @@
     ],
     "Rasterizer":[
         {
-            "CullMode": "BACK",
+            "CullMode": "NONE",
             "FillMode": "SOLID",
             "DepthClipEnable": "FALSE",
             "AntialiasedLineEnable": "FALSE"

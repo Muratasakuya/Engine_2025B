@@ -54,9 +54,6 @@ void ParticleSpawnBoxModule::Execute(std::list<CPUParticle::ParticleData>& parti
 
 void ParticleSpawnBoxModule::ImGui() {
 
-	// 共通パラメータ
-	ICPUParticleSpawnModule::ImGuiCommon();
-
 	ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 	ImGui::DragFloat3("size", &emitter_.size.x, 0.05f);
 	ImGui::DragFloat3("translation", &emitter_.translation.x, 0.05f);

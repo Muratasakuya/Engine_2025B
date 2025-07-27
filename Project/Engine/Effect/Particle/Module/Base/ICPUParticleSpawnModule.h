@@ -6,6 +6,8 @@
 #include <Engine/Effect/Particle/Module/Base/ICPUParticleModule.h>
 #include <Engine/Effect/Particle/Structures/ParticleEmitterStructures.h>
 
+// imgui
+#include <imgui.h>
 // c++
 #include <list>
 // front
@@ -28,6 +30,12 @@ public:
 
 	virtual void UpdateEmitter() {}
 	virtual void DrawEmitter() {}
+
+	// editor
+	void ImGuiRenderParam();
+	void ImGuiEmitParam();
+	void ImGuiTransformParam();
+	void ImGuiMaterialParam();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -69,9 +77,23 @@ protected:
 	// init
 	void InitCommonData();
 
-	// editor
-	void ImGuiCommon();
-
 	// helper
 	void SetCommonData(CPUParticle::ParticleData& particle);
+private:
+	//========================================================================
+	//	protected Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	// editor
+	std::string textureName_;
+	std::string noiseTextureName_;
+
+	//--------- functions ----------------------------------------------------
+
+	// editor
+	void DragAndDropTexture();
+	void ImageButtonWithLabel(const char* id,
+		const std::string& label, ImTextureID textureId, const ImVec2& size);
 };

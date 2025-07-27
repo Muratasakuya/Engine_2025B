@@ -38,8 +38,9 @@ void ParticleSpawnSphereModule::Execute(std::list<CPUParticle::ParticleData>& pa
 		ICPUParticleSpawnModule::SetCommonData(particle);
 
 		// 速度、発生位置
-		particle.velocity = GetRandomDirection() * moveSpeed_.GetValue();
-		particle.transform.translation = emitter_.translation * emitter_.radius;
+		Vector3 direction = GetRandomDirection();
+		particle.velocity = direction * moveSpeed_.GetValue();
+		particle.transform.translation = emitter_.translation + direction * emitter_.radius;
 
 		// 追加
 		particles.push_back(particle);
@@ -47,9 +48,6 @@ void ParticleSpawnSphereModule::Execute(std::list<CPUParticle::ParticleData>& pa
 }
 
 void ParticleSpawnSphereModule::ImGui() {
-
-	// 共通パラメータ
-	ICPUParticleSpawnModule::ImGuiCommon();
 
 	ImGui::DragFloat("radius", &emitter_.radius, 0.1f);
 	ImGui::DragFloat3("translation", &emitter_.translation.x, 0.05f);

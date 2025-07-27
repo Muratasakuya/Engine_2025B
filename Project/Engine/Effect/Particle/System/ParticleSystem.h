@@ -90,8 +90,8 @@ private:
 	int nextGroupId_ = 0;         // グループ添え字インデックス
 	char renameBuffer_[128] = {}; // 入力用バッファ
 	// layout
-	float comboWidth_ = 120.0f;
-	float itemWidth_ = 168.0f;
+	float comboWidth_ = 104.0f;
+	float itemWidth_ = 140.6f;
 	ImVec2 buttonSize_ = ImVec2(88.0f, 24.0f);
 
 	//--------- functions ----------------------------------------------------

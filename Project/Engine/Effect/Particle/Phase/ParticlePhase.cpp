@@ -86,57 +86,97 @@ void ParticlePhase::SwapUpdater(uint32_t from, uint32_t to) {
 
 void ParticlePhase::ImGui() {
 
-	//============================================================================
-	//	Emit
-	//============================================================================
-
+	ImGui::SeparatorText("Emit Duration");
 	ImGui::Text("elapsed:%.3f / duration:%.3f", elapsed_, duration_);
-	ImGui::DragFloat("duration", &duration_, 0.01f);
 
-	//============================================================================
-	//	Spawners
-	//============================================================================
+	if (ImGui::BeginTabBar("ParticlePhase")) {
 
-	ImGui::SeparatorText("Spawners");
+		//============================================================================
+		//	Render
+		//============================================================================
+		if (ImGui::BeginTabItem("Render")) {
 
-	// 発生モジュール選択
-	if (EnumAdapter<ParticleSpawnModuleID>::Combo("Spawner", &selectSpawnModule_)) {
+			spawner_->ImGuiRenderParam();
 
-		SetSpawner(selectSpawnModule_);
-	}
-	if (spawner_) {
-
-		spawner_->ImGui();
-	} else {
-
-		ImGui::Text("no selected spawner");
-	}
-
-	//============================================================================
-	//	Updaters
-	//============================================================================
-
-	ImGui::SeparatorText("Updaters");
-
-	if (ImGui::Button("+")) {
-
-		ImGui::OpenPopup("AddUpdater");
-	}
-
-	if (ImGui::BeginPopup("AddUpdater")) {
-		for (int i = 0; i < EnumAdapter<ParticleUpdateModuleID>::GetEnumCount(); ++i) {
-			if (ImGui::Selectable(EnumAdapter<ParticleUpdateModuleID>::GetEnumName(i))) {
-
-				AddUpdater(EnumAdapter<ParticleUpdateModuleID>::GetValue(i));
-			}
+			ImGui::EndTabItem();
 		}
-		ImGui::EndPopup();
-	}
 
-	for (size_t i = 0; i < updaters_.size(); ++i) {
+		//============================================================================
+		//	Emit
+		//============================================================================
+		if (ImGui::BeginTabItem("Emit")) {
 
-		ImGui::PushID(static_cast<int>(i));
-		ImGui::Selectable(updaters_[i]->GetName());
-		ImGui::PopID();
+			ImGui::DragFloat("duration", &duration_, 0.01f);
+
+			spawner_->ImGuiEmitParam();
+
+			ImGui::EndTabItem();
+		}
+
+		//============================================================================
+		//	Spawners
+		//============================================================================
+		if (ImGui::BeginTabItem("Spawner")) {
+
+			if (EnumAdapter<ParticleSpawnModuleID>::Combo("Spawner", &selectSpawnModule_)) {
+
+				SetSpawner(selectSpawnModule_);
+			}
+			// 選択されている物を表示
+			spawner_->ImGui();
+
+			ImGui::EndTabItem();
+		}
+
+		//============================================================================
+		//	Transform
+		//============================================================================
+		if (ImGui::BeginTabItem("Transform")) {
+
+			spawner_->ImGuiTransformParam();
+
+			ImGui::EndTabItem();
+		}
+
+		//============================================================================
+		//	Material
+		//============================================================================
+		if (ImGui::BeginTabItem("Material")) {
+
+			spawner_->ImGuiMaterialParam();
+
+			ImGui::EndTabItem();
+		}
+
+		//============================================================================
+		//	Updaters
+		//============================================================================
+		if (ImGui::BeginTabItem("Updater")) {
+
+			// この辺の処理よくわからない
+			if (ImGui::Button("+")) {
+				ImGui::OpenPopup("AddUpdater");
+			}
+			if (ImGui::BeginPopup("AddUpdater")) {
+				for (int i = 0; i < EnumAdapter<ParticleUpdateModuleID>::GetEnumCount(); ++i) {
+					if (ImGui::Selectable(EnumAdapter<ParticleUpdateModuleID>::GetEnumName(i))) {
+
+						AddUpdater(EnumAdapter<ParticleUpdateModuleID>::GetValue(i));
+					}
+				}
+				ImGui::EndPopup();
+			}
+
+			for (size_t i = 0; i < updaters_.size(); ++i) {
+
+				ImGui::PushID(static_cast<int>(i));
+				ImGui::Selectable(updaters_[i]->GetName());
+				ImGui::PopID();
+			}
+
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
 	}
 }
