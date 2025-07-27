@@ -6,8 +6,6 @@
 // Graphics
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
-
-// ECS
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Object/Data/Material.h>
 #include <Engine/Object/System/Systems/SpriteBufferSystem.h>
@@ -33,8 +31,8 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 	SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// 描画情報取得
-	const auto& ecsSystem = ObjectManager::GetInstance()->GetSystem<SpriteBufferSystem>();
-	const auto& spriteData = ecsSystem->GetSpriteData(layer);
+	const auto& system = ObjectManager::GetInstance()->GetSystem<SpriteBufferSystem>();
+	const auto& spriteData = system->GetSpriteData(layer);
 
 	if (spriteData.empty()) {
 		return;
@@ -86,8 +84,8 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxCommand* dxCommand) {
 
 	// 描画情報取得
-	const auto& ecsSystem = ObjectManager::GetInstance()->GetSystem<SpriteBufferSystem>();
-	const auto& spriteData = ecsSystem->GetSpriteData(SpriteLayer::PostModel);
+	const auto& system = ObjectManager::GetInstance()->GetSystem<SpriteBufferSystem>();
+	const auto& spriteData = system->GetSpriteData(SpriteLayer::PostModel);
 
 	if (spriteData.empty()) {
 		return;

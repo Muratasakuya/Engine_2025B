@@ -11,12 +11,10 @@
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
 #include <Engine/Core/Graphics/Context/MeshCommandContext.h>
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
-#include <Engine/Config.h>
-
-// ECS
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Object/System/Systems/InstancedMeshSystem.h>
 #include <Engine/Object/System/Systems/SkyboxRenderSystem.h>
+#include <Engine/Config.h>
 
 //============================================================================
 //	MeshRenderer classMethods
@@ -45,10 +43,10 @@ void MeshRenderer::UpdateRayScene(DxCommand* dxCommand) {
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
 
 	// 描画情報取得
-	const auto& ecsSystem = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
+	const auto& system = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
 
-	const auto& meshes = ecsSystem->GetMeshes();
-	auto instancingBuffers = ecsSystem->GetInstancingData();
+	const auto& meshes = system->GetMeshes();
+	auto instancingBuffers = system->GetInstancingData();
 
 	if (meshes.empty()) {
 		return;
@@ -76,7 +74,7 @@ void MeshRenderer::UpdateRayScene(DxCommand* dxCommand) {
 
 	// BLAS更新
 	rayScene_->BuildBLASes(commandList, meshPtrs);
-	std::vector<RayTracingInstance> rtInstances = ecsSystem->CollectRTInstances(rayScene_.get());
+	std::vector<RayTracingInstance> rtInstances = system->CollectRTInstances(rayScene_.get());
 	// TLAS更新
 	rayScene_->BuildTLAS(commandList, rtInstances);
 }
@@ -103,11 +101,11 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	}
 
 	// 描画情報取得
-	const auto& ecsSystem = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
+	const auto& system = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
 	MeshCommandContext commandContext{};
 
-	const auto& meshes = ecsSystem->GetMeshes();
-	auto instancingBuffers = ecsSystem->GetInstancingData();
+	const auto& meshes = system->GetMeshes();
+	auto instancingBuffers = system->GetInstancingData();
 
 	if (meshes.empty()) {
 		return;
