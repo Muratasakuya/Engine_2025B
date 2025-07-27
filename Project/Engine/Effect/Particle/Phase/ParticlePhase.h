@@ -69,4 +69,5 @@ private:
 
 	// editor
 	ParticleSpawnModuleID selectSpawnModule_;
+	int selectedUpdater_ = -1;
 };

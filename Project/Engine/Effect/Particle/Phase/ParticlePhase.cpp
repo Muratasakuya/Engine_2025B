@@ -41,7 +41,7 @@ void ParticlePhase::UpdateParticle(CPUParticle::ParticleData& particle, float de
 	for (const auto& updater : updaters_) {
 
 		updater->Execute(particle, deltaTime);
-	}	
+	}
 }
 
 void ParticlePhase::UpdateEmitter() {
@@ -81,7 +81,16 @@ void ParticlePhase::RemoveUpdater(uint32_t index) {
 
 void ParticlePhase::SwapUpdater(uint32_t from, uint32_t to) {
 
-	std::rotate(updaters_.begin() + from, updaters_.begin() + from + 1, updaters_.begin() + to + 1);
+	if (from == to) {
+		return;
+	}
+	if (from < to) {
+
+		std::rotate(updaters_.begin() + from, updaters_.begin() + from + 1, updaters_.begin() + to + 1);
+	} else {
+
+		std::rotate(updaters_.begin() + to, updaters_.begin() + from, updaters_.begin() + from + 1);
+	}
 }
 
 void ParticlePhase::ImGui() {
@@ -153,26 +162,90 @@ void ParticlePhase::ImGui() {
 		//============================================================================
 		if (ImGui::BeginTabItem("Updater")) {
 
-			// この辺の処理よくわからない
-			if (ImGui::Button("+")) {
+			// 追加処理
+			if (ImGui::Button("Add Updater")) {
 				ImGui::OpenPopup("AddUpdater");
 			}
 			if (ImGui::BeginPopup("AddUpdater")) {
 				for (int i = 0; i < EnumAdapter<ParticleUpdateModuleID>::GetEnumCount(); ++i) {
 					if (ImGui::Selectable(EnumAdapter<ParticleUpdateModuleID>::GetEnumName(i))) {
 
+						// 追加
 						AddUpdater(EnumAdapter<ParticleUpdateModuleID>::GetValue(i));
+						selectedUpdater_ = static_cast<int>(updaters_.size()) - 1;
 					}
 				}
 				ImGui::EndPopup();
 			}
 
+			//============================================================================
+			//	Updaters: Select
+			//============================================================================
+
+			ImGui::BeginChild("UpdatersSelect", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+
 			for (size_t i = 0; i < updaters_.size(); ++i) {
 
 				ImGui::PushID(static_cast<int>(i));
-				ImGui::Selectable(updaters_[i]->GetName());
+				bool isSelected = (selectedUpdater_ == static_cast<int>(i));
+				ImGui::Selectable(updaters_[i]->GetName(), isSelected, ImGuiSelectableFlags_AllowDoubleClick);
+
+				if (ImGui::IsItemClicked()) {
+
+					selectedUpdater_ = static_cast<int>(i);
+				}
+
+				// ドラッグ＆ドロップ
+				if (ImGui::BeginDragDropSource()) {
+
+					ImGui::SetDragDropPayload("UPD_IDX", &i, sizeof(size_t));
+					ImGui::Text("%s", updaters_[i]->GetName());
+					ImGui::EndDragDropSource();
+				}
+				if (ImGui::BeginDragDropTarget()) {
+					if (const ImGuiPayload* p = ImGui::AcceptDragDropPayload("UPD_IDX")) {
+
+						size_t from = *static_cast<const size_t*>(p->Data);
+						size_t to = i;
+						if (from != to) {
+
+							SwapUpdater(static_cast<uint32_t>(from), static_cast<uint32_t>(to));
+						}
+						selectedUpdater_ = static_cast<int>(to);
+					}
+					ImGui::EndDragDropTarget();
+				}
+
 				ImGui::PopID();
 			}
+
+			ImGui::EndChild();
+			ImGui::SameLine();
+
+			//============================================================================
+			//	Updaters: Edit
+			//============================================================================
+
+			ImGui::BeginChild("UpdatersEdit", ImVec2(), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeX);
+
+			// 選択中Updaterの値操作
+			if (selectedUpdater_ >= 0 && selectedUpdater_ < static_cast<int>(updaters_.size())) {
+
+				ImGui::SeparatorText(updaters_[selectedUpdater_]->GetName());
+
+				updaters_[selectedUpdater_]->ImGui();
+			}
+
+			// Deleteで削除
+			if (selectedUpdater_ >= 0 &&
+				ImGui::IsWindowFocused(ImGuiFocusedFlags_RootAndChildWindows) &&
+				ImGui::IsKeyPressed(ImGuiKey_Delete)) {
+
+				RemoveUpdater(static_cast<uint32_t>(selectedUpdater_));
+				selectedUpdater_ = std::clamp(selectedUpdater_ - 1, -1, static_cast<int>(updaters_.size()) - 1);
+			}
+
+			ImGui::EndChild();
 
 			ImGui::EndTabItem();
 		}
