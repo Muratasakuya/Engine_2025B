@@ -85,7 +85,9 @@ void ParticlePhase::SetSpawner(ParticleSpawnModuleID id) {
 
 void ParticlePhase::AddUpdater(ParticleUpdateModuleID id) {
 
+	// 追加して初期化
 	updaters_.push_back(UpdateRegistry::GetInstance().Create(id));
+	updaters_.back()->Init();
 }
 
 void ParticlePhase::RemoveUpdater(uint32_t index) {
