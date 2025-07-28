@@ -32,6 +32,7 @@ enum class ParticleUpdateModuleID {
 	Gravity,
 	Parent,
 	UV,
+	Emissive,
 	Count,
 };
 
