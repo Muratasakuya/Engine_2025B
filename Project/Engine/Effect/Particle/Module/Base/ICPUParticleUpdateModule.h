@@ -4,12 +4,14 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/Module/Base/ICPUParticleModule.h>
+#include <Engine/Effect/Particle/Module/Base/ParticleLoopableModule.h>
 
 //============================================================================
 //	ICPUParticleUpdateModule class
 //============================================================================
 class ICPUParticleUpdateModule :
-	public ICPUParticleModule {
+	public ICPUParticleModule,
+	public ParticleLoopableModule {
 public:
 	//========================================================================
 	//	public Methods

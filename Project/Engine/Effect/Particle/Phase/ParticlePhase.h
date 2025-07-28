@@ -46,6 +46,10 @@ public:
 	void RemoveUpdater(uint32_t index);
 	// 入れ替え
 	void SwapUpdater(uint32_t from, uint32_t to);
+
+	//--------- accessor -----------------------------------------------------
+
+	float GetLifeTime() const;
 private:
 	//========================================================================
 	//	private Methods
@@ -60,6 +64,8 @@ private:
 	float duration_;
 	// 現在の経過時間
 	float elapsed_;
+	// emitterとして処理しない
+	bool notEmit_ = false;
 
 	using SpawnRegistry = ParticleModuleRegistry<ICPUParticleSpawnModule, ParticleSpawnModuleID>;
 	using UpdateRegistry = ParticleModuleRegistry<ICPUParticleUpdateModule, ParticleUpdateModuleID>;

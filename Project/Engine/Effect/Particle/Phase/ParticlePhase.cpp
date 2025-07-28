@@ -23,6 +23,11 @@ void ParticlePhase::Init(Asset* asset, ParticlePrimitiveType primitiveType) {
 
 void ParticlePhase::Emit(std::list<CPUParticle::ParticleData>& particles, float deltaTime) {
 
+	// emitterとして処理しない
+	if (notEmit_) {
+		return;
+	}
+
 	// 時間経過を進める
 	elapsed_ += deltaTime;
 	// 時間を超えたら発生させる
@@ -45,6 +50,11 @@ void ParticlePhase::UpdateParticle(CPUParticle::ParticleData& particle, float de
 }
 
 void ParticlePhase::UpdateEmitter() {
+
+	// emitterとして処理しない
+	if (notEmit_) {
+		return;
+	}
 
 	// emitterの更新
 	if (!spawner_) {
@@ -109,6 +119,12 @@ void ParticlePhase::SwapUpdater(uint32_t from, uint32_t to) {
 	}
 }
 
+float ParticlePhase::GetLifeTime() const {
+
+	// 現在有効なemitterから取得
+	return spawner_->GetLifeTime();
+}
+
 void ParticlePhase::ImGui() {
 
 	ImGui::SeparatorText("Emit Duration");
@@ -141,6 +157,7 @@ void ParticlePhase::ImGui() {
 		//============================================================================
 		if (ImGui::BeginTabItem("Emit")) {
 
+			ImGui::Checkbox("notEmit", &notEmit_);
 			ImGui::DragFloat("duration", &duration_, 0.01f);
 
 			spawner_->ImGuiEmitParam();

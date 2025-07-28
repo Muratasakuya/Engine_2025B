@@ -43,6 +43,8 @@ public:
 
 	// データ共有
 	void ShareCommonParam(ICPUParticleSpawnModule* other);
+
+	float GetLifeTime() const { return lifeTime_.GetValue(); }
 protected:
 	//========================================================================
 	//	protected Methods

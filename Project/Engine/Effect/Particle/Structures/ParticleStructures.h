@@ -25,9 +25,9 @@ enum class ParticleType {
 // billboardの種類
 enum class ParticleBillboardType {
 
-	None,
 	All,
-	YAxis
+	YAxis,
+	None
 };
 
 //============================================================================
@@ -175,6 +175,8 @@ namespace CPUParticle {
 		// 経過時間
 		float currentTime;
 		float progress;
+		// 現在のフェーズ
+		uint32_t phaseIndex;
 
 		// bufferを更新するデータ
 		// 移動速度

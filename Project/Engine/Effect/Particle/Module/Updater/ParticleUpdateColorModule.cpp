@@ -14,9 +14,12 @@ void ParticleUpdateColorModule::Init() {
 void ParticleUpdateColorModule::Execute(
 	CPUParticle::ParticleData& particle, [[maybe_unused]] float deltaTime) {
 
+	// t値取得
+	const float lerpT = LoopedT(particle.progress);
+
 	// 色を補間
 	particle.material.color = Color::Lerp(color_.start, color_.target,
-		EasedValue(easing, particle.progress));
+		EasedValue(easing, lerpT));
 }
 
 void ParticleUpdateColorModule::ImGui() {
@@ -25,4 +28,6 @@ void ParticleUpdateColorModule::ImGui() {
 	ImGui::ColorEdit4("targetColor", &color_.target.r);
 
 	Easing::SelectEasingType(easing, GetName());
+
+	ImGuiLoopParam();
 }

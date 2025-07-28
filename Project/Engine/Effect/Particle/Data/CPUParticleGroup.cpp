@@ -38,43 +38,66 @@ void CPUParticleGroup::Update() {
 
 void CPUParticleGroup::UpdatePhase() {
 
+	// フェーズがない場合は処理しない
+	if (phases_.empty()) {
+		return;
+	}
+
 	const float deltaTime = GameTimer::GetDeltaTime();
 
 	for (auto& phase : phases_) {
 
-		// emitterの更新
-		phase->UpdateEmitter();
-
 		// 発生処理
 		phase->Emit(particles_, deltaTime);
 
-		// 全てのparticleに対して更新処理を行う
-		uint32_t particleIndex = 0;
+		// emitterの更新
+		phase->UpdateEmitter();
+	}
 
-		// 転送データのリサイズ
-		ResizeTransferData(static_cast<uint32_t>(particles_.size()));
-		for (auto it = particles_.begin(); it != particles_.end();) {
-			 
-			// 時間を進める
-			it->currentTime += deltaTime;
-			it->progress = it->currentTime / it->lifeTime;
+	// 転送データのリサイズ
+	ResizeTransferData(static_cast<uint32_t>(particles_.size()));
 
-			// 寿命のきれたparticleの削除
-			if (it->lifeTime <= it->currentTime) {
+	// 全てのparticleに対して更新処理を行う
+	uint32_t particleIndex = 0;
+	for (auto it = particles_.begin(); it != particles_.end();) {
+
+		auto& particle = *it;
+		// フェーズインデックスが範囲外にならないように制御
+		particle.phaseIndex = (std::min)(particle.phaseIndex, static_cast<uint32_t>(phases_.size() - 1));
+
+		// 時間を進める
+		particle.currentTime += deltaTime;
+		particle.progress = particle.currentTime / particle.lifeTime;
+
+		// 現在のフェーズで更新
+		phases_[particle.phaseIndex]->UpdateParticle(particle, deltaTime);
+
+		// 削除、フェーズ判定処理
+		if (particle.lifeTime <= particle.currentTime) {
+			// 次のフェーズがあれば次に移る
+			if (particle.phaseIndex + 1 < phases_.size()) {
+
+				// フェーズを進める
+				++particle.phaseIndex;
+				// リセット
+				particle.currentTime = 0.0f;
+				particle.progress = 0.0f;
+				particle.lifeTime = phases_[particle.phaseIndex]->GetLifeTime();
+				continue;
+			} else {
+
+				// 削除
 				it = particles_.erase(it);
 				continue;
 			}
-
-			// 更新処理
-			phase->UpdateParticle(*it, deltaTime);
-
-			// bufferに渡すデータの更新処理
-			UpdateTransferData(particleIndex, *it);
-
-			// indexを進める
-			++it;
-			++particleIndex;
 		}
+
+		// bufferに渡すデータの更新処理
+		UpdateTransferData(particleIndex, *it);
+
+		// indexを進める
+		++it;
+		++particleIndex;
 	}
 
 	// instance数を更新
@@ -175,7 +198,7 @@ void CPUParticleGroup::AddPhase() {
 	ParticlePhase* phase = phases_.back().get();
 	phase->Init(asset_, primitiveBuffer_.type);
 	phase->SetSpawner(ParticleSpawnModuleID::Sphere);
-	
+
 	selectedPhase_ = static_cast<int>(phases_.size() - 1);
 }
 
