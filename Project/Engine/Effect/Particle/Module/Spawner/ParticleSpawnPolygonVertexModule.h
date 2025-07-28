@@ -41,6 +41,9 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// パーティクル間の補間処理を行うか
+	bool isInterpolate_;
+
 	Vector3 emitterRotation_;
 	Vector3 translation_;
 
@@ -48,10 +51,16 @@ private:
 	int vertexCount_; // 頂点数
 	float scale_;     // サイズ
 
-	ParticleValue<uint32_t> emitPerVertex_; // 各頂点の発生数
-	std::vector<Vector3> prevVertices_;     // 前フレームの頂点位置
+	ParticleValue<uint32_t> emitPerVertex_;   // 各頂点の発生数
+	std::vector<Vector3> prevVertices_;       // 前フレームの頂点位置
+	ParticleValue<float> interpolateSpacing_; // パーティクル間の距離
 
 	//--------- functions ----------------------------------------------------
 
+	// emit
+	void InterpolateEmit(std::list<CPUParticle::ParticleData>& particles);
+	void NoneEmit(std::list<CPUParticle::ParticleData>& particles);
+
+	// helper
 	std::vector<Vector3> CalcVertices() const;
 };

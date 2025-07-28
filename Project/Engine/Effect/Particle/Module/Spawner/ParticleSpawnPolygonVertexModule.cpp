@@ -14,6 +14,8 @@ void ParticleSpawnPolygonVertexModule::Init() {
 	// 初期化値
 	ICPUParticleSpawnModule::InitCommonData();
 
+	isInterpolate_ = false;
+
 	// xを90度回転
 	emitterRotation_.x = pi / 2.0f;
 
@@ -21,6 +23,7 @@ void ParticleSpawnPolygonVertexModule::Init() {
 	scale_ = 1.0f;
 
 	emitPerVertex_ = ParticleValue<uint32_t>::SetValue(4);
+	interpolateSpacing_ = ParticleValue<float>::SetValue(0.08f);
 	prevVertices_ = CalcVertices();
 }
 
@@ -48,6 +51,103 @@ void ParticleSpawnPolygonVertexModule::UpdateEmitter() {
 
 void ParticleSpawnPolygonVertexModule::Execute(std::list<CPUParticle::ParticleData>& particles) {
 
+	// 補間処理を行う場合
+	if (isInterpolate_) {
+
+		InterpolateEmit(particles);
+	}
+	// 補間処理をしない場合
+	else {
+
+		NoneEmit(particles);
+	}
+}
+
+void ParticleSpawnPolygonVertexModule::InterpolateEmit(std::list<CPUParticle::ParticleData>& particles) {
+
+	const std::vector<Vector3> currentVertices = CalcVertices();
+	// 頂点数が変わった時は速度を0.0fにする
+	if (prevVertices_.size() != currentVertices.size()) {
+		prevVertices_ = currentVertices;
+	}
+
+	const float spacing = interpolateSpacing_.GetValue();
+	const uint32_t emitPerVertex = emitPerVertex_.GetValue();
+	for (uint32_t v = 0; v < static_cast<uint32_t>(currentVertices.size()); ++v) {
+
+		const Vector3 diff = currentVertices[v] - prevVertices_[v];
+		const float length = diff.Length();
+
+		// 頂点が静止している場合は通常発生のみ
+		if (length < spacing || length < std::numeric_limits<float>::epsilon()) {
+
+			// 速度設定
+			Vector3 velocity = Vector3::Normalize(diff) * moveSpeed_.GetValue();
+			for (uint32_t n = 0; n < emitPerVertex; ++n) {
+
+				CPUParticle::ParticleData particle{};
+
+				// 共通設定
+				ICPUParticleSpawnModule::SetCommonData(particle);
+
+				// 速度、発生位置
+				particle.velocity = velocity;
+				particle.transform.translation = currentVertices[v];
+
+				// 追加
+				particles.push_back(particle);
+			}
+			continue;
+		}
+
+		// 補間個数と方向
+		const uint32_t interpCount = static_cast<uint32_t>(length / spacing);
+		const Vector3 direction = diff / length; // 正規化
+		const float stepLen = spacing;           // 等間隔
+		const Vector3 velocity = direction * moveSpeed_.GetValue();
+
+		// パーティクル間の補間
+		for (uint32_t i = 1; i <= interpCount; ++i) {
+
+			const Vector3 pos = prevVertices_[v] + direction * stepLen * static_cast<float>(i);
+			for (uint32_t n = 0; n < emitPerVertex; ++n) {
+
+				CPUParticle::ParticleData particle{};
+
+				// 共通設定
+				ICPUParticleSpawnModule::SetCommonData(particle);
+
+				// 速度、発生位置
+				particle.velocity = velocity;
+				particle.transform.translation = pos;
+
+				// 追加
+				particles.push_back(particle);
+			}
+
+		}
+
+		// 現在のフレームの頂点位置に発生
+		for (uint32_t n = 0; n < emitPerVertex; ++n) {
+
+			CPUParticle::ParticleData particle{};
+
+			// 共通設定
+			ICPUParticleSpawnModule::SetCommonData(particle);
+
+			// 速度、発生位置
+			particle.velocity = velocity;
+			particle.transform.translation = currentVertices[v];
+
+			// 追加
+			particles.push_back(particle);
+		}
+
+	}
+}
+
+void ParticleSpawnPolygonVertexModule::NoneEmit(std::list<CPUParticle::ParticleData>& particles) {
+
 	const std::vector<Vector3> currentVertices = CalcVertices();
 	// 頂点数が変わった時は速度を0.0fにする
 	if (prevVertices_.size() != currentVertices.size()) {
@@ -72,8 +172,8 @@ void ParticleSpawnPolygonVertexModule::Execute(std::list<CPUParticle::ParticleDa
 			ICPUParticleSpawnModule::SetCommonData(particle);
 
 			// 速度、発生位置
-			particle.transform.translation = currentVertices[cIndex];
 			particle.velocity = velocity;
+			particle.transform.translation = currentVertices[cIndex];
 
 			// 追加
 			particles.push_back(particle);
@@ -83,12 +183,20 @@ void ParticleSpawnPolygonVertexModule::Execute(std::list<CPUParticle::ParticleDa
 
 void ParticleSpawnPolygonVertexModule::ImGui() {
 
+	ImGui::Checkbox("isInterpolate", &isInterpolate_);
+
 	ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 	ImGui::DragFloat("scale", &scale_, 0.05f);
 	ImGui::DragFloat3("translation", &translation_.x, 0.05f);
 
 	ImGui::DragInt("vertexCount", &vertexCount_, 1, 3, 16);
 	emitPerVertex_.EditDragValue("emitPerVertex");
+
+	if (!isInterpolate_) {
+		return;
+	}
+
+	interpolateSpacing_.EditDragValue("spacing");
 }
 
 void ParticleSpawnPolygonVertexModule::DrawEmitter() {
