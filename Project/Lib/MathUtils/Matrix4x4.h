@@ -70,4 +70,5 @@ public:
 	Vector3 TransformPoint(const Vector3& point) const;
 
 	Vector3 GetTranslationValue() const;
+	Vector3 GetRotationValue() const;
 };

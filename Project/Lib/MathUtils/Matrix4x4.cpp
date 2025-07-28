@@ -462,3 +462,24 @@ Vector3 Matrix4x4::GetTranslationValue() const {
 
 	return Vector3(m[3][0], m[3][1], m[3][2]);
 }
+
+Vector3 Matrix4x4::GetRotationValue() const {
+
+	Vector3 euler{};
+	float sy = m[2][0];
+	if (std::abs(sy) < 0.999999f) {
+
+		euler.y = std::asin(sy);                 // yaw
+		euler.x = std::atan2(-m[2][1], m[2][2]); // pitch
+		euler.z = std::atan2(-m[1][0], m[0][0]); // roll
+	} else {
+
+		euler.y = (sy > 0.0f) ? +std::numbers::pi_v<float> *0.5f
+			: -std::numbers::pi_v<float> *0.5f;
+
+		// pitchとrollはまとめて求める
+		euler.x = std::atan2(m[0][1], m[1][1]);
+		euler.z = 0.0f;
+	}
+	return euler;
+}

@@ -19,6 +19,8 @@ public:
 	ParticleUpdateUVModule() = default;
 	~ParticleUpdateUVModule() = default;
 
+	void Init() override;
+
 	void Execute(CPUParticle::ParticleData& particle, float deltaTime) override;
 
 	void ImGui() override;
@@ -35,10 +37,23 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	// 更新の種類
+	enum class UpdateType {
+
+		Lerp,
+		Scroll
+	};
+
 	//--------- variables ----------------------------------------------------
 
 	// UV座標
 	ParticleCommon::LerpValue<Vector3> translation_;
 
+	// スクロール加算値
+	Vector2 scrollValue_;
+
 	EasingType easing_;
+	UpdateType updateType_;
 };

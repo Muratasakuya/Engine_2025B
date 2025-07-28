@@ -34,12 +34,26 @@ private:
 	//	private Methods
 	//========================================================================
 
-	//--------- variables ---------------------------------------------------
+	//--------- structure ----------------------------------------------------
+
+	// 更新の種類
+	enum class UpdateType {
+
+		Lerp,
+		ConstantAdd
+	};
+
+	//--------- variables ----------------------------------------------------
 	
-	ParticleCommon::LerpValue<Vector3> rotation_;
+	// 回転補間
+	ParticleCommon::LerpValue<Vector3> lerpRotation_;
+
+	// 回転加算
+	Vector3 addRotation_;
 
 	// ビルボードの種類
 	ParticleBillboardType billboardType_;
 
-	EasingType easing;
+	EasingType easing_;
+	UpdateType updateType_;
 };
