@@ -87,16 +87,12 @@ void ICPUParticleSpawnModule::ImGuiRenderParam() {
 	// ドラッグアンドドロップ処理
 	DragAndDropTexture();
 
-	ImGui::DragInt("useNoiseTexture", &textureInfo_.useNoiseTexture, 1, 0, 1);
-	ImGui::SameLine();
-	bool useNoiseTexture = textureInfo_.useNoiseTexture;
-	ImGui::Text(std::format(": {}", useNoiseTexture).c_str());
-
 	ImGui::DragInt("samplerType", &textureInfo_.samplerType, 1, 0, 1);
 	ImGui::SameLine();
 	ImGui::Text("    : %s", EnumAdapter<ParticleCommon::SamplerType>::GetEnumName(textureInfo_.samplerType));
+}
 
-	ImGui::SeparatorText("Primitive");
+void ICPUParticleSpawnModule::ImGuiPrimitiveParam() {
 
 	switch (primitive_.type) {
 	case ParticlePrimitiveType::Plane:

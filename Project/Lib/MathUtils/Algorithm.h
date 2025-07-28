@@ -102,6 +102,8 @@ namespace Algorithm {
 		return start + (end - start) * t;
 	}
 
+	int LerpInt(int a, int b, float t);
+
 	// アーク長
 	template <typename T>
 	inline std::vector<float> ComputeArcLengths(const std::vector<T>& points, uint32_t division) {

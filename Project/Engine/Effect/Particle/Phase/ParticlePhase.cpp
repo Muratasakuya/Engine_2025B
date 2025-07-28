@@ -127,6 +127,16 @@ void ParticlePhase::ImGui() {
 		}
 
 		//============================================================================
+		//	Primitive
+		//============================================================================
+		if (ImGui::BeginTabItem("Primitive")) {
+
+			spawner_->ImGuiPrimitiveParam();
+
+			ImGui::EndTabItem();
+		}
+
+		//============================================================================
 		//	Emit
 		//============================================================================
 		if (ImGui::BeginTabItem("Emit")) {
@@ -229,7 +239,11 @@ void ParticlePhase::ImGui() {
 
 				ImGui::SeparatorText(updaters_[selectedUpdater_]->GetName());
 
+				ImGui::PushItemWidth(160.0f);
+
 				updaters_[selectedUpdater_]->ImGui();
+
+				ImGui::PopItemWidth();
 			}
 
 			// Deleteで削除

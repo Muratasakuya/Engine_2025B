@@ -91,7 +91,7 @@ private:
 	char renameBuffer_[128] = {}; // 入力用バッファ
 	// layout
 	float comboWidth_ = 104.0f;
-	float itemWidth_ = 140.6f;
+	float itemWidth_ = 160.0f;
 	ImVec2 buttonSize_ = ImVec2(88.0f, 24.0f);
 
 	//--------- functions ----------------------------------------------------

@@ -31,6 +31,12 @@ std::string Algorithm::GetIndexLabel(const std::string& label, uint32_t index) {
 	return label + std::to_string(index);
 }
 
+int Algorithm::LerpInt(int a, int b, float t) {
+
+	return static_cast<int>(std::round(std::lerp(
+		static_cast<float>(a), static_cast<float>(b), t)));
+}
+
 float Algorithm::GetReparameterizedT(float t, const std::vector<float>& arcLengths) {
 
 	// arcLengthsになにも値が入ってない

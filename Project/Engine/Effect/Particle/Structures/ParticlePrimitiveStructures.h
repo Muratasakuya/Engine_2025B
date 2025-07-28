@@ -37,9 +37,9 @@ struct RingForGPU {
 
 	void Init() {
 
-		outerRadius = 16.0f;
-		innerRadius = 8.0f;
-		divide = 16;
+		outerRadius = 4.0f;
+		innerRadius = 2.0f;
+		divide = 8;
 	}
 };
 // 円柱

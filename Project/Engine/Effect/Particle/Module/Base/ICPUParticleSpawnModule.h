@@ -33,6 +33,7 @@ public:
 
 	// editor
 	void ImGuiRenderParam();
+	void ImGuiPrimitiveParam();
 	void ImGuiEmitParam();
 
 	//--------- accessor -----------------------------------------------------

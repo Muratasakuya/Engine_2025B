@@ -26,6 +26,7 @@
 #include <Engine/Effect/Particle/Module/Updater/ParticleUpdateGravityModule.h>
 #include <Engine/Effect/Particle/Module/Updater/ParticleUpdateEmissiveModule.h>
 #include <Engine/Effect/Particle/Module/Updater/ParticleUpdateAlphaReferenceModule.h>
+#include <Engine/Effect/Particle/Module/Updater/ParticleUpdatePrimitiveModule.h>
 
 //============================================================================
 //	ParticleManager classMethods
@@ -84,6 +85,7 @@ void ParticleManager::RegisterModules() {
 	uRegistry.Register<ParticleUpdateGravityModule>();
 	uRegistry.Register<ParticleUpdateEmissiveModule>();
 	uRegistry.Register<ParticleUpdateAlphaReferenceModule>();
+	uRegistry.Register<ParticleUpdatePrimitiveModule>();
 }
 
 void ParticleManager::Init(Asset* asset, ID3D12Device8* device,

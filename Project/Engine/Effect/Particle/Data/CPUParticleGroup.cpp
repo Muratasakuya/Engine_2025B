@@ -54,7 +54,7 @@ void CPUParticleGroup::UpdatePhase() {
 		// 転送データのリサイズ
 		ResizeTransferData(static_cast<uint32_t>(particles_.size()));
 		for (auto it = particles_.begin(); it != particles_.end();) {
-
+			 
 			// 時間を進める
 			it->currentTime += deltaTime;
 			it->progress = it->currentTime / it->lifeTime;
@@ -173,7 +173,6 @@ void CPUParticleGroup::AddPhase() {
 	// phase追加
 	phases_.emplace_back(std::make_unique<ParticlePhase>());
 	ParticlePhase* phase = phases_.back().get();
-
 	phase->Init(asset_, primitiveBuffer_.type);
 	phase->SetSpawner(ParticleSpawnModuleID::Sphere);
 	

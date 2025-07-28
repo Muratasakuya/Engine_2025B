@@ -34,6 +34,7 @@ enum class ParticleUpdateModuleID {
 	UV,
 	Emissive,
 	AlphaReference,
+	Primitive,
 	Count,
 };
 

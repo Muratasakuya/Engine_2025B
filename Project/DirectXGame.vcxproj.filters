@@ -614,6 +614,9 @@
     <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateAlphaReferenceModule.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdatePrimitiveModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -845,6 +848,7 @@
     <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateGravityModule.h" />
     <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateEmissiveModule.h" />
     <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateAlphaReferenceModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdatePrimitiveModule.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />
