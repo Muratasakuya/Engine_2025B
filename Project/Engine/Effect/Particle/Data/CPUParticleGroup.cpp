@@ -214,42 +214,42 @@ void CPUParticleGroup::ImGui() {
 		AddPhase();
 	}
 
-	int eraseIndex = -1;
-	for (size_t i = 0; i < phases_.size(); ++i) {
+	if (!phases_.empty()) {
 
-		ImGui::PushID(static_cast<int>(i));
+		ImGui::BeginChild("PhaseList", ImVec2(88.0f, 0.0f), ImGuiChildFlags_Border);
+		for (size_t i = 0; i < phases_.size(); ++i) {
 
-		bool nodeOpen = ImGui::TreeNodeEx(
-			("Phase " + std::to_string(i)).c_str(),
-			ImGuiTreeNodeFlags_DefaultOpen |
-			(selectedPhase_ == static_cast<int>(i) ? ImGuiTreeNodeFlags_Selected : 0));
+			ImGui::PushID(static_cast<int>(i));
+			bool selected = (selectedPhase_ == static_cast<int>(i));
+			if (ImGui::Selectable(("Phase" + std::to_string(i)).c_str(), selected)) {
 
-		if (ImGui::IsItemClicked()) {
+				selectedPhase_ = static_cast<int>(i);
+			}
 
-			selectedPhase_ = static_cast<int>(i);
+			ImGui::SameLine();
+			if (ImGui::SmallButton("X")) {
+
+				phases_.erase(phases_.begin() + i);
+				selectedPhase_ = std::clamp(selectedPhase_, 0, static_cast<int>(phases_.size()) - 1);
+				ImGui::PopID();
+				break;
+			}
+
+			ImGui::PopID();
 		}
-
+		ImGui::EndChild();
 		ImGui::SameLine();
-		if (ImGui::SmallButton("[X]")) {
-
-			eraseIndex = static_cast<int>(i);
-		}
-		// 中身
-		if (nodeOpen) {
-
-			phases_[i]->ImGui();
-			ImGui::TreePop();
-		}
-		ImGui::PopID();
 	}
 
-	// 削除処理
-	if (eraseIndex != -1) {
+	// 選択フェーズ値操作
+	ImGui::BeginChild("PhaseEdit", ImVec2(0.0f, 0.0f), ImGuiChildFlags_Border);
+	if (0 <= selectedPhase_ && selectedPhase_ < static_cast<int>(phases_.size())) {
 
-		phases_.erase(phases_.begin() + eraseIndex);
-		if (eraseIndex <= selectedPhase_) {
+		ImGui::PushItemWidth(160.0f);
 
-			--selectedPhase_;
-		}
+		phases_[selectedPhase_]->ImGui();
+
+		ImGui::PopItemWidth();
 	}
+	ImGui::EndChild();
 }

@@ -211,7 +211,19 @@ void ParticlePhase::ImGui() {
 
 				ImGui::PushID(static_cast<int>(i));
 				bool isSelected = (selectedUpdater_ == static_cast<int>(i));
-				ImGui::Selectable(updaters_[i]->GetName(), isSelected, ImGuiSelectableFlags_AllowDoubleClick);
+				
+				std::string displayName = updaters_[i]->GetName();
+				// 8文字以上は...表示
+				bool isSubstrName = displayName.length() > 8;
+				if (isSubstrName) {
+
+					displayName = displayName.substr(0, 7) + "...";
+				}
+				ImGui::Selectable(displayName.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick);
+				if (ImGui::IsItemHovered()&& isSubstrName) {
+
+					ImGui::SetTooltip("%s", updaters_[i]->GetName());
+				}
 
 				if (ImGui::IsItemClicked()) {
 

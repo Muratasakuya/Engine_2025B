@@ -24,7 +24,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const char* GetName() const override { return "UpdateVelocity"; }
+	const char* GetName() const override { return "Velocity"; }
 
 	//-------- registryID ----------------------------------------------------
 

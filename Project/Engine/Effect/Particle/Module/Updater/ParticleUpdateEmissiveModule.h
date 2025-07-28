@@ -27,7 +27,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const char* GetName() const override { return "UpdateEmissive"; }
+	const char* GetName() const override { return "Emissive"; }
 
 	//-------- registryID ----------------------------------------------------
 
