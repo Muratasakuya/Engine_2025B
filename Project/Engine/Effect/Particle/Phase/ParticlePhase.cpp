@@ -67,6 +67,7 @@ void ParticlePhase::SetSpawner(ParticleSpawnModuleID id) {
 		module->Init();
 
 		// 現在有効な物があった場合、データを共有する
+		// カウントは処理しない
 		if (currentSpawnId_ != ParticleSpawnModuleID::Count) {
 			if (spawnerCache_[static_cast<size_t>(currentSpawnId_)]) {
 
