@@ -82,6 +82,7 @@ void CPUParticleGroup::UpdatePhase() {
 				// リセット
 				particle.currentTime = 0.0f;
 				particle.progress = 0.0f;
+				// 次のフェーズの生存時間で初期化
 				particle.lifeTime = phases_[particle.phaseIndex]->GetLifeTime();
 				continue;
 			} else {
