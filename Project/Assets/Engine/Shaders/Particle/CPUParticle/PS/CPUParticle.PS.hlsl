@@ -91,7 +91,7 @@ void CheckNoiseDiscard(Material material, TextureInfo textureInfo, float4 transf
 		return;
 	}
 	
-	float4 color = gTextures[textureInfo.noiseTextureIndex].Sample(gWRAPSampler, transformUV.xy);
+	float4 color = gTextures[textureInfo.noiseTextureIndex].Sample(gWRAPSampler, transformUV.xy).r;
 	
 	// è‡’lˆÈ‰º‚È‚çŠü‹p
 	CheckDiscard(color.a, material.noiseAlphaReference);

@@ -179,14 +179,6 @@ namespace CPUParticle {
 		// bufferを更新するデータ
 		// 移動速度
 		Vector3 velocity;
-		// 回転
-		Vector3 rotation;
-		// 拡縮
-		ParticleCommon::LerpValue<Vector3> scale;
-		// 色
-		ParticleCommon::LerpValue<Color> color;
-		// UV
-		ParticleCommon::LerpValue<Vector3> uvTranslation;
 
 		// bufferに渡すデータ
 		MaterialForGPU material;

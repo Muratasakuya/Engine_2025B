@@ -4,19 +4,22 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/Module/Base/ICPUParticleUpdateModule.h>
+#include <Lib/Adapter/Easing.h>
 
 //============================================================================
-//	ParticleUpdateVelocityModule class
+//	ParticleUpdateAlphaReferenceModule class
 //============================================================================
-class ParticleUpdateVelocityModule :
+class ParticleUpdateAlphaReferenceModule :
 	public ICPUParticleUpdateModule {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ParticleUpdateVelocityModule() = default;
-	~ParticleUpdateVelocityModule() = default;
+	ParticleUpdateAlphaReferenceModule() = default;
+	~ParticleUpdateAlphaReferenceModule() = default;
+
+	void Init() override;
 
 	void Execute(CPUParticle::ParticleData& particle, float deltaTime) override;
 
@@ -24,11 +27,11 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const char* GetName() const override { return "UpdateVelocity"; }
+	const char* GetName() const override { return "UpdateAlphaReference"; }
 
 	//-------- registryID ----------------------------------------------------
 
-	static constexpr ParticleUpdateModuleID ID = ParticleUpdateModuleID::Velocity;
+	static constexpr ParticleUpdateModuleID ID = ParticleUpdateModuleID::AlphaReference;
 private:
 	//========================================================================
 	//	private Methods
@@ -36,4 +39,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// ノイズを使用するか
+	bool useNoiseTexture_;
+
+	// 棄却値
+	ParticleCommon::LerpValue<float> color_; // 色
+	ParticleCommon::LerpValue<float> noise_; // ノイズ
+
+	EasingType easing_;
 };

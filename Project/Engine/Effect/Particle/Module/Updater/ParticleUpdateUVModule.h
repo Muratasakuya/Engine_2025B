@@ -37,5 +37,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// UV座標
+	ParticleCommon::LerpValue<Vector3> translation_;
+
 	EasingType easing_;
 };

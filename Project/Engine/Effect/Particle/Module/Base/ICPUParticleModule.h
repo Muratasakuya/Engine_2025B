@@ -33,6 +33,7 @@ enum class ParticleUpdateModuleID {
 	Parent,
 	UV,
 	Emissive,
+	AlphaReference,
 	Count,
 };
 

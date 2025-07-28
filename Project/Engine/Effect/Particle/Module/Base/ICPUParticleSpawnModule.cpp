@@ -18,12 +18,6 @@ void ICPUParticleSpawnModule::InitCommonData() {
 	emitCount_ = ParticleValue<uint32_t>::SetValue(4);
 	lifeTime_ = ParticleValue<float>::SetValue(0.8f);
 
-	// Material
-	color_.start = ParticleValue<Color>::SetValue(Color::White());
-	color_.target = ParticleValue<Color>::SetValue(Color::White(0.0f));
-	uvTranslation_.start = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
-	uvTranslation_.target = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
-
 	// TextureInfo
 	textureInfo_.samplerType = 0;
 	textureInfo_.useNoiseTexture = false;
@@ -33,10 +27,7 @@ void ICPUParticleSpawnModule::InitCommonData() {
 	textureInfo_.colorTextureIndex = asset_->GetTextureGPUIndex(textureName_);
 	textureInfo_.noiseTextureIndex = asset_->GetTextureGPUIndex(noiseTextureName_);
 
-	// Transform
-	billboardType_ = ParticleBillboardType::All;
-	scale_.start = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(1.0f));
-	scale_.target = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
+	// 移動速度
 	moveSpeed_ = ParticleValue<float>::SetValue(1.6f);
 }
 
@@ -45,21 +36,8 @@ void ICPUParticleSpawnModule::SetCommonData(CPUParticle::ParticleData& particle)
 	// 生存時間
 	particle.lifeTime = lifeTime_.GetValue();
 
-	// 色
-	particle.color.start = color_.start.GetValue();
-	particle.color.target = color_.target.GetValue();
-	// UV座標
-	particle.uvTranslation.start = uvTranslation_.start.GetValue();
-	particle.uvTranslation.target = uvTranslation_.target.GetValue();
-
 	// テクスチャ情報
 	particle.textureInfo = textureInfo_;
-
-	// ビルボード
-	particle.transform.billboardMode = static_cast<uint32_t>(billboardType_);
-	// 拡縮
-	particle.scale.start = scale_.start.GetValue();
-	particle.scale.target = scale_.target.GetValue();
 
 	// プリミティブ
 	particle.primitive = primitive_;
@@ -90,18 +68,12 @@ void ICPUParticleSpawnModule::ShareCommonParam(ICPUParticleSpawnModule* other) {
 	// Emit
 	emitCount_ = other->emitCount_;
 
-	// Material
-	color_ = other->color_;
-	uvTranslation_ = other->uvTranslation_;
-
 	// TextureInfo
 	textureName_ = other->textureName_;
 	noiseTextureName_ = other->noiseTextureName_;
 	textureInfo_ = other->textureInfo_;
 
-	// Transform
-	billboardType_ = other->billboardType_;
-	scale_ = other->scale_;
+	// 移動速度
 	moveSpeed_ = other->moveSpeed_;
 
 	// Primitive
@@ -151,25 +123,8 @@ void ICPUParticleSpawnModule::ImGuiEmitParam() {
 
 	emitCount_.EditDragValue("emitCount");
 	lifeTime_.EditDragValue("lifeTime");
-}
-
-void ICPUParticleSpawnModule::ImGuiTransformParam() {
-
-	EnumAdapter<ParticleBillboardType>::Combo("billboardType", &billboardType_);
-
-	scale_.start.EditDragValue("startScale");
-	scale_.target.EditDragValue("targetScale");
 
 	moveSpeed_.EditDragValue("moveSpeed");
-}
-
-void ICPUParticleSpawnModule::ImGuiMaterialParam() {
-
-	color_.start.EditColor("startColor");
-	color_.target.EditColor("targetColor");
-
-	uvTranslation_.start.EditDragValue("startUVTranslation");
-	uvTranslation_.target.EditDragValue("targetUVTranslation");
 }
 
 void ICPUParticleSpawnModule::DragAndDropTexture() {

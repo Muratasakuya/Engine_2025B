@@ -253,6 +253,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateAlphaReferenceModule.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateColorModule.cpp">
       <SubType>
       </SubType>
@@ -882,6 +886,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnSphereModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdateAlphaReferenceModule.h">
       <SubType>
       </SubType>
     </ClInclude>

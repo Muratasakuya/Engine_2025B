@@ -18,6 +18,8 @@ public:
 	ParticleUpdateScaleModule() = default;
 	~ParticleUpdateScaleModule() = default;
 
+	void Init() override;
+
 	void Execute(CPUParticle::ParticleData& particle, float deltaTime) override;
 
 	void ImGui() override;
@@ -35,6 +37,8 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	ParticleCommon::LerpValue<Vector3> scale_;
 
 	EasingType easing;
 };

@@ -8,8 +8,8 @@ void ParticleUpdateUVModule::Execute(
 	CPUParticle::ParticleData& particle, [[maybe_unused]] float deltaTime) {
 
 	// UV座標
-	Vector3 translation = Vector3::Lerp(particle.uvTranslation.start,
-		particle.uvTranslation.target, EasedValue(easing_, particle.progress));
+	Vector3 translation = Vector3::Lerp(translation_.start,
+		translation_.target, EasedValue(easing_, particle.progress));
 
 	// uvMatrixの更新
 	particle.material.uvTransform = Matrix4x4::MakeAffineMatrix(
@@ -17,6 +17,9 @@ void ParticleUpdateUVModule::Execute(
 }
 
 void ParticleUpdateUVModule::ImGui() {
+
+	ImGui::DragFloat2("startTranslation", &translation_.start.x, 0.01f);
+	ImGui::DragFloat2("targetTranslation", &translation_.target.x, 0.01f);
 
 	Easing::SelectEasingType(easing_, GetName());
 }

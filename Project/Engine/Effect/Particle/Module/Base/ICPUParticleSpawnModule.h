@@ -34,8 +34,6 @@ public:
 	// editor
 	void ImGuiRenderParam();
 	void ImGuiEmitParam();
-	void ImGuiTransformParam();
-	void ImGuiMaterialParam();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -58,17 +56,11 @@ protected:
 	ParticleValue<uint32_t> emitCount_; // 発生数
 	ParticleValue<float> lifeTime_;     // 生存時間
 
-	// Material
-	ParticleCommon::EditLerpValue<Color> color_;           // 色
-	ParticleCommon::EditLerpValue<Vector3> uvTranslation_; // UV座標
+	// 移動速度
+	ParticleValue<float> moveSpeed_;
 
 	// TextureInfo、ランダムがないのでそのまま渡す
 	CPUParticle::TextureInfoForGPU textureInfo_;
-
-	// Transform
-	ParticleBillboardType billboardType_;          // ビルボードの種類
-	ParticleCommon::EditLerpValue<Vector3> scale_; // 拡縮
-	ParticleValue<float> moveSpeed_;               // 移動速度
 
 	// Primtive
 	ParticleCommon::PrimitiveData<false> primitive_;

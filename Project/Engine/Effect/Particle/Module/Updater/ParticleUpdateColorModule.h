@@ -18,6 +18,8 @@ public:
 	ParticleUpdateColorModule() = default;
 	~ParticleUpdateColorModule() = default;
 
+	void Init() override;
+
 	void Execute(CPUParticle::ParticleData& particle, float deltaTime) override;
 
 	void ImGui() override;
@@ -35,6 +37,8 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	ParticleCommon::LerpValue<Color> color_;
 
 	EasingType easing;
 };

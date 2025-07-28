@@ -34,7 +34,12 @@ private:
 	//	private Methods
 	//========================================================================
 
-	//--------- variables ----------------------------------------------------
+	//--------- variables ---------------------------------------------------
+	
+	ParticleCommon::LerpValue<Vector3> rotation_;
+
+	// ビルボードの種類
+	ParticleBillboardType billboardType_;
 
 	EasingType easing;
 };
