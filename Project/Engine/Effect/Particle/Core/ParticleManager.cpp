@@ -22,6 +22,7 @@
 #include <Engine/Effect/Particle/Module/Updater/ParticleUpdateVelocityModule.h>
 #include <Engine/Effect/Particle/Module/Updater/ParticleUpdateRotationModule.h>
 #include <Engine/Effect/Particle/Module/Updater/ParticleUpdateScaleModule.h>
+#include <Engine/Effect/Particle/Module/Updater/ParticleUpdateUVModule.h>
 
 //============================================================================
 //	ParticleManager classMethods
@@ -76,6 +77,7 @@ void ParticleManager::RegisterModules() {
 	uRegistry.Register<ParticleUpdateVelocityModule>();
 	uRegistry.Register<ParticleUpdateRotationModule>();
 	uRegistry.Register<ParticleUpdateScaleModule>();
+	uRegistry.Register<ParticleUpdateUVModule>();
 }
 
 void ParticleManager::Init(Asset* asset, ID3D12Device8* device,

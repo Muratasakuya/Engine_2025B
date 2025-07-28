@@ -4,19 +4,20 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/Module/Base/ICPUParticleUpdateModule.h>
+#include <Lib/Adapter/Easing.h>
 
 //============================================================================
-//	ParticleUpdateVelocityModule class
+//	ParticleUpdateUVModule class
 //============================================================================
-class ParticleUpdateVelocityModule :
+class ParticleUpdateUVModule :
 	public ICPUParticleUpdateModule {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ParticleUpdateVelocityModule() = default;
-	~ParticleUpdateVelocityModule() = default;
+	ParticleUpdateUVModule() = default;
+	~ParticleUpdateUVModule() = default;
 
 	void Execute(CPUParticle::ParticleData& particle, float deltaTime) override;
 
@@ -24,11 +25,11 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	const char* GetName() const override { return "UpdateVelocity"; }
+	const char* GetName() const override { return "UpdateUV"; }
 
 	//-------- registryID ----------------------------------------------------
 
-	static constexpr ParticleUpdateModuleID ID = ParticleUpdateModuleID::Velocity;
+	static constexpr ParticleUpdateModuleID ID = ParticleUpdateModuleID::UV;
 private:
 	//========================================================================
 	//	private Methods
@@ -36,5 +37,5 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	EasingType easing_;
 };

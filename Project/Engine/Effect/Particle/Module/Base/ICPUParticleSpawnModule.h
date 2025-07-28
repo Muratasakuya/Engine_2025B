@@ -41,6 +41,9 @@ public:
 
 	void SetAsset(Asset* asset) { asset_ = asset; }
 	void SetPrimitiveType(ParticlePrimitiveType type);
+
+	// データ共有
+	void ShareCommonParam(ICPUParticleSpawnModule* other);
 protected:
 	//========================================================================
 	//	protected Methods
@@ -56,7 +59,8 @@ protected:
 	ParticleValue<float> lifeTime_;     // 生存時間
 
 	// Material
-	ParticleCommon::EditLerpValue<Color> color_; // 色
+	ParticleCommon::EditLerpValue<Color> color_;           // 色
+	ParticleCommon::EditLerpValue<Vector3> uvTranslation_; // UV座標
 
 	// TextureInfo、ランダムがないのでそのまま渡す
 	CPUParticle::TextureInfoForGPU textureInfo_;
@@ -70,7 +74,9 @@ protected:
 	ParticleCommon::PrimitiveData<false> primitive_;
 
 	// editor
-	const Color emitterLineColor = Color::Yellow(0.4f);
+	const Color emitterLineColor_ = Color::Yellow(0.4f);
+	std::string textureName_;
+	std::string noiseTextureName_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -83,12 +89,6 @@ private:
 	//========================================================================
 	//	protected Methods
 	//========================================================================
-
-	//--------- variables ----------------------------------------------------
-
-	// editor
-	std::string textureName_;
-	std::string noiseTextureName_;
 
 	//--------- functions ----------------------------------------------------
 

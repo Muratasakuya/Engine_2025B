@@ -56,5 +56,5 @@ void ParticleSpawnSphereModule::ImGui() {
 void ParticleSpawnSphereModule::DrawEmitter() {
 
 	LineRenderer::GetInstance()->DrawSphere(4, emitter_.radius,
-		emitter_.translation, emitterLineColor);
+		emitter_.translation, emitterLineColor_);
 }

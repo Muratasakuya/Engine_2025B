@@ -149,7 +149,7 @@ namespace CPUParticle {
 		float alphaReference;
 		float noiseAlphaReference;
 
-		Matrix4x4 uvTransform;
+		Matrix4x4 uvTransform = Matrix4x4::MakeIdentity4x4();
 	};
 
 	struct TextureInfoForGPU {
@@ -185,6 +185,8 @@ namespace CPUParticle {
 		ParticleCommon::LerpValue<Vector3> scale;
 		// 色
 		ParticleCommon::LerpValue<Color> color;
+		// UV
+		ParticleCommon::LerpValue<Vector3> uvTranslation;
 
 		// bufferに渡すデータ
 		MaterialForGPU material;

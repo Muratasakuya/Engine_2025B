@@ -62,5 +62,5 @@ void ParticleSpawnBoxModule::ImGui() {
 void ParticleSpawnBoxModule::DrawEmitter() {
 
 	LineRenderer::GetInstance()->DrawOBB(emitter_.translation,
-		emitter_.size, emitter_.rotationMatrix, emitterLineColor);
+		emitter_.size, emitter_.rotationMatrix, emitterLineColor_);
 }

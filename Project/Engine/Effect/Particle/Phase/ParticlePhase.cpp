@@ -56,17 +56,30 @@ void ParticlePhase::UpdateEmitter() {
 
 void ParticlePhase::SetSpawner(ParticleSpawnModuleID id) {
 
-	if (spawner_) {
-		spawner_.reset();
+	uint32_t index = static_cast<size_t>(id);
+
+	// 作成していない場合のみ作成する
+	if (!spawnerCache_[index]) {
+
+		std::unique_ptr<ICPUParticleSpawnModule> module = SpawnRegistry::GetInstance().Create(id);
+		module->SetAsset(asset_);
+		module->SetPrimitiveType(primitiveType_);
+		module->Init();
+
+		// 現在有効な物があった場合、データを共有する
+		if (currentSpawnId_ != ParticleSpawnModuleID::Count) {
+			if (spawnerCache_[static_cast<size_t>(currentSpawnId_)]) {
+
+				module->ShareCommonParam(spawnerCache_[static_cast<size_t>(currentSpawnId_)].get());
+			}
+		}
+
+		spawnerCache_[index] = std::move(module);
 	}
-	spawner_ = SpawnRegistry::GetInstance().Create(id);
 
-	// 必要なデータを設定
-	spawner_->SetAsset(asset_);
-	spawner_->SetPrimitiveType(primitiveType_);
-
-	// 初期化
-	spawner_->Init();
+	// 作成してあればキャッシュから引っ張ってきて使用する
+	spawner_ = spawnerCache_[index].get();
+	currentSpawnId_ = id;
 }
 
 void ParticlePhase::AddUpdater(ParticleUpdateModuleID id) {

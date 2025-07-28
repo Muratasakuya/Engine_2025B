@@ -90,7 +90,6 @@ void CPUParticleGroup::UpdateTransferData(uint32_t particleIndex,
 	transferTransforms_[particleIndex] = particle.transform;
 	// material
 	transferMaterials_[particleIndex] = particle.material;
-	transferMaterials_[particleIndex].uvTransform = Matrix4x4::MakeIdentity4x4();
 	// texture
 	transferTextureInfos_[particleIndex] = particle.textureInfo;
 	// primitive

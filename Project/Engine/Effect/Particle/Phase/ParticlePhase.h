@@ -64,8 +64,11 @@ private:
 	using SpawnRegistry = ParticleModuleRegistry<ICPUParticleSpawnModule, ParticleSpawnModuleID>;
 	using UpdateRegistry = ParticleModuleRegistry<ICPUParticleUpdateModule, ParticleUpdateModuleID>;
 
-	std::unique_ptr<ICPUParticleSpawnModule>  spawner_;
 	std::vector<std::unique_ptr<ICPUParticleUpdateModule>> updaters_;
+
+	std::array<std::unique_ptr<ICPUParticleSpawnModule>, static_cast<size_t>(ParticleSpawnModuleID::Count)> spawnerCache_;
+	ICPUParticleSpawnModule* spawner_ = nullptr;
+	ParticleSpawnModuleID currentSpawnId_ = ParticleSpawnModuleID::Count;
 
 	// editor
 	ParticleSpawnModuleID selectSpawnModule_;

@@ -69,5 +69,5 @@ void ParticleSpawnHemisphereModule::ImGui() {
 void ParticleSpawnHemisphereModule::DrawEmitter() {
 
 	LineRenderer::GetInstance()->DrawHemisphere(8, emitter_.radius,
-		emitter_.translation, emitter_.rotationMatrix, emitterLineColor);
+		emitter_.translation, emitter_.rotationMatrix, emitterLineColor_);
 }

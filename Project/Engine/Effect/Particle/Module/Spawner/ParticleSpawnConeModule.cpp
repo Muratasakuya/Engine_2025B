@@ -76,5 +76,5 @@ void ParticleSpawnConeModule::DrawEmitter() {
 
 	LineRenderer::GetInstance()->DrawCone(
 		8, emitter_.baseRadius, emitter_.topRadius, emitter_.height,
-		emitter_.translation, emitter_.rotationMatrix, emitterLineColor);
+		emitter_.translation, emitter_.rotationMatrix, emitterLineColor_);
 }

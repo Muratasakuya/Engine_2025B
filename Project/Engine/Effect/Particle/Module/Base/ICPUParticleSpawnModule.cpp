@@ -21,6 +21,8 @@ void ICPUParticleSpawnModule::InitCommonData() {
 	// Material
 	color_.start = ParticleValue<Color>::SetValue(Color::White());
 	color_.target = ParticleValue<Color>::SetValue(Color::White(0.0f));
+	uvTranslation_.start = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
+	uvTranslation_.target = ParticleValue<Vector3>::SetValue(Vector3::AnyInit(0.0f));
 
 	// TextureInfo
 	textureInfo_.samplerType = 0;
@@ -46,6 +48,9 @@ void ICPUParticleSpawnModule::SetCommonData(CPUParticle::ParticleData& particle)
 	// 色
 	particle.color.start = color_.start.GetValue();
 	particle.color.target = color_.target.GetValue();
+	// UV座標
+	particle.uvTranslation.start = uvTranslation_.start.GetValue();
+	particle.uvTranslation.target = uvTranslation_.target.GetValue();
 
 	// テクスチャ情報
 	particle.textureInfo = textureInfo_;
@@ -78,6 +83,29 @@ void ICPUParticleSpawnModule::SetPrimitiveType(ParticlePrimitiveType type) {
 		primitive_.cylinder.Init();
 		break;
 	}
+}
+
+void ICPUParticleSpawnModule::ShareCommonParam(ICPUParticleSpawnModule* other) {
+
+	// Emit
+	emitCount_ = other->emitCount_;
+
+	// Material
+	color_ = other->color_;
+	uvTranslation_ = other->uvTranslation_;
+
+	// TextureInfo
+	textureName_ = other->textureName_;
+	noiseTextureName_ = other->noiseTextureName_;
+	textureInfo_ = other->textureInfo_;
+
+	// Transform
+	billboardType_ = other->billboardType_;
+	scale_ = other->scale_;
+	moveSpeed_ = other->moveSpeed_;
+
+	// Primitive
+	primitive_ = other->primitive_;
 }
 
 void ICPUParticleSpawnModule::ImGuiRenderParam() {
@@ -139,6 +167,9 @@ void ICPUParticleSpawnModule::ImGuiMaterialParam() {
 
 	color_.start.EditColor("startColor");
 	color_.target.EditColor("targetColor");
+
+	uvTranslation_.start.EditDragValue("startUVTranslation");
+	uvTranslation_.target.EditDragValue("targetUVTranslation");
 }
 
 void ICPUParticleSpawnModule::DragAndDropTexture() {
