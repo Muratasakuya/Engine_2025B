@@ -123,7 +123,7 @@ inline void ParticleValue<T>::SelectType(const std::string& label) {
 	const char* kItems[] = { "Constant", "Random" };
 	int comboIndex = static_cast<int>(valueType);
 	ImGui::SetNextItemWidth(132.0f);
-	ImGui::SetCursorPosX(560.0f);
+	ImGui::SetCursorPosX(320.0f);
 	if (ImGui::Combo(("##Type" + label).c_str(), &comboIndex, kItems, IM_ARRAYSIZE(kItems))) {
 
 		valueType = static_cast<ParticleValueType>(comboIndex);

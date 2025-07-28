@@ -17,6 +17,7 @@
 #include <Engine/Effect/Particle/Module/Spawner/ParticleSpawnHemisphereModule.h>
 #include <Engine/Effect/Particle/Module/Spawner/ParticleSpawnBoxModule.h>
 #include <Engine/Effect/Particle/Module/Spawner/ParticleSpawnConeModule.h>
+#include <Engine/Effect/Particle/Module/Spawner/ParticleSpawnPolygonVertexModule.h>
 // Updater
 #include <Engine/Effect/Particle/Module/Updater/ParticleUpdateColorModule.h>
 #include <Engine/Effect/Particle/Module/Updater/ParticleUpdateVelocityModule.h>
@@ -70,6 +71,7 @@ void ParticleManager::RegisterModules() {
 	sRegistry.Register<ParticleSpawnHemisphereModule>();
 	sRegistry.Register<ParticleSpawnBoxModule>();
 	sRegistry.Register<ParticleSpawnConeModule>();
+	sRegistry.Register<ParticleSpawnPolygonVertexModule>();
 
 	//============================================================================
 	//	Updaters

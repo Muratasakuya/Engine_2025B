@@ -623,6 +623,9 @@
     <ClCompile Include="Engine\Effect\Particle\Module\Base\ParticleLoopableModule.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnPolygonVertexModule.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -857,6 +860,7 @@
     <ClInclude Include="Engine\Effect\Particle\Module\Updater\ParticleUpdatePrimitiveModule.h" />
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleLoop.h" />
     <ClInclude Include="Engine\Effect\Particle\Module\Base\ParticleLoopableModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnPolygonVertexModule.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

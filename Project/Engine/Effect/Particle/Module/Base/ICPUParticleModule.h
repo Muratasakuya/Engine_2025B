@@ -19,6 +19,7 @@ enum class ParticleSpawnModuleID {
 	Hemisphere,
 	Box,
 	Cone,
+	PolygonVertex,
 	Count,
 };
 
