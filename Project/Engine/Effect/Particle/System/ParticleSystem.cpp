@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Window/WinApp.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Lib/Adapter/EnumAdapter.h>
 #include <Lib/Adapter/JsonAdapter.h>
@@ -166,7 +167,12 @@ void ParticleSystem::ImGuiSystemParameter() {
 	// 読み込み処理
 	if (ImGui::Button("Load##ps")) {
 
-		LoadJson();
+		std::string relPath;
+		if (ShowOpenJsonDialog(relPath)) {
+
+			strncpy_s(fileBuffer_, sizeof(fileBuffer_), relPath.c_str(), _TRUNCATE);
+			LoadJson();
+		}
 	}
 }
 
@@ -196,6 +202,40 @@ void ParticleSystem::EditLayout() {
 	ImGui::DragFloat2("buttonSize_", &buttonSize_.x, 0.1f);
 
 	ImGui::End();
+}
+
+bool ParticleSystem::ShowOpenJsonDialog(std::string& outRelPath) {
+
+	char szFile[MAX_PATH] = {};
+	OPENFILENAMEA ofn{};
+	ofn.lStructSize = sizeof(ofn);
+	ofn.hwndOwner = WinApp::GetHwnd();
+	ofn.lpstrFile = szFile;
+	ofn.nMaxFile = MAX_PATH;
+	ofn.lpstrFilter = "JSON (*.json)\0*.json\0All\0*.*\0";
+
+	static const std::string kInitDir =
+		std::filesystem::absolute(JsonAdapter::baseDirectoryFilePath_).string();
+	ofn.lpstrInitialDir = kInitDir.c_str();
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST | OFN_NOCHANGEDIR;
+
+	if (GetOpenFileNameA(&ofn)) {
+
+		namespace fs = std::filesystem;
+		fs::path base = fs::weakly_canonical(JsonAdapter::baseDirectoryFilePath_);
+		fs::path full = fs::weakly_canonical(ofn.lpstrFile);
+		try {
+
+			outRelPath = fs::relative(full, base).generic_string();
+		}
+		catch (...) {
+
+			// base配下でなければファイル名のみ
+			outRelPath = full.filename().generic_string();
+		}
+		return true;
+	}
+	return false;
 }
 
 void ParticleSystem::SaveJson() {

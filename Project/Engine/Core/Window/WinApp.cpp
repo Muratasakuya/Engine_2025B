@@ -19,6 +19,8 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(
 //	WinApp classMethods
 //============================================================================
 
+HWND WinApp::hwnd_ = nullptr;
+
 void WinApp::Create() {
 
 	timeBeginPeriod(1);

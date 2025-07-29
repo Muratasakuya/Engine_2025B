@@ -29,7 +29,7 @@ public:
 
 	void SetFullscreen(bool fullscreen);
 
-	HWND GetHwnd() const { return hwnd_; }
+	static HWND GetHwnd() { return hwnd_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -37,7 +37,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	HWND hwnd_;
+	static HWND hwnd_;
 
 	UINT windowStyle_;
 	RECT windowRect_;

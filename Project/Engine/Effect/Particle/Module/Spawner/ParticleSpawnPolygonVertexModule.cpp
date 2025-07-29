@@ -282,5 +282,5 @@ void ParticleSpawnPolygonVertexModule::FromJson(const Json& data) {
 	translation_.FromJson(data["translation"]);
 
 	emitPerVertex_.ApplyJson(data, "emitPerVertex");
-	interpolateSpacing_.ApplyJson(data, "spacing");
+	interpolateSpacing_.ApplyJson(data, "interpolateSpacing");
 }

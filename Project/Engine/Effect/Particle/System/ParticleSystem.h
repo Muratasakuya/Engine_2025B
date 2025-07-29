@@ -6,8 +6,13 @@
 #include <Engine/Effect/Particle/Data/GPUParticleGroup.h>
 #include <Engine/Effect/Particle/Data/CPUParticleGroup.h>
 
+// windows
+#include <commdlg.h>
+#include <windows.h>
 // imgui
 #include <imgui.h>
+// c++
+#include <filesystem>
 // front
 class Asset;
 
@@ -107,4 +112,5 @@ private:
 
 	// helper
 	void EditLayout();
+	bool ShowOpenJsonDialog(std::string& outRelPath);
 };
