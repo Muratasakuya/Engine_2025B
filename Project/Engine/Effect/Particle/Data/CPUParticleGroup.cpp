@@ -133,6 +133,11 @@ void CPUParticleGroup::UpdateTransferData(uint32_t particleIndex,
 		transferPrimitives_.cylinder[particleIndex] = particle.primitive.cylinder;
 		break;
 	}
+	case ParticlePrimitiveType::Crescent: {
+
+		transferPrimitives_.crescent[particleIndex] = particle.primitive.crescent;
+		break;
+	}
 	}
 }
 
@@ -161,6 +166,11 @@ void CPUParticleGroup::TransferBuffer() {
 		primitiveBuffer_.cylinder.TransferData(transferPrimitives_.cylinder);
 		break;
 	}
+	case ParticlePrimitiveType::Crescent: {
+
+		primitiveBuffer_.crescent.TransferData(transferPrimitives_.crescent);
+		break;
+	}
 	}
 }
 
@@ -187,6 +197,11 @@ void CPUParticleGroup::ResizeTransferData(uint32_t size) {
 	case ParticlePrimitiveType::Cylinder: {
 
 		transferPrimitives_.cylinder.resize(size);
+		break;
+	}
+	case ParticlePrimitiveType::Crescent: {
+
+		transferPrimitives_.crescent.resize(size);
 		break;
 	}
 	}

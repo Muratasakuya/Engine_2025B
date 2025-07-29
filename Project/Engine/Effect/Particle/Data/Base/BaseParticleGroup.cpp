@@ -29,6 +29,10 @@ D3D12_GPU_VIRTUAL_ADDRESS BaseParticleGroup::GetPrimitiveBufferAdress() const {
 
 		return primitiveBuffer_.cylinder.GetResource()->GetGPUVirtualAddress();
 	}
+	case ParticlePrimitiveType::Crescent: {
+
+		return primitiveBuffer_.crescent.GetResource()->GetGPUVirtualAddress();
+	}
 	case ParticlePrimitiveType::Count: {
 
 		ASSERT(false, "ParticlePrimitiveType::Count is not buffer");
@@ -76,6 +80,16 @@ void BaseParticleGroup::CreatePrimitiveBuffer(
 		std::vector<CylinderForGPU> cylinders(kMaxParticles, cylinder);
 		primitiveBuffer_.cylinder.CreateSRVBuffer(device, kMaxParticles);
 		primitiveBuffer_.cylinder.TransferData(cylinders);
+		break;
+	}
+	case ParticlePrimitiveType::Crescent: {
+
+		CrescentForGPU crescent{};
+		crescent.Init();
+
+		std::vector<CrescentForGPU> crescents(kMaxParticles, crescent);
+		primitiveBuffer_.crescent.CreateSRVBuffer(device, kMaxParticles);
+		primitiveBuffer_.crescent.TransferData(crescents);
 		break;
 	}
 	}

@@ -55,6 +55,8 @@ namespace ParticleCommon {
 		std::conditional_t<kMultiple, std::vector<RingForGPU>, RingForGPU> ring;
 		// 円柱
 		std::conditional_t<kMultiple, std::vector<CylinderForGPU>, CylinderForGPU> cylinder;
+		// 三日月
+		std::conditional_t<kMultiple, std::vector<CrescentForGPU>, CrescentForGPU> crescent;
 	};
 	struct PrimitiveBufferData {
 
@@ -66,6 +68,8 @@ namespace ParticleCommon {
 		DxStructuredBuffer<RingForGPU> ring;
 		// 円柱
 		DxStructuredBuffer<CylinderForGPU> cylinder;
+		// 三日月
+		DxStructuredBuffer<CrescentForGPU> crescent;
 	};
 
 	struct TransformForGPU {

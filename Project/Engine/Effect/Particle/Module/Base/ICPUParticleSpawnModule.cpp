@@ -60,6 +60,10 @@ void ICPUParticleSpawnModule::SetPrimitiveType(ParticlePrimitiveType type) {
 
 		primitive_.cylinder.Init();
 		break;
+	case ParticlePrimitiveType::Crescent:
+
+		primitive_.crescent.Init();
+		break;
 	}
 }
 
@@ -98,6 +102,7 @@ void ICPUParticleSpawnModule::ImGuiPrimitiveParam() {
 	case ParticlePrimitiveType::Plane:
 
 		ImGui::DragFloat2("size", &primitive_.plane.size.x, 0.01f);
+		ImGui::DragFloat2("pivot", &primitive_.plane.pivot.x, 0.01f);
 		break;
 	case ParticlePrimitiveType::Ring:
 
@@ -111,6 +116,16 @@ void ICPUParticleSpawnModule::ImGuiPrimitiveParam() {
 		ImGui::DragFloat("topRadius", &primitive_.cylinder.topRadius, 0.01f);
 		ImGui::DragFloat("bottomRadius", &primitive_.cylinder.bottomRadius, 0.01f);
 		ImGui::DragFloat("height", &primitive_.cylinder.height, 0.01f);
+		break;
+	case ParticlePrimitiveType::Crescent:
+
+		ImGui::DragInt("divide", &primitive_.crescent.divide, 1, 3, 32);
+		ImGui::DragFloat("outerRadius", &primitive_.crescent.outerRadius, 0.01f);
+		ImGui::DragFloat("innerRadius", &primitive_.crescent.innerRadius, 0.01f);
+		ImGui::DragFloat("startAngle", &primitive_.crescent.startAngle, 0.01f);
+		ImGui::DragFloat("endAngle", &primitive_.crescent.endAngle, 0.01f);
+		ImGui::DragFloat("lattice", &primitive_.crescent.lattice, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat2("pivot", &primitive_.plane.pivot.x, 0.01f);
 		break;
 	}
 }
@@ -233,6 +248,7 @@ void ICPUParticleSpawnModule::ToCommonJson(Json& data) {
 	case ParticlePrimitiveType::Plane:
 
 		data[key]["primitive"]["plane"]["size"] = primitive_.plane.size.ToJson();
+		data[key]["primitive"]["plane"]["pivot"] = primitive_.plane.pivot.ToJson();
 		break;
 	case ParticlePrimitiveType::Ring:
 
@@ -246,6 +262,16 @@ void ICPUParticleSpawnModule::ToCommonJson(Json& data) {
 		data[key]["primitive"]["cylinder"]["topRadius"] = primitive_.cylinder.topRadius;
 		data[key]["primitive"]["cylinder"]["bottomRadius"] = primitive_.cylinder.bottomRadius;
 		data[key]["primitive"]["cylinder"]["height"] = primitive_.cylinder.height;
+		break;
+	case ParticlePrimitiveType::Crescent:
+
+		data[key]["primitive"]["crescent"]["divide"] = primitive_.crescent.divide;
+		data[key]["primitive"]["crescent"]["outerRadius"] = primitive_.crescent.outerRadius;
+		data[key]["primitive"]["crescent"]["innerRadius"] = primitive_.crescent.innerRadius;
+		data[key]["primitive"]["crescent"]["startAngle"] = primitive_.crescent.startAngle;
+		data[key]["primitive"]["crescent"]["endAngle"] = primitive_.crescent.endAngle;
+		data[key]["primitive"]["crescent"]["lattice"] = primitive_.crescent.lattice;
+		data[key]["primitive"]["crescent"]["pivot"] = primitive_.crescent.pivot.ToJson();
 		break;
 	}
 }
@@ -284,21 +310,30 @@ void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
 	case ParticlePrimitiveType::Plane:
 
 		primitive_.plane.size = primitive_.plane.size.FromJson(primitive["plane"]["size"]);
+		primitive_.plane.pivot = primitive_.plane.pivot.FromJson(primitive["plane"]["pivot"]);
 		break;
-
 	case ParticlePrimitiveType::Ring:
 
 		primitive_.ring.divide = primitive["ring"].value("divide", 8);
-		primitive_.ring.outerRadius = primitive["ring"].value("outerRadius", 1.0f);
-		primitive_.ring.innerRadius = primitive["ring"].value("innerRadius", 0.5f);
+		primitive_.ring.outerRadius = primitive["ring"].value("outerRadius", 4.0f);
+		primitive_.ring.innerRadius = primitive["ring"].value("innerRadius", 2.0f);
 		break;
-
 	case ParticlePrimitiveType::Cylinder:
 
 		primitive_.cylinder.divide = primitive["cylinder"].value("divide", 8);
 		primitive_.cylinder.topRadius = primitive["cylinder"].value("topRadius", 1.0f);
 		primitive_.cylinder.bottomRadius = primitive["cylinder"].value("bottomRadius", 1.0f);
 		primitive_.cylinder.height = primitive["cylinder"].value("height", 2.0f);
+		break;
+	case ParticlePrimitiveType::Crescent:
+
+		primitive_.crescent.divide = primitive["crescent"].value("divide", 8);
+		primitive_.crescent.outerRadius = primitive["crescent"].value("outerRadius", 4.0f);
+		primitive_.crescent.innerRadius = primitive["crescent"].value("innerRadius", 2.0f);
+		primitive_.crescent.startAngle = primitive["crescent"].value("startAngle", pi / 6.0f);
+		primitive_.crescent.endAngle = primitive["crescent"].value("endAngle", pi * 5.0f / 6.0f);
+		primitive_.crescent.lattice = primitive["crescent"].value("lattice", 0.5f);
+		primitive_.crescent.pivot = primitive_.crescent.pivot.FromJson(primitive["crescent"]["pivot"]);
 		break;
 	}
 }

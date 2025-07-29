@@ -12,9 +12,10 @@
 // 形状
 enum class ParticlePrimitiveType {
 
-	Plane,
-	Ring,
-	Cylinder,
+	Plane,    // 平面
+	Ring,     // リング
+	Cylinder, // 円柱
+	Crescent, // 三日月
 	Count
 };
 
@@ -27,7 +28,7 @@ struct PlaneForGPU {
 	void Init() {
 
 		size = Vector2::AnyInit(1.0f);
-		pivot = Vector2::AnyInit(0.0f);
+		pivot = Vector2::AnyInit(0.5f);
 	}
 };
 // リング
@@ -58,5 +59,31 @@ struct CylinderForGPU {
 		bottomRadius = 4.0f;
 		height = 4.0f;
 		divide = 16;
+	}
+};
+struct CrescentForGPU {
+
+	float outerRadius;
+	float innerRadius;
+
+	float startAngle;
+	float endAngle;
+
+	float lattice;
+	Vector2 pivot;
+	int divide;
+
+	void Init() {
+
+		outerRadius = 4.0f;
+		innerRadius = 2.0f;
+
+		// 30度~150度
+		startAngle = pi / 6.0f;
+		endAngle = pi * 5.0f / 6.0f;
+
+		lattice = 0.5f;
+		pivot = Vector2::AnyInit(0.5f);
+		divide = 8;
 	}
 };

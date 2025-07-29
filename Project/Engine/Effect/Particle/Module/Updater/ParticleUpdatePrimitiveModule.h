@@ -57,4 +57,5 @@ private:
 	void UpdatePlane(CPUParticle::ParticleData& particle);
 	void UpdateRing(CPUParticle::ParticleData& particle);
 	void UpdateCylinder(CPUParticle::ParticleData& particle);
+	void UpdateCrescent(CPUParticle::ParticleData& particle);
 };

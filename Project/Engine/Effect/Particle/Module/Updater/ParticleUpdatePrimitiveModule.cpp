@@ -21,6 +21,9 @@ void ParticleUpdatePrimitiveModule::Init() {
 
 	primitive_.start.cylinder.Init();
 	primitive_.target.cylinder.Init();
+
+	primitive_.start.crescent.Init();
+	primitive_.target.crescent.Init();
 }
 
 void ParticleUpdatePrimitiveModule::Execute(
@@ -42,6 +45,11 @@ void ParticleUpdatePrimitiveModule::Execute(
 	case ParticlePrimitiveType::Cylinder: {
 
 		UpdateCylinder(particle);
+		break;
+	}
+	case ParticlePrimitiveType::Crescent: {
+
+		UpdateCrescent(particle);
 		break;
 	}
 	}
@@ -92,6 +100,33 @@ void ParticleUpdatePrimitiveModule::UpdateCylinder(CPUParticle::ParticleData& pa
 		primitive_.target.cylinder.height, EasedValue(easingType_, particle.progress));
 }
 
+//============================================================================
+//	Crescent
+//============================================================================
+void ParticleUpdatePrimitiveModule::UpdateCrescent(CPUParticle::ParticleData& particle) {
+
+	particle.primitive.crescent.divide = Algorithm::LerpInt(primitive_.start.crescent.divide,
+		primitive_.target.crescent.divide, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.crescent.outerRadius = std::lerp(primitive_.start.crescent.outerRadius,
+		primitive_.target.crescent.outerRadius, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.crescent.innerRadius = std::lerp(primitive_.start.crescent.innerRadius,
+		primitive_.target.crescent.innerRadius, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.crescent.startAngle = std::lerp(primitive_.start.crescent.startAngle,
+		primitive_.target.crescent.startAngle, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.crescent.endAngle = std::lerp(primitive_.start.crescent.endAngle,
+		primitive_.target.crescent.endAngle, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.crescent.lattice = std::lerp(primitive_.start.crescent.lattice,
+		primitive_.target.crescent.lattice, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.crescent.pivot = Vector2::Lerp(primitive_.start.crescent.pivot,
+		primitive_.target.crescent.pivot, EasedValue(easingType_, particle.progress));
+}
+
 void ParticleUpdatePrimitiveModule::ImGui() {
 
 	Easing::SelectEasingType(easingType_, GetName());
@@ -133,6 +168,30 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 		ImGui::DragFloat("targetHeight", &primitive_.target.cylinder.height, 0.01f);
 		break;
 	}
+	case ParticlePrimitiveType::Crescent: {
+
+		ImGui::DragInt("startDivide", &primitive_.start.crescent.divide, 1, 3, 32);
+		ImGui::DragInt("targetDivide", &primitive_.target.crescent.divide, 1, 3, 32);
+
+		ImGui::DragFloat("startOuterRadius", &primitive_.start.crescent.outerRadius, 0.01f);
+		ImGui::DragFloat("targetOuterRadius", &primitive_.target.crescent.outerRadius, 0.01f);
+
+		ImGui::DragFloat("startInnerRadius", &primitive_.start.crescent.innerRadius, 0.01f);
+		ImGui::DragFloat("targetInnerRadius", &primitive_.target.crescent.innerRadius, 0.01f);
+
+		ImGui::DragFloat("startStartAngle", &primitive_.start.crescent.startAngle, 0.01f);
+		ImGui::DragFloat("targetStartAngle", &primitive_.target.crescent.startAngle, 0.01f);
+
+		ImGui::DragFloat("startEndAngle", &primitive_.start.crescent.endAngle, 0.01f);
+		ImGui::DragFloat("targetEndAngle", &primitive_.target.crescent.endAngle, 0.01f);
+
+		ImGui::DragFloat("startLattice", &primitive_.start.crescent.lattice, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("targetLattice", &primitive_.target.crescent.lattice, 0.01f, 0.0f, 1.0f);
+
+		ImGui::DragFloat2("startPivot", &primitive_.start.crescent.pivot.x, 0.01f);
+		ImGui::DragFloat2("targetPivot", &primitive_.target.crescent.pivot.x, 0.01f);
+		break;
+	}
 	}
 }
 
@@ -144,28 +203,56 @@ Json ParticleUpdatePrimitiveModule::ToJson() {
 	data["easingType"] = EnumAdapter<EasingType>::ToString(easingType_);
 
 	// Plane
-	data["plane"]["startSize"] = primitive_.start.plane.size.ToJson();
-	data["plane"]["targetSize"] = primitive_.target.plane.size.ToJson();
-	data["plane"]["startPivot"] = primitive_.start.plane.pivot.ToJson();
-	data["plane"]["targetPivot"] = primitive_.target.plane.pivot.ToJson();
+	{
+		data["plane"]["startSize"] = primitive_.start.plane.size.ToJson();
+		data["plane"]["targetSize"] = primitive_.target.plane.size.ToJson();
+		data["plane"]["startPivot"] = primitive_.start.plane.pivot.ToJson();
+		data["plane"]["targetPivot"] = primitive_.target.plane.pivot.ToJson();
+	}
 
 	// Ring
-	data["ring"]["startDivide"] = primitive_.start.ring.divide;
-	data["ring"]["targetDivide"] = primitive_.target.ring.divide;
-	data["ring"]["startOuterRadius"] = primitive_.start.ring.outerRadius;
-	data["ring"]["targetOuterRadius"] = primitive_.target.ring.outerRadius;
-	data["ring"]["startInnerRadius"] = primitive_.start.ring.innerRadius;
-	data["ring"]["targetInnerRadius"] = primitive_.target.ring.innerRadius;
+	{
+		data["ring"]["startDivide"] = primitive_.start.ring.divide;
+		data["ring"]["targetDivide"] = primitive_.target.ring.divide;
+		data["ring"]["startOuterRadius"] = primitive_.start.ring.outerRadius;
+		data["ring"]["targetOuterRadius"] = primitive_.target.ring.outerRadius;
+		data["ring"]["startInnerRadius"] = primitive_.start.ring.innerRadius;
+		data["ring"]["targetInnerRadius"] = primitive_.target.ring.innerRadius;
+	}
 
 	// Cylinder
-	data["cylinder"]["startDivide"] = primitive_.start.cylinder.divide;
-	data["cylinder"]["targetDivide"] = primitive_.target.cylinder.divide;
-	data["cylinder"]["startTopRadius"] = primitive_.start.cylinder.topRadius;
-	data["cylinder"]["targetTopRadius"] = primitive_.target.cylinder.topRadius;
-	data["cylinder"]["startBottomRadius"] = primitive_.start.cylinder.bottomRadius;
-	data["cylinder"]["targetBottomRadius"] = primitive_.target.cylinder.bottomRadius;
-	data["cylinder"]["startHeight"] = primitive_.start.cylinder.height;
-	data["cylinder"]["targetHeight"] = primitive_.target.cylinder.height;
+	{
+		data["cylinder"]["startDivide"] = primitive_.start.cylinder.divide;
+		data["cylinder"]["targetDivide"] = primitive_.target.cylinder.divide;
+		data["cylinder"]["startTopRadius"] = primitive_.start.cylinder.topRadius;
+		data["cylinder"]["targetTopRadius"] = primitive_.target.cylinder.topRadius;
+		data["cylinder"]["startBottomRadius"] = primitive_.start.cylinder.bottomRadius;
+		data["cylinder"]["targetBottomRadius"] = primitive_.target.cylinder.bottomRadius;
+		data["cylinder"]["startHeight"] = primitive_.start.cylinder.height;
+		data["cylinder"]["targetHeight"] = primitive_.target.cylinder.height;
+	}
+
+	// Crescent
+	{
+		data["crescent"]["startDivide"] = primitive_.start.crescent.divide;
+		data["crescent"]["targetDivide"] = primitive_.target.crescent.divide;
+
+		data["crescent"]["startOuterRadius"] = primitive_.start.crescent.outerRadius;
+		data["crescent"]["targetOuterRadius"] = primitive_.target.crescent.outerRadius;
+		data["crescent"]["startInnerRadius"] = primitive_.start.crescent.innerRadius;
+		data["crescent"]["targetInnerRadius"] = primitive_.target.crescent.innerRadius;
+
+		data["crescent"]["startStartAngle"] = primitive_.start.crescent.startAngle;
+		data["crescent"]["targetStartAngle"] = primitive_.target.crescent.startAngle;
+		data["crescent"]["startEndAngle"] = primitive_.start.crescent.endAngle;
+		data["crescent"]["targetEndAngle"] = primitive_.target.crescent.endAngle;
+
+		data["crescent"]["startLattice"] = primitive_.start.crescent.lattice;
+		data["crescent"]["targetLattice"] = primitive_.target.crescent.lattice;
+
+		data["crescent"]["startPivot"] = primitive_.start.crescent.pivot.ToJson();
+		data["crescent"]["targetPivot"] = primitive_.target.crescent.pivot.ToJson();
+	}
 
 	return data;
 }
@@ -177,29 +264,59 @@ void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
 	easingType_ = easingType.value();
 
 	// Plane
-	const auto& planeData = data["plane"];
-	primitive_.start.plane.size = primitive_.start.plane.size.FromJson(planeData["startSize"]);
-	primitive_.target.plane.size = primitive_.target.plane.size.FromJson(planeData["targetSize"]);
-	primitive_.start.plane.pivot = primitive_.start.plane.pivot.FromJson(planeData["startPivot"]);
-	primitive_.target.plane.pivot = primitive_.target.plane.pivot.FromJson(planeData["targetPivot"]);
+	{
+		const auto& planeData = data["plane"];
+		primitive_.start.plane.size = primitive_.start.plane.size.FromJson(planeData["startSize"]);
+		primitive_.target.plane.size = primitive_.target.plane.size.FromJson(planeData["targetSize"]);
+		primitive_.start.plane.pivot = primitive_.start.plane.pivot.FromJson(planeData["startPivot"]);
+		primitive_.target.plane.pivot = primitive_.target.plane.pivot.FromJson(planeData["targetPivot"]);
+	}
 
 	// Ring
-	const auto& ringData = data["ring"];
-	primitive_.start.ring.divide = ringData.value("startDivide", primitive_.start.ring.divide);
-	primitive_.target.ring.divide = ringData.value("targetDivide", primitive_.target.ring.divide);
-	primitive_.start.ring.outerRadius = ringData.value("startOuterRadius", primitive_.start.ring.outerRadius);
-	primitive_.target.ring.outerRadius = ringData.value("targetOuterRadius", primitive_.target.ring.outerRadius);
-	primitive_.start.ring.innerRadius = ringData.value("startInnerRadius", primitive_.start.ring.innerRadius);
-	primitive_.target.ring.innerRadius = ringData.value("targetInnerRadius", primitive_.target.ring.innerRadius);
+	{
+		const auto& ringData = data["ring"];
+		primitive_.start.ring.divide = ringData.value("startDivide", primitive_.start.ring.divide);
+		primitive_.target.ring.divide = ringData.value("targetDivide", primitive_.target.ring.divide);
+		primitive_.start.ring.outerRadius = ringData.value("startOuterRadius", primitive_.start.ring.outerRadius);
+		primitive_.target.ring.outerRadius = ringData.value("targetOuterRadius", primitive_.target.ring.outerRadius);
+		primitive_.start.ring.innerRadius = ringData.value("startInnerRadius", primitive_.start.ring.innerRadius);
+		primitive_.target.ring.innerRadius = ringData.value("targetInnerRadius", primitive_.target.ring.innerRadius);
+	}
 
 	// Cylinder
-	const auto& cylinderData = data["cylinder"];
-	primitive_.start.cylinder.divide = cylinderData.value("startDivide", primitive_.start.cylinder.divide);
-	primitive_.target.cylinder.divide = cylinderData.value("targetDivide", primitive_.target.cylinder.divide);
-	primitive_.start.cylinder.topRadius = cylinderData.value("startTopRadius", primitive_.start.cylinder.topRadius);
-	primitive_.target.cylinder.topRadius = cylinderData.value("targetTopRadius", primitive_.target.cylinder.topRadius);
-	primitive_.start.cylinder.bottomRadius = cylinderData.value("startBottomRadius", primitive_.start.cylinder.bottomRadius);
-	primitive_.target.cylinder.bottomRadius = cylinderData.value("targetBottomRadius", primitive_.target.cylinder.bottomRadius);
-	primitive_.start.cylinder.height = cylinderData.value("startHeight", primitive_.start.cylinder.height);
-	primitive_.target.cylinder.height = cylinderData.value("targetHeight", primitive_.target.cylinder.height);
+	{
+		const auto& cylinderData = data["cylinder"];
+		primitive_.start.cylinder.divide = cylinderData.value("startDivide", primitive_.start.cylinder.divide);
+		primitive_.target.cylinder.divide = cylinderData.value("targetDivide", primitive_.target.cylinder.divide);
+		primitive_.start.cylinder.topRadius = cylinderData.value("startTopRadius", primitive_.start.cylinder.topRadius);
+		primitive_.target.cylinder.topRadius = cylinderData.value("targetTopRadius", primitive_.target.cylinder.topRadius);
+		primitive_.start.cylinder.bottomRadius = cylinderData.value("startBottomRadius", primitive_.start.cylinder.bottomRadius);
+		primitive_.target.cylinder.bottomRadius = cylinderData.value("targetBottomRadius", primitive_.target.cylinder.bottomRadius);
+		primitive_.start.cylinder.height = cylinderData.value("startHeight", primitive_.start.cylinder.height);
+		primitive_.target.cylinder.height = cylinderData.value("targetHeight", primitive_.target.cylinder.height);
+	}
+
+	// Crescent
+	{
+		const auto& crescentData = data["crescent"];
+
+		primitive_.start.crescent.divide = crescentData.value("startDivide", primitive_.start.crescent.divide);
+		primitive_.target.crescent.divide = crescentData.value("targetDivide", primitive_.target.crescent.divide);
+
+		primitive_.start.crescent.outerRadius = crescentData.value("startOuterRadius", primitive_.start.crescent.outerRadius);
+		primitive_.target.crescent.outerRadius = crescentData.value("targetOuterRadius", primitive_.target.crescent.outerRadius);
+		primitive_.start.crescent.innerRadius = crescentData.value("startInnerRadius", primitive_.start.crescent.innerRadius);
+		primitive_.target.crescent.innerRadius = crescentData.value("targetInnerRadius", primitive_.target.crescent.innerRadius);
+
+		primitive_.start.crescent.startAngle = crescentData.value("startStartAngle", primitive_.start.crescent.startAngle);
+		primitive_.target.crescent.startAngle = crescentData.value("targetStartAngle", primitive_.target.crescent.startAngle);
+		primitive_.start.crescent.endAngle = crescentData.value("startEndAngle", primitive_.start.crescent.endAngle);
+		primitive_.target.crescent.endAngle = crescentData.value("targetEndAngle", primitive_.target.crescent.endAngle);
+
+		primitive_.start.crescent.lattice = crescentData.value("startLattice", primitive_.start.crescent.lattice);
+		primitive_.target.crescent.lattice = crescentData.value("targetLattice", primitive_.target.crescent.lattice);
+
+		primitive_.start.crescent.pivot = primitive_.start.crescent.pivot.FromJson(crescentData["startPivot"]);
+		primitive_.target.crescent.pivot = primitive_.target.crescent.pivot.FromJson(crescentData["targetPivot"]);
+	}
 }
