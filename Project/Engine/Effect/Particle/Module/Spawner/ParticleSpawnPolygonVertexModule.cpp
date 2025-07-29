@@ -15,6 +15,7 @@ void ParticleSpawnPolygonVertexModule::Init() {
 	ICPUParticleSpawnModule::InitCommonData();
 
 	isInterpolate_ = false;
+	notMoveEmit_ = false;
 
 	// xを90度回転
 	emitterRotation_.x = pi / 2.0f;
@@ -51,6 +52,11 @@ void ParticleSpawnPolygonVertexModule::UpdateEmitter() {
 
 void ParticleSpawnPolygonVertexModule::Execute(std::list<CPUParticle::ParticleData>& particles) {
 
+	// 発生判定
+	if (!EnableEmit()) {
+		return;
+	}
+
 	// 補間処理を行う場合
 	if (isInterpolate_) {
 
@@ -61,6 +67,26 @@ void ParticleSpawnPolygonVertexModule::Execute(std::list<CPUParticle::ParticleDa
 
 		NoneEmit(particles);
 	}
+}
+
+bool ParticleSpawnPolygonVertexModule::EnableEmit() {
+
+	if (!notMoveEmit_) {
+		return true;
+	}
+
+	bool moved = false;
+	const std::vector<Vector3> currentVertices = CalcVertices();
+	const size_t vertexCount = (std::min)(currentVertices.size(), prevVertices_.size());
+	// 前フレームの頂点位置と比較する
+	for (size_t i = 0; i < vertexCount; ++i) {
+		if (std::numeric_limits<float>::epsilon() < (currentVertices[i] - prevVertices_[i]).Length()) {
+			
+			moved = true;
+			break;
+		}
+	}
+	return moved;
 }
 
 void ParticleSpawnPolygonVertexModule::InterpolateEmit(std::list<CPUParticle::ParticleData>& particles) {
@@ -183,13 +209,14 @@ void ParticleSpawnPolygonVertexModule::NoneEmit(std::list<CPUParticle::ParticleD
 
 void ParticleSpawnPolygonVertexModule::ImGui() {
 
+	ImGui::Checkbox("notMoveEmit", &notMoveEmit_);
 	ImGui::Checkbox("isInterpolate", &isInterpolate_);
 
 	ImGui::DragFloat3("rotation", &emitterRotation_.x, 0.01f);
 	ImGui::DragFloat("scale", &scale_, 0.05f);
 	ImGui::DragFloat3("translation", &translation_.x, 0.05f);
 
-	ImGui::DragInt("vertexCount", &vertexCount_, 1, 3, 16);
+	ImGui::DragInt("vertexCount", &vertexCount_, 1, 1, 12);
 	emitPerVertex_.EditDragValue("emitPerVertex");
 
 	if (!isInterpolate_) {
@@ -201,6 +228,22 @@ void ParticleSpawnPolygonVertexModule::ImGui() {
 
 void ParticleSpawnPolygonVertexModule::DrawEmitter() {
 
-	LineRenderer::GetInstance()->DrawPolygon(vertexCount_,
-		translation_, scale_, emitterRotation_, emitterLineColor_);
+	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+
+	if (3 <= vertexCount_) {
+
+		// 多角形の場合
+		lineRenderer->DrawPolygon(vertexCount_,
+			translation_, scale_, emitterRotation_, emitterLineColor_);
+	} else if (vertexCount_ == 2) {
+
+		// 2頂点の場合
+		const auto vertices = CalcVertices();
+		lineRenderer->DrawLine3D(vertices[0], vertices[1], emitterLineColor_);
+	} else {
+
+		// 1頂点の場合
+		const auto vertices = CalcVertices();
+		lineRenderer->DrawSphere(4, 0.08f * scale_, vertices[0], emitterLineColor_);
+	}
 }

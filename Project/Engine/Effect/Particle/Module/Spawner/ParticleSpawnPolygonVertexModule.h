@@ -43,6 +43,8 @@ private:
 
 	// パーティクル間の補間処理を行うか
 	bool isInterpolate_;
+	// 移動していなければ発生させないか
+	bool notMoveEmit_;
 
 	Vector3 emitterRotation_;
 	Vector3 translation_;
@@ -58,6 +60,7 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// emit
+	bool EnableEmit();
 	void InterpolateEmit(std::list<CPUParticle::ParticleData>& particles);
 	void NoneEmit(std::list<CPUParticle::ParticleData>& particles);
 
