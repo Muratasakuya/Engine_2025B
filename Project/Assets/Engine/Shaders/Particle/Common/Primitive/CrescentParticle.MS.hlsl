@@ -34,6 +34,7 @@ struct Crescent {
 	float lattice;
 	float2 pivot;
 	uint divide;
+	uint uvMode;
 };
 
 StructuredBuffer<Crescent> gCrescents : register(t0);
@@ -73,10 +74,14 @@ out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 2], out indices uint3 po
 		float t = segIndex / (float) crescent.divide;
 		float angRad = lerp(crescent.startAngle, crescent.endAngle, t);
 
-		// 半径 + ラティス歪曲
-		float rBase = isOuter ? crescent.outerRadius : crescent.innerRadius;
-		float r = rBase + (isOuter ? 1 : -1) * crescent.lattice * 0.5f * sin(t * PI);
-
+		// 端で厚みを0.0fにして尖らせる
+		float thickness = crescent.outerRadius - crescent.innerRadius;
+		float innerDynamic = crescent.outerRadius - thickness * sin(t * PI);
+		
+		// ラティス歪曲
+		float latticeOff = (isOuter ? 1.0f : -1.0f) * crescent.lattice * 0.5f * sin(t * PI);
+		float r = (isOuter ? crescent.outerRadius : innerDynamic) + latticeOff;
+		
 		float2 pos2 = float2(cos(angRad), sin(angRad)) * r;
 
 		// ピボット補正
@@ -101,7 +106,8 @@ out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 2], out indices uint3 po
 		// 頂点情報を設定
 		MSOutput vertex;
 		vertex.position = pos;
-		vertex.texcoord = float2(t, isOuter ? 0.0f : 1.0f);
+		vertex.texcoord = (crescent.uvMode == 0) ?
+		float2(t, isOuter ? 0.0f : 1.0f) : float2(isOuter ? 0.0f : 1.0f, t);
 		vertex.instanceID = instanceIndex;
 
 		verts[groupThreadId] = vertex;

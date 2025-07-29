@@ -105,6 +105,9 @@ void ParticleUpdatePrimitiveModule::UpdateCylinder(CPUParticle::ParticleData& pa
 //============================================================================
 void ParticleUpdatePrimitiveModule::UpdateCrescent(CPUParticle::ParticleData& particle) {
 
+	particle.primitive.crescent.uvMode = primitive_.start.crescent.uvMode;
+	particle.primitive.crescent.uvMode = primitive_.target.crescent.uvMode;
+
 	particle.primitive.crescent.divide = Algorithm::LerpInt(primitive_.start.crescent.divide,
 		primitive_.target.crescent.divide, EasedValue(easingType_, particle.progress));
 
@@ -173,6 +176,9 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 		ImGui::DragInt("startDivide", &primitive_.start.crescent.divide, 1, 3, 32);
 		ImGui::DragInt("targetDivide", &primitive_.target.crescent.divide, 1, 3, 32);
 
+		ImGui::DragInt("startUVMode", &primitive_.start.crescent.uvMode, 1, 0, 1);
+		ImGui::DragInt("targetUVMode", &primitive_.target.crescent.uvMode, 1, 0, 1);
+
 		ImGui::DragFloat("startOuterRadius", &primitive_.start.crescent.outerRadius, 0.01f);
 		ImGui::DragFloat("targetOuterRadius", &primitive_.target.crescent.outerRadius, 0.01f);
 
@@ -236,6 +242,8 @@ Json ParticleUpdatePrimitiveModule::ToJson() {
 	{
 		data["crescent"]["startDivide"] = primitive_.start.crescent.divide;
 		data["crescent"]["targetDivide"] = primitive_.target.crescent.divide;
+		data["crescent"]["startUVMode"] = primitive_.start.crescent.uvMode;
+		data["crescent"]["targetUVMode"] = primitive_.target.crescent.uvMode;
 
 		data["crescent"]["startOuterRadius"] = primitive_.start.crescent.outerRadius;
 		data["crescent"]["targetOuterRadius"] = primitive_.target.crescent.outerRadius;
@@ -302,6 +310,8 @@ void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
 
 		primitive_.start.crescent.divide = crescentData.value("startDivide", primitive_.start.crescent.divide);
 		primitive_.target.crescent.divide = crescentData.value("targetDivide", primitive_.target.crescent.divide);
+		primitive_.start.crescent.uvMode = crescentData.value("startUVMode", primitive_.start.crescent.uvMode);
+		primitive_.target.crescent.uvMode = crescentData.value("targetUVMode", primitive_.target.crescent.uvMode);
 
 		primitive_.start.crescent.outerRadius = crescentData.value("startOuterRadius", primitive_.start.crescent.outerRadius);
 		primitive_.target.crescent.outerRadius = crescentData.value("targetOuterRadius", primitive_.target.crescent.outerRadius);

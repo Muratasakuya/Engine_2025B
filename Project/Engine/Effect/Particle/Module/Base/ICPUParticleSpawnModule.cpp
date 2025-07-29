@@ -120,6 +120,7 @@ void ICPUParticleSpawnModule::ImGuiPrimitiveParam() {
 	case ParticlePrimitiveType::Crescent:
 
 		ImGui::DragInt("divide", &primitive_.crescent.divide, 1, 3, 32);
+		ImGui::DragInt("uvMode", &primitive_.crescent.uvMode, 1, 0, 1);
 		ImGui::DragFloat("outerRadius", &primitive_.crescent.outerRadius, 0.01f);
 		ImGui::DragFloat("innerRadius", &primitive_.crescent.innerRadius, 0.01f);
 		ImGui::DragFloat("startAngle", &primitive_.crescent.startAngle, 0.01f);
@@ -266,6 +267,7 @@ void ICPUParticleSpawnModule::ToCommonJson(Json& data) {
 	case ParticlePrimitiveType::Crescent:
 
 		data[key]["primitive"]["crescent"]["divide"] = primitive_.crescent.divide;
+		data[key]["primitive"]["crescent"]["uvMode"] = primitive_.crescent.uvMode;
 		data[key]["primitive"]["crescent"]["outerRadius"] = primitive_.crescent.outerRadius;
 		data[key]["primitive"]["crescent"]["innerRadius"] = primitive_.crescent.innerRadius;
 		data[key]["primitive"]["crescent"]["startAngle"] = primitive_.crescent.startAngle;
@@ -295,6 +297,16 @@ void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
 	textureName_ = data[key]["textureName"].get<std::string>();
 	noiseTextureName_ = data[key]["noiseTextureName"].get<std::string>();
 
+	// 存在していなければ読み込む
+	if (!asset_->SearchTexture(textureName_)) {
+		asset_->LoadTexture(textureName_);
+	}
+	if (!asset_->SearchTexture(noiseTextureName_)) {
+		asset_->LoadTexture(noiseTextureName_);
+	}
+
+	textureInfo_.colorTextureIndex = asset_->GetTextureGPUIndex(textureName_);
+	textureInfo_.noiseTextureIndex = asset_->GetTextureGPUIndex(noiseTextureName_);
 	textureInfo_.samplerType = data[key]["samplerType"].get<int32_t>();
 	textureInfo_.useNoiseTexture = data[key]["useNoiseTexture"].get<int32_t>();
 
@@ -328,6 +340,7 @@ void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
 	case ParticlePrimitiveType::Crescent:
 
 		primitive_.crescent.divide = primitive["crescent"].value("divide", 8);
+		primitive_.crescent.uvMode = primitive["crescent"].value("uvMode", 1);
 		primitive_.crescent.outerRadius = primitive["crescent"].value("outerRadius", 4.0f);
 		primitive_.crescent.innerRadius = primitive["crescent"].value("innerRadius", 2.0f);
 		primitive_.crescent.startAngle = primitive["crescent"].value("startAngle", pi / 6.0f);

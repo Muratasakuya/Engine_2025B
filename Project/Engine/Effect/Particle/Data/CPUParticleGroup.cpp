@@ -281,6 +281,8 @@ Json CPUParticleGroup::ToJson() const {
 	data["primitive"] = EnumAdapter<ParticlePrimitiveType>::ToString(primitiveBuffer_.type);
 	data["blendMode"] = EnumAdapter<BlendMode>::ToString(blendMode_);
 
+	data["textureName"] = textureName_;
+
 	//============================================================================
 	//	PhasesParameters
 	//============================================================================
@@ -302,6 +304,8 @@ void CPUParticleGroup::FromJson(const Json& data, Asset* asset) {
 	primitiveBuffer_.type = primitive.value();
 	const auto& blendMode= EnumAdapter<BlendMode>::FromString(data["blendMode"]);
 	blendMode_ = blendMode.value();
+
+	textureName_ = data.value("textureName", "circle");
 
 	//============================================================================
 	//	PhasesParameters

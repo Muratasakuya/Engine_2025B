@@ -159,12 +159,12 @@ void ParticleSystem::ImGuiSystemParameter() {
 	ImGui::InputText("file", fileBuffer_, sizeof(fileBuffer_));
 
 	// 保存処理
-	if (ImGui::Button("Save##ps")) { 
+	if (ImGui::Button("Save##ps")) {
 
 		SaveJson();
 	}
 	// 読み込み処理
-	if (ImGui::Button("Load##ps")) { 
+	if (ImGui::Button("Load##ps")) {
 
 		LoadJson();
 	}
@@ -206,6 +206,7 @@ void ParticleSystem::SaveJson() {
 	//	SystemParameters
 	//============================================================================
 
+	data["primitiveType"] = EnumAdapter<ParticlePrimitiveType>::ToString(primitiveType_);
 	data["name"] = name_;
 
 	//============================================================================
@@ -241,6 +242,8 @@ void ParticleSystem::LoadJson() {
 	//	SystemParameters
 	//============================================================================
 
+	const auto& primitiveType = EnumAdapter<ParticlePrimitiveType>::FromString(data["primitiveType"]);
+	primitiveType_ = primitiveType.value();
 	name_ = data.value("name", "particleSystem");
 
 	//============================================================================

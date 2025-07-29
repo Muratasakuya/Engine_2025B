@@ -73,6 +73,10 @@ struct CrescentForGPU {
 	Vector2 pivot;
 	int divide;
 
+	// 0: 縦
+	// 1: 横
+	int uvMode;
+
 	void Init() {
 
 		outerRadius = 4.0f;
@@ -85,5 +89,6 @@ struct CrescentForGPU {
 		lattice = 0.5f;
 		pivot = Vector2::AnyInit(0.5f);
 		divide = 8;
+		uvMode = 1;
 	}
 };
