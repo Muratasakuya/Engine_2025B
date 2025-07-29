@@ -73,11 +73,16 @@ namespace ParticleCommon {
 		Vector3 translation;
 		Vector3 scale;
 		Matrix4x4 rotationMatrix;
+		Matrix4x4 parentMatrix;
 
 		// 0: full
 		// 1: yAxis(XZ回転を適応)
 		// 2: none(XYZ回転を適応)
 		uint32_t billboardMode;
+
+		// 0: 親無し
+		// 1: 親有り
+		uint32_t aliveParent = false;
 	};
 
 	struct PerFrameForGPU {

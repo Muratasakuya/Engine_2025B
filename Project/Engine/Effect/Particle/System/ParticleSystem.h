@@ -96,6 +96,9 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	// json
+	void SaveJson();
+
 	// editor
 	void AddGroup();
 	void RemoveGroup();

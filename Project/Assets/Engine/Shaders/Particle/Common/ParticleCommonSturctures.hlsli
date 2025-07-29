@@ -7,8 +7,10 @@ struct Transform {
 	float3 translation;
 	float3 scale;
 	float4x4 rotationMatrix;
+	float4x4 parentMatrix;
 	
 	uint billboardMode;
+	uint aliveParent;
 };
 
 struct Material {

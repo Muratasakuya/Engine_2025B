@@ -88,6 +88,12 @@ out vertices MSOutput verts[4], out indices uint3 polys[2]) {
 		// world行列を作成
 		float4x4 worldMatrix = MakeWorldMatrix(transform, gPerView.billboardMatrix, gPerView.cameraPos);
 		worldMatrix[3].xyz = transform.translation;
+		
+		// 親がいる場合
+		if (transform.aliveParent == 1) {
+			
+			worldMatrix = mul(worldMatrix, transform.parentMatrix);
+		}
 
 		// 行列計算
 		float4x4 wvp = mul(worldMatrix, gPerView.viewProjection);

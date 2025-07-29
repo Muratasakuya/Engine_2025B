@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Lib/Adapter/EnumAdapter.h>
+#include <Lib/Adapter/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>
@@ -184,4 +185,9 @@ void ParticleSystem::EditLayout() {
 	ImGui::DragFloat2("buttonSize_", &buttonSize_.x, 0.1f);
 
 	ImGui::End();
+}
+
+void ParticleSystem::SaveJson() {
+
+
 }
