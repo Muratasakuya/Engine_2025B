@@ -22,10 +22,12 @@ enum class ParticlePrimitiveType {
 struct PlaneForGPU {
 
 	Vector2 size;
+	Vector2 pivot;
 
 	void Init() {
 
 		size = Vector2::AnyInit(1.0f);
+		pivot = Vector2::AnyInit(0.0f);
 	}
 };
 // リング

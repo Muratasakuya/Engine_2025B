@@ -54,6 +54,9 @@ void ParticleUpdatePrimitiveModule::UpdatePlane(CPUParticle::ParticleData& parti
 
 	particle.primitive.plane.size = Vector2::Lerp(primitive_.start.plane.size,
 		primitive_.target.plane.size, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.plane.pivot = Vector2::Lerp(primitive_.start.plane.pivot,
+		primitive_.target.plane.pivot, EasedValue(easingType_, particle.progress));
 }
 
 //============================================================================
@@ -98,6 +101,9 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 
 		ImGui::DragFloat2("startSize", &primitive_.start.plane.size.x, 0.01f);
 		ImGui::DragFloat2("targetSize", &primitive_.target.plane.size.x, 0.01f);
+
+		ImGui::DragFloat2("startPivot", &primitive_.start.plane.pivot.x, 0.01f);
+		ImGui::DragFloat2("targetPivot", &primitive_.target.plane.pivot.x, 0.01f);
 		break;
 	}
 	case ParticlePrimitiveType::Ring: {
@@ -140,6 +146,8 @@ Json ParticleUpdatePrimitiveModule::ToJson() {
 	// Plane
 	data["plane"]["startSize"] = primitive_.start.plane.size.ToJson();
 	data["plane"]["targetSize"] = primitive_.target.plane.size.ToJson();
+	data["plane"]["startPivot"] = primitive_.start.plane.pivot.ToJson();
+	data["plane"]["targetPivot"] = primitive_.target.plane.pivot.ToJson();
 
 	// Ring
 	data["ring"]["startDivide"] = primitive_.start.ring.divide;
@@ -170,8 +178,10 @@ void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
 
 	// Plane
 	const auto& planeData = data["plane"];
-	primitive_.start.plane.size.FromJson(planeData["startSize"]);
-	primitive_.target.plane.size.FromJson(planeData["targetSize"]);
+	primitive_.start.plane.size = primitive_.start.plane.size.FromJson(planeData["startSize"]);
+	primitive_.target.plane.size = primitive_.target.plane.size.FromJson(planeData["targetSize"]);
+	primitive_.start.plane.pivot = primitive_.start.plane.pivot.FromJson(planeData["startPivot"]);
+	primitive_.target.plane.pivot = primitive_.target.plane.pivot.FromJson(planeData["targetPivot"]);
 
 	// Ring
 	const auto& ringData = data["ring"];

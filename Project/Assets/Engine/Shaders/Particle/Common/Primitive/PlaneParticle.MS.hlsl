@@ -20,6 +20,7 @@ ConstantBuffer<PerView> gPerView : register(b0);
 struct Plane {
 	
 	float2 size;
+	float2 pivot;
 };
 
 StructuredBuffer<Plane> gPlanes : register(t0);
@@ -53,8 +54,7 @@ out vertices MSOutput verts[4], out indices uint3 polys[2]) {
 	if (groupThreadId < 4) {
 		
 		// 縦と横の半分のサイズ
-		float halfWidth = plane.size.x * 0.5f;
-		float halfHeight = plane.size.y * 0.5f;
+		float2 halfSize = plane.size * 0.5f;
 
 		float3 localPos;
 		float2 uv = float2(0.0f, 0.0f);
@@ -62,28 +62,32 @@ out vertices MSOutput verts[4], out indices uint3 polys[2]) {
 			// 下左
 			case 0:
 
-				localPos = float3(-halfWidth, -halfHeight, 0.0f);
+				localPos = float3(-halfSize.x, -halfSize.y, 0.0f);
 				uv = float2(0.0f, 1.0f);
 				break;
 			// 下右
 			case 1:
 
-				localPos = float3(halfWidth, -halfHeight, 0.0f);
+				localPos = float3(halfSize.x, -halfSize.y, 0.0f);
 				uv = float2(1.0f, 1.0f);
 				break;
 			// 上左
 			case 2:
 
-				localPos = float3(-halfWidth, halfHeight, 0.0f);
+				localPos = float3(-halfSize.x, halfSize.y, 0.0f);
 				uv = float2(0.0f, 0.0f);
 				break;
 			// 上右
 			default:
 
-				localPos = float3(halfWidth, halfHeight, 0.0f);
+				localPos = float3(halfSize.x, halfSize.y, 0.0f);
 				uv = float2(1.0f, 0.0f);
 				break;
 		}
+		
+		// ピボットを適応
+		float2 pivotOffset = lerp(-halfSize, halfSize, plane.pivot);
+		localPos.xy -= pivotOffset;
 		
 		// world行列を作成
 		float4x4 worldMatrix = MakeWorldMatrix(transform, gPerView.billboardMatrix, gPerView.cameraPos);
