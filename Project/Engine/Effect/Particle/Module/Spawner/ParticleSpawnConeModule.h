@@ -27,6 +27,10 @@ public:
 
 	void ImGui() override;
 
+	// json
+	Json ToJson() override;
+	void FromJson(const Json& data) override;
+
 	//--------- accessor -----------------------------------------------------
 
 	const char* GetName() const override { return "SpawnCone"; }

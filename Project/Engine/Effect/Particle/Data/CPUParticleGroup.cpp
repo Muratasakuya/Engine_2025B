@@ -254,3 +254,50 @@ void CPUParticleGroup::ImGui() {
 	}
 	ImGui::EndChild();
 }
+
+Json CPUParticleGroup::ToJson() const {
+
+	Json data;
+
+	//============================================================================
+	//	GroupParameters
+	//============================================================================
+
+	data["primitive"] = EnumAdapter<ParticlePrimitiveType>::ToString(primitiveBuffer_.type);
+	data["blendMode"] = EnumAdapter<BlendMode>::ToString(blendMode_);
+
+	//============================================================================
+	//	PhasesParameters
+	//============================================================================
+
+	for (auto& phase : phases_) {
+
+		data["phases"].push_back(phase->ToJson());
+	}
+	return data;
+}
+
+void CPUParticleGroup::FromJson(const Json& data, Asset* asset) {
+
+	//============================================================================
+	//	GroupParameters
+	//============================================================================
+
+	const auto& primitive = EnumAdapter<ParticlePrimitiveType>::FromString(data["primitive"]);
+	primitiveBuffer_.type = primitive.value();
+	const auto& blendMode= EnumAdapter<BlendMode>::FromString(data["blendMode"]);
+	blendMode_ = blendMode.value();
+
+	//============================================================================
+	//	PhasesParameters
+	//============================================================================
+
+	phases_.clear();
+	for (auto& phaseData : data["phases"]) {
+
+		auto phase = std::make_unique<ParticlePhase>();
+		phase->Init(asset, primitiveBuffer_.type);
+		phase->FromJson(phaseData);
+		phases_.push_back(std::move(phase));
+	}
+}

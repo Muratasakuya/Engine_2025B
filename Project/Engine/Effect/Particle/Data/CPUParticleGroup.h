@@ -30,7 +30,12 @@ public:
 
 	void Update();
 
+	// editor
 	void ImGui();
+
+	// json
+	Json ToJson() const;
+	void FromJson(const Json& data, Asset* asset);
 
 	//--------- accessor -----------------------------------------------------
 

@@ -200,3 +200,105 @@ void ICPUParticleSpawnModule::ImageButtonWithLabel(const char* id,
 	ImGui::EndGroup();
 	ImGui::PopID();
 }
+
+void ICPUParticleSpawnModule::ToCommonJson(Json& data) {
+
+	const std::string key = "common";
+
+	//============================================================================
+	//	EmitParameters
+	//============================================================================
+
+	emitCount_.SaveJson(data[key], "emitCount");
+	lifeTime_.SaveJson(data[key], "lifeTime");
+	moveSpeed_.SaveJson(data[key], "moveSpeed");
+
+	//============================================================================
+	//	TextureParameters
+	//============================================================================
+
+	data[key]["textureName"] = textureName_;
+	data[key]["noiseTextureName"] = noiseTextureName_;
+
+	data[key]["samplerType"] = textureInfo_.samplerType;
+	data[key]["useNoiseTexture"] = textureInfo_.useNoiseTexture;
+
+	//============================================================================
+	//	PrimitiveParameters
+	//============================================================================
+
+	data[key]["primitive"]["shape"] = EnumAdapter<ParticlePrimitiveType>::ToString(primitive_.type);
+
+	switch (primitive_.type) {
+	case ParticlePrimitiveType::Plane:
+
+		data[key]["primitive"]["plane"]["size"] = primitive_.plane.size.ToJson();
+		break;
+	case ParticlePrimitiveType::Ring:
+
+		data[key]["primitive"]["ring"]["divide"] = primitive_.ring.divide;
+		data[key]["primitive"]["ring"]["outerRadius"] = primitive_.ring.outerRadius;
+		data[key]["primitive"]["ring"]["innerRadius"] = primitive_.ring.innerRadius;
+		break;
+	case ParticlePrimitiveType::Cylinder:
+
+		data[key]["primitive"]["cylinder"]["divide"] = primitive_.cylinder.divide;
+		data[key]["primitive"]["cylinder"]["topRadius"] = primitive_.cylinder.topRadius;
+		data[key]["primitive"]["cylinder"]["bottomRadius"] = primitive_.cylinder.bottomRadius;
+		data[key]["primitive"]["cylinder"]["height"] = primitive_.cylinder.height;
+		break;
+	}
+}
+
+void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
+
+	const std::string key = "common";
+
+	//============================================================================
+	//	EmitParameters
+	//============================================================================
+
+	emitCount_.ApplyJson(data[key], "emitCount");
+	lifeTime_.ApplyJson(data[key], "lifeTime");
+	moveSpeed_.ApplyJson(data[key], "moveSpeed");
+
+	//============================================================================
+	//	TextureParameters
+	//============================================================================
+
+	textureName_ = data[key]["textureName"].get<std::string>();
+	noiseTextureName_ = data[key]["noiseTextureName"].get<std::string>();
+
+	textureInfo_.samplerType = data[key]["samplerType"].get<int32_t>();
+	textureInfo_.useNoiseTexture = data[key]["useNoiseTexture"].get<int32_t>();
+
+	//============================================================================
+	//	PrimitiveParameters
+	//============================================================================
+
+	const auto& primitive = data[key]["primitive"];
+	const auto& shape = EnumAdapter<ParticlePrimitiveType>::FromString(primitive["shape"]);
+	primitive_.type = shape.value();
+
+	switch (primitive_.type) {
+	case ParticlePrimitiveType::Plane:
+
+		primitive_.plane.size = primitive_.plane.size.FromJson(primitive["plane"]["size"]);
+		break;
+
+	case ParticlePrimitiveType::Ring:
+
+		primitive_.ring.divide = primitive["ring"].value("divide", 8);
+		primitive_.ring.outerRadius = primitive["ring"].value("outerRadius", 1.0f);
+		primitive_.ring.innerRadius = primitive["ring"].value("innerRadius", 0.5f);
+		break;
+
+	case ParticlePrimitiveType::Cylinder:
+
+		primitive_.cylinder.divide = primitive["cylinder"].value("divide", 8);
+		primitive_.cylinder.topRadius = primitive["cylinder"].value("topRadius", 1.0f);
+		primitive_.cylinder.bottomRadius = primitive["cylinder"].value("bottomRadius", 1.0f);
+		primitive_.cylinder.height = primitive["cylinder"].value("height", 2.0f);
+		break;
+	}
+}

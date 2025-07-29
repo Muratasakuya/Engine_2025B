@@ -1,6 +1,11 @@
 #include "ParticleUpdateScaleModule.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Lib/Adapter/EnumAdapter.h>
+
+//============================================================================
 //	ParticleUpdateScaleModule classMethods
 //============================================================================
 
@@ -16,7 +21,7 @@ void ParticleUpdateScaleModule::Execute(
 
 	// 色を補間
 	particle.transform.scale = Vector3::Lerp(scale_.start, scale_.target,
-		EasedValue(easing, particle.progress));
+		EasedValue(easing_, particle.progress));
 }
 
 void ParticleUpdateScaleModule::ImGui() {
@@ -24,5 +29,26 @@ void ParticleUpdateScaleModule::ImGui() {
 	ImGui::DragFloat3("startScale", &scale_.start.x, 0.01f);
 	ImGui::DragFloat3("targetScale", &scale_.target.x, 0.01f);
 
-	Easing::SelectEasingType(easing, GetName());
+	Easing::SelectEasingType(easing_, GetName());
+}
+
+Json ParticleUpdateScaleModule::ToJson() {
+
+	Json data;
+
+	data["scale"]["start"] = scale_.start.ToJson();
+	data["scale"]["target"] = scale_.target.ToJson();
+	data["easingType"] = EnumAdapter<EasingType>::ToString(easing_);
+
+	return data;
+}
+
+void ParticleUpdateScaleModule::FromJson(const Json& data) {
+
+	const auto& easingType = EnumAdapter<EasingType>::FromString(data.value("easingType", ""));
+	easing_ = easingType.value();
+
+	const auto& scaleData = data["scale"];
+	scale_.start = scale_.start.FromJson(scaleData["start"]);
+	scale_.target = scale_.target.FromJson(scaleData["target"]);
 }

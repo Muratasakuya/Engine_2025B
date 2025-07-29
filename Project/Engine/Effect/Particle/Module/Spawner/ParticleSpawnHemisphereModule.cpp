@@ -71,3 +71,29 @@ void ParticleSpawnHemisphereModule::DrawEmitter() {
 	LineRenderer::GetInstance()->DrawHemisphere(8, emitter_.radius,
 		emitter_.translation, emitter_.rotationMatrix, emitterLineColor_);
 }
+
+Json ParticleSpawnHemisphereModule::ToJson() {
+
+	Json data;
+
+	// 共通設定
+	ICPUParticleSpawnModule::ToCommonJson(data);
+
+	data["emitterRotation"] = emitterRotation_.ToJson();
+
+	data["radius"] = emitter_.radius;
+	data["translation"] = emitter_.translation.ToJson();
+
+	return data;
+}
+
+void ParticleSpawnHemisphereModule::FromJson(const Json& data) {
+
+	// 共通設定
+	ICPUParticleSpawnModule::FromCommonJson(data);
+
+	emitterRotation_.FromJson(data["emitterRotation"]);
+
+	emitter_.radius = data.value("radius", 1.0f);
+	emitter_.translation.FromJson(data["translation"]);
+}

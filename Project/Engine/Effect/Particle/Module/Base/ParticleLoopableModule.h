@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/Structures/ParticleLoop.h>
+#include <Lib/MathUtils/Vector2.h>
 
 //============================================================================
 //	ParticleLoopableModule class
@@ -32,4 +33,8 @@ protected:
 	float LoopedT(float rawT) { return ParticleLoop::CalLoopedT(rawT, loopCount_, loopType_); }
 
 	void ImGuiLoopParam();
+
+	// json
+	void ToLoopJson(Json& data);
+	void FromLoopJson(const Json& data);
 };

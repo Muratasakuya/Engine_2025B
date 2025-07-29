@@ -1,6 +1,11 @@
 #include "ParticleUpdateColorModule.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Lib/Adapter/EnumAdapter.h>
+
+//============================================================================
 //	ParticleUpdateColorModule classMethods
 //============================================================================
 
@@ -30,4 +35,32 @@ void ParticleUpdateColorModule::ImGui() {
 	Easing::SelectEasingType(easing, GetName());
 
 	ImGuiLoopParam();
+}
+
+Json ParticleUpdateColorModule::ToJson() {
+
+	Json data;
+
+	// ループ
+	ParticleLoopableModule::ToLoopJson(data);
+
+	data["color"]["start"] = color_.start.ToJson();
+	data["color"]["target"] = color_.target.ToJson();
+
+	data["easingType"] = EnumAdapter<EasingType>::ToString(easing);
+
+	return data;
+}
+
+void ParticleUpdateColorModule::FromJson(const Json& data) {
+
+	// ループ
+	ParticleLoopableModule::FromLoopJson(data);
+
+	const auto& easingType = EnumAdapter<EasingType>::FromString(data.value("easingType", ""));
+	easing = easingType.value();
+
+	const auto& colorData = data["color"];
+	color_.start = color_.start.FromJson(colorData["start"]);
+	color_.target = color_.target.FromJson(colorData["target"]);
 }

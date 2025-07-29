@@ -58,3 +58,33 @@ void ParticleUpdateUVModule::ImGui() {
 		break;
 	}
 }
+
+Json ParticleUpdateUVModule::ToJson() {
+
+	Json data;
+
+	data["updateType"] = EnumAdapter<UpdateType>::ToString(updateType_);
+	data["easingType"] = EnumAdapter<EasingType>::ToString(easing_);
+
+	data["translation"]["start"] = translation_.start.ToJson();
+	data["translation"]["target"] = translation_.target.ToJson();
+
+	data["scrollValue"] = scrollValue_.ToJson();
+
+	return data;
+}
+
+void ParticleUpdateUVModule::FromJson(const Json& data) {
+
+	const auto& updateType = EnumAdapter<UpdateType>::FromString(data.value("updateType", ""));
+	updateType_ = updateType.value();
+
+	const auto& easingType = EnumAdapter<EasingType>::FromString(data.value("easingType", ""));
+	easing_ = easingType.value();
+
+	const auto& translationData = data["translation"];
+	translation_.start = translation_.start.FromJson(translationData["start"]);
+	translation_.target = translation_.target.FromJson(translationData["target"]);
+
+	scrollValue_ = scrollValue_.FromJson(data["scrollValue"]);
+}

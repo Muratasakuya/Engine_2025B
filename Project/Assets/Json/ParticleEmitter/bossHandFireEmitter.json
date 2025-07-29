@@ -1,8 +1,0 @@
-{
-    "FileType": "ParticleEmitter",
-    "particleNames": {
-        "0": "bossHandFireEmitter_fireRed.json",
-        "1": "bossHandFireEmitter_fireBlue.json",
-        "2": "bossHandFireEmitter_fire.json"
-    }
-}

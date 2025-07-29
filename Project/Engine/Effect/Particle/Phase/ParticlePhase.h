@@ -47,6 +47,10 @@ public:
 	// 入れ替え
 	void SwapUpdater(uint32_t from, uint32_t to);
 
+	// json
+	Json ToJson() const;
+	void FromJson(const Json& data);
+
 	//--------- accessor -----------------------------------------------------
 
 	float GetLifeTime() const;

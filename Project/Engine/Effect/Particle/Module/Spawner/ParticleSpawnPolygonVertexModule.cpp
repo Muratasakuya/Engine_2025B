@@ -81,7 +81,7 @@ bool ParticleSpawnPolygonVertexModule::EnableEmit() {
 	// 前フレームの頂点位置と比較する
 	for (size_t i = 0; i < vertexCount; ++i) {
 		if (std::numeric_limits<float>::epsilon() < (currentVertices[i] - prevVertices_[i]).Length()) {
-			
+
 			moved = true;
 			break;
 		}
@@ -246,4 +246,41 @@ void ParticleSpawnPolygonVertexModule::DrawEmitter() {
 		const auto vertices = CalcVertices();
 		lineRenderer->DrawSphere(4, 0.08f * scale_, vertices[0], emitterLineColor_);
 	}
+}
+
+Json ParticleSpawnPolygonVertexModule::ToJson() {
+
+	Json data;
+
+	// 共通設定
+	ICPUParticleSpawnModule::ToCommonJson(data);
+
+	data["isInterpolate"] = isInterpolate_;
+	data["notMoveEmit"] = notMoveEmit_;
+	data["vertexCount"] = vertexCount_;
+	data["scale"] = scale_;
+	data["emitterRotation"] = emitterRotation_.ToJson();
+	data["translation"] = translation_.ToJson();
+
+	emitPerVertex_.SaveJson(data, "emitPerVertex");
+	interpolateSpacing_.SaveJson(data, "interpolateSpacing");
+
+	return data;
+}
+
+void ParticleSpawnPolygonVertexModule::FromJson(const Json& data) {
+
+	// 共通設定
+	ICPUParticleSpawnModule::FromCommonJson(data);
+
+	isInterpolate_ = data.value("isInterpolate", false);
+	notMoveEmit_ = data.value("notMoveEmit", false);
+	vertexCount_ = data.value("vertexCount", 3);
+	scale_ = data.value("scale", 1.0f);
+
+	emitterRotation_.FromJson(data["emitterRotation"]);
+	translation_.FromJson(data["translation"]);
+
+	emitPerVertex_.ApplyJson(data, "emitPerVertex");
+	interpolateSpacing_.ApplyJson(data, "spacing");
 }

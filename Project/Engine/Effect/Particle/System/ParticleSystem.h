@@ -88,7 +88,8 @@ private:
 	GroupHandle selected_{ ParticleType::GPU, -1 };
 	GroupHandle renaming_{ ParticleType::GPU, -1 };
 	int nextGroupId_ = 0;         // グループ添え字インデックス
-	char renameBuffer_[128] = {}; // 入力用バッファ
+	char renameBuffer_[128] = {}; // 改名入力用
+	char fileBuffer_[128] = {};   // ファイル入力用
 	// layout
 	float comboWidth_ = 104.0f;
 	float itemWidth_ = 160.0f;
@@ -98,6 +99,7 @@ private:
 
 	// json
 	void SaveJson();
+	void LoadJson();
 
 	// editor
 	void AddGroup();

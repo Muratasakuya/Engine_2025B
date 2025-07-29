@@ -80,6 +80,10 @@ protected:
 
 	// helper
 	void SetCommonData(CPUParticle::ParticleData& particle);
+
+	// json
+	void ToCommonJson(Json& data);
+	void FromCommonJson(const Json& data);
 private:
 	//========================================================================
 	//	protected Methods

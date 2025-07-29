@@ -58,3 +58,25 @@ void ParticleSpawnSphereModule::DrawEmitter() {
 	LineRenderer::GetInstance()->DrawSphere(4, emitter_.radius,
 		emitter_.translation, emitterLineColor_);
 }
+
+Json ParticleSpawnSphereModule::ToJson() {
+
+	Json data;
+
+	// 共通設定
+	ICPUParticleSpawnModule::ToCommonJson(data);
+
+	data["radius"] = emitter_.radius;
+	data["translation"] = emitter_.translation.ToJson();
+
+	return data;
+}
+
+void ParticleSpawnSphereModule::FromJson(const Json& data) {
+
+	// 共通設定
+	ICPUParticleSpawnModule::FromCommonJson(data);
+
+	emitter_.radius = data.value("radius", 1.0f);
+	emitter_.translation.FromJson(data["translation"]);
+}

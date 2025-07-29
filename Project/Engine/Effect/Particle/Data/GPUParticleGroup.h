@@ -22,7 +22,12 @@ public:
 
 	void Update();
 
+	// editor
 	void ImGui(ID3D12Device* device);
+
+	// json
+	Json ToJson() const;
+	void FromJson(const Json& data);
 
 	//--------- accessor -----------------------------------------------------
 

@@ -78,3 +78,33 @@ void ParticleSpawnConeModule::DrawEmitter() {
 		8, emitter_.baseRadius, emitter_.topRadius, emitter_.height,
 		emitter_.translation, emitter_.rotationMatrix, emitterLineColor_);
 }
+
+Json ParticleSpawnConeModule::ToJson() {
+
+	Json data;
+
+	// 共通設定
+	ICPUParticleSpawnModule::ToCommonJson(data);
+
+	data["emitterRotation"] = emitterRotation_.ToJson();
+
+	data["baseRadius"] = emitter_.baseRadius;
+	data["topRadius"] = emitter_.topRadius;
+	data["height"] = emitter_.height;
+	data["translation"] = emitter_.translation.ToJson();
+
+	return data;
+}
+
+void ParticleSpawnConeModule::FromJson(const Json& data) {
+
+	// 共通設定
+	ICPUParticleSpawnModule::FromCommonJson(data);
+
+	emitterRotation_.FromJson(data["emitterRotation"]);
+
+	emitter_.baseRadius = data.value("baseRadius", 1.0f);
+	emitter_.topRadius = data.value("topRadius", 0.5f);
+	emitter_.height = data.value("height", 1.0f);
+	emitter_.translation.FromJson(data["translation"]);
+}

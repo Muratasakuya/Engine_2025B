@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Lib/Adapter/EnumAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 //============================================================================
@@ -127,4 +128,68 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 		break;
 	}
 	}
+}
+
+Json ParticleUpdatePrimitiveModule::ToJson() {
+
+	Json data;
+
+	// イージング
+	data["easingType"] = EnumAdapter<EasingType>::ToString(easingType_);
+
+	// Plane
+	data["plane"]["startSize"] = primitive_.start.plane.size.ToJson();
+	data["plane"]["targetSize"] = primitive_.target.plane.size.ToJson();
+
+	// Ring
+	data["ring"]["startDivide"] = primitive_.start.ring.divide;
+	data["ring"]["targetDivide"] = primitive_.target.ring.divide;
+	data["ring"]["startOuterRadius"] = primitive_.start.ring.outerRadius;
+	data["ring"]["targetOuterRadius"] = primitive_.target.ring.outerRadius;
+	data["ring"]["startInnerRadius"] = primitive_.start.ring.innerRadius;
+	data["ring"]["targetInnerRadius"] = primitive_.target.ring.innerRadius;
+
+	// Cylinder
+	data["cylinder"]["startDivide"] = primitive_.start.cylinder.divide;
+	data["cylinder"]["targetDivide"] = primitive_.target.cylinder.divide;
+	data["cylinder"]["startTopRadius"] = primitive_.start.cylinder.topRadius;
+	data["cylinder"]["targetTopRadius"] = primitive_.target.cylinder.topRadius;
+	data["cylinder"]["startBottomRadius"] = primitive_.start.cylinder.bottomRadius;
+	data["cylinder"]["targetBottomRadius"] = primitive_.target.cylinder.bottomRadius;
+	data["cylinder"]["startHeight"] = primitive_.start.cylinder.height;
+	data["cylinder"]["targetHeight"] = primitive_.target.cylinder.height;
+
+	return data;
+}
+
+void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
+
+	// イージング
+	const auto& easingType = EnumAdapter<EasingType>::FromString(data.value("easingType", ""));
+	easingType_ = easingType.value();
+
+	// Plane
+	const auto& planeData = data["plane"];
+	primitive_.start.plane.size.FromJson(planeData["startSize"]);
+	primitive_.target.plane.size.FromJson(planeData["targetSize"]);
+
+	// Ring
+	const auto& ringData = data["ring"];
+	primitive_.start.ring.divide = ringData.value("startDivide", primitive_.start.ring.divide);
+	primitive_.target.ring.divide = ringData.value("targetDivide", primitive_.target.ring.divide);
+	primitive_.start.ring.outerRadius = ringData.value("startOuterRadius", primitive_.start.ring.outerRadius);
+	primitive_.target.ring.outerRadius = ringData.value("targetOuterRadius", primitive_.target.ring.outerRadius);
+	primitive_.start.ring.innerRadius = ringData.value("startInnerRadius", primitive_.start.ring.innerRadius);
+	primitive_.target.ring.innerRadius = ringData.value("targetInnerRadius", primitive_.target.ring.innerRadius);
+
+	// Cylinder
+	const auto& cylinderData = data["cylinder"];
+	primitive_.start.cylinder.divide = cylinderData.value("startDivide", primitive_.start.cylinder.divide);
+	primitive_.target.cylinder.divide = cylinderData.value("targetDivide", primitive_.target.cylinder.divide);
+	primitive_.start.cylinder.topRadius = cylinderData.value("startTopRadius", primitive_.start.cylinder.topRadius);
+	primitive_.target.cylinder.topRadius = cylinderData.value("targetTopRadius", primitive_.target.cylinder.topRadius);
+	primitive_.start.cylinder.bottomRadius = cylinderData.value("startBottomRadius", primitive_.start.cylinder.bottomRadius);
+	primitive_.target.cylinder.bottomRadius = cylinderData.value("targetBottomRadius", primitive_.target.cylinder.bottomRadius);
+	primitive_.start.cylinder.height = cylinderData.value("startHeight", primitive_.start.cylinder.height);
+	primitive_.target.cylinder.height = cylinderData.value("targetHeight", primitive_.target.cylinder.height);
 }

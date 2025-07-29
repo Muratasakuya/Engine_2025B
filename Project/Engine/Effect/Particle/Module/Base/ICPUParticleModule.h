@@ -55,6 +55,10 @@ public:
 
 	virtual void ImGui() = 0;
 
+	// json
+	virtual Json ToJson() = 0;
+	virtual void FromJson(const Json& data) = 0;
+
 	//--------- accessor -----------------------------------------------------
 
 	virtual const char* GetName() const = 0;

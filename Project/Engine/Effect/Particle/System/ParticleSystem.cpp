@@ -156,7 +156,18 @@ void ParticleSystem::ImGuiGroupSelect() {
 
 void ParticleSystem::ImGuiSystemParameter() {
 
-	ImGui::TextDisabled("...");
+	ImGui::InputText("file", fileBuffer_, sizeof(fileBuffer_));
+
+	// 保存処理
+	if (ImGui::Button("Save##ps")) { 
+
+		SaveJson();
+	}
+	// 読み込み処理
+	if (ImGui::Button("Load##ps")) { 
+
+		LoadJson();
+	}
 }
 
 void ParticleSystem::ImGuiSelectedGroupEditor() {
@@ -189,5 +200,70 @@ void ParticleSystem::EditLayout() {
 
 void ParticleSystem::SaveJson() {
 
+	Json data;
 
+	//============================================================================
+	//	SystemParameters
+	//============================================================================
+
+	data["name"] = name_;
+
+	//============================================================================
+	//	GroupsParameters
+	//============================================================================
+
+	for (auto& group : gpuGroups_) {
+
+		Json groupData = group.group.ToJson();
+		groupData["name"] = group.name;
+		data["GPUGroups"].push_back(std::move(groupData));
+	}
+	for (auto& group : cpuGroups_) {
+
+		Json groupData = group.group.ToJson();
+		groupData["name"] = group.name;
+		data["CPUGroups"].push_back(std::move(groupData));
+	}
+
+	std::string fileName = static_cast<std::string>(fileBuffer_);
+	JsonAdapter::Save("Particle/" + fileName, data);
+}
+
+void ParticleSystem::LoadJson() {
+
+	Json data;
+	std::string fileName = static_cast<std::string>(fileBuffer_);
+	if (!JsonAdapter::LoadCheck(fileName, data)) {
+		return;
+	}
+
+	//============================================================================
+	//	SystemParameters
+	//============================================================================
+
+	name_ = data.value("name", "particleSystem");
+
+	//============================================================================
+	//	GroupsParameters
+	//============================================================================
+
+	gpuGroups_.clear();
+	cpuGroups_.clear();
+
+	// GPU
+	for (auto& groupData : data["GPUGroups"]) {
+
+		auto& group = gpuGroups_.emplace_back();
+		group.name = groupData.value("name", "");
+		group.group.Create(device_, primitiveType_);
+		group.group.FromJson(groupData);
+	}
+	// CPU
+	for (auto& groupData : data["CPUGroups"]) {
+
+		auto& group = cpuGroups_.emplace_back();
+		group.name = groupData.value("name", "");
+		group.group.Create(device_, asset_, primitiveType_);
+		group.group.FromJson(groupData, asset_);
+	}
 }

@@ -56,3 +56,27 @@ void ParticleUpdateGravityModule::ImGui() {
 		direction_ = direction_.Normalize();
 	}
 }
+
+Json ParticleUpdateGravityModule::ToJson() {
+
+	Json data;
+
+	data["reflectGround"] = reflectGround_;
+	data["reflectGroundY"] = reflectGroundY_;
+	data["restitution"] = restitution_;
+
+	data["strength"] = strength_;
+	data["direction"] = direction_.ToJson();
+
+	return data;
+}
+
+void ParticleUpdateGravityModule::FromJson(const Json& data) {
+
+	reflectGround_ = data.value("reflectGround", true);
+	reflectGroundY_ = data.value("reflectGroundY", 0.0f);
+	restitution_ = data.value("restitution", 0.4f);
+
+	strength_ = data.value("strength", 9.8f);
+	direction_ = direction_.FromJson(data["direction"]).Normalize();
+}

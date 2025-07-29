@@ -25,6 +25,10 @@ public:
 
 	void ImGui() override;
 
+	// json
+	Json ToJson() override;
+	void FromJson(const Json& data) override;
+
 	//--------- accessor -----------------------------------------------------
 
 	const char* GetName() const override { return "Emissive"; }
@@ -32,6 +36,7 @@ public:
 	//-------- registryID ----------------------------------------------------
 
 	static constexpr ParticleUpdateModuleID ID = ParticleUpdateModuleID::Emissive;
+	ParticleUpdateModuleID GetID() const override { return ID; }
 private:
 	//========================================================================
 	//	private Methods

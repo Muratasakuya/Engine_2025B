@@ -64,3 +64,29 @@ void ParticleSpawnBoxModule::DrawEmitter() {
 	LineRenderer::GetInstance()->DrawOBB(emitter_.translation,
 		emitter_.size, emitter_.rotationMatrix, emitterLineColor_);
 }
+
+Json ParticleSpawnBoxModule::ToJson() {
+
+	Json data;
+
+	// 共通設定
+	ICPUParticleSpawnModule::ToCommonJson(data);
+
+	data["emitterRotation"] = emitterRotation_.ToJson();
+
+	data["size"] = emitter_.size.ToJson();
+	data["translation"] = emitter_.translation.ToJson();
+
+	return data;
+}
+
+void ParticleSpawnBoxModule::FromJson(const Json& data) {
+
+	// 共通設定
+	ICPUParticleSpawnModule::FromCommonJson(data);
+
+	emitterRotation_.FromJson(data["emitterRotation"]);
+
+	emitter_.size.FromJson(data["size"]);
+	emitter_.translation.FromJson(data["translation"]);
+}

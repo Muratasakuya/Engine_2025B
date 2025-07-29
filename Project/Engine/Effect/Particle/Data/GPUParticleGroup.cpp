@@ -249,3 +249,120 @@ void GPUParticleGroup::SelectEmitter(ID3D12Device* device) {
 		}
 	}
 }
+
+Json GPUParticleGroup::ToJson() const {
+
+	Json data;
+
+	//============================================================================
+	//	GroupParameters
+	//============================================================================
+
+	data["primitive"] = EnumAdapter<ParticlePrimitiveType>::ToString(primitiveBuffer_.type);
+	data["blendMode"] = EnumAdapter<BlendMode>::ToString(blendMode_);
+
+	data["textureName"] = textureName_;
+	data["frequency"] = frequency_;
+
+	//============================================================================
+	//	EmitterParameters
+	//============================================================================
+
+	data["emitterRotation"] = emitterRotation_.ToJson();
+	data["emitterShape"] = EnumAdapter<ParticleEmitterShape>::ToString(emitter_.shape);
+
+	data["common"]["count"] = emitter_.common.count;
+	data["common"]["lifeTime"] = emitter_.common.lifeTime;
+	data["common"]["moveSpeed"] = emitter_.common.moveSpeed;
+	data["common"]["scale"] = emitter_.common.scale.ToJson();
+	data["common"]["color"] = emitter_.common.color.ToJson();
+
+	switch (emitter_.shape) {
+	case ParticleEmitterShape::Sphere:
+
+		data["sphere"]["radius"] = emitter_.sphere.radius;
+		data["sphere"]["translation"] = emitter_.sphere.translation.ToJson();
+		break;
+	case ParticleEmitterShape::Hemisphere:
+
+		data["hemisphere"]["radius"] = emitter_.hemisphere.radius;
+		data["hemisphere"]["translation"] = emitter_.hemisphere.translation.ToJson();
+		break;
+	case ParticleEmitterShape::Box:
+
+		data["box"]["size"] = emitter_.box.size.ToJson();
+		data["box"]["translation"] = emitter_.box.translation.ToJson();
+		break;
+	case ParticleEmitterShape::Cone:
+
+		data["cone"]["baseRadius"] = emitter_.cone.baseRadius;
+		data["cone"]["topRadius"] = emitter_.cone.topRadius;
+		data["cone"]["height"] = emitter_.cone.height;
+		data["cone"]["translation"] = emitter_.cone.translation.ToJson();
+		break;
+	}
+	return data;
+}
+
+void GPUParticleGroup::FromJson(const Json& data) {
+
+	//============================================================================
+	//	GroupParameters
+	//============================================================================
+
+	const auto& primitive = EnumAdapter<ParticlePrimitiveType>::FromString(data["primitive"]);
+	primitiveBuffer_.type = primitive.value();
+	const auto& blendMode = EnumAdapter<BlendMode>::FromString(data["blendMode"]);
+	blendMode_ = blendMode.value();
+
+	textureName_ = data.value("textureName", "circle");
+	frequency_ = data.value("frequency", 0.4f);
+
+	//============================================================================
+	//	EmitterParameters
+	//============================================================================
+
+	emitterRotation_ = emitterRotation_.FromJson(data["emitterRotation"]);
+	const auto& emitterShape = EnumAdapter<ParticleEmitterShape>::FromString(data["emitterShape"]);
+	emitter_.shape = emitterShape.value();
+
+	const auto& commonData = data["common"];
+	emitter_.common.count = commonData.value("count", 32);
+	emitter_.common.lifeTime = commonData.value("lifeTime", 1.0f);
+	emitter_.common.moveSpeed = commonData.value("moveSpeed", 1.0f);
+	emitter_.common.scale = emitter_.common.scale.FromJson(commonData["scale"]);
+	emitter_.common.color = emitter_.common.color.FromJson(commonData["color"]);
+
+	switch (emitter_.shape) {
+	case ParticleEmitterShape::Sphere: {
+
+		const auto& emitterData = data["sphere"];
+		emitter_.sphere.radius = emitterData.value("radius", 2.0f);
+		emitter_.sphere.translation = emitter_.sphere.translation.FromJson(emitterData["translation"]);
+		break;
+	}
+	case ParticleEmitterShape::Hemisphere: {
+
+		const auto& emitterData = data["hemisphere"];
+		emitter_.sphere.radius = emitterData.value("radius", 2.0f);
+		emitter_.hemisphere.translation = emitter_.hemisphere.translation.FromJson(emitterData["translation"]);
+		break;
+	}
+	case ParticleEmitterShape::Box: {
+
+		const auto& emitterData = data["box"];
+		emitter_.box.size = emitter_.box.size.FromJson(emitterData["size"]);
+		emitter_.box.translation = emitter_.box.translation.FromJson(emitterData["translation"]);
+		break;
+	}
+	case ParticleEmitterShape::Cone: {
+
+		const auto& emitterData = data["cone"];
+		emitter_.cone.baseRadius = emitterData.value("baseRadius", 0.4f);
+		emitter_.cone.topRadius = emitterData.value("topRadius", 1.6f);
+		emitter_.cone.height = emitterData.value("height", 1.6f);
+		emitter_.cone.translation = emitter_.cone.translation.FromJson(emitterData["translation"]);
+		break;
+	}
+	}
+}

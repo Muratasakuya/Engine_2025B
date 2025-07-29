@@ -135,3 +135,43 @@ void ParticleUpdateRotationModule::ImGui() {
 		break;
 	}
 }
+
+Json ParticleUpdateRotationModule::ToJson() {
+
+	Json data;
+
+	data["easingType"] = EnumAdapter<EasingType>::ToString(easing_);
+	data["billboardType"] = EnumAdapter<ParticleBillboardType>::ToString(billboardType_);
+	data["updateType"] = EnumAdapter<UpdateType>::ToString(updateType_);
+	data["lockAxisType"] = EnumAdapter<LockAxisType>::ToString(lockAxisType_);
+
+	// 回転
+	data["lerpRotation"]["start"] = lerpRotation_.start.ToJson();
+	data["lerpRotation"]["target"] = lerpRotation_.target.ToJson();
+	data["addRotation"] = addRotation_.ToJson();
+	data["lockAxis"] = lockAxis_.ToJson();
+
+	return data;
+}
+
+void ParticleUpdateRotationModule::FromJson(const Json& data) {
+
+	const auto& easingType = EnumAdapter<EasingType>::FromString(data.value("easingType", ""));
+	easing_ = easingType.value();
+
+	const auto& billboardType = EnumAdapter<ParticleBillboardType>::FromString(data.value("billboardType", ""));
+	billboardType_ = billboardType.value();
+
+	const auto& updateType = EnumAdapter<UpdateType>::FromString(data.value("updateType", ""));
+	updateType_ = updateType.value();
+
+	const auto& lockAxisType = EnumAdapter<LockAxisType>::FromString(data.value("lockAxisType", ""));
+	lockAxisType_ = lockAxisType.value();
+
+	// 回転
+	const auto& lerpData = data["lerpRotation"];
+	lerpRotation_.start = lerpRotation_.start.FromJson(lerpData["start"]);
+	lerpRotation_.target = lerpRotation_.target.FromJson(lerpData["target"]);
+	addRotation_ = addRotation_.FromJson(data["addRotation"]);
+	lockAxis_ = lockAxis_.FromJson(data["lockAxis"]);
+}

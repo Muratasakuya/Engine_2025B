@@ -211,7 +211,7 @@ void ParticlePhase::ImGui() {
 
 				ImGui::PushID(static_cast<int>(i));
 				bool isSelected = (selectedUpdater_ == static_cast<int>(i));
-				
+
 				std::string displayName = updaters_[i]->GetName();
 				// 8文字以上は...表示
 				bool isSubstrName = displayName.length() > 8;
@@ -220,7 +220,7 @@ void ParticlePhase::ImGui() {
 					displayName = displayName.substr(0, 7) + "...";
 				}
 				ImGui::Selectable(displayName.c_str(), isSelected, ImGuiSelectableFlags_AllowDoubleClick);
-				if (ImGui::IsItemHovered()&& isSubstrName) {
+				if (ImGui::IsItemHovered() && isSubstrName) {
 
 					ImGui::SetTooltip("%s", updaters_[i]->GetName());
 				}
@@ -290,5 +290,67 @@ void ParticlePhase::ImGui() {
 		}
 
 		ImGui::EndTabBar();
+	}
+}
+
+Json ParticlePhase::ToJson() const {
+
+	Json data;
+
+	//============================================================================
+	//	PhaseParameters
+	//============================================================================
+
+	data["duration"] = duration_;
+	data["notEmit"] = notEmit_;
+
+	//============================================================================
+	//	SpawnerParameters
+	//============================================================================
+
+	data["spawn"]["type"] = EnumAdapter<ParticleSpawnModuleID>::ToString(currentSpawnId_);
+	data["spawn"]["params"] = spawner_->ToJson();
+
+	//============================================================================
+	//	UpdatersParameters
+	//============================================================================
+
+	for (auto& updater : updaters_) {
+
+		data["updaters"].push_back({
+			{"type",   EnumAdapter<ParticleUpdateModuleID>::ToString(updater->GetID())},
+			{"params", updater->ToJson()} });
+	}
+	return data;
+}
+
+void ParticlePhase::FromJson(const Json& data) {
+
+	//============================================================================
+	//	PhaseParameters
+	//============================================================================
+
+	duration_ = data.value("duration", 0.8f);
+	notEmit_ = data.value("notEmit", false);
+
+	//============================================================================
+	//	SpawnerParameters
+	//============================================================================
+
+	const auto& spawnID = EnumAdapter<ParticleSpawnModuleID>::FromString(data["spawn"]["type"]);
+	SetSpawner(spawnID.value());
+
+	spawner_->FromJson(data["spawn"]["params"]);
+
+	//============================================================================
+	//	UpdatersParameters
+	//============================================================================
+
+	updaters_.clear();
+	for (auto& updateData : data["updaters"]) {
+
+		const auto& updateID = EnumAdapter<ParticleUpdateModuleID>::FromString(updateData["type"]);
+		AddUpdater(updateID.value());
+		updaters_.back()->FromJson(updateData["params"]);
 	}
 }

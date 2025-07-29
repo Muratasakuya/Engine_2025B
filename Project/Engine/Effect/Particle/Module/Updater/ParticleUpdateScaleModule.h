@@ -24,6 +24,10 @@ public:
 
 	void ImGui() override;
 
+	// json
+	Json ToJson() override;
+	void FromJson(const Json& data) override;
+
 	//--------- accessor -----------------------------------------------------
 
 	const char* GetName() const override { return "Scale"; }
@@ -31,6 +35,7 @@ public:
 	//-------- registryID ----------------------------------------------------
 
 	static constexpr ParticleUpdateModuleID ID = ParticleUpdateModuleID::Scale;
+	ParticleUpdateModuleID GetID() const override { return ID; }
 private:
 	//========================================================================
 	//	private Methods
@@ -40,5 +45,5 @@ private:
 
 	ParticleCommon::LerpValue<Vector3> scale_;
 
-	EasingType easing;
+	EasingType easing_;
 };

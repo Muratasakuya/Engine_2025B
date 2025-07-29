@@ -1,6 +1,11 @@
 #include "ParticleUpdateEmissiveModule.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Lib/Adapter/EnumAdapter.h>
+
+//============================================================================
 //	ParticleUpdateEmissiveModule classMethods
 //============================================================================
 
@@ -34,4 +39,37 @@ void ParticleUpdateEmissiveModule::ImGui() {
 	ImGui::ColorEdit3("targetColor", &color_.target.x);
 
 	Easing::SelectEasingType(easingType_, GetName());
+}
+
+Json ParticleUpdateEmissiveModule::ToJson() {
+
+	Json data;
+
+	// 発光度
+	data["intencity"]["start"] = intencity_.start;
+	data["intencity"]["target"] = intencity_.target;
+
+	// 発光色
+	data["color"]["start"] = color_.start.ToJson();
+	data["color"]["target"] = color_.target.ToJson();
+
+	data["easingType"] = EnumAdapter<EasingType>::ToString(easingType_);
+
+	return data;
+}
+
+void ParticleUpdateEmissiveModule::FromJson(const Json& data) {
+
+	const auto& easingType = EnumAdapter<EasingType>::FromString(data.value("easingType", ""));
+	easingType_ = easingType.value();
+
+	// 発光度
+	const auto& intData = data["intencity"];
+	intencity_.start = intData.value("start", 1.0f);
+	intencity_.target = intData.value("target", 1.0f);
+
+	// 発光色
+	const auto& colData = data["color"];
+	color_.start = color_.start.FromJson(colData["start"]);
+	color_.target = color_.target.FromJson(colData["target"]);
 }

@@ -1,6 +1,11 @@
 #include "ParticleUpdateAlphaReferenceModule.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Lib/Adapter/EnumAdapter.h>
+
+//============================================================================
 //	ParticleUpdateAlphaReferenceModule classMethods
 //============================================================================
 
@@ -48,4 +53,41 @@ void ParticleUpdateAlphaReferenceModule::ImGui() {
 	ImGui::DragFloat("targetNoiseReference", &noise_.target, 0.01f);
 
 	Easing::SelectEasingType(easing_, GetName());
+}
+
+Json ParticleUpdateAlphaReferenceModule::ToJson() {
+
+	Json data;
+
+	data["useNoiseTexture"] = useNoiseTexture_;
+
+	// 棄却値
+	data["color"]["start"] = color_.start;
+	data["color"]["target"] = color_.target;
+
+	data["noise"]["start"] = noise_.start;
+	data["noise"]["target"] = noise_.target;
+
+	data["easingType"] = EnumAdapter<EasingType>::ToString(easing_);
+
+	return data;
+}
+
+void ParticleUpdateAlphaReferenceModule::FromJson(const Json& data) {
+
+	useNoiseTexture_ = data.value("useNoiseTexture", false);
+
+	// イージング
+	const auto& easingType = EnumAdapter<EasingType>::FromString(data.value("easingType", ""));
+	easing_ = easingType.value();
+
+	// 色
+	const auto& colorData = data["color"];
+	color_.start = colorData.value("start", 0.5f);
+	color_.target = colorData.value("target", 0.5f);
+
+	// ノイズ
+	const auto& noiseData = data["noise"];
+	noise_.start = noiseData.value("start", 0.0f);
+	noise_.target = noiseData.value("target", 0.5f);
 }
