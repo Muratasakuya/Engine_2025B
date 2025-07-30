@@ -95,6 +95,9 @@ private:
 	int nextGroupId_ = 0;         // グループ添え字インデックス
 	char renameBuffer_[128] = {}; // 改名入力用
 	char fileBuffer_[128] = {};   // ファイル入力用
+	bool showSavePopup_ = false;
+	static constexpr int kSaveNameSize = 128;
+	char jsonSaveInput_[kSaveNameSize] = {};
 	// layout
 	float comboWidth_ = 104.0f;
 	float itemWidth_ = 160.0f;

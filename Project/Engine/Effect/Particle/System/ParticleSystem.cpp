@@ -157,13 +157,39 @@ void ParticleSystem::ImGuiGroupSelect() {
 
 void ParticleSystem::ImGuiSystemParameter() {
 
-	ImGui::InputText("file", fileBuffer_, sizeof(fileBuffer_));
-
 	// 保存処理
 	if (ImGui::Button("Save##ps")) {
-
-		SaveJson();
+		showSavePopup_ = true;
 	}
+
+	if (showSavePopup_) {
+		ImGui::OpenPopup("Save Particle");
+	}
+
+	if (ImGui::BeginPopupModal("Save Particle", nullptr, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Json/Particle/%s", jsonSaveInput_);
+		ImGui::InputText("##JsonFilename", jsonSaveInput_, kSaveNameSize);
+
+		if (ImGui::Button("Save")) {
+			std::string fileName = "Particle/" + std::string(jsonSaveInput_);
+			if (!fileName.empty()) {
+				strncpy_s(fileBuffer_, sizeof(fileBuffer_), fileName.c_str(), _TRUNCATE);
+				SaveJson();
+				showSavePopup_ = false;
+				ImGui::CloseCurrentPopup();
+			}
+		}
+
+		ImGui::SameLine();
+
+		if (ImGui::Button("Cancel")) {
+			showSavePopup_ = false;
+			ImGui::CloseCurrentPopup();
+		}
+
+		ImGui::EndPopup();
+	}
+	ImGui::SameLine();
 	// 読み込み処理
 	if (ImGui::Button("Load##ps")) {
 
@@ -173,6 +199,10 @@ void ParticleSystem::ImGuiSystemParameter() {
 			strncpy_s(fileBuffer_, sizeof(fileBuffer_), relPath.c_str(), _TRUNCATE);
 			LoadJson();
 		}
+	}
+
+	if (ImGui::CollapsingHeader("Parameters", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf)) {
+
 	}
 }
 
@@ -277,6 +307,8 @@ void ParticleSystem::LoadJson() {
 	if (!JsonAdapter::LoadCheck(fileName, data)) {
 		return;
 	}
+	// リセット
+	fileBuffer_[0] = '\0';
 
 	//============================================================================
 	//	SystemParameters
