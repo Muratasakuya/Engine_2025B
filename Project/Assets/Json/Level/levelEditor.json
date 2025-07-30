@@ -72,7 +72,7 @@
                 "scaling": [
                     8.0,
                     8.0,
-                    10.079999923706055
+                    14.40000057220459
                 ]
             }
         },
@@ -236,7 +236,7 @@
                 "translation": [
                     -99.0,
                     -93.0,
-                    -0.05606520175933838
+                    0.3648169934749603
                 ],
                 "rotation_quaternion": [
                     0.0,
@@ -861,7 +861,7 @@
                 "translation": [
                     -100.0,
                     96.0,
-                    -0.05606520175933838
+                    0.3648169934749603
                 ],
                 "rotation_quaternion": [
                     0.0,
@@ -886,7 +886,7 @@
                 "translation": [
                     100.0,
                     96.0,
-                    -0.05606520175933838
+                    0.3648169934749603
                 ],
                 "rotation_quaternion": [
                     0.0,
@@ -911,7 +911,7 @@
                 "translation": [
                     100.0,
                     -93.0,
-                    -0.05606520175933838
+                    0.3648169934749603
                 ],
                 "rotation_quaternion": [
                     0.0,
@@ -1472,7 +1472,7 @@
                 "scaling": [
                     8.0,
                     8.0,
-                    10.800000190734863
+                    14.40000057220459
                 ]
             }
         },
@@ -2005,7 +2005,7 @@
             "type": "MESH",
             "name": "wall_0",
             "entity_flag": true,
-            "entity_type": "",
+            "entity_type": "CrossMarkWall",
             "modelName": "wall",
             "transform": {
                 "translation": [
@@ -2024,13 +2024,38 @@
                     64.0,
                     8.0
                 ]
-            }
+            },
+            "collision": [
+                {
+                    "shape": "OBB",
+                    "center": [
+                        8.0,
+                        0.0,
+                        0.0
+                    ],
+                    "selfType": "CrossMarkWall",
+                    "targetTypes": [
+                        "Player"
+                    ],
+                    "size": [
+                        5.5,
+                        1.399999976158142,
+                        1.5
+                    ],
+                    "rotate": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ]
         },
         {
             "type": "MESH",
             "name": "wall_1",
             "entity_flag": true,
-            "entity_type": "",
+            "entity_type": "CrossMarkWall",
             "modelName": "wall",
             "transform": {
                 "translation": [
@@ -2049,7 +2074,32 @@
                     64.0,
                     8.0
                 ]
-            }
+            },
+            "collision": [
+                {
+                    "shape": "OBB",
+                    "center": [
+                        -8.0,
+                        0.0,
+                        0.0
+                    ],
+                    "selfType": "CrossMarkWall",
+                    "targetTypes": [
+                        "Player"
+                    ],
+                    "size": [
+                        5.5,
+                        1.399999976158142,
+                        1.5
+                    ],
+                    "rotate": [
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ]
+                }
+            ]
         },
         {
             "type": "MESH",
@@ -2861,7 +2911,7 @@
                 "translation": [
                     0.0,
                     0.0,
-                    0.0
+                    -3.0
                 ],
                 "rotation_quaternion": [
                     0.0,

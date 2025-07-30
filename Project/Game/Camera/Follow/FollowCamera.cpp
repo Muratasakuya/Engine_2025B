@@ -15,7 +15,7 @@
 
 void FollowCamera::Init() {
 
-	displayFrustum_ = true;
+	displayFrustum_ = false;
 
 	// json適応
 	ApplyJson();

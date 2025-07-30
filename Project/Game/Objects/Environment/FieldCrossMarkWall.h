@@ -18,7 +18,11 @@ public:
 	FieldCrossMarkWall() = default;
 	~FieldCrossMarkWall() = default;
 
+	void DerivedInit() override;
+
 	void Update() override;
+
+	void DerivedImGui() override;
 
 	/*-------- collision ----------*/
 
@@ -34,10 +38,39 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	// 状態
+	enum class State {
+
+		Idle,
+		Entering,
+		Staying,
+		Exiting
+	};
+
 	//--------- variables ----------------------------------------------------
 
+	State state_ = State::Idle;
 
+	// parameters
+	float lerpTimer_; // 補間時間経過
+	float lerpTime_;  // 補間時間
+
+	float blinkingSpacing_; // 点滅間隔
+	float blinkTimer_;      // 点滅経過時間
+
+	Color initColor_;    // 初期色
+	Color targetColor_;  // 目標色
+	Color startColor_;   // 補間開始色
+	Color currentColor_; // 現在の値
+
+	float startEmissive_;   // 補間開始発光度
+	float currentEmissive_; // 現在の値
 
 	//--------- functions ----------------------------------------------------
 
+	// json
+	void ApplyJson();
+	void SaveJson();
 };
