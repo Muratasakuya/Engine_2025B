@@ -115,7 +115,7 @@ Framework::Framework() {
 	//------------------------------------------------------------------------
 	// scene管理クラス初期化
 
-	sceneManager_ = std::make_unique<SceneManager>(Scene::Effect,
+	sceneManager_ = std::make_unique<SceneManager>(Scene::Game,
 		asset_.get(), postProcessSystem_.get(), sceneView_.get());
 
 	//------------------------------------------------------------------------
