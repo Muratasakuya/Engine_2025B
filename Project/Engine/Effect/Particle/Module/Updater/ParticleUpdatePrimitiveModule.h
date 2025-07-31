@@ -50,6 +50,7 @@ private:
 	ParticleCommon::LerpValue<ParticleCommon::PrimitiveData<false>> primitive_;
 
 	EasingType easingType_;
+	ParticlePlaneType planeType_;
 
 	//--------- functions ----------------------------------------------------
 

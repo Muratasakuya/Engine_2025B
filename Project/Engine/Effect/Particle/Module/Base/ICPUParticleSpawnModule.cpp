@@ -123,6 +123,11 @@ void ICPUParticleSpawnModule::ImGuiPrimitiveParam() {
 
 		ImGui::DragFloat2("size", &primitive_.plane.size.x, 0.01f);
 		ImGui::DragFloat2("pivot", &primitive_.plane.pivot.x, 0.01f);
+
+		if (EnumAdapter<ParticlePlaneType>::Combo("planeType", &planeType_)) {
+
+			primitive_.plane.mode = static_cast<uint32_t>(planeType_);
+		}
 		break;
 	case ParticlePrimitiveType::Ring:
 
@@ -270,6 +275,7 @@ void ICPUParticleSpawnModule::ToCommonJson(Json& data) {
 
 		data[key]["primitive"]["plane"]["size"] = primitive_.plane.size.ToJson();
 		data[key]["primitive"]["plane"]["pivot"] = primitive_.plane.pivot.ToJson();
+		data[key]["primitive"]["plane"]["mode"] = EnumAdapter<ParticlePlaneType>::ToString(planeType_);
 		break;
 	case ParticlePrimitiveType::Ring:
 
@@ -339,25 +345,31 @@ void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
 	primitive_.type = shape.value();
 
 	switch (primitive_.type) {
-	case ParticlePrimitiveType::Plane:
+	case ParticlePrimitiveType::Plane: {
 
 		primitive_.plane.size = primitive_.plane.size.FromJson(primitive["plane"]["size"]);
 		primitive_.plane.pivot = primitive_.plane.pivot.FromJson(primitive["plane"]["pivot"]);
+
+		const auto& planeType = EnumAdapter<ParticlePlaneType>::FromString(primitive["plane"]["mode"]);
+		primitive_.plane.mode = static_cast<uint32_t>(planeType.value());
 		break;
-	case ParticlePrimitiveType::Ring:
+	}
+	case ParticlePrimitiveType::Ring: {
 
 		primitive_.ring.divide = primitive["ring"].value("divide", 8);
 		primitive_.ring.outerRadius = primitive["ring"].value("outerRadius", 4.0f);
 		primitive_.ring.innerRadius = primitive["ring"].value("innerRadius", 2.0f);
 		break;
-	case ParticlePrimitiveType::Cylinder:
+	}
+	case ParticlePrimitiveType::Cylinder: {
 
 		primitive_.cylinder.divide = primitive["cylinder"].value("divide", 8);
 		primitive_.cylinder.topRadius = primitive["cylinder"].value("topRadius", 1.0f);
 		primitive_.cylinder.bottomRadius = primitive["cylinder"].value("bottomRadius", 1.0f);
 		primitive_.cylinder.height = primitive["cylinder"].value("height", 2.0f);
 		break;
-	case ParticlePrimitiveType::Crescent:
+	}
+	case ParticlePrimitiveType::Crescent: {
 
 		primitive_.crescent.divide = primitive["crescent"].value("divide", 8);
 		primitive_.crescent.uvMode = primitive["crescent"].value("uvMode", 1);
@@ -368,5 +380,6 @@ void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
 		primitive_.crescent.lattice = primitive["crescent"].value("lattice", 0.5f);
 		primitive_.crescent.pivot = primitive_.crescent.pivot.FromJson(primitive["crescent"]["pivot"]);
 		break;
+	}
 	}
 }

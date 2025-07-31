@@ -21,6 +21,7 @@ struct Plane {
 	
 	float2 size;
 	float2 pivot;
+	uint mode;
 };
 
 StructuredBuffer<Plane> gPlanes : register(t0);
@@ -88,6 +89,17 @@ out vertices MSOutput verts[4], out indices uint3 polys[2]) {
 		// ピボットを適応
 		float2 pivotOffset = lerp(-halfSize, halfSize, plane.pivot);
 		localPos.xy -= pivotOffset;
+		
+		// XY平面
+		if (plane.mode == 0) {
+
+			localPos = float3(localPos.x, localPos.y, 0.0f);
+		}
+		// XZ平面
+		else if (plane.mode == 1) {
+
+			localPos = float3(localPos.x, 0.0f, localPos.y);
+		}
 		
 		// world行列を作成
 		float4x4 worldMatrix = MakeWorldMatrix(transform, gPerView.billboardMatrix, gPerView.cameraPos);

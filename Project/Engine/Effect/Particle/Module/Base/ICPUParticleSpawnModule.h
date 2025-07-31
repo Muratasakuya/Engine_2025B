@@ -71,6 +71,7 @@ protected:
 
 	// Primtive
 	ParticleCommon::PrimitiveData<false> primitive_;
+	ParticlePlaneType planeType_;
 
 	// editor
 	const Color emitterLineColor_ = Color::Yellow(0.4f);

@@ -24,6 +24,8 @@ void ParticleUpdatePrimitiveModule::Init() {
 
 	primitive_.start.crescent.Init();
 	primitive_.target.crescent.Init();
+
+	planeType_ = ParticlePlaneType::XY;
 }
 
 void ParticleUpdatePrimitiveModule::Execute(
@@ -59,6 +61,9 @@ void ParticleUpdatePrimitiveModule::Execute(
 //	Plane
 //============================================================================
 void ParticleUpdatePrimitiveModule::UpdatePlane(CPUParticle::ParticleData& particle) {
+
+	particle.primitive.plane.mode = primitive_.start.plane.mode;
+	particle.primitive.plane.mode = primitive_.target.plane.mode;
 
 	particle.primitive.plane.size = Vector2::Lerp(primitive_.start.plane.size,
 		primitive_.target.plane.size, EasedValue(easingType_, particle.progress));
@@ -142,6 +147,12 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 
 		ImGui::DragFloat2("startPivot", &primitive_.start.plane.pivot.x, 0.01f);
 		ImGui::DragFloat2("targetPivot", &primitive_.target.plane.pivot.x, 0.01f);
+
+		if (EnumAdapter<ParticlePlaneType>::Combo("planeType", &planeType_)) {
+
+			primitive_.start.plane.mode = static_cast<uint32_t>(planeType_);
+			primitive_.target.plane.mode = static_cast<uint32_t>(planeType_);
+		}
 		break;
 	}
 	case ParticlePrimitiveType::Ring: {
@@ -214,6 +225,7 @@ Json ParticleUpdatePrimitiveModule::ToJson() {
 		data["plane"]["targetSize"] = primitive_.target.plane.size.ToJson();
 		data["plane"]["startPivot"] = primitive_.start.plane.pivot.ToJson();
 		data["plane"]["targetPivot"] = primitive_.target.plane.pivot.ToJson();
+		data["plane"]["mode"] = EnumAdapter<ParticlePlaneType>::ToString(planeType_);
 	}
 
 	// Ring
@@ -278,6 +290,10 @@ void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
 		primitive_.target.plane.size = primitive_.target.plane.size.FromJson(planeData["targetSize"]);
 		primitive_.start.plane.pivot = primitive_.start.plane.pivot.FromJson(planeData["startPivot"]);
 		primitive_.target.plane.pivot = primitive_.target.plane.pivot.FromJson(planeData["targetPivot"]);
+
+		const auto& planeType = EnumAdapter<ParticlePlaneType>::FromString(data["plane"]["mode"]);
+		primitive_.start.plane.mode = static_cast<uint32_t>(planeType.value());
+		primitive_.target.plane.mode = static_cast<uint32_t>(planeType.value());
 	}
 
 	// Ring

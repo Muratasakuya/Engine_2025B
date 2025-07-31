@@ -19,16 +19,29 @@ enum class ParticlePrimitiveType {
 	Count
 };
 
+// 平面の種類
+enum class ParticlePlaneType {
+
+	XY,
+	XZ
+};
+
 // 平面
 struct PlaneForGPU {
 
 	Vector2 size;
 	Vector2 pivot;
 
+	// 0: XY
+	// 1: XZ
+	uint32_t mode;
+
 	void Init() {
 
 		size = Vector2::AnyInit(1.0f);
 		pivot = Vector2::AnyInit(0.5f);
+
+		mode = 0;
 	}
 };
 // リング
