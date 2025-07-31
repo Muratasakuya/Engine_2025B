@@ -115,30 +115,37 @@ void BaseParticleGroup::DrawEmitter() {
 	const uint32_t division = 8;
 	const Color color = Color::Red(0.6f);
 
+	Vector3 parentTranslation{};
+	// 親の座標
+	if (parentTransform_) {
+
+		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+	}
+
 	// まだbufferが作成されていなければ作成する
 	switch (emitter_.shape) {
 	case ParticleEmitterShape::Sphere: {
 
 		lineRenderer->DrawSphere(division, emitter_.sphere.radius,
-			emitter_.sphere.translation, color);
+			parentTranslation + emitter_.sphere.translation, color);
 		break;
 	}
 	case ParticleEmitterShape::Hemisphere: {
 
 		lineRenderer->DrawHemisphere(division, emitter_.hemisphere.radius,
-			emitter_.hemisphere.translation, emitter_.hemisphere.rotationMatrix, color);
+			parentTranslation + emitter_.hemisphere.translation, emitter_.hemisphere.rotationMatrix, color);
 		break;
 	}
 	case ParticleEmitterShape::Box: {
 
-		lineRenderer->DrawOBB(emitter_.box.translation,
+		lineRenderer->DrawOBB(parentTranslation + emitter_.box.translation,
 			emitter_.box.size, emitter_.box.rotationMatrix, color);
 		break;
 	}
 	case ParticleEmitterShape::Cone: {
 
 		lineRenderer->DrawCone(division, emitter_.cone.baseRadius, emitter_.cone.topRadius,
-			emitter_.cone.height, emitter_.cone.translation, emitter_.cone.rotationMatrix, color);
+			emitter_.cone.height, parentTranslation + emitter_.cone.translation, emitter_.cone.rotationMatrix, color);
 		break;
 	}
 	}
