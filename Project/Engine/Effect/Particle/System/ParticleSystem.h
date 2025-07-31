@@ -37,9 +37,8 @@ private:
 	struct GroupHandle {
 
 		ParticleType type;
-		int index; 
+		int index;
 	};
-
 public:
 	//========================================================================
 	//	public Methods
@@ -63,12 +62,23 @@ public:
 	void SetName(const std::string& name) { name_ = name; }
 	void SetGroupName(uint32_t i, const std::string& name) { gpuGroups_[i].name = name; }
 	void SelectGroup(int index) { selected_.index = index; }
+	void SetParent(const BaseTransform& transform);
 
 	const std::string& GetName() const { return name_; }
 	const std::string& GetGroupName(uint32_t i) const { return gpuGroups_[i].name; }
 
 	std::vector<NameGroup<GPUParticleGroup>>& GetGPUGroup() { return gpuGroups_; }
 	std::vector<NameGroup<CPUParticleGroup>>& GetCPUGroup() { return cpuGroups_; }
+
+	//---------- runtime -----------------------------------------------------
+
+	// .jsonファイルから読み込んで作成する
+	void LoadJson(const std::optional<std::string>& filePath = std::nullopt, bool useGame = false);
+
+	// 一定間隔
+	void FrequencyEmit();
+	// 強制発生
+	void Emit();
 private:
 	//========================================================================
 	//	private Methods
@@ -86,6 +96,15 @@ private:
 	std::vector<NameGroup<GPUParticleGroup>> gpuGroups_;
 	// CPU
 	std::vector<NameGroup<CPUParticleGroup>> cpuGroups_;
+
+	// runtime
+	bool useGame_; // ゲーム側で使用する場合
+
+	// allEmit
+	// 全て同時に発生させる
+	bool allEmitEnable_; // フラグ
+	float allEmitTimer_; // 経過時間経過
+	float allEmitTime_;  // 経過時間
 
 	// editor
 	ParticleType particleType_;
@@ -107,7 +126,9 @@ private:
 
 	// json
 	void SaveJson();
-	void LoadJson();
+
+	// update
+	void UpdateAllEmit();
 
 	// editor
 	void AddGroup();

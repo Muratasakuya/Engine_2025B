@@ -28,7 +28,11 @@ public:
 	void Init(Asset* asset, ParticlePrimitiveType primitiveType);
 
 	// 発生処理
-	void Emit(std::list<CPUParticle::ParticleData>& particles, float deltaTime);
+	// 一定間隔
+	void FrequencyEmit(std::list<CPUParticle::ParticleData>& particles, float deltaTime);
+	// 強制発生
+	void Emit(std::list<CPUParticle::ParticleData>& particles);
+
 	// 更新処理
 	void UpdateParticle(CPUParticle::ParticleData& particle, float deltaTime);
 	void UpdateEmitter();
@@ -54,6 +58,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	// 親の設定
+	void SetTransform(const Matrix4x4& matrix);
 	void SetParent(bool isSet, const BaseTransform& parent);
 
 	float GetLifeTime() const;

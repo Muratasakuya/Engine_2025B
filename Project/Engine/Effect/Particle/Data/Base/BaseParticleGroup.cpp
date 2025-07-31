@@ -16,7 +16,7 @@
 //	BaseParticleGroup classMethods
 //============================================================================
 
-void BaseParticleGroup::SetParent(bool isSet, const Transform3D& parent) {
+void BaseParticleGroup::SetParent(bool isSet, const BaseTransform& parent) {
 
 	if (isSet) {
 

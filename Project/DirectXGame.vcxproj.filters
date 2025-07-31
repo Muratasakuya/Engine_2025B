@@ -539,9 +539,6 @@
     <ClCompile Include="Engine\Effect\Particle\Core\GPUParticleUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Effect\EffectSystem.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Effect\Trail\Editor\TrailEffectEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -824,7 +821,6 @@
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticlePrimitiveStructures.h" />
     <ClInclude Include="Engine\Effect\Particle\Core\GPUParticleUpdater.h" />
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleEmitterStructures.h" />
-    <ClInclude Include="Engine\Effect\EffectSystem.h" />
     <ClInclude Include="Engine\Effect\Trail\Editor\TrailEffectEditor.h" />
     <ClInclude Include="Engine\Effect\Trail\Structures\TrailEffectStructures.h" />
     <ClInclude Include="Engine\Effect\Trail\Core\TrailEffectRenderer.h" />

@@ -9,6 +9,14 @@
 //	ParticleSpawnPolygonVertexModule classMethods
 //============================================================================
 
+void ParticleSpawnPolygonVertexModule::SetTransform(const Matrix4x4& matrix) {
+
+	// 座標の設定
+	translation_ = matrix.GetTranslationValue();
+	// 回転の設定
+	emitterRotation_ = matrix.GetRotationValue();
+}
+
 void ParticleSpawnPolygonVertexModule::Init() {
 
 	// 初期化値

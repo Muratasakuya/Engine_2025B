@@ -4,6 +4,16 @@
 //	ParticlePhase classMethods
 //============================================================================
 
+void ParticlePhase::SetTransform(const Matrix4x4& matrix) {
+
+	// 親の設定
+	if (!spawner_) {
+		return;
+	}
+
+	spawner_->SetTransform(matrix);
+}
+
 void ParticlePhase::SetParent(bool isSet, const BaseTransform& parent) {
 
 	// 親の設定
@@ -31,7 +41,7 @@ void ParticlePhase::Init(Asset* asset, ParticlePrimitiveType primitiveType) {
 	AddUpdater(ParticleUpdateModuleID::Color);
 }
 
-void ParticlePhase::Emit(std::list<CPUParticle::ParticleData>& particles, float deltaTime) {
+void ParticlePhase::FrequencyEmit(std::list<CPUParticle::ParticleData>& particles, float deltaTime) {
 
 	// emitterとして処理しない
 	if (notEmit_) {
@@ -48,6 +58,12 @@ void ParticlePhase::Emit(std::list<CPUParticle::ParticleData>& particles, float 
 	// 発生処理
 	spawner_->Execute(particles);
 	elapsed_ = 0.0f;
+}
+
+void ParticlePhase::Emit(std::list<CPUParticle::ParticleData>& particles) {
+
+	// 発生処理
+	spawner_->Execute(particles);
 }
 
 void ParticlePhase::UpdateParticle(CPUParticle::ParticleData& particle, float deltaTime) {

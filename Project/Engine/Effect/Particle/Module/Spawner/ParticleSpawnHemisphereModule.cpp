@@ -10,6 +10,12 @@
 //	ParticleSpawnHemisphereModule classMethods
 //============================================================================
 
+void ParticleSpawnHemisphereModule::SetTransform(const Matrix4x4& matrix) {
+
+	// 座標の設定
+	emitter_.translation = matrix.GetTranslationValue();
+}
+
 void ParticleSpawnHemisphereModule::Init() {
 
 	// 値の初期値

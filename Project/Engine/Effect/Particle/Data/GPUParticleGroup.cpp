@@ -52,7 +52,7 @@ void GPUParticleGroup::Update() {
 	UpdateParent();
 }
 
-void GPUParticleGroup::UpdateEmitter() {
+void GPUParticleGroup::FrequencyEmit() {
 
 	// 時間を進める
 	frequencyTime_ += GameTimer::GetDeltaTime();
@@ -65,6 +65,39 @@ void GPUParticleGroup::UpdateEmitter() {
 
 		emitter_.common.emit = false;
 	}
+}
+
+void GPUParticleGroup::Emit() {
+
+	// 強制的に発生させる
+	emitter_.common.emit = true;
+}
+
+void GPUParticleGroup::SetTransform(const Matrix4x4& matrix) {
+
+	// 座標を設定
+	switch (emitter_.shape) {
+	case ParticleEmitterShape::Sphere: {
+
+		emitter_.sphere.translation = matrix.GetTranslationValue();
+	}
+	case ParticleEmitterShape::Hemisphere: {
+
+		emitter_.hemisphere.translation = matrix.GetTranslationValue();
+	}
+	case ParticleEmitterShape::Box: {
+
+		emitter_.box.translation = matrix.GetTranslationValue();
+	}
+	case ParticleEmitterShape::Cone: {
+
+		emitter_.cone.translation = matrix.GetTranslationValue();
+	}
+	}
+}
+
+void GPUParticleGroup::UpdateEmitter() {
+
 	// buffer転送
 	emitterBuffer_.common.TransferData(emitter_.common);
 

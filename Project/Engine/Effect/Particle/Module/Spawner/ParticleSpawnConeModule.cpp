@@ -10,6 +10,12 @@
 //	ParticleSpawnConeModule classMethods
 //============================================================================
 
+void ParticleSpawnConeModule::SetTransform(const Matrix4x4& matrix) {
+
+	// 座標の設定
+	emitter_.translation = matrix.GetTranslationValue();
+}
+
 void ParticleSpawnConeModule::Init() {
 
 	// 値の初期値

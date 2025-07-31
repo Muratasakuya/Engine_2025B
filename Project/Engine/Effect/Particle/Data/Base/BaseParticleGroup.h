@@ -22,7 +22,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	// 親の設定
-	void SetParent(bool isSet, const Transform3D& parent);
+	void SetParent(bool isSet, const BaseTransform& parent);
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetPrimitiveBufferAdress() const;
 protected:

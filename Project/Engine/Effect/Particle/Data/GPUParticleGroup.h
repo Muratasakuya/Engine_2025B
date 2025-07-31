@@ -61,6 +61,19 @@ public:
 	const DxStructuredBuffer<GPUParticle::ParticleForGPU>& GetParticleBuffer() const { return particleBuffer_; }
 	const DxStructuredBuffer<uint32_t>& GetFreeListIndexBuffer() const { return freeListIndexBuffer_; }
 	const DxStructuredBuffer<uint32_t>& GetFreeListBuffer() const { return freeListBuffer_; }
+
+	//---------- runtime -----------------------------------------------------
+
+	//----------- emit -------------------------------------------------------
+
+	// 一定間隔
+	void FrequencyEmit();
+	// 強制発生
+	void Emit();
+
+	//---------- setter ------------------------------------------------------
+
+	void SetTransform(const Matrix4x4& matrix);
 private:
 	//========================================================================
 	//	private Methods

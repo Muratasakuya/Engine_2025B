@@ -6,6 +6,8 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
+#include <Engine/Core/Debug/Assert.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Utility/GameTimer.h>
@@ -50,6 +52,28 @@ void ParticleManager::Finalize() {
 		delete instance_;
 		instance_ = nullptr;
 	}
+}
+
+ParticleSystem* ParticleManager::CreateParticleSystem(const std::string& filePath) {
+
+	// ファイル読み込みチェック
+	if (!JsonAdapter::LoadAssert(filePath)) {
+
+		LOG_WARN("particleFile not found → {}", filePath);
+		ASSERT(FALSE, "particleFile not found:" + filePath);
+		return nullptr;
+	}
+
+	// システム作成
+	std::unique_ptr<ParticleSystem> system = std::make_unique<ParticleSystem>();
+	system->Init(device_, asset_, filePath);
+	// jsonファイルから作成
+	system->LoadJson(filePath, true);
+	// 配列に追加
+	systems_.emplace_back(std::move(system));
+
+	// 生ptrを返す
+	return systems_.back().get();
 }
 
 //============================================================================
@@ -118,19 +142,15 @@ void ParticleManager::Update(DxCommand* dxCommand) {
 
 	// すべてのシステムを更新
 	for (auto& system : systems_) {
+
+		// パーティクルを更新
+		system->Update();
+
 		// GPU
 		for (auto& group : system->GetGPUGroup()) {
 
-			// グループ更新
-			group.group.Update();
 			// GPU更新
 			gpuUpdater_->Update(group.group, dxCommand);
-		}
-		// CPU
-		for (auto& group : system->GetCPUGroup()) {
-
-			// グループ更新
-			group.group.Update();
 		}
 	}
 }

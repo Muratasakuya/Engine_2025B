@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
+#include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/EnumAdapter.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
@@ -25,24 +26,87 @@ void ParticleSystem::Init(ID3D12Device* device,
 	asset_ = asset;
 
 	name_ = name;
+
+	useGame_ = false;
+	allEmitEnable_ = false;
+	allEmitTime_ = 1.0f;
 }
 
 void ParticleSystem::Update() {
 
-	if (gpuGroups_.empty()) {
-		return;
-	}
+	// 全ての同時発生
+	UpdateAllEmit();
 
 	// 所持しているパーティクルの更新
 	// GPU、発生処理しか行わない
 	for (auto& group : gpuGroups_) {
 
+		// ゲーム側で使用しない場合は常に
+		// 一定間隔で発生させる
+		if (!useGame_ && !allEmitEnable_) {
+
+			group.group.FrequencyEmit();
+		}
 		group.group.Update();
 	}
 	// CPU
 	for (auto& group : cpuGroups_) {
 
+		// ゲーム側で使用しない場合は常に
+		// 一定間隔で発生させる
+		if (!useGame_ && !allEmitEnable_) {
+
+			group.group.FrequencyEmit();
+		}
 		group.group.Update();
+	}
+}
+
+void ParticleSystem::FrequencyEmit() {
+
+	// 全てグループを一定間隔で発生させる
+	// GPU
+	for (auto& group : gpuGroups_) {
+
+		group.group.FrequencyEmit();
+	}
+	// CPU
+	for (auto& group : cpuGroups_) {
+
+		group.group.FrequencyEmit();
+	}
+}
+
+void ParticleSystem::Emit() {
+
+	// 全てのグループを発生させる
+	// GPU
+	for (auto& group : gpuGroups_) {
+
+		group.group.Emit();
+	}
+	// CPU
+	for (auto& group : cpuGroups_) {
+
+		group.group.Emit();
+	}
+}
+
+void ParticleSystem::UpdateAllEmit() {
+
+	// フラグがtrueじゃないときは処理しない
+	if (!allEmitEnable_) {
+		return;
+	}
+
+	// 時間経過で全て発生させる
+	allEmitTimer_ += GameTimer::GetDeltaTime();
+	if (allEmitTime_ < allEmitTimer_) {
+
+		// 発生
+		Emit();
+		// リセット
+		allEmitTimer_ = 0.0f;
 	}
 }
 
@@ -203,6 +267,10 @@ void ParticleSystem::ImGuiSystemParameter() {
 
 	if (ImGui::CollapsingHeader("Parameters", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf)) {
 
+		ImGui::Checkbox("allEmitEnable", &allEmitEnable_);
+
+		ImGui::Text("%.3f / %.3f", allEmitTimer_, allEmitTime_);
+		ImGui::DragFloat("emit", &allEmitTime_, 0.01f);
 	}
 }
 
@@ -300,15 +368,22 @@ void ParticleSystem::SaveJson() {
 	JsonAdapter::Save("Particle/" + fileName, data);
 }
 
-void ParticleSystem::LoadJson() {
+void ParticleSystem::LoadJson(const std::optional<std::string>& filePath, bool useGame) {
 
 	Json data;
 	std::string fileName = static_cast<std::string>(fileBuffer_);
+	if (filePath.has_value()) {
+
+		fileName = filePath.value();
+	}
 	if (!JsonAdapter::LoadCheck(fileName, data)) {
 		return;
 	}
 	// リセット
 	fileBuffer_[0] = '\0';
+
+	// 設定
+	useGame_ = useGame;
 
 	//============================================================================
 	//	SystemParameters

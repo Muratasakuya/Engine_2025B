@@ -36,6 +36,46 @@ void CPUParticleGroup::Update() {
 	UpdatePhase();
 }
 
+void CPUParticleGroup::FrequencyEmit() {
+
+	const float deltaTime = GameTimer::GetDeltaTime();
+
+	for (auto& phase : phases_) {
+
+		// 一定間隔で発生させる
+		phase->FrequencyEmit(particles_, deltaTime);
+
+		// emitterの更新
+		phase->UpdateEmitter();
+	}
+}
+
+void CPUParticleGroup::Emit() {
+
+	for (auto& phase : phases_) {
+
+		// 強制的に発生させる
+		phase->Emit(particles_);
+
+		// emitterの更新
+		phase->UpdateEmitter();
+	}
+}
+
+void CPUParticleGroup::SetTransform(const Matrix4x4& matrix) {
+
+	// 全てのemitterの座標を設定
+	// フェーズがない場合は処理しない
+	if (phases_.empty()) {
+		return;
+	}
+
+	for (const auto& phase : phases_) {
+
+		phase->SetTransform(matrix);
+	}
+}
+
 void CPUParticleGroup::UpdatePhase() {
 
 	// フェーズがない場合は処理しない
@@ -44,15 +84,6 @@ void CPUParticleGroup::UpdatePhase() {
 	}
 
 	const float deltaTime = GameTimer::GetDeltaTime();
-
-	for (auto& phase : phases_) {
-
-		// 発生処理
-		phase->Emit(particles_, deltaTime);
-
-		// emitterの更新
-		phase->UpdateEmitter();
-	}
 
 	// 転送データのリサイズ
 	ResizeTransferData(static_cast<uint32_t>(particles_.size()));
