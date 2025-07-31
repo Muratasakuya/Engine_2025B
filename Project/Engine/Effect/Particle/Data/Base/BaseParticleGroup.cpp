@@ -5,6 +5,8 @@
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/Debug/Assert.h>
+#include <Engine/Object/Core/ObjectManager.h>
+#include <Engine/Object/System/Systems/TagSystem.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 
 // imgui
@@ -13,6 +15,17 @@
 //============================================================================
 //	BaseParticleGroup classMethods
 //============================================================================
+
+void BaseParticleGroup::SetParent(bool isSet, const Transform3D& parent) {
+
+	if (isSet) {
+
+		parentTransform_ = &parent;
+	} else {
+
+		parentTransform_ = nullptr;
+	}
+}
 
 D3D12_GPU_VIRTUAL_ADDRESS BaseParticleGroup::GetPrimitiveBufferAdress() const {
 
@@ -184,4 +197,70 @@ void BaseParticleGroup::EditEmitter() {
 		break;
 	}
 	}
+}
+
+bool BaseParticleGroup::ImGuiParent() {
+
+	// 必要なシステム取得
+	ObjectManager* objectManager = ObjectManager::GetInstance();
+	TagSystem* tagSystem = objectManager->GetSystem<TagSystem>();
+	const auto& tags = tagSystem->Tags();
+
+	// すべてクリア
+	parentIDs_.clear();
+	parentNames_.clear();
+
+	// 0番目に設定なしを入れる
+	parentNames_.emplace_back("None");
+	parentIDs_.push_back(0);
+
+	for (const auto& [id, tag] : tags) {
+		if (objectManager->GetData<Transform3D>(id)) {
+
+			parentIDs_.push_back(id);
+			parentNames_.emplace_back(tag->name);
+		}
+	}
+
+	// 現在選択されているtransformの取得
+	int current = 0;
+	if (parentTransform_) {
+		for (size_t i = 1; i < parentIDs_.size(); ++i) {
+			if (objectManager->GetData<Transform3D>(parentIDs_[i]) == parentTransform_) {
+
+				current = static_cast<int>(i);
+				break;
+			}
+		}
+	}
+
+	// 親のリストをコンボ表示
+	bool edit = ImGui::BeginCombo("##ParentCombo", parentNames_[current].c_str());
+	if (edit) {
+		for (int i = 0; i < static_cast<int>(parentNames_.size()); ++i) {
+
+			bool selected = (current == i);
+			if (ImGui::Selectable(parentNames_[i].c_str(), selected)) {
+
+				current = i;
+			}
+			if (selected) {
+
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	// 親の設定
+	if (current == 0) {
+
+		SetParent(false, Transform3D());
+	} else {
+
+		SetParent(true, *objectManager->GetData<Transform3D>(parentIDs_[current]));
+	}
+
+	// Combo操作のリザルトを返す
+	return edit;
 }

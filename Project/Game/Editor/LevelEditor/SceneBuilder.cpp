@@ -56,6 +56,9 @@ void SceneBuilder::CreateObjectsMap(std::unordered_map<Level::ObjectType,
 
 	LOG_INFO("create sceneObjects...: {}", fileName_.value());
 
+	// 一度すべて破棄
+	objectsMap.clear();
+
 	// 作成処理
 	for (const auto& obj : data["objects"]) {
 

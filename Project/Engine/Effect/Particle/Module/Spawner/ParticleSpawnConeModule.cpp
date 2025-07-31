@@ -74,9 +74,16 @@ void ParticleSpawnConeModule::ImGui() {
 
 void ParticleSpawnConeModule::DrawEmitter() {
 
+	Vector3 parentTranslation{};
+	// 親の座標
+	if (parentTransform_) {
+
+		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+	}
+
 	LineRenderer::GetInstance()->DrawCone(
 		8, emitter_.baseRadius, emitter_.topRadius, emitter_.height,
-		emitter_.translation, emitter_.rotationMatrix, emitterLineColor_);
+		parentTranslation + emitter_.translation, emitter_.rotationMatrix, emitterLineColor_);
 }
 
 Json ParticleSpawnConeModule::ToJson() {

@@ -229,22 +229,31 @@ void ParticleSpawnPolygonVertexModule::ImGui() {
 void ParticleSpawnPolygonVertexModule::DrawEmitter() {
 
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
+	Vector3 parentTranslation{};
+	// 親の座標
+	if (parentTransform_) {
+
+		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+	}
 
 	if (3 <= vertexCount_) {
 
 		// 多角形の場合
 		lineRenderer->DrawPolygon(vertexCount_,
-			translation_, scale_, emitterRotation_, emitterLineColor_);
+			parentTranslation + translation_, scale_, emitterRotation_, emitterLineColor_);
 	} else if (vertexCount_ == 2) {
 
 		// 2頂点の場合
 		const auto vertices = CalcVertices();
-		lineRenderer->DrawLine3D(vertices[0], vertices[1], emitterLineColor_);
+		lineRenderer->DrawLine3D(
+			parentTranslation + vertices[0],
+			parentTranslation + vertices[1], emitterLineColor_);
 	} else {
 
 		// 1頂点の場合
 		const auto vertices = CalcVertices();
-		lineRenderer->DrawSphere(4, 0.08f * scale_, vertices[0], emitterLineColor_);
+		lineRenderer->DrawSphere(4, 0.08f * scale_,
+			parentTranslation + vertices[0], emitterLineColor_);
 	}
 }
 

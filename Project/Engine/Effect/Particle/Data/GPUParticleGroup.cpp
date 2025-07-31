@@ -30,6 +30,7 @@ void GPUParticleGroup::Create(ID3D12Device* device, ParticlePrimitiveType primit
 
 	// buffer作成
 	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveType);
+	parentBuffer_.CreateBuffer(device);
 	// 球でデフォルトで作成
 	emitterBuffer_.common.CreateBuffer(device);
 	emitterBuffer_.sphere.CreateBuffer(device);
@@ -46,6 +47,9 @@ void GPUParticleGroup::Update() {
 
 	// 現在使用中のエミッタを更新
 	UpdateEmitter();
+
+	// 親の情報を更新
+	UpdateParent();
 }
 
 void GPUParticleGroup::UpdateEmitter() {
@@ -102,9 +106,28 @@ void GPUParticleGroup::UpdateEmitter() {
 	BaseParticleGroup::DrawEmitter();
 }
 
+void GPUParticleGroup::UpdateParent() {
+
+	// 親の設定
+	ParentForGPU paent{};
+	if (parentTransform_) {
+
+		paent.aliveParent = true;
+		paent.parentMatrix = parentTransform_->matrix.world;
+	} else {
+
+		paent.aliveParent = false;
+		paent.parentMatrix = Matrix4x4::MakeIdentity4x4();
+	}
+
+	// buffer転送
+	parentBuffer_.TransferData(paent);
+}
+
 void GPUParticleGroup::ImGui(ID3D12Device* device) {
 
 	ImGui::Text("kMaxParticle: %d", kMaxParticles);
+
 	if (ImGui::BeginTabBar("GPUParticleGroupTab")) {
 		if (ImGui::BeginTabItem("Render")) {
 
@@ -128,6 +151,11 @@ void GPUParticleGroup::ImGui(ID3D12Device* device) {
 		if (ImGui::BeginTabItem("Transform")) {
 
 			ImGui::DragFloat3("scale", &emitter_.common.scale.x, 0.01f);
+
+			ImGui::SeparatorText("Parent");
+
+			BaseParticleGroup::ImGuiParent();
+
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Material")) {

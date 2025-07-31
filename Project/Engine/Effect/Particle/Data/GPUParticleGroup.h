@@ -10,6 +10,19 @@
 //============================================================================
 class GPUParticleGroup :
 	public BaseParticleGroup {
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- structures ---------------------------------------------------
+
+	// GPUに渡す親の情報
+	struct ParentForGPU {
+
+		Matrix4x4 parentMatrix;
+		uint32_t aliveParent;
+	};
 public:
 	//========================================================================
 	//	public Methods
@@ -41,6 +54,7 @@ public:
 	uint32_t GetEmitCount() const { return emitter_.common.count; }
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetEmitterShapeBufferAdress() const;
+	const DxConstBuffer<ParentForGPU>& GetParentBuffer() const { return parentBuffer_; }
 	const DxConstBuffer<ParticleEmitterCommon>& GetEmitterCommonBuffer() const { return emitterBuffer_.common; }
 	const DxStructuredBuffer<ParticleCommon::TransformForGPU>& GetTransformBuffer() const { return transformBuffer_; }
 	const DxStructuredBuffer<GPUParticle::MaterialForGPU>& GetMaterialBuffer() const { return materialBuffer_; }
@@ -62,6 +76,7 @@ private:
 
 	// buffers
 	ParticleEmitterBufferData emitterBuffer_;
+	DxConstBuffer<ParentForGPU> parentBuffer_;
 	DxStructuredBuffer<GPUParticle::MaterialForGPU> materialBuffer_;
 	DxStructuredBuffer<GPUParticle::ParticleForGPU> particleBuffer_;
 	// freeList
@@ -72,6 +87,7 @@ private:
 
 	// update
 	void UpdateEmitter();
+	void UpdateParent();
 
 	// editor
 	void SelectEmitter(ID3D12Device* device);

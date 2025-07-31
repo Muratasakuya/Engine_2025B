@@ -64,11 +64,8 @@ out vertices MSOutput verts[RING_MAX_VERTS], out indices uint3 polys[RING_MAX_TR
 	float4x4 worldMatrix = MakeWorldMatrix(transform, gPerView.billboardMatrix, gPerView.cameraPos);
 	worldMatrix[3].xyz = transform.translation;
 	
-	// 親がいる場合
-	if (transform.aliveParent == 1) {
-			
-		worldMatrix = mul(worldMatrix, transform.parentMatrix);
-	}
+	// 親の設定
+	worldMatrix = SetParent(transform, worldMatrix);
 
 	// 行列計算
 	float4x4 wvp = mul(worldMatrix, gPerView.viewProjection);

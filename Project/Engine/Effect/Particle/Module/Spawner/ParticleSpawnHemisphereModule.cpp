@@ -68,8 +68,15 @@ void ParticleSpawnHemisphereModule::ImGui() {
 
 void ParticleSpawnHemisphereModule::DrawEmitter() {
 
+	Vector3 parentTranslation{};
+	// 親の座標
+	if (parentTransform_) {
+
+		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+	}
+
 	LineRenderer::GetInstance()->DrawHemisphere(8, emitter_.radius,
-		emitter_.translation, emitter_.rotationMatrix, emitterLineColor_);
+		parentTranslation + emitter_.translation, emitter_.rotationMatrix, emitterLineColor_);
 }
 
 Json ParticleSpawnHemisphereModule::ToJson() {

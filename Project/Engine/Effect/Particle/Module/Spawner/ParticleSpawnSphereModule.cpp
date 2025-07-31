@@ -55,8 +55,14 @@ void ParticleSpawnSphereModule::ImGui() {
 
 void ParticleSpawnSphereModule::DrawEmitter() {
 
+	Vector3 parentTranslation{};
+	// 親の座標
+	if (parentTransform_) {
+
+		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+	}
 	LineRenderer::GetInstance()->DrawSphere(4, emitter_.radius,
-		emitter_.translation, emitterLineColor_);
+		parentTranslation + emitter_.translation, emitterLineColor_);
 }
 
 Json ParticleSpawnSphereModule::ToJson() {

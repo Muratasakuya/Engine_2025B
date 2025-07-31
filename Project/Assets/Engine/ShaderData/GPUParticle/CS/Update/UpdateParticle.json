@@ -11,6 +11,7 @@
         { "RootIndex": 2, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 2 },
         { "RootIndex": 3, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 3 },
         { "RootIndex": 4, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 4 },
-        { "RootIndex": 5, "Type": "CBV", "Visibility": "COMPUTE", "ShaderRegister": 0 }
+        { "RootIndex": 5, "Type": "CBV", "Visibility": "COMPUTE", "ShaderRegister": 0 },
+        { "RootIndex": 6, "Type": "CBV", "Visibility": "COMPUTE", "ShaderRegister": 1 }
     ]
 }

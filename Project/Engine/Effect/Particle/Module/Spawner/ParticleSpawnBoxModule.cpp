@@ -61,7 +61,14 @@ void ParticleSpawnBoxModule::ImGui() {
 
 void ParticleSpawnBoxModule::DrawEmitter() {
 
-	LineRenderer::GetInstance()->DrawOBB(emitter_.translation,
+	Vector3 parentTranslation{};
+	// 親の座標
+	if (parentTransform_) {
+
+		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+	}
+
+	LineRenderer::GetInstance()->DrawOBB(parentTranslation + emitter_.translation,
 		emitter_.size, emitter_.rotationMatrix, emitterLineColor_);
 }
 

@@ -4,6 +4,16 @@
 //	ParticlePhase classMethods
 //============================================================================
 
+void ParticlePhase::SetParent(bool isSet, const BaseTransform& parent) {
+
+	// 親の設定
+	if (!spawner_) {
+		return;
+	}
+
+	spawner_->SetParent(isSet, parent);
+}
+
 void ParticlePhase::Init(Asset* asset, ParticlePrimitiveType primitiveType) {
 
 	asset_ = nullptr;

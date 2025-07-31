@@ -53,6 +53,9 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	// 親の設定
+	void SetParent(bool isSet, const BaseTransform& parent);
+
 	float GetLifeTime() const;
 private:
 	//========================================================================

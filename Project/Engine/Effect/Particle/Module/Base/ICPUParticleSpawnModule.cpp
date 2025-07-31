@@ -67,6 +67,17 @@ void ICPUParticleSpawnModule::SetPrimitiveType(ParticlePrimitiveType type) {
 	}
 }
 
+void ICPUParticleSpawnModule::SetParent(bool isSet, const BaseTransform& parent) {
+
+	if (isSet) {
+
+		parentTransform_ = &parent;
+	} else {
+
+		parentTransform_ = nullptr;
+	}
+}
+
 void ICPUParticleSpawnModule::ShareCommonParam(ICPUParticleSpawnModule* other) {
 
 	// Emit
@@ -82,6 +93,15 @@ void ICPUParticleSpawnModule::ShareCommonParam(ICPUParticleSpawnModule* other) {
 
 	// Primitive
 	primitive_ = other->primitive_;
+
+	// 親の設定
+	if (other->parentTransform_) {
+
+		SetParent(true, *other->parentTransform_);
+	} else {
+
+		SetParent(false, Transform3D());
+	}
 }
 
 void ICPUParticleSpawnModule::ImGuiRenderParam() {

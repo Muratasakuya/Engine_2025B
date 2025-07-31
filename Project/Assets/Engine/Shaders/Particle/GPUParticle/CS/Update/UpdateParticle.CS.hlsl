@@ -9,7 +9,14 @@
 //	CBuffer
 //============================================================================
 
+struct ParentBuffer {
+	
+	float4x4 parentMatrix;
+	uint aliveParent;
+};
+
 ConstantBuffer<PerFrame> gPerFrame : register(b0);
+ConstantBuffer<ParentBuffer> gParentBuffer : register(b1);
 
 //============================================================================
 //	RWStructuredBuffer
@@ -43,6 +50,9 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 		
 		// transform
 		transform.translation += particle.velocity * gPerFrame.deltaTime;
+		// êeÇÃê›íË
+		transform.aliveParent = gParentBuffer.aliveParent;
+		transform.parentMatrix = gParentBuffer.parentMatrix;
 		
 		// material
 		material.color.a = saturate(1.0f - particle.currentTime / particle.lifeTime);

@@ -112,6 +112,17 @@ void CPUParticleGroup::UpdateTransferData(uint32_t particleIndex,
 
 	// transform
 	transferTransforms_[particleIndex] = particle.transform;
+	// 親の設定
+	if (parentTransform_) {
+
+		transferTransforms_[particleIndex].aliveParent = true;
+		transferTransforms_[particleIndex].parentMatrix = parentTransform_->matrix.world;
+	} else {
+
+		transferTransforms_[particleIndex].aliveParent = false;
+		transferTransforms_[particleIndex].parentMatrix = Matrix4x4::MakeIdentity4x4();
+	}
+
 	// material
 	transferMaterials_[particleIndex] = particle.material;
 	// texture
@@ -230,6 +241,27 @@ void CPUParticleGroup::ImGui() {
 		AddPhase();
 	}
 
+	ImGui::SeparatorText("Parent");
+
+	// 親の設定があった場合すべてのemitterにも通知して処理する
+	bool editParent = BaseParticleGroup::ImGuiParent();
+	if (editParent) {
+		// 親が設定されている場合
+		if (parentTransform_) {
+			for (const auto& phase : phases_) {
+
+				phase->SetParent(true, *parentTransform_);
+			}
+		}
+		// 親が設定されていない場合
+		else {
+			for (const auto& phase : phases_) {
+
+				phase->SetParent(false, Transform3D());
+			}
+		}
+	}
+
 	if (!phases_.empty()) {
 
 		ImGui::BeginChild("PhaseList", ImVec2(88.0f, 0.0f), ImGuiChildFlags_Border);
@@ -302,7 +334,7 @@ void CPUParticleGroup::FromJson(const Json& data, Asset* asset) {
 
 	const auto& primitive = EnumAdapter<ParticlePrimitiveType>::FromString(data["primitive"]);
 	primitiveBuffer_.type = primitive.value();
-	const auto& blendMode= EnumAdapter<BlendMode>::FromString(data["blendMode"]);
+	const auto& blendMode = EnumAdapter<BlendMode>::FromString(data["blendMode"]);
 	blendMode_ = blendMode.value();
 
 	textureName_ = data.value("textureName", "circle");

@@ -162,6 +162,8 @@ void GPUParticleUpdater::DispatchUpdate(const GPUParticleGroup& group, DxCommand
 	commandList->SetComputeRootUnorderedAccessView(4, group.GetFreeListBuffer().GetResource()->GetGPUVirtualAddress());
 	// perFrame
 	commandList->SetComputeRootConstantBufferView(5, perFrameBuffer_.GetResource()->GetGPUVirtualAddress());
+	// perFrame
+	commandList->SetComputeRootConstantBufferView(6, group.GetParentBuffer().GetResource()->GetGPUVirtualAddress());
 
 	// 実行
 	commandList->Dispatch(1, 1, 1);

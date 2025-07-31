@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Object/Data/Transform.h>
 #include <Engine/Effect/Particle/Structures/ParticleStructures.h>
 #include <Engine/Effect/Particle/Structures/ParticleEmitterStructures.h>
 
@@ -19,6 +20,9 @@ public:
 	virtual ~BaseParticleGroup() = default;
 
 	//--------- accessor -----------------------------------------------------
+
+	// 親の設定
+	void SetParent(bool isSet, const Transform3D& parent);
 
 	D3D12_GPU_VIRTUAL_ADDRESS GetPrimitiveBufferAdress() const;
 protected:
@@ -40,6 +44,9 @@ protected:
 	BlendMode blendMode_;
 	std::string textureName_;
 
+	// 親設定
+	const BaseTransform* parentTransform_ = nullptr;
+
 	//--------- functions ----------------------------------------------------
 
 	// create
@@ -48,4 +55,17 @@ protected:
 	// emitter
 	void DrawEmitter();
 	void EditEmitter();
+
+	// editor
+	bool ImGuiParent();
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	// editor
+	std::vector<uint32_t> parentIDs_;
+	std::vector<std::string> parentNames_;
 };

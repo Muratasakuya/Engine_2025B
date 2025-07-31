@@ -80,3 +80,18 @@ float4x4 MakeWorldMatrix(Transform transform, float4x4 billboardMatrix, float3 c
 	
 	return mul(scaleMatrix, transform.rotationMatrix);
 }
+
+float4x4 SetParent(Transform transform, float4x4 worldMatrix) {
+	
+	// 親の設定がいらない場合はそのまま返す
+	if (transform.aliveParent == 0) {
+		
+		return worldMatrix;
+	}
+	
+	 // 親の平行移動成分
+	float3 parentPos = transform.parentMatrix[3].xyz;
+	worldMatrix[3].xyz += parentPos;
+
+	return worldMatrix;
+}

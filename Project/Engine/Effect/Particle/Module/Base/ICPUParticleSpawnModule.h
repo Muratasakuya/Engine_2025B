@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Object/Data/Transform.h>
 #include <Engine/Effect/Particle/Module/Base/ICPUParticleModule.h>
 #include <Engine/Effect/Particle/Structures/ParticleEmitterStructures.h>
 
@@ -40,6 +41,8 @@ public:
 
 	void SetAsset(Asset* asset) { asset_ = asset; }
 	void SetPrimitiveType(ParticlePrimitiveType type);
+	// 親の設定
+	void SetParent(bool isSet, const BaseTransform& parent);
 
 	// データ共有
 	void ShareCommonParam(ICPUParticleSpawnModule* other);
@@ -72,6 +75,9 @@ protected:
 	const Color emitterLineColor_ = Color::Yellow(0.4f);
 	std::string textureName_;
 	std::string noiseTextureName_;
+
+	// 親設定
+	const BaseTransform* parentTransform_ = nullptr;
 
 	//--------- functions ----------------------------------------------------
 
