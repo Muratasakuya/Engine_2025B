@@ -151,6 +151,53 @@ void ParticleSystem::RemoveGroup() {
 	renaming_.index = -1;
 }
 
+void ParticleSystem::HandleCopyPaste() {
+
+	ImGuiIO& io = ImGui::GetIO();
+	const bool ctrl = io.KeyCtrl;
+
+	// Ctrl + Cで選択したGroupのコピー
+	if (ctrl && ImGui::IsKeyPressed(ImGuiKey_C) && 0 <= selected_.index && !ImGui::IsAnyItemActive()) {
+
+		copyGroup_.type = selected_.type;
+		if (selected_.type == ParticleType::GPU) {
+
+			copyGroup_.data = gpuGroups_[selected_.index].group.ToJson();
+		} else if (selected_.type == ParticleType::CPU) {
+
+			copyGroup_.data = cpuGroups_[selected_.index].group.ToJson();
+		}
+		copyGroup_.hasData = true;
+	}
+
+	// Ctrl + Vで選択したGroupのコピーを追加
+	if (ctrl && ImGui::IsKeyPressed(ImGuiKey_V) && copyGroup_.hasData && !ImGui::IsAnyItemActive()) {
+
+		// indexを進める
+		++nextGroupId_;
+		if (copyGroup_.type == ParticleType::GPU) {
+
+			auto& group = gpuGroups_.emplace_back();
+			group.name = "particle" + std::to_string(nextGroupId_);
+			group.group.Create(device_, primitiveType_);
+			group.group.FromJson(copyGroup_.data);
+		} else if (copyGroup_.type == ParticleType::CPU) {
+
+			auto& group = cpuGroups_.emplace_back();
+			group.name = "particle" + std::to_string(nextGroupId_);
+			group.group.Create(device_, asset_, primitiveType_);
+			group.group.FromJson(copyGroup_.data, asset_);
+		}
+		copyGroup_.hasData = false;
+	}
+
+	// 他の場所をクリックしたらコピー状態解除
+	if (copyGroup_.hasData && ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
+
+		copyGroup_.hasData = false;
+	}
+}
+
 void ParticleSystem::ImGuiGroupAdd() {
 
 	EditLayout();
@@ -175,6 +222,12 @@ void ParticleSystem::ImGuiGroupAdd() {
 }
 
 void ParticleSystem::ImGuiGroupSelect() {
+
+	// コピー&ペースト処理
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_None)) {
+		
+		HandleCopyPaste();
+	}
 
 	int id = 0;
 	auto drawItem = [&](auto& vec, ParticleType type) {
@@ -365,7 +418,7 @@ void ParticleSystem::SaveJson() {
 	}
 
 	std::string fileName = static_cast<std::string>(fileBuffer_);
-	JsonAdapter::Save("Particle/" + fileName, data);
+	JsonAdapter::Save(fileName, data);
 }
 
 void ParticleSystem::LoadJson(const std::optional<std::string>& filePath, bool useGame) {

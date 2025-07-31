@@ -84,6 +84,16 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	// Groupのコピー用データ
+	struct CopyGroup {
+
+		bool hasData;
+		ParticleType type;
+		Json data;
+	};
+
 	//--------- variables ----------------------------------------------------
 
 	ID3D12Device* device_;
@@ -107,6 +117,7 @@ private:
 	float allEmitTime_;  // 経過時間
 
 	// editor
+	CopyGroup copyGroup_;
 	ParticleType particleType_;
 	ParticlePrimitiveType primitiveType_;
 	GroupHandle selected_{ ParticleType::GPU, -1 };
@@ -133,6 +144,7 @@ private:
 	// editor
 	void AddGroup();
 	void RemoveGroup();
+	void HandleCopyPaste();
 
 	// helper
 	void EditLayout();
