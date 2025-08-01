@@ -32,6 +32,10 @@ public:
 	// singleton
 	static ParticleManager* GetInstance();
 	static void Finalize();
+
+	//---------- runtime -----------------------------------------------------
+
+	ParticleSystem* CreateParticleSystem(const std::string& filePath, bool useGame = true);
 private:
 	//========================================================================
 	//	private Methods

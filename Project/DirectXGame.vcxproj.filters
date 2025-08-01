@@ -539,9 +539,6 @@
     <ClCompile Include="Engine\Effect\Particle\Core\GPUParticleUpdater.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Engine\Effect\EffectSystem.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Effect\Trail\Editor\TrailEffectEditor.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -824,7 +821,6 @@
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticlePrimitiveStructures.h" />
     <ClInclude Include="Engine\Effect\Particle\Core\GPUParticleUpdater.h" />
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleEmitterStructures.h" />
-    <ClInclude Include="Engine\Effect\EffectSystem.h" />
     <ClInclude Include="Engine\Effect\Trail\Editor\TrailEffectEditor.h" />
     <ClInclude Include="Engine\Effect\Trail\Structures\TrailEffectStructures.h" />
     <ClInclude Include="Engine\Effect\Trail\Core\TrailEffectRenderer.h" />
@@ -880,7 +876,6 @@
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Init\InitParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Particle\VertexEffect.VS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\Common\Primitive\PlaneParticle.MS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Update\UpdateParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitSphereParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitHemisphereParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitBoxParticle.CS.hlsl" />
@@ -888,6 +883,7 @@
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitMeshParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\CPUParticle\PS\CPUParticle.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Glitch\Glitch.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Update\NoiseUpdateParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\Standard\StandardMSFunction.hlsli" />

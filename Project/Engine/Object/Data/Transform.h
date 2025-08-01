@@ -50,6 +50,7 @@ public:
 	Vector3 GetDown() const;
 
 	bool IsDirty() const { return isDirty_; }
+	void SetIsDirty(bool isDirty) { isDirty_ = isDirty; }
 
 	//--------- variables ----------------------------------------------------
 

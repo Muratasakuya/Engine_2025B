@@ -10,6 +10,12 @@
 //	ParticleSpawnBoxModule classMethods
 //============================================================================
 
+void ParticleSpawnBoxModule::SetTransform(const Matrix4x4& matrix) {
+
+	// 座標の設定
+	emitter_.translation = matrix.GetTranslationValue();
+}
+
 void ParticleSpawnBoxModule::Init() {
 
 	// 値の初期値

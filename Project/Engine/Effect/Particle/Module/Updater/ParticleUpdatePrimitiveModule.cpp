@@ -24,6 +24,8 @@ void ParticleUpdatePrimitiveModule::Init() {
 
 	primitive_.start.crescent.Init();
 	primitive_.target.crescent.Init();
+
+	planeType_ = ParticlePlaneType::XY;
 }
 
 void ParticleUpdatePrimitiveModule::Execute(
@@ -59,6 +61,9 @@ void ParticleUpdatePrimitiveModule::Execute(
 //	Plane
 //============================================================================
 void ParticleUpdatePrimitiveModule::UpdatePlane(CPUParticle::ParticleData& particle) {
+
+	particle.primitive.plane.mode = primitive_.start.plane.mode;
+	particle.primitive.plane.mode = primitive_.target.plane.mode;
 
 	particle.primitive.plane.size = Vector2::Lerp(primitive_.start.plane.size,
 		primitive_.target.plane.size, EasedValue(easingType_, particle.progress));
@@ -126,6 +131,9 @@ void ParticleUpdatePrimitiveModule::UpdateCrescent(CPUParticle::ParticleData& pa
 	particle.primitive.crescent.lattice = std::lerp(primitive_.start.crescent.lattice,
 		primitive_.target.crescent.lattice, EasedValue(easingType_, particle.progress));
 
+	particle.primitive.crescent.thickness = std::lerp(primitive_.start.crescent.thickness,
+		primitive_.target.crescent.thickness, EasedValue(easingType_, particle.progress));
+
 	particle.primitive.crescent.pivot = Vector2::Lerp(primitive_.start.crescent.pivot,
 		primitive_.target.crescent.pivot, EasedValue(easingType_, particle.progress));
 }
@@ -142,6 +150,12 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 
 		ImGui::DragFloat2("startPivot", &primitive_.start.plane.pivot.x, 0.01f);
 		ImGui::DragFloat2("targetPivot", &primitive_.target.plane.pivot.x, 0.01f);
+
+		if (EnumAdapter<ParticlePlaneType>::Combo("planeType", &planeType_)) {
+
+			primitive_.start.plane.mode = static_cast<uint32_t>(planeType_);
+			primitive_.target.plane.mode = static_cast<uint32_t>(planeType_);
+		}
 		break;
 	}
 	case ParticlePrimitiveType::Ring: {
@@ -173,8 +187,8 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 	}
 	case ParticlePrimitiveType::Crescent: {
 
-		ImGui::DragInt("startDivide", &primitive_.start.crescent.divide, 1, 3, 32);
-		ImGui::DragInt("targetDivide", &primitive_.target.crescent.divide, 1, 3, 32);
+		ImGui::DragInt("startDivide", &primitive_.start.crescent.divide, 1, 3, 30);
+		ImGui::DragInt("targetDivide", &primitive_.target.crescent.divide, 1, 3, 30);
 
 		ImGui::DragInt("startUVMode", &primitive_.start.crescent.uvMode, 1, 0, 1);
 		ImGui::DragInt("targetUVMode", &primitive_.target.crescent.uvMode, 1, 0, 1);
@@ -191,8 +205,11 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 		ImGui::DragFloat("startEndAngle", &primitive_.start.crescent.endAngle, 0.01f);
 		ImGui::DragFloat("targetEndAngle", &primitive_.target.crescent.endAngle, 0.01f);
 
-		ImGui::DragFloat("startLattice", &primitive_.start.crescent.lattice, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat("targetLattice", &primitive_.target.crescent.lattice, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("startLattice", &primitive_.start.crescent.lattice, 0.01f);
+		ImGui::DragFloat("targetLattice", &primitive_.target.crescent.lattice, 0.01f);
+
+		ImGui::DragFloat("startThickness", &primitive_.start.crescent.thickness, 0.01f, 0.1f, 8.0f);
+		ImGui::DragFloat("targetThickness", &primitive_.target.crescent.thickness, 0.01f, 0.1f, 8.0f);
 
 		ImGui::DragFloat2("startPivot", &primitive_.start.crescent.pivot.x, 0.01f);
 		ImGui::DragFloat2("targetPivot", &primitive_.target.crescent.pivot.x, 0.01f);
@@ -214,6 +231,7 @@ Json ParticleUpdatePrimitiveModule::ToJson() {
 		data["plane"]["targetSize"] = primitive_.target.plane.size.ToJson();
 		data["plane"]["startPivot"] = primitive_.start.plane.pivot.ToJson();
 		data["plane"]["targetPivot"] = primitive_.target.plane.pivot.ToJson();
+		data["plane"]["mode"] = EnumAdapter<ParticlePlaneType>::ToString(planeType_);
 	}
 
 	// Ring
@@ -257,6 +275,8 @@ Json ParticleUpdatePrimitiveModule::ToJson() {
 
 		data["crescent"]["startLattice"] = primitive_.start.crescent.lattice;
 		data["crescent"]["targetLattice"] = primitive_.target.crescent.lattice;
+		data["crescent"]["startThickness"] = primitive_.start.crescent.thickness;
+		data["crescent"]["targetThickness"] = primitive_.target.crescent.thickness;
 
 		data["crescent"]["startPivot"] = primitive_.start.crescent.pivot.ToJson();
 		data["crescent"]["targetPivot"] = primitive_.target.crescent.pivot.ToJson();
@@ -278,6 +298,10 @@ void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
 		primitive_.target.plane.size = primitive_.target.plane.size.FromJson(planeData["targetSize"]);
 		primitive_.start.plane.pivot = primitive_.start.plane.pivot.FromJson(planeData["startPivot"]);
 		primitive_.target.plane.pivot = primitive_.target.plane.pivot.FromJson(planeData["targetPivot"]);
+
+		const auto& planeType = EnumAdapter<ParticlePlaneType>::FromString(data["plane"]["mode"]);
+		primitive_.start.plane.mode = static_cast<uint32_t>(planeType.value());
+		primitive_.target.plane.mode = static_cast<uint32_t>(planeType.value());
 	}
 
 	// Ring
@@ -325,6 +349,8 @@ void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
 
 		primitive_.start.crescent.lattice = crescentData.value("startLattice", primitive_.start.crescent.lattice);
 		primitive_.target.crescent.lattice = crescentData.value("targetLattice", primitive_.target.crescent.lattice);
+		primitive_.start.crescent.thickness = crescentData.value("startThickness", primitive_.start.crescent.thickness);
+		primitive_.target.crescent.thickness = crescentData.value("targetThickness", primitive_.target.crescent.thickness);
 
 		primitive_.start.crescent.pivot = primitive_.start.crescent.pivot.FromJson(crescentData["startPivot"]);
 		primitive_.target.crescent.pivot = primitive_.target.crescent.pivot.FromJson(crescentData["targetPivot"]);

@@ -263,6 +263,7 @@ void SkinnedAnimation::UpdateSkeleton(const Matrix4x4& worldMatrix) {
 		// 親なら行列を更新する
 		if (joint.isParentTransform) {
 
+			joint.transform.SetIsDirty(true);
 			joint.transform.matrix.world = joint.skeletonSpaceMatrix * worldMatrix;
 		}
 	}

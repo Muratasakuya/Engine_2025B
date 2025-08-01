@@ -126,17 +126,42 @@ namespace ParticleCommon {
 
 namespace GPUParticle {
 
+	// 更新の種類
+	enum class UpdateType {
+
+		None,
+		Noise,
+		Count
+	};
+
+	// material
 	struct MaterialForGPU {
 
 		Color color;
 	};
 
+	// particleUpdate
 	struct ParticleForGPU {
 
 		float lifeTime;
 		float currentTime;
 
 		Vector3 velocity;
+	};
+
+	// ノイズで動かす更新処理の時に使用する
+	struct NoiseForGPU {
+
+		float scale;
+		float strength;
+		float speed;
+
+		void Init() {
+
+			scale = 0.04f;
+			strength = 1.0f;
+			speed = 0.1f;
+		}
 	};
 }
 

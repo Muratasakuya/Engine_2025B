@@ -33,6 +33,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetTransform(const Matrix4x4& matrix) override;
+
 	const char* GetName() const override { return "SpawnHemisphere"; }
 
 	//-------- registryID ----------------------------------------------------

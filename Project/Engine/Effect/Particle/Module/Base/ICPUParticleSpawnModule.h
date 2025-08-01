@@ -42,6 +42,7 @@ public:
 	void SetAsset(Asset* asset) { asset_ = asset; }
 	void SetPrimitiveType(ParticlePrimitiveType type);
 	// 親の設定
+	virtual void SetTransform([[maybe_unused]] const Matrix4x4& matrix) {};
 	void SetParent(bool isSet, const BaseTransform& parent);
 
 	// データ共有
@@ -70,6 +71,7 @@ protected:
 
 	// Primtive
 	ParticleCommon::PrimitiveData<false> primitive_;
+	ParticlePlaneType planeType_;
 
 	// editor
 	const Color emitterLineColor_ = Color::Yellow(0.4f);

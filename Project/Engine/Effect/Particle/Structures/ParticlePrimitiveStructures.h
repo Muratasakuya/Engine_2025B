@@ -19,16 +19,29 @@ enum class ParticlePrimitiveType {
 	Count
 };
 
+// 平面の種類
+enum class ParticlePlaneType {
+
+	XY,
+	XZ
+};
+
 // 平面
 struct PlaneForGPU {
 
 	Vector2 size;
 	Vector2 pivot;
 
+	// 0: XY
+	// 1: XZ
+	uint32_t mode;
+
 	void Init() {
 
 		size = Vector2::AnyInit(1.0f);
 		pivot = Vector2::AnyInit(0.5f);
+
+		mode = 0;
 	}
 };
 // リング
@@ -70,6 +83,8 @@ struct CrescentForGPU {
 	float endAngle;
 
 	float lattice;
+	float thickness;
+
 	Vector2 pivot;
 	int divide;
 
@@ -87,6 +102,8 @@ struct CrescentForGPU {
 		endAngle = pi * 5.0f / 6.0f;
 
 		lattice = 0.5f;
+		thickness = 0.1f;
+
 		pivot = Vector2::AnyInit(0.5f);
 		divide = 8;
 		uvMode = 1;

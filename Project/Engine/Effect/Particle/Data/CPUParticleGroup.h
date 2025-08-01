@@ -46,6 +46,19 @@ public:
 	const DxStructuredBuffer<ParticleCommon::TransformForGPU>& GetTransformBuffer() const { return transformBuffer_; }
 	const DxStructuredBuffer<CPUParticle::MaterialForGPU>& GetMaterialBuffer() const { return materialBuffer_; }
 	const DxStructuredBuffer<CPUParticle::TextureInfoForGPU>& GetTextureInfoBuffer() const { return textureInfoBuffer_; }
+
+	//---------- runtime -----------------------------------------------------
+
+	//----------- emit -------------------------------------------------------
+
+	// 一定間隔
+	void FrequencyEmit();
+	// 強制発生
+	void Emit();
+
+	//---------- setter ------------------------------------------------------
+
+	void SetTransform(const Matrix4x4& matrix);
 private:
 	//========================================================================
 	//	private Methods

@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
+#include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/EnumAdapter.h>
 #include <Lib/Adapter/JsonAdapter.h>
 
@@ -25,24 +26,87 @@ void ParticleSystem::Init(ID3D12Device* device,
 	asset_ = asset;
 
 	name_ = name;
+
+	useGame_ = false;
+	allEmitEnable_ = false;
+	allEmitTime_ = 1.0f;
 }
 
 void ParticleSystem::Update() {
 
-	if (gpuGroups_.empty()) {
-		return;
-	}
+	// 全ての同時発生
+	UpdateAllEmit();
 
 	// 所持しているパーティクルの更新
 	// GPU、発生処理しか行わない
 	for (auto& group : gpuGroups_) {
 
+		// ゲーム側で使用しない場合は常に
+		// 一定間隔で発生させる
+		if (!useGame_ && !allEmitEnable_) {
+
+			group.group.FrequencyEmit();
+		}
 		group.group.Update();
 	}
 	// CPU
 	for (auto& group : cpuGroups_) {
 
+		// ゲーム側で使用しない場合は常に
+		// 一定間隔で発生させる
+		if (!useGame_ && !allEmitEnable_) {
+
+			group.group.FrequencyEmit();
+		}
 		group.group.Update();
+	}
+}
+
+void ParticleSystem::FrequencyEmit() {
+
+	// 全てグループを一定間隔で発生させる
+	// GPU
+	for (auto& group : gpuGroups_) {
+
+		group.group.FrequencyEmit();
+	}
+	// CPU
+	for (auto& group : cpuGroups_) {
+
+		group.group.FrequencyEmit();
+	}
+}
+
+void ParticleSystem::Emit() {
+
+	// 全てのグループを発生させる
+	// GPU
+	for (auto& group : gpuGroups_) {
+
+		group.group.Emit();
+	}
+	// CPU
+	for (auto& group : cpuGroups_) {
+
+		group.group.Emit();
+	}
+}
+
+void ParticleSystem::UpdateAllEmit() {
+
+	// フラグがtrueじゃないときは処理しない
+	if (!allEmitEnable_) {
+		return;
+	}
+
+	// 時間経過で全て発生させる
+	allEmitTimer_ += GameTimer::GetDeltaTime();
+	if (allEmitTime_ < allEmitTimer_) {
+
+		// 発生
+		Emit();
+		// リセット
+		allEmitTimer_ = 0.0f;
 	}
 }
 
@@ -64,7 +128,7 @@ void ParticleSystem::AddGroup() {
 		// 名前の設定
 		group.name = "particle" + std::to_string(++nextGroupId_);
 		// 作成
-		group.group.Create(device_, primitiveType_);
+		group.group.Create(device_, asset_, primitiveType_);
 	}
 }
 
@@ -85,6 +149,52 @@ void ParticleSystem::RemoveGroup() {
 	// 未選択状態にする
 	selected_.index = -1;
 	renaming_.index = -1;
+}
+
+void ParticleSystem::HandleCopyPaste() {
+
+	ImGuiIO& io = ImGui::GetIO();
+	const bool ctrl = io.KeyCtrl;
+
+	// Ctrl + Cで選択したGroupのコピー
+	if (ctrl && ImGui::IsKeyPressed(ImGuiKey_C) && 0 <= selected_.index && !ImGui::IsAnyItemActive()) {
+
+		copyGroup_.type = selected_.type;
+		if (selected_.type == ParticleType::GPU) {
+
+			copyGroup_.data = gpuGroups_[selected_.index].group.ToJson();
+		} else if (selected_.type == ParticleType::CPU) {
+
+			copyGroup_.data = cpuGroups_[selected_.index].group.ToJson();
+		}
+		copyGroup_.hasData = true;
+	}
+
+	// Ctrl + Vで選択したGroupのコピーを追加
+	if (ctrl && ImGui::IsKeyPressed(ImGuiKey_V) && copyGroup_.hasData && !ImGui::IsAnyItemActive()) {
+
+		// indexを進める
+		++nextGroupId_;
+		if (copyGroup_.type == ParticleType::GPU) {
+
+			auto& group = gpuGroups_.emplace_back();
+			group.name = "particle" + std::to_string(nextGroupId_);
+			group.group.CreateFromJson(device_, asset_, copyGroup_.data);
+		} else if (copyGroup_.type == ParticleType::CPU) {
+
+			auto& group = cpuGroups_.emplace_back();
+			group.name = "particle" + std::to_string(nextGroupId_);
+			group.group.Create(device_, asset_, primitiveType_);
+			group.group.FromJson(copyGroup_.data, asset_);
+		}
+		copyGroup_.hasData = false;
+	}
+
+	// 他の場所をクリックしたらコピー状態解除
+	if (copyGroup_.hasData && ImGui::IsMouseClicked(0) && !ImGui::IsAnyItemHovered()) {
+
+		copyGroup_.hasData = false;
+	}
 }
 
 void ParticleSystem::ImGuiGroupAdd() {
@@ -111,6 +221,12 @@ void ParticleSystem::ImGuiGroupAdd() {
 }
 
 void ParticleSystem::ImGuiGroupSelect() {
+
+	// コピー&ペースト処理
+	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_None)) {
+
+		HandleCopyPaste();
+	}
 
 	int id = 0;
 	auto drawItem = [&](auto& vec, ParticleType type) {
@@ -203,6 +319,10 @@ void ParticleSystem::ImGuiSystemParameter() {
 
 	if (ImGui::CollapsingHeader("Parameters", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_Leaf)) {
 
+		ImGui::Checkbox("allEmitEnable", &allEmitEnable_);
+
+		ImGui::Text("%.3f / %.3f", allEmitTimer_, allEmitTime_);
+		ImGui::DragFloat("emit", &allEmitTime_, 0.01f);
 	}
 }
 
@@ -297,18 +417,25 @@ void ParticleSystem::SaveJson() {
 	}
 
 	std::string fileName = static_cast<std::string>(fileBuffer_);
-	JsonAdapter::Save("Particle/" + fileName, data);
+	JsonAdapter::Save(fileName, data);
 }
 
-void ParticleSystem::LoadJson() {
+void ParticleSystem::LoadJson(const std::optional<std::string>& filePath, bool useGame) {
 
 	Json data;
 	std::string fileName = static_cast<std::string>(fileBuffer_);
+	if (filePath.has_value()) {
+
+		fileName = filePath.value();
+	}
 	if (!JsonAdapter::LoadCheck(fileName, data)) {
 		return;
 	}
 	// リセット
 	fileBuffer_[0] = '\0';
+
+	// 設定
+	useGame_ = useGame;
 
 	//============================================================================
 	//	SystemParameters
@@ -330,8 +457,7 @@ void ParticleSystem::LoadJson() {
 
 		auto& group = gpuGroups_.emplace_back();
 		group.name = groupData.value("name", "");
-		group.group.Create(device_, primitiveType_);
-		group.group.FromJson(groupData);
+		group.group.CreateFromJson(device_, asset_, groupData);
 	}
 	// CPU
 	for (auto& groupData : data["CPUGroups"]) {
