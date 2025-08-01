@@ -91,6 +91,28 @@ void BaseTransform::ImGui(float itemSize) {
 		}
 		ImGui::EndTable();
 	}
+	// 親がいる場合
+	if (parent) {
+
+		ImGui::SeparatorText("Parent World Matrix");
+
+		ImGui::Text(std::format("isDirty {}", parent->isDirty_).c_str());
+		if (ImGui::BeginTable("Parent WorldMatrix", 4,
+			ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit)) {
+
+			const Matrix4x4& world = parent->matrix.world;
+			for (int row = 0; row < 4; ++row) {
+
+				ImGui::TableNextRow();
+				for (int col = 0; col < 4; ++col) {
+
+					ImGui::TableSetColumnIndex(col);
+					ImGui::Text("%.3f", world.m[row][col]);
+				}
+			}
+			ImGui::EndTable();
+		}
+	}
 
 	ImGui::PopItemWidth();
 }

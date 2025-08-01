@@ -44,3 +44,15 @@ void GameEffect::SetParent(const BaseTransform& parent) {
 		group.group.SetParent(true, parent);
 	}
 }
+
+void GameEffect::FrequencyEmit() {
+
+	// 一定間隔で発生
+	particleSystem_->FrequencyEmit();
+}
+
+void GameEffect::Emit() {
+
+	// 強制的に発生
+	particleSystem_->Emit();
+}

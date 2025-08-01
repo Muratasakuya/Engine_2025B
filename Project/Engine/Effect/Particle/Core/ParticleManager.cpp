@@ -54,7 +54,7 @@ void ParticleManager::Finalize() {
 	}
 }
 
-ParticleSystem* ParticleManager::CreateParticleSystem(const std::string& filePath) {
+ParticleSystem* ParticleManager::CreateParticleSystem(const std::string& filePath, bool useGame) {
 
 	// ファイル読み込みチェック
 	if (!JsonAdapter::LoadAssert(filePath)) {
@@ -68,7 +68,7 @@ ParticleSystem* ParticleManager::CreateParticleSystem(const std::string& filePat
 	std::unique_ptr<ParticleSystem> system = std::make_unique<ParticleSystem>();
 	system->Init(device_, asset_, filePath);
 	// jsonファイルから作成
-	system->LoadJson(filePath, true);
+	system->LoadJson(filePath, useGame);
 	// 配列に追加
 	systems_.emplace_back(std::move(system));
 
