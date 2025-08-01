@@ -83,6 +83,8 @@ struct CrescentForGPU {
 	float endAngle;
 
 	float lattice;
+	float thickness;
+
 	Vector2 pivot;
 	int divide;
 
@@ -100,6 +102,8 @@ struct CrescentForGPU {
 		endAngle = pi * 5.0f / 6.0f;
 
 		lattice = 0.5f;
+		thickness = 0.1f;
+
 		pivot = Vector2::AnyInit(0.5f);
 		divide = 8;
 		uvMode = 1;

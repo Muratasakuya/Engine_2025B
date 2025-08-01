@@ -144,13 +144,14 @@ void ICPUParticleSpawnModule::ImGuiPrimitiveParam() {
 		break;
 	case ParticlePrimitiveType::Crescent:
 
-		ImGui::DragInt("divide", &primitive_.crescent.divide, 1, 3, 32);
+		ImGui::DragInt("divide", &primitive_.crescent.divide, 1, 3, 30);
 		ImGui::DragInt("uvMode", &primitive_.crescent.uvMode, 1, 0, 1);
 		ImGui::DragFloat("outerRadius", &primitive_.crescent.outerRadius, 0.01f);
 		ImGui::DragFloat("innerRadius", &primitive_.crescent.innerRadius, 0.01f);
 		ImGui::DragFloat("startAngle", &primitive_.crescent.startAngle, 0.01f);
 		ImGui::DragFloat("endAngle", &primitive_.crescent.endAngle, 0.01f);
 		ImGui::DragFloat("lattice", &primitive_.crescent.lattice, 0.01f, 0.0f, 1.0f);
+		ImGui::DragFloat("thickness", &primitive_.crescent.thickness, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat2("pivot", &primitive_.plane.pivot.x, 0.01f);
 		break;
 	}
@@ -299,6 +300,7 @@ void ICPUParticleSpawnModule::ToCommonJson(Json& data) {
 		data[key]["primitive"]["crescent"]["startAngle"] = primitive_.crescent.startAngle;
 		data[key]["primitive"]["crescent"]["endAngle"] = primitive_.crescent.endAngle;
 		data[key]["primitive"]["crescent"]["lattice"] = primitive_.crescent.lattice;
+		data[key]["primitive"]["crescent"]["thickness"] = primitive_.crescent.thickness;
 		data[key]["primitive"]["crescent"]["pivot"] = primitive_.crescent.pivot.ToJson();
 		break;
 	}
@@ -378,6 +380,7 @@ void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
 		primitive_.crescent.startAngle = primitive["crescent"].value("startAngle", pi / 6.0f);
 		primitive_.crescent.endAngle = primitive["crescent"].value("endAngle", pi * 5.0f / 6.0f);
 		primitive_.crescent.lattice = primitive["crescent"].value("lattice", 0.5f);
+		primitive_.crescent.thickness = primitive["crescent"].value("thickness", 0.1f);
 		primitive_.crescent.pivot = primitive_.crescent.pivot.FromJson(primitive["crescent"]["pivot"]);
 		break;
 	}
