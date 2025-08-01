@@ -179,8 +179,7 @@ void ParticleSystem::HandleCopyPaste() {
 
 			auto& group = gpuGroups_.emplace_back();
 			group.name = "particle" + std::to_string(nextGroupId_);
-			group.group.Create(device_, asset_, primitiveType_);
-			group.group.FromJson(copyGroup_.data);
+			group.group.CreateFromJson(device_, asset_, copyGroup_.data);
 		} else if (copyGroup_.type == ParticleType::CPU) {
 
 			auto& group = cpuGroups_.emplace_back();

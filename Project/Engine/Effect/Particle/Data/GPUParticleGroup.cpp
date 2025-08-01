@@ -607,7 +607,7 @@ void GPUParticleGroup::FromJson(const Json& data) {
 	case ParticleEmitterShape::Hemisphere: {
 
 		const auto& emitterData = data["hemisphere"];
-		emitter_.sphere.radius = emitterData.value("radius", 2.0f);
+		emitter_.hemisphere.radius = emitterData.value("radius", 2.0f);
 		emitter_.hemisphere.translation = emitter_.hemisphere.translation.FromJson(emitterData["translation"]);
 		break;
 	}
