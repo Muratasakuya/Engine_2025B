@@ -128,7 +128,7 @@ void ParticleSystem::AddGroup() {
 		// 名前の設定
 		group.name = "particle" + std::to_string(++nextGroupId_);
 		// 作成
-		group.group.Create(device_, primitiveType_);
+		group.group.Create(device_, asset_, primitiveType_);
 	}
 }
 
@@ -179,7 +179,7 @@ void ParticleSystem::HandleCopyPaste() {
 
 			auto& group = gpuGroups_.emplace_back();
 			group.name = "particle" + std::to_string(nextGroupId_);
-			group.group.Create(device_, primitiveType_);
+			group.group.Create(device_, asset_, primitiveType_);
 			group.group.FromJson(copyGroup_.data);
 		} else if (copyGroup_.type == ParticleType::CPU) {
 
@@ -225,7 +225,7 @@ void ParticleSystem::ImGuiGroupSelect() {
 
 	// コピー&ペースト処理
 	if (ImGui::IsWindowFocused(ImGuiFocusedFlags_None)) {
-		
+
 		HandleCopyPaste();
 	}
 
@@ -458,8 +458,7 @@ void ParticleSystem::LoadJson(const std::optional<std::string>& filePath, bool u
 
 		auto& group = gpuGroups_.emplace_back();
 		group.name = groupData.value("name", "");
-		group.group.Create(device_, primitiveType_);
-		group.group.FromJson(groupData);
+		group.group.CreateFromJson(device_, asset_, groupData);
 	}
 	// CPU
 	for (auto& groupData : data["CPUGroups"]) {

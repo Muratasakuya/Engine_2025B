@@ -3,6 +3,7 @@
 //============================================================================
 //	GPUParticleUpdater classMethods
 //============================================================================
+#include <Engine/Asset/Asset.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Effect/Particle/Data/GPUParticleGroup.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
@@ -13,8 +14,11 @@
 //	GPUParticleUpdater classMethods
 //============================================================================
 
-void GPUParticleUpdater::Init(ID3D12Device8* device,
+void GPUParticleUpdater::Init(ID3D12Device8* device, Asset* asset,
 	SRVDescriptor* srvDescriptor, DxShaderCompiler* shaderCompiler) {
+
+	asset_ = nullptr;
+	asset_ = asset;
 
 	// 初期化
 	perFrame_.time = 0.0f;
@@ -56,8 +60,16 @@ void GPUParticleUpdater::InitPipelines(ID3D12Device8* device,
 	initPipeline_ = std::make_unique<PipelineState>();
 	initPipeline_->Create("InitParticle.json", device, srvDescriptor, shaderCompiler);
 
-	updatePipeline_ = std::make_unique<PipelineState>();
-	updatePipeline_->Create("UpdateParticle.json", device, srvDescriptor, shaderCompiler);
+	for (uint32_t index = 0; index < kUpdateTypeCount; ++index) {
+
+		// 更新の種類の名前を取得
+		const char* typeName = EnumAdapter<GPUParticle::UpdateType>::GetEnumName(index);
+		std::string jsonFile = std::string(typeName) + "UpdateParticle.json";
+
+		auto& pipeline = updatePipelines_[index];
+		pipeline = std::make_unique<PipelineState>();
+		pipeline->Create(jsonFile, device, srvDescriptor, shaderCompiler);
+	}
 
 	for (uint32_t index = 0; index < kEmitterShapeCount; ++index) {
 
@@ -105,7 +117,7 @@ void GPUParticleUpdater::DispatchInit(GPUParticleGroup& group, DxCommand* dxComm
 	group.SetIsInitialized(true);
 }
 
-void GPUParticleUpdater::DispatchEmit(const GPUParticleGroup& group, DxCommand* dxCommand) {
+void GPUParticleUpdater::DispatchEmit(GPUParticleGroup& group, DxCommand* dxCommand) {
 
 	if (group.GetEmitCount() == 0) {
 		return;
@@ -140,15 +152,22 @@ void GPUParticleUpdater::DispatchEmit(const GPUParticleGroup& group, DxCommand* 
 
 	// 各バッファのUAVバリア
 	dxCommand->UAVBarrierAll();
+
+	// 強制的に発生させていた場合は連続で発生させないためにfalseにする
+	if (group.IsForcedEmit()) {
+
+		group.SetIsForcedEmit(false);
+	}
 }
 
 void GPUParticleUpdater::DispatchUpdate(const GPUParticleGroup& group, DxCommand* dxCommand) {
 
 	ID3D12GraphicsCommandList6* commandList = dxCommand->GetCommandList();
+	const uint32_t typeIndex = static_cast<uint32_t>(group.GetUpdateType());
 
 	// 更新用のpipeline設定
-	commandList->SetComputeRootSignature(updatePipeline_->GetRootSignature());
-	commandList->SetPipelineState(updatePipeline_->GetComputePipeline());
+	commandList->SetComputeRootSignature(updatePipelines_[typeIndex]->GetRootSignature());
+	commandList->SetPipelineState(updatePipelines_[typeIndex]->GetComputePipeline());
 
 	// particle
 	commandList->SetComputeRootUnorderedAccessView(0, group.GetParticleBuffer().GetResource()->GetGPUVirtualAddress());
@@ -165,8 +184,17 @@ void GPUParticleUpdater::DispatchUpdate(const GPUParticleGroup& group, DxCommand
 	// perFrame
 	commandList->SetComputeRootConstantBufferView(6, group.GetParentBuffer().GetResource()->GetGPUVirtualAddress());
 
+	// ノイズを使用する場合の設定
+	if (typeIndex == static_cast<uint32_t>(GPUParticle::UpdateType::Noise)) {
+
+		// noise
+		commandList->SetComputeRootConstantBufferView(7, group.GetNoiseBuffer().GetResource()->GetGPUVirtualAddress());
+		// noiseTexture
+		commandList->SetComputeRootDescriptorTable(8, asset_->GetGPUHandle(group.GetNoiseTextureName()));
+	}
+
 	// 実行
-	commandList->Dispatch(1, 1, 1);
+	commandList->Dispatch(DxUtils::RoundUp(kMaxParticles, THREAD_UPDATE_GROUP), 1, 1);
 
 	//============================================================================
 	// バリア遷移処理

@@ -1,0 +1,52 @@
+{
+    "GPUGroups": [
+        {
+            "blendMode": "kBlendModeAdd",
+            "common": {
+                "color": {
+                    "a": 1.0,
+                    "b": 1.0,
+                    "g": 1.0,
+                    "r": 1.0
+                },
+                "count": 210,
+                "lifeTime": 6.269999980926514,
+                "moveSpeed": 8.890000343322754,
+                "scale": {
+                    "x": 0.3199999928474426,
+                    "y": 0.3199999928474426,
+                    "z": 0.3199999928474426
+                }
+            },
+            "cone": {
+                "baseRadius": 0.4000000059604645,
+                "height": 1.600000023841858,
+                "topRadius": 1.600000023841858,
+                "translation": {
+                    "x": 0.0,
+                    "y": 0.0,
+                    "z": 0.0
+                }
+            },
+            "emitterRotation": {
+                "x": 0.0,
+                "y": 0.0,
+                "z": 0.0
+            },
+            "emitterShape": "Cone",
+            "frequency": 0.009999999776482582,
+            "name": "particle1",
+            "noise": {
+                "scale": 8.0,
+                "speed": 8.0,
+                "strength": 8.0
+            },
+            "noiseTextureName": "noise1",
+            "primitive": "Plane",
+            "textureName": "redCircle",
+            "updateType": "None"
+        }
+    ],
+    "name": "particleSystem1",
+    "primitiveType": "Plane"
+}

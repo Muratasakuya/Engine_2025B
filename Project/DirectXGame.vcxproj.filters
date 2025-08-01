@@ -876,7 +876,6 @@
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Init\InitParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\VS_PS\Particle\VertexEffect.VS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\Common\Primitive\PlaneParticle.MS.hlsl" />
-    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Update\UpdateParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitSphereParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitHemisphereParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitBoxParticle.CS.hlsl" />
@@ -884,6 +883,7 @@
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Emit\EmitMeshParticle.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\CPUParticle\PS\CPUParticle.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Glitch\Glitch.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Update\NoiseUpdateParticle.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\Standard\StandardMSFunction.hlsli" />

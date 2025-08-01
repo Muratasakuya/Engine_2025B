@@ -64,7 +64,7 @@ void BaseParticleGroup::CreatePrimitiveBuffer(
 	primitiveBuffer_.type = primitiveType;
 
 	// 各形状で生成、この時点で転送してしまう
-	switch (primitiveType) {
+	switch (primitiveBuffer_.type) {
 	case ParticlePrimitiveType::Plane: {
 
 		PlaneForGPU plane{};

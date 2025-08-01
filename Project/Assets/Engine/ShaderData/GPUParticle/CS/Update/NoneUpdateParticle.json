@@ -2,7 +2,7 @@
     "ShaderPass":[
         {
             "Type": "Compute",
-            "ComputeShader": "UpdateParticle.CS.hlsl"
+            "ComputeShader": "NoneUpdateParticle.CS.hlsl"
         }
     ],
     "RootParameter": [

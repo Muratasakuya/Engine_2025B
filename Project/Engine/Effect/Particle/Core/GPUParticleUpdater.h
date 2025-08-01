@@ -12,6 +12,7 @@
 #include <array>
 #include <cstdint>
 // front
+class Asset;
 class SRVDescriptor;
 class DxShaderCompiler;
 class DxCommand;
@@ -29,7 +30,7 @@ public:
 	GPUParticleUpdater() = default;
 	~GPUParticleUpdater() = default;
 
-	void Init(ID3D12Device8* device, SRVDescriptor* srvDescriptor,
+	void Init(ID3D12Device8* device, Asset* asset, SRVDescriptor* srvDescriptor,
 		DxShaderCompiler* shaderCompiler);
 
 	void Update(GPUParticleGroup& group, DxCommand* dxCommand);
@@ -40,14 +41,18 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	Asset* asset_;
+
+	// それぞれのpipelineの数
 	static const uint32_t kEmitterShapeCount = static_cast<uint32_t>(ParticleEmitterShape::Count);
+	static const uint32_t kUpdateTypeCount = static_cast<uint32_t>(GPUParticle::UpdateType::Count);
 
 	// 初期化
 	std::unique_ptr<PipelineState> initPipeline_;
 	// 発生
 	std::array<std::unique_ptr<PipelineState>, kEmitterShapeCount> emitPipelines_;
 	// 更新
-	std::unique_ptr<PipelineState> updatePipeline_;
+	std::array<std::unique_ptr<PipelineState>, kUpdateTypeCount> updatePipelines_;
 
 	// 共通buffer
 	ParticleCommon::PerFrameForGPU perFrame_;
@@ -64,7 +69,7 @@ private:
 	// 初期化
 	void DispatchInit(GPUParticleGroup& group, DxCommand* dxCommand);
 	// 発生
-	void DispatchEmit(const GPUParticleGroup& group, DxCommand* dxCommand);
+	void DispatchEmit(GPUParticleGroup& group, DxCommand* dxCommand);
 	// 更新
 	void DispatchUpdate(const GPUParticleGroup& group, DxCommand* dxCommand);
 };

@@ -125,7 +125,7 @@ void ParticleManager::Init(Asset* asset, ID3D12Device8* device,
 
 	// 各メインモジュール初期化
 	gpuUpdater_ = std::make_unique<GPUParticleUpdater>();
-	gpuUpdater_->Init(device, srvDescriptor, shaderCompiler);
+	gpuUpdater_->Init(device, asset, srvDescriptor, shaderCompiler);
 
 	renderer_ = std::make_unique<ParticleRenderer>();
 	renderer_->Init(device, asset, srvDescriptor, shaderCompiler);
