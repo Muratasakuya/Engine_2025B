@@ -67,8 +67,11 @@ PSOutput main(MSOutput input) {
 		// lighting–³Œø
 		output.color.rgb = material.color.rgb * diffuseColor.rgb;
 	}
-	// imageBasedLightingˆ—
-	output.color.rgb += CalculateImageBasedLighting(normal, lighting.environmentCoefficient, input);
+	if (lighting.enableImageBasedLighting == 1) {
+	
+		// imageBasedLightingˆ—
+		output.color.rgb += CalculateImageBasedLighting(normal, lighting.environmentCoefficient, input);
+	}
 	
 	// emissive
 	float3 emission = material.emissionColor * material.emissiveIntensity;
