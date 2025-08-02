@@ -140,6 +140,9 @@ const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
 		LOG_WARN("model not found → {}", modelName);
 	}
 	ASSERT(find, "not found model" + modelName);
+
+	// 使用された
+	models_.at(modelName).isUse = true;
 	return models_.at(modelName);
 }
 
@@ -336,4 +339,74 @@ Node ModelLoader::ReadNode(aiNode* node) {
 	}
 
 	return result;
+}
+
+void ModelLoader::ReportUsage(bool listAll) const {
+
+	// ロード済みだが未使用の場合のログ出力
+	std::vector<std::string> unused;
+	unused.reserve(models_.size());
+	for (const auto& [name, model] : models_) {
+		if (!model.isUse) {
+
+			unused.emplace_back(name);
+		}
+	}
+
+	if (unused.empty()) {
+
+		LOG_INFO("[Model] Unused: 0");
+	} else {
+
+		LOG_WARN("[Model] Unused: {}", unused.size());
+		if (listAll) {
+			for (auto& n : unused) {
+
+				LOG_WARN("  - {}", n);
+			}
+		}
+	}
+
+	// フォルダ内にあるにも関わらず未使用
+	std::unordered_set<std::string> onDisk;
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
+		if (!entry.is_regular_file()) {
+			continue;
+		}
+		const auto ext = entry.path().extension().string();
+		if (ext == ".obj" || ext == ".gltf") {
+
+			onDisk.insert(entry.path().stem().string());
+		}
+	}
+
+	std::unordered_set<std::string> loaded;
+	loaded.reserve(models_.size());
+	for (const auto& [name, _] : models_) {
+
+		loaded.insert(name);
+	}
+
+	std::vector<std::string> notLoaded;
+	notLoaded.reserve(onDisk.size());
+	for (auto& stem : onDisk) {
+		if (!loaded.contains(stem)) {
+
+			notLoaded.emplace_back(stem);
+		}
+	}
+
+	if (notLoaded.empty()) {
+
+		LOG_INFO("[Model] NotLoaded(on disk only): 0");
+	} else {
+
+		LOG_WARN("[Model] NotLoaded(on disk only): {}", notLoaded.size());
+		if (listAll) {
+			for (auto& n : notLoaded) {
+
+				LOG_WARN("  - {}", n);
+			}
+		}
+	}
 }

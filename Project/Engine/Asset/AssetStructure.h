@@ -113,6 +113,9 @@ struct ModelData {
 	Node rootNode;
 
 	std::string fullPath;
+
+	// 使用されたかどうか
+	mutable bool isUse = false;
 };
 
 struct AnimationData {

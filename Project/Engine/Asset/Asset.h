@@ -24,6 +24,8 @@ public:
 
 	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor);
 
+	void ReportUsage(bool listAll = false) const;
+
 	void LoadTexture(const std::string& textureName);
 	void LoadLutTexture(const std::string& textureName);
 	void LoadModel(const std::string& modelName);

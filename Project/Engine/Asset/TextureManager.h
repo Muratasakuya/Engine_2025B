@@ -16,6 +16,7 @@
 #include <istream>
 #include <fstream>
 #include <unordered_map>
+#include <unordered_set>
 #include <filesystem>
 // front
 class DxCommand;
@@ -40,12 +41,13 @@ public:
 
 	bool Search(const std::string& textureName);
 
+	void ReportUsage(bool listAll) const;
+
 	//--------- accessor -----------------------------------------------------
 
+	// 描画に使用するデータ
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;
-
 	uint32_t GetTextureGPUIndex(const std::string& textureName) const;
-
 	const DirectX::TexMetadata& GetMetaData(const std::string textureName) const;
 
 	std::vector<std::string> GetTextureHierarchies() const;
@@ -64,6 +66,9 @@ private:
 		DirectX::TexMetadata metadata;
 		uint32_t srvIndex;
 		std::string hierarchy;
+
+		// 使用されたかどうか
+		mutable bool isUse = false;
 	};
 
 	//--------- variables ----------------------------------------------------

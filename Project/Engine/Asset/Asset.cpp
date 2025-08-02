@@ -16,6 +16,13 @@ void Asset::Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvD
 	animationManager_->Init(device, srvDescriptor, modelLoader_.get());
 }
 
+void Asset::ReportUsage(bool listAll) const {
+
+	// 全てのアセットファイルのログ出力
+	textureManager_->ReportUsage(listAll);
+	modelLoader_->ReportUsage(listAll);
+}
+
 void Asset::LoadTexture(const std::string& textureName) {
 	textureManager_->Load(textureName);
 }

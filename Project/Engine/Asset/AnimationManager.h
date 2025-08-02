@@ -11,6 +11,7 @@
 #include <Externals/assimp/include/assimp/scene.h>
 // c++
 #include <unordered_map>
+#include <unordered_set>
 // front
 class SRVDescriptor;
 class ModelLoader;

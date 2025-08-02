@@ -210,6 +210,7 @@ const AnimationData& AnimationManager::GetAnimationData(const std::string& anima
 		LOG_WARN("animation not found → {}", animationName);
 	}
 	ASSERT(find, "not found animation" + animationName);
+
 	return animations_.at(animationName);
 }
 

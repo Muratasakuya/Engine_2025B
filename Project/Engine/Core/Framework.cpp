@@ -265,6 +265,9 @@ void Framework::EndRequest() {
 
 void Framework::Finalize() {
 
+	// 全てのログ出力
+	asset_->ReportUsage(true);
+
 	graphicsPlatform_->Finalize(winApp_->GetHwnd());
 	renderEngine_->Finalize();
 	Input::GetInstance()->Finalize();

@@ -35,6 +35,8 @@ public:
 
 	bool Search(const std::string& modelName);
 
+	void ReportUsage(bool listAll) const;
+
 	//--------- accessor -----------------------------------------------------
 
 	const ModelData& GetModelData(const std::string& modelName) const;
