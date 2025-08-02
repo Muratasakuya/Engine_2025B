@@ -54,9 +54,6 @@ private:
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<BossEnemy> bossEnemy_;
 
-	// effects
-	std::unique_ptr<GameEffect> demoEffect_;
-
 	// editor
 	std::unique_ptr<GameObjectEditor> objectEditor_;
 	std::unique_ptr<LevelEditor> levelEditor_;

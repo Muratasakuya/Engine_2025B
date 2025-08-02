@@ -233,13 +233,6 @@ void GameScene::Init() {
 	player_->SetBossEnemy(bossEnemy_.get());
 	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
 	player_->SetPostProcessSystem(postProcessSystem_);
-
-	//========================================================================
-	//	effects
-	//========================================================================
-
-	demoEffect_ = std::make_unique<GameEffect>();
-	demoEffect_->CreateParticleSystem("Particle/GPU/demoParticles.json");
 }
 
 void GameScene::Update() {
@@ -250,12 +243,6 @@ void GameScene::Update() {
 
 	bossEnemy_->Update();
 	player_->Update();
-
-	//========================================================================
-	//	effect
-	//========================================================================
-
-	demoEffect_->FrequencyEmit();
 
 	//========================================================================
 	//	sceneObject
