@@ -36,16 +36,9 @@ void PlayerAttack_1stState::Update(Player& player) {
 	// 座標、回転補間
 	AttackAssist(player);
 
-	// playerの回転
-	Matrix4x4 playerRotation = Quaternion::MakeRotateMatrix(player.GetRotation());
-	// effectのオフセット回転
-	Matrix4x4 effectRotation = Matrix4x4::MakeRotateMatrix(slashEffectRotation_);
-	// オフセットはプレイヤー回転だけで回す
-	Vector3 worldOffset = Vector3::Transform(slashEffectTranslaton_, playerRotation);
-
-	// オフセット行列を計算して設定
-	Matrix4x4 offsetMatrix = playerRotation * effectRotation;
-	offsetMatrix = offsetMatrix * Matrix4x4::MakeTranslateMatrix(player.GetTranslation() + worldOffset);
+	// オフセット計算して設定
+	Matrix4x4 offsetMatrix = PlayerBaseAttackState::GetEffectOffsetMatrix(
+		player, slashEffectRotation_, slashEffectTranslaton_);
 	slashEffect_->SetTransform(offsetMatrix);
 	// 発生させる
 	slashEffect_->Emit(true);

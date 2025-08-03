@@ -12,6 +12,13 @@
 //	PlayerAttack_2ndState classMethods
 //============================================================================
 
+PlayerAttack_2ndState::PlayerAttack_2ndState() {
+
+	// effect作成
+	slashEffect_ = std::make_unique<GameEffect>();
+	slashEffect_->CreateParticleSystem("Particle/playerSlash.json");
+}
+
 void PlayerAttack_2ndState::Enter(Player& player) {
 
 	player.SetNextAnimation("player_attack_2nd", false, nextAnimDuration_);
@@ -27,12 +34,16 @@ void PlayerAttack_2ndState::Enter(Player& player) {
 		currentIndex_ = 0;
 		segmentTimer_ = 0.0f;
 		segmentTime_ = attackPosLerpTime_ / 3.0f;
+
+		// effectを発生させる
+		EmitSlashEffectForCurrentIndex(player);
 	}
 
 	// 初期化
 	currentIndex_ = 0;
 	segmentTimer_ = 0.0f;
 	segmentTime_ = attackPosLerpTime_ / 3.0f;
+	emittedThisSegment_ = false;
 }
 
 void PlayerAttack_2ndState::Update(Player& player) {
@@ -60,6 +71,12 @@ void PlayerAttack_2ndState::Update(Player& player) {
 			startTranslation_ = player.GetTranslation();
 
 			approachPhase_ = false;
+
+			// effectを発生させる
+			emittedThisSegment_ = false;
+			slashEffect_->ResetEmitFlag();
+			EmitSlashEffectForCurrentIndex(player);
+			emittedThisSegment_ = true;
 		}
 		return;
 	}
@@ -69,6 +86,14 @@ void PlayerAttack_2ndState::Update(Player& player) {
 
 		player.SetTranslation(*targetTranslation_);
 		return;
+	}
+
+	// 区間開始フレームでまだ発生していなければ発生させる
+	if (!emittedThisSegment_ && currentIndex_ < kNumSegments && segmentTimer_ == 0.0f) {
+
+		slashEffect_->ResetEmitFlag();
+		EmitSlashEffectForCurrentIndex(player);
+		emittedThisSegment_ = true;
 	}
 
 	// 各区間を順に補間する
@@ -85,8 +110,10 @@ void PlayerAttack_2ndState::Update(Player& player) {
 	// 遷移が完了したら次の区間に進む
 	if (segmentTime_ <= segmentTimer_) {
 
+		// リセット
 		segmentTimer_ = 0.0f;
 		++currentIndex_;
+		emittedThisSegment_ = false;
 	}
 }
 
@@ -110,11 +137,25 @@ void PlayerAttack_2ndState::CalcWayPoints(const Player& player, std::array<Vecto
 	dstWayPoints[2] = *targetTranslation_;
 }
 
+void PlayerAttack_2ndState::EmitSlashEffectForCurrentIndex(Player& player) {
+
+	const size_t key = (std::min)(currentIndex_, kNumSegments - 1);
+
+	// オフセット計算して設定
+	Matrix4x4 offsetMatrix = PlayerBaseAttackState::GetEffectOffsetMatrix(
+		player, slashEffectRotations_[key], slashEffectTranslatons_[key]);
+	slashEffect_->SetTransform(offsetMatrix);
+	// 発生させる
+	slashEffect_->Emit(true);
+}
+
 void PlayerAttack_2ndState::Exit([[maybe_unused]] Player& player) {
 
-	// timerをリセット
+	// リセット
 	attackPosLerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
+
+	slashEffect_->ResetEmitFlag();
 }
 
 void PlayerAttack_2ndState::ImGui(const Player& player) {
@@ -140,6 +181,16 @@ void PlayerAttack_2ndState::ImGui(const Player& player) {
 		lineRenderer->DrawLine3D(prev, debugWayPoints_[i], Color::White());
 		prev = debugWayPoints_[i];
 	}
+
+	ImGui::SeparatorText("Effect");
+	for (size_t i = 0; i < kNumSegments; ++i) {
+
+		ImGui::PushID(static_cast<int>(i));
+		ImGui::Text("Key %zu", i);
+		ImGui::DragFloat3("rotation", &slashEffectRotations_[i].x, 0.01f);
+		ImGui::DragFloat3("translation", &slashEffectTranslatons_[i].x, 0.01f);
+		ImGui::PopID();
+	}
 }
 
 void PlayerAttack_2ndState::ApplyJson(const Json& data) {
@@ -150,6 +201,24 @@ void PlayerAttack_2ndState::ApplyJson(const Json& data) {
 	swayRate_ = JsonAdapter::GetValue<float>(data, "swayRate_");
 	leftPointAngle_ = JsonAdapter::GetValue<float>(data, "leftPointAngle_");
 	rightPointAngle_ = JsonAdapter::GetValue<float>(data, "rightPointAngle_");
+
+	if (data.contains("slashEffectRotations_")) {
+
+		const auto& array = data["slashEffectRotations_"];
+		const size_t n = (std::min)(array.size(), kNumSegments);
+		for (size_t i = 0; i < n; ++i) {
+
+			slashEffectRotations_[i] = slashEffectRotations_[i].FromJson(array[i]);
+		}
+	}
+	if (data.contains("slashEffectTranslatons_")) {
+		const auto& array = data["slashEffectTranslatons_"];
+		const size_t n = (std::min)(array.size(), kNumSegments);
+		for (size_t i = 0; i < n; ++i) {
+
+			slashEffectTranslatons_[i] = slashEffectTranslatons_[i].FromJson(array[i]);
+		}
+	}
 
 	PlayerBaseAttackState::ApplyJson(data);
 }
@@ -162,6 +231,16 @@ void PlayerAttack_2ndState::SaveJson(Json& data) {
 	data["swayRate_"] = swayRate_;
 	data["leftPointAngle_"] = leftPointAngle_;
 	data["rightPointAngle_"] = rightPointAngle_;
+
+	Json rotArray = Json::array();
+	Json transArray = Json::array();
+	for (size_t i = 0; i < kNumSegments; ++i) {
+		
+		rotArray.push_back(slashEffectRotations_[i].ToJson());
+		transArray.push_back(slashEffectTranslatons_[i].ToJson());
+	}
+	data["slashEffectRotations_"] = rotArray;
+	data["slashEffectTranslatons_"] = transArray;
 
 	PlayerBaseAttackState::SaveJson(data);
 }
