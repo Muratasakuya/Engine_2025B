@@ -27,6 +27,7 @@ public:
 	CPUParticleGroup& operator=(CPUParticleGroup&&) noexcept = default;
 
 	void Create(ID3D12Device* device, Asset* asset, ParticlePrimitiveType primitiveType);
+	void CreateFromJson(ID3D12Device* device, Asset* asset, const Json& data);
 
 	void Update();
 

@@ -28,9 +28,15 @@ void ParticleLoopableModule::ToLoopJson(Json& data) {
 void ParticleLoopableModule::FromLoopJson(const Json& data) {
 
 	const std::string key = "loop";
+	if (data.contains(key)) {
 
-	loopCount_ = data[key].value("loopCount", 1);
+		loopCount_ = data[key].value("loopCount", 1);
 
-	const auto& type = EnumAdapter<ParticleLoop::Type>::FromString(data[key]["type"]);
-	loopType_ = type.value();
+		const auto& type = EnumAdapter<ParticleLoop::Type>::FromString(data[key]["type"]);
+		loopType_ = type.value();
+	} else {
+
+		loopCount_ = 1;
+		loopType_ = ParticleLoop::Type::Repeat;
+	}
 }

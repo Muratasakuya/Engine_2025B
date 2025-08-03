@@ -63,7 +63,7 @@ float2 ArcPoint(const Crescent crescent, float t, bool outer) {
 [numthreads(CRESCENT_MAX_DIVIDE * 4, 1, 1)]
 [outputtopology("triangle")]
 void main(uint groupThreadId : SV_GroupThreadID, uint groupId : SV_GroupID,
-out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 4], out indices uint3 polys[(CRESCENT_MAX_DIVIDE * 8) + 4]) {
+out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 4], out indices uint3 polys[(CRESCENT_MAX_DIVIDE * 6) + 4]) {
 	
 	// dispatchMeshでの1次元グループID
 	uint instanceIndex = groupId;
@@ -74,7 +74,7 @@ out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 4], out indices uint3 po
 	// 頂点数、出力三角形数
 	uint divide = min(crescent.divide, (uint) CRESCENT_MAX_DIVIDE);
 	uint vertCount = (divide + 1) * 4;
-	uint triCount = divide * 8 + 4;
+	uint triCount = divide * 4 + 4;
 	SetMeshOutputCounts(vertCount, triCount);
 
 	if (groupThreadId < vertCount) {
@@ -94,7 +94,9 @@ out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 4], out indices uint3 po
 
 		// 幅設定
 		float halfT = 0.5f * crescent.thickness;
-		float z = frontSide ? halfT : -halfT;
+		// 端(start/end)で0、中央で1になるスケール
+		float thickScale = sin(t * PI);
+		float z = (outer ? 0.0f : (frontSide ? halfT * thickScale : -halfT * thickScale));
 
 		// world行列を作成
 		float4x4 worldMatrix = MakeWorldMatrix(transform, gPerView.billboardMatrix, gPerView.cameraPos);
@@ -146,9 +148,6 @@ out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 4], out indices uint3 po
 
 		uint baseFront = 0;
 		uint baseBack = baseFront + divide * 2;
-		uint baseOuter = baseBack + divide * 2;
-		uint baseInner = baseOuter + divide * 2;
-		uint baseCap = baseInner + divide * 2;
 
 		//  +Z
 		uint fIndex = baseFront + i * 2;
@@ -159,16 +158,6 @@ out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 4], out indices uint3 po
 		uint bIndex = baseBack + i * 2;
 		polys[bIndex + 0] = uint3(OB1, IB0, OB0);
 		polys[bIndex + 1] = uint3(OB1, IB1, IB0);
-
-		// 外側の三角形
-		uint oIndex = baseOuter + i * 2;
-		polys[oIndex + 0] = uint3(OF0, OB0, OF1);
-		polys[oIndex + 1] = uint3(OF1, OB0, OB1);
-
-		// 内側の三角形
-		uint inIndex = baseInner + i * 2;
-		polys[inIndex + 0] = uint3(IF1, IB0, IF0);
-		polys[inIndex + 1] = uint3(IF1, IB1, IB0);
 	}
 
 	// 始点と終点の三角形生成
@@ -186,7 +175,7 @@ out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 4], out indices uint3 po
 		uint OBN = polyIndex + 2;
 		uint IBN = polyIndex + 3;
 
-		uint capBase = divide * 8;
+		uint capBase = divide * 4;
 
 		// startAngle
 		polys[capBase + 0] = uint3(OF0, OB0, IF0);

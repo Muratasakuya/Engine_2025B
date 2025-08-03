@@ -30,6 +30,26 @@ void CPUParticleGroup::Create(ID3D12Device* device,
 	textureInfoBuffer_.CreateSRVBuffer(device, kMaxParticles);
 }
 
+void CPUParticleGroup::CreateFromJson(ID3D12Device* device, Asset* asset, const Json& data) {
+
+	asset_ = nullptr;
+	asset_ = asset;
+
+	// 初期化値
+	// 全ての形状を初期化しておく
+	emitter_.Init();
+
+	// jsonからデータ取得
+	FromJson(data, asset_);
+
+	// buffer作成
+	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveBuffer_.type);
+	// structuredBuffer(SAV)
+	transformBuffer_.CreateSRVBuffer(device, kMaxParticles);
+	materialBuffer_.CreateSRVBuffer(device, kMaxParticles);
+	textureInfoBuffer_.CreateSRVBuffer(device, kMaxParticles);
+}
+
 void CPUParticleGroup::Update() {
 
 	// フェーズの更新処理
@@ -166,7 +186,7 @@ void CPUParticleGroup::UpdateTransferData(uint32_t particleIndex,
 		break;
 	}
 	case ParticlePrimitiveType::Ring: {
-
+		
 		transferPrimitives_.ring[particleIndex] = particle.primitive.ring;
 		break;
 	}
@@ -325,6 +345,8 @@ void CPUParticleGroup::ImGui() {
 	if (0 <= selectedPhase_ && selectedPhase_ < static_cast<int>(phases_.size())) {
 
 		ImGui::PushItemWidth(160.0f);
+
+		EnumAdapter<BlendMode>::Combo("blendMode", &blendMode_);
 
 		phases_[selectedPhase_]->ImGui();
 

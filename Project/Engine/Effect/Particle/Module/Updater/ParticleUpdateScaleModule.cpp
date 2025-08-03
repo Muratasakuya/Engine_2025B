@@ -19,9 +19,12 @@ void ParticleUpdateScaleModule::Init() {
 void ParticleUpdateScaleModule::Execute(
 	CPUParticle::ParticleData& particle, [[maybe_unused]] float deltaTime) {
 
+	// t値取得
+	const float lerpT = LoopedT(particle.progress);
+
 	// 色を補間
 	particle.transform.scale = Vector3::Lerp(scale_.start, scale_.target,
-		EasedValue(easing_, particle.progress));
+		EasedValue(easing_, lerpT));
 }
 
 void ParticleUpdateScaleModule::ImGui() {
@@ -30,11 +33,16 @@ void ParticleUpdateScaleModule::ImGui() {
 	ImGui::DragFloat3("targetScale", &scale_.target.x, 0.01f);
 
 	Easing::SelectEasingType(easing_, GetName());
+
+	ImGuiLoopParam();
 }
 
 Json ParticleUpdateScaleModule::ToJson() {
 
 	Json data;
+
+	// ループ
+	ParticleLoopableModule::ToLoopJson(data);
 
 	data["scale"]["start"] = scale_.start.ToJson();
 	data["scale"]["target"] = scale_.target.ToJson();
@@ -44,6 +52,9 @@ Json ParticleUpdateScaleModule::ToJson() {
 }
 
 void ParticleUpdateScaleModule::FromJson(const Json& data) {
+
+	// ループ
+	ParticleLoopableModule::FromLoopJson(data);
 
 	const auto& easingType = EnumAdapter<EasingType>::FromString(data.value("easingType", ""));
 	easing_ = easingType.value();

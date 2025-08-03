@@ -464,7 +464,6 @@ void ParticleSystem::LoadJson(const std::optional<std::string>& filePath, bool u
 
 		auto& group = cpuGroups_.emplace_back();
 		group.name = groupData.value("name", "");
-		group.group.Create(device_, asset_, primitiveType_);
-		group.group.FromJson(groupData, asset_);
+		group.group.CreateFromJson(device_, asset_, groupData);
 	}
 }
