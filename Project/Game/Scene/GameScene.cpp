@@ -22,35 +22,11 @@ void GameScene::Load() {
 	asset_->LoadTexture("circle");
 	asset_->LoadTexture("effectCircle");
 	asset_->LoadTexture("starCircle");
-	asset_->LoadTexture("starCircle2");
-	asset_->LoadTexture("circle4");
 	asset_->LoadTexture("gradationLine_0");
-	asset_->LoadTexture("gradationLine_1");
 	asset_->LoadTexture("groundEffect");
 	asset_->LoadTexture("redCircle");
-	asset_->LoadTexture("horaizontalRedCircle");
-	asset_->LoadTexture("verticalRedCircle");
-	asset_->LoadTexture("smallCircle");
 	asset_->LoadTexture("flashLlight");
 	asset_->LoadTexture("noise");
-	asset_->LoadTexture("noise1");
-	asset_->LoadTexture("noise2");
-	asset_->LoadTexture("uvChecker");
-
-	asset_->LoadModel("billboardPlane");
-	asset_->LoadModel("billboardHorizontalPlane");
-	asset_->LoadModel("billboardVerticalPlane");
-	asset_->LoadModel("bottomLocalbillboardPlane");
-	asset_->LoadModel("topLocalbillboardPlane");
-	asset_->LoadModel("crossPlane");
-	asset_->LoadModel("groundPlane");
-	asset_->LoadModel("groundRing");
-	asset_->LoadModel("hitLine");
-	asset_->LoadModel("slashEffect");
-	asset_->LoadModel("verticalPlane");
-	asset_->LoadModel("verticalRing");
-	asset_->LoadModel("primitiveRing");
-	asset_->LoadModel("primitiveCylinder");
 
 	//========================================================================
 	//	environment
@@ -81,7 +57,6 @@ void GameScene::Load() {
 	asset_->LoadModel("signCorner");
 	asset_->LoadModel("steelbeams");
 	asset_->LoadModel("tiltedWarningWall");
-	asset_->LoadModel("wall");
 	asset_->LoadModel("warningWall");
 
 	//========================================================================
@@ -104,9 +79,6 @@ void GameScene::Load() {
 	asset_->LoadModel("bossEnemyWeapon");
 	asset_->LoadAnimation("bossEnemy", "bossEnemy");
 
-	asset_->LoadModel("BrainStem");
-	asset_->LoadAnimation("BrainStem", "BrainStem");
-
 	//========================================================================
 	//	player
 	//========================================================================
@@ -124,14 +96,11 @@ void GameScene::Load() {
 	// mouse
 	asset_->LoadTexture("leftMouseClick");
 	asset_->LoadTexture("rightMouseClick");
-	asset_->LoadTexture("centerMouseClick");
 	asset_->LoadTexture("EButton");
-	asset_->LoadTexture("QButton");
 	// gamePad
 	asset_->LoadTexture("XButton");
 	asset_->LoadTexture("AButton");
 	asset_->LoadTexture("YButton");
-	asset_->LoadTexture("RTButton");
 	asset_->LoadTexture("RBButton");
 	asset_->LoadTexture("LBButton");
 	asset_->LoadTexture("spaceButton");
