@@ -89,6 +89,7 @@ Project/Log/assetCheck.log
 
 Project/Scripts/Make-UsedAssets.ps1
 Project/Scripts/Build-ExeBundle.ps1
+Project/Scripts/Build-ProjectBundle.ps1
 
 # Chutzpah Test files
 _Chutzpah*
