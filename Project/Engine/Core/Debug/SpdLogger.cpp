@@ -6,7 +6,7 @@
 
 void SpdLogger::Init(const std::string& fileName, bool truncate) {
 
-	// フォルダ作成（既存実装互換）
+	// フォルダ作成
 	const std::string logDir = "./Log/";
 	if (!std::filesystem::exists(logDir)) {
 
@@ -36,6 +36,30 @@ void SpdLogger::Init(const std::string& fileName, bool truncate) {
 
 	// 出力フォーマット
 	spdlog::set_pattern("[%H:%M:%S.%e] %v");
+}
+
+void SpdLogger::InitAsset(const std::string& fileName, bool truncate) {
+
+	// フォルダ作成
+	const std::string logDir = "./Log/";
+	if (!std::filesystem::exists(logDir)) {
+
+		std::filesystem::create_directories(logDir);
+	}
+
+	//--- sink 構築 ------------------------------------------------------
+	auto fileSink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(logDir + fileName, truncate);
+	std::vector<spdlog::sink_ptr> sinks{ fileSink };
+
+	//--- logger インスタンス作成 ---------------------------------------
+	assetLogger_ = std::make_shared<spdlog::logger>("asset", sinks.begin(), sinks.end());
+	spdlog::register_logger(assetLogger_);
+
+	assetLogger_->set_level(spdlog::level::trace);
+	assetLogger_->flush_on(spdlog::level::err);
+
+	// 出力フォーマット
+	assetLogger_->set_pattern("[%H:%M:%S.%e] [%n] %v");
 }
 
 void SpdLogger::Log(const std::string& message, LogLevel level) {

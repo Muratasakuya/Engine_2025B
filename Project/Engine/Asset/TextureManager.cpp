@@ -443,14 +443,14 @@ void TextureManager::ReportUsage(bool listAll) const {
 
 	if (unused.empty()) {
 
-		LOG_INFO("[Texture] Unused: 0");
+		LOG_ASSET_INFO("[Texture] Unused: 0");
 	} else {
 
-		LOG_WARN("[Texture] Unused: {}", unused.size());
+		LOG_ASSET_INFO("[Texture] Unused: {}", unused.size());
 		if (listAll) {
 			for (auto& n : unused) {
 
-				LOG_WARN("  - {}", n);
+				LOG_ASSET_INFO("  - {}", n);
 			}
 		}
 	}
@@ -486,14 +486,14 @@ void TextureManager::ReportUsage(bool listAll) const {
 
 	if (notLoaded.empty()) {
 
-		LOG_INFO("[Texture] NotLoaded(on disk only): 0");
+		LOG_ASSET_INFO("[Texture] NotLoaded(on disk only): 0");
 	} else {
 
-		LOG_WARN("[Texture] NotLoaded(on disk only): {}", notLoaded.size());
+		LOG_ASSET_INFO("[Texture] NotLoaded(on disk only): {}", notLoaded.size());
 		if (listAll) {
 			for (auto& n : notLoaded) {
 
-				LOG_WARN("  - {}", n);
+				LOG_ASSET_INFO("  - {}", n);
 			}
 		}
 	}

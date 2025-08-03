@@ -51,6 +51,7 @@ Framework::Framework() {
 	//========================================================================
 
 	SpdLogger::Init();
+	SpdLogger::InitAsset();
 	SpdLogger::Log("[StartLogginig]\n");
 
 	LOG_INFO("\nconfigs\nwindowTitle: {}\nwindowSize: {}×{}\nmaxInstanceCount: {}\n\n",

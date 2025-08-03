@@ -37,6 +37,7 @@ public:
 	};
 
 	static void Init(const std::string& fileName = "engine.log", bool truncate = true);
+	static void InitAsset(const std::string& fileName = "assetCheck.log", bool truncate = true);
 
 	static void Log(const std::string& message, LogLevel level = LogLevel::INFO);
 
@@ -46,6 +47,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	static std::shared_ptr<spdlog::logger>& Get() { return logger_; }
+	static std::shared_ptr<spdlog::logger>& GetAsset() { return assetLogger_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -54,6 +56,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	static inline std::shared_ptr<spdlog::logger> logger_;
+	static inline std::shared_ptr<spdlog::logger> assetLogger_;
 };
 
 //============================================================================
@@ -83,3 +86,5 @@ inline void SpdLogger::LogFormat(LogLevel level, fmt::format_string<Args...> fmt
 #define LOG_WARN(...)  SPDLOG_LOGGER_CALL(SpdLogger::Get(), spdlog::level::warn,     __VA_ARGS__)
 #define LOG_ERROR(...) SPDLOG_LOGGER_CALL(SpdLogger::Get(), spdlog::level::err,      __VA_ARGS__)
 #define LOG_CRIT(...)  SPDLOG_LOGGER_CALL(SpdLogger::Get(), spdlog::level::critical, __VA_ARGS__)
+
+#define LOG_ASSET_INFO(...)  SPDLOG_LOGGER_CALL(SpdLogger::GetAsset(), spdlog::level::info, __VA_ARGS__)

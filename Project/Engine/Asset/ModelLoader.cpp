@@ -355,14 +355,14 @@ void ModelLoader::ReportUsage(bool listAll) const {
 
 	if (unused.empty()) {
 
-		LOG_INFO("[Model] Unused: 0");
+		LOG_ASSET_INFO("[Model] Unused: 0");
 	} else {
 
-		LOG_WARN("[Model] Unused: {}", unused.size());
+		LOG_ASSET_INFO("[Model] Unused: {}", unused.size());
 		if (listAll) {
 			for (auto& n : unused) {
 
-				LOG_WARN("  - {}", n);
+				LOG_ASSET_INFO("  - {}", n);
 			}
 		}
 	}
@@ -398,14 +398,14 @@ void ModelLoader::ReportUsage(bool listAll) const {
 
 	if (notLoaded.empty()) {
 
-		LOG_INFO("[Model] NotLoaded(on disk only): 0");
+		LOG_ASSET_INFO("[Model] NotLoaded(on disk only): 0");
 	} else {
 
-		LOG_WARN("[Model] NotLoaded(on disk only): {}", notLoaded.size());
+		LOG_ASSET_INFO("[Model] NotLoaded(on disk only): {}", notLoaded.size());
 		if (listAll) {
 			for (auto& n : notLoaded) {
 
-				LOG_WARN("  - {}", n);
+				LOG_ASSET_INFO("  - {}", n);
 			}
 		}
 	}
