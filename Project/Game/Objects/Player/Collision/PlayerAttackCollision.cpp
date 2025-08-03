@@ -26,6 +26,10 @@ void PlayerAttackCollision::Init() {
 	// 最初は無効状態
 	weaponBody_->SetType(ColliderType::Type_None);
 	weaponBody_->SetTargetType(ColliderType::Type_BossEnemy);
+
+	// effect作成
+	hitEffect_ = std::make_unique<GameEffect>();
+	hitEffect_->CreateParticleSystem("Particle/playerHitEffect.json");
 }
 
 void PlayerAttackCollision::Update(const Transform3D& transform) {
@@ -97,6 +101,14 @@ void PlayerAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody)
 		// 座標を設定してparticleを発生
 		// 状態別で形状の値を設定
 		// システム変更で消えた
+		const auto& offset = std::get<CollisionShape::OBB>(bodyOffsets_.front());
+		Vector3 hitPos = transform_->translation + offset.center;
+		Matrix4x4 transMatrix = Matrix4x4::MakeIdentity4x4();
+		transMatrix = Matrix4x4::MakeTranslateMatrix(hitPos);
+
+		// 発生させる
+		hitEffect_->SetTransform(transMatrix);
+		hitEffect_->Emit();
 	}
 }
 

@@ -49,9 +49,9 @@
                             },
                             "radius": 0.0,
                             "translation": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
+                                "x": -96.75701141357422,
+                                "y": 3.799999952316284,
+                                "z": -108.67432403564453
                             }
                         },
                         "type": "Sphere"
@@ -95,6 +95,10 @@
                         {
                             "params": {
                                 "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 1,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 0.0,
@@ -102,9 +106,9 @@
                                         "z": 0.0
                                     },
                                     "target": {
-                                        "x": 14.0,
-                                        "y": 14.0,
-                                        "z": 14.0
+                                        "x": 22.0,
+                                        "y": 22.0,
+                                        "z": 22.0
                                     }
                                 }
                             },
@@ -211,9 +215,9 @@
                             },
                             "radius": 0.0,
                             "translation": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
+                                "x": -96.75701141357422,
+                                "y": 3.799999952316284,
+                                "z": -108.67432403564453
                             }
                         },
                         "type": "Sphere"
@@ -257,6 +261,10 @@
                         {
                             "params": {
                                 "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 1,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 0.0,
@@ -264,9 +272,9 @@
                                         "z": 0.0
                                     },
                                     "target": {
-                                        "x": 24.0,
-                                        "y": 24.0,
-                                        "z": 24.0
+                                        "x": 32.0,
+                                        "y": 32.0,
+                                        "z": 32.0
                                     }
                                 }
                             },
@@ -313,7 +321,7 @@
                                 "easingType": "EaseOutExpo",
                                 "intencity": {
                                     "start": 4.0,
-                                    "target": 2.0
+                                    "target": 4.0
                                 }
                             },
                             "type": "Emissive"
@@ -342,14 +350,14 @@
                                 },
                                 "lifeTime": {
                                     "constant": 0.3199999928474426,
-                                    "randomMax": 0.5400000214576721,
-                                    "randomMin": 0.3199999928474426,
+                                    "randomMax": 0.2980000078678131,
+                                    "randomMin": 0.11800000071525574,
                                     "valueType": 1
                                 },
                                 "moveSpeed": {
                                     "constant": 24.0,
-                                    "randomMax": 32.0,
-                                    "randomMin": 24.0,
+                                    "randomMax": 48.0,
+                                    "randomMin": 36.0,
                                     "valueType": 1
                                 },
                                 "noiseTextureName": "noise",
@@ -373,9 +381,9 @@
                             },
                             "radius": 0.20000000298023224,
                             "translation": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
+                                "x": -96.75701141357422,
+                                "y": 3.799999952316284,
+                                "z": -108.67432403564453
                             }
                         },
                         "type": "Sphere"
@@ -419,6 +427,10 @@
                         {
                             "params": {
                                 "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 1,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 0.23999999463558197,
@@ -444,7 +456,7 @@
                                         "r": 0.129169762134552
                                     },
                                     "target": {
-                                        "a": 0.0,
+                                        "a": 1.0,
                                         "b": 0.6627451181411743,
                                         "g": 0.6705882549285889,
                                         "r": 0.08627451211214066
@@ -517,14 +529,14 @@
                                 "z": 0.0
                             },
                             "size": {
-                                "x": 2.0,
+                                "x": 4.0,
                                 "y": 2.0,
-                                "z": 2.0
+                                "z": 4.0
                             },
                             "translation": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
+                                "x": -96.75701141357422,
+                                "y": 3.799999952316284,
+                                "z": -108.67432403564453
                             }
                         },
                         "type": "Box"
@@ -567,7 +579,11 @@
                         },
                         {
                             "params": {
-                                "easingType": "EaseInSine",
+                                "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 4,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 4.0,
@@ -575,9 +591,9 @@
                                         "z": 4.0
                                     },
                                     "target": {
-                                        "x": 4.0,
-                                        "y": 4.0,
-                                        "z": 4.0
+                                        "x": 0.0,
+                                        "y": 0.0,
+                                        "z": 0.0
                                     }
                                 }
                             },
@@ -599,7 +615,7 @@
                                         "r": 0.9680919051170349
                                     }
                                 },
-                                "easingType": "EaseInSine",
+                                "easingType": "EaseOutExpo",
                                 "loop": {
                                     "loopCount": 4,
                                     "type": "Repeat"
@@ -666,7 +682,7 @@
                                     "valueType": 0
                                 },
                                 "lifeTime": {
-                                    "constant": 0.1599999964237213,
+                                    "constant": 0.3199999928474426,
                                     "randomMax": 0.800000011920929,
                                     "randomMin": 0.800000011920929,
                                     "valueType": 0
@@ -698,9 +714,9 @@
                             },
                             "radius": 0.0,
                             "translation": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
+                                "x": -96.75701141357422,
+                                "y": 3.799999952316284,
+                                "z": -108.67432403564453
                             }
                         },
                         "type": "Sphere"
@@ -744,6 +760,10 @@
                         {
                             "params": {
                                 "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 1,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 0.0,
@@ -751,9 +771,9 @@
                                         "z": 0.0
                                     },
                                     "target": {
-                                        "x": 14.0,
-                                        "y": 14.0,
-                                        "z": 14.0
+                                        "x": 28.0,
+                                        "y": 28.0,
+                                        "z": 28.0
                                     }
                                 }
                             },

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Collision/Collider.h>
+#include <Engine/Effect/GameEffect.h>
 #include <Game/Objects/Player/Structures/PlayerStructures.h>
 
 //============================================================================
@@ -61,6 +62,9 @@ private:
 
 	float currentTimer_; // 現在の経過時間、全部共通
 	float reHitTimer_;   // 多段ヒット経過時間
+
+	// ヒットエフェクト
+	std::unique_ptr<GameEffect> hitEffect_;
 
 	// editor
 	PlayerState editingState_;
