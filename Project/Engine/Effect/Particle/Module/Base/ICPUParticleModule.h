@@ -4,40 +4,10 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/Structures/ParticleStructures.h>
+#include <Engine/Effect/Particle/Command/ParticleCommand.h>
 
 // imgui
 #include <imgui.h>
-
-//============================================================================
-//	enum class
-//============================================================================
-
-// 発生処理
-enum class ParticleSpawnModuleID {
-
-	Sphere,
-	Hemisphere,
-	Box,
-	Cone,
-	PolygonVertex,
-	Count,
-};
-
-// 更新処理
-enum class ParticleUpdateModuleID {
-
-	Color,
-	Velocity,
-	Rotation,
-	Scale,
-	Gravity,
-	Parent,
-	UV,
-	Emissive,
-	AlphaReference,
-	Primitive,
-	Count,
-};
 
 //============================================================================
 //	ICPUParticleModule class
@@ -61,7 +31,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	virtual void SetTransform([[maybe_unused]] const Matrix4x4& matrix) {};
+	virtual bool SetCommand([[maybe_unused]] const ParticleCommand& command) { return false; }
 
 	virtual const char* GetName() const = 0;
 };

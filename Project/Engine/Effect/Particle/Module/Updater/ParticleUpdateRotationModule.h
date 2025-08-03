@@ -28,7 +28,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetTransform(const Matrix4x4& matrix) override;
+	bool SetCommand(const ParticleCommand& command) override;
 
 	const char* GetName() const override { return "Rotation"; }
 

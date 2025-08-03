@@ -9,10 +9,21 @@
 //	ParticleUpdateRotationModule classMethods
 //============================================================================
 
-void ParticleUpdateRotationModule::SetTransform(const Matrix4x4& matrix) {
+bool ParticleUpdateRotationModule::SetCommand(const ParticleCommand& command) {
 
-	// 回転の設定
-	setRotation_ = matrix.GetRotationValue();
+	switch (command.id) {
+	case ParticleCommandID::SetEulerRotation: {
+		if (const auto& rotation = std::get_if<Vector3>(&command.value)) {
+
+			setRotation_ = *rotation;
+		} else if (const auto& matrix = std::get_if<Matrix4x4>(&command.value)){
+
+			setRotation_ = matrix->GetRotationValue();
+		}
+		return false;
+	}
+	}
+	return false;
 }
 
 Vector3 ParticleUpdateRotationModule::UpdateRotation(CPUParticle::ParticleData& particle) const {

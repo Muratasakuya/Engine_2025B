@@ -62,7 +62,6 @@ public:
 	void SetName(const std::string& name) { name_ = name; }
 	void SetGroupName(uint32_t i, const std::string& name) { gpuGroups_[i].name = name; }
 	void SelectGroup(int index) { selected_.index = index; }
-	void SetParent(const BaseTransform& transform);
 
 	const std::string& GetName() const { return name_; }
 	const std::string& GetGroupName(uint32_t i) const { return gpuGroups_[i].name; }
@@ -71,6 +70,8 @@ public:
 	std::vector<NameGroup<CPUParticleGroup>>& GetCPUGroup() { return cpuGroups_; }
 
 	//---------- runtime -----------------------------------------------------
+
+	void ApplyCommand(const ParticleCommand& command);
 
 	// .jsonファイルから読み込んで作成する
 	void LoadJson(const std::optional<std::string>& filePath = std::nullopt, bool useGame = false);

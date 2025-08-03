@@ -150,31 +150,9 @@ void GPUParticleGroup::SetIsForcedEmit(bool emit) {
 	isForcedEmit_ = emit;
 }
 
-void GPUParticleGroup::SetTransform(const Matrix4x4& matrix) {
+void GPUParticleGroup::ApplyCommand([[maybe_unused]] const ParticleCommand& command) {
 
-	// 座標を設定
-	switch (emitter_.shape) {
-	case ParticleEmitterShape::Sphere: {
 
-		emitter_.sphere.translation = matrix.GetTranslationValue();
-		break;
-	}
-	case ParticleEmitterShape::Hemisphere: {
-
-		emitter_.hemisphere.translation = matrix.GetTranslationValue();
-		break;
-	}
-	case ParticleEmitterShape::Box: {
-
-		emitter_.box.translation = matrix.GetTranslationValue();
-		break;
-	}
-	case ParticleEmitterShape::Cone: {
-
-		emitter_.cone.translation = matrix.GetTranslationValue();
-		break;
-	}
-	}
 }
 
 void GPUParticleGroup::UpdateEmitter() {

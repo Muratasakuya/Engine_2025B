@@ -110,6 +110,20 @@ void ParticleSystem::UpdateAllEmit() {
 	}
 }
 
+void ParticleSystem::ApplyCommand(const ParticleCommand& command) {
+
+	// GPU
+	for (auto& group : gpuGroups_) {
+
+		group.group.ApplyCommand(command);
+	}
+	// CPU
+	for (auto& group : cpuGroups_) {
+
+		group.group.ApplyCommand(command);
+	}
+}
+
 void ParticleSystem::AddGroup() {
 
 	// タイプに応じて作成

@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Object/Data/Transform.h>
+#include <Engine/Effect/Particle/Command/ParticleCommand.h>
 
 // c++
 #include <string>
@@ -25,6 +25,9 @@ public:
 	// ParticleSystemの作成
 	void CreateParticleSystem(const std::string& filePath);
 
+	// モジュールのコマンド適応
+	void SendCommand(const ParticleCommand& command);
+
 	// リセット
 	void ResetEmitFlag();
 
@@ -34,12 +37,6 @@ public:
 	void FrequencyEmit();
 	// 強制発生
 	void Emit(bool emitOnce = false);
-
-	//---------- setter ------------------------------------------------------
-
-	// transform
-	void SetTransform(const Matrix4x4& matrix);
-	void SetParent(const BaseTransform& transform);
 private:
 	//========================================================================
 	//	private Methods
@@ -51,7 +48,4 @@ private:
 
 	// 1回だけ発生させるか
 	bool emitOnce_;
-
-	// 親を設定済みか
-	bool hasParent_;
 };

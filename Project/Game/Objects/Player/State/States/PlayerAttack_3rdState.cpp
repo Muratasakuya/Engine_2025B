@@ -31,7 +31,14 @@ void PlayerAttack_3rdState::Enter(Player& player) {
 	Vector3 basePos = player.GetTranslation();
 	// Y固定
 	basePos.y = horaizontalSlashPosY_;
-	horaizontalSlashEffect_->SetTransform(Matrix4x4::MakeTranslateMatrix(basePos));
+	
+	// 座標設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetTranslation;
+	command.value = basePos;
+	horaizontalSlashEffect_->SendCommand(command);
+	// 発生させる
 	horaizontalSlashEffect_->Emit(true);
 }
 
@@ -47,14 +54,16 @@ void PlayerAttack_3rdState::Update(Player& player) {
 
 			// playerの前方
 			Vector3 forward = player.GetTransform().GetForward() * groundEffectDistance_;
-			Matrix4x4 transMatrix = Matrix4x4::MakeIdentity4x4();
 			Vector3 basePos = player.GetTranslation();
 			// Y固定
 			basePos.y = groundEffectPosY_;
-			transMatrix = Matrix4x4::MakeTranslateMatrix(basePos + forward);
-
+			// 座標設定
+			ParticleCommand command{};
+			command.target = ParticleCommandTarget::Spawner;
+			command.id = ParticleCommandID::SetTranslation;
+			command.value = basePos + forward;
+			groungEffect_->SendCommand(command);
 			// 発生させる
-			groungEffect_->SetTransform(transMatrix);
 			groungEffect_->Emit();
 
 			// システム変更で消えた
@@ -67,12 +76,6 @@ void PlayerAttack_3rdState::Update(Player& player) {
 
 	// 座標、回転補間
 	AttackAssist(player);
-
-	// 発生後も常に発生させる
-	Vector3 basePos = player.GetTranslation();
-	// Y固定
-	basePos.y = horaizontalSlashPosY_;
-	horaizontalSlashEffect_->SetTransform(Matrix4x4::MakeTranslateMatrix(basePos));
 }
 
 void PlayerAttack_3rdState::Exit([[maybe_unused]] Player& player) {

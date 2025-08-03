@@ -82,9 +82,8 @@ void CPUParticleGroup::Emit() {
 	}
 }
 
-void CPUParticleGroup::SetTransform(const Matrix4x4& matrix) {
+void CPUParticleGroup::ApplyCommand(const ParticleCommand& command) {
 
-	// 全てのemitterの座標を設定
 	// フェーズがない場合は処理しない
 	if (phases_.empty()) {
 		return;
@@ -92,7 +91,7 @@ void CPUParticleGroup::SetTransform(const Matrix4x4& matrix) {
 
 	for (const auto& phase : phases_) {
 
-		phase->SetTransform(matrix);
+		phase->ApplyCommand(command);
 	}
 }
 
@@ -293,25 +292,6 @@ void CPUParticleGroup::ImGui() {
 	}
 
 	ImGui::SeparatorText("Parent");
-
-	// 親の設定があった場合すべてのemitterにも通知して処理する
-	bool editParent = BaseParticleGroup::ImGuiParent();
-	if (editParent) {
-		// 親が設定されている場合
-		if (parentTransform_) {
-			for (const auto& phase : phases_) {
-
-				phase->SetParent(true, *parentTransform_);
-			}
-		}
-		// 親が設定されていない場合
-		else {
-			for (const auto& phase : phases_) {
-
-				phase->SetParent(false, Transform3D());
-			}
-		}
-	}
 
 	if (!phases_.empty()) {
 

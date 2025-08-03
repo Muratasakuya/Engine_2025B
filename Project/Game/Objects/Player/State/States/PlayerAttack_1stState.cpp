@@ -36,10 +36,23 @@ void PlayerAttack_1stState::Update(Player& player) {
 	// 座標、回転補間
 	AttackAssist(player);
 
-	// オフセット計算して設定
-	Matrix4x4 offsetMatrix = PlayerBaseAttackState::GetEffectOffsetMatrix(
-		player, slashEffectRotation_, slashEffectTranslaton_);
-	slashEffect_->SetTransform(offsetMatrix);
+	// コマンドに設定
+	ParticleCommand command{};
+	{
+		// 座標設定
+		command.target = ParticleCommandTarget::Spawner;
+		command.id = ParticleCommandID::SetTranslation;
+		command.value = PlayerBaseAttackState::GetPlayerOffsetPos(player, slashEffectTranslaton_);
+		slashEffect_->SendCommand(command);
+	}
+	{
+		// 回転設定
+		command.target = ParticleCommandTarget::Updater;
+		command.id = ParticleCommandID::SetEulerRotation;
+		command.filter.updaterId = ParticleUpdateModuleID::Rotation;
+		command.value = PlayerBaseAttackState::GetPlayerOffsetRotation(player, slashEffectRotation_);
+		slashEffect_->SendCommand(command);
+	}
 	// 発生させる
 	slashEffect_->Emit(true);
 }

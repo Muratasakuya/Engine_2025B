@@ -54,8 +54,8 @@ protected:
 	void AttackAssist(Player& player, bool onceTarget = false);
 
 	// helper
-	Matrix4x4 GetEffectOffsetMatrix(const Player& player,
-		const Vector3& offsetRotation, const Vector3& offsetTranslation);
+	Vector3 GetPlayerOffsetPos(const Player& player, const Vector3& offsetTranslation) const;
+	Matrix4x4 GetPlayerOffsetRotation(const Player& player, const Vector3& offsetRotation) const;
 
 	// debug
 	void DrawAttackOffset(const Player& player);

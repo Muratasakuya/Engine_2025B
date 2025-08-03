@@ -10,10 +10,27 @@
 //	ParticleSpawnHemisphereModule classMethods
 //============================================================================
 
-void ParticleSpawnHemisphereModule::SetTransform(const Matrix4x4& matrix) {
+bool ParticleSpawnHemisphereModule::SetCommand(const ParticleCommand& command) {
 
-	// 座標の設定
-	emitter_.translation = matrix.GetTranslationValue();
+	switch (command.id) {
+	case ParticleCommandID::SetTranslation: {
+		if (const auto& translation = std::get_if<Vector3>(&command.value)) {
+
+			emitter_.translation = *translation;
+			return true;
+		}
+		return false;
+	}
+	case ParticleCommandID::SetEulerRotation: {
+		if (const auto& rotation = std::get_if<Vector3>(&command.value)) {
+
+			emitterRotation_ = *rotation;
+			return true;
+		}
+		return false;
+	}
+	}
+	return false;
 }
 
 void ParticleSpawnHemisphereModule::Init() {

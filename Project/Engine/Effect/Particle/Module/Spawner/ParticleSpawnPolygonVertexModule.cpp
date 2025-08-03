@@ -9,12 +9,27 @@
 //	ParticleSpawnPolygonVertexModule classMethods
 //============================================================================
 
-void ParticleSpawnPolygonVertexModule::SetTransform(const Matrix4x4& matrix) {
+bool ParticleSpawnPolygonVertexModule::SetCommand(const ParticleCommand& command) {
 
-	// 座標の設定
-	translation_ = matrix.GetTranslationValue();
-	// 回転の設定
-	emitterRotation_ = matrix.GetRotationValue();
+	switch (command.id) {
+	case ParticleCommandID::SetTranslation: {
+		if (const auto& translation = std::get_if<Vector3>(&command.value)) {
+
+			translation_ = *translation;
+			return true;
+		}
+		return false;
+	}
+	case ParticleCommandID::SetEulerRotation: {
+		if (const auto& rotation = std::get_if<Vector3>(&command.value)) {
+
+			emitterRotation_ = *rotation;
+			return true;
+		}
+		return false;
+	}
+	}
+	return false;
 }
 
 void ParticleSpawnPolygonVertexModule::Init() {

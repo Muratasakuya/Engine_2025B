@@ -69,11 +69,15 @@ void PlayerParryState::UpdateDeltaWaitTime(const Player& player) {
 	if (deltaWaitTime_ < deltaWaitTimer_) {
 
 		GameTimer::SetReturnScaleEnable(true);
+		
+		// コマンドに設定
+		ParticleCommand command{};
+		// 座標設定
+		command.target = ParticleCommandTarget::Spawner;
+		command.id = ParticleCommandID::SetTranslation;
+		command.value = player.GetJointWorldPos("leftHand");
+		parryEffect_->SendCommand(command);
 
-		// 座標を設定
-		Vector3 emitPos = player.GetJointWorldPos("leftHand");
-		Matrix4x4 transMatrix = Matrix4x4::MakeTranslateMatrix(emitPos);
-		parryEffect_->SetTransform(transMatrix);
 		// 発生させる
 		parryEffect_->Emit(true);
 	}

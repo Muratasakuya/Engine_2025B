@@ -857,6 +857,8 @@
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleLoop.h" />
     <ClInclude Include="Engine\Effect\Particle\Module\Base\ParticleLoopableModule.h" />
     <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnPolygonVertexModule.h" />
+    <ClInclude Include="Engine\Effect\Particle\Command\ParticleCommand.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\ParticleModuleID.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/Data/Base/BaseParticleGroup.h>
+#include <Engine/Effect/Particle/Command/ParticleCommand.h>
 
 // front
 class Asset;
@@ -75,16 +76,15 @@ public:
 
 	//---------- runtime -----------------------------------------------------
 
+	// モジュールのコマンド適応
+	void ApplyCommand(const ParticleCommand& command);
+
 	//----------- emit -------------------------------------------------------
 
 	// 一定間隔
 	void FrequencyEmit();
 	// 強制発生
 	void Emit();
-
-	//---------- setter ------------------------------------------------------
-
-	void SetTransform(const Matrix4x4& matrix);
 private:
 	//========================================================================
 	//	private Methods

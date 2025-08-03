@@ -57,21 +57,24 @@ void PlayerBaseAttackState::AttackAssist(Player& player, bool onceTarget) {
 	}
 }
 
-Matrix4x4 PlayerBaseAttackState::GetEffectOffsetMatrix(const Player& player,
-	const Vector3& offsetRotation, const Vector3& offsetTranslation) {
+Vector3 PlayerBaseAttackState::GetPlayerOffsetPos(
+	const Player& player, const Vector3& offsetTranslation) const {
+
+	Vector3 offset = Vector3::Transform(offsetTranslation,
+		Quaternion::MakeRotateMatrix(player.GetRotation()));
+
+	return player.GetTranslation() + offset;
+}
+
+Matrix4x4 PlayerBaseAttackState::GetPlayerOffsetRotation(
+	const Player& player, const Vector3& offsetRotation) const {
 
 	// playerの回転
 	Matrix4x4 playerRotation = Quaternion::MakeRotateMatrix(player.GetRotation());
-	// effectのオフセット回転
-	Matrix4x4 effectRotation = Matrix4x4::MakeRotateMatrix(offsetRotation);
-	// オフセットはプレイヤー回転だけで回す
-	Vector3 worldOffset = Vector3::Transform(offsetTranslation, playerRotation);
+	// オフセット回転
+	Matrix4x4 offsetMatrix = Matrix4x4::MakeRotateMatrix(offsetRotation);
 
-	// オフセット行列を計算して設定
-	Matrix4x4 offsetMatrix = playerRotation * effectRotation;
-	offsetMatrix = offsetMatrix * Matrix4x4::MakeTranslateMatrix(player.GetTranslation() + worldOffset);
-
-	return offsetMatrix;
+	return playerRotation * offsetMatrix;
 }
 
 void PlayerBaseAttackState::DrawAttackOffset(const Player& player) {

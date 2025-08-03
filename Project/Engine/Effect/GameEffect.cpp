@@ -21,41 +21,10 @@ void GameEffect::ResetEmitFlag() {
 	emitOnce_ = false;
 }
 
-void GameEffect::SetTransform(const Matrix4x4& matrix) {
+void GameEffect::SendCommand(const ParticleCommand& command) {
 
-	// 座標を設定
-	// GPU
-	for (auto& group : particleSystem_->GetGPUGroup()) {
-
-		group.group.SetTransform(matrix);
-	}
-	// CPU
-	for (auto& group : particleSystem_->GetCPUGroup()) {
-
-		group.group.SetTransform(matrix);
-	}
-}
-
-void GameEffect::SetParent(const BaseTransform& parent) {
-
-	if (hasParent_) {
-		return;
-	}
-
-	// 親を設定
-	// GPU
-	for (auto& group : particleSystem_->GetGPUGroup()) {
-
-		group.group.SetParent(true, parent);
-	}
-	// CPU
-	for (auto& group : particleSystem_->GetCPUGroup()) {
-
-		group.group.SetParent(true, parent);
-	}
-
-	// 親を設定した
-	hasParent_ = true;
+	// コマンド設定AA
+	particleSystem_->ApplyCommand(command);
 }
 
 void GameEffect::FrequencyEmit() {

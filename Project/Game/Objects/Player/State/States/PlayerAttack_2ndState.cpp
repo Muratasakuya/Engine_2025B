@@ -141,10 +141,23 @@ void PlayerAttack_2ndState::EmitSlashEffectForCurrentIndex(Player& player) {
 
 	const size_t key = (std::min)(currentIndex_, kNumSegments - 1);
 
-	// オフセット計算して設定
-	Matrix4x4 offsetMatrix = PlayerBaseAttackState::GetEffectOffsetMatrix(
-		player, slashEffectRotations_[key], slashEffectTranslatons_[key]);
-	slashEffect_->SetTransform(offsetMatrix);
+	// コマンドに設定
+	ParticleCommand command{};
+	{
+		// 座標設定
+		command.target = ParticleCommandTarget::Spawner;
+		command.id = ParticleCommandID::SetTranslation;
+		command.value = PlayerBaseAttackState::GetPlayerOffsetPos(player, slashEffectTranslatons_[key]);
+		slashEffect_->SendCommand(command);
+	}
+	{
+		// 回転設定
+		command.target = ParticleCommandTarget::Updater;
+		command.id = ParticleCommandID::SetEulerRotation;
+		command.filter.updaterId = ParticleUpdateModuleID::Rotation;
+		command.value = PlayerBaseAttackState::GetPlayerOffsetRotation(player, slashEffectRotations_[key]);
+		slashEffect_->SendCommand(command);
+	}
 	// 発生させる
 	slashEffect_->Emit(true);
 }

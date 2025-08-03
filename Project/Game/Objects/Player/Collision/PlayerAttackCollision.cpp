@@ -100,14 +100,16 @@ void PlayerAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody)
 
 		// 座標を設定してparticleを発生
 		// 状態別で形状の値を設定
-		// システム変更で消えた
 		const auto& offset = std::get<CollisionShape::OBB>(bodyOffsets_.front());
-		Vector3 hitPos = transform_->translation + offset.center;
-		Matrix4x4 transMatrix = Matrix4x4::MakeIdentity4x4();
-		transMatrix = Matrix4x4::MakeTranslateMatrix(hitPos);
+
+		// コマンドに設定
+		ParticleCommand command{};
+		command.target = ParticleCommandTarget::Spawner;
+		command.id = ParticleCommandID::SetTranslation;
+		command.value = transform_->translation + offset.center;
 
 		// 発生させる
-		hitEffect_->SetTransform(transMatrix);
+		hitEffect_->SendCommand(command);
 		hitEffect_->Emit();
 	}
 }

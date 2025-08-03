@@ -37,6 +37,9 @@ public:
 	void UpdateParticle(CPUParticle::ParticleData& particle, float deltaTime);
 	void UpdateEmitter();
 
+	// モジュールのコマンド適応
+	void ApplyCommand(const ParticleCommand& command);
+
 	// editor
 	void ImGui();
 
@@ -56,10 +59,6 @@ public:
 	void FromJson(const Json& data);
 
 	//--------- accessor -----------------------------------------------------
-
-	// 親の設定
-	void SetTransform(const Matrix4x4& matrix);
-	void SetParent(bool isSet, const BaseTransform& parent);
 
 	float GetLifeTime() const;
 private:

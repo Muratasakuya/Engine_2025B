@@ -10,10 +10,19 @@
 //	ParticleSpawnSphereModule classMethods
 //============================================================================
 
-void ParticleSpawnSphereModule::SetTransform(const Matrix4x4& matrix) {
+bool ParticleSpawnSphereModule::SetCommand(const ParticleCommand& command) {
 
-	// 座標の設定
-	emitter_.translation = matrix.GetTranslationValue();
+	switch (command.id) {
+	case ParticleCommandID::SetTranslation: {
+		if (const auto& translation = std::get_if<Vector3>(&command.value)) {
+
+			emitter_.translation = *translation;
+			return true;
+		}
+		return false;
+	}
+	}
+	return false;
 }
 
 void ParticleSpawnSphereModule::Init() {

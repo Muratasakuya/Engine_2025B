@@ -4,35 +4,6 @@
 //	ParticlePhase classMethods
 //============================================================================
 
-void ParticlePhase::SetTransform(const Matrix4x4& matrix) {
-
-	// 親の設定
-	if (!spawner_) {
-		return;
-	}
-
-	spawner_->SetTransform(matrix);
-
-	// UpdateにRotationがあれば
-	auto it = std::find_if(updaters_.begin(), updaters_.end(),
-		[](const std::unique_ptr<ICPUParticleUpdateModule>& m) {
-			return m->GetID() == ParticleUpdateModuleID::Rotation; });
-	if (it != updaters_.end()) {
-
-		(*it)->SetTransform(matrix);
-	}
-}
-
-void ParticlePhase::SetParent(bool isSet, const BaseTransform& parent) {
-
-	// 親の設定
-	if (!spawner_) {
-		return;
-	}
-
-	spawner_->SetParent(isSet, parent);
-}
-
 void ParticlePhase::Init(Asset* asset, ParticlePrimitiveType primitiveType) {
 
 	asset_ = nullptr;
@@ -97,6 +68,26 @@ void ParticlePhase::UpdateEmitter() {
 	}
 	spawner_->UpdateEmitter();
 	spawner_->DrawEmitter();
+}
+
+void ParticlePhase::ApplyCommand(const ParticleCommand& command) {
+
+	// Spawner
+	if ((command.target == ParticleCommandTarget::Spawner ||
+		command.target == ParticleCommandTarget::All) && spawner_) {
+
+		spawner_->SetCommand(command);
+	}
+	// Updaters
+	if (command.target == ParticleCommandTarget::Updater ||
+		command.target == ParticleCommandTarget::All) {
+		for (const auto& updater : updaters_) {
+			if (!command.filter.updaterId || updater->GetID() == *command.filter.updaterId) {
+
+				updater->SetCommand(command);
+			}
+		}
+	}
 }
 
 void ParticlePhase::SetSpawner(ParticleSpawnModuleID id) {
