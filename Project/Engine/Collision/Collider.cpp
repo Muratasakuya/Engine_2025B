@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Object/Data/Transform.h>
 #include <Engine/Collision/CollisionManager.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // imgui

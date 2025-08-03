@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Camera/Follow/FollowCamera.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 
 //============================================================================
 //	FollowCameraStunAttackState classMethods

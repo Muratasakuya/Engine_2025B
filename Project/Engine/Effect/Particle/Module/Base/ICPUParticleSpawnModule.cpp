@@ -5,7 +5,8 @@
 //============================================================================
 #include <Engine/Asset/Asset.h>
 #include <Engine/Asset/AssetEditor.h>
-#include <Lib/Adapter/EnumAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
+#include <Engine/Utility/ImGuiHelper.h>
 
 //============================================================================
 //	ICPUParticleSpawnModule classMethods
@@ -174,76 +175,25 @@ void ICPUParticleSpawnModule::DragAndDropTexture() {
 	const float imageSize = 88.0f;
 
 	// 使用しているtextureの名前を表示
-	// 貼るtexture
-	ImageButtonWithLabel("texture", textureName_, (ImTextureID)asset_->GetGPUHandle(textureName_).ptr, { imageSize, imageSize });
-	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
-
-			auto* payloadTextureData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
-			// texture以外は受け付けない
-			if (payloadTextureData->type == AssetEditor::PendingType::Texture) {
-
-				// textureを設定
-				textureName_ = payloadTextureData->name;
-				// indexを設定
-				textureInfo_.colorTextureIndex = asset_->GetTextureGPUIndex(textureName_);
-			}
-		}
-		ImGui::EndDragDropTarget();
+	ImGuiHelper::ImageButtonWithLabel("texture", textureName_,
+		(ImTextureID)asset_->GetGPUHandle(textureName_).ptr, { imageSize, imageSize });
+	if (const auto* payload = ImGuiHelper::DragDropPayload(PendingType::Texture)) {
+		
+		// textureを設定
+		textureName_ = payload->name;
+		// indexを設定
+		textureInfo_.colorTextureIndex = asset_->GetTextureGPUIndex(textureName_);
 	}
-
 	ImGui::SameLine();
+	ImGuiHelper::ImageButtonWithLabel("noiseTexture", noiseTextureName_,
+		(ImTextureID)asset_->GetGPUHandle(noiseTextureName_).ptr, { imageSize, imageSize });
+	if (const auto* payload = ImGuiHelper::DragDropPayload(PendingType::Texture)) {
 
-	// noiseTexture
-	ImageButtonWithLabel("noiseTexture", noiseTextureName_, (ImTextureID)asset_->GetGPUHandle(noiseTextureName_).ptr, { imageSize, imageSize });
-	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
-
-			auto* payloadTextureData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
-			// texture以外は受け付けない
-			if (payloadTextureData->type == AssetEditor::PendingType::Texture) {
-
-				// textureを設定
-				noiseTextureName_ = payloadTextureData->name;
-				// indexを設定
-				textureInfo_.noiseTextureIndex = asset_->GetTextureGPUIndex(noiseTextureName_);
-			}
-		}
-		ImGui::EndDragDropTarget();
+		// textureを設定
+		noiseTextureName_ = payload->name;
+		// indexを設定
+		textureInfo_.noiseTextureIndex = asset_->GetTextureGPUIndex(noiseTextureName_);
 	}
-}
-
-void ICPUParticleSpawnModule::ImageButtonWithLabel(const char* id,
-	const std::string& label, ImTextureID textureId, const ImVec2& size) {
-
-	ImGui::PushID(id);
-	ImGui::BeginGroup();
-
-	// テキストサイズ計算
-	ImVec2 textSize = ImGui::CalcTextSize(label.c_str());
-
-	// 現在の位置取得
-	ImVec2 pos = ImGui::GetCursorScreenPos();
-
-	// 上にテキストの高さ分スペースを確保
-	float labelSpacing = 2.0f;
-	ImGui::Dummy(ImVec2(size.x, textSize.y + labelSpacing));
-
-	// 画像ボタンの描画
-	ImGui::SetCursorScreenPos(ImVec2(pos.x, pos.y + textSize.y + labelSpacing));
-	ImGui::ImageButton(label.c_str(), textureId, size);
-
-	// テキストをボタンの上に中央揃えで描画
-	ImVec2 textPos = ImVec2(
-		pos.x + (size.x - textSize.x) * 0.5f,
-		pos.y);
-	ImGui::GetWindowDrawList()->AddText(
-		textPos,
-		ImGui::GetColorU32(ImGuiCol_Text),
-		label.c_str());
-
-	ImGui::EndGroup();
-	ImGui::PopID();
 }
 
 void ICPUParticleSpawnModule::ToCommonJson(Json& data) {
@@ -387,12 +337,8 @@ void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
 		primitive_.crescent.lattice = primitive["crescent"].value("lattice", 0.5f);
 		primitive_.crescent.thickness = primitive["crescent"].value("thickness", 0.1f);
 		primitive_.crescent.pivot = primitive_.crescent.pivot.FromJson(primitive["crescent"]["pivot"]);
-
-		if (primitive["crescent"].contains("outerColor")) {
-
-			primitive_.crescent.outerColor = primitive_.crescent.outerColor.FromJson(primitive["crescent"]["outerColor"]);
-			primitive_.crescent.innerColor = primitive_.crescent.innerColor.FromJson(primitive["crescent"]["innerColor"]);
-		}
+		primitive_.crescent.outerColor = primitive_.crescent.outerColor.FromJson(primitive["crescent"]["outerColor"]);
+		primitive_.crescent.innerColor = primitive_.crescent.innerColor.FromJson(primitive["crescent"]["innerColor"]);
 		break;
 	}
 	}

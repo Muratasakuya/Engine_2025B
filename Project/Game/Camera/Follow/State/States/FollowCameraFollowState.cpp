@@ -6,7 +6,7 @@
 #include <Engine/Input/Input.h>
 #include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Camera/Follow/Input/FollowCameraInputMapper.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 
 //============================================================================
 //	FollowCameraFollowState classMethods

@@ -506,10 +506,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Utility\UVHelper.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Engine\Object\Data\Transform.cpp" />
     <ClCompile Include="Engine\Core\Debug\Assert.cpp" />
     <ClCompile Include="Engine\Core\Framework.cpp" />
@@ -788,7 +784,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Engine\Utility\GameTimer.cpp" />
     <ClCompile Include="Lib\Adapter\Easing.cpp" />
-    <ClCompile Include="Lib\Adapter\JsonAdapter.cpp" />
+    <ClCompile Include="Engine\Utility\ImGuiHelper.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\JsonAdapter.cpp" />
     <ClCompile Include="Lib\Adapter\RandomGenerator.cpp">
       <SubType>
       </SubType>
@@ -811,6 +811,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
     <ClInclude Include="Engine\Asset\Asset.h" />
     <ClInclude Include="Engine\Asset\AssetEditor.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Asset\AssetEditorPayloadData.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -1210,10 +1214,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Utility\UVHelper.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Engine\Object\Data\Transform.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DxConstBuffer.h" />
     <ClInclude Include="Engine\Core\Debug\Assert.h" />
@@ -1506,11 +1506,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Engine\Utility\GameTimer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
-    <ClInclude Include="Lib\Adapter\EnumAdapter.h">
+    <ClInclude Include="Engine\Utility\EnumAdapter.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
+    <ClInclude Include="Engine\Utility\ImGuiHelper.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Utility\JsonAdapter.h" />
     <ClInclude Include="Lib\Adapter\RandomGenerator.h" />
     <ClInclude Include="Lib\MathUtils\Algorithm.h">
       <SubType>

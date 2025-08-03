@@ -5,8 +5,8 @@
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Game/Objects/Player/Entity/Player.h>
-#include <Lib/Adapter/JsonAdapter.h>
-#include <Lib/Adapter/EnumAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================

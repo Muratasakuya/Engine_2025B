@@ -3,7 +3,7 @@
 //============================================================================
 //	BossEnemyStructures classMethods
 //============================================================================
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 
 //============================================================================
 //	BossEnemyStructures classMethods

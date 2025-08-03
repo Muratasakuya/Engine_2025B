@@ -127,6 +127,4 @@ private:
 
 	// editor
 	void SelectEmitter(ID3D12Device* device);
-	void ImageButtonWithLabel(const char* id,
-		const std::string& label, ImTextureID textureId, const ImVec2& size);
 };

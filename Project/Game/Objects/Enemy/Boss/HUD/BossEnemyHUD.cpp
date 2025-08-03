@@ -6,7 +6,7 @@
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================

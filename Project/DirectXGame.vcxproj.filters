@@ -95,7 +95,7 @@
     <ClCompile Include="Lib\Adapter\Easing.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Lib\Adapter\JsonAdapter.cpp">
+    <ClCompile Include="Engine\Utility\JsonAdapter.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Lib\MathUtils\Matrix4x4.cpp">
@@ -234,9 +234,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Scene\Light\PunctualLight.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Engine\Utility\UVHelper.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Engine\Utility\SimpleAnimation.cpp">
@@ -623,6 +620,9 @@
     <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnPolygonVertexModule.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Utility\ImGuiHelper.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -656,7 +656,7 @@
     <ClInclude Include="Engine\Core\Framework.h" />
     <ClInclude Include="Engine\Core\Graphics\Renderer\MeshRenderer.h" />
     <ClInclude Include="Lib\Adapter\Easing.h" />
-    <ClInclude Include="Lib\Adapter\JsonAdapter.h" />
+    <ClInclude Include="Engine\Utility\JsonAdapter.h" />
     <ClInclude Include="Lib\Adapter\RandomGenerator.h" />
     <ClInclude Include="Lib\MathUtils\Matrix4x4.h" />
     <ClInclude Include="Lib\MathUtils\Quaternion.h" />
@@ -707,7 +707,6 @@
     <ClInclude Include="Engine\Object\Data\Material.h" />
     <ClInclude Include="Engine\Core\Graphics\Descriptors\BaseDescriptor.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\SceneConstBuffer.h" />
-    <ClInclude Include="Engine\Utility\UVHelper.h" />
     <ClInclude Include="Engine\Utility\SimpleAnimation.h" />
     <ClInclude Include="Game\Camera\Follow\FollowCamera.h" />
     <ClInclude Include="Engine\Utility\KeyframeAnimation.h" />
@@ -827,7 +826,7 @@
     <ClInclude Include="Engine\Effect\Trail\Core\GPUTrailEffectUpdater.h" />
     <ClInclude Include="Engine\Effect\GameEffect.h" />
     <ClInclude Include="Engine\Effect\Particle\ParticleConfig.h" />
-    <ClInclude Include="Lib\Adapter\EnumAdapter.h" />
+    <ClInclude Include="Engine\Utility\EnumAdapter.h" />
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleStructures.h" />
     <ClInclude Include="Engine\Effect\Particle\System\ParticleSystem.h" />
     <ClInclude Include="Engine\Effect\Particle\Structures\ParticleValue.h" />
@@ -859,6 +858,8 @@
     <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnPolygonVertexModule.h" />
     <ClInclude Include="Engine\Effect\Particle\Command\ParticleCommand.h" />
     <ClInclude Include="Engine\Effect\Particle\Module\ParticleModuleID.h" />
+    <ClInclude Include="Engine\Utility\ImGuiHelper.h" />
+    <ClInclude Include="Engine\Asset\AssetEditorPayloadData.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

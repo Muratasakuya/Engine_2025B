@@ -6,8 +6,8 @@
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Engine/Utility/GameTimer.h>
-#include <Lib/Adapter/EnumAdapter.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 
 // imgui
 #include <imgui.h>

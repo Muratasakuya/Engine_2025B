@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Editor/ImGuiObjectEditor.h>
 #include <Engine/Object/Core/ObjectManager.h>
-#include <Lib/Adapter/EnumAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
 
 //============================================================================
 //	SceneManager classMethods

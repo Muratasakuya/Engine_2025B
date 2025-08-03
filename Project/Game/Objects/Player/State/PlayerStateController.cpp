@@ -6,8 +6,8 @@
 #include <Engine/Input/Input.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/Player/Entity/Player.h>
-#include <Lib/Adapter/JsonAdapter.h>
-#include <Lib/Adapter/EnumAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
 
 // inputDevice
 #include <Game/Objects/Player/Input/Device/PlayerKeyInput.h>

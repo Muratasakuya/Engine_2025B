@@ -8,7 +8,7 @@
 #include <Engine/Effect/Particle/Data/GPUParticleGroup.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Engine/Utility/GameTimer.h>
-#include <Lib/Adapter/EnumAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
 
 //============================================================================
 //	GPUParticleUpdater classMethods

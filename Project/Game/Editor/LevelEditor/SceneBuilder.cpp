@@ -5,7 +5,8 @@
 //============================================================================
 #include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Asset/AssetEditor.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
+#include <Engine/Utility/ImGuiHelper.h>
 
 // object
 #include <Game/Objects/Environment/FieldCrossMarkWall.h>
@@ -242,21 +243,15 @@ void SceneBuilder::RecieveFile() {
 
 	ImGui::Button("Load File", buttonSize_);
 	if (ImGui::BeginDragDropTarget()) {
-		if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
+		if (const auto* payload = ImGuiHelper::DragDropPayload(PendingType::None)) {
 
-			auto* payloadJsonData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
-			// .json以外は受け付けない
-			if (payloadJsonData->type == AssetEditor::PendingType::None) {
+			// 名前の設定
+			// 読み込めたら作成させる
+			std::string loadName = "Level/" + std::string(payload->name) + ".json";
+			if (JsonAdapter::LoadAssert(loadName)) {
 
-				// 読み込み処理
-				std::string loadName = "Level/" + std::string(payloadJsonData->name) + ".json";
-
-				// 読み込めたら作成させる
-				if (JsonAdapter::LoadAssert(loadName)) {
-
-					// 作成元設定
-					fileName_ = loadName;
-				}
+				// 作成元設定
+				fileName_ = loadName;
 			}
 		}
 		ImGui::EndDragDropTarget();

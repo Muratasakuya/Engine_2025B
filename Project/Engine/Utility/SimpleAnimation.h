@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Utility/GameTimer.h>
 #include <Lib/Adapter/Easing.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 #include <Lib/MathUtils/MathUtils.h>
 

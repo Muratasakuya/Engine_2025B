@@ -5,7 +5,7 @@
 //============================================================================
 #include <Engine/Input/Input.h>
 #include <Engine/Utility/GameTimer.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 #include <Lib/Adapter/RandomGenerator.h>
 #include <Lib/MathUtils/MathUtils.h>
 

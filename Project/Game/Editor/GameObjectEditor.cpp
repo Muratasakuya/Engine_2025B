@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Asset/AssetEditor.h>
 #include <Engine/Asset/Asset.h>
+#include <Engine/Utility/ImGuiHelper.h>
 #include <Engine/Object/Core/ObjectManager.h>
 
 //============================================================================
@@ -230,15 +231,10 @@ void GameObjectEditor::DropFile(const std::string& label, std::optional<std::str
 		ImGui::Button(label.c_str(), dropSize_);
 
 		if (ImGui::BeginDragDropTarget()) {
-			if (const ImGuiPayload* payloadDataId = ImGui::AcceptDragDropPayload(AssetEditor::kDragPayloadId)) {
+			if (const auto* payload = ImGuiHelper::DragDropPayload(PendingType::Model)) {
 
-				auto* payloadModelData = static_cast<AssetEditor::DragPayload*>(payloadDataId->Data);
-				// model以外は受け付けない
-				if (payloadModelData->type == AssetEditor::PendingType::Model) {
-
-					// 名前を保存
-					recieveName = std::string(payloadModelData->name);
-				}
+				// 名前を保存
+				recieveName = std::string(payload->name);
 			}
 			ImGui::EndDragDropTarget();
 		}

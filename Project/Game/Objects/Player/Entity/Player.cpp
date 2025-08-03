@@ -5,7 +5,7 @@
 //============================================================================
 #include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
 #include <Lib/Adapter/RandomGenerator.h>
-#include <Lib/Adapter/EnumAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
 
 //============================================================================
 //	Player classMethods

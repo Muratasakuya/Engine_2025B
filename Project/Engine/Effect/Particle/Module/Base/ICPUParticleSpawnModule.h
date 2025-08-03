@@ -100,6 +100,4 @@ private:
 
 	// editor
 	void DragAndDropTexture();
-	void ImageButtonWithLabel(const char* id,
-		const std::string& label, ImTextureID textureId, const ImVec2& size);
 };

@@ -6,7 +6,7 @@
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Camera/Follow/FollowCamera.h>
 #include <Lib/Adapter/RandomGenerator.h>
-#include <Lib/Adapter/JsonAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
 
 //============================================================================
 //	FollowCameraShakeState classMethods

@@ -10,7 +10,7 @@
 #include <Engine/Effect/Particle/Data/CPUParticleGroup.h>
 #include <Engine/Effect/Particle/ParticleConfig.h>
 #include <Engine/Scene/SceneView.h>
-#include <Lib/Adapter/EnumAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
 
 //============================================================================
 //	ParticleRenderer classMethods

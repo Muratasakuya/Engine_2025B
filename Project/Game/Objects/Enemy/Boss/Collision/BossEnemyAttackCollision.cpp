@@ -5,8 +5,8 @@
 //============================================================================
 #include <Engine/Object/Data/Transform.h>
 #include <Engine/Utility/GameTimer.h>
-#include <Lib/Adapter/JsonAdapter.h>
-#include <Lib/Adapter/EnumAdapter.h>
+#include <Engine/Utility/JsonAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // imgui
