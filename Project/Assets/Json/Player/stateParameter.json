@@ -29,6 +29,8 @@
         "attackPosLerpCircleRange_": 40.0,
         "attackPosLerpTime_": 0.4399999976158142,
         "exitTime_": 0.4000000059604645,
+        "groundEffectDistance_": 6.809999942779541,
+        "groundEffectPosY_": 2.0,
         "nextAnimDuration_": 0.07999999821186066,
         "rotationLerpRate_": 0.46000000834465027
     },

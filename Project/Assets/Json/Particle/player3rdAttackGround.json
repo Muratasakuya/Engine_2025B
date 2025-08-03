@@ -31,7 +31,7 @@
                                 "noiseTextureName": "redCircle",
                                 "primitive": {
                                     "plane": {
-                                        "mode": "XY",
+                                        "mode": "XZ",
                                         "pivot": {
                                             "x": 0.5,
                                             "y": 0.5
@@ -95,6 +95,10 @@
                         {
                             "params": {
                                 "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 1,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 0.0,
@@ -267,6 +271,10 @@
                         {
                             "params": {
                                 "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 1,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 1.0,
@@ -499,6 +507,10 @@
                         {
                             "params": {
                                 "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 1,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 0.0,
@@ -639,6 +651,10 @@
                         {
                             "params": {
                                 "easingType": "EaseOutExpo",
+                                "loop": {
+                                    "loopCount": 1,
+                                    "type": "Repeat"
+                                },
                                 "scale": {
                                     "start": {
                                         "x": 0.0,

@@ -24,7 +24,7 @@ void CPUParticleGroup::Create(ID3D12Device* device,
 
 	// buffer作成
 	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveType);
-	// structuredBuffer(SAV)
+	// structuredBuffer(SRV)
 	transformBuffer_.CreateSRVBuffer(device, kMaxParticles);
 	materialBuffer_.CreateSRVBuffer(device, kMaxParticles);
 	textureInfoBuffer_.CreateSRVBuffer(device, kMaxParticles);
@@ -44,7 +44,7 @@ void CPUParticleGroup::CreateFromJson(ID3D12Device* device, Asset* asset, const 
 
 	// buffer作成
 	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveBuffer_.type);
-	// structuredBuffer(SAV)
+	// structuredBuffer(SRV)
 	transformBuffer_.CreateSRVBuffer(device, kMaxParticles);
 	materialBuffer_.CreateSRVBuffer(device, kMaxParticles);
 	textureInfoBuffer_.CreateSRVBuffer(device, kMaxParticles);
