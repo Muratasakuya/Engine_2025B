@@ -373,10 +373,13 @@ void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
 		primitive_.start.crescent.pivot = primitive_.start.crescent.pivot.FromJson(crescentData["startPivot"]);
 		primitive_.target.crescent.pivot = primitive_.target.crescent.pivot.FromJson(crescentData["targetPivot"]);
 
-		primitive_.start.crescent.outerColor = primitive_.start.crescent.outerColor.FromJson(crescentData["startOuterColor"]);
-		primitive_.target.crescent.outerColor = primitive_.target.crescent.outerColor.FromJson(crescentData["targetOuterColor"]);
+		if (crescentData.contains("startOuterColor")) {
 
-		primitive_.start.crescent.innerColor = primitive_.start.crescent.innerColor.FromJson(crescentData["startInnerColor"]);
-		primitive_.target.crescent.innerColor = primitive_.target.crescent.innerColor.FromJson(crescentData["targetInnerColor"]);
+			primitive_.start.crescent.outerColor = primitive_.start.crescent.outerColor.FromJson(crescentData["startOuterColor"]);
+			primitive_.target.crescent.outerColor = primitive_.target.crescent.outerColor.FromJson(crescentData["targetOuterColor"]);
+
+			primitive_.start.crescent.innerColor = primitive_.start.crescent.innerColor.FromJson(crescentData["startInnerColor"]);
+			primitive_.target.crescent.innerColor = primitive_.target.crescent.innerColor.FromJson(crescentData["targetInnerColor"]);
+		}
 	}
 }
