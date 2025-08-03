@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Objects/Player/State/Interface/PlayerIState.h>
+#include <Engine/Effect/GameEffect.h>
 #include <Lib/Adapter/Easing.h>
 
 //============================================================================
@@ -16,7 +17,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	PlayerParryState() = default;
+	PlayerParryState();
 	~PlayerParryState() = default;
 
 	void Enter(Player& player) override;
@@ -68,9 +69,12 @@ private:
 
 	std::optional<RequestState> request_;
 
+	// パリィ
+	std::unique_ptr<GameEffect> parryEffect_;
+
 	//--------- functions ----------------------------------------------------
 
-	void UpdateDeltaWaitTime();
+	void UpdateDeltaWaitTime(const Player& player);
 	void UpdateLerpTranslation(Player& player);
 	void CheckInput();
 	void UpdateAnimation(Player& player);

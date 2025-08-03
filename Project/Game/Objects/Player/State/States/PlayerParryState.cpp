@@ -13,6 +13,13 @@
 //	PlayerParryState classMethods
 //============================================================================
 
+PlayerParryState::PlayerParryState() {
+
+	// effect作成
+	parryEffect_ = std::make_unique<GameEffect>();
+	parryEffect_->CreateParticleSystem("Particle/parryParticle.json");
+}
+
 void PlayerParryState::Enter(Player& player) {
 
 	player.SetNextAnimation("player_parry", false, nextAnimDuration_);
@@ -42,7 +49,7 @@ void PlayerParryState::Enter(Player& player) {
 void PlayerParryState::Update(Player& player) {
 
 	// deltaTimeの管理時間を更新
-	UpdateDeltaWaitTime();
+	UpdateDeltaWaitTime(player);
 
 	// 入力状態を確認
 	CheckInput();
@@ -54,7 +61,7 @@ void PlayerParryState::Update(Player& player) {
 	UpdateAnimation(player);
 }
 
-void PlayerParryState::UpdateDeltaWaitTime() {
+void PlayerParryState::UpdateDeltaWaitTime(const Player& player) {
 
 	// 時間経過を進める
 	deltaWaitTimer_ += GameTimer::GetDeltaTime();
@@ -62,6 +69,13 @@ void PlayerParryState::UpdateDeltaWaitTime() {
 	if (deltaWaitTime_ < deltaWaitTimer_) {
 
 		GameTimer::SetReturnScaleEnable(true);
+
+		// 座標を設定
+		Vector3 emitPos = player.GetJointWorldPos("leftHand");
+		Matrix4x4 transMatrix = Matrix4x4::MakeTranslateMatrix(emitPos);
+		parryEffect_->SetTransform(transMatrix);
+		// 発生させる
+		parryEffect_->Emit(true);
 	}
 }
 
@@ -198,6 +212,7 @@ void PlayerParryState::Exit([[maybe_unused]] Player& player) {
 	parryLerp_.isFinised = false;
 	attackLerp_.isFinised = false;
 	canExit_ = false;
+	parryEffect_->ResetEmitFlag();
 }
 
 void PlayerParryState::ImGui(const Player& player) {

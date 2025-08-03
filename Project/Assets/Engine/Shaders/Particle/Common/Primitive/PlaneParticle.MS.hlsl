@@ -117,6 +117,7 @@ out vertices MSOutput verts[4], out indices uint3 polys[2]) {
 		vertex.position = pos;
 		vertex.texcoord = uv;
 		vertex.instanceID = instanceIndex;
+		vertex.vertexColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
 		
 		verts[groupThreadId] = vertex;
 	}

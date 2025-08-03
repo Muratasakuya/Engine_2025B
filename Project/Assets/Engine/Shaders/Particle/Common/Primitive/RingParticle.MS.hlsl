@@ -127,6 +127,7 @@ out vertices MSOutput verts[RING_MAX_VERTS], out indices uint3 polys[RING_MAX_TR
 		verts[vBase + 3] = vertex;
 		
 		vertex.instanceID = instanceIndex;
+		vertex.vertexColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
 
 		// –Ê
 		// outer0, outer1, inner0

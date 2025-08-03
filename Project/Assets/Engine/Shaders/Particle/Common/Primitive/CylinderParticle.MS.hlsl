@@ -93,6 +93,7 @@ out vertices MSOutput verts[CYL_MAX_VERTS], out indices uint3 polys[CYL_MAX_TRIS
 		verts[divide + 1 + i] = vertex;
 		
 		vertex.instanceID = instanceIndex;
+		vertex.vertexColor = float4(1.0f, 1.0f, 1.0f, 1.0f);
 	}
 
 	// インデックス

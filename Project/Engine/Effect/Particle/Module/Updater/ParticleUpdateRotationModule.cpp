@@ -96,7 +96,7 @@ void ParticleUpdateRotationModule::Execute(
 
 	particle.transform.billboardMode = static_cast<uint32_t>(billboardType_);
 
-	if (setRotation_.has_value()) {
+	if (setRotation_.has_value() && billboardType_ == ParticleBillboardType::None) {
 
 		// 行列の更新
 		UpdateMatrix(particle, setRotation_.value());

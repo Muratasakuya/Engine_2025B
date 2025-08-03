@@ -70,18 +70,22 @@ void GPUParticleGroup::CreateFromJson(ID3D12Device* device, Asset* asset, const 
 	case ParticleEmitterShape::Sphere: {
 
 		emitterBuffer_.sphere.CreateBuffer(device);
+		break;
 	}
 	case ParticleEmitterShape::Hemisphere: {
 
 		emitterBuffer_.hemisphere.CreateBuffer(device);
+		break;
 	}
 	case ParticleEmitterShape::Box: {
 
 		emitterBuffer_.box.CreateBuffer(device);
+		break;
 	}
 	case ParticleEmitterShape::Cone: {
 
 		emitterBuffer_.cone.CreateBuffer(device);
+		break;
 	}
 	}
 
@@ -119,6 +123,17 @@ void GPUParticleGroup::FrequencyEmit() {
 
 		emitter_.common.emit = false;
 	}
+
+	// 現在使用中のエミッタを更新
+	UpdateEmitter();
+	// emitterの描画
+	BaseParticleGroup::DrawEmitter();
+
+	// 親の情報を更新
+	UpdateParent();
+
+	// ノイズ情報更新
+	UpdateNoise();
 }
 
 void GPUParticleGroup::Emit() {
@@ -200,9 +215,6 @@ void GPUParticleGroup::UpdateEmitter() {
 		break;
 	}
 	}
-
-	// emitterの描画
-	BaseParticleGroup::DrawEmitter();
 }
 
 void GPUParticleGroup::UpdateParent() {
