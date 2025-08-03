@@ -75,6 +75,7 @@
         "exitTime_": 0.4000000059604645,
         "groundEffectDistance_": 6.809999942779541,
         "groundEffectPosY_": 2.0,
+        "horaizontalSlashPosY_": 4.019999980926514,
         "nextAnimDuration_": 0.07999999821186066,
         "rotationLerpRate_": 0.46000000834465027
     },

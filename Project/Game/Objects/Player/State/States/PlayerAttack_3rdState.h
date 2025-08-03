@@ -47,7 +47,10 @@ private:
 	// effectParameters
 	float groundEffectDistance_; // plyerからの距離
 	float groundEffectPosY_;     // Y座標
+	float horaizontalSlashPosY_; // Y座標
 
 	// 地割れ
 	std::unique_ptr<GameEffect> groungEffect_;
+	// 最初の回転斬撃
+	std::unique_ptr<GameEffect> horaizontalSlashEffect_;
 };

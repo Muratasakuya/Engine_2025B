@@ -98,8 +98,11 @@ void ParticleUpdateRotationModule::Execute(
 
 	if (setRotation_.has_value() && billboardType_ == ParticleBillboardType::None) {
 
+		// 回転軸の固定
+		Vector3 rotation = LockAxis(setRotation_.value());
+
 		// 行列の更新
-		UpdateMatrix(particle, setRotation_.value());
+		UpdateMatrix(particle, rotation);
 		return;
 	} else {
 

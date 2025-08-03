@@ -17,12 +17,22 @@ PlayerAttack_3rdState::PlayerAttack_3rdState() {
 	// effect作成
 	groungEffect_ = std::make_unique<GameEffect>();
 	groungEffect_->CreateParticleSystem("Particle/player3rdAttackGround.json");
+
+	horaizontalSlashEffect_ = std::make_unique<GameEffect>();
+	horaizontalSlashEffect_->CreateParticleSystem("Particle/playerRotationSlash.json");
 }
 
 void PlayerAttack_3rdState::Enter(Player& player) {
 
 	player.SetNextAnimation("player_attack_3rd", false, nextAnimDuration_);
 	canExit_ = false;
+
+	// animation開始時にすぐに発生させる
+	Vector3 basePos = player.GetTranslation();
+	// Y固定
+	basePos.y = horaizontalSlashPosY_;
+	horaizontalSlashEffect_->SetTransform(Matrix4x4::MakeTranslateMatrix(basePos));
+	horaizontalSlashEffect_->Emit(true);
 }
 
 void PlayerAttack_3rdState::Update(Player& player) {
@@ -57,14 +67,21 @@ void PlayerAttack_3rdState::Update(Player& player) {
 
 	// 座標、回転補間
 	AttackAssist(player);
+
+	// 発生後も常に発生させる
+	Vector3 basePos = player.GetTranslation();
+	// Y固定
+	basePos.y = horaizontalSlashPosY_;
+	horaizontalSlashEffect_->SetTransform(Matrix4x4::MakeTranslateMatrix(basePos));
 }
 
 void PlayerAttack_3rdState::Exit([[maybe_unused]] Player& player) {
 
-	// timerをリセット
+	// リセット
 	attackPosLerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
 	emitEffect_ = false;
+	horaizontalSlashEffect_->ResetEmitFlag();
 }
 
 void PlayerAttack_3rdState::ImGui(const Player& player) {
@@ -79,6 +96,7 @@ void PlayerAttack_3rdState::ImGui(const Player& player) {
 
 	ImGui::DragFloat("groundEffectDistance", &groundEffectDistance_, 0.01f);
 	ImGui::DragFloat("groundEffectPosY", &groundEffectPosY_, 0.01f);
+	ImGui::DragFloat("horaizontalSlashPosY", &horaizontalSlashPosY_, 0.01f);
 
 	LineRenderer::GetInstance()->DrawLine3D(player.GetTranslation(),
 		player.GetTranslation() + player.GetTransform().GetForward() * groundEffectDistance_, Color::Red());
@@ -93,6 +111,7 @@ void PlayerAttack_3rdState::ApplyJson(const Json& data) {
 	// この書き方でいい、GetValue関数はいらない
 	groundEffectDistance_ = data.value("groundEffectDistance_", 2.0f);
 	groundEffectPosY_ = data.value("groundEffectPosY_", 2.0f);
+	horaizontalSlashPosY_ = data.value("horaizontalSlashPosY_", 2.0f);
 
 	PlayerBaseAttackState::ApplyJson(data);
 }
@@ -104,6 +123,7 @@ void PlayerAttack_3rdState::SaveJson(Json& data) {
 	data["exitTime_"] = exitTime_;
 	data["groundEffectDistance_"] = groundEffectDistance_;
 	data["groundEffectPosY_"] = groundEffectPosY_;
+	data["horaizontalSlashPosY_"] = horaizontalSlashPosY_;
 
 	PlayerBaseAttackState::SaveJson(data);
 }
