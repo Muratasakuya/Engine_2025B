@@ -9,6 +9,12 @@
 //	ParticleUpdateRotationModule classMethods
 //============================================================================
 
+void ParticleUpdateRotationModule::SetTransform(const Matrix4x4& matrix) {
+
+	// 回転の設定
+	setRotation_ = matrix.GetRotationValue();
+}
+
 Vector3 ParticleUpdateRotationModule::UpdateRotation(CPUParticle::ParticleData& particle) const {
 
 	Vector3 rotation{};
@@ -90,14 +96,22 @@ void ParticleUpdateRotationModule::Execute(
 
 	particle.transform.billboardMode = static_cast<uint32_t>(billboardType_);
 
-	// 回転の更新
-	Vector3 rotation = UpdateRotation(particle);
+	if (setRotation_.has_value()) {
 
-	// 回転軸の固定
-	rotation = LockAxis(rotation);
+		// 行列の更新
+		UpdateMatrix(particle, setRotation_.value());
+		return;
+	} else {
 
-	// 行列の更新
-	UpdateMatrix(particle, rotation);
+		// 回転の更新
+		Vector3 rotation = UpdateRotation(particle);
+
+		// 回転軸の固定
+		rotation = LockAxis(rotation);
+
+		// 行列の更新
+		UpdateMatrix(particle, rotation);
+	}
 }
 
 void ParticleUpdateRotationModule::ImGui() {

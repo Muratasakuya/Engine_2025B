@@ -27,13 +27,23 @@ ConstantBuffer<PerView> gPerView : register(b0);
 
 struct Crescent {
 	
+	// 半径
 	float outerRadius;
 	float innerRadius;
+	
+	// 始点と終点
 	float startAngle;
 	float endAngle;
+	
+	// 変形
 	float lattice;
 	float thickness;
 	float2 pivot;
+	
+	// 頂点色
+	float4 outerColor;
+	float4 innerColor;
+	
 	uint divide;
 	uint uvMode;
 };
@@ -125,6 +135,10 @@ out vertices MSOutput verts[(CRESCENT_MAX_DIVIDE + 1) * 4], out indices uint3 po
 			
 			vertex.texcoord = (crescent.uvMode == 0) ? float2(t, outer ? 0.0f : 1.0f) : float2(outer ? 0.0f : 1.0f, t);
 		}
+		
+		// 頂点色
+		float radialWeight = outer ? 1.0f : 0.0f;
+		vertex.vertexColor = lerp(crescent.innerColor, crescent.outerColor, radialWeight);
 
 		verts[groupThreadId] = vertex;
 	}

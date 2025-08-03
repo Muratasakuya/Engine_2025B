@@ -136,6 +136,12 @@ void ParticleUpdatePrimitiveModule::UpdateCrescent(CPUParticle::ParticleData& pa
 
 	particle.primitive.crescent.pivot = Vector2::Lerp(primitive_.start.crescent.pivot,
 		primitive_.target.crescent.pivot, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.crescent.outerColor = Color::Lerp(primitive_.start.crescent.outerColor,
+		primitive_.target.crescent.outerColor, EasedValue(easingType_, particle.progress));
+
+	particle.primitive.crescent.innerColor = Color::Lerp(primitive_.start.crescent.innerColor,
+		primitive_.target.crescent.innerColor, EasedValue(easingType_, particle.progress));
 }
 
 void ParticleUpdatePrimitiveModule::ImGui() {
@@ -213,6 +219,12 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 
 		ImGui::DragFloat2("startPivot", &primitive_.start.crescent.pivot.x, 0.01f);
 		ImGui::DragFloat2("targetPivot", &primitive_.target.crescent.pivot.x, 0.01f);
+
+		ImGui::ColorEdit4("startOuterColor", &primitive_.start.crescent.outerColor.r);
+		ImGui::ColorEdit4("targetOuterColor", &primitive_.target.crescent.outerColor.r);
+
+		ImGui::ColorEdit4("startInnerColor", &primitive_.start.crescent.innerColor.r);
+		ImGui::ColorEdit4("targetInnerColor", &primitive_.target.crescent.innerColor.r);
 		break;
 	}
 	}
@@ -280,6 +292,12 @@ Json ParticleUpdatePrimitiveModule::ToJson() {
 
 		data["crescent"]["startPivot"] = primitive_.start.crescent.pivot.ToJson();
 		data["crescent"]["targetPivot"] = primitive_.target.crescent.pivot.ToJson();
+
+		data["crescent"]["startOuterColor"] = primitive_.start.crescent.outerColor.ToJson();
+		data["crescent"]["targetOuterColor"] = primitive_.target.crescent.outerColor.ToJson();
+
+		data["crescent"]["startInnerColor"] = primitive_.start.crescent.innerColor.ToJson();
+		data["crescent"]["targetInnerColor"] = primitive_.target.crescent.innerColor.ToJson();
 	}
 
 	return data;
@@ -354,5 +372,14 @@ void ParticleUpdatePrimitiveModule::FromJson(const Json& data) {
 
 		primitive_.start.crescent.pivot = primitive_.start.crescent.pivot.FromJson(crescentData["startPivot"]);
 		primitive_.target.crescent.pivot = primitive_.target.crescent.pivot.FromJson(crescentData["targetPivot"]);
+
+		if (crescentData.contains("startOuterColor")) {
+
+			primitive_.start.crescent.outerColor = primitive_.start.crescent.outerColor.FromJson(crescentData["startOuterColor"]);
+			primitive_.target.crescent.outerColor = primitive_.target.crescent.outerColor.FromJson(crescentData["targetOuterColor"]);
+
+			primitive_.start.crescent.innerColor = primitive_.start.crescent.innerColor.FromJson(crescentData["startInnerColor"]);
+			primitive_.target.crescent.innerColor = primitive_.target.crescent.innerColor.FromJson(crescentData["targetInnerColor"]);
+		}
 	}
 }

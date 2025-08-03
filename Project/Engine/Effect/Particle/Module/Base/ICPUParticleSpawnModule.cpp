@@ -152,7 +152,10 @@ void ICPUParticleSpawnModule::ImGuiPrimitiveParam() {
 		ImGui::DragFloat("endAngle", &primitive_.crescent.endAngle, 0.01f);
 		ImGui::DragFloat("lattice", &primitive_.crescent.lattice, 0.01f, 0.0f, 1.0f);
 		ImGui::DragFloat("thickness", &primitive_.crescent.thickness, 0.01f, 0.0f, 1.0f);
-		ImGui::DragFloat2("pivot", &primitive_.plane.pivot.x, 0.01f);
+		ImGui::DragFloat2("pivot", &primitive_.crescent.pivot.x, 0.01f);
+
+		ImGui::ColorEdit4("outerColor", &primitive_.crescent.outerColor.r);
+		ImGui::ColorEdit4("innerColor", &primitive_.crescent.innerColor.r);
 		break;
 	}
 }
@@ -302,6 +305,8 @@ void ICPUParticleSpawnModule::ToCommonJson(Json& data) {
 		data[key]["primitive"]["crescent"]["lattice"] = primitive_.crescent.lattice;
 		data[key]["primitive"]["crescent"]["thickness"] = primitive_.crescent.thickness;
 		data[key]["primitive"]["crescent"]["pivot"] = primitive_.crescent.pivot.ToJson();
+		data[key]["primitive"]["crescent"]["outerColor"] = primitive_.crescent.outerColor.ToJson();
+		data[key]["primitive"]["crescent"]["innerColor"] = primitive_.crescent.innerColor.ToJson();
 		break;
 	}
 }
@@ -382,6 +387,12 @@ void ICPUParticleSpawnModule::FromCommonJson(const Json& data) {
 		primitive_.crescent.lattice = primitive["crescent"].value("lattice", 0.5f);
 		primitive_.crescent.thickness = primitive["crescent"].value("thickness", 0.1f);
 		primitive_.crescent.pivot = primitive_.crescent.pivot.FromJson(primitive["crescent"]["pivot"]);
+
+		if (primitive["crescent"].contains("outerColor")) {
+
+			primitive_.crescent.outerColor = primitive_.crescent.outerColor.FromJson(primitive["crescent"]["outerColor"]);
+			primitive_.crescent.innerColor = primitive_.crescent.innerColor.FromJson(primitive["crescent"]["innerColor"]);
+		}
 		break;
 	}
 	}

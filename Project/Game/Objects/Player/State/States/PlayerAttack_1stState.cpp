@@ -10,6 +10,13 @@
 //	PlayerAttack_1stState classMethods
 //============================================================================
 
+PlayerAttack_1stState::PlayerAttack_1stState() {
+
+	// effect作成
+	slashEffect_ = std::make_unique<GameEffect>();
+	slashEffect_->CreateParticleSystem("Particle/playerSlash.json");
+}
+
 void PlayerAttack_1stState::Enter(Player& player) {
 
 	player.SetNextAnimation("player_attack_1st", false, nextAnimDuration_);
@@ -28,13 +35,28 @@ void PlayerAttack_1stState::Update(Player& player) {
 
 	// 座標、回転補間
 	AttackAssist(player);
+
+	// playerの回転
+	Matrix4x4 playerRotation = Quaternion::MakeRotateMatrix(player.GetRotation());
+	// effectのオフセット回転
+	Matrix4x4 effectRotation = Matrix4x4::MakeRotateMatrix(slashEffectRotation_);
+	// オフセットはプレイヤー回転だけで回す
+	Vector3 worldOffset = Vector3::Transform(slashEffectTranslaton_, playerRotation);
+
+	// オフセット行列を計算して設定
+	Matrix4x4 offsetMatrix = playerRotation * effectRotation;
+	offsetMatrix = offsetMatrix * Matrix4x4::MakeTranslateMatrix(player.GetTranslation() + worldOffset);
+	slashEffect_->SetTransform(offsetMatrix);
+	// 発生させる
+	slashEffect_->Emit(true);
 }
 
 void PlayerAttack_1stState::Exit([[maybe_unused]] Player& player) {
 
-	// timerをリセット
+	// リセット
 	attackPosLerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
+	slashEffect_->ResetEmitFlag();
 }
 
 void PlayerAttack_1stState::ImGui(const Player& player) {
@@ -44,6 +66,11 @@ void PlayerAttack_1stState::ImGui(const Player& player) {
 	ImGui::DragFloat("exitTime", &exitTime_, 0.01f);
 
 	PlayerBaseAttackState::ImGui(player);
+
+	ImGui::SeparatorText("Effect");
+
+	ImGui::DragFloat3("slashEffectRotation", &slashEffectRotation_.x, 0.01f);
+	ImGui::DragFloat3("slashEffectTranslaton", &slashEffectTranslaton_.x, 0.01f);
 }
 
 void PlayerAttack_1stState::ApplyJson(const Json& data) {
@@ -51,6 +78,12 @@ void PlayerAttack_1stState::ApplyJson(const Json& data) {
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 	exitTime_ = JsonAdapter::GetValue<float>(data, "exitTime_");
+
+	if (data.contains("slashEffectRotation_")) {
+
+		slashEffectRotation_ = slashEffectRotation_.FromJson(data["slashEffectRotation_"]);
+		slashEffectTranslaton_ = slashEffectTranslaton_.FromJson(data["slashEffectTranslaton_"]);
+	}
 
 	PlayerBaseAttackState::ApplyJson(data);
 }
@@ -60,6 +93,9 @@ void PlayerAttack_1stState::SaveJson(Json& data) {
 	data["nextAnimDuration_"] = nextAnimDuration_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
 	data["exitTime_"] = exitTime_;
+
+	data["slashEffectRotation_"] = slashEffectRotation_.ToJson();
+	data["slashEffectTranslaton_"] = slashEffectTranslaton_.ToJson();
 
 	PlayerBaseAttackState::SaveJson(data);
 }

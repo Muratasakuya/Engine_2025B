@@ -127,13 +127,13 @@ PSOutput main(MSOutput input) {
 	CheckDiscard(textureColor.a, material.alphaReference);
 	
 	// F
-	output.color.rgb = material.color.rgb * textureColor.rgb;
+	output.color.rgb = material.color.rgb * textureColor.rgb * input.vertexColor.rgb;
 	
 	// ”­Œõˆ—
 	ApplyEmissive(output.color.rgb, textureColor.rgb, material);
 	
 	// ƒ¿’l
-	output.color.a = material.color.a * textureColor.a;
+	output.color.a = material.color.a * textureColor.a * input.vertexColor.a;
 	
 	return output;
 }

@@ -7,7 +7,17 @@
         "attackPosLerpTime_": 0.4399999976158142,
         "exitTime_": 0.029999999329447746,
         "nextAnimDuration_": 0.019999999552965164,
-        "rotationLerpRate_": 0.46000000834465027
+        "rotationLerpRate_": 0.46000000834465027,
+        "slashEffectRotation_": {
+            "x": 1.600000023841858,
+            "y": 0.0,
+            "z": -1.7000000476837158
+        },
+        "slashEffectTranslaton_": {
+            "x": 1.6100000143051147,
+            "y": 4.0,
+            "z": -2.8299999237060547
+        }
     },
     "Attack_2nd": {
         "attackLookAtCircleRange_": 108.0,

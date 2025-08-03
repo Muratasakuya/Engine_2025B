@@ -61,5 +61,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	virtual void SetTransform([[maybe_unused]] const Matrix4x4& matrix) {};
+
 	virtual const char* GetName() const = 0;
 };

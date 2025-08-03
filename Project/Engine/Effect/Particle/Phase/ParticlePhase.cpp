@@ -12,6 +12,15 @@ void ParticlePhase::SetTransform(const Matrix4x4& matrix) {
 	}
 
 	spawner_->SetTransform(matrix);
+
+	// UpdateにRotationがあれば
+	auto it = std::find_if(updaters_.begin(), updaters_.end(),
+		[](const std::unique_ptr<ICPUParticleUpdateModule>& m) {
+			return m->GetID() == ParticleUpdateModuleID::Rotation; });
+	if (it != updaters_.end()) {
+
+		(*it)->SetTransform(matrix);
+	}
 }
 
 void ParticlePhase::SetParent(bool isSet, const BaseTransform& parent) {

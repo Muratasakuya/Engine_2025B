@@ -14,6 +14,9 @@ void ParticleSpawnBoxModule::SetTransform(const Matrix4x4& matrix) {
 
 	// 座標の設定
 	emitter_.translation = matrix.GetTranslationValue();
+	
+	// 回転の設定
+	emitterRotation_= matrix.GetRotationValue();
 }
 
 void ParticleSpawnBoxModule::Init() {

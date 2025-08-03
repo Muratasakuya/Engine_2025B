@@ -28,6 +28,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	void SetTransform(const Matrix4x4& matrix) override;
+
 	const char* GetName() const override { return "Rotation"; }
 
 	//-------- registryID ----------------------------------------------------
@@ -68,6 +70,9 @@ private:
 
 	// 回転固定
 	Vector3 lockAxis_;
+
+	// 外部設定
+	std::optional<Vector3> setRotation_;
 
 	// ビルボードの種類
 	ParticleBillboardType billboardType_;

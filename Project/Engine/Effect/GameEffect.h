@@ -25,12 +25,15 @@ public:
 	// ParticleSystemの作成
 	void CreateParticleSystem(const std::string& filePath);
 
+	// リセット
+	void ResetEmitFlag();
+
 	//----------- emit -------------------------------------------------------
 
 	// 一定間隔
 	void FrequencyEmit();
 	// 強制発生
-	void Emit();
+	void Emit(bool emitOnce = false);
 
 	//---------- setter ------------------------------------------------------
 
@@ -45,4 +48,10 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	ParticleSystem* particleSystem_;
+
+	// 1回だけ発生させるか
+	bool emitOnce_;
+
+	// 親を設定済みか
+	bool hasParent_;
 };

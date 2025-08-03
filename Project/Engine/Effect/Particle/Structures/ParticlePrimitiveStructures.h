@@ -76,16 +76,23 @@ struct CylinderForGPU {
 };
 struct CrescentForGPU {
 
+	// 半径
 	float outerRadius;
 	float innerRadius;
 
+	// 始点と終点
 	float startAngle;
 	float endAngle;
 
+	// 変形
 	float lattice;
 	float thickness;
-
 	Vector2 pivot;
+
+	// 頂点色
+	Color outerColor;
+	Color innerColor;
+
 	int divide;
 
 	// 0: 縦
@@ -103,8 +110,11 @@ struct CrescentForGPU {
 
 		lattice = 0.5f;
 		thickness = 0.1f;
-
 		pivot = Vector2::AnyInit(0.5f);
+
+		outerColor = Color::White();
+		innerColor = Color::White();
+
 		divide = 8;
 		uvMode = 1;
 	}
