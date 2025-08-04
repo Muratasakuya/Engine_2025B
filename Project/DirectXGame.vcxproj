@@ -763,6 +763,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Objects\SceneTransition\FadeTransition.cpp" />
+    <ClCompile Include="Game\Scene\ClearScene.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Scene\EffectScene.cpp">
       <SubType>
       </SubType>
@@ -1485,6 +1489,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\SceneTransition\FadeTransition.h" />
+    <ClInclude Include="Game\Scene\ClearScene.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Scene\EffectScene.h">
       <SubType>
       </SubType>

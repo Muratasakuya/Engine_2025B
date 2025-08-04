@@ -1,6 +1,14 @@
 #include "Asset.h"
 
 //============================================================================
+//	include
+//============================================================================
+#include <Engine/Core/Debug/Assert.h>
+#include <Engine/Core/Debug/SpdLogger.h>
+#include <Engine/Utility/JsonAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
+
+//============================================================================
 //	Asset classMethods
 //============================================================================
 
@@ -21,6 +29,21 @@ void Asset::ReportUsage(bool listAll) const {
 	// 全てのアセットファイルのログ出力
 	textureManager_->ReportUsage(listAll);
 	modelLoader_->ReportUsage(listAll);
+}
+
+void Asset::LoadSceneAsync(Scene scene, AssetLoadType loadType) {
+
+	// Sceneの種類に応じてファイル名を決定する
+	std::string sceneName = EnumAdapter<Scene>::ToString(scene);
+	// 1文字目を小文字に変換する
+	sceneName[0] = static_cast<char>(std::tolower(sceneName[0]));
+	std::string fileName = "Scene/" + sceneName + "Scene.json";
+	// 読み込みチェック
+	if (!JsonAdapter::LoadAssert(fileName)) {
+		// エラー
+		LOG_WARN("sceneFile not found → {}", fileName);
+		ASSERT(FALSE, "");
+	}
 }
 
 void Asset::LoadTexture(const std::string& textureName) {
