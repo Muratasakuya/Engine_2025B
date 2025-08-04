@@ -57,6 +57,8 @@ public:
 	void LoadModel(const std::string& modelName);
 	void LoadAnimation(const std::string& animationName, const std::string& modelName);
 
+	void LoadTextureAsync(const std::string& textureName);
+
 	//--------- textures -----------------------------------------------------
 
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;

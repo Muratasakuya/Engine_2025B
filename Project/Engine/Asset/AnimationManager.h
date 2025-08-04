@@ -12,6 +12,10 @@
 // c++
 #include <unordered_map>
 #include <unordered_set>
+#include <thread>
+#include <mutex>
+#include <deque>
+#include <condition_variable>
 // front
 class SRVDescriptor;
 class ModelLoader;
@@ -26,11 +30,15 @@ public:
 	//========================================================================
 
 	AnimationManager() = default;
-	~AnimationManager() = default;
+	~AnimationManager();
 
 	void Init(ID3D12Device* device, SRVDescriptor* srvDescriptor, ModelLoader* modelLoader);
 
 	void Load(const std::string& animationName, const std::string& modelName);
+
+	// 非同期処理
+	void RequestLoadAsync(const std::string& animationName, const std::string& modelName);
+	void WaitAll();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -57,6 +65,16 @@ private:
 	std::unordered_map<std::string, AnimationData> animations_;
 	std::unordered_map<std::string, Skeleton> skeletons_;
 	std::unordered_map<std::string, SkinCluster> skinClusters_;
+
+	// 非同期処理
+	struct AnimJob { std::string anim; std::string model; };
+	std::thread worker_;
+	std::atomic_bool stop_{ false };
+	std::mutex jobMutex_;
+	std::condition_variable jobCv_;
+	std::deque<AnimJob> jobs_;
+
+	mutable std::mutex animMutex_;
 
 	//--------- functions ----------------------------------------------------
 

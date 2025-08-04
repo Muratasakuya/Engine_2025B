@@ -3,10 +3,9 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Lib/ComPtr.h>
+#include <Engine/Core/Graphics/DxObject/DxUploadCommand.h>
 
 // directX
-#include <d3d12.h>
 #include <Externals/DirectXTex/DirectXTex.h>
 #include <Externals/DirectXTex/d3dx12.h>
 #include <DirectXMath.h>
@@ -18,6 +17,9 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <filesystem>
+#include <deque>
+#include <thread>
+#include <mutex>
 // front
 class DxCommand;
 class SRVDescriptor;
@@ -32,7 +34,7 @@ public:
 	//========================================================================
 
 	TextureManager() = default;
-	~TextureManager() = default;
+	~TextureManager();
 
 	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor);
 
@@ -42,6 +44,10 @@ public:
 	bool Search(const std::string& textureName);
 
 	void ReportUsage(bool listAll) const;
+
+	// 非同期処理
+	void RequestLoadAsync(const std::string& textureName);
+	void WaitAll();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -84,6 +90,16 @@ private:
 	mutable std::vector<std::string> textureKeysCache_;
 	mutable bool isCacheValid_;
 
+	// 非同期処理
+	std::unique_ptr<DxUploadCommand> dxUploadCommand_;
+	std::thread worker_;
+	std::mutex jobMutex_;
+	std::condition_variable jobCv_;
+	std::deque<std::string> jobs_;
+	std::atomic_bool stop_{ false };
+
+	std::mutex gpuMutex_;
+
 	//--------- functions ----------------------------------------------------
 
 	DirectX::ScratchImage GenerateMipMaps(const std::string& filePath);
@@ -95,4 +111,13 @@ private:
 
 	void CreateBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, size_t sizeInBytes);
 	std::wstring ConvertString(const std::string& str);
+
+	// helper
+	bool FindTexturePath(const std::string& textureName, std::filesystem::path& outPath);
+	DirectX::ScratchImage DecodeAndGenMips(const std::filesystem::path& filePath, DirectX::TexMetadata& outMeta);
+
+	// 非同期処理
+	void WorkerLoop();
+	void CreateAndUpload(const std::string& identifier,
+		const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& meta);
 };

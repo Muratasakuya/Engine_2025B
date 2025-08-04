@@ -67,7 +67,7 @@ std::vector<std::function<void()>> Asset::SetTask(const Json& data) {
 			for (auto& name : data["Textures"]) {
 
 				std::string texture = name.get<std::string>();
-				tasks.emplace_back([this, texture]() { this->LoadTexture(texture); });
+				tasks.emplace_back([this, texture]() { this->LoadTextureAsync(texture); });
 			}
 		}
 	}
@@ -75,9 +75,9 @@ std::vector<std::function<void()>> Asset::SetTask(const Json& data) {
 	{
 		if (data.contains("Models") && data["Models"].is_array()) {
 			for (auto& name : data["Models"]) {
-
 				std::string model = name.get<std::string>();
-				tasks.emplace_back([this, model]() { this->LoadModel(model); });
+				// ★ 実体ロードはワーカースレッドへ
+				tasks.emplace_back([this, model]() { this->modelLoader_->RequestLoadAsync(model); });
 			}
 		}
 	}
@@ -85,10 +85,10 @@ std::vector<std::function<void()>> Asset::SetTask(const Json& data) {
 	{
 		if (data.contains("Animations") && data["Animations"].is_array()) {
 			for (auto& a : data["Animations"]) {
-
 				std::string model = a["model"].get<std::string>();
 				std::string animation = a["animation"].get<std::string>();
-				tasks.emplace_back([this, animation, model]() { this->LoadAnimation(animation, model); });
+				// ★ モデル依存あり → 非同期投入。ワーカ側で依存解決
+				tasks.emplace_back([this, animation, model]() { this->animationManager_->RequestLoadAsync(animation, model); });
 			}
 		}
 	}
@@ -181,6 +181,10 @@ void Asset::LoadModel(const std::string& modelName) {
 
 void Asset::LoadAnimation(const std::string& animationName, const std::string& modelName) {
 	animationManager_->Load(animationName, modelName);
+}
+
+void Asset::LoadTextureAsync(const std::string& textureName) {
+	textureManager_->RequestLoadAsync(textureName);
 }
 
 void Asset::MakeModel(const std::string& modelName,

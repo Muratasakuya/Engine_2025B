@@ -626,6 +626,9 @@
     <ClCompile Include="Game\Scene\ClearScene.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Core\Graphics\DxObject\DxUploadCommand.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -864,6 +867,7 @@
     <ClInclude Include="Engine\Utility\ImGuiHelper.h" />
     <ClInclude Include="Engine\Asset\AssetEditorPayloadData.h" />
     <ClInclude Include="Game\Scene\ClearScene.h" />
+    <ClInclude Include="Engine\Core\Graphics\DxObject\DxUploadCommand.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

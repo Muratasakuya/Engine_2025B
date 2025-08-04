@@ -8,6 +8,9 @@
 
 // c++
 #include <unordered_map>
+#include <thread>
+#include <mutex>
+#include <deque>
 // front
 class TextureManager;
 
@@ -21,7 +24,7 @@ public:
 	//========================================================================
 
 	ModelLoader() = default;
-	~ModelLoader() = default;
+	~ModelLoader();
 
 	void Init(TextureManager* textureManager);
 
@@ -36,6 +39,10 @@ public:
 	bool Search(const std::string& modelName);
 
 	void ReportUsage(bool listAll) const;
+
+	// 非同期処理
+	void RequestLoadAsync(const std::string& modelName);
+	void WaitAll();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -58,9 +65,22 @@ private:
 	mutable std::vector<std::string> modelKeysCache_;
 	mutable bool isCacheValid_;
 
+	// 非同期処理
+	std::thread worker_;
+	std::atomic_bool stop_{ false };
+	std::mutex jobMutex_;
+	std::condition_variable jobCv_;
+	std::deque<std::string> jobs_;
+
+	mutable std::mutex modelMutex_;
+
 	//--------- functions ----------------------------------------------------
 
 	ModelData LoadModelFile(const std::string& filePath);
-
 	Node ReadNode(aiNode* node);
+	// helper
+	bool FindModelPath(const std::string& modelName, std::filesystem::path& outPath);
+
+	// 非同期処理
+	void WorkerLoop();
 };

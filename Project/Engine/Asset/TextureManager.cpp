@@ -14,6 +14,13 @@
 //	TextureManager classMethods
 //============================================================================
 
+TextureManager::~TextureManager() {
+
+	stop_ = true;
+	jobCv_.notify_all();
+	if (worker_.joinable()) worker_.join();
+}
+
 void TextureManager::Init(ID3D12Device* device, DxCommand* dxCommand,
 	SRVDescriptor* srvDescriptor) {
 
@@ -28,100 +35,27 @@ void TextureManager::Init(ID3D12Device* device, DxCommand* dxCommand,
 
 	baseDirectoryPath_ = "./Assets/Textures/";
 	isCacheValid_ = false;
+
+	// 転送用
+	dxUploadCommand_ = std::make_unique<DxUploadCommand>();
+	dxUploadCommand_->Create(device_);
+
+	// ワーカースレッド起動
+	stop_ = false;
+	worker_ = std::thread([this] { this->WorkerLoop(); });
 }
 
 void TextureManager::Load(const std::string& textureName) {
 
-	// 時間経過カウント開始
-	auto start = std::chrono::high_resolution_clock::now();
-
-	// 読みこみ済みなら早期リターン
-	LOG_INFO("load texture begin: {}", textureName);
-	if (textures_.contains(textureName)) {
-		LOG_INFO("load texture cached: {}", textureName);
-		return;
-	}
-
-	// texture検索
-	std::filesystem::path filePath;
-	bool found = false;
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
-		if (entry.is_regular_file() &&
-			entry.path().stem().string() == textureName) {
-
-			std::string extension = entry.path().extension().string();
-			if (extension == ".png" ||
-				extension == ".jpg" ||
-				extension == ".dds") {
-
-				filePath = entry.path();
-				found = true;
-				break;
-			}
+	RequestLoadAsync(textureName);
+	// 単純同期：当該テクスチャが出来るまでポーリング（プロダクションでは条件変数等で個別待ち推奨）
+	for (;;) {
+		{
+			std::scoped_lock lk(gpuMutex_);
+			if (textures_.contains(textureName)) break;
 		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
-	if (!found) {
-
-		LOG_WARN("texture not found → {}", textureName);
-		ASSERT(FALSE, "texture not found:" + textureName);
-	}
-
-	std::string identifier = filePath.stem().string();
-	TextureData& texture = textures_[identifier];
-	texture.isUse = false;
-
-	// 階層を保存
-	std::filesystem::path relative = std::filesystem::relative(filePath, baseDirectoryPath_);
-	relative.replace_extension();
-	texture.hierarchy = relative.generic_string();
-
-	DirectX::ScratchImage mipImages = GenerateMipMaps(filePath.string());
-	texture.metadata = mipImages.GetMetadata();
-	CreateTextureResource(device_, texture.resource, texture.metadata);
-	ComPtr<ID3D12Resource> intermediateResource = nullptr;
-	UploadTextureData(texture.resource.Get(), intermediateResource, mipImages);
-
-	// GPU実行の完了を待つ
-	dxCommand_->WaitForGPU();
-	intermediateResource.Reset();
-
-	// SRV作成
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
-	srvDesc.Format = texture.metadata.format;
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	// cubeMap用かチェックして分岐
-	if (texture.metadata.IsCubemap()) {
-
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
-		srvDesc.TextureCube.MostDetailedMip = 0;
-		srvDesc.TextureCube.MipLevels = UINT_MAX;
-		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
-	} else {
-
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MipLevels = static_cast<UINT>(texture.metadata.mipLevels);
-	}
-
-	// srv作成
-	srvDescriptor_->CreateSRV(texture.srvIndex, texture.resource.Get(), srvDesc);
-	texture.gpuHandle = srvDescriptor_->GetGPUHandle(texture.srvIndex);
-
-	std::wstring resourceName = std::wstring(identifier.begin(), identifier.end());
-	// debug用にGPUResourceにtextureの名前を設定する
-	texture.resource->SetName(resourceName.c_str());
-
-	isCacheValid_ = false;
-
-	auto end = std::chrono::high_resolution_clock::now();
-	auto duration = duration_cast<std::chrono::milliseconds>(end - start).count();
-
-	LOG_INFO("load texture ok: {} ({}×{} mip{} srv={}) load time: {} ms",
-		identifier,
-		texture.metadata.width,
-		texture.metadata.height,
-		texture.metadata.mipLevels,
-		texture.srvIndex,
-		duration);
 }
 
 void TextureManager::LoadLutTexture(const std::string& textureName) {
@@ -564,4 +498,227 @@ const std::vector<std::string>& TextureManager::GetTextureKeys() const {
 		isCacheValid_ = true;
 	}
 	return textureKeysCache_;
+}
+
+void TextureManager::RequestLoadAsync(const std::string& textureName) {
+
+	// 既にロード済みなら何もしない
+	{
+		std::scoped_lock lk(gpuMutex_);
+		if (textures_.contains(textureName)) return;
+	}
+	// 多重投入防止（簡易: キュー内重複チェック）
+	{
+		std::scoped_lock lk(jobMutex_);
+		for (auto& j : jobs_) {
+			if (j == textureName) return;
+		}
+		jobs_.push_back(textureName);
+		SpdLogger::Log("[Texture][Enqueue] " + textureName);
+	}
+	jobCv_.notify_one();
+}
+
+void TextureManager::WaitAll() {
+
+	// ジョブ枯渇待ち（簡易）
+	for (;;) {
+		{
+			std::scoped_lock lk(jobMutex_);
+			if (jobs_.empty()) {
+
+				break;
+			}
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+}
+
+bool TextureManager::FindTexturePath(const std::string& textureName, std::filesystem::path& outPath) {
+
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
+		if (entry.is_regular_file() && entry.path().stem().string() == textureName) {
+			const std::string ext = entry.path().extension().string();
+			if (ext == ".png" || ext == ".jpg" || ext == ".dds") {
+				outPath = entry.path();
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+DirectX::ScratchImage TextureManager::DecodeAndGenMips(
+	const std::filesystem::path& filePath, DirectX::TexMetadata& outMeta) {
+
+	using namespace DirectX;
+	ScratchImage img{};
+	const auto wpath = ConvertString(filePath.string());
+
+	HRESULT hr = S_OK;
+	if (wpath.ends_with(L".dds")) {
+		hr = LoadFromDDSFile(wpath.c_str(), DDS_FLAGS_NONE, nullptr, img);
+	} else {
+		hr = LoadFromWICFile(wpath.c_str(), WIC_FLAGS_FORCE_SRGB | WIC_FLAGS_DEFAULT_SRGB, nullptr, img);
+	}
+	assert(SUCCEEDED(hr));
+
+	ScratchImage mip;
+	if (IsCompressed(img.GetMetadata().format)) {
+		mip = std::move(img);
+	} else {
+		hr = DirectX::GenerateMipMaps(img.GetImages(), img.GetImageCount(), img.GetMetadata(),
+			DirectX::TEX_FILTER_SRGB, 4, mip);
+		assert(SUCCEEDED(hr));
+	}
+	outMeta = mip.GetMetadata();
+	return mip;
+}
+
+void TextureManager::WorkerLoop() {
+
+	while (!stop_) {
+		std::string name;
+		{
+			std::unique_lock lk(jobMutex_);
+			jobCv_.wait(lk, [&] { return stop_ || !jobs_.empty(); });
+			if (stop_) break;
+			name = std::move(jobs_.front());
+			jobs_.pop_front();
+		}
+
+		// 重複ロード（他スレッドで完了済み）チェック
+		{
+			std::scoped_lock lk(gpuMutex_);
+			if (textures_.contains(name)) continue;
+		}
+
+		SpdLogger::Log("[Texture][Begin] " + name);
+
+		std::filesystem::path path;
+		if (!FindTexturePath(name, path)) {
+			// ログ・アサートはお好みで
+			continue;
+		}
+
+		// CPU重い部分（WIC/DDSロード, MIP生成）
+		auto t0 = std::chrono::high_resolution_clock::now();
+		DirectX::TexMetadata meta{};
+		auto mip = DecodeAndGenMips(path, meta);
+		auto t1 = std::chrono::high_resolution_clock::now();
+		auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count();
+		SpdLogger::Log("[Texture][Decoded] " + name + "  " +
+			std::to_string(meta.width) + "x" + std::to_string(meta.height) +
+			" mips=" + std::to_string(meta.mipLevels) +
+			" (" + std::to_string(ms) + "ms)");
+
+		// 階層などのメタはファイル名から計算
+		const std::string identifier = path.stem().string();
+
+		// GPU転送
+		CreateAndUpload(identifier, mip, meta);
+
+		// 階層（相対パス）を後から設定
+		{
+			std::scoped_lock lk(gpuMutex_);
+			TextureData& t = textures_[identifier];
+
+			std::filesystem::path relative = std::filesystem::relative(path, baseDirectoryPath_);
+			relative.replace_extension();
+			t.hierarchy = relative.generic_string();
+		}
+	}
+}
+
+void TextureManager::CreateAndUpload(const std::string& identifier,
+	const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& meta) {
+
+	// GPUリソース作成
+	ComPtr<ID3D12Resource> tex;
+	{
+		D3D12_RESOURCE_DESC desc{};
+		desc.Width = UINT(meta.width);
+		desc.Height = UINT(meta.height);
+		desc.MipLevels = UINT16(meta.mipLevels);
+		desc.DepthOrArraySize = UINT16(meta.arraySize);
+		desc.Format = meta.format;
+		desc.SampleDesc.Count = 1;
+		desc.Dimension = D3D12_RESOURCE_DIMENSION(meta.dimension);
+
+		D3D12_HEAP_PROPERTIES heap{};
+		heap.Type = D3D12_HEAP_TYPE_DEFAULT;
+
+		HRESULT hr = device_->CreateCommittedResource(
+			&heap, D3D12_HEAP_FLAG_NONE, &desc,
+			D3D12_RESOURCE_STATE_COPY_DEST, nullptr, IID_PPV_ARGS(&tex));
+		assert(SUCCEEDED(hr));
+	}
+
+	// サブリソース
+	std::vector<D3D12_SUBRESOURCE_DATA> subs;
+	DirectX::PrepareUpload(device_, mipImages.GetImages(), mipImages.GetImageCount(), meta, subs);
+
+	// 中間バッファ
+	Microsoft::WRL::ComPtr<ID3D12Resource> uploadBuf;
+	{
+		uint64_t size = GetRequiredIntermediateSize(tex.Get(), 0, (UINT)subs.size());
+
+		D3D12_HEAP_PROPERTIES heap{};
+		heap.Type = D3D12_HEAP_TYPE_UPLOAD;
+
+		D3D12_RESOURCE_DESC buf{};
+		buf.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+		buf.Width = size; buf.Height = 1; buf.DepthOrArraySize = 1;
+		buf.MipLevels = 1; buf.SampleDesc.Count = 1; buf.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+
+		HRESULT hr = device_->CreateCommittedResource(
+			&heap, D3D12_HEAP_FLAG_NONE, &buf, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadBuf));
+		assert(SUCCEEDED(hr));
+	}
+
+	auto* cl = dxUploadCommand_->GetCommandList();
+	UpdateSubresources(cl, tex.Get(), uploadBuf.Get(), 0, 0, (UINT)subs.size(), subs.data());
+
+	// バリア: COPY_DEST -> GENERIC_READ
+	D3D12_RESOURCE_BARRIER b{};
+	b.Type = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	b.Transition.pResource = tex.Get();
+	b.Transition.StateBefore = D3D12_RESOURCE_STATE_COPY_DEST;
+	b.Transition.StateAfter = D3D12_RESOURCE_STATE_GENERIC_READ;
+	b.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	cl->ResourceBarrier(1, &b);
+
+	// 実行＆待機（描画キューを止めない）
+	dxUploadCommand_->ExecuteCommands();
+	SpdLogger::Log(std::string("[Texture][Upload->GPU][End]  ") + identifier);
+
+	// SRV生成と登録（競合防止のためロック）
+	std::scoped_lock lk(gpuMutex_);
+
+	TextureData& t = textures_[identifier];
+	t.resource = tex;
+	t.metadata = meta;
+	t.isUse = false;
+
+	// SRV
+	D3D12_SHADER_RESOURCE_VIEW_DESC srv{};
+	srv.Format = meta.format;
+	srv.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	if (meta.IsCubemap()) {
+		srv.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+		srv.TextureCube.MostDetailedMip = 0;
+		srv.TextureCube.MipLevels = UINT_MAX;
+		srv.TextureCube.ResourceMinLODClamp = 0.0f;
+	} else {
+		srv.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+		srv.Texture2D.MipLevels = (UINT)meta.mipLevels;
+	}
+
+	srvDescriptor_->CreateSRV(t.srvIndex, t.resource.Get(), srv);
+	t.gpuHandle = srvDescriptor_->GetGPUHandle(t.srvIndex);
+
+	std::wstring wname(identifier.begin(), identifier.end());
+	t.resource->SetName(wname.c_str());
+
+	isCacheValid_ = false;
 }

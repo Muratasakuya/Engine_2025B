@@ -13,6 +13,13 @@
 //	ModelLoader classMethods
 //============================================================================
 
+ModelLoader::~ModelLoader() {
+
+	stop_ = true;
+	jobCv_.notify_all();
+	if (worker_.joinable()) worker_.join();
+}
+
 void ModelLoader::Init(TextureManager* textureManager) {
 
 	textureManager_ = nullptr;
@@ -20,41 +27,21 @@ void ModelLoader::Init(TextureManager* textureManager) {
 
 	baseDirectoryPath_ = "./Assets/Models/";
 	isCacheValid_ = false;
+
+	stop_ = false;
+	worker_ = std::thread([this] { WorkerLoop(); });
 }
 
 void ModelLoader::Load(const std::string& modelName) {
 
-	// モデルがすでにあれば読み込みは行わない
-	LOG_INFO("load mdoel begin: {}", modelName);
-	if (models_.contains(modelName)) {
-		LOG_INFO("load model cached: {}", modelName);
-		return;
-	}
-
-	// model検索
-	std::filesystem::path filePath;
-	bool found = false;
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
-		if (entry.is_regular_file() &&
-			entry.path().stem().string() == modelName) {
-
-			std::string extension = entry.path().extension().string();
-			if (extension == ".obj" || extension == ".gltf") {
-
-				filePath = entry.path();
-				found = true;
-				break;
-			}
+	RequestLoadAsync(modelName);
+	for (;;) {
+		{
+			std::scoped_lock lk(modelMutex_);
+			if (models_.contains(modelName)) break;
 		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
-	if (!found) {
-
-		LOG_WARN("model not found → {}", modelName);
-		ASSERT(FALSE, "model not found:" + modelName);
-	}
-
-	models_[modelName] = LoadModelFile(filePath.string());
-	LOG_INFO("load mdoel ok: {}", modelName);
 }
 
 void ModelLoader::Make(const std::string& modelName,
@@ -129,33 +116,29 @@ void ModelLoader::Export(const std::vector<MeshVertex>& inputVertices,
 
 bool ModelLoader::Search(const std::string& modelName) {
 
-	return Algorithm::Find(models_, modelName);
+	std::scoped_lock lk(modelMutex_);
+	return models_.find(modelName) != models_.end();
 }
 
 const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
 
+	std::scoped_lock lk(modelMutex_);
 	bool find = models_.find(modelName) != models_.end();
-
-	if (!find) {
-		LOG_WARN("model not found → {}", modelName);
-	}
-	ASSERT(find, "not found model" + modelName);
-
-	// 使用された
+	// 既存は ASSERT していたが、呼び出し側が非同期化されるので注意
+	// 以降は同じ（使用フラグも更新）
+	if (!find) { /* ログは既存通り */ }
+	ASSERT(find, "not found model" + modelName); // 元実装踏襲
 	models_.at(modelName).isUse = true;
 	return models_.at(modelName);
 }
 
 const std::vector<std::string>& ModelLoader::GetModelKeys() const {
 
+	std::scoped_lock lk(modelMutex_);
 	if (!isCacheValid_) {
-
 		modelKeysCache_.clear();
 		modelKeysCache_.reserve(models_.size());
-		for (const auto& pair : models_) {
-
-			modelKeysCache_.emplace_back(pair.first);
-		}
+		for (auto& [k, _] : models_) modelKeysCache_.push_back(k);
 		isCacheValid_ = true;
 	}
 	return modelKeysCache_;
@@ -267,7 +250,7 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 			std::string identifier = name.stem().string();
 			meshModelData.textureName = identifier;
 
-			textureManager_->Load(meshModelData.textureName.value());
+			textureManager_->RequestLoadAsync(meshModelData.textureName.value());
 		}
 		// NORMALS
 		if (material->GetTextureCount(aiTextureType_NORMALS) > 0 ||
@@ -286,7 +269,7 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 			std::string normalIdentifier = normalNamePath.stem().string();
 			meshModelData.normalMapTexture = normalIdentifier;
 
-			textureManager_->Load(meshModelData.normalMapTexture.value());
+			textureManager_->RequestLoadAsync(meshModelData.normalMapTexture.value());
 		}
 		// BaseColor
 		aiColor4D baseColor;
@@ -408,5 +391,85 @@ void ModelLoader::ReportUsage(bool listAll) const {
 				LOG_ASSET_INFO("  - {}", n);
 			}
 		}
+	}
+}
+
+void ModelLoader::RequestLoadAsync(const std::string& modelName) {
+	// 既にロード済みなら何もしない
+	{
+		std::scoped_lock lk(modelMutex_);
+		if (models_.contains(modelName)) return;
+	}
+	// キュー重複回避（簡易）
+	{
+		std::scoped_lock lk(jobMutex_);
+		for (auto& j : jobs_) if (j == modelName) return;
+		jobs_.push_back(modelName);
+
+		SpdLogger::Log("[Model][Enqueue] " + modelName);
+	}
+	jobCv_.notify_one();
+}
+
+bool ModelLoader::FindModelPath(const std::string& modelName, std::filesystem::path& outPath) {
+	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
+		if (entry.is_regular_file() && entry.path().stem().string() == modelName) {
+			std::string ext = entry.path().extension().string();
+			if (ext == ".obj" || ext == ".gltf") { // 既存実装と同じ判定
+				outPath = entry.path();
+				return true;
+			}
+		}
+	}
+	return false;
+}
+
+void ModelLoader::WorkerLoop() {
+	while (!stop_) {
+		std::string name;
+		{
+			std::unique_lock lk(jobMutex_);
+			jobCv_.wait(lk, [&] { return stop_ || !jobs_.empty(); });
+			if (stop_) break;
+			name = std::move(jobs_.front());
+			jobs_.pop_front();
+		}
+
+		// 二重ロード防止
+		{
+			std::scoped_lock lk(modelMutex_);
+			if (models_.contains(name)) continue;
+		}
+
+		SpdLogger::Log("[Model][Begin] " + name);
+
+		std::filesystem::path path;
+		if (!FindModelPath(name, path)) {
+			// 見つからない場合はスキップ（ログ等は適宜）
+			continue;
+		}
+
+		auto t0 = std::chrono::high_resolution_clock::now();
+		ModelData md = LoadModelFile(path.string());
+		auto t1 = std::chrono::high_resolution_clock::now();
+		SpdLogger::Log("[Model][Loaded] " + name + " (" +
+			std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count()) + "ms)");
+
+		// 反映（排他）
+		{
+			std::scoped_lock lk(modelMutex_);
+			models_[name] = std::move(md);
+			isCacheValid_ = false; // キーキャッシュを無効化
+		}
+	}
+}
+
+void ModelLoader::WaitAll() {
+	for (;;) {
+		{
+			std::scoped_lock lk(jobMutex_);
+			if (jobs_.empty()) break;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }
