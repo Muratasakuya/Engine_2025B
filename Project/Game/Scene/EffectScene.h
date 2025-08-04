@@ -34,8 +34,4 @@ private:
 
 	std::unique_ptr<BaseCamera> camera3D_;
 	std::unique_ptr<PunctualLight> light_;
-
-	//--------- functions ----------------------------------------------------
-
-	void Load();
 };

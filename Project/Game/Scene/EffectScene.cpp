@@ -6,21 +6,12 @@
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Scene/SceneView.h>
-#include <Engine/Asset/Asset.h>
 
 //============================================================================
 //	EffectScene classMethods
 //============================================================================
 
-void EffectScene::Load() {
-
-	asset_->LoadTexture("circle");
-	asset_->LoadTexture("noise");
-}
-
 void EffectScene::Init() {
-
-	Load();
 
 	//========================================================================
 	//	postProcess

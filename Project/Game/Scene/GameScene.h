@@ -17,7 +17,6 @@
 #include <Engine/Effect/GameEffect.h>
 
 // editor
-#include <Game/Editor/GameObjectEditor.h>
 #include <Game/Editor/LevelEditor/LevelEditor.h>
 
 //============================================================================
@@ -55,10 +54,5 @@ private:
 	std::unique_ptr<BossEnemy> bossEnemy_;
 
 	// editor
-	std::unique_ptr<GameObjectEditor> objectEditor_;
 	std::unique_ptr<LevelEditor> levelEditor_;
-
-	//--------- functions ----------------------------------------------------
-
-	void Load();
 };

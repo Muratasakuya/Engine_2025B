@@ -10,6 +10,9 @@
 
 // c++
 #include <memory>
+#include <mutex>
+#include <functional>
+#include <deque>
 #include <cctype>
 
 //============================================================================
@@ -42,6 +45,12 @@ public:
 
 	// シーンアセットファイルの読み込み
 	void LoadSceneAsync(Scene scene, AssetLoadType loadType);
+	// 非同期読み込みの更新
+	void PumpAsyncLoads();
+
+	// 非同期読み込み処理が終わっているかどうか
+	bool IsScenePreloadFinished(Scene scene) const;
+	float GetScenePreloadProgress(Scene scene) const;
 
 	void LoadTexture(const std::string& textureName);
 	void LoadLutTexture(const std::string& textureName);
@@ -82,10 +91,34 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	// 読み込み進捗度
+	struct ScenePreload {
+
+		Scene scene;           // シーンの種類
+		uint32_t total = 0;    // キュー投入総数
+		uint32_t done = 0;     // 処理済み数
+		bool started = false;  // 要求済みか
+		bool finished = false; // 完了したか
+	};
+
 	//--------- variables ----------------------------------------------------
 
 	// assetを管理する
 	std::unique_ptr<TextureManager> textureManager_;
 	std::unique_ptr<ModelLoader> modelLoader_;
 	std::unique_ptr<AnimationManager> animationManager_;
+
+	// 1フレームで処理される読み込みスレッド数
+	const uint32_t maxCountPerFrame_ = 2;
+
+	std::mutex asyncMutex_;
+	std::deque<std::function<void()>> pendingLoads_;  // 実行待ちタスク
+	std::unordered_map<Scene, ScenePreload> preload_; // シーン別進捗度
+
+	//--------- functions ----------------------------------------------------
+
+	// helper
+	std::vector<std::function<void()>> SetTask(const Json& data);
 };

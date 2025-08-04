@@ -10,6 +10,8 @@
 
 // c++
 #include <memory>
+// front
+class Asset;
 
 //============================================================================
 //	SceneManager class
@@ -38,6 +40,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	bool IsSceneSwitching() const { return isSceneSwitching_; }
+
+	bool ConsumeNeedInitNextScene();
 private:
 	//========================================================================
 	//	private Methods
@@ -58,6 +62,7 @@ private:
 	Scene currentSceneType_;
 	Scene nextSceneType_;
 	bool isSceneSwitching_;
+	bool needInitNextScene_;
 
 	//--------- functions ----------------------------------------------------
 
