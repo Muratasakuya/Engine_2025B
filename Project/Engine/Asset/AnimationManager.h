@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
+#include <Engine/Asset/Async/AssetLoadWorker.h>
 
 // assimp
 #include <Externals/assimp/include/assimp/Importer.hpp>
@@ -12,10 +13,6 @@
 // c++
 #include <unordered_map>
 #include <unordered_set>
-#include <thread>
-#include <mutex>
-#include <deque>
-#include <condition_variable>
 // front
 class SRVDescriptor;
 class ModelLoader;
@@ -30,7 +27,7 @@ public:
 	//========================================================================
 
 	AnimationManager() = default;
-	~AnimationManager();
+	~AnimationManager() = default;
 
 	void Init(ID3D12Device* device, SRVDescriptor* srvDescriptor, ModelLoader* modelLoader);
 
@@ -43,14 +40,21 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	const AnimationData& GetAnimationData(const std::string& animationName) const;
-
 	const Skeleton& GetSkeletonData(const std::string& animationName) const;
-
 	const SkinCluster& GetSkinClusterData(const std::string& animationName) const;
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
+
+	//--------- structure ----------------------------------------------------
+
+	// 非同期処理データキー
+	struct AnimationAsyncKey {
+
+		std::string animName;
+		std::string modelName;
+	};
 
 	//--------- variables ----------------------------------------------------
 
@@ -60,20 +64,12 @@ private:
 
 	std::string baseDirectoryPath_;
 
-	uint32_t srvIndex_ = 0;
-
 	std::unordered_map<std::string, AnimationData> animations_;
 	std::unordered_map<std::string, Skeleton> skeletons_;
 	std::unordered_map<std::string, SkinCluster> skinClusters_;
 
 	// 非同期処理
-	struct AnimJob { std::string anim; std::string model; };
-	std::thread worker_;
-	std::atomic_bool stop_{ false };
-	std::mutex jobMutex_;
-	std::condition_variable jobCv_;
-	std::deque<AnimJob> jobs_;
-
+	AssetLoadWorker<AnimationAsyncKey> loadWorker_;
 	mutable std::mutex animMutex_;
 
 	//--------- functions ----------------------------------------------------
@@ -81,4 +77,7 @@ private:
 	Skeleton CreateSkeleton(const Node& rootNode);
 	int32_t CreateJoint(const Node& node, const std::optional<int32_t> parent, std::vector<Joint>& joints);
 	SkinCluster CreateSkinCluster(const std::string& modelName, const std::string& animationName);
+
+	// 非同期処理
+	void LoadAsync(AnimationAsyncKey key);
 };

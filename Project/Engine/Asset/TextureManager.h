@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/DxObject/DxUploadCommand.h>
+#include <Engine/Asset/Async/AssetLoadWorker.h>
 
 // directX
 #include <Externals/DirectXTex/DirectXTex.h>
@@ -17,9 +18,6 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <filesystem>
-#include <deque>
-#include <thread>
-#include <mutex>
 // front
 class DxCommand;
 class SRVDescriptor;
@@ -34,20 +32,17 @@ public:
 	//========================================================================
 
 	TextureManager() = default;
-	~TextureManager();
+	~TextureManager() = default;
 
 	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor);
 
+	// 読み込み処理
 	void Load(const std::string& textureName);
-	void LoadLutTexture(const std::string& textureName);
+	void RequestLoadAsync(const std::string& textureName);
 
 	bool Search(const std::string& textureName);
-
-	void ReportUsage(bool listAll) const;
-
-	// 非同期処理
-	void RequestLoadAsync(const std::string& textureName);
 	void WaitAll();
+	void ReportUsage(bool listAll) const;
 
 	//--------- accessor -----------------------------------------------------
 
@@ -92,32 +87,17 @@ private:
 
 	// 非同期処理
 	std::unique_ptr<DxUploadCommand> dxUploadCommand_;
-	std::thread worker_;
-	std::mutex jobMutex_;
-	std::condition_variable jobCv_;
-	std::deque<std::string> jobs_;
-	std::atomic_bool stop_{ false };
 
+	AssetLoadWorker<std::string> loadWorker_;
 	std::mutex gpuMutex_;
 
 	//--------- functions ----------------------------------------------------
 
-	DirectX::ScratchImage GenerateMipMaps(const std::string& filePath);
-	DirectX::ScratchImage LoadCubeLUT(const std::filesystem::path& path);
-
-	void CreateTextureResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, const DirectX::TexMetadata& metadata);
-	void CreateTextureResource3D(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, const DirectX::TexMetadata& metadata);
-	void UploadTextureData(ID3D12Resource* texture, ComPtr<ID3D12Resource>& resource, const DirectX::ScratchImage& mipImages);
-
-	void CreateBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, size_t sizeInBytes);
-	std::wstring ConvertString(const std::string& str);
-
 	// helper
-	bool FindTexturePath(const std::string& textureName, std::filesystem::path& outPath);
-	DirectX::ScratchImage DecodeAndGenMips(const std::filesystem::path& filePath, DirectX::TexMetadata& outMeta);
+	DirectX::ScratchImage GenerateMipMaps(const std::filesystem::path& filePath, DirectX::TexMetadata& outMeta);
 
 	// 非同期処理
-	void WorkerLoop();
+	void LoadAsync(std::string name);
 	void CreateAndUpload(const std::string& identifier,
 		const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& meta);
 };

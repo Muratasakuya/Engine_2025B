@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
-#include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
+#include <Engine/Asset/Async/AssetLoadWorker.h>
 
 // c++
 #include <unordered_map>
@@ -24,30 +24,21 @@ public:
 	//========================================================================
 
 	ModelLoader() = default;
-	~ModelLoader();
+	~ModelLoader() = default;
 
 	void Init(TextureManager* textureManager);
 
+	// 読み込み処理
 	void Load(const std::string& modelName);
-
-	void Make(const std::string& modelName,
-		const std::vector<MeshVertex>& vertexData,
-		const std::vector<uint32_t>& indexData);
-	void Export(const std::vector<MeshVertex>& inputVertices,
-		const std::vector<uint32_t>& inputIndices,const std::string& filePath);
+	void RequestLoadAsync(const std::string& modelName);
 
 	bool Search(const std::string& modelName);
-
-	void ReportUsage(bool listAll) const;
-
-	// 非同期処理
-	void RequestLoadAsync(const std::string& modelName);
 	void WaitAll();
+	void ReportUsage(bool listAll) const;
 
 	//--------- accessor -----------------------------------------------------
 
 	const ModelData& GetModelData(const std::string& modelName) const;
-
 	const std::vector<std::string>& GetModelKeys() const;
 private:
 	//========================================================================
@@ -66,21 +57,14 @@ private:
 	mutable bool isCacheValid_;
 
 	// 非同期処理
-	std::thread worker_;
-	std::atomic_bool stop_{ false };
-	std::mutex jobMutex_;
-	std::condition_variable jobCv_;
-	std::deque<std::string> jobs_;
-
+	AssetLoadWorker<std::string> loadWorker_;
 	mutable std::mutex modelMutex_;
 
 	//--------- functions ----------------------------------------------------
 
 	ModelData LoadModelFile(const std::string& filePath);
 	Node ReadNode(aiNode* node);
-	// helper
-	bool FindModelPath(const std::string& modelName, std::filesystem::path& outPath);
 
 	// 非同期処理
-	void WorkerLoop();
+	void LoadAsync(std::string name);
 };

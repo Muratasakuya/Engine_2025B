@@ -827,6 +827,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Asset\AssetStructure.h" />
+    <ClInclude Include="Engine\Asset\Async\AssetAsyncQueue.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Asset\Async\AssetLoadWorker.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Asset\ModelLoader.h" />
     <ClInclude Include="Engine\Asset\TextureManager.h" />
     <ClInclude Include="Engine\Config.h">

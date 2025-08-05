@@ -171,10 +171,6 @@ void Asset::LoadTexture(const std::string& textureName) {
 	textureManager_->Load(textureName);
 }
 
-void Asset::LoadLutTexture(const std::string& textureName) {
-	textureManager_->LoadLutTexture(textureName);
-}
-
 void Asset::LoadModel(const std::string& modelName) {
 	modelLoader_->Load(modelName);
 }
@@ -185,17 +181,6 @@ void Asset::LoadAnimation(const std::string& animationName, const std::string& m
 
 void Asset::LoadTextureAsync(const std::string& textureName) {
 	textureManager_->RequestLoadAsync(textureName);
-}
-
-void Asset::MakeModel(const std::string& modelName,
-	const std::vector<MeshVertex>& vertexData,
-	const std::vector<uint32_t>& indexData) {
-	modelLoader_->Make(modelName, vertexData, indexData);
-}
-
-void Asset::Export(const std::vector<MeshVertex>& inputVertices,
-	const std::vector<uint32_t>& inputIndices, const std::string& filePath) {
-	modelLoader_->Export(inputVertices, inputIndices, filePath);
 }
 
 const D3D12_GPU_DESCRIPTOR_HANDLE& Asset::GetGPUHandle(const std::string textureName) const {

@@ -15,14 +15,8 @@
 //	AnimationManager classMethods
 //============================================================================
 
-AnimationManager::~AnimationManager() {
-
-	stop_ = true;
-	jobCv_.notify_all();
-	if (worker_.joinable()) worker_.join();
-}
-
-void AnimationManager::Init(ID3D12Device* device, SRVDescriptor* srvDescriptor, ModelLoader* modelLoader) {
+void AnimationManager::Init(ID3D12Device* device,
+	SRVDescriptor* srvDescriptor, ModelLoader* modelLoader) {
 
 	device_ = nullptr;
 	device_ = device;
@@ -35,124 +29,15 @@ void AnimationManager::Init(ID3D12Device* device, SRVDescriptor* srvDescriptor, 
 
 	baseDirectoryPath_ = "./Assets/Models/";
 
-	stop_ = false;
-	worker_ = std::thread([this] {
-		while (!stop_) {
-			AnimJob job;
-			{
-				std::unique_lock lk(jobMutex_);
-				jobCv_.wait(lk, [&] { return stop_ || !jobs_.empty(); });
-				if (stop_) break;
-				job = jobs_.front();
-				jobs_.pop_front();
-			}
-
-			// 依存：モデルがまだなら後回し（再投入）
-			if (!modelLoader_->Search(job.model)) { // 非同期ロード完了待ちを避ける
-
-				SpdLogger::Log("[Anim][WaitModel] anim=" + job.anim + " model=" + job.model);
-
-				std::this_thread::sleep_for(std::chrono::milliseconds(2));
-				std::scoped_lock lk(jobMutex_);
-				jobs_.push_back(job); // 後ろに戻す
-				continue;
-			}
-
-			// Assimp 読み込みの時間
-			auto t0 = std::chrono::high_resolution_clock::now();
-			// ... importer.ReadFile / 解析
-			auto t1 = std::chrono::high_resolution_clock::now();
-
-			SpdLogger::Log("[Anim][Loaded] anim=" + job.anim +
-				" (" + std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count()) + "ms)");
-
-			// 既存の Load と同じ処理をバックグラウンド実行
-			// 1) ファイル探索
-			std::filesystem::path filePath;
-			bool found = false;
-			for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
-				if (entry.is_regular_file() && entry.path().stem().string() == job.anim) {
-					std::string extension = entry.path().extension().string();
-					if (extension == ".gltf") { filePath = entry.path(); found = true; break; }
-				}
-			}
-			if (!found) { continue; }
-
-			// 2) 読み込み（Assimp）
-			Assimp::Importer importer;
-			const aiScene* scene = importer.ReadFile(filePath.string(), 0);
-			if (scene->mNumAnimations == 0) { continue; }
-
-			// 3) 既存と同じ解析
-			std::unordered_map<std::string, AnimationData> localAnims;
-			for (uint32_t i = 0; i < scene->mNumAnimations; ++i) {
-				aiAnimation* animationAssimp = scene->mAnimations[i];
-				AnimationData animation;
-
-				std::string newName = (scene->mNumAnimations == 1)
-					? job.model
-					: job.model + "_" + animationAssimp->mName.C_Str();
-
-				animation.duration = static_cast<float>(animationAssimp->mDuration / animationAssimp->mTicksPerSecond);
-
-				for (uint32_t c = 0; c < animationAssimp->mNumChannels; ++c) {
-					aiNodeAnim* nodeAnim = animationAssimp->mChannels[c];
-					NodeAnimation& node = animation.nodeAnimations[nodeAnim->mNodeName.C_Str()];
-					// T
-					for (uint32_t k = 0; k < nodeAnim->mNumPositionKeys; ++k) {
-						aiVectorKey& kv = nodeAnim->mPositionKeys[k];
-						KeyframeVector3 f; f.time = float(kv.mTime / animationAssimp->mTicksPerSecond);
-						f.value = { -kv.mValue.x, kv.mValue.y, kv.mValue.z };
-						node.translate.keyframes.push_back(f);
-					}
-					// R
-					for (uint32_t k = 0; k < nodeAnim->mNumRotationKeys; ++k) {
-						aiQuatKey& kv = nodeAnim->mRotationKeys[k];
-						KeyframeQuaternion f; f.time = float(kv.mTime / animationAssimp->mTicksPerSecond);
-						f.value = { kv.mValue.x, -kv.mValue.y, -kv.mValue.z, kv.mValue.w };
-						node.rotate.keyframes.push_back(f);
-					}
-					// S
-					for (uint32_t k = 0; k < nodeAnim->mNumScalingKeys; ++k) {
-						aiVectorKey& kv = nodeAnim->mScalingKeys[k];
-						KeyframeVector3 f; f.time = float(kv.mTime / animationAssimp->mTicksPerSecond);
-						f.value = { kv.mValue.x, kv.mValue.y, kv.mValue.z };
-						node.scale.keyframes.push_back(f);
-					}
-				}
-				localAnims.emplace(newName, std::move(animation));
-			}
-
-			// 4) スケルトンとクラスター生成（モデルが必要）
-			//    既存実装を流用
-			//    skeletons_[animName] = CreateSkeleton(modelLoader_->GetModelData(model).rootNode);
-			//    skinClusters_[animName] = CreateSkinCluster(model, animName);
-			{
-				std::scoped_lock lk(animMutex_);
-				for (auto& [newName, anim] : localAnims) {
-					animations_[newName] = std::move(anim);
-					                    // 既存の流れと同じ
-						skeletons_[newName] = CreateSkeleton(modelLoader_->GetModelData(job.model).rootNode);
-					skinClusters_[newName] = CreateSkinCluster(job.model, newName);
-					                    // ★骨とスキンクラはモデル名をキーに“未作成なら一度だけ”作る
-						if (!skeletons_.contains(job.anim)) {
-						skeletons_[job.anim] = CreateSkeleton(modelLoader_->GetModelData(job.model).rootNode);
-						
-					}
-					if (!skinClusters_.contains(job.anim)) {
-						skinClusters_[job.anim] = CreateSkinCluster(job.model, job.anim);
-						
-					}
-				}
-			}
-		}
-		});
+	// ワーカースレッド起動
+	loadWorker_.Start([this](AnimationAsyncKey&& key) {
+		this->LoadAsync(std::move(key)); });
 }
 
 void AnimationManager::Load(const std::string& animationName, const std::string& modelName) {
 
 	RequestLoadAsync(animationName, modelName);
-	// モデルとアニメが来るまで待つ（簡易）
+	// モデルとアニメが来るまで待つ
 	for (;;) {
 		{
 			std::scoped_lock lk(animMutex_);
@@ -160,6 +45,127 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 		}
 		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
+}
+
+void AnimationManager::RequestLoadAsync(const std::string& animationName, const std::string& modelName) {
+
+	auto& queue = loadWorker_.RefAsyncQueue();
+
+	// 処理中のキューにあるなら処理させない
+	if (queue.IsClearCondition([&](const AnimationAsyncKey& j) {
+		return j.animName == animationName && j.modelName == modelName;
+		})) {
+		return;
+	}
+	// 重複チェック後にキューを追加
+	queue.AddQueue(AnimationAsyncKey{ animationName, modelName });
+	SpdLogger::Log("[Animation][Enqueue] anim:" + animationName + " model:" + modelName);
+}
+
+void AnimationManager::WaitAll() {
+
+	for (;;) {
+		if (loadWorker_.GetAsyncQueue().IsEmpty()) {
+
+			break;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+}
+
+void AnimationManager::LoadAsync(AnimationAsyncKey key) {
+
+	// 必要なモデルがまだ読み込みされていなければ処理しない
+	if (!modelLoader_->Search(key.modelName)) {
+
+		SpdLogger::Log("[Animation][WaitModel] anim:" + key.animName + " model:" + key.modelName);
+		std::this_thread::sleep_for(std::chrono::milliseconds(2));
+		loadWorker_.RefAsyncQueue().AddQueue(std::move(key));
+		return;
+	}
+
+	std::filesystem::path filePath;
+	// 見つからなければ処理しない
+	if (!Filesystem::FindByStem(baseDirectoryPath_, key.animName, { ".gltf" }, filePath)) {
+
+		SpdLogger::Log("[Animation][Missing] anim=" + key.animName);
+		return;
+	}
+
+	// アニメーションが存在していない場合はエラーにする
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile(filePath.string(), 0);
+	if (!scene || scene->mNumAnimations == 0) {
+
+		SpdLogger::Log("[Animation][NoClips] anim=" + key.animName);
+		ASSERT(FALSE, "[Animation][NoClips] anim=" + key.animName);
+		return;
+	}
+
+	// アニメーション解析処理
+	std::unordered_map<std::string, AnimationData> localAnimations{};
+	for (uint32_t i = 0; i < scene->mNumAnimations; ++i) {
+
+		aiAnimation* animAssimp = scene->mAnimations[i];
+		AnimationData anim;
+
+		// アニメーションの名前設定
+		const std::string newName = (scene->mNumAnimations == 1) ?
+			key.modelName : (key.modelName + "_" + animAssimp->mName.C_Str());
+
+		anim.duration = static_cast<float>(animAssimp->mDuration / animAssimp->mTicksPerSecond);
+		for (uint32_t c = 0; c < animAssimp->mNumChannels; ++c) {
+
+			aiNodeAnim* nodeAnim = animAssimp->mChannels[c];
+			NodeAnimation& node = anim.nodeAnimations[nodeAnim->mNodeName.C_Str()];
+			// T
+			for (uint32_t k = 0; k < nodeAnim->mNumPositionKeys; ++k) {
+
+				aiVectorKey& kv = nodeAnim->mPositionKeys[k];
+				KeyframeVector3 f; f.time = float(kv.mTime / animAssimp->mTicksPerSecond);
+				f.value = { -kv.mValue.x, kv.mValue.y, kv.mValue.z };
+				node.translate.keyframes.push_back(f);
+			}
+			// R
+			for (uint32_t k = 0; k < nodeAnim->mNumRotationKeys; ++k) {
+
+				aiQuatKey& kv = nodeAnim->mRotationKeys[k];
+				KeyframeQuaternion f; f.time = float(kv.mTime / animAssimp->mTicksPerSecond);
+				f.value = { kv.mValue.x, -kv.mValue.y, -kv.mValue.z, kv.mValue.w };
+				node.rotate.keyframes.push_back(f);
+			}
+			// S
+			for (uint32_t k = 0; k < nodeAnim->mNumScalingKeys; ++k) {
+
+				aiVectorKey& kv = nodeAnim->mScalingKeys[k];
+				KeyframeVector3 f; f.time = float(kv.mTime / animAssimp->mTicksPerSecond);
+				f.value = { kv.mValue.x, kv.mValue.y, kv.mValue.z };
+				node.scale.keyframes.push_back(f);
+			}
+		}
+		localAnimations.emplace(newName, std::move(anim));
+	}
+
+	// 読み込み完了
+	SpdLogger::Log("[Animation][Loaded] anim=" + key.animName);
+	{
+		std::scoped_lock lk(animMutex_);
+		for (auto& [name, animation] : localAnimations) {
+
+			animations_[name] = std::move(animation);
+		}
+
+		// クラスター、骨データ作成
+		if (!skeletons_.contains(key.modelName)) {
+
+			skeletons_[key.modelName] = CreateSkeleton(modelLoader_->GetModelData(key.modelName).rootNode);
+		}
+		if (!skinClusters_.contains(key.modelName)) {
+
+			skinClusters_[key.modelName] = CreateSkinCluster(key.modelName, key.modelName);
+		}
+	}
+	SpdLogger::Log("[Animation][Registered] model:" + key.modelName + "animations:" + std::to_string(localAnimations.size()));
 }
 
 Skeleton AnimationManager::CreateSkeleton(const Node& rootNode) {
@@ -233,8 +239,11 @@ const AnimationData& AnimationManager::GetAnimationData(const std::string& anima
 
 	std::scoped_lock lk(animMutex_);
 	bool find = animations_.find(animationName) != animations_.end();
-	if (!find) { /* ログは既存通り */ }
-	ASSERT(find, "not found animation" + animationName); // 元実装踏襲 :contentReference[oaicite:25]{index=25}
+	if (!find) {
+
+		LOG_WARN("not found animation", animationName);
+		ASSERT(find, "not found animation" + animationName);
+	}
 	return animations_.at(animationName);
 }
 
@@ -242,8 +251,11 @@ const Skeleton& AnimationManager::GetSkeletonData(const std::string& animationNa
 
 	std::scoped_lock lk(animMutex_);
 	bool find = skeletons_.find(animationName) != skeletons_.end();
-	if (!find) { /* ログ */ }
-	ASSERT(find, "not found animation" + animationName); // 元実装踏襲 :contentReference[oaicite:26]{index=26}
+	if (!find) {
+
+		LOG_WARN("not found animation", animationName);
+		ASSERT(find, "not found animation" + animationName);
+	}
 	return skeletons_.at(animationName);
 }
 
@@ -251,28 +263,10 @@ const SkinCluster& AnimationManager::GetSkinClusterData(const std::string& anima
 
 	std::scoped_lock lk(animMutex_);
 	bool find = skinClusters_.find(animationName) != skinClusters_.end();
-	if (!find) { /* ログ */ }
-	ASSERT(find, "not found animation" + animationName); // 元実装踏襲 :contentReference[oaicite:27]{index=27}
+	if (!find) {
+
+		LOG_WARN("not found animation", animationName);
+		ASSERT(find, "not found animation" + animationName);
+	}
 	return skinClusters_.at(animationName);
-}
-
-void AnimationManager::RequestLoadAsync(const std::string& animationName, const std::string& modelName) {
-	{
-		std::scoped_lock lk(animMutex_);
-		if (animations_.contains(modelName)) return; // 1本だけなら modelName をキーに上書きしない運用
-	}
-	std::scoped_lock lk(jobMutex_);
-	jobs_.push_back({ animationName, modelName });
-	SpdLogger::Log("[Anim][Enqueue] anim=" + animationName + " model=" + modelName);
-	jobCv_.notify_one();
-}
-
-void AnimationManager::WaitAll() {
-	for (;;) {
-		{
-			std::scoped_lock lk(jobMutex_);
-			if (jobs_.empty()) break;
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
-	}
 }

@@ -868,6 +868,8 @@
     <ClInclude Include="Engine\Asset\AssetEditorPayloadData.h" />
     <ClInclude Include="Game\Scene\ClearScene.h" />
     <ClInclude Include="Engine\Core\Graphics\DxObject\DxUploadCommand.h" />
+    <ClInclude Include="Engine\Asset\Async\AssetAsyncQueue.h" />
+    <ClInclude Include="Engine\Asset\Async\AssetLoadWorker.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

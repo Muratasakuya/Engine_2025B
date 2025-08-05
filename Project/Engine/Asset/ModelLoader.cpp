@@ -13,13 +13,6 @@
 //	ModelLoader classMethods
 //============================================================================
 
-ModelLoader::~ModelLoader() {
-
-	stop_ = true;
-	jobCv_.notify_all();
-	if (worker_.joinable()) worker_.join();
-}
-
 void ModelLoader::Init(TextureManager* textureManager) {
 
 	textureManager_ = nullptr;
@@ -28,8 +21,9 @@ void ModelLoader::Init(TextureManager* textureManager) {
 	baseDirectoryPath_ = "./Assets/Models/";
 	isCacheValid_ = false;
 
-	stop_ = false;
-	worker_ = std::thread([this] { WorkerLoop(); });
+	// ワーカースレッド起動
+	loadWorker_.Start([this](std::string&& name) {
+		this->LoadAsync(std::move(name)); });
 }
 
 void ModelLoader::Load(const std::string& modelName) {
@@ -44,104 +38,65 @@ void ModelLoader::Load(const std::string& modelName) {
 	}
 }
 
-void ModelLoader::Make(const std::string& modelName,
-	const std::vector<MeshVertex>& vertexData,
-	const std::vector<uint32_t>& indexData) {
+void ModelLoader::RequestLoadAsync(const std::string& modelName) {
 
-	ModelData modelData{};
-	MeshModelData meshData{};
-
-	// 頂点情報設定
-	meshData.vertices = vertexData;
-	meshData.indices = indexData;
-
-	meshData.textureName = std::nullopt;
-	modelData.meshes.push_back(meshData);
-
-	models_[modelName] = modelData;
+	// 既にロード済みなら何もしない
+	{
+		std::scoped_lock lk(modelMutex_);
+		if (models_.contains(modelName)) {
+			return;
+		}
+	}
+	// 重複チェック後にキューを追加
+	auto& queue = loadWorker_.RefAsyncQueue();
+	if (queue.IsClearCondition([&](const std::string& j) { return j == modelName; })) {
+		return;
+	}
+	queue.AddQueue(modelName);
+	SpdLogger::Log("[Model][Enqueue] " + modelName);
 }
 
-void ModelLoader::Export(const std::vector<MeshVertex>& inputVertices,
-	const std::vector<uint32_t>& inputIndices, const std::string& filePath) {
+void ModelLoader::WaitAll() {
 
-	// filePath
-	const std::string fullPath = "./Assets/Models/" + filePath;
-	std::ofstream file(fullPath, std::ios::out);
+	for (;;) {
+		if (loadWorker_.GetAsyncQueue().IsEmpty()) {
 
-	// 開けないファイルはエラー
-	if (!file.is_open()) {
-		ASSERT(FALSE, fullPath + " is not writable");
+			break;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
-
-	// 頂点
-	std::vector<MeshVertex> vertices = inputVertices;
-	std::vector<uint32_t> indices = inputIndices;
-
-	// 頂点データを書き込む
-	for (auto& vertex : vertices) {
-
-		// 読み込みで*-1.0fするので先んじて*-1.0fしておく
-		vertex.pos.x *= -1.0f;
-		file << "v " << vertex.pos.x << " " << vertex.pos.y << " " << vertex.pos.z << "\n";
-	}
-
-	// テクスチャ座標の書き込み
-	for (const auto& vertex : vertices) {
-
-		file << "vt " << vertex.texcoord.x << " " << vertex.texcoord.y << "\n";
-	}
-
-	// 法線データを書き込む
-	for (auto& vertex : vertices) {
-
-		// 読み込みで*-1.0fするので先んじて*-1.0fしておく
-		vertex.normal.x *= -1.0f;
-		file << "vn " << vertex.normal.x << " " << vertex.normal.y << " " << vertex.normal.z << "\n";
-	}
-
-	// 面の書き込み、index情報を設定
-	size_t numTriangles = indices.size() / 3;
-	for (size_t i = 0; i < numTriangles; ++i) {
-
-		// インデックスを1から始めるため+1をする
-		file << "f "
-			<< indices[i * 3 + 0] + 1 << "/" << indices[i * 3 + 0] + 1 << "/" << indices[i * 3 + 0] + 1 << " "
-			<< indices[i * 3 + 1] + 1 << "/" << indices[i * 3 + 1] + 1 << "/" << indices[i * 3 + 1] + 1 << " "
-			<< indices[i * 3 + 2] + 1 << "/" << indices[i * 3 + 2] + 1 << "/" << indices[i * 3 + 2] + 1 << "\n";
-	}
-
-	// 書き込み完了
-	file.close();
 }
 
-bool ModelLoader::Search(const std::string& modelName) {
+void ModelLoader::LoadAsync(std::string name) {
 
-	std::scoped_lock lk(modelMutex_);
-	return models_.find(modelName) != models_.end();
-}
-
-const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
-
-	std::scoped_lock lk(modelMutex_);
-	bool find = models_.find(modelName) != models_.end();
-	// 既存は ASSERT していたが、呼び出し側が非同期化されるので注意
-	// 以降は同じ（使用フラグも更新）
-	if (!find) { /* ログは既存通り */ }
-	ASSERT(find, "not found model" + modelName); // 元実装踏襲
-	models_.at(modelName).isUse = true;
-	return models_.at(modelName);
-}
-
-const std::vector<std::string>& ModelLoader::GetModelKeys() const {
-
-	std::scoped_lock lk(modelMutex_);
-	if (!isCacheValid_) {
-		modelKeysCache_.clear();
-		modelKeysCache_.reserve(models_.size());
-		for (auto& [k, _] : models_) modelKeysCache_.push_back(k);
-		isCacheValid_ = true;
+	// 重複読み込みを行わないようにチェック
+	{
+		std::scoped_lock lock(modelMutex_);
+		if (models_.contains(name)) {
+			return;
+		}
 	}
-	return modelKeysCache_;
+
+	// 読み込み開始
+	SpdLogger::Log("[Model][Begin] " + name);
+
+	std::filesystem::path path;
+	// 見つからなければ処理しない
+	if (!Filesystem::FindByStem(baseDirectoryPath_, name, { ".obj", ".gltf" }, path)) {
+		SpdLogger::Log("[Model][Missing] " + name);
+		return;
+	}
+
+	// モデル読み込み処理
+	ModelData modelData = LoadModelFile(path.string());
+	SpdLogger::Log("[Model][Loaded] " + name);
+
+	// 読み込みデータを設定
+	{
+		std::scoped_lock lk(modelMutex_);
+		models_[name] = std::move(modelData);
+		isCacheValid_ = false;
+	}
 }
 
 ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
@@ -324,6 +279,42 @@ Node ModelLoader::ReadNode(aiNode* node) {
 	return result;
 }
 
+bool ModelLoader::Search(const std::string& modelName) {
+
+	std::scoped_lock lock(modelMutex_);
+	return models_.find(modelName) != models_.end();
+}
+
+const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
+
+	std::scoped_lock lock(modelMutex_);
+	bool find = models_.find(modelName) != models_.end();
+	if (!find) {
+
+		LOG_WARN("not found model", modelName);
+		ASSERT(find, "not found model" + modelName);
+	}
+	models_.at(modelName).isUse = true;
+	return models_.at(modelName);
+}
+
+const std::vector<std::string>& ModelLoader::GetModelKeys() const {
+
+	std::scoped_lock lock(modelMutex_);
+	if (!isCacheValid_) {
+
+		modelKeysCache_.clear();
+		modelKeysCache_.reserve(models_.size());
+		for (auto& [key, _] : models_) {
+
+			modelKeysCache_.push_back(key);
+		}
+		// キャッシュを有効にする
+		isCacheValid_ = true;
+	}
+	return modelKeysCache_;
+}
+
 void ModelLoader::ReportUsage(bool listAll) const {
 
 	// ロード済みだが未使用の場合のログ出力
@@ -391,85 +382,5 @@ void ModelLoader::ReportUsage(bool listAll) const {
 				LOG_ASSET_INFO("  - {}", n);
 			}
 		}
-	}
-}
-
-void ModelLoader::RequestLoadAsync(const std::string& modelName) {
-	// 既にロード済みなら何もしない
-	{
-		std::scoped_lock lk(modelMutex_);
-		if (models_.contains(modelName)) return;
-	}
-	// キュー重複回避（簡易）
-	{
-		std::scoped_lock lk(jobMutex_);
-		for (auto& j : jobs_) if (j == modelName) return;
-		jobs_.push_back(modelName);
-
-		SpdLogger::Log("[Model][Enqueue] " + modelName);
-	}
-	jobCv_.notify_one();
-}
-
-bool ModelLoader::FindModelPath(const std::string& modelName, std::filesystem::path& outPath) {
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
-		if (entry.is_regular_file() && entry.path().stem().string() == modelName) {
-			std::string ext = entry.path().extension().string();
-			if (ext == ".obj" || ext == ".gltf") { // 既存実装と同じ判定
-				outPath = entry.path();
-				return true;
-			}
-		}
-	}
-	return false;
-}
-
-void ModelLoader::WorkerLoop() {
-	while (!stop_) {
-		std::string name;
-		{
-			std::unique_lock lk(jobMutex_);
-			jobCv_.wait(lk, [&] { return stop_ || !jobs_.empty(); });
-			if (stop_) break;
-			name = std::move(jobs_.front());
-			jobs_.pop_front();
-		}
-
-		// 二重ロード防止
-		{
-			std::scoped_lock lk(modelMutex_);
-			if (models_.contains(name)) continue;
-		}
-
-		SpdLogger::Log("[Model][Begin] " + name);
-
-		std::filesystem::path path;
-		if (!FindModelPath(name, path)) {
-			// 見つからない場合はスキップ（ログ等は適宜）
-			continue;
-		}
-
-		auto t0 = std::chrono::high_resolution_clock::now();
-		ModelData md = LoadModelFile(path.string());
-		auto t1 = std::chrono::high_resolution_clock::now();
-		SpdLogger::Log("[Model][Loaded] " + name + " (" +
-			std::to_string(std::chrono::duration_cast<std::chrono::milliseconds>(t1 - t0).count()) + "ms)");
-
-		// 反映（排他）
-		{
-			std::scoped_lock lk(modelMutex_);
-			models_[name] = std::move(md);
-			isCacheValid_ = false; // キーキャッシュを無効化
-		}
-	}
-}
-
-void ModelLoader::WaitAll() {
-	for (;;) {
-		{
-			std::scoped_lock lk(jobMutex_);
-			if (jobs_.empty()) break;
-		}
-		std::this_thread::sleep_for(std::chrono::milliseconds(1));
 	}
 }

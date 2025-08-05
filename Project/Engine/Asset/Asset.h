@@ -53,7 +53,6 @@ public:
 	float GetScenePreloadProgress(Scene scene) const;
 
 	void LoadTexture(const std::string& textureName);
-	void LoadLutTexture(const std::string& textureName);
 	void LoadModel(const std::string& modelName);
 	void LoadAnimation(const std::string& animationName, const std::string& modelName);
 
@@ -82,12 +81,6 @@ public:
 	const AnimationData& GetAnimationData(const std::string& animationName) const;
 	const Skeleton& GetSkeletonData(const std::string& animationName) const;
 	const SkinCluster& GetSkinClusterData(const std::string& animationName) const;
-
-	void MakeModel(const std::string& modelName,
-		const std::vector<MeshVertex>& vertexData,
-		const std::vector<uint32_t>& indexData);
-	void Export(const std::vector<MeshVertex>& inputVertices,
-		const std::vector<uint32_t>& inputIndices, const std::string& filePath);
 private:
 	//========================================================================
 	//	private Methods
