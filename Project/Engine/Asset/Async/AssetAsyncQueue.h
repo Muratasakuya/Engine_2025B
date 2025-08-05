@@ -51,20 +51,22 @@ inline void AssetAsyncQueue<Tx>::AddQueue(Tx job) {
 		std::scoped_lock lock(jobMutex_);
 		jobs_.push_back(job);
 	}
+	// 1スレッド起床させる
 	jobCondition_.notify_one();
 }
 
 template<class Tx>
 inline std::optional<Tx> AssetAsyncQueue<Tx>::PopBlock(std::atomic_bool& stop) {
 
-	std::unique_lock lk(jobMutex_);
-	jobCondition_.wait(lk, [&] { return stop || !jobs_.empty(); });
+	std::unique_lock lock(jobMutex_);
+	jobCondition_.wait(lock, [&] { return stop || !jobs_.empty(); });
 
 	if (stop) {
 
 		return std::nullopt;
 	}
 
+	// キューの先頭を取得
 	Tx job = std::move(jobs_.front());
 	jobs_.pop_front();
 	return job;

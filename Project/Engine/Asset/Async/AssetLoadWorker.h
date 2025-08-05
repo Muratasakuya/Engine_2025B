@@ -48,7 +48,7 @@ private:
 template<class T>
 inline AssetLoadWorker<T>::~AssetLoadWorker() {
 
-	// 終了していないスレッドがあれば終了まで待つ
+	// 起動しているスレッドを終了させる
 	Stop();
 }
 
