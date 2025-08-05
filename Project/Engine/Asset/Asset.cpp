@@ -12,8 +12,28 @@
 //	Asset classMethods
 //============================================================================
 
+void Asset::Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor) {
+
+	textureManager_ = std::make_unique<TextureManager>();
+	textureManager_->Init(device, dxCommand, srvDescriptor);
+
+	modelLoader_ = std::make_unique<ModelLoader>();
+	modelLoader_->Init(textureManager_.get());
+
+	animationManager_ = std::make_unique<AnimationManager>();
+	animationManager_->Init(device, srvDescriptor, modelLoader_.get());
+}
+
+void Asset::ReportUsage(bool listAll) const {
+
+	// 全てのアセットファイルのログ出力
+	textureManager_->ReportUsage(listAll);
+	modelLoader_->ReportUsage(listAll);
+}
+
 void Asset::PumpAsyncLoads() {
 
+	// 最大数分の件数を毎フレーム実行
 	size_t executed = 0;
 	for (;;) {
 
@@ -67,7 +87,7 @@ std::vector<std::function<void()>> Asset::SetTask(const Json& data) {
 			for (auto& name : data["Textures"]) {
 
 				std::string texture = name.get<std::string>();
-				tasks.emplace_back([this, texture]() { this->LoadTextureAsync(texture); });
+				tasks.emplace_back([this, texture]() { this->textureManager_->RequestLoadAsync(texture); });
 			}
 		}
 	}
@@ -75,8 +95,8 @@ std::vector<std::function<void()>> Asset::SetTask(const Json& data) {
 	{
 		if (data.contains("Models") && data["Models"].is_array()) {
 			for (auto& name : data["Models"]) {
+
 				std::string model = name.get<std::string>();
-				// ★ 実体ロードはワーカースレッドへ
 				tasks.emplace_back([this, model]() { this->modelLoader_->RequestLoadAsync(model); });
 			}
 		}
@@ -85,33 +105,14 @@ std::vector<std::function<void()>> Asset::SetTask(const Json& data) {
 	{
 		if (data.contains("Animations") && data["Animations"].is_array()) {
 			for (auto& a : data["Animations"]) {
+
 				std::string model = a["model"].get<std::string>();
 				std::string animation = a["animation"].get<std::string>();
-				// ★ モデル依存あり → 非同期投入。ワーカ側で依存解決
 				tasks.emplace_back([this, animation, model]() { this->animationManager_->RequestLoadAsync(animation, model); });
 			}
 		}
 	}
 	return tasks;
-}
-
-void Asset::Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor) {
-
-	textureManager_ = std::make_unique<TextureManager>();
-	textureManager_->Init(device, dxCommand, srvDescriptor);
-
-	modelLoader_ = std::make_unique<ModelLoader>();
-	modelLoader_->Init(textureManager_.get());
-
-	animationManager_ = std::make_unique<AnimationManager>();
-	animationManager_->Init(device, srvDescriptor, modelLoader_.get());
-}
-
-void Asset::ReportUsage(bool listAll) const {
-
-	// 全てのアセットファイルのログ出力
-	textureManager_->ReportUsage(listAll);
-	modelLoader_->ReportUsage(listAll);
 }
 
 void Asset::LoadSceneAsync(Scene scene, AssetLoadType loadType) {
@@ -177,10 +178,6 @@ void Asset::LoadModel(const std::string& modelName) {
 
 void Asset::LoadAnimation(const std::string& animationName, const std::string& modelName) {
 	animationManager_->Load(animationName, modelName);
-}
-
-void Asset::LoadTextureAsync(const std::string& textureName) {
-	textureManager_->RequestLoadAsync(textureName);
 }
 
 const D3D12_GPU_DESCRIPTOR_HANDLE& Asset::GetGPUHandle(const std::string textureName) const {

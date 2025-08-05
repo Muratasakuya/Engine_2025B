@@ -35,7 +35,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	Asset() = default;
+	Asset() = default;;
 	~Asset() = default;
 
 	// 初期化
@@ -43,41 +43,46 @@ public:
 	// ログ出力
 	void ReportUsage(bool listAll = false) const;
 
+	//--------- loading ------------------------------------------------------
+
 	// シーンアセットファイルの読み込み
 	void LoadSceneAsync(Scene scene, AssetLoadType loadType);
 	// 非同期読み込みの更新
 	void PumpAsyncLoads();
 
+	void LoadTexture(const std::string& textureName);
+	void LoadModel(const std::string& modelName);
+	void LoadAnimation(const std::string& animationName, const std::string& modelName);
+	
+	//--------- accessor -----------------------------------------------------
+
 	// 非同期読み込み処理が終わっているかどうか
 	bool IsScenePreloadFinished(Scene scene) const;
 	float GetScenePreloadProgress(Scene scene) const;
 
-	void LoadTexture(const std::string& textureName);
-	void LoadModel(const std::string& modelName);
-	void LoadAnimation(const std::string& animationName, const std::string& modelName);
-
-	void LoadTextureAsync(const std::string& textureName);
-
 	//--------- textures -----------------------------------------------------
 
+	// 描画に必要なデータ
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;
 	uint32_t GetTextureGPUIndex(const std::string& textureName) const;
 	const DirectX::TexMetadata& GetMetaData(const std::string textureName) const;
 
+	// エディターで使用するデータ
 	std::vector<std::string> GetTextureHierarchies() const;
 	const std::vector<std::string>& GetTextureKeys() const;
-
 	bool SearchTexture(const std::string& textureName);
 
 	//---------- models ------------------------------------------------------
 
+	// 描画に必要なデータ
 	const ModelData& GetModelData(const std::string& modelName) const;
 	const std::vector<std::string>& GetModelKeys() const;
-
+	// エディターで使用するデータ
 	bool SearchModel(const std::string& modelName);
 
 	//--------- animation ----------------------------------------------------
 
+	// 描画に必要なデータ
 	const AnimationData& GetAnimationData(const std::string& animationName) const;
 	const Skeleton& GetSkeletonData(const std::string& animationName) const;
 	const SkinCluster& GetSkinClusterData(const std::string& animationName) const;
@@ -106,7 +111,7 @@ private:
 	std::unique_ptr<AnimationManager> animationManager_;
 
 	// 1フレームで処理される読み込みスレッド数
-	const uint32_t maxCountPerFrame_ = 2;
+	const uint32_t maxCountPerFrame_ = 1;
 
 	std::mutex asyncMutex_;
 	std::deque<std::function<void()>> pendingLoads_;  // 実行待ちタスク
