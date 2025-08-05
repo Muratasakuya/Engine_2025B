@@ -5,7 +5,6 @@
 //============================================================================
 
 // front
-class Asset;
 class SceneView;
 class SceneManager;
 class PostProcessSystem;
@@ -18,7 +17,8 @@ enum class Scene {
 
 	Effect,
 	Title,
-	Game
+	Game,
+	Clear
 };
 
 //============================================================================
@@ -39,7 +39,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetPtr(Asset* asset, PostProcessSystem* postProcessSystem,
+	void SetPtr(PostProcessSystem* postProcessSystem,
 		SceneView* sceneView, SceneManager* sceneManager);
 protected:
 	//========================================================================
@@ -48,7 +48,6 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
-	Asset* asset_;
 	PostProcessSystem* postProcessSystem_;
 
 	SceneView* sceneView_;

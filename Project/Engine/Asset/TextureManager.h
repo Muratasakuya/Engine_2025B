@@ -3,10 +3,10 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Lib/ComPtr.h>
+#include <Engine/Core/Graphics/DxObject/DxUploadCommand.h>
+#include <Engine/Asset/Async/AssetLoadWorker.h>
 
 // directX
-#include <d3d12.h>
 #include <Externals/DirectXTex/DirectXTex.h>
 #include <Externals/DirectXTex/d3dx12.h>
 #include <DirectXMath.h>
@@ -36,11 +36,12 @@ public:
 
 	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor);
 
+	// 読み込み処理
 	void Load(const std::string& textureName);
-	void LoadLutTexture(const std::string& textureName);
+	void RequestLoadAsync(const std::string& textureName);
 
 	bool Search(const std::string& textureName);
-
+	void WaitAll();
 	void ReportUsage(bool listAll) const;
 
 	//--------- accessor -----------------------------------------------------
@@ -84,15 +85,19 @@ private:
 	mutable std::vector<std::string> textureKeysCache_;
 	mutable bool isCacheValid_;
 
+	// 非同期処理
+	std::unique_ptr<DxUploadCommand> dxUploadCommand_;
+
+	AssetLoadWorker<std::string> loadWorker_;
+	std::mutex gpuMutex_;
+
 	//--------- functions ----------------------------------------------------
 
-	DirectX::ScratchImage GenerateMipMaps(const std::string& filePath);
-	DirectX::ScratchImage LoadCubeLUT(const std::filesystem::path& path);
+	// helper
+	DirectX::ScratchImage GenerateMipMaps(const std::filesystem::path& filePath, DirectX::TexMetadata& outMeta);
 
-	void CreateTextureResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, const DirectX::TexMetadata& metadata);
-	void CreateTextureResource3D(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, const DirectX::TexMetadata& metadata);
-	void UploadTextureData(ID3D12Resource* texture, ComPtr<ID3D12Resource>& resource, const DirectX::ScratchImage& mipImages);
-
-	void CreateBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, size_t sizeInBytes);
-	std::wstring ConvertString(const std::string& str);
+	// 非同期処理
+	void LoadAsync(std::string name);
+	void CreateAndUpload(const std::string& identifier,
+		const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& meta);
 };

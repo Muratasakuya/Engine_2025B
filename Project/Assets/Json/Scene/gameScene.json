@@ -44,7 +44,8 @@
     "chainPlayerIcon",
     "chainPlayerIconRing",
     "mouseCancel",
-    "gamepadCancel"
+    "gamepadCancel",
+    "slashEffect1"
   ],
   "Models": [
     "field",

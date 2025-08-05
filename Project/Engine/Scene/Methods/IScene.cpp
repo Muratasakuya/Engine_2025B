@@ -4,11 +4,8 @@
 //	IScene classMethods
 //============================================================================
 
-void IScene::SetPtr(Asset* asset, PostProcessSystem* postProcessSystem,
+void IScene::SetPtr(PostProcessSystem* postProcessSystem,
 	SceneView* sceneView, SceneManager* sceneManager) {
-
-	asset_ = nullptr;
-	asset_ = asset;
 
 	postProcessSystem_ = nullptr;
 	postProcessSystem_ = postProcessSystem;

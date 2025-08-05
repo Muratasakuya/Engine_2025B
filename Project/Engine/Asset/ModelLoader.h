@@ -4,10 +4,13 @@
 //	include
 //============================================================================
 #include <Engine/Asset/AssetStructure.h>
-#include <Engine/Core/Graphics/Mesh/MeshletStructures.h>
+#include <Engine/Asset/Async/AssetLoadWorker.h>
 
 // c++
 #include <unordered_map>
+#include <thread>
+#include <mutex>
+#include <deque>
 // front
 class TextureManager;
 
@@ -25,22 +28,17 @@ public:
 
 	void Init(TextureManager* textureManager);
 
+	// 読み込み処理
 	void Load(const std::string& modelName);
-
-	void Make(const std::string& modelName,
-		const std::vector<MeshVertex>& vertexData,
-		const std::vector<uint32_t>& indexData);
-	void Export(const std::vector<MeshVertex>& inputVertices,
-		const std::vector<uint32_t>& inputIndices,const std::string& filePath);
+	void RequestLoadAsync(const std::string& modelName);
 
 	bool Search(const std::string& modelName);
-
+	void WaitAll();
 	void ReportUsage(bool listAll) const;
 
 	//--------- accessor -----------------------------------------------------
 
 	const ModelData& GetModelData(const std::string& modelName) const;
-
 	const std::vector<std::string>& GetModelKeys() const;
 private:
 	//========================================================================
@@ -58,9 +56,15 @@ private:
 	mutable std::vector<std::string> modelKeysCache_;
 	mutable bool isCacheValid_;
 
+	// 非同期処理
+	AssetLoadWorker<std::string> loadWorker_;
+	mutable std::mutex modelMutex_;
+
 	//--------- functions ----------------------------------------------------
 
 	ModelData LoadModelFile(const std::string& filePath);
-
 	Node ReadNode(aiNode* node);
+
+	// 非同期処理
+	void LoadAsync(std::string name);
 };

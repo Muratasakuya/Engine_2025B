@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
 #include <Engine/Editor/ImGuiObjectEditor.h>
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Utility/EnumAdapter.h>
@@ -14,11 +15,11 @@
 SceneManager::SceneManager(Scene scene, Asset* asset,
 	PostProcessSystem* postProcessSystem, SceneView* sceneView) :IGameEditor("SceneManager") {
 
-	asset_ = nullptr;
-	asset_ = asset;
-
 	sceneView_ = nullptr;
 	sceneView_ = sceneView;
+
+	asset_ = nullptr;
+	asset_ = asset;
 
 	postProcessSystem_ = nullptr;
 	postProcessSystem_ = postProcessSystem;
@@ -28,6 +29,19 @@ SceneManager::SceneManager(Scene scene, Asset* asset,
 	sceneTransition_ = std::make_unique<SceneTransition>();
 	sceneTransition_->Init();
 
+	// 最初のシーンファイルを読みこみ
+	asset->LoadSceneAsync(scene, AssetLoadType::Synch);
+	// 最初のシーン以外を非同期で読み込む
+	for (uint32_t index = 0; index < EnumAdapter<Scene>::GetEnumCount(); ++index) {
+
+		// 同じシーンは処理しない
+		if (index == static_cast<uint32_t>(scene)) {
+			continue;
+		}
+		asset->LoadSceneAsync(EnumAdapter<Scene>::GetValue(index), AssetLoadType::Async);
+	}
+
+	// 最初のシーンを読み込んで初期化
 	LoadScene(scene);
 	currentScene_->Init();
 }
@@ -47,8 +61,16 @@ void SceneManager::SwitchScene() {
 	}
 
 	if (isSceneSwitching_) {
+		if (asset_->IsScenePreloadFinished(nextSceneType_)) {
+			if (!needInitNextScene_) {
 
-		LoadScene(nextSceneType_);
+				LoadScene(nextSceneType_);
+				needInitNextScene_ = true;
+			}
+		} else {
+
+			// Loading中の処理はここに入れる
+		}
 	}
 }
 
@@ -80,13 +102,20 @@ void SceneManager::ImGui() {
 	}
 }
 
+bool SceneManager::ConsumeNeedInitNextScene() {
+
+	bool need = needInitNextScene_;
+	needInitNextScene_ = false;
+	return need;
+}
+
 void SceneManager::LoadScene(Scene scene) {
 
 	currentScene_.reset();
 	// 次のSceneを作成
 	currentSceneType_ = scene;
 	currentScene_ = factory_->Create(scene);
-	currentScene_->SetPtr(asset_, postProcessSystem_, sceneView_, this);
+	currentScene_->SetPtr(postProcessSystem_, sceneView_, this);
 
 	// imgui選択をリセット
 	ImGuiObjectEditor::GetInstance()->Reset();

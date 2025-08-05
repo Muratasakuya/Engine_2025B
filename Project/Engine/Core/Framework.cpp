@@ -108,7 +108,7 @@ Framework::Framework() {
 	ObjectManager::GetInstance()->Init(device, asset_.get(), dxCommand);
 
 	//------------------------------------------------------------------------
-	// scene管理クラス初期化
+	// particle管理クラス初期化
 
 	ParticleManager::GetInstance()->Init(asset_.get(),
 		device, srvDescriptor, shaderCompiler);
@@ -116,7 +116,7 @@ Framework::Framework() {
 	//------------------------------------------------------------------------
 	// scene管理クラス初期化
 
-	sceneManager_ = std::make_unique<SceneManager>(Scene::Game,
+	sceneManager_ = std::make_unique<SceneManager>(Scene::Title,
 		asset_.get(), postProcessSystem_.get(), sceneView_.get());
 
 	//------------------------------------------------------------------------
@@ -149,9 +149,10 @@ void Framework::Update() {
 	// 描画前処理
 	renderEngine_->BeginFrame();
 
-	if (sceneManager_->IsSceneSwitching()) {
+	// 非同期読み込みの更新
+	asset_->PumpAsyncLoads();
+	if (sceneManager_->ConsumeNeedInitNextScene()) {
 
-		// postProcessをリセット
 		postProcessSystem_->ClearProcess();
 		sceneManager_->InitNextScene();
 	}

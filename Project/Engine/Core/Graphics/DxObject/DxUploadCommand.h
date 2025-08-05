@@ -3,28 +3,32 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Scene/Methods/IScene.h>
+#include <Engine/Core/Graphics/Lib/ComPtr.h>
 
-// scene
-#include <Engine/Scene/Camera/BaseCamera.h>
-#include <Engine/Scene/Light/PunctualLight.h>
+// directX
+#include <d3d12.h>
+// c++
+#include <cstdint>
 
 //============================================================================
-//	EffectScene class
+//	DxUploadCommand class
 //============================================================================
-class EffectScene :
-	public IScene {
+class DxUploadCommand {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	EffectScene() = default;
-	~EffectScene() = default;
+	DxUploadCommand() = default;
+	~DxUploadCommand() = default;
 
-	void Init() override;
+	void Create(ID3D12Device* device);
 
-	void Update() override;
+	void ExecuteCommands();
+
+	//--------- accessor -----------------------------------------------------
+
+	ID3D12GraphicsCommandList* GetCommandList() const { return commandList_.Get(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -32,6 +36,16 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	std::unique_ptr<BaseCamera> camera3D_;
-	std::unique_ptr<PunctualLight> light_;
+	ComPtr<ID3D12GraphicsCommandList> commandList_;
+	ComPtr<ID3D12CommandAllocator> commandAllocator_;
+
+	ComPtr<ID3D12CommandQueue> commandQueue_;
+
+	ComPtr<ID3D12Fence> fence_;
+	uint64_t fenceValue_;
+	HANDLE fenceEvent_;
+
+	//--------- functions ----------------------------------------------------
+
+	void ResetCommand();
 };

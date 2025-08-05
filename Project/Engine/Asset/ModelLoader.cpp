@@ -20,145 +20,83 @@ void ModelLoader::Init(TextureManager* textureManager) {
 
 	baseDirectoryPath_ = "./Assets/Models/";
 	isCacheValid_ = false;
+
+	// ワーカースレッド起動
+	loadWorker_.Start([this](std::string&& name) {
+		this->LoadAsync(std::move(name)); });
 }
 
 void ModelLoader::Load(const std::string& modelName) {
 
-	// モデルがすでにあれば読み込みは行わない
-	LOG_INFO("load mdoel begin: {}", modelName);
-	if (models_.contains(modelName)) {
-		LOG_INFO("load model cached: {}", modelName);
+	RequestLoadAsync(modelName);
+	for (;;) {
+		{
+			std::scoped_lock lk(modelMutex_);
+			if (models_.contains(modelName)) break;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+}
+
+void ModelLoader::RequestLoadAsync(const std::string& modelName) {
+
+	// 既にロード済みなら何もしない
+	{
+		std::scoped_lock lk(modelMutex_);
+		if (models_.contains(modelName)) {
+			return;
+		}
+	}
+	// 重複チェック後にキューを追加
+	auto& queue = loadWorker_.RefAsyncQueue();
+	if (queue.IsClearCondition([&](const std::string& j) { return j == modelName; })) {
+		return;
+	}
+	queue.AddQueue(modelName);
+	SpdLogger::Log("[Model][Enqueue] " + modelName);
+}
+
+void ModelLoader::WaitAll() {
+
+	for (;;) {
+		if (loadWorker_.GetAsyncQueue().IsEmpty()) {
+
+			break;
+		}
+		std::this_thread::sleep_for(std::chrono::milliseconds(1));
+	}
+}
+
+void ModelLoader::LoadAsync(std::string name) {
+
+	// 重複読み込みを行わないようにチェック
+	{
+		std::scoped_lock lock(modelMutex_);
+		if (models_.contains(name)) {
+			return;
+		}
+	}
+
+	// 読み込み開始
+	SpdLogger::Log("[Model][Begin] " + name);
+
+	std::filesystem::path path;
+	// 見つからなければ処理しない
+	if (!Filesystem::FindByStem(baseDirectoryPath_, name, { ".obj", ".gltf" }, path)) {
+		SpdLogger::Log("[Model][Missing] " + name);
 		return;
 	}
 
-	// model検索
-	std::filesystem::path filePath;
-	bool found = false;
-	for (const auto& entry : std::filesystem::recursive_directory_iterator(baseDirectoryPath_)) {
-		if (entry.is_regular_file() &&
-			entry.path().stem().string() == modelName) {
+	// モデル読み込み処理
+	ModelData modelData = LoadModelFile(path.string());
+	SpdLogger::Log("[Model][Loaded] " + name);
 
-			std::string extension = entry.path().extension().string();
-			if (extension == ".obj" || extension == ".gltf") {
-
-				filePath = entry.path();
-				found = true;
-				break;
-			}
-		}
+	// 読み込みデータを設定
+	{
+		std::scoped_lock lk(modelMutex_);
+		models_[name] = std::move(modelData);
+		isCacheValid_ = false;
 	}
-	if (!found) {
-
-		LOG_WARN("model not found → {}", modelName);
-		ASSERT(FALSE, "model not found:" + modelName);
-	}
-
-	models_[modelName] = LoadModelFile(filePath.string());
-	LOG_INFO("load mdoel ok: {}", modelName);
-}
-
-void ModelLoader::Make(const std::string& modelName,
-	const std::vector<MeshVertex>& vertexData,
-	const std::vector<uint32_t>& indexData) {
-
-	ModelData modelData{};
-	MeshModelData meshData{};
-
-	// 頂点情報設定
-	meshData.vertices = vertexData;
-	meshData.indices = indexData;
-
-	meshData.textureName = std::nullopt;
-	modelData.meshes.push_back(meshData);
-
-	models_[modelName] = modelData;
-}
-
-void ModelLoader::Export(const std::vector<MeshVertex>& inputVertices,
-	const std::vector<uint32_t>& inputIndices, const std::string& filePath) {
-
-	// filePath
-	const std::string fullPath = "./Assets/Models/" + filePath;
-	std::ofstream file(fullPath, std::ios::out);
-
-	// 開けないファイルはエラー
-	if (!file.is_open()) {
-		ASSERT(FALSE, fullPath + " is not writable");
-	}
-
-	// 頂点
-	std::vector<MeshVertex> vertices = inputVertices;
-	std::vector<uint32_t> indices = inputIndices;
-
-	// 頂点データを書き込む
-	for (auto& vertex : vertices) {
-
-		// 読み込みで*-1.0fするので先んじて*-1.0fしておく
-		vertex.pos.x *= -1.0f;
-		file << "v " << vertex.pos.x << " " << vertex.pos.y << " " << vertex.pos.z << "\n";
-	}
-
-	// テクスチャ座標の書き込み
-	for (const auto& vertex : vertices) {
-
-		file << "vt " << vertex.texcoord.x << " " << vertex.texcoord.y << "\n";
-	}
-
-	// 法線データを書き込む
-	for (auto& vertex : vertices) {
-
-		// 読み込みで*-1.0fするので先んじて*-1.0fしておく
-		vertex.normal.x *= -1.0f;
-		file << "vn " << vertex.normal.x << " " << vertex.normal.y << " " << vertex.normal.z << "\n";
-	}
-
-	// 面の書き込み、index情報を設定
-	size_t numTriangles = indices.size() / 3;
-	for (size_t i = 0; i < numTriangles; ++i) {
-
-		// インデックスを1から始めるため+1をする
-		file << "f "
-			<< indices[i * 3 + 0] + 1 << "/" << indices[i * 3 + 0] + 1 << "/" << indices[i * 3 + 0] + 1 << " "
-			<< indices[i * 3 + 1] + 1 << "/" << indices[i * 3 + 1] + 1 << "/" << indices[i * 3 + 1] + 1 << " "
-			<< indices[i * 3 + 2] + 1 << "/" << indices[i * 3 + 2] + 1 << "/" << indices[i * 3 + 2] + 1 << "\n";
-	}
-
-	// 書き込み完了
-	file.close();
-}
-
-bool ModelLoader::Search(const std::string& modelName) {
-
-	return Algorithm::Find(models_, modelName);
-}
-
-const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
-
-	bool find = models_.find(modelName) != models_.end();
-
-	if (!find) {
-		LOG_WARN("model not found → {}", modelName);
-	}
-	ASSERT(find, "not found model" + modelName);
-
-	// 使用された
-	models_.at(modelName).isUse = true;
-	return models_.at(modelName);
-}
-
-const std::vector<std::string>& ModelLoader::GetModelKeys() const {
-
-	if (!isCacheValid_) {
-
-		modelKeysCache_.clear();
-		modelKeysCache_.reserve(models_.size());
-		for (const auto& pair : models_) {
-
-			modelKeysCache_.emplace_back(pair.first);
-		}
-		isCacheValid_ = true;
-	}
-	return modelKeysCache_;
 }
 
 ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
@@ -267,7 +205,7 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 			std::string identifier = name.stem().string();
 			meshModelData.textureName = identifier;
 
-			textureManager_->Load(meshModelData.textureName.value());
+			textureManager_->RequestLoadAsync(meshModelData.textureName.value());
 		}
 		// NORMALS
 		if (material->GetTextureCount(aiTextureType_NORMALS) > 0 ||
@@ -286,7 +224,7 @@ ModelData ModelLoader::LoadModelFile(const std::string& filePath) {
 			std::string normalIdentifier = normalNamePath.stem().string();
 			meshModelData.normalMapTexture = normalIdentifier;
 
-			textureManager_->Load(meshModelData.normalMapTexture.value());
+			textureManager_->RequestLoadAsync(meshModelData.normalMapTexture.value());
 		}
 		// BaseColor
 		aiColor4D baseColor;
@@ -339,6 +277,42 @@ Node ModelLoader::ReadNode(aiNode* node) {
 	}
 
 	return result;
+}
+
+bool ModelLoader::Search(const std::string& modelName) {
+
+	std::scoped_lock lock(modelMutex_);
+	return models_.find(modelName) != models_.end();
+}
+
+const ModelData& ModelLoader::GetModelData(const std::string& modelName) const {
+
+	std::scoped_lock lock(modelMutex_);
+	bool find = models_.find(modelName) != models_.end();
+	if (!find) {
+
+		LOG_WARN("not found model", modelName);
+		ASSERT(find, "not found model" + modelName);
+	}
+	models_.at(modelName).isUse = true;
+	return models_.at(modelName);
+}
+
+const std::vector<std::string>& ModelLoader::GetModelKeys() const {
+
+	std::scoped_lock lock(modelMutex_);
+	if (!isCacheValid_) {
+
+		modelKeysCache_.clear();
+		modelKeysCache_.reserve(models_.size());
+		for (auto& [key, _] : models_) {
+
+			modelKeysCache_.push_back(key);
+		}
+		// キャッシュを有効にする
+		isCacheValid_ = true;
+	}
+	return modelKeysCache_;
 }
 
 void ModelLoader::ReportUsage(bool listAll) const {

@@ -51,6 +51,8 @@ namespace Algorithm {
 		return RemoveSubstring(className, prefix);
 	}
 
+	std::wstring ConvertString(const std::string& str);
+
 	//========================================================================
 	//	Find
 	//========================================================================

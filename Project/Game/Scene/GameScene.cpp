@@ -13,122 +13,7 @@
 //	GameScene classMethods
 //============================================================================
 
-void GameScene::Load() {
-
-	//========================================================================
-	//	effect
-	//========================================================================
-
-	asset_->LoadTexture("circle");
-	asset_->LoadTexture("effectCircle");
-	asset_->LoadTexture("starCircle");
-	asset_->LoadTexture("gradationLine_0");
-	asset_->LoadTexture("groundEffect");
-	asset_->LoadTexture("redCircle");
-	asset_->LoadTexture("flashLlight");
-	asset_->LoadTexture("noise");
-
-	//========================================================================
-	//	environment
-	//========================================================================
-
-	// cubeMap、.dds
-	asset_->LoadTexture("overcast_soil_puresky_4k");
-
-	// common
-	asset_->LoadTexture("whiteAlphaGradation_0");
-	asset_->LoadTexture("whiteAlphaGradation_1");
-
-	asset_->LoadModel("field");
-	asset_->LoadModel("fieldUnder");
-	asset_->LoadModel("fence");
-	asset_->LoadModel("wall");
-	asset_->LoadModel("antenna");
-	asset_->LoadModel("columnMetalSupport");
-	asset_->LoadModel("columnPipes");
-	asset_->LoadModel("lghtStreet");
-	asset_->LoadModel("lightSquare");
-	asset_->LoadModel("platformField");
-	asset_->LoadModel("platformRound");
-	asset_->LoadModel("propCable");
-	asset_->LoadModel("propCableLong");
-	asset_->LoadModel("propRailOrigin");
-	asset_->LoadModel("railLong");
-	asset_->LoadModel("signCorner");
-	asset_->LoadModel("steelbeams");
-	asset_->LoadModel("tiltedWarningWall");
-	asset_->LoadModel("warningWall");
-
-	//========================================================================
-	//	enemy
-	//========================================================================
-
-	// HUD
-	asset_->LoadTexture("enemyHPBackground");
-	asset_->LoadTexture("enemyHPBar");
-	asset_->LoadTexture("enemyDestroyBar");
-	asset_->LoadTexture("toughnessNumber");
-	asset_->LoadTexture("enemyDamageNumber");
-	asset_->LoadTexture("playerDamageNumber");
-	asset_->LoadTexture("timeNumber");
-	asset_->LoadTexture("timeSymbol");
-	asset_->LoadTexture("bossName");
-
-	// model
-	asset_->LoadModel("bossEnemy");
-	asset_->LoadModel("bossEnemyWeapon");
-	asset_->LoadAnimation("bossEnemy", "bossEnemy");
-
-	//========================================================================
-	//	player
-	//========================================================================
-
-	// HUD
-	asset_->LoadTexture("playerHPBackground");
-	asset_->LoadTexture("playerHPBar");
-	asset_->LoadTexture("playerSkilBar");
-	asset_->LoadTexture("playerName");
-	// operate
-	asset_->LoadTexture("attackIcon");
-	asset_->LoadTexture("dashIcon");
-	asset_->LoadTexture("skilIcon");
-	asset_->LoadTexture("parryIcon");
-	// mouse
-	asset_->LoadTexture("leftMouseClick");
-	asset_->LoadTexture("rightMouseClick");
-	asset_->LoadTexture("EButton");
-	// gamePad
-	asset_->LoadTexture("XButton");
-	asset_->LoadTexture("AButton");
-	asset_->LoadTexture("YButton");
-	asset_->LoadTexture("RBButton");
-	asset_->LoadTexture("LBButton");
-	asset_->LoadTexture("spaceButton");
-	asset_->LoadTexture("LBAndRBButton");
-	// stun
-	asset_->LoadTexture("stunProgressBarBackground");
-	asset_->LoadTexture("stunProgressBar");
-	asset_->LoadTexture("CHAINATTACK");
-	asset_->LoadTexture("chainPlayerIcon");
-	asset_->LoadTexture("chainPlayerIconRing");
-	asset_->LoadTexture("mouseCancel");
-	asset_->LoadTexture("gamepadCancel");
-
-	// player
-	asset_->LoadModel("player");
-	asset_->LoadModel("cube");
-	asset_->LoadModel("playerRightWeapon");
-	asset_->LoadModel("playerLeftWeapon");
-	asset_->LoadAnimation("player", "player");
-}
-
 void GameScene::Init() {
-
-	//========================================================================
-	//	load
-	//========================================================================
-
-	Load();
 
 	//========================================================================
 	//	postProcess
@@ -175,10 +60,6 @@ void GameScene::Init() {
 	//	editor
 	//========================================================================
 
-	// editor
-	objectEditor_ = std::make_unique<GameObjectEditor>();
-	objectEditor_->Init(asset_);
-
 	levelEditor_ = std::make_unique<LevelEditor>();
 	levelEditor_->Init("levelEditor");
 
@@ -224,7 +105,6 @@ void GameScene::Update() {
 	//========================================================================
 
 	// editor
-	objectEditor_->Update();
 	levelEditor_->Update();
 }
 
