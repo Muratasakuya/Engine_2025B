@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Config.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 //============================================================================
@@ -253,4 +254,36 @@ public:
 
 	float noiseStrength = 0.2f; // ノイズ混合率
 	float lineSpeed = 1.5f;     // スキャンライン走査速度
+};
+
+class CRTDisplayForGPU {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	void ImGui();
+
+	//--------- properties ---------------------------------------------------
+
+	// 出力解像度
+	Vector2 resolution = Vector2(Config::kWindowWidthf, Config::kWindowHeightf);
+	Vector2 invResolution = 1.0f / Vector2(Config::kWindowWidthf, Config::kWindowHeightf);
+
+	float barrel = 0.18f; // 歪曲量
+	float zoom = 1.08f;   // 歪曲で欠ける分の拡大
+
+	float cornerRadius = 64.0f; // 丸角半径
+	float cornerFeather = 3.0f; // 丸角フェザー幅
+
+	float vignette = 0.28f;  // ヴィネット強度
+	float aberration = 0.0f; // 色収差の量
+
+	float scanlineIntensity = 0.25f;              // 走査線強度
+	float scanlineCount = Config::kWindowHeightf; // 走査線の本数
+
+	float noise = 0.03f; // ノイズ強度
+	float time = 0.0f;   // 秒
+
+	float pad0[2];
 };

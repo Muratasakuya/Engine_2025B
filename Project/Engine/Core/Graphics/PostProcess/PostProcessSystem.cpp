@@ -475,6 +475,14 @@ void PostProcessSystem::CreateCBuffer(PostProcessType type) {
 		buffers_[type] = std::move(buffer);
 		break;
 	}
+	case PostProcessType::CRTDisplay: {
+
+		auto buffer = std::make_unique<PostProcessBuffer<CRTDisplayForGPU>>();
+		buffer->Init(device_, 2);
+
+		buffers_[type] = std::move(buffer);
+		break;
+	}
 	}
 }
 

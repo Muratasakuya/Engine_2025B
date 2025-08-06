@@ -18,7 +18,10 @@ void TitleScene::Init() {
 	//========================================================================
 
 	// 初期化時にのみ作成できる
-	PostProcessSystem::GetInstance()->Create({ PostProcessType::RadialBlur,PostProcessType::Bloom });
+	PostProcessSystem::GetInstance()->Create({
+		PostProcessType::RadialBlur,
+		PostProcessType::Bloom,
+		PostProcessType::CRTDisplay});
 
 	//========================================================================
 	//	scene

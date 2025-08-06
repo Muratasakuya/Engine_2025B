@@ -20,7 +20,7 @@ struct GlitchMaterial {
 ConstantBuffer<GlitchMaterial> gMaterial : register(b0);
 
 //============================================================================
-//	RWStructuredBuffer
+//	Texture
 //============================================================================
 
 RWTexture2D<float4> gOutputTexture : register(u0);
@@ -28,16 +28,6 @@ Texture2D<float4> gRenderTexture : register(t0);
 Texture2D<float> gNoiseTexture : register(t1);
 
 SamplerState gSampler : register(s0);
-
-//============================================================================
-//	Functions
-//============================================================================
-
-float Hash12(float2 p) {
-	
-	p = frac(p * 0.3183099f + float2(0.71f, 0.113f));
-	return frac(23.357f * dot(p, p + float2(21.17f, 37.95f)));
-}
 
 //============================================================================
 //	main
@@ -56,7 +46,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	float2 uv = (float2) DTid.xy / float2(width, height);
 	
 	// 横スキャンラインずらし
-	float linePhase = Hash12(float2(0, DTid.y * 7.13) + gMaterial.time * gMaterial.lineSpeed);
+	float linePhase = Hash12(float2(0.0f, DTid.y * 7.13f) + gMaterial.time * gMaterial.lineSpeed);
 	// たまに大きく跳ねるブロックグリッチ
 	float lineAmp = smoothstep(0.8f, 1.0f, linePhase);
 	// ブロック単位で段差状にしたい場合

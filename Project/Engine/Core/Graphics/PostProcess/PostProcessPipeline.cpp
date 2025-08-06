@@ -37,6 +37,7 @@ void PostProcessPipeline::Init(ID3D12Device8* device, SRVDescriptor* srvDescript
 		"DepthBasedOutline.json",
 		"Lut.json",
 		"Glitch.json",
+		"CRTDisplay.json",
 	};
 
 	for (const uint32_t& type : Algorithm::GetEnumArray(PostProcessType::Count)) {
