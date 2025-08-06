@@ -5,7 +5,6 @@
 //============================================================================
 #include <Engine/Input/Input.h>
 #include <Game/Camera/Follow/FollowCamera.h>
-#include <Game/Camera/Follow/Input/FollowCameraInputMapper.h>
 #include <Engine/Utility/JsonAdapter.h>
 
 //============================================================================
@@ -30,8 +29,8 @@ void FollowCameraFollowState::Update(FollowCamera& followCamera) {
 	interTarget_ = Vector3::Lerp(interTarget_, targets_[FollowCameraTargetType::Player]->GetWorldPos(), lerpRate_);
 
 	// 入力から移動量を取得する
-	Vector2 rawInput(inputMapper_->GetVector(FollowCameraAction::RotateX),
-		inputMapper_->GetVector(FollowCameraAction::RotateY));
+	Vector2 rawInput(inputMapper_->GetVector(FollowCameraInputAction::RotateX),
+		inputMapper_->GetVector(FollowCameraInputAction::RotateY));
 	// 補間を適応する
 	smoothedInput_ = Vector2::Lerp(smoothedInput_, rawInput, inputLerpRate_);
 

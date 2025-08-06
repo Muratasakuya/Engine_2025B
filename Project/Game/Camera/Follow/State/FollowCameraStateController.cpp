@@ -32,7 +32,7 @@ void FollowCameraStateController::Init(FollowCamera& owner) {
 
 	// 入力クラスを初期化
 	Input* input = Input::GetInstance();
-	inputMapper_ = std::make_unique<FollowCameraInputMapper>();
+	inputMapper_ = std::make_unique<InputMapper<FollowCameraInputAction>>();
 	//inputMapper_->AddDevice(std::make_unique<FollowCameraKeyInput>(input));
 	inputMapper_->AddDevice(std::make_unique<FollowCameraGamePadInput>(input));
 

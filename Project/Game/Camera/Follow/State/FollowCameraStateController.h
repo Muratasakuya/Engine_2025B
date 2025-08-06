@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Game/Camera/Follow/State/Interface/FollowCameraIState.h>
-#include <Game/Camera/Follow/Input/FollowCameraInputMapper.h>
 #include <Game/Camera/Follow/Structures/FollowCameraStructures.h>
 
 // c++
@@ -49,7 +48,7 @@ private:
 	const std::string kStateJsonPath_ = "FollowCamera/stateParameter.json";
 
 	// 入力
-	std::unique_ptr<FollowCameraInputMapper> inputMapper_;
+	std::unique_ptr<InputMapper<FollowCameraInputAction>> inputMapper_;
 
 	std::unordered_map<FollowCameraState, std::unique_ptr<FollowCameraIState>> states_;
 	std::unordered_map<FollowCameraOverlayState, std::unique_ptr<FollowCameraIState>> overlayStates_;

@@ -81,7 +81,7 @@ void GameScene::Init() {
 	// player、カメラをセット
 	bossEnemy_->SetPlayer(player_.get());
 	bossEnemy_->SetFollowCamera(cameraManager_->GetFollowCamera());
-	// bossEnemy、カメラ、postProcessをセット
+	// bossEnemy、カメラをセット
 	player_->SetBossEnemy(bossEnemy_.get());
 	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
 }

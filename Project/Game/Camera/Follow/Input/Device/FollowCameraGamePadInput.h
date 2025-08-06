@@ -3,13 +3,14 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Camera/Follow/Input/Interface/FollowCameraIInputDevice.h>
+#include <Engine/Input/Base/IInputDevice.h>
+#include <Game/Camera/Follow/Input/FollowCameraInputAction.h>
 
 //============================================================================
 //	FollowCameraGamePadInput class
 //============================================================================
 class FollowCameraGamePadInput :
-	public FollowCameraIInputDevice {
+	public IInputDevice<FollowCameraInputAction> {
 public:
 	//========================================================================
 	//	public Methods
@@ -21,9 +22,9 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	// 連続入力
-	float GetVector(FollowCameraAction axis)  const override;
+	float GetVector(FollowCameraInputAction axis)  const override;
 
 	// 単入力
-	bool IsPressed(FollowCameraAction button) const override;
-	bool IsTriggered(FollowCameraAction button) const override;
+	bool IsPressed(FollowCameraInputAction button) const override;
+	bool IsTriggered(FollowCameraInputAction button) const override;
 };

@@ -3,12 +3,13 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Input/Base/InputMapper.h>
 #include <Game/Camera/Follow/Structures/FollowCameraStructures.h>
+#include <Game/Camera/Follow/Input/FollowCameraInputAction.h>
 #include <Lib/MathUtils/MathUtils.h>
 
 // front
 class FollowCamera;
-class FollowCameraInputMapper;
 class Transform3D;
 
 //============================================================================
@@ -41,7 +42,7 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetInputMapper(const FollowCameraInputMapper* inputMapper) { inputMapper_ = inputMapper; }
+	void SetInputMapper(const InputMapper<FollowCameraInputAction>* inputMapper) { inputMapper_ = inputMapper; }
 	void SetTarget(FollowCameraTargetType type, const Transform3D& target);
 	void SetCanExit(bool canExit) { canExit_ = canExit; }
 
@@ -53,7 +54,7 @@ protected:
 
 	//--------- variables ----------------------------------------------------
 
-	const FollowCameraInputMapper* inputMapper_;
+	const InputMapper<FollowCameraInputAction>* inputMapper_;
 	std::unordered_map<FollowCameraTargetType, const Transform3D*> targets_;
 
 	// 共通parameters

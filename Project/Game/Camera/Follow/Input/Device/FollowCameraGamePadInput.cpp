@@ -9,15 +9,15 @@
 //	FollowCameraGamePadInput classMethods
 //============================================================================
 
-float FollowCameraGamePadInput::GetVector(FollowCameraAction axis) const {
+float FollowCameraGamePadInput::GetVector(FollowCameraInputAction axis) const {
 
 	const Vector2 value = Input::GetInstance()->GetRightStickVal() * 1.0f / 32767.0f;
 	switch (axis) {
-	case FollowCameraAction::RotateX: {
+	case FollowCameraInputAction::RotateX: {
 
 		return value.x;
 	}
-	case FollowCameraAction::RotateY: {
+	case FollowCameraInputAction::RotateY: {
 
 		return value.y;
 	}
@@ -25,26 +25,26 @@ float FollowCameraGamePadInput::GetVector(FollowCameraAction axis) const {
 	return 0.0f;
 }
 
-bool FollowCameraGamePadInput::IsPressed(FollowCameraAction button) const {
+bool FollowCameraGamePadInput::IsPressed(FollowCameraInputAction button) const {
 
 	switch (button) {
-	case FollowCameraAction::RotateX: {
+	case FollowCameraInputAction::RotateX: {
 		return false;
 	}
-	case FollowCameraAction::RotateY: {
+	case FollowCameraInputAction::RotateY: {
 		return false;
 	}
 	}
 	return false;
 }
 
-bool FollowCameraGamePadInput::IsTriggered(FollowCameraAction button) const {
+bool FollowCameraGamePadInput::IsTriggered(FollowCameraInputAction button) const {
 
 	switch (button) {
-	case FollowCameraAction::RotateX: {
+	case FollowCameraInputAction::RotateX: {
 		return false;
 	}
-	case FollowCameraAction::RotateY: {
+	case FollowCameraInputAction::RotateY: {
 		return false;
 	}
 	}

@@ -10,8 +10,8 @@
 #include <Engine/Scene/Light/PunctualLight.h>
 
 // object
-#include <Game/Objects/Player/Entity/Player.h>
-#include <Game/Objects/Enemy/Boss/Entity/BossEnemy.h>
+#include <Game/Objects/GameScene/Player/Entity/Player.h>
+#include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
 
 // effect
 #include <Engine/Effect/GameEffect.h>

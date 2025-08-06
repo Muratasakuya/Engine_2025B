@@ -9,40 +9,40 @@
 //	FollowCameraKeyInput classMethods
 //============================================================================
 
-float FollowCameraKeyInput::GetVector(FollowCameraAction axis) const {
+float FollowCameraKeyInput::GetVector(FollowCameraInputAction axis) const {
 
 	const Vector2 value = input_->GetMouseMoveValue();
-	if (axis == FollowCameraAction::RotateX) {
+	if (axis == FollowCameraInputAction::RotateX) {
 
 		return value.x;
 	}
-	if (axis == FollowCameraAction::RotateY) {
+	if (axis == FollowCameraInputAction::RotateY) {
 
 		return value.y;
 	}
 	return 0.0f;
 }
 
-bool FollowCameraKeyInput::IsPressed(FollowCameraAction button) const {
+bool FollowCameraKeyInput::IsPressed(FollowCameraInputAction button) const {
 
 	switch (button) {
-	case FollowCameraAction::RotateX: {
+	case FollowCameraInputAction::RotateX: {
 		return false;
 	}
-	case FollowCameraAction::RotateY: {
+	case FollowCameraInputAction::RotateY: {
 		return false;
 	}
 	}
 	return false;
 }
 
-bool FollowCameraKeyInput::IsTriggered(FollowCameraAction button) const {
+bool FollowCameraKeyInput::IsTriggered(FollowCameraInputAction button) const {
 
 	switch (button) {
-	case FollowCameraAction::RotateX: {
+	case FollowCameraInputAction::RotateX: {
 		return false;
 	}
-	case FollowCameraAction::RotateY: {
+	case FollowCameraInputAction::RotateY: {
 		return false;
 	}
 	}
