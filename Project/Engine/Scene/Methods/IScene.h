@@ -7,7 +7,6 @@
 // front
 class SceneView;
 class SceneManager;
-class PostProcessSystem;
 
 //============================================================================
 //	Scene
@@ -39,16 +38,13 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetPtr(PostProcessSystem* postProcessSystem,
-		SceneView* sceneView, SceneManager* sceneManager);
+	void SetPtr(SceneView* sceneView, SceneManager* sceneManager);
 protected:
 	//========================================================================
 	//	protected Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
-
-	PostProcessSystem* postProcessSystem_;
 
 	SceneView* sceneView_;
 	SceneManager* sceneManager_;

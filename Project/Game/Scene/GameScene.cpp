@@ -19,18 +19,20 @@ void GameScene::Init() {
 	//	postProcess
 	//========================================================================
 
-	postProcessSystem_->Create({
+	PostProcessSystem* postProcessSystem = PostProcessSystem::GetInstance();
+
+	postProcessSystem->Create({
 			PostProcessType::RadialBlur,
 			PostProcessType::Bloom });
-	postProcessSystem_->AddProcess(PostProcessType::RadialBlur);
-	postProcessSystem_->AddProcess(PostProcessType::Bloom);
+	postProcessSystem->AddProcess(PostProcessType::RadialBlur);
+	postProcessSystem->AddProcess(PostProcessType::Bloom);
 
 	// ブラーの値を0.0fで初期化
 	RadialBlurForGPU radialBlurParam{};
 	radialBlurParam.center = Vector2(0.5f, 0.5f);
 	radialBlurParam.numSamples = 0;
 	radialBlurParam.width = 0.0f;
-	postProcessSystem_->SetParameter(radialBlurParam, PostProcessType::RadialBlur);
+	postProcessSystem->SetParameter(radialBlurParam, PostProcessType::RadialBlur);
 
 	//========================================================================
 	//	sceneObject
@@ -82,7 +84,6 @@ void GameScene::Init() {
 	// bossEnemy、カメラ、postProcessをセット
 	player_->SetBossEnemy(bossEnemy_.get());
 	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
-	player_->SetPostProcessSystem(postProcessSystem_);
 }
 
 void GameScene::Update() {

@@ -41,7 +41,6 @@ private:
 
 	std::unique_ptr<GraphicsPlatform> graphicsPlatform_;
 	std::unique_ptr<RenderEngine> renderEngine_;
-	std::unique_ptr<PostProcessSystem> postProcessSystem_;
 
 	std::unique_ptr<Asset> asset_;
 

@@ -17,6 +17,25 @@
 //	PostProcessSystem classMethods
 //============================================================================
 
+PostProcessSystem* PostProcessSystem::instance_ = nullptr;
+
+PostProcessSystem* PostProcessSystem::GetInstance() {
+
+	if (instance_ == nullptr) {
+		instance_ = new PostProcessSystem();
+	}
+	return instance_;
+}
+
+void PostProcessSystem::Finalize() {
+
+	if (instance_ != nullptr) {
+
+		delete instance_;
+		instance_ = nullptr;
+	}
+}
+
 void PostProcessSystem::AddProcess(PostProcessType process) {
 
 	// 追加

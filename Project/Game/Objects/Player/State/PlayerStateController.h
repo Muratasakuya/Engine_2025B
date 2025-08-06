@@ -36,7 +36,6 @@ public:
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
 	void SetFollowCamera(FollowCamera* followCamera);
-	void SetPostProcessSystem(PostProcessSystem* postProcessSystem);
 
 	void SetStatas(const PlayerStats& stats) { stats_ = stats; }
 	void SetForcedState(Player& owner, PlayerState state);

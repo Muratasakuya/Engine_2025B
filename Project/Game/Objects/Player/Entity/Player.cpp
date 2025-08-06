@@ -135,11 +135,6 @@ void Player::SetFollowCamera(FollowCamera* followCamera) {
 	hudSprites_->SetFollowCamera(followCamera);
 }
 
-void Player::SetPostProcessSystem(PostProcessSystem* postProcessSystem) {
-
-	stateController_->SetPostProcessSystem(postProcessSystem);
-}
-
 void Player::SetReverseWeapon(bool isReverse, PlayerWeaponType type) {
 
 	// 剣の持ち方設定

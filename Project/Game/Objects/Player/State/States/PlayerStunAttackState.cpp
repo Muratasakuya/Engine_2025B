@@ -74,11 +74,13 @@ void PlayerStunAttackState::Update(Player& player) {
 
 void PlayerStunAttackState::UpdateBlur() {
 
+	PostProcessSystem* postProcess = PostProcessSystem::GetInstance();
+
 	// 補間終了
 	if (blurTime_ <= blurTimer_) {
 
 		// 初期化値を設定
-		postProcessSystem_->SetParameter(targetRadialBlur_, PostProcessType::RadialBlur);
+		postProcess->SetParameter(targetRadialBlur_, PostProcessType::RadialBlur);
 		return;
 	}
 
@@ -95,7 +97,7 @@ void PlayerStunAttackState::UpdateBlur() {
 	radialBlur_.width = std::lerp(startRadialBlur_.width, 0.0f, lerpT);
 
 	// 値を設定
-	postProcessSystem_->SetParameter(radialBlur_, PostProcessType::RadialBlur);
+	postProcess->SetParameter(radialBlur_, PostProcessType::RadialBlur);
 }
 
 void PlayerStunAttackState::UpdateAllyEntry(Player& player) {

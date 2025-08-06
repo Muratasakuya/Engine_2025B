@@ -46,7 +46,6 @@ public:
 	void SetInputMapper(const PlayerInputMapper* inputMapper) { inputMapper_ = inputMapper; }
 	void SetBossEnemy(const BossEnemy* bossEnemy) { bossEnemy_ = bossEnemy; }
 	void SetFollowCamera(FollowCamera* followCamera) { followCamera_ = followCamera; }
-	void SetPostProcessSystem(PostProcessSystem* postProcessSystem) { postProcessSystem_ = postProcessSystem; }
 	void SetCanExit(bool canExit) { canExit_ = canExit; }
 	void SetPreState(PlayerState preState) { preState_ = preState; }
 	void SetMoveClampSize(float size) { moveClampSize_ = size; }
@@ -62,7 +61,6 @@ protected:
 	const PlayerInputMapper* inputMapper_;
 	const BossEnemy* bossEnemy_;
 	FollowCamera* followCamera_;
-	PostProcessSystem* postProcessSystem_;
 
 	// 遷移前の状態
 	PlayerState preState_;

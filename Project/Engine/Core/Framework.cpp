@@ -88,9 +88,9 @@ Framework::Framework() {
 
 	SRVDescriptor* srvDescriptor = renderEngine_->GetSRVDescriptor();
 
-	postProcessSystem_ = std::make_unique<PostProcessSystem>();
-	postProcessSystem_->Init(device, shaderCompiler, srvDescriptor);
-	postProcessSystem_->SetDepthFrameBufferGPUHandle(renderEngine_->GetDepthGPUHandle());
+	PostProcessSystem* postProcessSystem = PostProcessSystem::GetInstance();
+	postProcessSystem->Init(device, shaderCompiler, srvDescriptor);
+	postProcessSystem->SetDepthFrameBufferGPUHandle(renderEngine_->GetDepthGPUHandle());
 
 	// asset機能初期化
 	asset_ = std::make_unique<Asset>();
@@ -116,8 +116,7 @@ Framework::Framework() {
 	//------------------------------------------------------------------------
 	// scene管理クラス初期化
 
-	sceneManager_ = std::make_unique<SceneManager>(Scene::Title,
-		asset_.get(), postProcessSystem_.get(), sceneView_.get());
+	sceneManager_ = std::make_unique<SceneManager>(Scene::Title, asset_.get(), sceneView_.get());
 
 	//------------------------------------------------------------------------
 	// module初期化
@@ -133,7 +132,7 @@ Framework::Framework() {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiEditor_ = std::make_unique<ImGuiEditor>();
 	imguiEditor_->Init(renderEngine_->GetRenderTextureGPUHandle(),
-		postProcessSystem_->GetCopySRVGPUHandle());
+		postProcessSystem->GetCopySRVGPUHandle());
 #endif
 }
 
@@ -153,7 +152,7 @@ void Framework::Update() {
 	asset_->PumpAsyncLoads();
 	if (sceneManager_->ConsumeNeedInitNextScene()) {
 
-		postProcessSystem_->ClearProcess();
+		PostProcessSystem::GetInstance()->ClearProcess();
 		sceneManager_->InitNextScene();
 	}
 
@@ -182,7 +181,7 @@ void Framework::UpdateScene() {
 	// particle更新
 	ParticleManager::GetInstance()->Update(graphicsPlatform_->GetDxCommand());
 	// postProcess更新
-	postProcessSystem_->Update(sceneView_.get());
+	PostProcessSystem::GetInstance()->Update(sceneView_.get());
 }
 
 void Framework::Draw() {
@@ -212,7 +211,7 @@ void Framework::Draw() {
 	renderEngine_->EndRenderFrameBuffer();
 
 	// csへの書き込み状態へ遷移
-	postProcessSystem_->ToWrite(dxCommand);
+	PostProcessSystem::GetInstance()->ToWrite(dxCommand);
 
 	// command実行
 	dxCommand->ExecuteCommands(renderEngine_->GetDxSwapChain()->Get());
@@ -223,6 +222,8 @@ void Framework::Draw() {
 
 void Framework::RenderPath(DxCommand* dxCommand) {
 
+	PostProcessSystem* postProcessSystem = PostProcessSystem::GetInstance();
+
 	//========================================================================
 	//	draw: renderTexture
 	//========================================================================
@@ -232,7 +233,7 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 	renderEngine_->BeginPostProcess();
 
 	// postProcess処理実行
-	postProcessSystem_->Execute(renderEngine_->GetRenderTexture(
+	postProcessSystem->Execute(renderEngine_->GetRenderTexture(
 		RenderEngine::ViewType::Main)->GetSRVGPUHandle(), dxCommand);
 
 	renderEngine_->EndPostProcess();
@@ -244,7 +245,7 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 
 	renderEngine_->Rendering(RenderEngine::ViewType::Debug);
 
-	postProcessSystem_->ExecuteDebugScene(renderEngine_->GetRenderTexture(
+	postProcessSystem->ExecuteDebugScene(renderEngine_->GetRenderTexture(
 		RenderEngine::ViewType::Debug)->GetSRVGPUHandle(), dxCommand);
 #endif
 	//========================================================================
@@ -254,7 +255,7 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 	renderEngine_->BeginRenderFrameBuffer();
 
 	// frameBufferへ結果を描画
-	postProcessSystem_->RenderFrameBuffer(dxCommand);
+	postProcessSystem->RenderFrameBuffer(dxCommand);
 }
 
 void Framework::EndRequest() {
@@ -279,12 +280,12 @@ void Framework::Finalize() {
 
 	ObjectManager::GetInstance()->Finalize();
 	ParticleManager::GetInstance()->Finalize();
+	PostProcessSystem::GetInstance()->Finalize();
 
 	winApp_.reset();
 	asset_.reset();
 	graphicsPlatform_.reset();
 	renderEngine_.reset();
-	postProcessSystem_.reset();
 	sceneView_.reset();
 	imguiEditor_.reset();
 

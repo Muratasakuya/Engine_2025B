@@ -104,15 +104,6 @@ void PlayerStateController::SetFollowCamera(FollowCamera* followCamera) {
 	}
 }
 
-void PlayerStateController::SetPostProcessSystem(PostProcessSystem* postProcessSystem) {
-
-	// 各状態にpostProcessSystemをセット
-	for (const auto& state : std::views::values(states_)) {
-
-		state->SetPostProcessSystem(postProcessSystem);
-	}
-}
-
 void PlayerStateController::SetForcedState(Player& owner, PlayerState state) {
 
 	// 同じ状態へは遷移不可

@@ -28,9 +28,6 @@ public:
 	//	public Methods
 	//========================================================================
 
-	PostProcessSystem() : IGameEditor("postProcess") {};
-	~PostProcessSystem() = default;
-
 	void Init(ID3D12Device8* device, class DxShaderCompiler* shaderComplier,
 		SRVDescriptor* srvDescriptor);
 
@@ -67,6 +64,10 @@ public:
 
 	PostProcessPipeline* GetPipeline() const { return pipeline_.get(); }
 	const D3D12_GPU_DESCRIPTOR_HANDLE& GetCopySRVGPUHandle() const { return copyTextureProcess_->GetSRVGPUHandle(); }
+
+	// singleton
+	static PostProcessSystem* GetInstance();
+	static void Finalize();
 private:
 	//========================================================================
 	//	private Methods
@@ -80,6 +81,8 @@ private:
 	SRVDescriptor* srvDescriptor_;
 
 	//--------- variables ----------------------------------------------------
+
+	static PostProcessSystem* instance_;
 
 	// pipeline
 	std::unique_ptr<PostProcessPipeline> pipeline_;
@@ -111,6 +114,11 @@ private:
 	void ExecuteCBuffer(ID3D12GraphicsCommandList* commandList, PostProcessType type);
 
 	void BeginTransition(PostProcessType type, DxCommand* dxCommand);
+
+	PostProcessSystem() :IGameEditor("PostProcessSystem") {}
+	~PostProcessSystem() = default;
+	PostProcessSystem(const PostProcessSystem&) = delete;
+	PostProcessSystem& operator=(const PostProcessSystem&) = delete;
 };
 
 //============================================================================

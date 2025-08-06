@@ -75,13 +75,15 @@ void PlayerSwitchAllyState::Update(Player& player) {
 
 void PlayerSwitchAllyState::UpdateBlur() {
 
+	PostProcessSystem* postProcess = PostProcessSystem::GetInstance();
+
 	// ブラー更新
 	blurTimer_ += GameTimer::GetDeltaTime();
 
 	// 補間終了
 	if (blurTime_ <= blurTimer_) {
 
-		postProcessSystem_->SetParameter(targetRadialBlur_, PostProcessType::RadialBlur);
+		postProcess->SetParameter(targetRadialBlur_, PostProcessType::RadialBlur);
 		return;
 	}
 	float lerpT = std::clamp(blurTimer_ / blurTime_, 0.0f, 1.0f);
@@ -94,7 +96,7 @@ void PlayerSwitchAllyState::UpdateBlur() {
 	radialBlur_.width = std::lerp(0.0f, targetRadialBlur_.width, lerpT);
 
 	// 値を設定
-	postProcessSystem_->SetParameter(radialBlur_, PostProcessType::RadialBlur);
+	postProcess->SetParameter(radialBlur_, PostProcessType::RadialBlur);
 }
 
 void PlayerSwitchAllyState::CheckInput(float t) {

@@ -44,7 +44,6 @@ public:
 
 	void SetBossEnemy(const BossEnemy* bossEnemy);
 	void SetFollowCamera(FollowCamera* followCamera);
-	void SetPostProcessSystem(PostProcessSystem* postProcessSystem);
 	void SetReverseWeapon(bool isReverse, PlayerWeaponType type);
 
 	PlayerState GetCurrentState() const { return stateController_->GetCurrentState(); }

@@ -12,17 +12,13 @@
 //	SceneManager classMethods
 //============================================================================
 
-SceneManager::SceneManager(Scene scene, Asset* asset,
-	PostProcessSystem* postProcessSystem, SceneView* sceneView) :IGameEditor("SceneManager") {
+SceneManager::SceneManager(Scene scene, Asset* asset, SceneView* sceneView) :IGameEditor("SceneManager") {
 
 	sceneView_ = nullptr;
 	sceneView_ = sceneView;
 
 	asset_ = nullptr;
 	asset_ = asset;
-
-	postProcessSystem_ = nullptr;
-	postProcessSystem_ = postProcessSystem;
 
 	factory_ = std::make_unique<SceneFactory>();
 
@@ -115,7 +111,7 @@ void SceneManager::LoadScene(Scene scene) {
 	// 次のSceneを作成
 	currentSceneType_ = scene;
 	currentScene_ = factory_->Create(scene);
-	currentScene_->SetPtr(postProcessSystem_, sceneView_, this);
+	currentScene_->SetPtr(sceneView_, this);
 
 	// imgui選択をリセット
 	ImGuiObjectEditor::GetInstance()->Reset();

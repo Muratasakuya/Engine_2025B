@@ -4,11 +4,7 @@
 //	IScene classMethods
 //============================================================================
 
-void IScene::SetPtr(PostProcessSystem* postProcessSystem,
-	SceneView* sceneView, SceneManager* sceneManager) {
-
-	postProcessSystem_ = nullptr;
-	postProcessSystem_ = postProcessSystem;
+void IScene::SetPtr(SceneView* sceneView, SceneManager* sceneManager) {
 
 	sceneView_ = nullptr;
 	sceneView_ = sceneView;

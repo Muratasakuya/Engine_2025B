@@ -88,7 +88,7 @@ void AnimationManager::LoadAsync(AnimationAsyncKey key) {
 	// 見つからなければ処理しない
 	if (!Filesystem::FindByStem(baseDirectoryPath_, key.animName, { ".gltf" }, filePath)) {
 
-		SpdLogger::Log("[Animation][Missing] anim=" + key.animName);
+		SpdLogger::Log("[Animation][Missing] anim:" + key.animName);
 		return;
 	}
 
@@ -97,8 +97,8 @@ void AnimationManager::LoadAsync(AnimationAsyncKey key) {
 	const aiScene* scene = importer.ReadFile(filePath.string(), 0);
 	if (!scene || scene->mNumAnimations == 0) {
 
-		SpdLogger::Log("[Animation][NoClips] anim=" + key.animName);
-		ASSERT(FALSE, "[Animation][NoClips] anim=" + key.animName);
+		SpdLogger::Log("[Animation][NoClips] anim:" + key.animName);
+		ASSERT(FALSE, "[Animation][NoClips] anim:" + key.animName);
 		return;
 	}
 
