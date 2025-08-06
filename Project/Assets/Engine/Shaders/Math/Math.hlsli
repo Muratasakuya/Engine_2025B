@@ -56,6 +56,24 @@ float3 Rand3DTo3D(float3 value) {
 		Rand3DTo1D(value, float3(73.156f, 52.235f, 09.151f)));
 }
 
+float SStep(float a, float b, float x) {
+	
+	return saturate((x - a) / max(b - a, 1e-6f));
+}
+
+float SdRoundRect(float2 p, float2 hs, float r) {
+	
+	float2 q = abs(p) - hs + r;
+	return length(max(q, 0.0f)) - r + min(max(q.x, q.y), 0.0f);
+}
+
+float Hash12(float2 p) {
+	
+	float3 p3 = frac(float3(p.xyx) * 0.1031f);
+	p3 += dot(p3, p3.yzx + 33.33f);
+	return frac((p3.x + p3.y) * p3.z);
+}
+
 //============================================================================
 //	Classes
 //============================================================================

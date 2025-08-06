@@ -897,6 +897,7 @@
     <FxCompile Include="Assets\Engine\Shaders\Particle\CPUParticle\PS\CPUParticle.PS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Glitch\Glitch.CS.hlsl" />
     <FxCompile Include="Assets\Engine\Shaders\Particle\GPUParticle\CS\Update\NoiseUpdateParticle.CS.hlsl" />
+    <FxCompile Include="Assets\Engine\Shaders\PostProcess\CRTDisplay\CRTDisplay.CS.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Engine\Shaders\Standard\StandardMSFunction.hlsli" />

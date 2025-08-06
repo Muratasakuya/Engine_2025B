@@ -32,6 +32,7 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 	case PostProcessType::GaussianFilter:
 	case PostProcessType::HorizontalBlur:
 	case PostProcessType::LuminanceBasedOutline:
+	case PostProcessType::CRTDisplay:
 
 		commandList->SetComputeRootDescriptorTable(0, processor->GetUAVGPUHandle());
 		commandList->SetComputeRootDescriptorTable(1, inputTextureGPUHandle);

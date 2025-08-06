@@ -185,3 +185,33 @@ void GlitchForGPU::ImGui() {
 
 	ImGui::PopItemWidth();
 }
+
+void CRTDisplayForGPU::ImGui() {
+
+	ImGui::Text("CRTDisplay");
+
+	ImGui::PushItemWidth(itemWidth_);
+
+	time += GameTimer::GetDeltaTime();
+
+	ImGui::Text("currentTime: %.3f", time);
+
+	ImGui::DragFloat2("resolution##CRTDisplayForGPU", &resolution.x, 0.1f);
+	invResolution = 1.0f / resolution;
+
+	ImGui::DragFloat("barrel##CRTDisplayForGPU", &barrel, 0.01f);
+	ImGui::DragFloat("zoom##CRTDisplayForGPU", &zoom, 0.01f);
+
+	ImGui::DragFloat("cornerRadius##CRTDisplayForGPU", &cornerRadius, 0.1f);
+	ImGui::DragFloat("cornerFeather##CRTDisplayForGPU", &cornerFeather, 0.01f);
+
+	ImGui::DragFloat("vignette##CRTDisplayForGPU", &vignette, 0.01f);
+	ImGui::DragFloat("aberration##CRTDisplayForGPU", &aberration, 0.01f);
+
+	ImGui::DragFloat("scanlineIntensity##CRTDisplayForGPU", &scanlineIntensity, 0.01f);
+	ImGui::DragFloat("scanlineCount##CRTDisplayForGPU", &scanlineCount, 0.01f);
+
+	ImGui::DragFloat("noise##CRTDisplayForGPU", &noise, 0.01f);
+
+	ImGui::PopItemWidth();
+}
