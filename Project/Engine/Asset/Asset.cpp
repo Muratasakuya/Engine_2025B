@@ -78,7 +78,7 @@ float Asset::GetScenePreloadProgress(Scene scene) const {
 	return static_cast<float>(load.done) / static_cast<float>(load.total);
 }
 
-std::vector<std::function<void()>> Asset::SetTask(const Json& data) {
+std::vector<std::function<void()>> Asset::SetTask(const Json& data, AssetLoadType loadType) {
 
 	std::vector<std::function<void()>> tasks{};
 	// texture
@@ -86,8 +86,15 @@ std::vector<std::function<void()>> Asset::SetTask(const Json& data) {
 		if (data.contains("Textures") && data["Textures"].is_array()) {
 			for (auto& name : data["Textures"]) {
 
-				std::string texture = name.get<std::string>();
-				tasks.emplace_back([this, texture]() { this->textureManager_->RequestLoadAsync(texture); });
+				if (loadType == AssetLoadType::Synch) {
+
+					std::string texture = name.get<std::string>();
+					tasks.emplace_back([this, texture]() { this->textureManager_->LoadSynch(texture); });
+				} else if (loadType == AssetLoadType::Async) {
+
+					std::string texture = name.get<std::string>();
+					tasks.emplace_back([this, texture]() { this->textureManager_->RequestLoadAsync(texture); });
+				}
 			}
 		}
 	}
@@ -132,7 +139,7 @@ void Asset::LoadSceneAsync(Scene scene, AssetLoadType loadType) {
 	}
 
 	//	タスク処理設定
-	std::vector<std::function<void()>> tasks = SetTask(data);
+	std::vector<std::function<void()>> tasks = SetTask(data, loadType);
 
 	// 同期、非同期読み込み処理振り分け
 	auto& info = preload_[scene];

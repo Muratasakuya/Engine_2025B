@@ -747,6 +747,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Objects\SceneTransition\FadeTransition.cpp" />
+    <ClCompile Include="Game\Objects\TitleScene\DisplaySprite\GameFinishUI.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\TitleScene\DisplaySprite\TitleDisplaySprite.cpp">
       <SubType>
       </SubType>
@@ -815,6 +819,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Asset\AssetEditorPayloadData.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Asset\AssetLoadType.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -1485,6 +1493,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\SceneTransition\FadeTransition.h" />
+    <ClInclude Include="Game\Objects\TitleScene\DisplaySprite\GameFinishUI.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\TitleScene\DisplaySprite\TitleDisplaySprite.h">
       <SubType>
       </SubType>

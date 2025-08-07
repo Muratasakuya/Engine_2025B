@@ -1,0 +1,33 @@
+{
+    "FinishUI": {
+        "askFinishBackground_Size": {
+            "x": 1920.0,
+            "y": 180.0
+        },
+        "askFinish_Size": {
+            "x": 480.0,
+            "y": 80.0
+        },
+        "powerIcon_Size": {
+            "x": 64.0,
+            "y": 64.0
+        },
+        "selectButtonSpacing_": 144.0,
+        "selectCancel_Size": {
+            "x": 210.0,
+            "y": 54.0
+        },
+        "selectOK_Size": {
+            "x": 210.0,
+            "y": 54.0
+        }
+    },
+    "name_Size": {
+        "x": 1920.0,
+        "y": 1080.0
+    },
+    "start_Size": {
+        "x": 256.0,
+        "y": 54.0
+    }
+}

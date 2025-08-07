@@ -38,6 +38,44 @@ void TextureManager::Init(ID3D12Device* device, DxCommand* dxCommand,
 		this->LoadAsync(std::move(name)); });
 }
 
+void TextureManager::LoadSynch(const std::string& name) {
+
+	// すでにロード済みなら何もしない
+	{
+		std::scoped_lock lk(gpuMutex_);
+		if (textures_.contains(name)) { return; }
+	}
+
+	// 読み込み開始
+	SpdLogger::Log("[Texture][Begin] " + name);
+
+	std::filesystem::path path;
+	// 見つからなければ処理しない
+	if (!Filesystem::FindByStem(baseDirectoryPath_, name, { ".png",".jpg",".dds" }, path)) {
+		SpdLogger::Log("[Texture][Missing] " + name);
+		return;
+	}
+	// 識別名取得
+	const std::string identifier = path.stem().string();
+
+	// ミップマップの作成
+	DirectX::TexMetadata meta{};
+	auto mip = GenerateMipMaps(path, meta);
+	// リソース作成してGPUに転送
+	CreateAndUpload(identifier, mip, meta);
+
+	// 階層を設定
+	{
+		std::scoped_lock lock(gpuMutex_);
+
+		std::filesystem::path relative = std::filesystem::relative(path, baseDirectoryPath_);
+		relative.replace_extension();
+		textures_[identifier].hierarchy = relative.generic_string();
+	}
+
+	SpdLogger::Log("[Texture][SyncLoad][End] " + identifier);
+}
+
 void TextureManager::Load(const std::string& textureName) {
 
 	RequestLoadAsync(textureName);

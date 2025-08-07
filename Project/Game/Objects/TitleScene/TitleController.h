@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Game/Objects/TitleScene/DisplaySprite/TitleDisplaySprite.h>
 
 //============================================================================
 //	TitleController class
@@ -16,6 +17,10 @@ public:
 	TitleController() = default;
 	~TitleController() = default;
 
+	void Init();
+
+	void Update();
+
 	//--------- accessor -----------------------------------------------------
 
 private:
@@ -25,8 +30,6 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
-
-	//--------- functions ----------------------------------------------------
-
+	// 表示スプライト
+	std::unique_ptr<TitleDisplaySprite> displaySprite_;
 };

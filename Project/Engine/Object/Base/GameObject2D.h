@@ -30,6 +30,8 @@ public:
 	// imgui
 	void ImGui() override {};
 	virtual void DerivedImGui() override {}
+	// 各パラメータ
+	bool ImGuiSize();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -93,4 +95,13 @@ protected:
 	SpriteMaterial* material_;
 	// sprite
 	Sprite* sprite_;
+
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	std::string uniqueName_;
 };

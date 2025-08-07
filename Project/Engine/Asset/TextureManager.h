@@ -37,6 +37,7 @@ public:
 	void Init(ID3D12Device* device, DxCommand* dxCommand, SRVDescriptor* srvDescriptor);
 
 	// 読み込み処理
+	void LoadSynch(const std::string& name);
 	void Load(const std::string& textureName);
 	void RequestLoadAsync(const std::string& textureName);
 

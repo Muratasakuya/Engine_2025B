@@ -29,17 +29,28 @@ void TitleScene::Init() {
 
 	// カメラの設定
 	camera3D_ = std::make_unique<BaseCamera>();
+	camera3D_->UpdateView();
+
 	sceneView_->SetGameCamera(camera3D_.get());
 
 	// ライトの設定
 	light_ = std::make_unique<PunctualLight>();
 	light_->Init();
 	sceneView_->SetLight(light_.get());
+
+	//========================================================================
+	//	controller
+	//========================================================================
+
+	controller_ = std::make_unique<TitleController>();
+	controller_->Init();
 }
 
 void TitleScene::Update() {
 
-	camera3D_->UpdateView();
-
-	LineRenderer::GetInstance()->DrawGrid(32, 32.0f, Color::White());
+	//========================================================================
+	//	controller
+	//========================================================================
+	
+	controller_->Update();
 }

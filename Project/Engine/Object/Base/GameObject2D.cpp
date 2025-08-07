@@ -21,6 +21,7 @@ void GameObject2D::Init(const std::string& textureName,
 	transform_ = objectManager_->GetData<Transform2D>(objectId_);
 	material_ = objectManager_->GetData<SpriteMaterial>(objectId_);
 	sprite_ = objectManager_->GetData<Sprite>(objectId_);
+	tag_ = objectManager_->GetData<ObjectTag>(objectId_);
 }
 
 void GameObject2D::SetCenterTranslation() {
@@ -41,4 +42,14 @@ void GameObject2D::ProjectToScreen(const Vector3& translation, const BaseCamera&
 	float screenY = (1.0f - (clipPos.y * 0.5f + 0.5f)) * Config::kWindowHeightf;
 
 	transform_->translation = Vector2(screenX, screenY);
+}
+
+bool GameObject2D::ImGuiSize() {
+
+	bool edit = false;
+
+	edit |= ImGui::DragFloat2((tag_->name + "_size").c_str(), &transform_->size.x, 0.1f);
+	edit |= ImGui::DragFloat2((tag_->name + "_textureSize").c_str(), &transform_->textureSize.x, 0.1f);
+
+	return edit;
 }

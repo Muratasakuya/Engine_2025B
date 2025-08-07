@@ -6,6 +6,7 @@
 #include <Engine/Asset/TextureManager.h>
 #include <Engine/Asset/ModelLoader.h>
 #include <Engine/Asset/AnimationManager.h>
+#include <Engine/Asset/AssetLoadType.h>
 #include <Engine/Scene/Methods/IScene.h>
 
 // c++
@@ -14,17 +15,6 @@
 #include <functional>
 #include <deque>
 #include <cctype>
-
-//============================================================================
-//	enum class
-//============================================================================
-
-// 読み込みの仕方
-enum class AssetLoadType {
-
-	Synch, // 同期
-	Async  // 非同期
-};
 
 //============================================================================
 //	Asset class
@@ -120,5 +110,5 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// helper
-	std::vector<std::function<void()>> SetTask(const Json& data);
+	std::vector<std::function<void()>> SetTask(const Json& data, AssetLoadType loadType);
 };

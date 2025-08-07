@@ -1,6 +1,12 @@
 {
   "Textures": [
     "title",
-    "nowLoading"
+    "nowLoading",
+    "powerIcon",
+    "gameStartText",
+    "gameFinishText",
+    "gameFinishTextBackground",
+    "okText",
+    "cancelText"
   ]
 }
