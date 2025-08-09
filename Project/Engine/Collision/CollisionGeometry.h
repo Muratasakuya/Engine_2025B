@@ -86,6 +86,10 @@ enum class ShapeType {
 //============================================================================
 namespace Collision {
 
+	//============================================================================
+	//	3D
+	//============================================================================
+
 	// sphere
 	bool SphereToSphere(const CollisionShape::Sphere& sphereA, const CollisionShape::Sphere& sphereB);
 	bool SphereToAABB(const CollisionShape::Sphere& sphere, const CollisionShape::AABB& aabb);
@@ -102,4 +106,11 @@ namespace Collision {
 	bool AABBToSphere(const CollisionShape::AABB& aabb, const CollisionShape::Sphere& sphere);
 	bool OBBToSphere(const CollisionShape::OBB& obb, const CollisionShape::Sphere& sphere);
 	bool OBBToAABB(const CollisionShape::OBB& obb, const CollisionShape::AABB& aabb);
+
+	//============================================================================
+	//	2D
+	//============================================================================
+
+	bool RectToMouse(const Vector2& center, const Vector2& size,
+		const Vector2& anchor);
 }

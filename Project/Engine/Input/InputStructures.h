@@ -30,6 +30,14 @@ enum class GamePadButtons {
 	Counts          // ボタンの数を表すための定数
 };
 
+// マウス入力の種類
+enum class MouseButton {
+
+	Right,
+	Left,
+	Center
+};
+
 // 入力されている状態
 enum class InputType {
 

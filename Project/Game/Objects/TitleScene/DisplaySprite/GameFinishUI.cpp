@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Config.h>
 #include <Engine/Utility/EnumAdapter.h>
+#include <Game/Objects/Common/GameButtonBlinkingUpdater.h>
 
 // imgui
 #include <imgui.h>
@@ -19,8 +20,10 @@ void GameFinishUI::InitSprites() {
 
 	// 使用するスプライトの生成
 	// 電源
-	powerIcon_ = std::make_unique<GameObject2D>();
-	powerIcon_->Init("powerIcon", "powerIcon", groupName);
+	powerIcon_ = std::make_unique<GameButton>();
+	powerIcon_->Init("powerIcon", groupName);
+	powerIcon_->RegisterUpdater(GameButtonResponseType::AnyMouseClick,
+		std::make_unique<GameButtonBlinkingUpdater>());
 
 	// 終了しますか表示の背景
 	askFinishBackground_ = std::make_unique<GameObject2D>();
@@ -71,7 +74,27 @@ void GameFinishUI::Init() {
 
 void GameFinishUI::Update() {
 
+	// 状態別の更新処理
+	UpdateState();
+}
 
+void GameFinishUI::UpdateState() {
+
+	switch (currentState_) {
+	case GameFinishUI::State::Power: {
+
+		powerIcon_->Update();
+		break;
+	}
+	case GameFinishUI::State::Select: {
+
+		break;
+	}
+	case GameFinishUI::State::Finish:{
+
+		break;
+	}
+	}
 }
 
 void GameFinishUI::ImGui() {
@@ -94,6 +117,10 @@ void GameFinishUI::ImGui() {
 
 		SetSpritePos();
 	}
+
+	ImGui::SeparatorText("Other Settings");
+
+	powerIcon_->ImGui();
 }
 
 void GameFinishUI::ApplyJson(const Json& data) {
@@ -108,6 +135,11 @@ void GameFinishUI::ApplyJson(const Json& data) {
 
 	// 値設定
 	SetSpritePos();
+
+	if (data.contains("powerIcon_")) {
+
+		powerIcon_->FromJson(data["powerIcon_"]);
+	}
 }
 
 void GameFinishUI::SaveJson(Json& data) {
@@ -119,6 +151,8 @@ void GameFinishUI::SaveJson(Json& data) {
 	data["askFinish_Size"] = askFinish_->GetSize().ToJson();
 	data["selectCancel_Size"] = selectCancel_->GetSize().ToJson();
 	data["selectOK_Size"] = selectOK_->GetSize().ToJson();
+
+	powerIcon_->ToJson(data["powerIcon_"]);
 }
 
 bool GameFinishUI::IsSelectFinish() const {

@@ -170,10 +170,9 @@ bool Input::ReleaseKey(BYTE keyNumber, const std::source_location& location) {
 
 	if (!key_[keyNumber] && keyPre_[keyNumber]) {
 
-		LOG_INFO("{}", MakeCallerTag(location, "ReleaseKey:"+ std::string(ToDikName(keyNumber))));
+		LOG_INFO("{}", MakeCallerTag(location, "ReleaseKey:" + std::string(ToDikName(keyNumber))));
 		return true;
 	}
-
 	return false;
 }
 bool Input::PushGamepadButton(GamePadButtons button, const std::source_location& location) {
@@ -252,6 +251,28 @@ bool Input::PushMouseButton(size_t index, const std::source_location& location) 
 
 	return now;
 }
+bool Input::PushMouse(MouseButton button, const std::source_location& location) const {
+
+	bool push = false;
+	switch (button) {
+	case MouseButton::Right: {
+
+		push = PushMouseRight(location);
+		break;
+	}
+	case MouseButton::Left: {
+
+		push = PushMouseLeft(location);
+		break;
+	}
+	case MouseButton::Center: {
+
+		push = PushMouseCenter(location);
+		break;
+	}
+	}
+	return push;
+}
 bool Input::TriggerMouseLeft(const std::source_location& location) const {
 
 	bool trigger = !mousePreButtons_[0] && mouseButtons_[0];
@@ -281,6 +302,62 @@ bool Input::TriggerMouseCenter(const std::source_location& location) const {
 	}
 
 	return trigger;
+}
+bool Input::TriggerMouse(MouseButton button, const std::source_location& location) const {
+
+	bool trigger = false;
+	switch (button) {
+	case MouseButton::Right: {
+
+		trigger = TriggerMouseRight(location);
+		break;
+	}
+	case MouseButton::Left: {
+
+		trigger = TriggerMouseLeft(location);
+		break;
+	}
+	case MouseButton::Center: {
+
+		trigger = TriggerMouseCenter(location);
+		break;
+	}
+	}
+	return trigger;
+}
+bool Input::ReleaseMouse(MouseButton button, const std::source_location& location) const {
+
+	bool released = false;
+	switch (button) {
+	case MouseButton::Left: {
+
+		released = !mouseButtons_[0] && mousePreButtons_[0];
+		if (released) {
+
+			LOG_INFO("{}  mouseLeft=released", MakeCallerTag(location, "ReleaseMouseLeft"));
+		}
+		break;
+	}
+	case MouseButton::Right: {
+
+		released = !mouseButtons_[1] && mousePreButtons_[1];
+		if (released) {
+
+			LOG_INFO("{}  mouseRight=released", MakeCallerTag(location, "ReleaseMouseRight"));
+		}
+		break;
+	}
+	case MouseButton::Center: {
+
+		released = !mouseButtons_[2] && mousePreButtons_[2];
+		if (released) {
+
+			LOG_INFO("{}  mouseCenter=released", MakeCallerTag(location, "ReleaseMouseCenter"));
+		}
+		break;
+	}
+	}
+	return released;
 }
 void Input::SetDeadZone(float deadZone) {
 

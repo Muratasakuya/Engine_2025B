@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Input/Input.h>
 #include <Engine/Utility/JsonAdapter.h>
 
 //============================================================================
@@ -202,4 +203,23 @@ bool Collision::OBBToSphere(const CollisionShape::OBB& obb, const CollisionShape
 bool Collision::OBBToAABB(const CollisionShape::OBB& obb, const CollisionShape::AABB& aabb) {
 
 	return AABBToOBB(aabb, obb);
+}
+
+bool Collision::RectToMouse(const Vector2& center,
+	const Vector2& size, const Vector2& anchor) {
+
+	Input* input = Input::GetInstance();
+	// マウス位置
+	Vector2 mousePos = input->GetMousePos();
+
+	// 矩形左上
+	Vector2 topLeft = center - Vector2(size.x * anchor.x, size.y * anchor.y);
+	Vector2 bottomRight = topLeft + size;
+	if (mousePos.x >= topLeft.x && mousePos.x <= bottomRight.x &&
+		mousePos.y >= topLeft.y && mousePos.y <= bottomRight.y) {
+
+		return true;
+	}
+
+	return false;
 }

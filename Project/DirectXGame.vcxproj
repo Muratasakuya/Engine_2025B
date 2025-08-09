@@ -506,6 +506,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Utility\AnimationLoop.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Utility\SimpleAnimation.cpp">
       <SubType>
       </SubType>
@@ -630,6 +634,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Game\Editor\LevelEditor\LevelEditor.cpp" />
     <ClCompile Include="Game\Editor\LevelEditor\SceneBuilder.cpp" />
+    <ClCompile Include="Game\Objects\Base\GameButton.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\Base\GameCommonStructures.cpp">
       <SubType>
       </SubType>
@@ -647,6 +655,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClCompile>
     <ClCompile Include="Game\Objects\Base\GameTimerDisplay.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Common\GameButtonBlinkingUpdater.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -1238,6 +1250,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Engine\Utility\AnimationLoop.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Engine\Utility\SimpleAnimation.h">
       <SubType>
       </SubType>
@@ -1374,6 +1390,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Editor\LevelEditor\LevelEditor.h" />
     <ClInclude Include="Game\Editor\LevelEditor\LevelStructures.h" />
     <ClInclude Include="Game\Editor\LevelEditor\SceneBuilder.h" />
+    <ClInclude Include="Game\Objects\Base\GameButton.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Base\GameCommonStructures.h">
       <SubType>
       </SubType>
@@ -1394,7 +1414,15 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
+    <ClInclude Include="Game\Objects\Base\IGameButtonResponseUpdater.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\Base\ITransition.h" />
+    <ClInclude Include="Game\Objects\Common\GameButtonBlinkingUpdater.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Collision\BossEnemyAttackCollision.h">
       <SubType>
       </SubType>

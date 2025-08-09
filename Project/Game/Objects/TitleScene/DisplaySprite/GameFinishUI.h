@@ -3,7 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Object/Base/GameObject2D.h>
+#include <Game/Objects/Base/GameButton.h>
 
 //============================================================================
 //	GameFinishUI class
@@ -54,7 +54,7 @@ private:
 
 	// 表示するスプライト
 	// 常に表示
-	std::unique_ptr<GameObject2D> powerIcon_; // 電源アイコン
+	std::unique_ptr<GameButton> powerIcon_; // 電源アイコン
 
 	// 状態に応じて表示
 	std::unique_ptr<GameObject2D> askFinish_;           // 終了しますか表示
@@ -71,4 +71,7 @@ private:
 	// init
 	void InitSprites();
 	void SetSpritePos();
+
+	// update
+	void UpdateState();
 };

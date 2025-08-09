@@ -626,6 +626,15 @@
     <ClCompile Include="Game\Objects\TitleScene\DisplaySprite\GameFinishUI.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Base\GameButton.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\Common\GameButtonBlinkingUpdater.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Utility\AnimationLoop.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -869,6 +878,10 @@
     <ClInclude Include="Engine\Input\Base\InputMapper.h" />
     <ClInclude Include="Game\Objects\TitleScene\DisplaySprite\GameFinishUI.h" />
     <ClInclude Include="Engine\Asset\AssetLoadType.h" />
+    <ClInclude Include="Game\Objects\Base\GameButton.h" />
+    <ClInclude Include="Game\Objects\Base\IGameButtonResponseUpdater.h" />
+    <ClInclude Include="Game\Objects\Common\GameButtonBlinkingUpdater.h" />
+    <ClInclude Include="Engine\Utility\AnimationLoop.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

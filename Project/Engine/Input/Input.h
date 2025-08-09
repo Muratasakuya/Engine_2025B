@@ -54,10 +54,14 @@ public:
 	bool PushMouseLeft(const std::source_location& location = std::source_location::current()) const { return PushMouseButton(0, location); }
 	bool PushMouseRight(const std::source_location& location = std::source_location::current()) const { return PushMouseButton(1, location); }
 	bool PushMouseCenter(const std::source_location& location = std::source_location::current()) const { return PushMouseButton(2, location); }
+	bool PushMouse(MouseButton button, const std::source_location& location = std::source_location::current()) const;
 
 	bool TriggerMouseLeft(const std::source_location& location = std::source_location::current()) const;
 	bool TriggerMouseRight(const std::source_location& location = std::source_location::current()) const;
 	bool TriggerMouseCenter(const std::source_location& location = std::source_location::current()) const;
+	bool TriggerMouse(MouseButton button, const std::source_location& location = std::source_location::current()) const;
+
+	bool ReleaseMouse(MouseButton button, const std::source_location& location = std::source_location::current()) const;
 
 	Vector2 GetMousePos() const;
 	Vector2 GetMousePrePos() const;
