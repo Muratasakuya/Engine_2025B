@@ -10,11 +10,10 @@
 //	GameButtonBlinkingUpdater classMethods
 //============================================================================
 
-void GameButtonBlinkingUpdater::Begin(GameObject2D& object) {
+void GameButtonBlinkingUpdater::Begin([[maybe_unused]] GameObject2D& object) {
 
-	// 最初の値を保持
-	smallScale_ = object.GetSize().x;
-	beginColor_ = object.GetColor();
+	// 初期化値
+	beginColor_ = Color::White();
 }
 
 void GameButtonBlinkingUpdater::ActiveUpdate(GameObject2D& object) {
@@ -23,14 +22,25 @@ void GameButtonBlinkingUpdater::ActiveUpdate(GameObject2D& object) {
 	loopTimer_ += GameTimer::GetDeltaTime();
 	float t = loopTimer_ / loopSpacing_;
 	// ループ
-	t = animationLoop_.LoopedT(t);
-	float easedT = EasedValue(loopEasing_, t);
+	float loopedT = animationLoop_.LoopedT(t);
+	float easedT = EasedValue(loopEasing_, loopedT);
 
-	// サイズ補間
-	object.SetSize(Vector2::Lerp(Vector2::AnyInit(smallScale_),
-		Vector2::AnyInit(maxScale_), easedT));
 	// 色補間
 	object.SetColor(Color::Lerp(startColor_, targetColor_, easedT));
+
+	// サイズは最大まで行ったら補間しない
+	if (loopSpacing_ < loopTimer_) {
+
+		object.SetSize(Vector2::AnyInit(maxScale_));
+		return;
+	}
+
+	// ループ処理なし
+	easedT = EasedValue(loopEasing_, t);
+
+	// サイズ補間
+	float currentScale = std::lerp(smallScale_, maxScale_, easedT);
+	object.SetSize(Vector2::AnyInit(currentScale));
 }
 
 void GameButtonBlinkingUpdater::InactiveUpdate(GameObject2D& object) {
@@ -62,7 +72,7 @@ bool GameButtonBlinkingUpdater::IsInactiveFinished() const {
 	return endTime_ <= endTimer_;
 }
 
-void GameButtonBlinkingUpdater::IdleUpdate([[maybe_unused]] GameObject2D&) {
+void GameButtonBlinkingUpdater::IdleUpdate([[maybe_unused]] GameObject2D& object) {
 }
 
 void GameButtonBlinkingUpdater::ImGui() {
@@ -78,6 +88,8 @@ void GameButtonBlinkingUpdater::ImGui() {
 
 	ImGui::ColorEdit4("startColor", &startColor_.r);
 	ImGui::ColorEdit4("targetColor", &targetColor_.r);
+
+	animationLoop_.ImGuiLoopParam();
 }
 
 void GameButtonBlinkingUpdater::FromJson(const Json& data) {
@@ -97,6 +109,11 @@ void GameButtonBlinkingUpdater::FromJson(const Json& data) {
 		const auto& easing = EnumAdapter<EasingType>::FromString(data["endEasing_"]);
 		endEasing_ = easing.value();
 	}
+
+	if (data.contains("colorLoop")) {
+
+		animationLoop_.FromLoopJson(data["colorLoop"]);
+	}
 }
 
 void GameButtonBlinkingUpdater::ToJson(Json& data) {
@@ -110,4 +127,6 @@ void GameButtonBlinkingUpdater::ToJson(Json& data) {
 
 	data["loopEasing_"] = EnumAdapter<EasingType>::ToString(loopEasing_);
 	data["endEasing_"] = EnumAdapter<EasingType>::ToString(endEasing_);
+
+	animationLoop_.ToLoopJson(data["colorLoop"]);
 }

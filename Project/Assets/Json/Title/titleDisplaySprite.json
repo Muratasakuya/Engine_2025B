@@ -10,11 +10,17 @@
         },
         "powerIcon_": {
             "AnyMouseClick": {
-                "endEasing_": "EaseInOutBounce",
-                "endTime_": 1.0,
-                "loopEasing_": "EaseInSine",
-                "loopSpacing_": 1.0,
-                "maxScale_": 72.0,
+                "colorLoop": {
+                    "loop": {
+                        "loopCount": 2,
+                        "type": "PingPong"
+                    }
+                },
+                "endEasing_": "EaseInBounce",
+                "endTime_": 0.4000000059604645,
+                "loopEasing_": "EaseOutExpo",
+                "loopSpacing_": 0.4699999988079071,
+                "maxScale_": 88.0,
                 "smallScale_": 64.0,
                 "startColor_": {
                     "a": 1.0,
@@ -24,9 +30,9 @@
                 },
                 "targetColor_": {
                     "a": 1.0,
-                    "b": 0.025147410109639168,
-                    "g": 0.16307693719863892,
-                    "r": 0.009031957015395164
+                    "b": 0.05252544954419136,
+                    "g": 0.8984615206718445,
+                    "r": 0.6043360829353333
                 }
             },
             "checkCollisionEnable_": true,

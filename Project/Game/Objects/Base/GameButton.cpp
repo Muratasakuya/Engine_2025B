@@ -177,7 +177,7 @@ void GameButton::ImGui() {
 void GameButton::FromJson(const Json& data) {
 
 	checkCollisionEnable_ = data["checkCollisionEnable_"];
-	collisionSize_ = collisionSize_.FromJson(data["checkCollisionEnable_"]);
+	collisionSize_ = collisionSize_.FromJson(data["collisionSize_"]);
 
 	const auto& collisionType = EnumAdapter<GameButtonCollisionType>::FromString(data["collisionType_"]);
 	collisionType_ = collisionType.value();
