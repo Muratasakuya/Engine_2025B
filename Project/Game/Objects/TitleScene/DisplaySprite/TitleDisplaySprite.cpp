@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Config.h>
+#include <Game/Objects/Common/GameButtonBlinkingUpdater.h>
 
 //============================================================================
 //	TitleDisplaySprite classMethods
@@ -17,8 +18,10 @@ void TitleDisplaySprite::InitSprites() {
 	name_ = std::make_unique<GameObject2D>();
 	name_->Init("title", "title", groupName);
 
-	start_ = std::make_unique<GameObject2D>();
-	start_->Init("gameStartText", "gameStartText", groupName);
+	start_ = std::make_unique<GameButton>();
+	start_->Init("gameStartText", groupName);
+	start_->RegisterUpdater(GameButtonResponseType::AnyMouseClick,
+		std::make_unique<GameButtonBlinkingUpdater>());
 }
 
 void TitleDisplaySprite::SetSpritePos() {
@@ -47,6 +50,7 @@ void TitleDisplaySprite::Init() {
 
 void TitleDisplaySprite::Update() {
 
+	start_->Update();
 	finishUI_->Update();
 }
 
@@ -70,6 +74,12 @@ void TitleDisplaySprite::ImGui() {
 
 				SetSpritePos();
 			}
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("StartButton")) {
+
+			start_->ImGui();
 			ImGui::EndTabItem();
 		}
 
@@ -98,6 +108,11 @@ void TitleDisplaySprite::ApplyJson() {
 
 	finishUI_->ApplyJson(data["FinishUI"]);
 
+	if (data.contains("start_")) {
+
+		start_->FromJson(data["start_"]);
+	}
+
 	// 値設定
 	SetSpritePos();
 }
@@ -110,6 +125,8 @@ void TitleDisplaySprite::SaveJson() {
 	data["start_Size"] = start_->GetSize().ToJson();
 
 	finishUI_->SaveJson(data["FinishUI"]);
+
+	start_->ToJson(data["start_"]);
 
 	JsonAdapter::Save("Title/titleDisplaySprite.json", data);
 }

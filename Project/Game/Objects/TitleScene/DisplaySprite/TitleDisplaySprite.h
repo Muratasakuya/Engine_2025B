@@ -38,7 +38,7 @@ private:
 
 	// 表示するスプライト
 	std::unique_ptr<GameObject2D> name_;  // 名前
-	std::unique_ptr<GameObject2D> start_; // 開始文字
+	std::unique_ptr<GameButton> start_;   // 開始文字
 
 	std::unique_ptr<GameFinishUI> finishUI_; // 終了表示
 
