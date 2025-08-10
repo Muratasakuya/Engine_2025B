@@ -33,6 +33,15 @@ public:
 
 	// ゲーム終了フラグ
 	bool IsSelectFinish() const;
+	bool IsInSelect() const { return currentState_ == State::Select; }
+
+	GameButton* GetPowerButton() const { return powerIcon_.get(); }
+	GameButton* GetCancelButton() const { return selectCancel_.get(); }
+	GameButton* GetOKButton() const { return selectOK_.get(); }
+	// パッド操作入力設定
+	void ConfirmPowerByPad() { currentState_ = State::Select; }
+	void ConfirmCancelByPad();
+	void ConfirmOKByPad();
 private:
 	//========================================================================
 	//	private Methods

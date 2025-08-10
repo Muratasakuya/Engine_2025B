@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Config.h>
+#include <Engine/Input/Input.h>
 #include <Game/Objects/Common/GameButtonBlinkingUpdater.h>
 
 //============================================================================
@@ -22,6 +23,35 @@ void TitleDisplaySprite::InitSprites() {
 	start_->Init("gameStartText", groupName);
 	start_->RegisterUpdater(GameButtonResponseType::AnyMouseClick,
 		std::make_unique<GameButtonBlinkingUpdater>());
+	start_->RegisterUpdater(GameButtonResponseType::Focus,
+		std::make_unique<GameButtonBlinkingUpdater>());
+}
+
+void TitleDisplaySprite::InitNavigator() {
+
+	buttonFocusNavigator_ = std::make_unique<GamecButtonFocusNavigator>();
+
+	// 入力処理に応じた処理の設定
+	buttonFocusNavigator_->SetOnConfirm([&](ButtonFocusGroup group, int index) {
+		if (group == ButtonFocusGroup::Top) {
+			if (index == 0) {
+
+				// スタート入力時の処理
+			} else {
+
+				finishUI_->ConfirmPowerByPad();
+			}
+		} else if (group == ButtonFocusGroup::Select) {
+			if (index == 0) {
+
+				finishUI_->ConfirmCancelByPad();
+			} else {
+
+				finishUI_->ConfirmOKByPad();
+			}
+		}
+		});
+	buttonFocusNavigator_->Init(ButtonFocusGroup::Top, { start_.get(), finishUI_->GetPowerButton() });
 }
 
 void TitleDisplaySprite::SetSpritePos() {
@@ -44,6 +74,9 @@ void TitleDisplaySprite::Init() {
 	finishUI_ = std::make_unique<GameFinishUI>();
 	finishUI_->Init();
 
+	// 操作入力管理初期化
+	InitNavigator();
+
 	// json適応
 	ApplyJson();
 }
@@ -52,6 +85,38 @@ void TitleDisplaySprite::Update() {
 
 	start_->Update();
 	finishUI_->Update();
+
+	// パッド操作入力時の更新
+	UpdateInputGamepad();
+}
+
+void TitleDisplaySprite::UpdateInputGamepad() {
+
+	const auto& type = Input::GetInstance()->GetType();
+	// パッド操作入力時のみ処理
+	if (type == InputType::Keyboard) {
+		return;
+	}
+
+	// 画面状態に応じてグループを切替
+	if (finishUI_->IsInSelect()) {
+		// キャンセル、OKの選択
+		if (currentFocusGroup_ != ButtonFocusGroup::Select) {
+
+			buttonFocusNavigator_->SetGroup(ButtonFocusGroup::Select,
+				{ finishUI_->GetCancelButton(), finishUI_->GetOKButton() }, 0);
+			currentFocusGroup_ = ButtonFocusGroup::Select;
+		}
+	} else {
+		if (currentFocusGroup_ != ButtonFocusGroup::Top) {
+
+			buttonFocusNavigator_->SetGroup(ButtonFocusGroup::Top,
+				{ start_.get(), finishUI_->GetPowerButton() }, 0);
+			currentFocusGroup_ = ButtonFocusGroup::Top;
+		}
+	}
+	// 入力判定処理
+	buttonFocusNavigator_->Update();
 }
 
 void TitleDisplaySprite::ImGui() {

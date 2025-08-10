@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
+#include <Game/Objects/Base/GamecButtonFocusNavigator.h>
 #include <Game/Objects/TitleScene/DisplaySprite/GameFinishUI.h>
 
 //============================================================================
@@ -42,6 +43,10 @@ private:
 
 	std::unique_ptr<GameFinishUI> finishUI_; // 終了表示
 
+	// パッド操作入力管理
+	std::unique_ptr<GamecButtonFocusNavigator> buttonFocusNavigator_;
+	ButtonFocusGroup currentFocusGroup_;
+
 	//--------- functions ----------------------------------------------------
 
 	// json
@@ -50,5 +55,9 @@ private:
 
 	// init
 	void InitSprites();
+	void InitNavigator();
 	void SetSpritePos();
+	
+	// update
+	void UpdateInputGamepad();
 };

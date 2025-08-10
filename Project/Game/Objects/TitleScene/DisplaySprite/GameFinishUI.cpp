@@ -24,6 +24,8 @@ void GameFinishUI::InitSprites() {
 	powerIcon_->Init("powerIcon", groupName);
 	powerIcon_->RegisterUpdater(GameButtonResponseType::AnyMouseClick,
 		std::make_unique<GameButtonBlinkingUpdater>());
+	powerIcon_->RegisterUpdater(GameButtonResponseType::Focus,
+		std::make_unique<GameButtonBlinkingUpdater>());
 
 	// 終了しますか表示の背景
 	askFinishBackground_ = std::make_unique<GameObject2D>();
@@ -38,11 +40,15 @@ void GameFinishUI::InitSprites() {
 	selectCancel_->Init("cancelText", groupName);
 	selectCancel_->RegisterUpdater(GameButtonResponseType::AnyMouseClick,
 		std::make_unique<GameButtonBlinkingUpdater>());
+	selectCancel_->RegisterUpdater(GameButtonResponseType::Focus,
+		std::make_unique<GameButtonBlinkingUpdater>());
 
 	// OK -> Finish
 	selectOK_ = std::make_unique<GameButton>();
 	selectOK_->Init("okText", groupName);
 	selectOK_->RegisterUpdater(GameButtonResponseType::AnyMouseClick,
+		std::make_unique<GameButtonBlinkingUpdater>());
+	selectOK_->RegisterUpdater(GameButtonResponseType::Focus,
 		std::make_unique<GameButtonBlinkingUpdater>());
 }
 
@@ -90,6 +96,43 @@ void GameFinishUI::SetSpritePos() {
 	selectCancel_->SetTranslation(Vector2(backgroundPos.x - selectButtonSpacing_, selectPosY));
 	// OK -> Finish
 	selectOK_->SetTranslation(Vector2(backgroundPos.x + selectButtonSpacing_, selectPosY));
+}
+
+void GameFinishUI::ConfirmCancelByPad() {
+
+	if (currentState_ != State::Select ||
+		currentSelectState_ != SelectState::Select) {
+		return;
+	}
+
+	// パッド操作によるボタンの選択
+	currentSelectState_ = SelectState::Decide;
+	selectCancel_->SetEnableCollision(false);
+	selectOK_->SetEnableCollision(false);
+
+	ForEachAnimations([](SimpleAnimation<Vector2>* animations) {
+		animations->Reset(); });
+	ForEachAnimations([](SimpleAnimation<Vector2>* animations) {
+		animations->type_ = SimpleAnimationType::Return; });
+}
+
+void GameFinishUI::ConfirmOKByPad() {
+
+	if (currentState_ != State::Select ||
+		currentSelectState_ != SelectState::Select) {
+		return;
+	}
+
+	// パッド操作によるボタンの選択
+	currentState_ = State::Finish;
+	selectCancel_->SetEnableCollision(false);
+	selectOK_->SetEnableCollision(false);
+
+	// 表示を消す
+	askFinish_->SetSize(Vector2::AnyInit(0.0f));
+	askFinishBackground_->SetSize(Vector2::AnyInit(0.0f));
+	selectCancel_->SetSize(Vector2::AnyInit(0.0f));
+	selectOK_->SetSize(Vector2::AnyInit(0.0f));
 }
 
 void GameFinishUI::Init() {

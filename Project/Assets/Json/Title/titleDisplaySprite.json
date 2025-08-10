@@ -121,6 +121,32 @@
                     "r": 0.6043360829353333
                 }
             },
+            "Focus": {
+                "colorLoop": {
+                    "loop": {
+                        "loopCount": 2,
+                        "type": "PingPong"
+                    }
+                },
+                "endEasing_": "EaseOutQuint",
+                "endTime_": 0.1599999964237213,
+                "loopEasing_": "EaseOutExpo",
+                "loopSpacing_": 0.4699999988079071,
+                "maxScale_": 1.2000000476837158,
+                "smallScale_": 1.0,
+                "startColor_": {
+                    "a": 1.0,
+                    "b": 0.05252544954419136,
+                    "g": 0.849006712436676,
+                    "r": 0.8984615206718445
+                },
+                "targetColor_": {
+                    "a": 1.0,
+                    "b": 0.05252544954419136,
+                    "g": 0.8984615206718445,
+                    "r": 0.6043360829353333
+                }
+            },
             "checkCollisionEnable_": false,
             "collisionSize_": {
                 "x": 64.0,
@@ -162,6 +188,32 @@
                     "r": 0.6039215922355652
                 }
             },
+            "Focus": {
+                "colorLoop": {
+                    "loop": {
+                        "loopCount": 2,
+                        "type": "PingPong"
+                    }
+                },
+                "endEasing_": "EaseOutQuint",
+                "endTime_": 0.1599999964237213,
+                "loopEasing_": "EaseOutExpo",
+                "loopSpacing_": 0.4699999988079071,
+                "maxScale_": 1.2000000476837158,
+                "smallScale_": 1.0,
+                "startColor_": {
+                    "a": 1.0,
+                    "b": 0.05252544954419136,
+                    "g": 0.849006712436676,
+                    "r": 0.8984615206718445
+                },
+                "targetColor_": {
+                    "a": 1.0,
+                    "b": 0.05252544954419136,
+                    "g": 0.8984615206718445,
+                    "r": 0.6043360829353333
+                }
+            },
             "checkCollisionEnable_": true,
             "collisionSize_": {
                 "x": 320.0,
@@ -200,6 +252,32 @@
                     "b": 0.05098039284348488,
                     "g": 0.8980392217636108,
                     "r": 0.6039215922355652
+                }
+            },
+            "Focus": {
+                "colorLoop": {
+                    "loop": {
+                        "loopCount": 2,
+                        "type": "PingPong"
+                    }
+                },
+                "endEasing_": "EaseOutQuint",
+                "endTime_": 0.1599999964237213,
+                "loopEasing_": "EaseOutExpo",
+                "loopSpacing_": 0.4699999988079071,
+                "maxScale_": 1.2000000476837158,
+                "smallScale_": 1.0,
+                "startColor_": {
+                    "a": 1.0,
+                    "b": 0.05252544954419136,
+                    "g": 0.849006712436676,
+                    "r": 0.8984615206718445
+                },
+                "targetColor_": {
+                    "a": 1.0,
+                    "b": 0.05252544954419136,
+                    "g": 0.8984615206718445,
+                    "r": 0.6043360829353333
                 }
             },
             "checkCollisionEnable_": true,
@@ -247,6 +325,32 @@
                 "r": 0.6039215922355652
             }
         },
+        "Focus": {
+            "colorLoop": {
+                    "loop": {
+                        "loopCount": 2,
+                        "type": "PingPong"
+                    }
+                },
+                "endEasing_": "EaseOutQuint",
+                "endTime_": 0.1599999964237213,
+                "loopEasing_": "EaseOutExpo",
+                "loopSpacing_": 0.4699999988079071,
+                "maxScale_": 1.2000000476837158,
+                "smallScale_": 1.0,
+                "startColor_": {
+                    "a": 1.0,
+                    "b": 0.05252544954419136,
+                    "g": 0.849006712436676,
+                    "r": 0.8984615206718445
+                },
+                "targetColor_": {
+                    "a": 1.0,
+                    "b": 0.05252544954419136,
+                    "g": 0.8984615206718445,
+                    "r": 0.6043360829353333
+                }
+        },
         "checkCollisionEnable_": true,
         "collisionSize_": {
             "x": 400.0,
@@ -257,7 +361,7 @@
         "responseType_": "AnyMouseClick"
     },
     "start_Size": {
-        "x": 256.0,
-        "y": 54.0
+        "x": 0.0,
+        "y": 0.0
     }
 }

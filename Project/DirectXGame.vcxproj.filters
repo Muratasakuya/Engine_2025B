@@ -635,6 +635,9 @@
     <ClCompile Include="Engine\Utility\AnimationLoop.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\Base\GamecButtonFocusNavigator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -882,6 +885,7 @@
     <ClInclude Include="Game\Objects\Base\IGameButtonResponseUpdater.h" />
     <ClInclude Include="Game\Objects\Common\GameButtonBlinkingUpdater.h" />
     <ClInclude Include="Engine\Utility\AnimationLoop.h" />
+    <ClInclude Include="Game\Objects\Base\GamecButtonFocusNavigator.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

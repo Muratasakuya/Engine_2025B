@@ -173,9 +173,40 @@ void GameButton::ImGui() {
 		return;
 	}
 
-	for (const auto& updater : std::views::values(responseUpdaters_)) {
+	struct Item {
 
-		updater->ImGui();
+		GameButtonResponseType type;
+		IGameButtonResponseUpdater* updater;
+	};
+	std::vector<Item> items;
+	items.reserve(responseUpdaters_.size());
+	for (auto& [type, up] : responseUpdaters_) {
+		items.push_back(Item{ type, up.get() });
+	}
+	std::sort(items.begin(), items.end(),
+		[](const Item& a, const Item& b) {
+			return static_cast<int>(a.type) < static_cast<int>(b.type); });
+
+	// UI表示
+	if (ImGui::BeginTabBar("Updaters##GameButton")) {
+		for (auto& it : items) {
+
+			const std::string typeLabel = EnumAdapter<GameButtonResponseType>::ToString(it.type);
+			if (ImGui::BeginTabItem((typeLabel + "##tab").c_str())) {
+
+				// ID重複対策
+				ImGui::PushID(static_cast<int>(it.type));
+				ImGui::PushID(it.updater);
+				ImGui::SeparatorText(typeLabel.c_str());
+
+				it.updater->ImGui();
+
+				ImGui::PopID();
+				ImGui::PopID();
+				ImGui::EndTabItem();
+			}
+		}
+		ImGui::EndTabBar();
 	}
 }
 
@@ -193,9 +224,13 @@ void GameButton::FromJson(const Json& data) {
 	const auto& mouseButton = EnumAdapter<MouseButton>::FromString(data["mouseButton_"]);
 	mouseButton_ = mouseButton.value();
 
-	for (const auto& [type, updater] : responseUpdaters_) {
+	for (auto& [type, updater] : responseUpdaters_) {
 
-		updater->FromJson(data[EnumAdapter<GameButtonResponseType>::ToString(type)]);
+		const std::string key = EnumAdapter<GameButtonResponseType>::ToString(type);
+		if (!data.contains(key)) {
+			continue;
+		}
+		updater->FromJson(data.at(key));
 	}
 }
 

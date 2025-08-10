@@ -25,6 +25,7 @@ enum class GameButtonResponseType {
 	MouseClick,    // 上にある状態でクリック(Trigger)
 	OnMouseClick,  // 上にある状態でクリック(Press)
 	AnyMouseClick, // 上にある状態でクリック後、離した位置によってレスポンスを変える
+	Focus,         // フォーカス中はアクティブ
 };
 
 //============================================================================
@@ -60,6 +61,7 @@ public:
 	void SetCollisionType(GameButtonCollisionType type) { collisionType_ = type; }
 	void SetResponseType(GameButtonResponseType type) { responseType_ = type; }
 	void SetEnableCollision(bool enable) { checkCollisionEnable_ = enable; }
+	void SetFocusActive(bool active) { currentActive_[GameButtonResponseType::Focus] = active; }
 
 	bool GetHoverAtRelease() const;
 	GameButtonCollisionType GetCollisionType() const { return collisionType_; }

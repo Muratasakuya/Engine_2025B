@@ -72,6 +72,7 @@ public:
 
 	// deadZone
 	void SetDeadZone(float deadZone);
+	float GetDeadZone() const { return deadZone_; }
 
 	// singleton
 	static Input* GetInstance();
@@ -119,7 +120,7 @@ private:
 	float rightThumbY_;
 
 	// デッドゾーンの閾値
-	float deadZone_ = 9600.0f;
+	float deadZone_ = 16000.0f;
 
 	// LTボタン
 	float leftTriggerValue_ = 0.0f;
