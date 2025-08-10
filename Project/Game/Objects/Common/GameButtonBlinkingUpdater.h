@@ -62,6 +62,7 @@ private:
 	float endTime_;  // 元に戻っていく時間
 	EasingType endEasing_;
 
+	std::optional<Vector2> baseSize_; // 最初のサイズ
 	float smallScale_; // 最小スケール
 	float maxScale_;   // 最大スケール
 

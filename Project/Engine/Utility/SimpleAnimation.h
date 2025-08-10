@@ -16,6 +16,17 @@
 #include <imgui.h>
 
 //============================================================================
+//	SimpleAnimation enum class
+//============================================================================
+
+// 補間の仕方
+enum class SimpleAnimationType {
+
+	None,  // start -> end
+	Return // end -> start
+};
+
+//============================================================================
 //	SimpleAnimation class
 //============================================================================
 template <typename T>
@@ -103,6 +114,8 @@ public:
 	Loop loop_; // ループの情報
 	Time time_; // タイマーの情報
 	Move move_; // 動かす値の情報
+
+	SimpleAnimationType type_;
 
 	std::vector<T> keyframes_; // 外部から設定する
 private:
@@ -327,9 +340,17 @@ inline void SimpleAnimation<T>::UpdateLerpValue(T& value) {
 		return;
 	}
 
+	T from = move_.start;
+	T to = move_.end;
+
+	// 逆補間なら逆にして補間させる
+	if (type_ == SimpleAnimationType::Return) {
+
+		std::swap(from, to);
+	}
+
 	// 補間する
-	value = Algorithm::Lerp<T>(move_.start, move_.end,
-		EasedValue(move_.easingType, time_.currentT));
+	value = Algorithm::Lerp<T>(from, to, EasedValue(move_.easingType, time_.currentT));
 
 	// 1ループ終了
 	if (time_.currentT == 1.0f) {

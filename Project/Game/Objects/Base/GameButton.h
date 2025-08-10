@@ -61,6 +61,7 @@ public:
 	void SetResponseType(GameButtonResponseType type) { responseType_ = type; }
 	void SetEnableCollision(bool enable) { checkCollisionEnable_ = enable; }
 
+	bool GetHoverAtRelease() const;
 	GameButtonCollisionType GetCollisionType() const { return collisionType_; }
 private:
 	//========================================================================

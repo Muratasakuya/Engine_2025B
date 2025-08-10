@@ -28,11 +28,6 @@ void GameButton::Init(const std::string& textureName, const std::string& groupNa
 
 void GameButton::Update() {
 
-	// 判定を取らない場合は処理しない
-	if (!checkCollisionEnable_) {
-		return;
-	}
-
 	// 衝突タイプ別に処理
 	DetectCollision();
 	// レスポンス更新
@@ -82,15 +77,14 @@ void GameButton::UpdateResponses() {
 		}
 		preActive_[type] = current;
 	}
-
-	// 話していたら入力状態をリセット
-	if (releaseNow_) {
-
-		hoverAtRelease_ = false;
-	}
 }
 
 void GameButton::DetectCollision() {
+
+	// 判定を取らない場合は処理しない
+	if (!checkCollisionEnable_) {
+		return;
+	}
 
 	switch (collisionType_) {
 	case GameButtonCollisionType::Mouse: {
@@ -130,22 +124,33 @@ void GameButton::DetectMouseCollision() {
 void GameButton::EvaluateAnyMouseClick() {
 
 	// ホバー中に入力を開始したかどうか
-	if (!anyPressActive_ && triggerNow_) {
+	if (!anyPressActive_ && pushNow_) {
 
 		anyPressActive_ = true;
-		anyPressStartedOnHover_ = true;
+		hoverAtRelease_ = false;
+		anyPressStartedOnHover_ = hoverNow_;
+	}
+
+	// 先にリリース処理を適用して状態を更新
+	if (anyPressActive_ && releaseNow_) {
+
+		hoverAtRelease_ = anyPressStartedOnHover_ && hoverNow_;
+		anyPressActive_ = false;
 	}
 
 	// 入力中かどうか
-	bool activeThisFrame = anyPressActive_ && pushNow_;
+	bool activeThisFrame = anyPressActive_ && anyPressStartedOnHover_;
+	if (!anyPressActive_) {
 
-	// 離した瞬間
-	if (anyPressActive_ && releaseNow_) {
-
-		hoverAtRelease_ = hoverNow_;
-		anyPressActive_ = false;
+		anyPressStartedOnHover_ = false;
 	}
+
 	currentActive_[GameButtonResponseType::AnyMouseClick] = activeThisFrame;
+}
+
+bool GameButton::GetHoverAtRelease() const {
+
+	return releaseNow_ && hoverAtRelease_;
 }
 
 void GameButton::ImGui() {

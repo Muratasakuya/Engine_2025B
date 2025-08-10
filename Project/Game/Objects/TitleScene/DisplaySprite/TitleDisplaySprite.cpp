@@ -52,21 +52,38 @@ void TitleDisplaySprite::Update() {
 
 void TitleDisplaySprite::ImGui() {
 
+	ImGui::SetWindowFontScale(0.8f);
+	ImGui::PushItemWidth(224.0f);
+
 	if (ImGui::Button("Save")) {
 
 		SaveJson();
 	}
+	if (ImGui::BeginTabBar("TitleDisplaySprite")) {
+		if (ImGui::BeginTabItem("Base")) {
 
-	bool edit = false;
-	edit |= name_->ImGuiSize();
-	edit |= start_->ImGuiSize();
+			bool edit = false;
+			edit |= name_->ImGuiSize();
+			edit |= start_->ImGuiSize();
 
-	if (edit) {
+			if (edit) {
 
-		SetSpritePos();
+				SetSpritePos();
+			}
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("FinishUI")) {
+
+			finishUI_->ImGui();
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
 	}
 
-	finishUI_->ImGui();
+	ImGui::PopItemWidth();
+	ImGui::SetWindowFontScale(1.0f);
 }
 
 void TitleDisplaySprite::ApplyJson() {

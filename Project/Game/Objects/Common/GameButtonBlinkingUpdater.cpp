@@ -10,10 +10,15 @@
 //	GameButtonBlinkingUpdater classMethods
 //============================================================================
 
-void GameButtonBlinkingUpdater::Begin([[maybe_unused]] GameObject2D& object) {
+void GameButtonBlinkingUpdater::Begin(GameObject2D& object) {
 
 	// 初期化値
 	beginColor_ = Color::White();
+
+	if (baseSize_.has_value()) {
+		return;
+	}
+	baseSize_ = object.GetSize();
 }
 
 void GameButtonBlinkingUpdater::ActiveUpdate(GameObject2D& object) {
@@ -31,16 +36,14 @@ void GameButtonBlinkingUpdater::ActiveUpdate(GameObject2D& object) {
 	// サイズは最大まで行ったら補間しない
 	if (loopSpacing_ < loopTimer_) {
 
-		object.SetSize(Vector2::AnyInit(maxScale_));
+		object.SetSize(baseSize_.value() * maxScale_);
 		return;
 	}
 
 	// ループ処理なし
 	easedT = EasedValue(loopEasing_, t);
-
 	// サイズ補間
-	float currentScale = std::lerp(smallScale_, maxScale_, easedT);
-	object.SetSize(Vector2::AnyInit(currentScale));
+	object.SetSize(baseSize_.value() * std::lerp(smallScale_, maxScale_, easedT));
 }
 
 void GameButtonBlinkingUpdater::InactiveUpdate(GameObject2D& object) {
@@ -50,8 +53,7 @@ void GameButtonBlinkingUpdater::InactiveUpdate(GameObject2D& object) {
 	float easedT = EasedValue(endEasing_, t);
 
 	// サイズ補間
-	object.SetSize(Vector2::Lerp(Vector2::AnyInit(maxScale_),
-		Vector2::AnyInit(smallScale_), easedT));
+	object.SetSize(baseSize_.value() * std::lerp(maxScale_, smallScale_, easedT));
 	// 色補間
 	object.SetColor(Color::Lerp(targetColor_, startColor_, easedT));
 }
@@ -62,7 +64,7 @@ void GameButtonBlinkingUpdater::End(GameObject2D& object) {
 	loopTimer_ = 0.0f;
 	endTimer_ = 0.0f;
 
-	object.SetSize(Vector2::AnyInit(smallScale_));
+	object.SetSize(baseSize_.value());
 	object.SetColor(beginColor_);
 }
 
