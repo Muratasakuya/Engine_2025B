@@ -134,7 +134,6 @@ void TitleDisplaySprite::ImGui() {
 			bool edit = false;
 			edit |= name_->ImGuiSize();
 			edit |= start_->ImGuiSize();
-
 			if (edit) {
 
 				SetSpritePos();

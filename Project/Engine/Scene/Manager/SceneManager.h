@@ -40,6 +40,8 @@ public:
 
 	bool IsSceneSwitching() const { return isSceneSwitching_; }
 
+	bool IsFinishGame() const { return currentScene_->IsFinishGame(); }
+
 	bool ConsumeNeedInitNextScene();
 private:
 	//========================================================================

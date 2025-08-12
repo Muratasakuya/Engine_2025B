@@ -34,7 +34,8 @@ void Framework::Run() {
 			winApp_->SetFullscreen(fullscreenEnable_);
 		}
 
-		if (winApp_->ProcessMessage()) {
+		if (winApp_->ProcessMessage() ||
+			sceneManager_->IsFinishGame()) {
 			break;
 		}
 	}

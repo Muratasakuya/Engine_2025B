@@ -39,6 +39,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetPtr(SceneView* sceneView, SceneManager* sceneManager);
+
+	bool IsFinishGame() const { return isFinishGame_; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -48,4 +50,6 @@ protected:
 
 	SceneView* sceneView_;
 	SceneManager* sceneManager_;
+
+	bool isFinishGame_ = false;;
 };

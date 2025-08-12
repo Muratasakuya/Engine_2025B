@@ -23,6 +23,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+		// ゲーム終了フラグ
+	bool IsSelectFinish() const { return displaySprite_->IsSelectFinish(); }
 private:
 	//========================================================================
 	//	private Methods
