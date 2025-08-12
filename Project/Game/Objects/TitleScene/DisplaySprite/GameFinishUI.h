@@ -33,7 +33,7 @@ public:
 
 	// ゲーム終了フラグ
 	bool IsSelectFinish() const;
-	bool IsInSelect() const { return currentState_ == State::Select; }
+	bool IsSelectMenuReady() const { return currentState_ == State::Select && currentSelectState_ == SelectState::Select; }
 
 	GameButton* GetPowerButton() const { return powerIcon_.get(); }
 	GameButton* GetCancelButton() const { return selectCancel_.get(); }

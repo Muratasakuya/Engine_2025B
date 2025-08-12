@@ -83,11 +83,11 @@ void TitleDisplaySprite::Init() {
 
 void TitleDisplaySprite::Update() {
 
-	start_->Update();
-	finishUI_->Update();
-
 	// パッド操作入力時の更新
 	UpdateInputGamepad();
+
+	start_->Update();
+	finishUI_->Update();
 }
 
 void TitleDisplaySprite::UpdateInputGamepad() {
@@ -99,7 +99,7 @@ void TitleDisplaySprite::UpdateInputGamepad() {
 	}
 
 	// 画面状態に応じてグループを切替
-	if (finishUI_->IsInSelect()) {
+	if (finishUI_->IsSelectMenuReady()) {
 		// キャンセル、OKの選択
 		if (currentFocusGroup_ != ButtonFocusGroup::Select) {
 

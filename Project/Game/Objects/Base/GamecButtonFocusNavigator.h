@@ -51,9 +51,10 @@ private:
 
 	ButtonFocusGroup group_;
 
-	// 押しっぱなし入力回避
-	bool axisLatched_;
-	size_t index_ = 0;
+	bool axisLatched_; // 押しっぱなし入力回避
+	bool hasFocus_;    // まだフォーカスされていない
+	size_t defaultIndex_ = 0; // 最初に立てるインデックス
+	size_t index_ = 0;        // 現在のインデックス
 
 	std::vector<GameButton*> items_;
 	std::function<void(ButtonFocusGroup, int)> onConfirm_;
@@ -65,4 +66,5 @@ private:
 	void MoveRight();
 	void Confirm();
 	void ApplyVisuals();
+	void ClearFocus();
 };

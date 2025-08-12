@@ -10,15 +10,10 @@
 //	GameButtonBlinkingUpdater classMethods
 //============================================================================
 
-void GameButtonBlinkingUpdater::Begin(GameObject2D& object) {
+void GameButtonBlinkingUpdater::Begin([[maybe_unused]] GameObject2D& object) {
 
 	// 初期化値
 	beginColor_ = Color::White();
-
-	if (baseSize_.has_value()) {
-		return;
-	}
-	baseSize_ = object.GetSize();
 }
 
 void GameButtonBlinkingUpdater::ActiveUpdate(GameObject2D& object) {
@@ -36,14 +31,14 @@ void GameButtonBlinkingUpdater::ActiveUpdate(GameObject2D& object) {
 	// サイズは最大まで行ったら補間しない
 	if (loopSpacing_ < loopTimer_) {
 
-		object.SetSize(baseSize_.value() * maxScale_);
+		object.SetSize(baseSize_ * maxScale_);
 		return;
 	}
 
 	// ループ処理なし
 	easedT = EasedValue(loopEasing_, t);
 	// サイズ補間
-	object.SetSize(baseSize_.value() * std::lerp(smallScale_, maxScale_, easedT));
+	object.SetSize(baseSize_ * std::lerp(smallScale_, maxScale_, easedT));
 }
 
 void GameButtonBlinkingUpdater::InactiveUpdate(GameObject2D& object) {
@@ -53,7 +48,7 @@ void GameButtonBlinkingUpdater::InactiveUpdate(GameObject2D& object) {
 	float easedT = EasedValue(endEasing_, t);
 
 	// サイズ補間
-	object.SetSize(baseSize_.value() * std::lerp(maxScale_, smallScale_, easedT));
+	object.SetSize(baseSize_ * std::lerp(maxScale_, smallScale_, easedT));
 	// 色補間
 	object.SetColor(Color::Lerp(targetColor_, startColor_, easedT));
 }
@@ -64,7 +59,7 @@ void GameButtonBlinkingUpdater::End(GameObject2D& object) {
 	loopTimer_ = 0.0f;
 	endTimer_ = 0.0f;
 
-	object.SetSize(baseSize_.value());
+	object.SetSize(baseSize_);
 	object.SetColor(beginColor_);
 }
 
@@ -85,6 +80,7 @@ void GameButtonBlinkingUpdater::ImGui() {
 	ImGui::DragFloat("endTime", &endTime_, 0.01f);
 	Easing::SelectEasingType(endEasing_, "endEasing_");
 
+	ImGui::DragFloat2("baseSize", &baseSize_.x, 0.1f);
 	ImGui::DragFloat("smallScale", &smallScale_, 0.01f);
 	ImGui::DragFloat("maxScale", &maxScale_, 0.01f);
 
@@ -102,6 +98,7 @@ void GameButtonBlinkingUpdater::FromJson(const Json& data) {
 	maxScale_ = data["maxScale_"];
 	startColor_ = startColor_.FromJson(data["startColor_"]);
 	targetColor_ = targetColor_.FromJson(data["targetColor_"]);
+	baseSize_ = baseSize_.FromJson(data.value("baseSize_", Json{}));
 
 	{
 		const auto& easing = EnumAdapter<EasingType>::FromString(data["loopEasing_"]);
@@ -124,6 +121,7 @@ void GameButtonBlinkingUpdater::ToJson(Json& data) {
 	data["endTime_"] = endTime_;
 	data["smallScale_"] = smallScale_;
 	data["maxScale_"] = maxScale_;
+	data["baseSize_"] = baseSize_.ToJson();
 	data["startColor_"] = startColor_.ToJson();
 	data["targetColor_"] = targetColor_.ToJson();
 

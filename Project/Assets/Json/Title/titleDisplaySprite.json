@@ -96,6 +96,10 @@
         },
         "powerIcon_": {
             "AnyMouseClick": {
+                "baseSize_": {
+                    "x": 64.0,
+                    "y": 64.0
+                },
                 "colorLoop": {
                     "loop": {
                         "loopCount": 2,
@@ -122,6 +126,10 @@
                 }
             },
             "Focus": {
+                "baseSize_": {
+                    "x": 64.0,
+                    "y": 64.0
+                },
                 "colorLoop": {
                     "loop": {
                         "loopCount": 2,
@@ -163,6 +171,10 @@
         "selectButtonSpacing_": 144.0,
         "selectCancel_": {
             "AnyMouseClick": {
+                "baseSize_": {
+                    "x": 210.0,
+                    "y": 54.0
+                },
                 "colorLoop": {
                     "loop": {
                         "loopCount": 2,
@@ -189,6 +201,10 @@
                 }
             },
             "Focus": {
+                "baseSize_": {
+                    "x": 210.0,
+                    "y": 54.0
+                },
                 "colorLoop": {
                     "loop": {
                         "loopCount": 2,
@@ -229,6 +245,10 @@
         },
         "selectOK_": {
             "AnyMouseClick": {
+                "baseSize_": {
+                    "x": 210.0,
+                    "y": 54.0
+                },
                 "colorLoop": {
                     "loop": {
                         "loopCount": 2,
@@ -255,6 +275,10 @@
                 }
             },
             "Focus": {
+                "baseSize_": {
+                    "x": 210.0,
+                    "y": 54.0
+                },
                 "colorLoop": {
                     "loop": {
                         "loopCount": 2,
@@ -300,6 +324,10 @@
     },
     "start_": {
         "AnyMouseClick": {
+            "baseSize_": {
+                "x": 256.0,
+                "y": 54.0
+            },
             "colorLoop": {
                 "loop": {
                     "loopCount": 2,
@@ -326,30 +354,34 @@
             }
         },
         "Focus": {
+            "baseSize_": {
+                "x": 256.0,
+                "y": 54.0
+            },
             "colorLoop": {
-                    "loop": {
-                        "loopCount": 2,
-                        "type": "PingPong"
-                    }
-                },
-                "endEasing_": "EaseOutQuint",
-                "endTime_": 0.1599999964237213,
-                "loopEasing_": "EaseOutExpo",
-                "loopSpacing_": 0.4699999988079071,
-                "maxScale_": 1.2000000476837158,
-                "smallScale_": 1.0,
-                "startColor_": {
-                    "a": 1.0,
-                    "b": 0.05252544954419136,
-                    "g": 0.849006712436676,
-                    "r": 0.8984615206718445
-                },
-                "targetColor_": {
-                    "a": 1.0,
-                    "b": 0.05252544954419136,
-                    "g": 0.8984615206718445,
-                    "r": 0.6043360829353333
+                "loop": {
+                    "loopCount": 2,
+                    "type": "PingPong"
                 }
+            },
+            "endEasing_": "EaseOutQuint",
+            "endTime_": 0.1599999964237213,
+            "loopEasing_": "EaseOutExpo",
+            "loopSpacing_": 0.4699999988079071,
+            "maxScale_": 1.2000000476837158,
+            "smallScale_": 1.0,
+            "startColor_": {
+                "a": 1.0,
+                "b": 0.05252544954419136,
+                "g": 0.849006712436676,
+                "r": 0.8984615206718445
+            },
+            "targetColor_": {
+                "a": 1.0,
+                "b": 0.05252544954419136,
+                "g": 0.8984615206718445,
+                "r": 0.6043360829353333
+            }
         },
         "checkCollisionEnable_": true,
         "collisionSize_": {
@@ -361,7 +393,7 @@
         "responseType_": "AnyMouseClick"
     },
     "start_Size": {
-        "x": 0.0,
-        "y": 0.0
+        "x": 256.0,
+        "y": 54.0
     }
 }
