@@ -12,17 +12,24 @@
 
 void FadeTransition::Init() {
 
-	sprite_ = std::make_unique<GameObject2D>();
-	sprite_->Init("white", "transitionSprite", "Scene");
+	fadeSprite_ = std::make_unique<GameObject2D>();
+	fadeSprite_->Init("white", "transitionSprite", "Scene");
 	// シーンが切り替わっても破棄しない
-	sprite_->SetDestroyOnLoad(false);
-	// サイズ、座標設定
-	sprite_->SetCenterTranslation();
-	sprite_->SetSize(Vector2(Config::kWindowWidthf, Config::kWindowHeightf));
+	fadeSprite_->SetDestroyOnLoad(false);
 
 	// fade初期設定
-	sprite_->SetColor(Color::Convert(0x1F1F1FFF));
-	sprite_->SetAlpha(0.0f);
+	fadeSprite_->SetCenterTranslation();
+	fadeSprite_->SetSize(Vector2(Config::kWindowWidthf, Config::kWindowHeightf));
+	fadeSprite_->SetColor(Color::Convert(0x1F1F1FFF));
+	fadeSprite_->SetAlpha(0.0f);
+
+	loadSprite_ = std::make_unique<GameObject2D>();
+	loadSprite_->Init("nowLoading", "nowLoading", "Scene");
+	// シーンが切り替わっても破棄しない
+	loadSprite_->SetDestroyOnLoad(false);
+	// 初期設定
+	loadSprite_->SetCenterTranslation();
+	loadSprite_->SetAlpha(0.0f);
 
 	// json適応
 	ApplyJson();
@@ -33,11 +40,11 @@ void FadeTransition::Update() {}
 void FadeTransition::BeginUpdate() {
 
 	beginTimer_.Update();
-	sprite_->SetAlpha(std::lerp(0.0f, 1.0f, beginTimer_.easedT_));
+	fadeSprite_->SetAlpha(std::lerp(0.0f, 1.0f, beginTimer_.easedT_));
 
 	if (beginTimer_.IsReached()) {
 
-		sprite_->SetAlpha(1.0f);
+		fadeSprite_->SetAlpha(1.0f);
 
 		// 次に進める
 		state_ = TransitionState::Wait;
@@ -48,6 +55,7 @@ void FadeTransition::BeginUpdate() {
 void FadeTransition::WaitUpdate() {
 
 	waitTimer_.Update();
+	loadSprite_->SetAlpha(1.0f);
 	if (waitTimer_.IsReached()) {
 
 		// 次に進める
@@ -59,11 +67,11 @@ void FadeTransition::WaitUpdate() {
 void FadeTransition::EndUpdate() {
 
 	endTimer_.Update();
-	sprite_->SetAlpha(std::lerp(0.0f, 1.0f, endTimer_.easedT_));
-
+	fadeSprite_->SetAlpha(std::lerp(0.0f, 1.0f, endTimer_.easedT_));
+	loadSprite_->SetAlpha(0.0f);
 	if (endTimer_.IsReached()) {
 
-		sprite_->SetAlpha(0.0f);
+		fadeSprite_->SetAlpha(0.0f);
 
 		// 遷移終了
 		state_ = TransitionState::Begin;

@@ -39,7 +39,9 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// フェード用
-	std::unique_ptr<GameObject2D> sprite_;
+	std::unique_ptr<GameObject2D> fadeSprite_;
+	// ロード中用
+	std::unique_ptr<GameObject2D> loadSprite_;
 
 	// タイマー管理
 	StateTimer beginTimer_;

@@ -110,13 +110,11 @@ uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 
 		// bufferを作成
 		systemManager_->GetSystem<InstancedMeshSystem>()->CreateSkinnedMesh(modelName);
-
 		LOG_INFO("created object3D: name: [{}] skinnedMesh: [{}] animation: [{}]", name, modelName, animationName.value());
 	} else {
 
 		// bufferを作成
 		systemManager_->GetSystem<InstancedMeshSystem>()->CreateStaticMesh(modelName);
-
 		LOG_INFO("created object3D: name: [{}] staticMesh: [{}]", name, modelName);
 	}
 
@@ -132,7 +130,6 @@ uint32_t ObjectManager::CreateSkybox(const std::string& textureName) {
 
 	// dataを初期化
 	skybox->Create(device_, asset_->GetTextureGPUIndex(textureName));
-
 	LOG_INFO("created skybox: textureName: [{}]", textureName);
 
 	return object;
@@ -155,7 +152,6 @@ uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 	// sprite
 	objectPoolManager_->AddData<Sprite>(object,
 		device_, asset_, textureName, *transform);
-
 	LOG_INFO("created object2D: name: [{}] textureName: [{}]", name, textureName);
 
 	return object;
@@ -178,7 +174,6 @@ void ObjectManager::DestroyAll() {
 		if (!tag->destroyOnLoad) {
 			continue;
 		}
-
 		objectPoolManager_->Destroy(id);
 	}
 }
