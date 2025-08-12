@@ -23,8 +23,11 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-		// ゲーム終了フラグ
+	// ゲーム終了フラグ
 	bool IsSelectFinish() const { return displaySprite_->IsSelectFinish(); }
+
+	// ゲーム遷移フラグ
+	bool IsGameStart() const { return displaySprite_->IsGameStart(); }
 private:
 	//========================================================================
 	//	private Methods

@@ -64,7 +64,8 @@ public:
 	void SetFocusActive(bool active) { currentActive_[GameButtonResponseType::Focus] = active; }
 
 	bool GetHoverAtRelease() const;
-	GameButtonCollisionType GetCollisionType() const { return collisionType_; }
+	bool GetCurrentHover() const { return hoverNow_; }
+	bool GetCurrentActive(GameButtonResponseType type) const { return currentActive_.at(type); }
 private:
 	//========================================================================
 	//	private Methods

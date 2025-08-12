@@ -11,6 +11,7 @@
 // c++
 #include <optional>
 #include <string>
+#include <unordered_set>
 // front
 class Asset;
 class DxCommand;
@@ -69,7 +70,7 @@ private:
 
 	static ObjectManager* instance_;
 
-	std::unique_ptr<ObjectPoolManager> ObjectPoolManager_;
+	std::unique_ptr<ObjectPoolManager> objectPoolManager_;
 
 	std::unique_ptr<SystemManager> systemManager_;
 
@@ -85,7 +86,7 @@ private:
 template<class T, bool Flag>
 inline typename ObjectPool<T, Flag>::Storage* ObjectManager::GetData(uint32_t object) {
 
-	return ObjectPoolManager_->GetData<T, Flag>(object);
+	return objectPoolManager_->GetData<T, Flag>(object);
 }
 
 template<class T>

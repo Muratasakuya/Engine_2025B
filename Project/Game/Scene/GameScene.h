@@ -23,7 +23,8 @@
 //	GameScene class
 //============================================================================
 class GameScene :
-	public IScene, public IGameEditor {
+	public IScene,
+	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods

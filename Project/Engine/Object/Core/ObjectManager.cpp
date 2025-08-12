@@ -52,7 +52,7 @@ void ObjectManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxComman
 	device_ = nullptr;
 	device_ = device;
 
-	ObjectPoolManager_ = std::make_unique<ObjectPoolManager>();
+	objectPoolManager_ = std::make_unique<ObjectPoolManager>();
 	systemManager_ = std::make_unique<SystemManager>();
 
 	// system登録
@@ -71,12 +71,12 @@ void ObjectManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxComman
 
 void ObjectManager::UpdateData() {
 
-	systemManager_->UpdateData(*ObjectPoolManager_.get());
+	systemManager_->UpdateData(*objectPoolManager_.get());
 }
 
 void ObjectManager::UpdateBuffer() {
 
-	systemManager_->UpdateBuffer(*ObjectPoolManager_.get());
+	systemManager_->UpdateBuffer(*objectPoolManager_.get());
 }
 
 uint32_t ObjectManager::CreateObjects(const std::string& modelName,
@@ -86,8 +86,8 @@ uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 	// object作成
 	uint32_t object = BuildEmptyobject(name, groupName);
 	// 必要なdataを作成
-	auto* transform = ObjectPoolManager_->AddData<Transform3D>(object);
-	auto* materialsPtr = ObjectPoolManager_->AddData<Material, true>(object);
+	auto* transform = objectPoolManager_->AddData<Transform3D>(object);
+	auto* materialsPtr = objectPoolManager_->AddData<Material, true>(object);
 
 	// 各dataを初期化
 	// transform
@@ -104,7 +104,7 @@ uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 	if (animationName.has_value()) {
 
 		// animation処理がある場合はdataを追加
-		auto* animation = ObjectPoolManager_->AddData<SkinnedAnimation>(object);
+		auto* animation = objectPoolManager_->AddData<SkinnedAnimation>(object);
 		// 初期化
 		animation->Init(*animationName, asset_);
 
@@ -128,7 +128,7 @@ uint32_t ObjectManager::CreateSkybox(const std::string& textureName) {
 	// object作成
 	uint32_t object = BuildEmptyobject("skybox", "Environment");
 	// 必要なdataを作成
-	auto* skybox = ObjectPoolManager_->AddData<Skybox>(object);
+	auto* skybox = objectPoolManager_->AddData<Skybox>(object);
 
 	// dataを初期化
 	skybox->Create(device_, asset_->GetTextureGPUIndex(textureName));
@@ -144,8 +144,8 @@ uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 	// object作成
 	uint32_t object = BuildEmptyobject(name, groupName);
 	// 必要なdataを作成
-	auto* transform = ObjectPoolManager_->AddData<Transform2D>(object);
-	auto* material = ObjectPoolManager_->AddData<SpriteMaterial>(object);
+	auto* transform = objectPoolManager_->AddData<Transform2D>(object);
+	auto* material = objectPoolManager_->AddData<SpriteMaterial>(object);
 
 	// 各dataを初期化
 	// transform
@@ -153,7 +153,7 @@ uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 	// material
 	material->Init(device_);
 	// sprite
-	ObjectPoolManager_->AddData<Sprite>(object,
+	objectPoolManager_->AddData<Sprite>(object,
 		device_, asset_, textureName, *transform);
 
 	LOG_INFO("created object2D: name: [{}] textureName: [{}]", name, textureName);
@@ -163,26 +163,32 @@ uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 
 void ObjectManager::Destroy(uint32_t object) {
 
-	ObjectPoolManager_->Destroy(object);
+	objectPoolManager_->Destroy(object);
 }
 
 void ObjectManager::DestroyAll() {
 
 	// すべて走査して破棄
 	Archetype mask{};
-	auto objects = ObjectPoolManager_->View(mask);
+	auto objects = objectPoolManager_->View(mask);
 	for (uint32_t id : objects) {
 
-		ObjectPoolManager_->Destroy(id);
+		// 破棄フラグがたっていなければ破棄しない
+		const auto& tag = objectPoolManager_->GetData<ObjectTag>(id);
+		if (!tag->destroyOnLoad) {
+			continue;
+		}
+
+		objectPoolManager_->Destroy(id);
 	}
 }
 
 uint32_t ObjectManager::BuildEmptyobject(const std::string& name, const std::string& groupName) {
 
 	// object作成
-	uint32_t object = ObjectPoolManager_->Create();
+	uint32_t object = objectPoolManager_->Create();
 	// tag設定
-	auto* tag = ObjectPoolManager_->AddData<ObjectTag>(object);
+	auto* tag = objectPoolManager_->AddData<ObjectTag>(object);
 	tag->name = systemManager_->GetSystem<TagSystem>()->CheckName(name);
 	tag->groupName = groupName;
 

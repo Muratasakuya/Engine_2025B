@@ -24,7 +24,6 @@ void SceneTransition::Update() {
 	}
 
 	assert(transition_);
-
 	switch (state_) {
 	case TransitionState::Begin: {
 
@@ -61,15 +60,6 @@ void SceneTransition::Update() {
 	}
 	}
 	transition_->Update();
-}
-
-void SceneTransition::ImGui() {
-
-	if (!isTransition_) {
-		return;
-	}
-
-	transition_->ImGui();
 }
 
 void SceneTransition::SetTransition(std::unique_ptr<ITransition> transition) {

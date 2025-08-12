@@ -3,7 +3,6 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Editor/Base/IGameEditor.h>
 #include <Game/Objects/Base/ITransition.h>
 
 // c++
@@ -12,21 +11,18 @@
 //============================================================================
 //	SceneTransition class
 //============================================================================
-class SceneTransition :
-	public IGameEditor {
+class SceneTransition {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	SceneTransition() : IGameEditor("sceneTransition") {};
+	SceneTransition() = default;
 	~SceneTransition() = default;
 
 	void Init();
 
 	void Update();
-
-	void ImGui() override;
 
 	//--------- accessor -----------------------------------------------------
 

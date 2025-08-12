@@ -6,6 +6,7 @@
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
 #include <Engine/Scene/SceneView.h>
+#include <Engine/Scene/Manager/SceneManager.h>
 
 //============================================================================
 //	TitleScene classMethods
@@ -21,7 +22,14 @@ void TitleScene::Init() {
 	PostProcessSystem::GetInstance()->Create({
 		PostProcessType::RadialBlur,
 		PostProcessType::Bloom,
-		PostProcessType::CRTDisplay});
+		PostProcessType::CRTDisplay });
+
+	//========================================================================
+	//	controller(objects)
+	//========================================================================
+
+	controller_ = std::make_unique<TitleController>();
+	controller_->Init();
 
 	//========================================================================
 	//	scene
@@ -38,12 +46,9 @@ void TitleScene::Init() {
 	light_->Init();
 	sceneView_->SetLight(light_.get());
 
-	//========================================================================
-	//	controller
-	//========================================================================
-
-	controller_ = std::make_unique<TitleController>();
-	controller_->Init();
+	// 遷移の設定
+	fadeTransition_ = std::make_unique<FadeTransition>();
+	fadeTransition_->Init();
 }
 
 void TitleScene::Update() {
@@ -51,7 +56,7 @@ void TitleScene::Update() {
 	//========================================================================
 	//	controller
 	//========================================================================
-	
+
 	controller_->Update();
 
 	//========================================================================
@@ -64,4 +69,19 @@ void TitleScene::Update() {
 		// 終了させる
 		isFinishGame_ = true;
 	}
+
+	//========================================================================
+	//	scene
+	//========================================================================
+
+	// ゲーム開始フラグが立てば開始
+	if (controller_->IsGameStart() && fadeTransition_) {
+
+		sceneManager_->SetNextScene(Scene::Game, std::move(fadeTransition_));
+	}
+}
+
+void TitleScene::ImGui() {
+
+	fadeTransition_->ImGui();
 }

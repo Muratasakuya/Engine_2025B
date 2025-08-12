@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Config.h>
 #include <Engine/Input/Input.h>
+#include <Engine/Collision/CollisionGeometry.h>
 #include <Game/Objects/Common/GameButtonBlinkingUpdater.h>
 
 //============================================================================
@@ -85,6 +86,8 @@ void TitleDisplaySprite::Update() {
 
 	// パッド操作入力時の更新
 	UpdateInputGamepad();
+	// ゲーム開始チェック
+	CheckGameStart();
 
 	start_->Update();
 	finishUI_->Update();
@@ -117,6 +120,37 @@ void TitleDisplaySprite::UpdateInputGamepad() {
 	}
 	// 入力判定処理
 	buttonFocusNavigator_->Update();
+}
+
+void TitleDisplaySprite::CheckGameStart() {
+
+	if (isGameStart_ || finishUI_->IsSelectState()) {
+		return;
+	}
+
+	// 入力状態に応じて判定方法を変える
+	const auto& inputType = Input::GetInstance()->GetType();
+	if (inputType == InputType::Keyboard) {
+
+		// 電源ボタン以外の場所を左クリックしたら開始
+		/*if (finishUI_->GetPowerButton()->GetCurrentHover()) {
+			return;
+		}
+		if (Input::GetInstance()->TriggerMouseLeft()) {
+
+			isGameStart_ = true;
+		}*/
+	} else if (inputType == InputType::GamePad) {
+
+		// 開始にフォーカスが合っている状態でAボタンで開始
+		if (!start_->GetCurrentActive(GameButtonResponseType::Focus)) {
+			return;
+		}
+		if (Input::GetInstance()->TriggerGamepadButton(GamePadButtons::A)) {
+
+			isGameStart_ = true;
+		}
+	}
 }
 
 void TitleDisplaySprite::ImGui() {

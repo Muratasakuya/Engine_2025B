@@ -38,6 +38,7 @@ public:
 	/*---------- setter ----------*/
 
 	void SetIdentifier(const std::string& identifier) { identifier_ = identifier; }
+	void SetDestroyOnLoad(bool enable) { tag_->destroyOnLoad = enable; }
 
 	/*---------- getter ----------*/
 

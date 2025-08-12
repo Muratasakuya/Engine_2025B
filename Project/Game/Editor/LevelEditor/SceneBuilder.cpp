@@ -165,7 +165,6 @@ std::unique_ptr<GameObject3D> SceneBuilder::CreateObjectPtr(Level::ObjectType ob
 		return std::make_unique<FieldCrossMarkWall>();
 	}
 	}
-
 	return nullptr;
 }
 

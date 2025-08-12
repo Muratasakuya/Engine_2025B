@@ -12,6 +12,7 @@
 //============================================================================
 struct ObjectTag {
 
-	std::string name;      // objectの名前
-	std::string groupName; // objectの所属しているgroupの名前
+	std::string name;          // objectの名前
+	std::string groupName;     // objectの所属しているgroupの名前
+	bool destroyOnLoad = true; // 全破棄時に破棄しないか
 };
