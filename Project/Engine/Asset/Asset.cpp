@@ -57,11 +57,7 @@ void Asset::PumpAsyncLoads() {
 bool Asset::IsScenePreloadFinished(Scene scene) const {
 
 	// 読み込みが終了しているか
-	auto it = preload_.find(scene);
-	if (it == preload_.end()) {
-		return false;
-	}
-	return it->second.finished;
+	return 1.0f <= GetScenePreloadProgress(scene);
 }
 
 float Asset::GetScenePreloadProgress(Scene scene) const {
@@ -75,7 +71,32 @@ float Asset::GetScenePreloadProgress(Scene scene) const {
 	if (load.total == 0) {
 		return 1.0f;
 	}
-	return static_cast<float>(load.done) / static_cast<float>(load.total);
+	// 読み込み済み
+	uint32_t ready = 0;
+
+	// テクスチャ
+	for (const auto& t : load.textures) {
+		if (textureManager_->Search(t)) {
+
+			++ready;
+		}
+	}
+	// モデル
+	for (const auto& m : load.models) {
+		if (modelLoader_->Search(m)) {
+
+			++ready;
+		}
+	}
+
+	for (const auto& [anim, model] : load.animations) {
+		if (modelLoader_->Search(model)) {
+
+			++ready;
+		}
+	}
+	float progress = static_cast<float>(ready) / static_cast<float>(load.total);
+	return std::clamp(progress, 0.0f, 1.0f);
 }
 
 std::vector<std::function<void()>> Asset::SetTask(const Json& data, AssetLoadType loadType) {
@@ -144,33 +165,44 @@ void Asset::LoadSceneAsync(Scene scene, AssetLoadType loadType) {
 	// 同期、非同期読み込み処理振り分け
 	auto& info = preload_[scene];
 	info.scene = scene;
-	info.started = true;
-	info.total += static_cast<uint32_t>(tasks.size());
+
+	// 必要なデータの名前を取得
+	if (data.contains("Textures") && data["Textures"].is_array()) {
+		for (const auto& texture : data["Textures"]) {
+
+			info.textures.emplace_back(texture.get<std::string>());
+		}
+	}
+	if (data.contains("Models") && data["Models"].is_array()) {
+		for (const auto& model : data["Models"]) {
+
+			info.models.emplace_back(model.get<std::string>());
+		}
+	}
+	if (data.contains("Animations") && data["Animations"].is_array()) {
+		for (const auto& animation : data["Animations"]) {
+
+			info.animations.emplace_back(animation["animation"].get<std::string>(),
+				animation["model"].get<std::string>());
+		}
+	}
+	// リソース合計数
+	info.total = static_cast<uint32_t>(info.textures.size() + info.models.size() + info.animations.size());
 
 	// 同期読み込み処理
 	if (loadType == AssetLoadType::Synch) {
 		for (auto& task : tasks) {
 
 			task();
-			info.done++;
 		}
-		info.finished = true;
 		return;
 	}
 	{
 		// 非同期読み込み処理
 		std::scoped_lock lock(asyncMutex_);
 		for (auto& task : tasks) {
-			pendingLoads_.emplace_back([this, scene, task]() {
 
-				task();
-				auto& load = preload_[scene];
-				load.done++;
-				if (load.total <= load.done) {
-
-					load.finished = true;
-				}
-				});
+			pendingLoads_.emplace_back([this, scene, task]() {task(); });
 		}
 	}
 }

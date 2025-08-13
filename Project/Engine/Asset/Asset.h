@@ -88,9 +88,10 @@ private:
 
 		Scene scene;           // シーンの種類
 		uint32_t total = 0;    // キュー投入総数
-		uint32_t done = 0;     // 処理済み数
-		bool started = false;  // 要求済みか
-		bool finished = false; // 完了したか
+
+		std::vector<std::string> textures;
+		std::vector<std::string> models;
+		std::vector<std::pair<std::string, std::string>> animations;
 	};
 
 	//--------- variables ----------------------------------------------------

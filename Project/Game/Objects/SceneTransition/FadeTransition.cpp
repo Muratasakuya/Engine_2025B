@@ -67,7 +67,7 @@ void FadeTransition::WaitUpdate() {
 void FadeTransition::EndUpdate() {
 
 	endTimer_.Update();
-	fadeSprite_->SetAlpha(std::lerp(0.0f, 1.0f, endTimer_.easedT_));
+	fadeSprite_->SetAlpha(std::lerp(1.0f, 0.0f, endTimer_.easedT_));
 	loadSprite_->SetAlpha(0.0f);
 	if (endTimer_.IsReached()) {
 

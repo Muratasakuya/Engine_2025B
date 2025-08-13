@@ -63,9 +63,6 @@ void SceneManager::SwitchScene() {
 				LoadScene(nextSceneType_);
 				needInitNextScene_ = true;
 			}
-		} else {
-
-			// Loading中の処理はここに入れる
 		}
 	}
 }

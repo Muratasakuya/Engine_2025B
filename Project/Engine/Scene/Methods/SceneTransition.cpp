@@ -32,6 +32,7 @@ void SceneTransition::Update() {
 
 			// 次の状態へ遷移
 			state_ = TransitionState::Wait;
+			isBeginTransitionFinished_ = true;
 		}
 		break;
 	}
@@ -43,7 +44,6 @@ void SceneTransition::Update() {
 			// SceneManagerに次に進めるフラグを通達
 			// 次の状態へ遷移
 			state_ = TransitionState::End;
-			isBeginTransitionFinished_ = true;
 		}
 		break;
 	}
