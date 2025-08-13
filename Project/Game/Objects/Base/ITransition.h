@@ -10,9 +10,10 @@
 // 遷移状態
 enum class TransitionState {
 
-	Begin, // 開始
-	Wait,  // 待ち時間
-	End    // 終了
+	Begin,   // 開始
+	Load,    // 読み込み中
+	LoadEnd, // 読み込み終了
+	End      // 終了
 };
 
 //============================================================================
@@ -33,13 +34,16 @@ public:
 
 	virtual void BeginUpdate() = 0;
 
-	virtual void WaitUpdate() = 0;
+	virtual void LoadUpdate() = 0;
+	virtual void LoadEndUpdate() = 0;
 
 	virtual void EndUpdate() = 0;
 
 	virtual void ImGui() = 0;
 
 	//--------- accessor -----------------------------------------------------
+
+	void SetLoadingFinished(bool finished) { loadingFinished_ = finished; }
 
 	TransitionState GetState() const { return state_; }
 protected:
@@ -51,4 +55,7 @@ protected:
 
 	// 遷移状態
 	TransitionState state_;
+
+	// 読み込みが終了したかどうか
+	bool loadingFinished_;
 };

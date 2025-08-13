@@ -47,12 +47,23 @@ void FadeTransition::BeginUpdate() {
 		fadeSprite_->SetAlpha(1.0f);
 
 		// 次に進める
-		state_ = TransitionState::Wait;
+		state_ = TransitionState::Load;
 		beginTimer_.Reset();
 	}
 }
 
-void FadeTransition::WaitUpdate() {
+void FadeTransition::LoadUpdate() {
+
+	loadSprite_->SetAlpha(1.0f);
+
+	// 読み込み完了後次に進む
+	if (loadingFinished_) {
+
+		state_ = TransitionState::LoadEnd;
+	}
+}
+
+void FadeTransition::LoadEndUpdate() {
 
 	waitTimer_.Update();
 	loadSprite_->SetAlpha(1.0f);
@@ -76,6 +87,7 @@ void FadeTransition::EndUpdate() {
 		// 遷移終了
 		state_ = TransitionState::Begin;
 		endTimer_.Reset();
+		loadingFinished_ = false;
 	}
 }
 

@@ -26,7 +26,8 @@ public:
 
 	void BeginUpdate() override;
 
-	void WaitUpdate() override;
+	void LoadUpdate() override;
+	void LoadEndUpdate() override;
 
 	void EndUpdate() override;
 

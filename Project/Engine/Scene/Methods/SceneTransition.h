@@ -30,9 +30,12 @@ public:
 	void SetTransition();
 	void SetResetBeginTransition() { isBeginTransitionFinished_ = false; }
 
-	bool IsTransition() const { return isTransition_; }
+	void NotifyAssetsFinished() { isLoadingFinished_ = true; }
+	bool ConsumeLoadEndFinished();
 
+	bool IsTransition() const { return isTransition_; }
 	bool IsBeginTransitionFinished() const { return isBeginTransitionFinished_; }
+	TransitionState GetState() const { return state_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -45,6 +48,8 @@ private:
 
 	// 次のSceneに進めるフラグ
 	bool isBeginTransitionFinished_;
+	bool isLoadingFinished_ = false;
+	bool isLoadEndFinished_ = false;
 
 	// 遷移状態
 	TransitionState state_;
