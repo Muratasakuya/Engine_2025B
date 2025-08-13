@@ -13,6 +13,8 @@ void SceneTransition::Init() {
 
 	isTransition_ = false;
 	isBeginTransitionFinished_ = false;
+	isLoadingFinished_ = false;
+	isLoadEndFinished_ = false;
 
 	state_ = TransitionState::Begin;
 }
@@ -28,22 +30,33 @@ void SceneTransition::Update() {
 	case TransitionState::Begin: {
 
 		transition_->BeginUpdate();
-		if (transition_->GetState() == TransitionState::Wait) {
+		if (transition_->GetState() == TransitionState::Load) {
 
 			// 次の状態へ遷移
-			state_ = TransitionState::Wait;
+			state_ = TransitionState::Load;
+			isBeginTransitionFinished_ = true;
 		}
 		break;
 	}
-	case TransitionState::Wait: {
+	case TransitionState::Load: {
 
-		transition_->WaitUpdate();
+		// 読み込みが完了次第次に進める
+		transition_->SetLoadingFinished(isLoadingFinished_);
+		transition_->LoadUpdate();
+		if (transition_->GetState() == TransitionState::LoadEnd) {
+
+			state_ = TransitionState::LoadEnd;
+		}
+		break;
+	}
+	case TransitionState::LoadEnd: {
+
+		// 読み込み終了後更新
+		transition_->LoadEndUpdate();
 		if (transition_->GetState() == TransitionState::End) {
 
-			// SceneManagerに次に進めるフラグを通達
-			// 次の状態へ遷移
 			state_ = TransitionState::End;
-			isBeginTransitionFinished_ = true;
+			isLoadEndFinished_ = true;
 		}
 		break;
 	}
@@ -55,6 +68,7 @@ void SceneTransition::Update() {
 			// 最初の状態に戻す
 			state_ = TransitionState::Begin;
 			isTransition_ = false;
+			isLoadingFinished_ = false;
 		}
 		break;
 	}
@@ -73,4 +87,11 @@ void SceneTransition::SetTransition(std::unique_ptr<ITransition> transition) {
 void SceneTransition::SetTransition() {
 
 	isTransition_ = true;
+}
+
+bool SceneTransition::ConsumeLoadEndFinished() {
+
+	bool result = isLoadEndFinished_;
+	isLoadEndFinished_ = false;
+	return result;
 }

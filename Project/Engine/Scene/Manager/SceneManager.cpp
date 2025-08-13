@@ -57,15 +57,16 @@ void SceneManager::SwitchScene() {
 	}
 
 	if (isSceneSwitching_) {
+
+		// 読み込みが完了したら通知する
 		if (asset_->IsScenePreloadFinished(nextSceneType_)) {
-			if (!needInitNextScene_) {
 
-				LoadScene(nextSceneType_);
-				needInitNextScene_ = true;
-			}
-		} else {
+			sceneTransition_->NotifyAssetsFinished();
+		}
+		if (!needInitNextScene_ && sceneTransition_->ConsumeLoadEndFinished()) {
 
-			// Loading中の処理はここに入れる
+			LoadScene(nextSceneType_);
+			needInitNextScene_ = true;
 		}
 	}
 }
