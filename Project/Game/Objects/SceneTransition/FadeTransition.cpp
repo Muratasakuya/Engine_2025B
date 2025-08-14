@@ -20,7 +20,7 @@ void FadeTransition::Init() {
 	// fade初期設定
 	fadeSprite_->SetCenterTranslation();
 	fadeSprite_->SetSize(Vector2(Config::kWindowWidthf, Config::kWindowHeightf));
-	fadeSprite_->SetColor(Color::Convert(0x1F1F1FFF));
+	fadeSprite_->SetColor(Color::Convert(0x040404FF));
 	fadeSprite_->SetAlpha(0.0f);
 
 	loadSprite_ = std::make_unique<GameObject2D>();
