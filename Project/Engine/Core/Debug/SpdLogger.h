@@ -17,6 +17,8 @@
 // c++
 #include <filesystem>
 #include <vector>
+#include <chrono>
+#include <string>
 
 //============================================================================
 //	SpdLogger class
@@ -88,3 +90,44 @@ inline void SpdLogger::LogFormat(LogLevel level, fmt::format_string<Args...> fmt
 #define LOG_CRIT(...)  SPDLOG_LOGGER_CALL(SpdLogger::Get(), spdlog::level::critical, __VA_ARGS__)
 
 #define LOG_ASSET_INFO(...)  SPDLOG_LOGGER_CALL(SpdLogger::GetAsset(), spdlog::level::info, __VA_ARGS__)
+
+//============================================================================
+//	ScopedMsLog class
+//============================================================================
+class ScopedMsLog final {
+public:
+	//========================================================================
+	//	public Methods
+	//========================================================================
+
+	explicit ScopedMsLog(std::string label) :
+		label_(std::move(label)), start_(std::chrono::steady_clock::now()) {}
+
+	~ScopedMsLog() {
+
+		using namespace std::chrono;
+		const auto us = duration_cast<microseconds>(steady_clock::now() - start_).count();
+		const double ms = static_cast<double>(us) / 1000.0;
+		SpdLogger::Get()->log(spdlog::level::info, "[TIMER] {} : {:.3f} ms", label_, ms);
+	}
+private:
+	//========================================================================
+	//	private Methods
+	//========================================================================
+
+	//--------- variables ----------------------------------------------------
+
+	std::string label_;
+	std::chrono::steady_clock::time_point start_;
+};
+
+//============================================================================
+//	ScopedMsLog defines
+//============================================================================
+#ifndef SPDLOG_FUNCTION
+#   define SPDLOG_FUNCTION __FUNCSIG__
+#endif
+#define CONCAT_INNER(a,b) a##b
+#define CONCAT(a,b) CONCAT_INNER(a,b)
+#define LOG_SCOPE_MS_THIS() ::ScopedMsLog CONCAT(_scopems_, __LINE__)(SPDLOG_FUNCTION)
+#define LOG_SCOPE_MS_LABEL(label) ::ScopedMsLog CONCAT(_scopems_, __LINE__)(label)

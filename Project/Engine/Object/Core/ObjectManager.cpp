@@ -83,6 +83,8 @@ uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 	const std::string& name, const std::string& groupName,
 	const std::optional<std::string>& animationName) {
 
+	LOG_SCOPE_MS_LABEL(modelName);
+
 	// object作成
 	uint32_t object = BuildEmptyobject(name, groupName);
 	// 必要なdataを作成
@@ -117,11 +119,12 @@ uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 		systemManager_->GetSystem<InstancedMeshSystem>()->CreateStaticMesh(modelName);
 		LOG_INFO("created object3D: name: [{}] staticMesh: [{}]", name, modelName);
 	}
-
 	return object;
 }
 
 uint32_t ObjectManager::CreateSkybox(const std::string& textureName) {
+
+	LOG_SCOPE_MS_LABEL("skybox");
 
 	// object作成
 	uint32_t object = BuildEmptyobject("skybox", "Environment");
@@ -137,6 +140,8 @@ uint32_t ObjectManager::CreateSkybox(const std::string& textureName) {
 
 uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 	const std::string& name, const std::string& groupName) {
+
+	LOG_SCOPE_MS_LABEL(textureName);
 
 	// object作成
 	uint32_t object = BuildEmptyobject(name, groupName);
