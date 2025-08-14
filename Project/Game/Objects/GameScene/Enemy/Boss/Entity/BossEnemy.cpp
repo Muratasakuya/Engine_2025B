@@ -45,6 +45,7 @@ void BossEnemy::InitAnimations() {
 
 	// keyEventを設定
 	animation_->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
+	animation_->Update(transform_->matrix.world);
 }
 
 void BossEnemy::InitCollision() {

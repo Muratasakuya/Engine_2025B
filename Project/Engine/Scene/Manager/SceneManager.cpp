@@ -112,6 +112,10 @@ void SceneManager::ImGui() {
 		isSceneSwitching_ = true;
 		nextSceneType_ = selected;
 	}
+
+	ImGui::SeparatorText("Scene Transition");
+
+	sceneTransition_->ImGui();
 }
 
 bool SceneManager::ConsumeNeedInitNextScene() {

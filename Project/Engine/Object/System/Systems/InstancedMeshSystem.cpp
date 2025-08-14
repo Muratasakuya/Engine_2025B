@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Asset/Asset.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Object/Core/ObjectPoolManager.h>
 #include <Engine/Core/Graphics/Raytracing/RaytracingScene.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
@@ -32,6 +33,8 @@ InstancedMeshSystem::~InstancedMeshSystem() {
 void InstancedMeshSystem::StartBuildWorker() {
 
 	buildWorker_.Start([this](MeshBuildJob&& job) {
+
+		LOG_SCOPE_MS_LABEL(job.name);
 
 		// ジョブ開始
 		runningJobs_.fetch_add(1, std::memory_order_relaxed);

@@ -83,5 +83,9 @@ void TitleScene::Update() {
 
 void TitleScene::ImGui() {
 
+	if (!fadeTransition_) {
+		return;
+	}
+
 	fadeTransition_->ImGui();
 }
