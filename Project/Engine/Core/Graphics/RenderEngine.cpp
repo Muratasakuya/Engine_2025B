@@ -7,6 +7,7 @@
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Object/Core/ObjectManager.h>
+#include <Engine/Object/System/Systems/InstancedMeshSystem.h>
 #include <Engine/Effect/Particle/Core/ParticleManager.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Config.h>
@@ -102,8 +103,8 @@ void RenderEngine::InitRenderer(ID3D12Device8* device, DxShaderCompiler* shaderC
 void RenderEngine::Init(WinApp* winApp, ID3D12Device8* device, DxShaderCompiler* shaderCompiler,
 	DxCommand* dxCommand, IDXGIFactory7* factory) {
 
-	ObjectManager_ = nullptr;
-	ObjectManager_ = ObjectManager::GetInstance();
+	objectManager_ = nullptr;
+	objectManager_ = ObjectManager::GetInstance();
 
 	dxCommand_ = nullptr;
 	dxCommand_ = dxCommand;
@@ -149,7 +150,7 @@ void RenderEngine::BeginFrame() {
 	dxCommand_->SetDescriptorHeaps({ srvDescriptor_->GetDescriptorHeap() });
 }
 
-void RenderEngine::UpdateGPUBuffer(SceneView* sceneView) {
+void RenderEngine::UpdateGPUBuffer(SceneView* sceneView, bool enableMesh) {
 
 	// commandList取得
 	ID3D12GraphicsCommandList* commandList = dxCommand_->GetCommandList();
@@ -160,19 +161,28 @@ void RenderEngine::UpdateGPUBuffer(SceneView* sceneView) {
 	// skinningPipeline設定
 	commandList->SetComputeRootSignature(skinningPipeline_->GetRootSignature());
 	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
-	// objectが持つbufferを更新
-	ObjectManager_->UpdateBuffer();
 
 	// TLASの更新処理
-	meshRenderer_->UpdateRayScene(dxCommand_);
+	if (enableMesh) {
+
+		// objectが持つbufferを更新
+		objectManager_->UpdateBuffer();
+
+		const auto& system = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
+		// メッシュ非同期処理中は処理しない
+		if (!system->IsBuilding()) {
+
+			meshRenderer_->UpdateRayScene(dxCommand_);
+		}
+	}
 }
 
-void RenderEngine::Rendering(ViewType type) {
+void RenderEngine::Rendering(ViewType type, bool enableMesh) {
 
 	BeginRenderTarget(renderTextures_[type].get());
 
 	// 描画処理
-	Renderers(type);
+	Renderers(type, enableMesh);
 
 	EndRenderTarget(renderTextures_[type].get());
 }
@@ -191,7 +201,7 @@ void RenderEngine::EndPostProcess() {
 		D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE);
 }
 
-void RenderEngine::Renderers(ViewType type) {
+void RenderEngine::Renderers(ViewType type, bool enableMesh) {
 
 	// 再設定
 	// srvDescriptorHeap設定
@@ -204,8 +214,11 @@ void RenderEngine::Renderers(ViewType type) {
 	// line描画実行
 	LineRenderer::GetInstance()->ExecuteLine(static_cast<bool>(type), LineType::None);
 
-	// 通常描画処理
-	meshRenderer_->Rendering(static_cast<bool>(type), sceneBuffer_.get(), dxCommand_);
+	// 通常描画処理(シーン遷移中は処理できないようにする)
+	if (enableMesh) {
+
+		meshRenderer_->Rendering(static_cast<bool>(type), sceneBuffer_.get(), dxCommand_);
+	}
 
 	// particle描画
 	ParticleManager::GetInstance()->Rendering(static_cast<bool>(type), sceneBuffer_.get(), dxCommand_);

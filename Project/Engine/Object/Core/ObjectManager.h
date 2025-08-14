@@ -33,6 +33,8 @@ public:
 	void UpdateData();
 	void UpdateBuffer();
 
+	//---------- objects -----------------------------------------------------
+
 	// object追加
 	// helper
 	uint32_t CreateObjects(const std::string& modelName, const std::string& name,

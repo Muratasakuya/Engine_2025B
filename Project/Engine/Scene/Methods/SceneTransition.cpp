@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
+#include <Engine/Utility/EnumAdapter.h>
 
 //============================================================================
 //	SceneTransition classMethods
@@ -87,6 +88,16 @@ void SceneTransition::SetTransition(std::unique_ptr<ITransition> transition) {
 void SceneTransition::SetTransition() {
 
 	isTransition_ = true;
+}
+
+void SceneTransition::ImGui() {
+
+	ImGui::Text("CurrentTransition : %s", EnumAdapter<TransitionState>::ToString(state_));
+	if (!isTransition_) {
+		return;
+	}
+
+	transition_->ImGui();
 }
 
 bool SceneTransition::ConsumeLoadEndFinished() {

@@ -55,10 +55,10 @@ public:
 	void BeginFrame();
 
 	// GPUの更新処理
-	void UpdateGPUBuffer(SceneView* sceneView);
+	void UpdateGPUBuffer(SceneView* sceneView, bool enableMesh);
 
 	// viewごとの描画
-	void Rendering(ViewType type);
+	void Rendering(ViewType type, bool enableMesh);
 
 	// postProcess処理
 	void BeginPostProcess();
@@ -85,7 +85,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	ObjectManager* ObjectManager_;
+	ObjectManager* objectManager_;
 	DxCommand* dxCommand_;
 
 	std::unique_ptr<DxSwapChain> dxSwapChain_;
@@ -120,7 +120,7 @@ private:
 	void InitRenderer(ID3D12Device8* device, DxShaderCompiler* shaderCompiler);
 
 	// render
-	void Renderers(ViewType type);
+	void Renderers(ViewType type, bool enableMesh);
 
 	// command
 	void BeginRenderTarget(RenderTexture* renderTexture);

@@ -67,6 +67,7 @@ public:
 	// 描画に必要なデータ
 	const ModelData& GetModelData(const std::string& modelName) const;
 	const std::vector<std::string>& GetModelKeys() const;
+	const std::vector<std::string>& GetPreloadModels(Scene scene) const;
 	// エディターで使用するデータ
 	bool SearchModel(const std::string& modelName);
 

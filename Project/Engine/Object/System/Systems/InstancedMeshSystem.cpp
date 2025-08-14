@@ -3,6 +3,8 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Asset/Asset.h>
+#include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Object/Core/ObjectPoolManager.h>
 #include <Engine/Core/Graphics/Raytracing/RaytracingScene.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
@@ -20,6 +22,114 @@ InstancedMeshSystem::InstancedMeshSystem(ID3D12Device* device, Asset* asset,
 
 	instancedBuffer_ = std::make_unique<InstancedMeshBuffer>();
 	instancedBuffer_->Init(device_, asset_);
+}
+
+InstancedMeshSystem::~InstancedMeshSystem() {
+
+	// 処理されている非同期処理をすべて停止させる
+	StopBuildWorker();
+}
+
+void InstancedMeshSystem::StartBuildWorker() {
+
+	buildWorker_.Start([this](MeshBuildJob&& job) {
+
+		LOG_SCOPE_MS_LABEL(job.name);
+
+		// ジョブ開始
+		runningJobs_.fetch_add(1, std::memory_order_relaxed);
+		// キュー分を減算
+		pendingJobs_.fetch_sub(1, std::memory_order_relaxed);
+		if (job.skinned) {
+
+			// 骨ありメッシュ
+			meshRegistry_->RegisterMesh(job.name, true, job.maxInstance);
+			std::scoped_lock lock(instancedMutex_);
+			instancedBuffer_->Create(meshRegistry_->GetMeshes().at(job.name).get(),
+				job.name, job.maxInstance);
+		} else {
+
+			// 静的メッシュ
+			meshRegistry_->RegisterMesh(job.name, false, job.maxInstance);
+			std::scoped_lock lock(instancedMutex_);
+			instancedBuffer_->Create(meshRegistry_->GetMeshes().at(job.name).get(),
+				job.name, job.maxInstance);
+		}
+		// ジョブ終了
+		runningJobs_.fetch_sub(1, std::memory_order_relaxed);
+		});
+}
+
+void InstancedMeshSystem::StopBuildWorker() {
+
+	buildWorker_.Stop();
+}
+
+void InstancedMeshSystem::RequestBuild(const std::string& modelName,
+	uint32_t maxInstStatic, uint32_t maxInstSkinned) {
+
+	// 作成済み、キューに設定済みなら処理しない
+	if (IsReady(modelName) || requested_.count(modelName)) {
+		return;
+	}
+
+	// 骨があるか判定
+	const bool skinned = !asset_->GetModelData(modelName).skinClusterData.empty();
+	const uint32_t maxInstatnce = skinned ? maxInstSkinned : maxInstStatic;
+
+	auto& queue = buildWorker_.RefAsyncQueue();
+	if (queue.IsClearCondition([&](const MeshBuildJob& j) { return j.name == modelName; })) {
+		return;
+	}
+	// 処理キューの追加
+	queue.AddQueue(MeshBuildJob{ modelName, skinned, maxInstatnce });
+	requested_.insert(modelName);
+	pendingJobs_.fetch_add(1, std::memory_order_relaxed);
+}
+
+void InstancedMeshSystem::RequestBuildForScene(Scene scene) {
+
+	// シーンファイルから作成するメッシュのリストを取得する
+	const auto& modelNames = asset_->GetPreloadModels(scene);
+	for (auto& modelName : modelNames) {
+
+		RequestBuild(modelName);
+	}
+}
+
+bool InstancedMeshSystem::IsReady(const std::string& name) const {
+
+	// メッシュ作成済みかどうか
+	const auto& meshes = meshRegistry_->GetMeshes();
+	if (!meshes.contains(name)) {
+		return false;
+	}
+	// バッファ作成済みかどうか
+	const auto& insttance = instancedBuffer_->GetInstancingData();
+	return insttance.contains(name);
+}
+
+bool InstancedMeshSystem::IsBuilding() const {
+
+	// どれかが1以上なら処理中
+	return 0 < (pendingJobs_.load(std::memory_order_relaxed) +
+		runningJobs_.load(std::memory_order_relaxed));
+}
+
+float InstancedMeshSystem::GetBuildProgressForScene(Scene scene) const {
+
+	const auto& modelNames = asset_->GetPreloadModels(scene);
+	if (modelNames.empty()) {
+		return 1.0f;
+	}
+
+	uint32_t ready = 0;
+	for (auto& model : modelNames) {
+		if (IsReady(model)) {
+			++ready;
+		}
+	}
+	return std::clamp(ready / static_cast<float>(modelNames.size()), 0.0f, 1.0f);
 }
 
 void InstancedMeshSystem::CreateStaticMesh(const std::string& modelName) {
@@ -64,7 +174,11 @@ void InstancedMeshSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 		auto* materials = ObjectPoolManager.GetData<Material, true>(object);
 		auto* animation = ObjectPoolManager.GetData<SkinnedAnimation>(object);
 
+		// 未作成の場合スキップ
 		const std::string& instancingName = transform->GetInstancingName();
+		if (!IsReady(instancingName)) {
+			continue;
+		}
 		instancedBuffer_->SetUploadData(
 			instancingName, transform->matrix, *materials, *animation);
 	}

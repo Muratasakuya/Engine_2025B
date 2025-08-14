@@ -58,6 +58,7 @@ void Player::InitAnimations() {
 
 	// keyEventを設定
 	animation_->SetKeyframeEvent("Player/animationEffectKey.json");
+	animation_->Update(transform_->matrix.world);
 }
 
 void Player::InitCollision() {

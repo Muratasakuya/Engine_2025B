@@ -62,9 +62,10 @@ void ObjectManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxComman
 	systemManager_->AddSystem<MaterialSystem>();
 	systemManager_->AddSystem<SpriteMaterialSystem>();
 	systemManager_->AddSystem<TagSystem>();
-	systemManager_->AddSystem<InstancedMeshSystem>(device, asset, dxCommand);
 	systemManager_->AddSystem<SpriteBufferSystem>();
 	systemManager_->AddSystem<SkyboxRenderSystem>();
+	systemManager_->AddSystem<InstancedMeshSystem>(device, asset, dxCommand);
+	systemManager_->GetSystem<InstancedMeshSystem>()->StartBuildWorker();
 
 	ImGuiObjectEditor::GetInstance()->Init();
 }
@@ -82,6 +83,8 @@ void ObjectManager::UpdateBuffer() {
 uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 	const std::string& name, const std::string& groupName,
 	const std::optional<std::string>& animationName) {
+
+	LOG_SCOPE_MS_LABEL(modelName);
 
 	// object作成
 	uint32_t object = BuildEmptyobject(name, groupName);
@@ -108,20 +111,17 @@ uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 		// 初期化
 		animation->Init(*animationName, asset_);
 
-		// bufferを作成
-		systemManager_->GetSystem<InstancedMeshSystem>()->CreateSkinnedMesh(modelName);
 		LOG_INFO("created object3D: name: [{}] skinnedMesh: [{}] animation: [{}]", name, modelName, animationName.value());
 	} else {
 
-		// bufferを作成
-		systemManager_->GetSystem<InstancedMeshSystem>()->CreateStaticMesh(modelName);
 		LOG_INFO("created object3D: name: [{}] staticMesh: [{}]", name, modelName);
 	}
-
 	return object;
 }
 
 uint32_t ObjectManager::CreateSkybox(const std::string& textureName) {
+
+	LOG_SCOPE_MS_LABEL("skybox");
 
 	// object作成
 	uint32_t object = BuildEmptyobject("skybox", "Environment");
@@ -137,6 +137,8 @@ uint32_t ObjectManager::CreateSkybox(const std::string& textureName) {
 
 uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 	const std::string& name, const std::string& groupName) {
+
+	LOG_SCOPE_MS_LABEL(textureName);
 
 	// object作成
 	uint32_t object = BuildEmptyobject(name, groupName);

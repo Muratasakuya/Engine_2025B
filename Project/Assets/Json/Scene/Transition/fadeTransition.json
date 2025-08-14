@@ -5,7 +5,7 @@
     },
     "endTimer_": {
         "easeingType_": "EaseInSine",
-        "target_": 0.4000000059604645
+        "target_": 2.4000000953674316
     },
     "waitTimer_": {
         "easeingType_": "EaseInSine",

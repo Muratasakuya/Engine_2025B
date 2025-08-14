@@ -255,6 +255,16 @@ const std::vector<std::string>& Asset::GetModelKeys() const {
 	return modelLoader_->GetModelKeys();
 }
 
+const std::vector<std::string>& Asset::GetPreloadModels(Scene scene) const {
+
+	static const std::vector<std::string> kEmpty;
+	auto it = preload_.find(scene);
+	if (it == preload_.end()) {
+		return kEmpty;
+	}
+	return it->second.models;
+}
+
 const AnimationData& Asset::GetAnimationData(const std::string& animationName) const {
 	return animationManager_->GetAnimationData(animationName);
 }

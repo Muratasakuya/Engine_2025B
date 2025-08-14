@@ -24,6 +24,8 @@ public:
 
 	void Update();
 
+	void ImGui();
+
 	//--------- accessor -----------------------------------------------------
 
 	void SetTransition(std::unique_ptr<ITransition> transition);
