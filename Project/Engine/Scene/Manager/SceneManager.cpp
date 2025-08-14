@@ -6,6 +6,7 @@
 #include <Engine/Asset/Asset.h>
 #include <Engine/Editor/ImGuiObjectEditor.h>
 #include <Engine/Object/Core/ObjectManager.h>
+#include <Engine/Object/System/Systems/InstancedMeshSystem.h>
 #include <Engine/Utility/EnumAdapter.h>
 
 //============================================================================
@@ -54,19 +55,33 @@ void SceneManager::SwitchScene() {
 
 		isSceneSwitching_ = true;
 		sceneTransition_->SetResetBeginTransition();
+		queuedMeshBuild_ = false;
+		allowMeshRendering_ = false;
 	}
 
 	if (isSceneSwitching_) {
-
-		// 読み込みが完了したら通知する
+		// アセットファイルの読み込みが終了したかどうか
 		if (asset_->IsScenePreloadFinished(nextSceneType_)) {
 
-			sceneTransition_->NotifyAssetsFinished();
+			const auto& system = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
+			// シーンに必要なメッシュ生成を依頼する
+			if (!queuedMeshBuild_) {
+
+				system->RequestBuildForScene(nextSceneType_);
+				queuedMeshBuild_ = true;
+			}
+			// 終了したら遷移を終了させる
+			if (1.0f <= system->GetBuildProgressForScene(nextSceneType_)) {
+
+				sceneTransition_->NotifyAssetsFinished();
+			}
 		}
+		// 遷移終了後
 		if (!needInitNextScene_ && sceneTransition_->ConsumeLoadEndFinished()) {
 
 			LoadScene(nextSceneType_);
 			needInitNextScene_ = true;
+			allowMeshRendering_ = true;
 		}
 	}
 }

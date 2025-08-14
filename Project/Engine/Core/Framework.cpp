@@ -196,7 +196,7 @@ void Framework::Draw() {
 	GameTimer::BeginDrawCount();
 
 	// GPUの更新処理
-	renderEngine_->UpdateGPUBuffer(sceneView_.get());
+	renderEngine_->UpdateGPUBuffer(sceneView_.get(), sceneManager_->IsMeshRenderingAllowed());
 
 	//========================================================================
 	//	draw: render
@@ -224,12 +224,13 @@ void Framework::Draw() {
 void Framework::RenderPath(DxCommand* dxCommand) {
 
 	PostProcessSystem* postProcessSystem = PostProcessSystem::GetInstance();
+	bool meshEnable = sceneManager_->IsMeshRenderingAllowed();
 
 	//========================================================================
 	//	draw: renderTexture
 	//========================================================================
 
-	renderEngine_->Rendering(RenderEngine::ViewType::Main);
+	renderEngine_->Rendering(RenderEngine::ViewType::Main, meshEnable);
 
 	renderEngine_->BeginPostProcess();
 
@@ -244,7 +245,7 @@ void Framework::RenderPath(DxCommand* dxCommand) {
 	//========================================================================
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
-	renderEngine_->Rendering(RenderEngine::ViewType::Debug);
+	renderEngine_->Rendering(RenderEngine::ViewType::Debug, meshEnable);
 
 	postProcessSystem->ExecuteDebugScene(renderEngine_->GetRenderTexture(
 		RenderEngine::ViewType::Debug)->GetSRVGPUHandle(), dxCommand);

@@ -38,10 +38,9 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
-	bool IsSceneSwitching() const { return isSceneSwitching_; }
-
 	bool IsFinishGame() const { return currentScene_->IsFinishGame(); }
-
+	bool IsSceneSwitching() const { return isSceneSwitching_; }
+	bool IsMeshRenderingAllowed() const { return allowMeshRendering_; }
 	bool ConsumeNeedInitNextScene();
 private:
 	//========================================================================
@@ -63,6 +62,10 @@ private:
 	Scene nextSceneType_;
 	bool isSceneSwitching_;
 	bool needInitNextScene_;
+
+	// メッシュ制御
+	bool queuedMeshBuild_;
+	bool allowMeshRendering_ = true;
 
 	//--------- functions ----------------------------------------------------
 

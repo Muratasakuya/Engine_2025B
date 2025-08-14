@@ -47,7 +47,6 @@ void MeshRenderer::UpdateRayScene(DxCommand* dxCommand) {
 
 	const auto& meshes = system->GetMeshes();
 	auto instancingBuffers = system->GetInstancingData();
-
 	if (meshes.empty()) {
 		return;
 	}
@@ -55,8 +54,12 @@ void MeshRenderer::UpdateRayScene(DxCommand* dxCommand) {
 	// TLAS更新処理
 	std::vector<IMesh*> meshPtrs;
 	meshPtrs.reserve(meshes.size());
-	for (const auto& mesh : std::views::values(meshes)) {
+	for (const auto& [name, mesh] : meshes) {
 
+		// 作成しきれていないメッシュをスキップ
+		if (!system->IsReady(name)) {
+			continue;
+		}
 		meshPtrs.emplace_back(mesh.get());
 
 		// BLASに渡す前に頂点を遷移
@@ -136,6 +139,11 @@ void MeshRenderer::Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, Dx
 	}
 
 	for (const auto& [name, mesh] : meshes) {
+
+		// 作成しきれていないメッシュをスキップ
+		if (!system->IsReady(name)) {
+			 continue;
+		}
 
 		// meshごとのmatrix設定
 		commandList->SetGraphicsRootShaderResourceView(4,
