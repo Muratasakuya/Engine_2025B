@@ -51,6 +51,9 @@ void StartGameState::Init(SceneView* sceneView) {
 	context_->light->directional.color = Color::Convert(0xadceffff);
 	sceneView->SetLight(context_->light);
 
+	// 衝突
+	context_->fieldCollision->Init();
+
 	//========================================================================
 	//	backObjects
 	//========================================================================
@@ -82,6 +85,9 @@ void StartGameState::Init(SceneView* sceneView) {
 	// ボス、カメラをセット
 	context_->player->SetBossEnemy(context_->boss);
 	context_->player->SetFollowCamera(context_->camera->GetFollowCamera());
+
+	// 衝突応答にプレイヤー、ボスをセット
+	context_->fieldCollision->SetPushBackTarget(context_->player, context_->boss);
 }
 
 void StartGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -99,6 +105,7 @@ void StartGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	context_->camera->Update();
 	context_->level->Update();
+	context_->fieldCollision->Update();
 }
 
 void StartGameState::NonActiveUpdate([[maybe_unused]] SceneManager* sceneManager) {

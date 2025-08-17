@@ -59,6 +59,8 @@ private:
 	std::unique_ptr<CameraManager> cameraManager_;
 	// light
 	std::unique_ptr<PunctualLight> gameLight_;
+	// collision
+	std::unique_ptr<FieldCollisionCollection> fieldCollision_;
 
 	// objects
 	std::unique_ptr<Player> player_;

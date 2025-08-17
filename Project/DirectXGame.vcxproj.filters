@@ -347,7 +347,7 @@
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\State\BossEnemyStateController.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameScene\Environment\FieldCrossMarkWall.cpp">
+    <ClCompile Include="Game\Objects\GameScene\Environment\Object\FieldCrossMarkWall.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Objects\Base\GameHPBar.cpp">
@@ -656,6 +656,12 @@
     <ClCompile Include="Game\Scene\GameState\States\PauseState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldCollision.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldCollisionCollection.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -785,7 +791,7 @@
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\State\Interface\BossEnemyIState.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\State\BossEnemyStateController.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Structures\BossEnemyStructures.h" />
-    <ClInclude Include="Game\Objects\GameScene\Environment\FieldCrossMarkWall.h" />
+    <ClInclude Include="Game\Objects\GameScene\Environment\Object\FieldCrossMarkWall.h" />
     <ClInclude Include="Game\Objects\Base\GameHPBar.h" />
     <ClInclude Include="Game\Objects\Base\GameDigitDisplay.h" />
     <ClInclude Include="Engine\Core\Graphics\GPUObject\DitherStructures.h" />
@@ -912,6 +918,8 @@
     <ClInclude Include="Game\Scene\GameState\States\PlayGameState.h" />
     <ClInclude Include="Game\Scene\GameState\States\EndGameState.h" />
     <ClInclude Include="Game\Scene\GameState\States\PauseState.h" />
+    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldCollision.h" />
+    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldCollisionCollection.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />
