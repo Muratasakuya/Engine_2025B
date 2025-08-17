@@ -66,7 +66,7 @@ void GameScene::Init() {
 	//========================================================================
 
 	levelEditor_ = std::make_unique<LevelEditor>();
-	levelEditor_->Init("levelEditor");
+	levelEditor_->Init("testLevelEditor");
 
 	//========================================================================
 	//	frontObjects
