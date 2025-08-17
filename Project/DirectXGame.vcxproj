@@ -680,10 +680,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemy.cpp" />
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemyWeapon.cpp" />
-    <ClCompile Include="Game\Objects\GameScene\GameController.cpp">
-      <SubType>
-      </SubType>
-    </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Player\Collision\PlayerAttackCollision.cpp">
       <SubType>
       </SubType>
@@ -803,6 +799,26 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Engine\Scene\Methods\IScene.cpp" />
     <ClCompile Include="Engine\Scene\Methods\SceneFactory.cpp" />
     <ClCompile Include="Engine\Scene\Methods\SceneTransition.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameState\States\BeginGameState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameState\States\EndGameState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameState\States\StartGameState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameState\States\PauseState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameState\States\PlayGameState.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -1453,10 +1469,6 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemyWeapon.h" />
-    <ClInclude Include="Game\Objects\GameScene\GameController.h">
-      <SubType>
-      </SubType>
-    </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Player\Collision\PlayerAttackCollision.h">
       <SubType>
       </SubType>
@@ -1577,6 +1589,34 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Engine\Scene\Methods\IScene.h" />
     <ClInclude Include="Engine\Scene\Methods\SceneFactory.h" />
     <ClInclude Include="Engine\Scene\Methods\SceneTransition.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameState\GameContext.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameState\Interface\IGameSceneState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameState\States\BeginGameState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameState\States\EndGameState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameState\States\StartGameState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameState\States\PauseState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Scene\GameState\States\PlayGameState.h">
       <SubType>
       </SubType>
     </ClInclude>

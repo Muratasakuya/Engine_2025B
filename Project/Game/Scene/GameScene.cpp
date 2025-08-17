@@ -10,106 +10,124 @@
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Asset/Asset.h>
 
+// scene
+#include <Game/Scene/GameState/States/StartGameState.h>
+#include <Game/Scene/GameState/States/BeginGameState.h>
+#include <Game/Scene/GameState/States/PlayGameState.h>
+#include <Game/Scene/GameState/States/EndGameState.h>
+#include <Game/Scene/GameState/States/PauseState.h>
+
 //============================================================================
 //	GameScene classMethods
 //============================================================================
 
+void GameScene::InitStates() {
+
+	// scene
+	context_.camera = cameraManager_.get();
+	context_.light = gameLight_.get();
+	// object
+	context_.player = player_.get();
+	context_.boss = bossEnemy_.get();
+	// editor
+	context_.level = levelEditor_.get();
+
+	// シーン状態クラスの初期化
+	states_[static_cast<uint32_t>(State::Start)] = std::make_unique<StartGameState>(&context_);
+	states_[static_cast<uint32_t>(State::Start)]->Init(sceneView_);
+
+	states_[static_cast<uint32_t>(State::BeginGame)] = std::make_unique<BeginGameState>(&context_);
+	states_[static_cast<uint32_t>(State::BeginGame)]->Init(sceneView_);
+
+	states_[static_cast<uint32_t>(State::PlayGame)] = std::make_unique<PlayGameState>(&context_);
+	states_[static_cast<uint32_t>(State::PlayGame)]->Init(sceneView_);
+
+	states_[static_cast<uint32_t>(State::EndGame)] = std::make_unique<EndGameState>(&context_);
+	states_[static_cast<uint32_t>(State::EndGame)]->Init(sceneView_);
+
+	states_[static_cast<uint32_t>(State::Pause)] = std::make_unique<PauseState>(&context_);
+	states_[static_cast<uint32_t>(State::Pause)]->Init(sceneView_);
+
+	// 最初の状態を設定
+	currentState_ = State::Start;
+}
+
 void GameScene::Init() {
 
-	LOG_SCOPE_MS_LABEL("GameScene");
-
 	//========================================================================
-	//	postProcess
+	//	sceneObjects
 	//========================================================================
 
-	PostProcessSystem* postProcessSystem = PostProcessSystem::GetInstance();
-
-	postProcessSystem->Create({
-			PostProcessType::RadialBlur,
-			PostProcessType::Bloom });
-	postProcessSystem->AddProcess(PostProcessType::RadialBlur);
-	postProcessSystem->AddProcess(PostProcessType::Bloom);
-
-	// ブラーの値を0.0fで初期化
-	RadialBlurForGPU radialBlurParam{};
-	radialBlurParam.center = Vector2(0.5f, 0.5f);
-	radialBlurParam.numSamples = 0;
-	radialBlurParam.width = 0.0f;
-	postProcessSystem->SetParameter(radialBlurParam, PostProcessType::RadialBlur);
-
-	//========================================================================
-	//	sceneObject
-	//========================================================================
-
-	// camera
 	cameraManager_ = std::make_unique<CameraManager>();
-	cameraManager_->Init(sceneView_);
-
-	// light
 	gameLight_ = std::make_unique<PunctualLight>();
-	gameLight_->Init();
-	gameLight_->directional.direction.x = 0.558f;
-	gameLight_->directional.direction.y = -0.476f;
-	gameLight_->directional.direction.z = -0.68f;
-	gameLight_->directional.color = Color::Convert(0xadceffff);
-
-	sceneView_->SetLight(gameLight_.get());
-
-	//========================================================================
-	//	backObjects
-	//========================================================================
-
-	ObjectManager::GetInstance()->CreateSkybox("overcast_soil_puresky_4k");
 
 	//========================================================================
 	//	editor
 	//========================================================================
 
 	levelEditor_ = std::make_unique<LevelEditor>();
-	levelEditor_->Init("levelEditor");
 
 	//========================================================================
 	//	frontObjects
 	//========================================================================
 
 	player_ = std::make_unique<Player>();
-	player_->Init("player", "player", "Player", "player_idle");
-
-	// 追従先を設定する: player
-	cameraManager_->SetTarget(player_.get());
-
 	bossEnemy_ = std::make_unique<BossEnemy>();
-	bossEnemy_->Init("bossEnemy", "bossEnemy", "Enemy", "bossEnemy_idle");
 
-	// player、カメラをセット
-	bossEnemy_->SetPlayer(player_.get());
-	bossEnemy_->SetFollowCamera(cameraManager_->GetFollowCamera());
-	// bossEnemy、カメラをセット
-	player_->SetBossEnemy(bossEnemy_.get());
-	player_->SetFollowCamera(cameraManager_->GetFollowCamera());
+	//========================================================================
+	//	state
+	//========================================================================
+
+	// シーン状態の初期化
+	InitStates();
 }
 
 void GameScene::Update() {
 
-	//========================================================================
-	//	object
-	//========================================================================
+	// 状態に応じて更新
+	uint32_t stateIndex = static_cast<uint32_t>(currentState_);
+	switch (currentState_) {
+		//========================================================================
+		//	ゲーム開始時の処理
+		//========================================================================
+	case GameScene::State::Start: {
 
-	bossEnemy_->Update();
-	player_->Update();
+		states_[stateIndex]->Update(nullptr);
+		break;
+	}
+		//========================================================================
+		//	ゲーム開始演出の処理
+		//========================================================================
+	case GameScene::State::BeginGame: {
 
-	//========================================================================
-	//	sceneObject
-	//========================================================================
+		states_[stateIndex]->Update(nullptr);
+		break;
+	}
+		//========================================================================
+		//	ゲームプレイ中の処理
+		//========================================================================
+	case GameScene::State::PlayGame: {
 
-	cameraManager_->Update();
+		states_[stateIndex]->Update(nullptr);
+		break;
+	}
+		//========================================================================
+		//	ゲーム終了時の処理
+		//========================================================================
+	case GameScene::State::EndGame: {
 
-	//========================================================================
-	//	editor
-	//========================================================================
+		states_[stateIndex]->Update(nullptr);
+		break;
+	}
+		//========================================================================
+		//	ポーズ中の処理
+		//========================================================================
+	case GameScene::State::Pause: {
 
-	// editor
-	levelEditor_->Update();
+		states_[stateIndex]->Update(nullptr);
+		break;
+	}
+	}
 }
 
 void GameScene::ImGui() {
