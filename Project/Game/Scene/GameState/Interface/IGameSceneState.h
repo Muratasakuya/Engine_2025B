@@ -3,30 +3,40 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Game/Scene/GameState/GameContext.h>
+
+// front
+class SceneManager;
 
 //============================================================================
-//	GameController class
+//	IGameSceneState class
 //============================================================================
-class GameController {
+class IGameSceneState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	GameController() = default;
-	~GameController() = default;
+	IGameSceneState(GameContext* context) :context_(context) {}
+	virtual ~IGameSceneState() = default;
 
-	//--------- accessor -----------------------------------------------------
+	// 初期化
+	virtual void Init(SceneView* sceneView) = 0;
 
-private:
+	// 更新処理
+	virtual void Update(SceneManager* sceneManager) = 0;
+	virtual void NonActiveUpdate([[maybe_unused]] SceneManager* sceneManager) {}
+
+	// 遷移開始時
+	virtual void Enter() {}
+	// 遷移終了時
+	virtual void Exit() {}
+protected:
 	//========================================================================
-	//	private Methods
+	//	protected Methods
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
 
-
-
-	//--------- functions ----------------------------------------------------
-
+	GameContext* context_;
 };

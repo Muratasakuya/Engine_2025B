@@ -6,18 +6,10 @@
 #include <Engine/Scene/Methods/IScene.h>
 
 // scene
-#include <Game/Camera/Manager/CameraManager.h>
-#include <Engine/Scene/Light/PunctualLight.h>
-
-// object
-#include <Game/Objects/GameScene/Player/Entity/Player.h>
-#include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
+#include <Game/Scene/GameState/Interface/IGameSceneState.h>
 
 // effect
 #include <Engine/Effect/GameEffect.h>
-
-// editor
-#include <Game/Editor/LevelEditor/LevelEditor.h>
 
 //============================================================================
 //	GameScene class
@@ -52,10 +44,16 @@ private:
 		BeginGame, // ゲーム開始演出
 		PlayGame,  // ゲーム中
 		EndGame,   // 敵を倒した OR プレイヤーが負けた
-		Pause      // ポーズ中
+		Pause,     // ポーズ中
+		Count,
 	};
 
 	//--------- variables ----------------------------------------------------
+
+	// sceneState
+	State currentState_;
+	GameContext context_;
+	std::array<std::unique_ptr<IGameSceneState>, static_cast<uint32_t>(State::Count)> states_;
 
 	// camera
 	std::unique_ptr<CameraManager> cameraManager_;
@@ -68,4 +66,9 @@ private:
 
 	// editor
 	std::unique_ptr<LevelEditor> levelEditor_;
+
+	//--------- functions ----------------------------------------------------
+
+	// init
+	void InitStates();
 };
