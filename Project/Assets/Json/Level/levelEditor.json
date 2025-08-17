@@ -3,31 +3,6 @@
     "objects": [
         {
             "type": "MESH",
-            "name": "railLong_0",
-            "entity_flag": true,
-            "entity_type": "",
-            "modelName": "railLong",
-            "transform": {
-                "translation": [
-                    72.54496002197266,
-                    -188.0,
-                    0.0
-                ],
-                "rotation_quaternion": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scaling": [
-                    16.0,
-                    50.0,
-                    54.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
             "name": "signCorner_0",
             "entity_flag": true,
             "entity_type": "",
@@ -98,31 +73,6 @@
                     10.076726913452148,
                     10.076726913452148,
                     10.076727867126465
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "antenna_0",
-            "entity_flag": true,
-            "entity_type": "",
-            "modelName": "antenna",
-            "transform": {
-                "translation": [
-                    3.203585147857666,
-                    -199.9171142578125,
-                    0.45034170150756836
-                ],
-                "rotation_quaternion": [
-                    3.0908619663705394e-08,
-                    0.7071067690849304,
-                    0.7071067690849304,
-                    3.0908619663705394e-08
-                ],
-                "scaling": [
-                    48.0,
-                    48.0,
-                    24.0
                 ]
             }
         },
@@ -248,31 +198,6 @@
                     40.80000305175781,
                     38.400001525878906,
                     1.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
-            "name": "steelbeams_0",
-            "entity_flag": true,
-            "entity_type": "",
-            "modelName": "steelbeams",
-            "transform": {
-                "translation": [
-                    54.623268127441406,
-                    -194.0,
-                    -2.5999999046325684
-                ],
-                "rotation_quaternion": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scaling": [
-                    3.5999999046325684,
-                    7.599999904632568,
-                    4.400000095367432
                 ]
             }
         },
@@ -628,38 +553,13 @@
         },
         {
             "type": "MESH",
-            "name": "railLong_1",
-            "entity_flag": true,
-            "entity_type": "",
-            "modelName": "railLong",
-            "transform": {
-                "translation": [
-                    27.544960021972656,
-                    -188.0,
-                    0.0
-                ],
-                "rotation_quaternion": [
-                    0.0,
-                    0.0,
-                    0.0,
-                    1.0
-                ],
-                "scaling": [
-                    16.0,
-                    50.0,
-                    54.0
-                ]
-            }
-        },
-        {
-            "type": "MESH",
             "name": "steelbeams_20",
             "entity_flag": true,
             "entity_type": "",
             "modelName": "steelbeams",
             "transform": {
                 "translation": [
-                    -139.0,
+                    -149.33767700195312,
                     -194.0,
                     65.15350341796875
                 ],
@@ -670,7 +570,7 @@
                     1.0
                 ],
                 "scaling": [
-                    3.5999999046325684,
+                    2.879999876022339,
                     7.599999904632568,
                     4.400000095367432
                 ]
@@ -684,7 +584,7 @@
             "modelName": "steelbeams",
             "transform": {
                 "translation": [
-                    -139.0,
+                    -149.33767700195312,
                     -194.0,
                     30.993757247924805
                 ],
@@ -695,7 +595,7 @@
                     1.0
                 ],
                 "scaling": [
-                    3.5999999046325684,
+                    2.879999876022339,
                     7.599999904632568,
                     4.400000095367432
                 ]
@@ -709,9 +609,9 @@
             "modelName": "steelbeams",
             "transform": {
                 "translation": [
-                    -139.0,
+                    -149.33767700195312,
                     -194.0,
-                    -2.5999999046325684
+                    -2.5999984741210938
                 ],
                 "rotation_quaternion": [
                     0.0,
@@ -720,7 +620,7 @@
                     1.0
                 ],
                 "scaling": [
-                    3.5999999046325684,
+                    2.879999876022339,
                     7.599999904632568,
                     4.400000095367432
                 ]
@@ -734,7 +634,7 @@
             "modelName": "columnMetalSupport",
             "transform": {
                 "translation": [
-                    -142.0,
+                    -151.7376708984375,
                     -194.0,
                     12.830183029174805
                 ],
@@ -746,7 +646,7 @@
                 ],
                 "scaling": [
                     14.709463119506836,
-                    22.405628204345703,
+                    17.924501419067383,
                     4.0
                 ]
             }
@@ -759,7 +659,7 @@
             "modelName": "columnMetalSupport",
             "transform": {
                 "translation": [
-                    -142.0,
+                    -151.7376708984375,
                     -194.0,
                     26.836650848388672
                 ],
@@ -771,7 +671,7 @@
                 ],
                 "scaling": [
                     14.709463119506836,
-                    22.405628204345703,
+                    17.924501419067383,
                     4.0
                 ]
             }
@@ -784,7 +684,7 @@
             "modelName": "columnMetalSupport",
             "transform": {
                 "translation": [
-                    -142.0,
+                    -151.7376708984375,
                     -194.0,
                     46.83018493652344
                 ],
@@ -796,7 +696,7 @@
                 ],
                 "scaling": [
                     14.709463119506836,
-                    22.405628204345703,
+                    17.924501419067383,
                     4.0
                 ]
             }
@@ -809,7 +709,7 @@
             "modelName": "columnMetalSupport",
             "transform": {
                 "translation": [
-                    -142.0,
+                    -151.7376708984375,
                     -194.0,
                     60.83665084838867
                 ],
@@ -821,7 +721,7 @@
                 ],
                 "scaling": [
                     14.709463119506836,
-                    22.405628204345703,
+                    17.924501419067383,
                     4.0
                 ]
             }
@@ -834,9 +734,9 @@
             "modelName": "steelbeams",
             "transform": {
                 "translation": [
-                    -39.376731872558594,
+                    -77.63905334472656,
                     -194.0,
-                    -2.5999999046325684
+                    -2.5999984741210938
                 ],
                 "rotation_quaternion": [
                     0.0,
@@ -845,7 +745,7 @@
                     1.0
                 ],
                 "scaling": [
-                    3.5999999046325684,
+                    2.879999876022339,
                     7.599999904632568,
                     4.400000095367432
                 ]
@@ -1809,7 +1709,7 @@
             "modelName": "steelbeams",
             "transform": {
                 "translation": [
-                    -51.0,
+                    -78.93767547607422,
                     -194.0,
                     65.15350341796875
                 ],
@@ -1820,7 +1720,7 @@
                     1.0
                 ],
                 "scaling": [
-                    3.5999999046325684,
+                    2.879999876022339,
                     7.599999904632568,
                     4.400000095367432
                 ]
@@ -1834,7 +1734,7 @@
             "modelName": "steelbeams",
             "transform": {
                 "translation": [
-                    -51.0,
+                    -78.93767547607422,
                     -194.0,
                     30.993757247924805
                 ],
@@ -1845,7 +1745,7 @@
                     1.0
                 ],
                 "scaling": [
-                    3.5999999046325684,
+                    2.880000114440918,
                     7.599999904632568,
                     4.400000095367432
                 ]
@@ -1859,7 +1759,7 @@
             "modelName": "columnMetalSupport",
             "transform": {
                 "translation": [
-                    -54.0,
+                    -81.33767700195312,
                     -194.0,
                     12.830183029174805
                 ],
@@ -1871,7 +1771,7 @@
                 ],
                 "scaling": [
                     14.709463119506836,
-                    22.405628204345703,
+                    17.924501419067383,
                     4.0
                 ]
             }
@@ -1884,7 +1784,7 @@
             "modelName": "columnMetalSupport",
             "transform": {
                 "translation": [
-                    -54.0,
+                    -81.33767700195312,
                     -194.0,
                     26.836650848388672
                 ],
@@ -1896,7 +1796,7 @@
                 ],
                 "scaling": [
                     14.709463119506836,
-                    22.405628204345703,
+                    17.924501419067383,
                     4.0
                 ]
             }
@@ -1909,7 +1809,7 @@
             "modelName": "columnMetalSupport",
             "transform": {
                 "translation": [
-                    -54.0,
+                    -81.33767700195312,
                     -194.0,
                     46.83018493652344
                 ],
@@ -1921,7 +1821,7 @@
                 ],
                 "scaling": [
                     14.709463119506836,
-                    22.405628204345703,
+                    17.924501419067383,
                     4.0
                 ]
             }
@@ -1934,7 +1834,7 @@
             "modelName": "columnMetalSupport",
             "transform": {
                 "translation": [
-                    -54.0,
+                    -81.33767700195312,
                     -194.0,
                     60.83665084838867
                 ],
@@ -1946,7 +1846,7 @@
                 ],
                 "scaling": [
                     14.709463119506836,
-                    22.405628204345703,
+                    17.924501419067383,
                     4.0
                 ]
             }
@@ -2798,6 +2698,456 @@
                     2.6000001430511475,
                     3.3000001907348633,
                     3.200000047683716
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "steelbeams_30",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "steelbeams",
+            "transform": {
+                "translation": [
+                    75.06232452392578,
+                    -194.0,
+                    65.15350341796875
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scaling": [
+                    2.879999876022339,
+                    7.599999904632568,
+                    4.400000095367432
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "steelbeams_31",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "steelbeams",
+            "transform": {
+                "translation": [
+                    75.06232452392578,
+                    -194.0,
+                    30.993757247924805
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scaling": [
+                    2.880000114440918,
+                    7.599999904632568,
+                    4.400000095367432
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "steelbeams_32",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "steelbeams",
+            "transform": {
+                "translation": [
+                    76.36094665527344,
+                    -194.0,
+                    -2.5999984741210938
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scaling": [
+                    2.879999876022339,
+                    7.599999904632568,
+                    4.400000095367432
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "columnMetalSupport_38",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "columnMetalSupport",
+            "transform": {
+                "translation": [
+                    72.66232299804688,
+                    -194.0,
+                    60.83665084838867
+                ],
+                "rotation_quaternion": [
+                    -0.5,
+                    0.5,
+                    0.5,
+                    0.5000000596046448
+                ],
+                "scaling": [
+                    14.709463119506836,
+                    17.924501419067383,
+                    4.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "columnMetalSupport_36",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "columnMetalSupport",
+            "transform": {
+                "translation": [
+                    72.66232299804688,
+                    -194.0,
+                    12.830183029174805
+                ],
+                "rotation_quaternion": [
+                    -0.5,
+                    0.5,
+                    0.5,
+                    0.5000000596046448
+                ],
+                "scaling": [
+                    14.709463119506836,
+                    17.924501419067383,
+                    4.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "columnMetalSupport_39",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "columnMetalSupport",
+            "transform": {
+                "translation": [
+                    72.66232299804688,
+                    -194.0,
+                    26.836650848388672
+                ],
+                "rotation_quaternion": [
+                    -0.5,
+                    0.5,
+                    0.5,
+                    0.5000000596046448
+                ],
+                "scaling": [
+                    14.709463119506836,
+                    17.924501419067383,
+                    4.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "columnMetalSupport_37",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "columnMetalSupport",
+            "transform": {
+                "translation": [
+                    72.66232299804688,
+                    -194.0,
+                    46.83018493652344
+                ],
+                "rotation_quaternion": [
+                    -0.5,
+                    0.5,
+                    0.5,
+                    0.5
+                ],
+                "scaling": [
+                    14.709463119506836,
+                    17.924501419067383,
+                    4.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "field_1",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "field",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -296.0,
+                    0.0
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scaling": [
+                    54.0,
+                    96.0,
+                    0.009999999776482582
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "fieldUnder_1",
+            "entity_flag": true,
+            "entity_type": "None",
+            "modelName": "fieldUnder",
+            "transform": {
+                "translation": [
+                    0.0,
+                    -296.0,
+                    0.0
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scaling": [
+                    54.0,
+                    96.0,
+                    128.39999389648438
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "propRailOrigin_8",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "propRailOrigin",
+            "transform": {
+                "translation": [
+                    23.1435546875,
+                    -390.1832275390625,
+                    -0.5551687479019165
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    -0.7071066498756409,
+                    0.70710688829422
+                ],
+                "scaling": [
+                    8.0,
+                    7.0,
+                    8.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "propRailOrigin_9",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "propRailOrigin",
+            "transform": {
+                "translation": [
+                    -36.8564453125,
+                    -390.1832275390625,
+                    -0.5551687479019165
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    -0.7071066498756409,
+                    0.70710688829422
+                ],
+                "scaling": [
+                    8.0,
+                    7.0,
+                    8.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "propRailOrigin_10",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "propRailOrigin",
+            "transform": {
+                "translation": [
+                    -21.8564453125,
+                    -390.1832275390625,
+                    -0.5551687479019165
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    -0.7071066498756409,
+                    0.70710688829422
+                ],
+                "scaling": [
+                    8.0,
+                    7.0,
+                    8.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "propRailOrigin_11",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "propRailOrigin",
+            "transform": {
+                "translation": [
+                    -6.8564453125,
+                    -390.1832275390625,
+                    -0.5551687479019165
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    -0.7071066498756409,
+                    0.70710688829422
+                ],
+                "scaling": [
+                    8.0,
+                    7.0,
+                    8.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "propRailOrigin_12",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "propRailOrigin",
+            "transform": {
+                "translation": [
+                    8.1435546875,
+                    -390.1832275390625,
+                    -0.5551687479019165
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    -0.7071066498756409,
+                    0.70710688829422
+                ],
+                "scaling": [
+                    8.0,
+                    7.0,
+                    8.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "propRailOrigin_13",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "propRailOrigin",
+            "transform": {
+                "translation": [
+                    38.1435546875,
+                    -390.1832275390625,
+                    -0.5551687479019165
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    -0.7071066498756409,
+                    0.70710688829422
+                ],
+                "scaling": [
+                    8.0,
+                    7.0,
+                    8.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "propRailOrigin_14",
+            "entity_flag": true,
+            "entity_type": "",
+            "modelName": "propRailOrigin",
+            "transform": {
+                "translation": [
+                    -51.8564453125,
+                    -390.1832275390625,
+                    -0.5551687479019165
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    -0.7071066498756409,
+                    0.70710688829422
+                ],
+                "scaling": [
+                    8.0,
+                    7.0,
+                    8.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallBottom_0",
+            "entity_flag": true,
+            "entity_type": "Default",
+            "modelName": "wallBottom",
+            "transform": {
+                "translation": [
+                    51.82438278198242,
+                    -296.1539306640625,
+                    1.0135670900344849
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scaling": [
+                    1.0,
+                    94.26292419433594,
+                    1.0
+                ]
+            }
+        },
+        {
+            "type": "MESH",
+            "name": "wallBottom_1",
+            "entity_flag": true,
+            "entity_type": "Default",
+            "modelName": "wallBottom",
+            "transform": {
+                "translation": [
+                    -51.17561721801758,
+                    -296.1539306640625,
+                    1.0135670900344849
+                ],
+                "rotation_quaternion": [
+                    0.0,
+                    0.0,
+                    0.0,
+                    1.0
+                ],
+                "scaling": [
+                    1.0,
+                    94.26292419433594,
+                    1.0
                 ]
             }
         },
