@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Utility/JsonAdapter.h>
 #include <Game/Objects/GameScene/Player/Entity/Player.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
@@ -59,6 +60,10 @@ void FieldBoundary::ControlTargetMove() {
 	translation.x = std::clamp(translation.x, -clampSize, clampSize);
 	translation.z = std::clamp(translation.z, -clampSize, clampSize);
 	bossEnemy_->SetTranslation(translation);
+
+	// 線
+	LineRenderer::GetInstance()->DrawSquare(moveClampLength_,
+		Vector3::AnyInit(0.0f), Color::Yellow());
 }
 
 void FieldBoundary::ImGui() {

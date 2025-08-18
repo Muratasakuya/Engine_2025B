@@ -6,6 +6,7 @@
 #include <Engine/Object/Data/Transform.h>
 #include <Engine/Collision/CollisionManager.h>
 #include <Engine/Utility/JsonAdapter.h>
+#include <Engine/Utility/EnumAdapter.h>
 #include <Lib/MathUtils/Algorithm.h>
 
 // imgui
@@ -76,7 +77,6 @@ void Collider::UpdateAABBBody(CollisionBody* body, const Transform3D& transform,
 	// 子か親かで座標を変える
 	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
 	Vector3 center = bodyTranslation + offset.center;
-
 	Vector3 extent = transform.scale * offset.extent;
 
 	body->UpdateAABB(CollisionShape::AABB(center, extent));
@@ -87,7 +87,6 @@ void Collider::UpdateOBBBody(CollisionBody* body, const Transform3D& transform, 
 	// 子か親かで座標を変える
 	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
 	Vector3 center = bodyTranslation + offset.center;
-
 	Vector3 size = transform.scale + offset.size;
 
 	// 子か親かで回転を変える
@@ -97,21 +96,36 @@ void Collider::UpdateOBBBody(CollisionBody* body, const Transform3D& transform, 
 	body->UpdateOBB(CollisionShape::OBB(center, size, Vector3::AnyInit(0.0f), rotation));
 }
 
-CollisionBody* Collider::AddCollider(const CollisionShape::Shapes& shape) {
+CollisionBody* Collider::AddCollider(const CollisionShape::Shapes& shape, bool autoAddOffset) {
 
 	CollisionBody* collider = nullptr;
 	collider = CollisionManager::GetInstance()->AddCollisionBody(shape);
 
-	// 関数結び付け
+	// 関数呼び出し
+	currentState_ = State::None;
 	collider->SetOnCollisionEnter([this](CollisionBody* otherCollider) {
+
 		OnCollisionEnter(otherCollider);
+		currentState_ = State::Enter;
 		});
 	collider->SetOnCollisionStay([this](CollisionBody* otherCollider) {
+
 		OnCollisionStay(otherCollider);
+		currentState_ = State::Stay;
 		});
 	collider->SetOnCollisionExit([this](CollisionBody* otherCollider) {
+
 		OnCollisionExit(otherCollider);
+		currentState_ = State::Exit;
 		});
+
+	// オフセットを追加
+	if (autoAddOffset) {
+
+		bodies_.emplace_back(collider);
+		bodyOffsets_.emplace_back(shape);
+	}
+
 	return collider;
 }
 
@@ -127,6 +141,8 @@ void Collider::ImGui(float itemWidth) {
 	}
 
 	ImGui::PushItemWidth(itemWidth);
+
+	ImGui::Text("currentState: %s", EnumAdapter<State>::ToString(currentState_));
 
 	for (uint32_t index = 0; index < bodyOffsets_.size(); ++index) {
 
@@ -145,7 +161,6 @@ void Collider::ImGui(float itemWidth) {
 				EditOBBBody(index, std::get<CollisionShape::OBB>(offset));
 			}
 			}, offset);
-
 		ImGui::Separator();
 	}
 

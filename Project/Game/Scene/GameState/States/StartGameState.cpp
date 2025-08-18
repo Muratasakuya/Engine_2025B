@@ -88,6 +88,20 @@ void StartGameState::Init(SceneView* sceneView) {
 
 	// 衝突応答にプレイヤー、ボスをセット
 	context_->fieldBoundary->SetPushBackTarget(context_->player, context_->boss);
+
+	//========================================================================
+	//	sceneEvent
+	//========================================================================
+
+	nextStateEvent_ = std::make_unique<Collider>();
+	// 衝突タイプ設定
+	CollisionBody* body = nextStateEvent_->AddCollider(CollisionShape::AABB().Default(), true);
+	// タイプ設定
+	body->SetType(ColliderType::Type_Event);
+	body->SetTargetType(ColliderType::Type_Player);
+
+	// json適応
+	ApplyJson();
 }
 
 void StartGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
@@ -105,7 +119,50 @@ void StartGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	context_->camera->Update();
 	context_->level->Update();
+
+	//========================================================================
+	//	sceneEvent
+	//========================================================================
+
+	Transform3D transform{};
+	transform.scale = Vector3::AnyInit(1.0f);
+	nextStateEvent_->UpdateAllBodies(transform);
+
+	// イベント範囲内に入ったら次の状態に遷移させる
+	if (nextStateEvent_->IsHit()) {
+
+		requestNext_ = true;
+	}
 }
 
 void StartGameState::NonActiveUpdate([[maybe_unused]] SceneManager* sceneManager) {
+}
+
+void StartGameState::ImGui() {
+
+	if (ImGui::Button("Save Json")) {
+
+		SaveJson();
+	}
+
+	nextStateEvent_->ImGui(192.0f);
+}
+
+void StartGameState::ApplyJson() {
+
+	Json data;
+	if (!JsonAdapter::LoadCheck("Scene/State/startGameState.json", data)) {
+		return;
+	}
+
+	nextStateEvent_->ApplyBodyOffset(data["NextStateEvent"]);
+}
+
+void StartGameState::SaveJson() {
+
+	Json data;
+
+	nextStateEvent_->SaveBodyOffset(data["NextStateEvent"]);
+
+	JsonAdapter::Save("Scene/State/startGameState.json", data);
 }

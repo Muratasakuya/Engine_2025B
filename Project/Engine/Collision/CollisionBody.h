@@ -25,6 +25,7 @@ enum class ColliderType {
 	Type_BossBlade = 1 << 5,
 	Type_CrossMarkWall = 1 << 6,
 	Type_FieldWall = 1 << 7,
+	Type_Event = 1 << 8,
 };
 
 // operator

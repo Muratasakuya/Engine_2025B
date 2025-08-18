@@ -9,6 +9,7 @@
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Scene/SceneView.h>
 #include <Engine/Asset/Asset.h>
+#include <Engine/Utility/EnumAdapter.h>
 
 // scene
 #include <Game/Scene/GameState/States/StartGameState.h>
@@ -95,6 +96,12 @@ void GameScene::Update() {
 	case GameScene::State::Start: {
 
 		states_[stateIndex]->Update(nullptr);
+
+		// ゲーム開始演出状態にする
+		if (states_[stateIndex]->IsRequestNext()) {
+
+			RequestNextState(State::BeginGame);
+		}
 		break;
 	}
 		//========================================================================
@@ -132,5 +139,25 @@ void GameScene::Update() {
 	}
 }
 
+void GameScene::RequestNextState(State next) {
+
+	// 現在の状態を終了させる
+	uint32_t stateIndex = static_cast<uint32_t>(currentState_);
+	states_[stateIndex]->Exit();
+
+	// 遷移
+	currentState_ = next;
+	uint32_t nextIndex = static_cast<uint32_t>(next);
+
+	// 次の状態を設定
+	states_[nextIndex]->Enter();
+	states_[stateIndex]->ClearRequestNext();
+}
+
 void GameScene::ImGui() {
+
+	ImGui::SeparatorText(EnumAdapter<State>::ToString(currentState_));
+
+	uint32_t stateIndex = static_cast<uint32_t>(currentState_);
+	states_[stateIndex]->ImGui();
 }

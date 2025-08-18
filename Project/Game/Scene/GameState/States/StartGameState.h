@@ -22,6 +22,8 @@ public:
 
 	void Update(SceneManager* sceneManager) override;
 	void NonActiveUpdate(SceneManager* sceneManager) override;
+
+	void ImGui() override;
 private:
 	//========================================================================
 	//	private Methods
@@ -29,8 +31,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	// 指定の範囲に入ったら次の状態に遷移させる
+	std::unique_ptr<Collider> nextStateEvent_;
 
 	//--------- functions ----------------------------------------------------
 
+	// json
+	void ApplyJson();
+	void SaveJson();
 };

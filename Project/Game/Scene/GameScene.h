@@ -73,4 +73,7 @@ private:
 
 	// init
 	void InitStates();
+
+	// helper
+	void RequestNextState(State next);
 };

@@ -26,7 +26,7 @@ public:
 	void UpdateAllBodies(const Transform3D& transform);
 
 	// collision
-	CollisionBody* AddCollider(const CollisionShape::Shapes& shape);
+	CollisionBody* AddCollider(const CollisionShape::Shapes& shape, bool autoAddOffset = false);
 	void RemoveCollider(CollisionBody* collisionBody);
 
 	virtual void OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) {};
@@ -49,6 +49,8 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetIsChild(bool isChild) { isChild_ = isChild; }
+
+	bool IsHit() const { return currentState_ == State::Enter; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -68,6 +70,22 @@ private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
+
+	//--------- structure ----------------------------------------------------
+
+	// 状態
+	enum class State {
+
+		None,
+		Enter,
+		Stay,
+		Exit
+	};
+
+	//--------- variables ----------------------------------------------------
+
+	// 現在の状態
+	State currentState_;
 
 	//--------- functions ----------------------------------------------------
 
