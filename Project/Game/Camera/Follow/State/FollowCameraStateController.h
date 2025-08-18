@@ -45,7 +45,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// jsonを保存するパス
-	const std::string kStateJsonPath_ = "FollowCamera/stateParameter.json";
+	const std::string kStateJsonPath_ = "Camera/Follow/stateParameter.json";
 
 	// 入力
 	std::unique_ptr<InputMapper<FollowCameraInputAction>> inputMapper_;

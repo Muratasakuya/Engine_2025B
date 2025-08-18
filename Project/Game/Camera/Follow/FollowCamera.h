@@ -49,9 +49,6 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
-	// update
-	void UpdateMatrix();
-
 	// json
 	void ApplyJson();
 	void SaveJson();

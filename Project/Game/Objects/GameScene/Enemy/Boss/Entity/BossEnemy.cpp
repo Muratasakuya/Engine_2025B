@@ -74,6 +74,8 @@ void BossEnemy::InitHUD() {
 	// HUDの初期化
 	hudSprites_ = std::make_unique<BossEnemyHUD>();
 	hudSprites_->Init();
+	// 最初は表示しない
+	hudSprites_->SetDisable();
 }
 
 void BossEnemy::SetInitTransform() {
@@ -103,6 +105,11 @@ void BossEnemy::DerivedInit() {
 
 	// json適応
 	ApplyJson();
+
+	// 一度更新しておく
+	// HUDの更新
+	hudSprites_->SetStatas(stats_);
+	hudSprites_->Update(*this);
 }
 
 void BossEnemy::SetPlayer(const Player* player) {
@@ -166,7 +173,38 @@ int  BossEnemy::GetDamage() const {
 	return 0;
 }
 
-void BossEnemy::Update() {
+void BossEnemy::Update(GameSceneState sceneState) {
+
+	// シーンの状態に応じた更新処理
+	switch (sceneState) {
+	case GameSceneState::Start:
+		break;
+	case GameSceneState::BeginGame:
+
+		// ゲーム開始時の登場演出
+		UpdateBeginGame();
+		break;
+	case GameSceneState::PlayGame:
+
+		// ゲームプレイ中
+		UpdatePlayGame();
+		break;
+	case GameSceneState::EndGame:
+
+		// ゲーム終了
+		UpdateEndGame();
+		break;
+	}
+	// シーン状態のチェック
+	CheckSceneState(sceneState);
+}
+
+void BossEnemy::UpdateBeginGame() {
+
+
+}
+
+void BossEnemy::UpdatePlayGame() {
 
 	// 閾値のリストの条件に誤りがないかチェック
 	// indexNはindexN+1の値より必ず大きい(N=80、N+1=85にはならない)
@@ -189,9 +227,32 @@ void BossEnemy::Update() {
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
 	attackCollision_->Update(*transform_);
+}
 
-	// particle更新
-	// システム変更で消えた
+void BossEnemy::UpdateEndGame() {
+
+
+}
+
+void BossEnemy::CheckSceneState(GameSceneState sceneState) {
+
+	// シーンが切り替わったとき
+	if (preSceneState_ != sceneState) {
+		switch (preSceneState_) {
+		case GameSceneState::Start:
+
+			// HUDの表示を行う
+			hudSprites_->SetValid();
+			break;
+		case GameSceneState::BeginGame:
+			break;
+		case GameSceneState::PlayGame:
+			break;
+		case GameSceneState::EndGame:
+			break;
+		}
+	}
+	preSceneState_ = sceneState;
 }
 
 void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {

@@ -5,8 +5,11 @@
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
 
+// scene
+#include <Game/Scene/GameState/GameSceneState.h>
 // cameras
 #include <Game/Camera/Follow/FollowCamera.h>
+#include <Game/Camera/BeginGame/BeginGameCamera.h>
 // front
 class Player;
 class SceneView;
@@ -26,7 +29,7 @@ public:
 
 	void Init(SceneView* sceneView);
 
-	void Update();
+	void Update(GameSceneState sceneState);
 
 	void ImGui() override;
 
@@ -44,7 +47,15 @@ private:
 
 	SceneView* sceneView_;
 	const Player* player_;
+	GameSceneState preSceneState_;
 
 	// 追従カメラ
 	std::unique_ptr<FollowCamera> followCamera_;
+	// ゲーム開始時のカメラ
+	std::unique_ptr<BeginGameCamera> beginGameCamera_;
+
+	//--------- functions ----------------------------------------------------
+
+	// update
+	void CheckSceneState(GameSceneState sceneState);
 };

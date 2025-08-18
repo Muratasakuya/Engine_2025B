@@ -35,23 +35,23 @@ void GameScene::InitStates() {
 	context_.level = levelEditor_.get();
 
 	// シーン状態クラスの初期化
-	states_[static_cast<uint32_t>(State::Start)] = std::make_unique<StartGameState>(&context_);
-	states_[static_cast<uint32_t>(State::Start)]->Init(sceneView_);
+	states_[static_cast<uint32_t>(GameSceneState::Start)] = std::make_unique<StartGameState>(&context_);
+	states_[static_cast<uint32_t>(GameSceneState::Start)]->Init(sceneView_);
 
-	states_[static_cast<uint32_t>(State::BeginGame)] = std::make_unique<BeginGameState>(&context_);
-	states_[static_cast<uint32_t>(State::BeginGame)]->Init(sceneView_);
+	states_[static_cast<uint32_t>(GameSceneState::BeginGame)] = std::make_unique<BeginGameState>(&context_);
+	states_[static_cast<uint32_t>(GameSceneState::BeginGame)]->Init(sceneView_);
 
-	states_[static_cast<uint32_t>(State::PlayGame)] = std::make_unique<PlayGameState>(&context_);
-	states_[static_cast<uint32_t>(State::PlayGame)]->Init(sceneView_);
+	states_[static_cast<uint32_t>(GameSceneState::PlayGame)] = std::make_unique<PlayGameState>(&context_);
+	states_[static_cast<uint32_t>(GameSceneState::PlayGame)]->Init(sceneView_);
 
-	states_[static_cast<uint32_t>(State::EndGame)] = std::make_unique<EndGameState>(&context_);
-	states_[static_cast<uint32_t>(State::EndGame)]->Init(sceneView_);
+	states_[static_cast<uint32_t>(GameSceneState::EndGame)] = std::make_unique<EndGameState>(&context_);
+	states_[static_cast<uint32_t>(GameSceneState::EndGame)]->Init(sceneView_);
 
-	states_[static_cast<uint32_t>(State::Pause)] = std::make_unique<PauseState>(&context_);
-	states_[static_cast<uint32_t>(State::Pause)]->Init(sceneView_);
+	states_[static_cast<uint32_t>(GameSceneState::Pause)] = std::make_unique<PauseState>(&context_);
+	states_[static_cast<uint32_t>(GameSceneState::Pause)]->Init(sceneView_);
 
 	// 最初の状態を設定
-	currentState_ = State::Start;
+	currentState_ = GameSceneState::Start;
 }
 
 void GameScene::Init() {
@@ -93,21 +93,21 @@ void GameScene::Update() {
 		//========================================================================
 		//	ゲーム開始時の処理
 		//========================================================================
-	case GameScene::State::Start: {
+	case GameSceneState::Start: {
 
 		states_[stateIndex]->Update(nullptr);
 
 		// ゲーム開始演出状態にする
 		if (states_[stateIndex]->IsRequestNext()) {
 
-			RequestNextState(State::BeginGame);
+			RequestNextState(GameSceneState::BeginGame);
 		}
 		break;
 	}
 		//========================================================================
 		//	ゲーム開始演出の処理
 		//========================================================================
-	case GameScene::State::BeginGame: {
+	case GameSceneState::BeginGame: {
 
 		states_[stateIndex]->Update(nullptr);
 		break;
@@ -115,7 +115,7 @@ void GameScene::Update() {
 		//========================================================================
 		//	ゲームプレイ中の処理
 		//========================================================================
-	case GameScene::State::PlayGame: {
+	case GameSceneState::PlayGame: {
 
 		states_[stateIndex]->Update(nullptr);
 		break;
@@ -123,7 +123,7 @@ void GameScene::Update() {
 		//========================================================================
 		//	ゲーム終了時の処理
 		//========================================================================
-	case GameScene::State::EndGame: {
+	case GameSceneState::EndGame: {
 
 		states_[stateIndex]->Update(nullptr);
 		break;
@@ -131,7 +131,7 @@ void GameScene::Update() {
 		//========================================================================
 		//	ポーズ中の処理
 		//========================================================================
-	case GameScene::State::Pause: {
+	case GameSceneState::Pause: {
 
 		states_[stateIndex]->Update(nullptr);
 		break;
@@ -139,7 +139,7 @@ void GameScene::Update() {
 	}
 }
 
-void GameScene::RequestNextState(State next) {
+void GameScene::RequestNextState(GameSceneState next) {
 
 	// 現在の状態を終了させる
 	uint32_t stateIndex = static_cast<uint32_t>(currentState_);
@@ -156,7 +156,7 @@ void GameScene::RequestNextState(State next) {
 
 void GameScene::ImGui() {
 
-	ImGui::SeparatorText(EnumAdapter<State>::ToString(currentState_));
+	ImGui::SeparatorText(EnumAdapter<GameSceneState>::ToString(currentState_));
 
 	uint32_t stateIndex = static_cast<uint32_t>(currentState_);
 	states_[stateIndex]->ImGui();
