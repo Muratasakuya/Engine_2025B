@@ -119,6 +119,15 @@ void FieldBoundary::ApplyJson() {
 			collisions_.push_back(std::move(collision));
 		}
 	}
+
+	// config
+	{
+		Json data;
+		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", data)) {
+
+			moveClampLength_ = JsonAdapter::GetValue<float>(data["playableArea"], "length");
+		}
+	}
 }
 
 void FieldBoundary::SaveJson() {
@@ -134,14 +143,5 @@ void FieldBoundary::SaveJson() {
 		}
 
 		JsonAdapter::Save("Level/FieldWallCollisionCollection.json", data);
-	}
-
-	// config
-	{
-		Json data;
-		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", data)) {
-
-			moveClampLength_ = JsonAdapter::GetValue<float>(data["playableArea"], "length");
-		}
 	}
 }
