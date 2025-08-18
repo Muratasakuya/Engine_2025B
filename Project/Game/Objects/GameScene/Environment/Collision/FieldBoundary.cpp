@@ -63,7 +63,7 @@ void FieldBoundary::ControlTargetMove() {
 
 	// 線
 	LineRenderer::GetInstance()->DrawSquare(moveClampLength_,
-		Vector3::AnyInit(0.0f), Color::Yellow());
+		Vector3(0.0f, 2.0f, 0.0f), Color::Yellow());
 }
 
 void FieldBoundary::ImGui() {
