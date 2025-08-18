@@ -3,40 +3,64 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Scene/GameState/Interface/IGameSceneState.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
+#include <Engine/Utility/StateTimer.h>
 
 //============================================================================
-//	StartGameState class
+//	BeginGameCamera class
 //============================================================================
-class StartGameState :
-	public IGameSceneState {
+class BeginGameCamera :
+	public BaseCamera {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	StartGameState(GameContext* context) :IGameSceneState(context) {}
-	~StartGameState() = default;
-	
-	void Init(SceneView* sceneView) override;
+	BeginGameCamera() = default;
+	~BeginGameCamera() = default;
 
-	void Update(SceneManager* sceneManager) override;
-	void NonActiveUpdate(SceneManager* sceneManager) override;
+	void Init();
+
+	void Update();
 
 	void ImGui() override;
+
+	//--------- accessor -----------------------------------------------------
+
+	bool IsFinished() const;
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	// 現在の状態
+	enum class State {
+
+		Update,
+		Finished
+	};
+
 	//--------- variables ----------------------------------------------------
 
-	// 指定の範囲に入ったら次の状態に遷移させる
-	std::unique_ptr<Collider> nextStateEvent_;
+	// 現在の状態
+	State currentState_;
+	bool disableTransition_;
+
+	// 時間管理
+	StateTimer animationTimer_;
+
+	// parameters... 一旦簡易アニメーションで作成する
+	Vector3 startPos_;
+	Vector3 targetPos_;
 
 	//--------- functions ----------------------------------------------------
 
 	// json
 	void ApplyJson();
 	void SaveJson();
+
+	// update
+	void UpdateAnimation();
 };

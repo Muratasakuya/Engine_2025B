@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Scene/GameState/GameContext.h>
+#include <Game/Scene/GameState/GameSceneState.h>
 
 // front
 class SceneManager;

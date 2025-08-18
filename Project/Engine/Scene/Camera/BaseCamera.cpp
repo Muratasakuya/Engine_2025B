@@ -22,22 +22,22 @@ BaseCamera::BaseCamera() {
 	farClip_ = 3200.0f;
 
 	// transformを一回初期化
-	eulerRotation_ = Vector3(0.02f, 0.0f, 0.0f);
+	transform_.eulerRotate = Vector3(0.02f, 0.0f, 0.0f);
 	transform_.scale = Vector3::AnyInit(1.0f);
-	transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
+	transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
 	transform_.translation = Vector3(0.0f, 1.8f, -24.0f);
 }
 
 void BaseCamera::UpdateView() {
 
+	// eulerを設定して更新する
+	transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
+	// 行列更新
 	transform_.UpdateMatrix();
+
 	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
-
-	// アスペクト比
-	float aspectRatio = Config::kWindowWidthf / Config::kWindowHeightf;
 	projectionMatrix_ =
-		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio, nearClip_, farClip_);
-
+		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
 
 	// billboardMatrixを計算
@@ -47,9 +47,9 @@ void BaseCamera::UpdateView() {
 void BaseCamera::ImGui() {
 
 	ImGui::DragFloat3("translation##DebugCamera", &transform_.translation.x, 0.01f);
-	if (ImGui::DragFloat3("rotation##DebugCamera", &eulerRotation_.x, 0.01f)) {
+	if (ImGui::DragFloat3("rotation##DebugCamera", &transform_.eulerRotate.x, 0.01f)) {
 
-		transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
+		transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
 	}
 	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
 		transform_.rotation.x, transform_.rotation.y, transform_.rotation.z, transform_.rotation.w);

@@ -24,7 +24,7 @@ void FollowCamera::Init() {
 	stateController_->Init(*this);
 
 	// 行列更新
-	UpdateMatrix();
+	BaseCamera::UpdateView();
 }
 
 void FollowCamera::SetScreenShake(bool isShake) {
@@ -82,25 +82,7 @@ void FollowCamera::Update() {
 	stateController_->Update(*this);
 
 	// 行列更新
-	UpdateMatrix();
-}
-
-void FollowCamera::UpdateMatrix() {
-
-	// eulerを設定して更新する
-	transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
-
-	// 行列更新
-	transform_.UpdateMatrix();
-	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
-
-	projectionMatrix_ =
-		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
-
-	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
-
-	// billboardMatrixを計算
-	BaseCamera::CalBillboardMatrix();
+	BaseCamera::UpdateView();
 }
 
 void FollowCamera::ImGui() {
@@ -138,7 +120,7 @@ void FollowCamera::ImGui() {
 void FollowCamera::ApplyJson() {
 
 	Json data;
-	if (!JsonAdapter::LoadCheck("FollowCamera/initParameter.json", data)) {
+	if (!JsonAdapter::LoadCheck("Camera/Follow/initParameter.json", data)) {
 		return;
 	}
 
@@ -155,5 +137,5 @@ void FollowCamera::SaveJson() {
 	data["nearClip_"] = nearClip_;
 	data["farClip_"] = farClip_;
 
-	JsonAdapter::Save("FollowCamera/initParameter.json", data);
+	JsonAdapter::Save("Camera/Follow/initParameter.json", data);
 }

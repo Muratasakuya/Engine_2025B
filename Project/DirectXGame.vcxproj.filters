@@ -662,6 +662,9 @@
     <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldBoundary.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Camera\BeginGame\BeginGameCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -920,6 +923,8 @@
     <ClInclude Include="Game\Scene\GameState\States\PauseState.h" />
     <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldWallCollision.h" />
     <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldBoundary.h" />
+    <ClInclude Include="Game\Scene\GameState\GameSceneState.h" />
+    <ClInclude Include="Game\Camera\BeginGame\BeginGameCamera.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

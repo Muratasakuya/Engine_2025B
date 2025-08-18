@@ -15,8 +15,12 @@ void CameraManager::Init(SceneView* sceneView) {
 	sceneView_ = nullptr;
 	sceneView_ = sceneView;
 
+	// 追従カメラ
 	followCamera_ = std::make_unique<FollowCamera>();
 	followCamera_->Init();
+	// ゲーム開始時のカメラ
+	beginGameCamera_ = std::make_unique<BeginGameCamera>();
+	beginGameCamera_->Init();
 
 	// 最初のカメラを設定する
 	sceneView_->SetGameCamera(followCamera_.get());
@@ -25,6 +29,7 @@ void CameraManager::Init(SceneView* sceneView) {
 
 	// シーン視点のカメラに追加する
 	sceneView_->AddSceneCamera("DefaultFollowCamera", followCamera_.get());
+	sceneView_->AddSceneCamera("BeginGameCamera", beginGameCamera_.get());
 #endif
 }
 
@@ -38,12 +43,49 @@ void CameraManager::SetTarget(const Player* Player) {
 	followCamera_->SetTarget(FollowCameraTargetType::PlayerAlly, player_->GetAlly()->GetTransform());
 }
 
-void CameraManager::Update() {
+void CameraManager::Update(GameSceneState sceneState) {
 
-	followCamera_->Update();
+	// シーンの状態に応じた更新処理
+	switch (sceneState) {
+	case GameSceneState::Start:
+
+		followCamera_->Update();
+		break;
+	case GameSceneState::BeginGame:
+
+		beginGameCamera_->Update();
+		break;
+	case GameSceneState::PlayGame:
+
+		followCamera_->Update();
+		break;
+	case GameSceneState::EndGame:
+		break;
+	}
+	// シーン状態のチェック
+	CheckSceneState(sceneState);
+}
+
+void CameraManager::CheckSceneState(GameSceneState sceneState) {
+
+	// シーンが切り替わったとき
+	if (preSceneState_ != sceneState) {
+		switch (preSceneState_) {
+		case GameSceneState::Start:
+
+			// カメラを変更する
+			sceneView_->SetGameCamera(beginGameCamera_.get());
+			break;
+		case GameSceneState::BeginGame:
+			break;
+		case GameSceneState::PlayGame:
+			break;
+		case GameSceneState::EndGame:
+			break;
+		}
+	}
+	preSceneState_ = sceneState;
 }
 
 void CameraManager::ImGui() {
-
-
 }

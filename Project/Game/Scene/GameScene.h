@@ -35,25 +35,12 @@ private:
 	//	private Methods
 	//========================================================================
 
-	//--------- structure ----------------------------------------------------
-
-	// 状態
-	enum class State {
-
-		Start,     // プレイ範囲に入るまで
-		BeginGame, // ゲーム開始演出
-		PlayGame,  // ゲーム中
-		EndGame,   // 敵を倒した OR プレイヤーが負けた
-		Pause,     // ポーズ中
-		Count,
-	};
-
 	//--------- variables ----------------------------------------------------
 
 	// sceneState
-	State currentState_;
+	GameSceneState currentState_;
 	GameContext context_;
-	std::array<std::unique_ptr<IGameSceneState>, static_cast<uint32_t>(State::Count)> states_;
+	std::array<std::unique_ptr<IGameSceneState>, static_cast<uint32_t>(GameSceneState::Count)> states_;
 
 	// camera
 	std::unique_ptr<CameraManager> cameraManager_;
@@ -75,5 +62,5 @@ private:
 	void InitStates();
 
 	// helper
-	void RequestNextState(State next);
+	void RequestNextState(GameSceneState next);
 };

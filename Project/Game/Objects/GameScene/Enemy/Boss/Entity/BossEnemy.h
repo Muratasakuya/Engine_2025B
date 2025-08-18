@@ -5,6 +5,8 @@
 //============================================================================
 #include <Engine/Object/Base/GameObject3D.h>
 
+// scene
+#include <Game/Scene/GameState/GameSceneState.h>
 // weapon
 #include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemyWeapon.h>
 // state
@@ -32,7 +34,7 @@ public:
 
 	void DerivedInit() override;
 
-	void Update() override;
+	void Update(GameSceneState sceneState);
 
 	void DerivedImGui() override;
 
@@ -66,6 +68,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	const Player* player_;
+	GameSceneState preSceneState_;
 
 	// 使用する武器
 	std::unique_ptr<BossEnemyWeapon> weapon_;
@@ -99,6 +102,12 @@ private:
 	void InitCollision();
 	void InitState();
 	void InitHUD();
+
+	// update
+	void UpdateBeginGame();
+	void UpdatePlayGame();
+	void UpdateEndGame();
+	void CheckSceneState(GameSceneState sceneState);
 
 	// helper
 	void SetInitTransform();

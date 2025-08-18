@@ -20,9 +20,9 @@ void DebugCamera::Init() {
 	nearClip_ = 0.1f;
 	farClip_ = 3200.0f;
 
-	eulerRotation_ = Vector3(0.26f, 0.0f, 0.0f);
+	transform_.eulerRotate = Vector3(0.26f, 0.0f, 0.0f);
 	transform_.scale = Vector3::AnyInit(1.0f);
-	transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
+	transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
 	transform_.translation = Vector3(0.0f, 30.733f, -112.363f);
 
 	// 行列更新
@@ -43,7 +43,7 @@ void DebugCamera::Update() {
 	Move();
 
 	// 行列更新
-	rotateMatrix_ = Matrix4x4::MakeRotateMatrix(eulerRotation_);
+	rotateMatrix_ = Matrix4x4::MakeRotateMatrix(transform_.eulerRotate);
 	transform_.matrix.world = Matrix4x4::MakeIdentity4x4();
 
 	Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(transform_.translation);
@@ -68,9 +68,9 @@ void DebugCamera::ImGui() {
 	ImGui::PushItemWidth(itemWidth_);
 
 	ImGui::DragFloat3("translation##DebugCamera", &transform_.translation.x, 0.01f);
-	if (ImGui::DragFloat3("rotation##DebugCamera", &eulerRotation_.x, 0.01f)) {
+	if (ImGui::DragFloat3("rotation##DebugCamera", &transform_.eulerRotate.x, 0.01f)) {
 
-		transform_.rotation = Quaternion::EulerToQuaternion(eulerRotation_);
+		transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
 	}
 	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
 		transform_.rotation.x, transform_.rotation.y, transform_.rotation.z, transform_.rotation.w);
@@ -107,8 +107,8 @@ void DebugCamera::Move() {
 	// 右クリック
 	if (Input::GetInstance()->PushMouseRight()) {
 
-		eulerRotation_.x += deltaY * rotateSpeed;
-		eulerRotation_.y += deltaX * rotateSpeed;
+		transform_.eulerRotate.x += deltaY * rotateSpeed;
+		transform_.eulerRotate.y += deltaX * rotateSpeed;
 	}
 
 	// 中クリック

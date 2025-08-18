@@ -60,7 +60,6 @@ protected:
 	float aspectRatio_;
 
 	Transform3D transform_;
-	Vector3 eulerRotation_;
 
 	Matrix4x4 viewMatrix_;
 	Matrix4x4 projectionMatrix_;

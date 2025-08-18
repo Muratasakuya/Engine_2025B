@@ -106,18 +106,20 @@ void StartGameState::Init(SceneView* sceneView) {
 
 void StartGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 
+	const GameSceneState currentState = GameSceneState::Start;
+
 	//========================================================================
 	//	object
 	//========================================================================
 
 	context_->player->Update();
-	context_->boss->Update();
+	context_->boss->Update(currentState);
 
 	//========================================================================
 	//	scene
 	//========================================================================
 
-	context_->camera->Update();
+	context_->camera->Update(currentState);
 	context_->level->Update();
 
 	//========================================================================
