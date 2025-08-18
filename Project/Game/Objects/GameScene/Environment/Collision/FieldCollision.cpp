@@ -136,7 +136,6 @@ void FieldCollision::ImGui(uint32_t index) {
 
 	ImGui::PushID(index);
 
-	ImGui::DragFloat3("translation", &translation_.x, 0.01f);
 	Collider::ImGui(192.0f);
 
 	ImGui::PopID();
@@ -144,12 +143,10 @@ void FieldCollision::ImGui(uint32_t index) {
 
 void FieldCollision::FromJson(const Json& data) {
 
-	translation_ = Vector3::FromJson(data["translation_"]);
 	Collider::ApplyBodyOffset(data);
 }
 
 void FieldCollision::ToJson(Json& data) {
 
-	data["translation_"] = translation_.ToJson();
 	Collider::SaveBodyOffset(data);
 }
