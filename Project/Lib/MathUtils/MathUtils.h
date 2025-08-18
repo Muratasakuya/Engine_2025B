@@ -21,6 +21,8 @@ constexpr float radian = pi / 180.0f;
 
 namespace Math {
 
+	float AbsFloat(float v);
+
 	float GetYawRadian(const Vector3& direction);
 
 	Vector3 RandomPointOnArc(const Vector3& center, const Vector3& direction,

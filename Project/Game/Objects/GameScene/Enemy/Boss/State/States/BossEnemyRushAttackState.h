@@ -78,6 +78,7 @@ private:
 	float farRadius_;  // 扇形半径(遠くに移動)
 	float nearRadius_; // 扇形半径(近くに移動)
 	float halfAngle_;  // 扇形の半開き角
+	float moveClampSize_; // 移動範囲制限
 
 	// 座標
 	Vector3 startPos_;  // 開始座標

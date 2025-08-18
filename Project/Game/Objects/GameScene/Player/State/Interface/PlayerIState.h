@@ -48,7 +48,6 @@ public:
 	void SetFollowCamera(FollowCamera* followCamera) { followCamera_ = followCamera; }
 
 	void SetCanExit(bool canExit) { canExit_ = canExit; }
-	void SetMoveClampSize(float size) { moveClampSize_ = size; }
 	void SetPreState(PlayerState preState) { preState_ = preState; }
 
 	virtual bool GetCanExit() const { return canExit_; }
@@ -72,7 +71,6 @@ protected:
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
 	bool canExit_ = true;    // 遷移可能かどうか
 	float rotationLerpRate_; // 回転補間割合
-	float moveClampSize_;    // 移動できる範囲の制限
 
 	//--------- functions ----------------------------------------------------
 

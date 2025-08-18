@@ -574,20 +574,6 @@ void PlayerStateController::ApplyJson() {
 			conditions_[state] = std::move(condition);
 		}
 	}
-
-	// config
-	{
-		Json data;
-		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", data)) {
-
-			float clampSize = JsonAdapter::GetValue<float>(data["playableArea"], "length");
-
-			for (const auto& state : std::views::values(states_)) {
-
-				state->SetMoveClampSize(clampSize);
-			}
-		}
-	}
 }
 
 void PlayerStateController::SaveJson() {

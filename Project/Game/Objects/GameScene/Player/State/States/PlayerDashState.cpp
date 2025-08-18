@@ -84,11 +84,11 @@ void PlayerDashState::UpdateDash(Player& player) {
 
 		move_ = player.GetTransform().GetForward() * moveSpeed_;
 	}
+	move_.y = 0.0f;
 
 	// 座標を設定
 	Vector3 translation = player.GetTranslation();
-	translation.x = std::clamp(translation.x + move_.x, -moveClampSize_ / 2.0f, moveClampSize_ / 2.0f);
-	translation.z = std::clamp(translation.z + move_.z, -moveClampSize_ / 2.0f, moveClampSize_ / 2.0f);
+	translation += move_;
 	player.SetTranslation(translation);
 }
 

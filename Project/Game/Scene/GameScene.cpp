@@ -26,6 +26,7 @@ void GameScene::InitStates() {
 	// scene
 	context_.camera = cameraManager_.get();
 	context_.light = gameLight_.get();
+	context_.fieldBoundary = fieldBoundary_.get();
 	// object
 	context_.player = player_.get();
 	context_.boss = bossEnemy_.get();
@@ -60,6 +61,7 @@ void GameScene::Init() {
 
 	cameraManager_ = std::make_unique<CameraManager>();
 	gameLight_ = std::make_unique<PunctualLight>();
+	fieldBoundary_ = std::make_unique<FieldBoundary>();
 
 	//========================================================================
 	//	editor

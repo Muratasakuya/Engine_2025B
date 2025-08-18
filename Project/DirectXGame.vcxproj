@@ -680,6 +680,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemy.cpp" />
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemyWeapon.cpp" />
+    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldWallCollision.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldBoundary.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Player\Collision\PlayerAttackCollision.cpp">
       <SubType>
       </SubType>
@@ -706,7 +714,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameScene\Environment\FieldCrossMarkWall.cpp" />
+    <ClCompile Include="Game\Objects\GameScene\Environment\Object\FieldCrossMarkWall.cpp" />
     <ClCompile Include="Game\Objects\GameScene\Player\Entity\Player.cpp">
       <SubType>
       </SubType>
@@ -1469,6 +1477,14 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemyWeapon.h" />
+    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldWallCollision.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldBoundary.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Player\Collision\PlayerAttackCollision.h">
       <SubType>
       </SubType>
@@ -1492,7 +1508,7 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\State\States\BossEnemyTeleportationState.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Structures\BossEnemyStructures.h" />
-    <ClInclude Include="Game\Objects\GameScene\Environment\FieldCrossMarkWall.h" />
+    <ClInclude Include="Game\Objects\GameScene\Environment\Object\FieldCrossMarkWall.h" />
     <ClInclude Include="Game\Objects\GameScene\Player\Entity\Player.h">
       <SubType>
       </SubType>

@@ -130,6 +130,14 @@ void BossEnemyTeleportationState::ApplyJson(const Json& data) {
 	fadeInTime_ = JsonAdapter::GetValue<float>(data, "fadeInTime_");
 	emitParticleOffsetY_ = JsonAdapter::GetValue<float>(data, "emitParticleOffsetY_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
+
+	{
+		Json clampData;
+		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", clampData)) {
+
+			moveClampSize_ = JsonAdapter::GetValue<float>(clampData["playableArea"], "length");
+		}
+	}
 }
 
 void BossEnemyTeleportationState::SaveJson(Json& data) {

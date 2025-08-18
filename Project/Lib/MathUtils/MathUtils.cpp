@@ -9,6 +9,11 @@
 //	MathUtils namespaceMethods
 //============================================================================
 
+float Math::AbsFloat(float v) {
+
+	return v < 0.0f ? -v : v;
+}
+
 float Math::GetYawRadian(const Vector3& direction) {
 
 	return std::atan2(direction.z, direction.x);
