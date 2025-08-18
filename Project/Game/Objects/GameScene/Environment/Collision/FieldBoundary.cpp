@@ -122,7 +122,7 @@ void FieldBoundary::ApplyJson() {
 
 	// config
 	{
-		Json data;
+		data.clear();
 		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", data)) {
 
 			moveClampLength_ = JsonAdapter::GetValue<float>(data["playableArea"], "length");
