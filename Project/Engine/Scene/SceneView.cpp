@@ -54,6 +54,13 @@ void SceneView::UpdateCamera() {
 
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	debugCamera_->Update();
+
+	if (activeSceneCamera_.has_value()) {
+		if (activeSceneCamera_.value()->IsUpdateDebugView()) {
+
+			activeSceneCamera_.value()->Update();
+		}
+	}
 #endif
 }
 

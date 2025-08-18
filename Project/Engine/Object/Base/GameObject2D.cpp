@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Config.h>
 #include <Engine/Object/Core/ObjectManager.h>
+#include <Engine/Editor/ImGuiObjectEditor.h>
 #include <Engine/Scene/Camera/BaseCamera.h>
 
 //============================================================================
@@ -22,6 +23,12 @@ void GameObject2D::Init(const std::string& textureName,
 	material_ = objectManager_->GetData<SpriteMaterial>(objectId_);
 	sprite_ = objectManager_->GetData<Sprite>(objectId_);
 	tag_ = objectManager_->GetData<ObjectTag>(objectId_);
+
+	// editorに登録
+	ImGuiObjectEditor::GetInstance()->Registerobject(objectId_, this);
+
+	// 継承先のinit実装
+	DerivedInit();
 }
 
 void GameObject2D::SetCenterTranslation() {

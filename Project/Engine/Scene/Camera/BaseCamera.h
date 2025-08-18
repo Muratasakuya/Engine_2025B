@@ -38,6 +38,7 @@ public:
 	float GetFovY() const { return fovY_; }
 	float GetNearClip() const { return nearClip_; }
 	float GetFarClip() const { return farClip_; }
+	bool IsUpdateDebugView() const { return updateDebugView_; }
 
 	const Transform3D& GetTransform() const { return transform_; }
 
@@ -71,6 +72,7 @@ protected:
 	// debug
 	float frustumScale_;
 	bool displayFrustum_;
+	bool updateDebugView_;
 
 	//--------- functions ----------------------------------------------------
 

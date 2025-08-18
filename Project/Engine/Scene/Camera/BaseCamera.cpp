@@ -14,6 +14,7 @@
 BaseCamera::BaseCamera() {
 
 	// 初期値設定
+	updateDebugView_ = false;
 	aspectRatio_ = Config::kWindowWidthf / Config::kWindowHeightf;
 	frustumScale_ = 0.004f;
 

@@ -13,6 +13,9 @@
 #include <Game/Objects/GameScene/Player/Entity/Player.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
 
+// sprite
+#include <Game/Objects/GameScene/SpriteEffect/FadeSprite.h>
+
 // editor
 #include <Game/Editor/LevelEditor/LevelEditor.h>
 
@@ -31,6 +34,9 @@ struct GameContext {
 	// object
 	Player* player = nullptr;
 	BossEnemy* boss = nullptr;
+	
+	// sprite
+	FadeSprite* fadeSprite = nullptr;
 
 	// editor
 	LevelEditor* level = nullptr;

@@ -13,7 +13,6 @@
 void BeginGameCamera::Init() {
 
 	displayFrustum_ = true;
-	disableTransition_ = true;
 
 	// json適応
 	ApplyJson();
@@ -67,6 +66,7 @@ void BeginGameCamera::ImGui() {
 		SaveJson();
 	}
 
+	ImGui::Checkbox("updateDebugView", &updateDebugView_);
 	ImGui::Checkbox("disableTransition", &disableTransition_);
 	EnumAdapter<State>::Combo("state", &currentState_);
 

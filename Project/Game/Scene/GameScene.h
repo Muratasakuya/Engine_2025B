@@ -53,6 +53,9 @@ private:
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<BossEnemy> bossEnemy_;
 
+	// sprites
+	std::unique_ptr<FadeSprite> fadeSprite_;
+
 	// editor
 	std::unique_ptr<LevelEditor> levelEditor_;
 

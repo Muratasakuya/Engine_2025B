@@ -778,6 +778,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameScene\SpriteEffect\FadeSprite.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\SceneTransition\FadeTransition.cpp" />
     <ClCompile Include="Game\Objects\TitleScene\DisplaySprite\GameFinishUI.cpp">
       <SubType>
@@ -1577,6 +1581,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Player\State\States\PlayerWalkState.h" />
     <ClInclude Include="Game\Objects\GameScene\Player\Structures\PlayerStructures.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameScene\SpriteEffect\FadeSprite.h">
       <SubType>
       </SubType>
     </ClInclude>

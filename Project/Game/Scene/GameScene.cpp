@@ -31,6 +31,8 @@ void GameScene::InitStates() {
 	// object
 	context_.player = player_.get();
 	context_.boss = bossEnemy_.get();
+	// sprite
+	context_.fadeSprite = fadeSprite_.get();
 	// editor
 	context_.level = levelEditor_.get();
 
@@ -77,6 +79,8 @@ void GameScene::Init() {
 	player_ = std::make_unique<Player>();
 	bossEnemy_ = std::make_unique<BossEnemy>();
 
+	fadeSprite_ = std::make_unique<FadeSprite>();
+
 	//========================================================================
 	//	state
 	//========================================================================
@@ -110,6 +114,12 @@ void GameScene::Update() {
 	case GameSceneState::BeginGame: {
 
 		states_[stateIndex]->Update(nullptr);
+
+		// ゲーム開始
+		if (states_[stateIndex]->IsRequestNext()) {
+
+			RequestNextState(GameSceneState::PlayGame);
+		}
 		break;
 	}
 		//========================================================================

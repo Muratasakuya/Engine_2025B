@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Engine/Object/Core/ObjectManager.h>
-#include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Editor/ImGuiObjectEditor.h>
 
 //============================================================================

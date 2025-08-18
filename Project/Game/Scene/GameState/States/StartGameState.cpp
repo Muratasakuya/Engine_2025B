@@ -90,6 +90,12 @@ void StartGameState::Init(SceneView* sceneView) {
 	context_->fieldBoundary->SetPushBackTarget(context_->player, context_->boss);
 
 	//========================================================================
+	//	sprites
+	//========================================================================
+
+	context_->fadeSprite->Init("white", "fadeSprite", "Scene");
+
+	//========================================================================
 	//	sceneEvent
 	//========================================================================
 

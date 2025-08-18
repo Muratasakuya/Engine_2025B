@@ -24,6 +24,9 @@ public:
 	void NonActiveUpdate(SceneManager* sceneManager) override;
 
 	void ImGui() override;
+
+	// 遷移終了時
+	void Exit() override;
 private:
 	//========================================================================
 	//	private Methods
@@ -31,8 +34,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-
+	// 遷移後のプレイヤーの座標
+	Vector3 startPlayerPos_;
 
 	//--------- functions ----------------------------------------------------
 
+	// json
+	void ApplyJson();
+	void SaveJson();
 };

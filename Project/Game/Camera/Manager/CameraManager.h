@@ -38,6 +38,7 @@ public:
 	void SetTarget(const Player* Player);
 
 	FollowCamera* GetFollowCamera() const { return followCamera_.get(); }
+	BeginGameCamera* GetBeginGameCamera() const { return beginGameCamera_.get(); }
 private:
 	//========================================================================
 	//	private Methods

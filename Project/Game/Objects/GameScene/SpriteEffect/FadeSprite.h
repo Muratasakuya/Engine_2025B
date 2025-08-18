@@ -3,27 +3,30 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Scene/Camera/BaseCamera.h>
+#include <Engine/Object/Base/GameObject2D.h>
 #include <Engine/Utility/StateTimer.h>
 
 //============================================================================
-//	BeginGameCamera class
+//	FadeSprite class
 //============================================================================
-class BeginGameCamera :
-	public BaseCamera {
+class FadeSprite :
+	public GameObject2D {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BeginGameCamera() = default;
-	~BeginGameCamera() = default;
+	FadeSprite() = default;
+	~FadeSprite() = default;
 
-	void Init();
+	void DerivedInit() override;
 
-	void Update() override;
+	void Update();
 
-	void ImGui() override;
+	void DerivedImGui() override;
+
+	void Start();
+	void Reset();
 
 	//--------- accessor -----------------------------------------------------
 
@@ -35,11 +38,13 @@ private:
 
 	//--------- structure ----------------------------------------------------
 
-	// 現在の状態
+	// 状態
 	enum class State {
 
-		Update,
-		Finished
+		None,
+		Begin,
+		Wait,
+		End,
 	};
 
 	//--------- variables ----------------------------------------------------
@@ -48,12 +53,10 @@ private:
 	State currentState_;
 	bool disableTransition_;
 
-	// 時間管理
-	StateTimer animationTimer_;
-
-	// parameters... 一旦簡易アニメーションで作成する
-	Vector3 startPos_;
-	Vector3 targetPos_;
+	// タイマー管理
+	StateTimer beginTimer_;
+	StateTimer waitTimer_;
+	StateTimer endTimer_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -62,5 +65,4 @@ private:
 	void SaveJson();
 
 	// update
-	void UpdateAnimation();
 };

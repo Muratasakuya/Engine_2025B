@@ -243,12 +243,6 @@ void ImGuiObjectEditor::EditObject2D() {
 	if (!selected2D_) return;
 	uint32_t id = selected2D_.value();
 
-	if (Algorithm::Find(objectsMap_, id)) {
-
-		objectsMap_[id].value()->ImGui();
-		return;
-	}
-
 	if (ImGui::BeginTabBar("Obj2DTab")) {
 
 		if (ImGui::BeginTabItem("Info")) {
@@ -272,6 +266,14 @@ void ImGuiObjectEditor::EditObject2D() {
 		if (ImGui::BeginTabItem("Material")) {
 
 			Object2DMaterial();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Derived")) {
+			if (Algorithm::Find(objectsMap_, id)) {
+
+				objectsMap_[id].value()->DerivedImGui();
+			}
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();

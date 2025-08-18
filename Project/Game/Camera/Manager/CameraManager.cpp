@@ -77,6 +77,9 @@ void CameraManager::CheckSceneState(GameSceneState sceneState) {
 			sceneView_->SetGameCamera(beginGameCamera_.get());
 			break;
 		case GameSceneState::BeginGame:
+
+			// カメラを変更する
+			sceneView_->SetGameCamera(followCamera_.get());
 			break;
 		case GameSceneState::PlayGame:
 			break;
