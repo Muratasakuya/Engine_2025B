@@ -125,8 +125,11 @@ void CollisionManager::Update() {
 			CollisionBody* colliderA = *itA;
 			CollisionBody* colliderB = *itB;
 
-			if (colliderA->GetTargetType() != colliderB->GetType() &&
-				colliderB->GetTargetType() != colliderA->GetType()) {
+			auto hasPair = [](ColliderType a, ColliderType b) {
+				using T = std::underlying_type_t<ColliderType>;
+				return (static_cast<T>(a) & static_cast<T>(b)) != 0; };
+			if (!hasPair(colliderA->GetTargetType(), colliderB->GetType()) &&
+				!hasPair(colliderB->GetTargetType(), colliderA->GetType())) {
 				continue;
 			}
 

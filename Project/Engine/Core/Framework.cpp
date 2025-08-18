@@ -175,10 +175,10 @@ void Framework::UpdateScene() {
 	sceneManager_->Update();
 	sceneView_->Update();
 
-	// data更新
-	ObjectManager::GetInstance()->UpdateData();
 	// collision更新
 	CollisionManager::GetInstance()->Update();
+	// data更新
+	ObjectManager::GetInstance()->UpdateData();
 	// particle更新
 	ParticleManager::GetInstance()->Update(graphicsPlatform_->GetDxCommand());
 	// postProcess更新
