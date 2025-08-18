@@ -4,24 +4,25 @@
 //	include
 //============================================================================
 #include <Engine/Editor/Base/IGameEditor.h>
-#include <Game/Objects/GameScene/Environment/Collision/FieldCollision.h>
+#include <Game/Objects/GameScene/Environment/Collision/FieldWallCollision.h>
 
 //============================================================================
-//	FieldCollisionCollection class
+//	FieldBoundary class
 //============================================================================
-class FieldCollisionCollection :
+class FieldBoundary :
 	public IGameEditor {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	FieldCollisionCollection() :IGameEditor("FieldCollisionCollection") {}
-	~FieldCollisionCollection() = default;
+	FieldBoundary() :IGameEditor("FieldWallCollisionCollection") {}
+	~FieldBoundary() = default;
 
 	void Init();
 
-	void Update();
+	// 制御処理
+	void ControlTargetMove();
 
 	void ImGui() override;
 
@@ -38,11 +39,17 @@ private:
 	Player* player_;
 	BossEnemy* bossEnemy_;
 
-	std::vector<std::unique_ptr<FieldCollision>> collisions_;
+	// AABBの押し戻し領域
+	std::vector<std::unique_ptr<FieldWallCollision>> collisions_;
+	// 座標移動制限
+	float moveClampLength_;
 
 	//--------- functions ----------------------------------------------------
 
 	// json
 	void ApplyJson();
 	void SaveJson();
+
+	// update
+	void UpdateAllCollisionBody();
 };

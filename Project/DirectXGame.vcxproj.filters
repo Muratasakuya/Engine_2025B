@@ -656,10 +656,10 @@
     <ClCompile Include="Game\Scene\GameState\States\PauseState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldCollision.cpp">
+    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldWallCollision.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldCollisionCollection.cpp">
+    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldBoundary.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -918,8 +918,8 @@
     <ClInclude Include="Game\Scene\GameState\States\PlayGameState.h" />
     <ClInclude Include="Game\Scene\GameState\States\EndGameState.h" />
     <ClInclude Include="Game\Scene\GameState\States\PauseState.h" />
-    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldCollision.h" />
-    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldCollisionCollection.h" />
+    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldWallCollision.h" />
+    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldBoundary.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

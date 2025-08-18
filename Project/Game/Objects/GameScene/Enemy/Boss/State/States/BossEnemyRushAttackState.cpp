@@ -343,6 +343,14 @@ void BossEnemyRushAttackState::ApplyJson(const Json& data) {
 	divisionBladeMoveSpeed_ = JsonAdapter::GetValue<float>(data, "divisionBladeMoveSpeed_");
 	singleBladeMoveSpeed_ = JsonAdapter::GetValue<float>(data, "singleBladeMoveSpeed_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
+
+	{
+		Json clampData;
+		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", clampData)) {
+
+			moveClampSize_ = JsonAdapter::GetValue<float>(clampData["playableArea"], "length");
+		}
+	}
 }
 
 void BossEnemyRushAttackState::SaveJson(Json& data) {

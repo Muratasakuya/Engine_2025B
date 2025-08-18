@@ -60,7 +60,7 @@ private:
 	// light
 	std::unique_ptr<PunctualLight> gameLight_;
 	// collision
-	std::unique_ptr<FieldCollisionCollection> fieldCollision_;
+	std::unique_ptr<FieldBoundary> fieldBoundary_;
 
 	// objects
 	std::unique_ptr<Player> player_;

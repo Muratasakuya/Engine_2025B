@@ -666,20 +666,6 @@ void BossEnemyStateController::ApplyJson() {
 			stateTable_.phases.push_back(phase);
 		}
 	}
-
-	// config
-	{
-		Json data;
-		if (JsonAdapter::LoadCheck("GameConfig/gameConfig.json", data)) {
-
-			float clampSize = JsonAdapter::GetValue<float>(data["playableArea"], "length");
-
-			for (const auto& state : std::views::values(states_)) {
-
-				state->SetMoveClampSize(clampSize);
-			}
-		}
-	}
 }
 
 void BossEnemyStateController::SaveJson() {

@@ -112,7 +112,6 @@ CollisionBody* Collider::AddCollider(const CollisionShape::Shapes& shape) {
 	collider->SetOnCollisionExit([this](CollisionBody* otherCollider) {
 		OnCollisionExit(otherCollider);
 		});
-
 	return collider;
 }
 

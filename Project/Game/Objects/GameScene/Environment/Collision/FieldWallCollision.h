@@ -10,17 +10,17 @@ class Player;
 class BossEnemy;
 
 //============================================================================
-//	FieldCollision class
+//	FieldWallCollision class
 //============================================================================
-class FieldCollision :
+class FieldWallCollision :
 	public Collider {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	FieldCollision() = default;
-	~FieldCollision() = default;
+	FieldWallCollision() = default;
+	~FieldWallCollision() = default;
 
 	void Init();
 
@@ -41,9 +41,6 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	void SetPushBackTarget(Player* player, BossEnemy* bossEnemy);
-	void SetTranslation(const Vector3& translation) { translation_ = translation; }
-
-	const Vector3& GetTranslation() const { return translation_; }
 private:
 	//========================================================================
 	//	private Methods
@@ -54,9 +51,6 @@ private:
 	// 押し戻し対象
 	Player* player_;
 	BossEnemy* bossEnemy_;
-
-	// 中心座標
-	Vector3 translation_;
 
 	//--------- functions ----------------------------------------------------
 

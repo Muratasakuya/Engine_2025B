@@ -1,4 +1,4 @@
-#include "FieldCollision.h"
+#include "FieldWallCollision.h"
 
 //============================================================================
 //	include
@@ -12,10 +12,10 @@
 #include <imgui.h>
 
 //============================================================================
-//	FieldCollision classMethods
+//	FieldWallCollision classMethods
 //============================================================================
 
-void FieldCollision::Init() {
+void FieldWallCollision::Init() {
 
 	// 衝突タイプ設定
 	CollisionBody* body = bodies_.emplace_back(Collider::AddCollider(CollisionShape::AABB().Default()));
@@ -29,7 +29,7 @@ void FieldCollision::Init() {
 	SetIsChild(false);
 }
 
-void FieldCollision::SetPushBackTarget(Player* player, BossEnemy* bossEnemy) {
+void FieldWallCollision::SetPushBackTarget(Player* player, BossEnemy* bossEnemy) {
 
 	player_ = nullptr;
 	player_ = player;
@@ -38,27 +38,27 @@ void FieldCollision::SetPushBackTarget(Player* player, BossEnemy* bossEnemy) {
 	bossEnemy_ = bossEnemy;
 }
 
-CollisionShape::AABB FieldCollision::GetWorldAABB() const {
+CollisionShape::AABB FieldWallCollision::GetWorldAABB() const {
 
 	// オフセット分ずらしたAABBを取得
 	const auto& local = std::get<CollisionShape::AABB>(bodyOffsets_.front());
 	CollisionShape::AABB wall{};
-	wall.center = translation_ + local.center;
+	wall.center = local.center;
 	wall.extent = local.extent;
 	return wall;
 }
 
-void FieldCollision::Update() {
+void FieldWallCollision::Update() {
 
 	// 衝突ボディを更新
 	Transform3D transform{};
 	transform.scale = Vector3::AnyInit(1.0f);
 	transform.rotation = Quaternion::IdobjectQuaternion();
-	transform.translation = translation_;
+	transform.translation = Vector3::AnyInit(0.0f);
 	UpdateAllBodies(transform);
 }
 
-CollisionShape::AABB FieldCollision::MakeAABBProxy(const CollisionBody* other) {
+CollisionShape::AABB FieldWallCollision::MakeAABBProxy(const CollisionBody* other) {
 
 	CollisionShape::AABB proxy = CollisionShape::AABB::Default();
 	std::visit([&](const auto& shape) {
@@ -83,7 +83,7 @@ CollisionShape::AABB FieldCollision::MakeAABBProxy(const CollisionBody* other) {
 	return proxy;
 }
 
-Vector3 FieldCollision::ComputePushVector(const CollisionShape::AABB& wall, const CollisionShape::AABB& actor) {
+Vector3 FieldWallCollision::ComputePushVector(const CollisionShape::AABB& wall, const CollisionShape::AABB& actor) {
 
 	Vector3 direction = actor.center - wall.center;
 	Vector3 overlap = (wall.extent + actor.extent) -
@@ -106,7 +106,7 @@ Vector3 FieldCollision::ComputePushVector(const CollisionShape::AABB& wall, cons
 	return push;
 }
 
-void FieldCollision::OnCollisionStay(const CollisionBody* collisionBody) {
+void FieldWallCollision::OnCollisionStay(const CollisionBody* collisionBody) {
 
 	// プレイヤーか敵が衝突したときに押し戻し処理を行う
 	if ((collisionBody->GetType() & (ColliderType::Type_Player | ColliderType::Type_BossEnemy))
@@ -117,7 +117,7 @@ void FieldCollision::OnCollisionStay(const CollisionBody* collisionBody) {
 
 		// 押し戻し方向を計算
 		const Vector3 push = ComputePushVector(wall, actor);
-		if (push == Vector3::AnyInit(0.0f)) { 
+		if (push == Vector3::AnyInit(0.0f)) {
 			return;
 		}
 
@@ -132,7 +132,7 @@ void FieldCollision::OnCollisionStay(const CollisionBody* collisionBody) {
 	}
 }
 
-void FieldCollision::ImGui(uint32_t index) {
+void FieldWallCollision::ImGui(uint32_t index) {
 
 	ImGui::PushID(index);
 
@@ -141,12 +141,12 @@ void FieldCollision::ImGui(uint32_t index) {
 	ImGui::PopID();
 }
 
-void FieldCollision::FromJson(const Json& data) {
+void FieldWallCollision::FromJson(const Json& data) {
 
 	Collider::ApplyBodyOffset(data);
 }
 
-void FieldCollision::ToJson(Json& data) {
+void FieldWallCollision::ToJson(Json& data) {
 
 	Collider::SaveBodyOffset(data);
 }

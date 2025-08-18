@@ -52,15 +52,11 @@ void PlayerWalkState::UpdateWalk(Player& player) {
 			move_.Init();
 		}
 	}
+	move_.y = 0.0f;
 
 	// 移動量を加算
 	Vector3 translation = player.GetTranslation();
-	translation.x += move_.x;
-	translation.z += move_.z;
-	// 座標を制限する
-	float clampSize = moveClampSize_ / 2.0f;
-	translation.x = std::clamp(translation.x, -clampSize, clampSize);
-	translation.z = std::clamp(translation.z, -clampSize, clampSize);
+	translation += move_;
 	player.SetTranslation(translation);
 }
 

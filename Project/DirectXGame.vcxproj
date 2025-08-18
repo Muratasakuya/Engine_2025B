@@ -680,11 +680,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemy.cpp" />
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemyWeapon.cpp" />
-    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldCollision.cpp">
+    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldWallCollision.cpp">
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldCollisionCollection.cpp">
+    <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldBoundary.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -1477,11 +1477,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemyWeapon.h" />
-    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldCollision.h">
+    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldWallCollision.h">
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldCollisionCollection.h">
+    <ClInclude Include="Game\Objects\GameScene\Environment\Collision\FieldBoundary.h">
       <SubType>
       </SubType>
     </ClInclude>
