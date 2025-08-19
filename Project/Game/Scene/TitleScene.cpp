@@ -71,11 +71,12 @@ void TitleScene::Update() {
 	}
 
 	//========================================================================
-	//	scene
+	//	sceneEvent
 	//========================================================================
 
 	// ゲーム開始フラグが立てば開始
-	if (controller_->IsGameStart() && fadeTransition_) {
+	if (controller_->IsGameStart() &&
+		fadeTransition_ && sceneManager_->IsFinishedTransition()) {
 
 		sceneManager_->SetNextScene(Scene::Game, std::move(fadeTransition_));
 	}

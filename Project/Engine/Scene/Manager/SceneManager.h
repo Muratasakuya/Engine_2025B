@@ -40,6 +40,7 @@ public:
 
 	bool IsFinishGame() const { return currentScene_->IsFinishGame(); }
 	bool IsSceneSwitching() const { return isSceneSwitching_; }
+	bool IsFinishedTransition() const { return !sceneTransition_->IsTransition(); }
 	bool IsMeshRenderingAllowed() const { return allowMeshRendering_; }
 	bool ConsumeNeedInitNextScene();
 private:
