@@ -7,6 +7,7 @@
 
 // scene
 #include <Game/Scene/GameState/Interface/IGameSceneState.h>
+#include <Game/Objects/SceneTransition/FadeTransition.h>
 
 // effect
 #include <Engine/Effect/GameEffect.h>
@@ -42,10 +43,10 @@ private:
 	GameContext context_;
 	std::array<std::unique_ptr<IGameSceneState>, static_cast<uint32_t>(GameSceneState::Count)> states_;
 
-	// camera
+	// scene
 	std::unique_ptr<CameraManager> cameraManager_;
-	// light
 	std::unique_ptr<PunctualLight> gameLight_;
+	std::unique_ptr<FadeTransition> fadeTransition_;
 	// collision
 	std::unique_ptr<FieldBoundary> fieldBoundary_;
 

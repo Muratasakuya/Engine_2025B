@@ -21,6 +21,9 @@ void CameraManager::Init(SceneView* sceneView) {
 	// ゲーム開始時のカメラ
 	beginGameCamera_ = std::make_unique<BeginGameCamera>();
 	beginGameCamera_->Init();
+	// ゲーム終了時のカメラ
+	endGameCamera_ = std::make_unique<EndGameCamera>();
+	endGameCamera_->Init();
 
 	// 最初のカメラを設定する
 	sceneView_->SetGameCamera(followCamera_.get());
@@ -30,6 +33,7 @@ void CameraManager::Init(SceneView* sceneView) {
 	// シーン視点のカメラに追加する
 	sceneView_->AddSceneCamera("DefaultFollowCamera", followCamera_.get());
 	sceneView_->AddSceneCamera("BeginGameCamera", beginGameCamera_.get());
+	sceneView_->AddSceneCamera("EndGameCamera", endGameCamera_.get());
 #endif
 }
 
@@ -60,6 +64,8 @@ void CameraManager::Update(GameSceneState sceneState) {
 		followCamera_->Update();
 		break;
 	case GameSceneState::EndGame:
+
+		endGameCamera_->Update();
 		break;
 	}
 	// シーン状態のチェック
@@ -82,6 +88,9 @@ void CameraManager::CheckSceneState(GameSceneState sceneState) {
 			sceneView_->SetGameCamera(followCamera_.get());
 			break;
 		case GameSceneState::PlayGame:
+
+			// カメラを変更する
+			sceneView_->SetGameCamera(endGameCamera_.get());
 			break;
 		case GameSceneState::EndGame:
 			break;

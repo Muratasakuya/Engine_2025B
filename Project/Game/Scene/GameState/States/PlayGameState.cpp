@@ -34,6 +34,17 @@ void PlayGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 
 	// 移動範囲を制限する
 	context_->fieldBoundary->ControlTargetMove();
+
+	//========================================================================
+	//	sceneEvent
+	//========================================================================
+
+	// プレイヤーか敵が死んだらクリアシーンに遷移させる
+	if (context_->player->IsDead() ||
+		context_->boss->IsDead()) {
+
+		requestNext_ = true;
+	}
 }
 
 void PlayGameState::NonActiveUpdate([[maybe_unused]] SceneManager* sceneManager) {

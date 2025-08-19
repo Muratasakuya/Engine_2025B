@@ -173,6 +173,11 @@ int  BossEnemy::GetDamage() const {
 	return 0;
 }
 
+bool BossEnemy::IsDead() const {
+
+	return stats_.currentHP == 0;
+}
+
 void BossEnemy::Update(GameSceneState sceneState) {
 
 	// シーンの状態に応じた更新処理
