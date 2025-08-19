@@ -60,6 +60,7 @@ public:
 	bool CanParry() const { return attackCollision_->CanParry(); }
 
 	int GetDamage() const;
+	bool IsDead() const;
 private:
 	//========================================================================
 	//	private Methods

@@ -583,6 +583,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Camera\EndGame\EndGameCamera.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Camera\Follow\FollowCamera.cpp">
       <SubType>
       </SubType>
@@ -1370,6 +1374,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Camera\BeginGame\BeginGameCamera.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Camera\EndGame\EndGameCamera.h">
       <SubType>
       </SubType>
     </ClInclude>

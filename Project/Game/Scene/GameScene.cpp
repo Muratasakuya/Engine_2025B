@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Utility/EnumAdapter.h>
+#include <Engine/Scene/Manager/SceneManager.h>
 
 // scene
 #include <Game/Scene/GameState/States/StartGameState.h>
@@ -81,6 +82,10 @@ void GameScene::Init() {
 
 	// シーン状態の初期化
 	InitStates();
+
+	// 遷移の設定
+	fadeTransition_ = std::make_unique<FadeTransition>();
+	fadeTransition_->Init();
 }
 
 void GameScene::Update() {
@@ -122,6 +127,12 @@ void GameScene::Update() {
 	case GameSceneState::PlayGame: {
 
 		states_[stateIndex]->Update(nullptr);
+
+		// ゲーム終了
+		if (states_[stateIndex]->IsRequestNext()) {
+
+			RequestNextState(GameSceneState::EndGame);
+		}
 		break;
 	}
 		//========================================================================
@@ -130,6 +141,12 @@ void GameScene::Update() {
 	case GameSceneState::EndGame: {
 
 		states_[stateIndex]->Update(nullptr);
+
+		// 終了演出後、クリアシーンに遷移させる
+		if (states_[stateIndex]->IsRequestNext() && fadeTransition_) {
+
+			sceneManager_->SetNextScene(Scene::Clear, std::move(fadeTransition_));
+		}
 		break;
 	}
 		//========================================================================
