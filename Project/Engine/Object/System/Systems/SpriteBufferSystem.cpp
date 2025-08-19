@@ -39,4 +39,12 @@ void SpriteBufferSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 		// mapに追加
 		spriteDataMap_[sprite->GetLayer()].push_back(SpriteData(transform, material, sprite));
 	}
+
+	// 描画順インデックスでソートを行う
+	for (auto& [phase, vector] : spriteDataMap_) {
+		std::stable_sort(vector.begin(), vector.end(),
+			[](const SpriteData& a, const SpriteData& b) {
+				return a.sprite->GetLayerIndex() < b.sprite->GetLayerIndex();
+			});
+	}
 }

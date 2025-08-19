@@ -16,6 +16,7 @@ void FadeTransition::Init() {
 	fadeSprite_->Init("white", "transitionSprite", "Scene");
 	// シーンが切り替わっても破棄しない
 	fadeSprite_->SetDestroyOnLoad(false);
+	fadeSprite_->SetSpriteLayerIndex(SpriteLayerIndex::SceneTransition, 0);
 
 	// fade初期設定
 	fadeSprite_->SetCenterTranslation();
@@ -26,6 +27,7 @@ void FadeTransition::Init() {
 	loadSprite_->Init("nowLoading", "nowLoading", "Scene");
 	// シーンが切り替わっても破棄しない
 	loadSprite_->SetDestroyOnLoad(false);
+	loadSprite_->SetSpriteLayerIndex(SpriteLayerIndex::SceneTransition, 1);
 	// 初期設定
 	loadSprite_->SetCenterTranslation();
 	loadSprite_->SetAlpha(0.0f);

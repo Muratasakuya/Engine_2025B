@@ -26,6 +26,14 @@ enum class SpriteLayer {
 	PostModel // modelの後に描画する
 };
 
+// スプライトの描画順インデックス
+enum class SpriteLayerIndex :
+	uint16_t {
+
+	None = 0,              // 一番手前の表示(初期化順で決まる)
+	SceneTransition = 128, // シーン遷移処理
+};
+
 //============================================================================
 //	Sprite class
 //============================================================================
@@ -50,11 +58,13 @@ public:
 	void SetAlphaTextureName(const std::string& textureName) { alphaTextureName_ = textureName; }
 
 	void SetLayer(SpriteLayer layer) { layer_ = layer; }
+	void SetLayerIndex(SpriteLayerIndex layerIndex, uint16_t subLayerIndex) { layerIndex_ = static_cast<uint16_t>(layerIndex) + subLayerIndex; }
 	void SetPostProcessEnable(bool enable) { postProcessEnable_ = enable; }
 
 	static uint32_t GetIndexNum() { return kIndexNum_; }
 
 	SpriteLayer GetLayer() const { return layer_; }
+	uint16_t GetLayerIndex() const { return static_cast<uint16_t>(layerIndex_); }
 	bool GetPostProcessEnable() const { return postProcessEnable_; }
 	bool UseAlphaTexture() const { return alphaTextureName_.has_value(); }
 
@@ -80,7 +90,9 @@ private:
 	std::optional<std::string> alphaTextureName_;
 	DirectX::TexMetadata metadata_;
 
+	// 描画順制御
 	SpriteLayer layer_;
+	uint16_t layerIndex_ = static_cast<uint16_t>(SpriteLayerIndex::None);
 	bool postProcessEnable_;
 
 	// 頂点情報
