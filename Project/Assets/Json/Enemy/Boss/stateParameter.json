@@ -38,7 +38,7 @@
         "singleBladeMoveSpeed_": 64.0
     },
     "StrongAttack": {
-        "attack2ndAnimDuration_": 0.01600000075995922,
+        "attack2ndAnimDuration_": 0.1599999964237213,
         "attackOffsetTranslation_": -8.0,
         "easingType_": 4,
         "exitTime_": 0.07999999821186066,
