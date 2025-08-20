@@ -163,13 +163,13 @@ void RenderEngine::UpdateGPUBuffer(SceneView* sceneView, bool enableMesh) {
 	commandList->SetPipelineState(skinningPipeline_->GetComputePipeline());
 
 	// TLASの更新処理
+	// メッシュ非同期処理中は処理しない
 	if (enableMesh) {
 
 		// objectが持つbufferを更新
 		objectManager_->UpdateBuffer();
 
 		const auto& system = ObjectManager::GetInstance()->GetSystem<InstancedMeshSystem>();
-		// メッシュ非同期処理中は処理しない
 		if (!system->IsBuilding()) {
 
 			meshRenderer_->UpdateRayScene(dxCommand_);
