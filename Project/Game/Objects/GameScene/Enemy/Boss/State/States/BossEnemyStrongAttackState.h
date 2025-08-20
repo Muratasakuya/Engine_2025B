@@ -35,22 +35,35 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- stricture ----------------------------------------------------
+
+	// 状態
+	enum class State {
+
+		ParrySign, // パリィ受付中
+		Attack     // 攻撃
+	};
+
 	//--------- variables ----------------------------------------------------
 
-	// animation制御に使用
-	bool playAnimation_;
+	// 状態
+	State currentState_;
 
 	// 座標
 	Vector3 startPos_;  // 開始座標
-	Vector3 targetPos_; // 目標座標
 
 	// parameters
 	float lerpTimer_;       // 座標補間の際の経過時間
-	float lerpTime_;        // 座標補間にかける時間
 	EasingType easingType_; // 補間の際のイージング
 
 	float attackOffsetTranslation_;  // 座標からのオフセット距離
 
 	float exitTimer_; // 遷移可能にするまでの経過時間
 	float exitTime_;  // 遷移可能にするまでの時間
+
+	//--------- functions ----------------------------------------------------
+
+	// update
+	void UpdateParrySign(BossEnemy& bossEnemy);
+	void UpdateAttack(BossEnemy& bossEnemy);
 };

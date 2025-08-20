@@ -242,29 +242,6 @@ void Player::OnCollisionEnter(const CollisionBody* collisionBody) {
 	}
 }
 
-void Player::OnCollisionStay(const CollisionBody* collisionBody) {
-
-	// すでにパリィ状態なら処理しない
-	if (stateController_->GetCurrentState() == PlayerState::Parry) {
-		return;
-	}
-
-	// 衝突しているときにパリィ可能状態でパリィを入力出来たらパリィ状態に強制遷移させる
-	if ((collisionBody->GetType() & (ColliderType::Type_BossWeapon)) != ColliderType::Type_None) {
-		// 可能状態でない
-		if (!bossEnemy_->CanParry()) {
-			return;
-		}
-
-		// パリィ入力判定
-		if (stateController_->IsTriggerParry()) {
-
-			// 入力出来たらパリィ状態に強制遷移させる
-			stateController_->SetForcedState(*this, PlayerState::Parry);
-		}
-	}
-}
-
 void Player::DerivedImGui() {
 
 	ImGui::PushItemWidth(itemWidth_);

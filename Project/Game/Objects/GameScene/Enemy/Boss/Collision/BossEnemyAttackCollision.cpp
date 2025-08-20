@@ -29,7 +29,6 @@ void BossEnemyAttackCollision::Init() {
 
 	AttackParameter attackParameter{};
 	attackParameter.windows.emplace_back();
-	attackParameter.parryWindows.emplace_back();
 	table_.emplace(BossEnemyState::LightAttack, attackParameter);
 	table_.emplace(BossEnemyState::StrongAttack, attackParameter);
 }
@@ -45,11 +44,6 @@ void BossEnemyAttackCollision::Update(const Transform3D& transform) {
 	// 攻撃中かどうか
 	bool isAttack = std::any_of(parameter.windows.begin(),
 		parameter.windows.end(),
-		[t = currentTimer_](const TimeWindow& window) {
-			return window.on <= t && t < window.off; });
-	// パリィ可能状態か判定
-	parameter.isParryPossible = std::any_of(parameter.parryWindows.begin(),
-		parameter.parryWindows.end(),
 		[t = currentTimer_](const TimeWindow& window) {
 			return window.on <= t && t < window.off; });
 
@@ -92,17 +86,6 @@ void BossEnemyAttackCollision::SetEnterState(BossEnemyState state) {
 	weaponBody_->SetType(ColliderType::Type_None);
 }
 
-bool BossEnemyAttackCollision::CanParry() const {
-
-	// 存在しないテーブルの場合はfalse固定
-	if (!Algorithm::Find(table_, currentState_)) {
-		return false;
-	}
-
-	// 更新処理の結果を返す	
-	return table_.at(currentState_).isParryPossible;
-}
-
 void BossEnemyAttackCollision::OnCollisionEnter(const CollisionBody* collisionBody) {
 
 	if (collisionBody->GetType() == ColliderType::Type_Player) {
@@ -124,7 +107,6 @@ void BossEnemyAttackCollision::ImGui() {
 	edit |= ImGui::DragFloat3("size", &parameter.size.x, 0.01f);
 
 	EditWindowParameter("hitWindow", parameter.windows);
-	EditWindowParameter("parryWindow", parameter.parryWindows);
 
 	if (edit) {
 
@@ -152,15 +134,6 @@ void BossEnemyAttackCollision::ApplyJson(const Json& data) {
 				parameter.windows.emplace_back(time);
 			}
 		}
-		if (value.contains("parryWindows")) {
-			for (auto& w : value["parryWindows"]) {
-
-				TimeWindow time;
-				time.on = w.value("onTime", 0.0f);
-				time.off = w.value("offTime", 0.0f);
-				parameter.parryWindows.emplace_back(time);
-			}
-		}
 
 		table_[state] = parameter;
 	}
@@ -184,17 +157,6 @@ void BossEnemyAttackCollision::SaveJson(Json& data) {
 				windowData.push_back(j);
 			}
 			value["hitWindows"] = windowData;
-		}
-		{
-			Json windowData = Json::array();
-			for (auto& w : parameter.parryWindows) {
-
-				Json j;
-				j["onTime"] = w.on;
-				j["offTime"] = w.off;
-				windowData.push_back(j);
-			}
-			value["parryWindows"] = windowData;
 		}
 	}
 }

@@ -15,11 +15,10 @@
         "rotationLerpRate_": 8.0
     },
     "LightAttack": {
-        "attackOffsetTranslation_": -16.0,
-        "easingType_": 14,
-        "exitTime_": 0.10000000149011612,
-        "lerpTime_": 0.800000011920929,
-        "nextAnimDuration_": 0.23000000417232513,
+        "attackOffsetTranslation_": -8.0,
+        "easingType_": 4,
+        "exitTime_": 0.07999999821186066,
+        "nextAnimDuration_": 0.0,
         "rotationLerpRate_": 14.0
     },
     "RushAttack": {
@@ -39,11 +38,10 @@
         "singleBladeMoveSpeed_": 64.0
     },
     "StrongAttack": {
-        "attackOffsetTranslation_": -20.0,
-        "easingType_": 14,
-        "exitTime_": 0.10000000149011612,
-        "lerpTime_": 0.7200000286102295,
-        "nextAnimDuration_": 0.03200000151991844,
+        "attackOffsetTranslation_": -8.0,
+        "easingType_": 4,
+        "exitTime_": 0.07999999821186066,
+        "nextAnimDuration_": 0.0020000000949949026,
         "rotationLerpRate_": 14.0
     },
     "Stun": {
