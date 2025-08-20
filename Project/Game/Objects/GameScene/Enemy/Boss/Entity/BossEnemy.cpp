@@ -31,14 +31,16 @@ void BossEnemy::InitAnimations() {
 	animation_->SetPlayAnimation("bossEnemy_idle", true);
 
 	// animationのデータを設定
-	animation_->SetAnimationData("bossEnemy_teleport");
+	animation_->SetAnimationData("bossEnemy_chargeAttack");
 	animation_->SetAnimationData("bossEnemy_falter");
 	animation_->SetAnimationData("bossEnemy_lightAttack");
-	animation_->SetAnimationData("bossEnemy_strongAttack");
-	animation_->SetAnimationData("bossEnemy_chargeAttack");
+	animation_->SetAnimationData("bossEnemy_lightAttackParrySign");
 	animation_->SetAnimationData("bossEnemy_rushAttack");
+	animation_->SetAnimationData("bossEnemy_strongAttack");
+	animation_->SetAnimationData("bossEnemy_strongAttackParrySign");
 	animation_->SetAnimationData("bossEnemy_stun");
 	animation_->SetAnimationData("bossEnemy_stunUpdate");
+	animation_->SetAnimationData("bossEnemy_teleport");
 
 	// 右手を親として更新させる
 	animation_->SetParentJoint("rightHand");

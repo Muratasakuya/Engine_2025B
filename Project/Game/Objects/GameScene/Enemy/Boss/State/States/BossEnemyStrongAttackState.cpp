@@ -28,13 +28,6 @@ void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
 
 void BossEnemyStrongAttackState::Update(BossEnemy& bossEnemy) {
 
-	// 警告を出す
-	if (bossEnemy.IsEventKey(0)) {
-
-		// 座標を設定して発生
-		// システム変更で消えた
-	}
-
 	lerpTimer_ += GameTimer::GetScaledDeltaTime();
 	float lerpT = std::clamp(lerpTimer_ / lerpTime_, 0.0f, 1.0f);
 	lerpT = EasedValue(easingType_, lerpT);

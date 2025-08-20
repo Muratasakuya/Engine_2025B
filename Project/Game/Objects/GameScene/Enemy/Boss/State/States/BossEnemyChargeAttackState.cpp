@@ -26,13 +26,6 @@ void BossEnemyChargeAttackState::Enter(BossEnemy& bossEnemy) {
 
 void BossEnemyChargeAttackState::Update(BossEnemy& bossEnemy) {
 
-	// 警告を出す
-	if (bossEnemy.IsEventKey(0)) {
-
-		// 座標を設定して発生
-		// システム変更で消えた
-	}
-
 	if (bossEnemy.IsAnimationFinished()) {
 
 		exitTimer_ += GameTimer::GetDeltaTime();
