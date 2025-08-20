@@ -20,6 +20,11 @@ void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
 	// 座標を設定
 	startPos_ = bossEnemy.GetTranslation();
 	canExit_ = false;
+	
+	// 攻撃予兆を出す
+	Vector3 sign = bossEnemy.GetTranslation();
+	sign.y = 2.0f;
+	attackSign_->Emit(ProjectToScreen(sign, *followCamera_));
 }
 
 void BossEnemyStrongAttackState::Update(BossEnemy& bossEnemy) {

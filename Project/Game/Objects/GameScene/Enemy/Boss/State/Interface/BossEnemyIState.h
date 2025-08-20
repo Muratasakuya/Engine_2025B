@@ -9,6 +9,7 @@
 
 // front
 class BossEnemy;
+class BossEnemyAttackSign;
 class Player;
 class FollowCamera;
 
@@ -45,6 +46,7 @@ public:
 
 	void SetPlayer(const Player* player) { player_ = player; }
 	void SetFollowCamera(const FollowCamera* followCamera) { followCamera_ = followCamera; }
+	void SetAttackSign(BossEnemyAttackSign* attackSign) { attackSign_ = attackSign; }
 
 	virtual bool GetCanExit() const { return canExit_; }
 protected:
@@ -56,6 +58,7 @@ protected:
 
 	const Player* player_;
 	const FollowCamera* followCamera_;
+	BossEnemyAttackSign* attackSign_;
 
 	// 共通parameters
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
@@ -64,7 +67,8 @@ protected:
 
 	//--------- functions ----------------------------------------------------
 
+	// helper
 	void LookTarget(BossEnemy& bossEnemy, const Vector3& target);
-
 	void EmitTeleportParticle(const Vector3& translation);
+	Vector2 ProjectToScreen(const Vector3& translation, const FollowCamera& camera);
 };
