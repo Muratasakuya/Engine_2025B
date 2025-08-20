@@ -7,6 +7,7 @@
 #include <Engine/Object/Data/Transform.h>
 #include <Engine/Core/Graphics/GPUObject/VertexBuffer.h>
 #include <Engine/Core/Graphics/GPUObject/IndexBuffer.h>
+#include <Engine/Core/Graphics/Lib/DxStructures.h>
 
 // directX
 #include <Externals/DirectXTex/DirectXTex.h>
@@ -60,6 +61,7 @@ public:
 	void SetLayer(SpriteLayer layer) { layer_ = layer; }
 	void SetLayerIndex(SpriteLayerIndex layerIndex, uint16_t subLayerIndex) { layerIndex_ = static_cast<uint16_t>(layerIndex) + subLayerIndex; }
 	void SetPostProcessEnable(bool enable) { postProcessEnable_ = enable; }
+	void SetBlendMode(BlendMode blendMode) { blendMode_ = blendMode; }
 
 	static uint32_t GetIndexNum() { return kIndexNum_; }
 
@@ -67,6 +69,7 @@ public:
 	uint16_t GetLayerIndex() const { return static_cast<uint16_t>(layerIndex_); }
 	bool GetPostProcessEnable() const { return postProcessEnable_; }
 	bool UseAlphaTexture() const { return alphaTextureName_.has_value(); }
+	BlendMode GetBlendMode() const { return blendMode_; }
 
 	const VertexBuffer<SpriteVertexData>& GetVertexBuffer() const { return vertexBuffer_; }
 	const IndexBuffer& GetIndexBuffer() const { return indexBuffer_; }
@@ -97,6 +100,7 @@ private:
 
 	// 頂点情報
 	std::vector<SpriteVertexData> vertexData_;
+	BlendMode blendMode_ = BlendMode::kBlendModeNormal;
 
 	// buffer
 	VertexBuffer<SpriteVertexData> vertexBuffer_;
@@ -104,7 +108,7 @@ private:
 
 	//--------- functions ----------------------------------------------------
 
+	// init
 	void InitBuffer(ID3D12Device* device);
-
 	void SetMetaDataTextureSize(Transform2D& transform);
 };

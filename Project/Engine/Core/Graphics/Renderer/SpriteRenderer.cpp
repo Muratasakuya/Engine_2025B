@@ -44,7 +44,7 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 	// frameBufferへの描画処理
 	// pipeline設定
 	commandList->SetGraphicsRootSignature(pipelines_[RenderMode::ApplyPostProcess]->GetRootSignature());
-	commandList->SetPipelineState(pipelines_[RenderMode::ApplyPostProcess]->GetGraphicsPipeline());
+	commandList->SetPipelineState(pipelines_[RenderMode::ApplyPostProcess]->GetGraphicsPipeline(kBlendModeNormal));
 
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -53,12 +53,21 @@ void SpriteRenderer::ApplyPostProcessRendering(SpriteLayer layer,
 	// index
 	commandList->IASetIndexBuffer(&spriteData.front().sprite->GetIndexBuffer().GetIndexBufferView());
 
+	std::optional<BlendMode> currentBlendMode = std::nullopt;
 	for (const auto& buffer : spriteData) {
 
 		// postProcessをかけないのかチェック
 		if (!buffer.sprite->GetPostProcessEnable()) {
 			// かけない場合は処理しない
 			continue;
+		}
+
+		// 別のブレンドが設定されていればpipelineを再設定する
+		const auto blendMode = buffer.sprite->GetBlendMode();
+		if (!currentBlendMode || blendMode != currentBlendMode.value()) {
+
+			commandList->SetPipelineState(pipelines_[RenderMode::ApplyPostProcess]->GetGraphicsPipeline(blendMode));
+			currentBlendMode = blendMode;
 		}
 
 		// vertex
@@ -97,7 +106,7 @@ void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxComman
 	// frameBufferへの描画処理
 	// pipeline設定
 	commandList->SetGraphicsRootSignature(pipelines_[RenderMode::IrrelevantPostProcess]->GetRootSignature());
-	commandList->SetPipelineState(pipelines_[RenderMode::IrrelevantPostProcess]->GetGraphicsPipeline());
+	commandList->SetPipelineState(pipelines_[RenderMode::IrrelevantPostProcess]->GetGraphicsPipeline(kBlendModeNormal));
 
 	commandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
@@ -106,12 +115,21 @@ void SpriteRenderer::IrrelevantRendering(SceneConstBuffer* sceneBuffer, DxComman
 	// index
 	commandList->IASetIndexBuffer(&spriteData.front().sprite->GetIndexBuffer().GetIndexBufferView());
 
+	std::optional<BlendMode> currentBlendMode = std::nullopt;
 	for (const auto& buffer : spriteData) {
 
 		// postProcessをかけないのかチェック
 		if (buffer.sprite->GetPostProcessEnable()) {
 			// かける場合は処理しない
 			continue;
+		}
+
+		// 別のブレンドが設定されていればpipelineを再設定する
+		const auto blendMode = buffer.sprite->GetBlendMode();
+		if (!currentBlendMode || blendMode != currentBlendMode.value()) {
+
+			commandList->SetPipelineState(pipelines_[RenderMode::IrrelevantPostProcess]->GetGraphicsPipeline(blendMode));
+			currentBlendMode = blendMode;
 		}
 
 		// vertex
