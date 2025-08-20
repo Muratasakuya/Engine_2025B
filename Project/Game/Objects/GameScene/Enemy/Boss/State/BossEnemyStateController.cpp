@@ -42,15 +42,11 @@ void BossEnemyStateController::Init(BossEnemy& owner) {
 	requested_ = BossEnemyState::Idle;
 	ChangeState(owner);
 
-	//#if defined(_DEBUG) || defined(_DEVELOPBUILD)
-	//
-	//	disableTransitions_ = true;
-	//#else 
-	//
-	//	disableTransitions_ = false;
-	//#endif
-
 	disableTransitions_ = false;
+
+	// 攻撃予兆
+	attackSign_ = std::make_unique<BossEnemyAttackSign>();
+	attackSign_->Init();
 }
 
 void BossEnemyStateController::SetPlayer(const Player* player) {
@@ -72,6 +68,9 @@ void BossEnemyStateController::SetFollowCamera(const FollowCamera* followCamera)
 }
 
 void BossEnemyStateController::Update(BossEnemy& owner) {
+
+	// 攻撃予兆の更新処理
+	attackSign_->Update();
 
 	// 状態切り替えの設定処理
 	UpdatePhase();
