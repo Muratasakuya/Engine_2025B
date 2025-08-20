@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Objects/GameScene/Enemy/Boss/State/Interface/BossEnemyIState.h>
+#include <Game/Objects/GameScene/Enemy/Boss/HUD/BossEnemyAttackSign.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Structures/BossEnemyStructures.h>
 
 // c++
@@ -71,6 +72,9 @@ private:
 	uint32_t currentPhase_;
 
 	std::unordered_map<BossEnemyState, std::unique_ptr<BossEnemyIState>> states_;
+
+	// 攻撃予兆
+	std::unique_ptr<BossEnemyAttackSign> attackSign_;
 
 	BossEnemyState current_;                    // 現在の状態
 	std::optional<BossEnemyState> requested_;   // 次の状態

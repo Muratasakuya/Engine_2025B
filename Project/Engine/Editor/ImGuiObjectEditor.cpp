@@ -97,6 +97,8 @@ void ImGuiObjectEditor::CreateGroup() {
 
 void ImGuiObjectEditor::SelectGroupedObject() {
 
+	ImGui::SetWindowFontScale(0.84f);
+
 	for (auto& [group, ids] : groups_) {
 		if (group.empty()) continue;
 
@@ -109,6 +111,7 @@ void ImGuiObjectEditor::SelectGroupedObject() {
 			ImGui::TreePop();
 		}
 	}
+	ImGui::SetWindowFontScale(1.0f);
 }
 
 void ImGuiObjectEditor::EditObject() {

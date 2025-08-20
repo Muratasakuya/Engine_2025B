@@ -42,9 +42,17 @@ void SpriteBufferSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 
 	// 描画順インデックスでソートを行う
 	for (auto& [phase, vector] : spriteDataMap_) {
+
 		std::stable_sort(vector.begin(), vector.end(),
-			[](const SpriteData& a, const SpriteData& b) {
-				return a.sprite->GetLayerIndex() < b.sprite->GetLayerIndex();
+			[](const SpriteData& spriteDataA, const SpriteData& spriteDataB) {
+
+				const auto& spriteA = spriteDataA.sprite->GetLayerIndex();
+				const auto& spriteB = spriteDataB.sprite->GetLayerIndex();
+				if (spriteA != spriteB) {
+					return spriteA < spriteB;
+				}
+				return static_cast<int>(spriteDataA.sprite->GetBlendMode()) <
+					static_cast<int>(spriteDataB.sprite->GetBlendMode());
 			});
 	}
 }

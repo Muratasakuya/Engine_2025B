@@ -50,6 +50,8 @@ void GameEditorManager::RemoveEditor(IGameEditor* editor) {
 
 void GameEditorManager::SelectEditor() {
 
+	ImGui::SetWindowFontScale(0.84f);
+
 	// editorsの要素を表示
 	if (!editors_.empty()) {
 		for (uint32_t index = 0; index < editors_.size(); ++index) {
@@ -61,6 +63,7 @@ void GameEditorManager::SelectEditor() {
 			}
 		}
 	}
+	ImGui::SetWindowFontScale(1.0f);
 }
 
 void GameEditorManager::EditEditor() {

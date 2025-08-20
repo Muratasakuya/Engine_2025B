@@ -1,0 +1,16 @@
+{
+    "AnimationTimer": {
+        "easeingType_": "EaseOutQuad",
+        "target_": 0.23999999463558197
+    },
+    "move_start": 0.0,
+    "move_target": 800.0,
+    "size_start": {
+        "x": 16.0,
+        "y": 0.0
+    },
+    "size_target": {
+        "x": 46.0,
+        "y": 1600.0
+    }
+}
