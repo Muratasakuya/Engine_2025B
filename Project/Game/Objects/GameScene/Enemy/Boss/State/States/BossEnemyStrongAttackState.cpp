@@ -37,10 +37,16 @@ void BossEnemyStrongAttackState::Update(BossEnemy& bossEnemy) {
 		UpdateParrySign(bossEnemy);
 		break;
 	}
-	case BossEnemyStrongAttackState::State::Attack: {
+	case BossEnemyStrongAttackState::State::Attack1st: {
 
-		// 攻撃、終了後状態を終了
-		UpdateAttack(bossEnemy);
+		// 攻撃1回目
+		UpdateAttack1st(bossEnemy);
+		break;
+	}
+	case BossEnemyStrongAttackState::State::Attack2nd: {
+
+		// 攻撃2回目
+		UpdateAttack2nd(bossEnemy);
 		break;
 	}
 	}
@@ -71,11 +77,22 @@ void BossEnemyStrongAttackState::UpdateParrySign(BossEnemy& bossEnemy) {
 		bossEnemy.SetNextAnimation("bossEnemy_strongAttack", false, nextAnimDuration_);
 
 		// 状態を進める
-		currentState_ = State::Attack;
+		currentState_ = State::Attack1st;
 	}
 }
 
-void BossEnemyStrongAttackState::UpdateAttack(BossEnemy& bossEnemy) {
+void BossEnemyStrongAttackState::UpdateAttack1st(BossEnemy& bossEnemy) {
+
+	// animationが終了したら次の攻撃に移る
+	if (bossEnemy.IsAnimationFinished()) {
+
+		bossEnemy.SetNextAnimation("bossEnemy_lightAttack", false, attack2ndAnimDuration_);
+		// 状態を進める
+		currentState_ = State::Attack2nd;
+	}
+}
+
+void BossEnemyStrongAttackState::UpdateAttack2nd(BossEnemy& bossEnemy) {
 
 	// animationが終了したら経過時間を進める
 	if (bossEnemy.IsAnimationFinished()) {
@@ -101,6 +118,7 @@ void BossEnemyStrongAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 void BossEnemyStrongAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
+	ImGui::DragFloat("attack2ndAnimDuration", &attack2ndAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
 
 	ImGui::DragFloat("attackOffsetTranslation", &attackOffsetTranslation_, 0.1f);
@@ -123,6 +141,7 @@ void BossEnemyStrongAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEne
 void BossEnemyStrongAttackState::ApplyJson(const Json& data) {
 
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
+	attack2ndAnimDuration_ = data.value("attack2ndAnimDuration_", 0.4f);
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 
 	attackOffsetTranslation_ = JsonAdapter::GetValue<float>(data, "attackOffsetTranslation_");
@@ -133,6 +152,7 @@ void BossEnemyStrongAttackState::ApplyJson(const Json& data) {
 void BossEnemyStrongAttackState::SaveJson(Json& data) {
 
 	data["nextAnimDuration_"] = nextAnimDuration_;
+	data["attack2ndAnimDuration_"] = attack2ndAnimDuration_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
 
 	data["attackOffsetTranslation_"] = attackOffsetTranslation_;

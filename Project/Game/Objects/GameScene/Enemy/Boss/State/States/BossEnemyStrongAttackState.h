@@ -41,7 +41,8 @@ private:
 	enum class State {
 
 		ParrySign, // パリィ受付中
-		Attack     // 攻撃
+		Attack1st, // 攻撃1回目
+		Attack2nd  // 攻撃2回目
 	};
 
 	//--------- variables ----------------------------------------------------
@@ -60,10 +61,12 @@ private:
 
 	float exitTimer_; // 遷移可能にするまでの経過時間
 	float exitTime_;  // 遷移可能にするまでの時間
+	float attack2ndAnimDuration_;
 
 	//--------- functions ----------------------------------------------------
 
 	// update
 	void UpdateParrySign(BossEnemy& bossEnemy);
-	void UpdateAttack(BossEnemy& bossEnemy);
+	void UpdateAttack1st(BossEnemy& bossEnemy);
+	void UpdateAttack2nd(BossEnemy& bossEnemy);
 };

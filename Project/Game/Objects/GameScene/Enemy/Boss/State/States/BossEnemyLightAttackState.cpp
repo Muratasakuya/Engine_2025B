@@ -23,7 +23,7 @@ void BossEnemyLightAttackState::Enter(BossEnemy& bossEnemy) {
 
 	// 攻撃予兆を出す
 	Vector3 sign = bossEnemy.GetTranslation();
-	sign.y = 8.0f;
+	sign.y = 2.0f;
 	attackSign_->Emit(ProjectToScreen(sign, *followCamera_));
 }
 
