@@ -45,6 +45,7 @@ public:
 	void SetStatas(const BossEnemyStats& stats) { stats_ = stats; }
 
 	BossEnemyState GetCurrentState() const { return current_; }
+	const ParryParameter& GetParryParam() const { return states_.at(current_)->GetParryParam(); }
 private:
 	//========================================================================
 	//	private Methods

@@ -38,7 +38,6 @@ public:
 
 	// 衝突コールバック関数
 	void OnCollisionEnter(const CollisionBody* collisionBody) override;
-	void OnCollisionStay(const CollisionBody* collisionBody) override;
 
 	//--------- accessor -----------------------------------------------------
 

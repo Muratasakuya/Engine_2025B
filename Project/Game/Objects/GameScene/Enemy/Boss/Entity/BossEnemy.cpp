@@ -290,6 +290,22 @@ void BossEnemy::OnCollisionEnter(const CollisionBody* collisionBody) {
 	}
 }
 
+bool BossEnemy::ConsumeParryTiming() {
+
+	// 処理回数が0ならfalse
+	if (parryTimingTickets_ == 0) {
+		return false;
+	}
+	--parryTimingTickets_;
+	return true;
+}
+
+void BossEnemy::TellParryTiming() {
+
+	// パリィ処理回数を増やす
+	++parryTimingTickets_;
+}
+
 void BossEnemy::DerivedImGui() {
 
 	// 文字サイズを設定

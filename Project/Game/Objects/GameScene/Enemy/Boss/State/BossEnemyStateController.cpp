@@ -47,6 +47,12 @@ void BossEnemyStateController::Init(BossEnemy& owner) {
 	// 攻撃予兆
 	attackSign_ = std::make_unique<BossEnemyAttackSign>();
 	attackSign_->Init();
+
+	// 各状態に攻撃予兆をセット
+	for (const auto& state : std::views::values(states_)) {
+
+		state->SetAttackSign(attackSign_.get());
+	}
 }
 
 void BossEnemyStateController::SetPlayer(const Player* player) {
@@ -69,9 +75,6 @@ void BossEnemyStateController::SetFollowCamera(const FollowCamera* followCamera)
 
 void BossEnemyStateController::Update(BossEnemy& owner) {
 
-	// 攻撃予兆の更新処理
-	attackSign_->Update();
-
 	// 状態切り替えの設定処理
 	UpdatePhase();
 	CheckStunToughness();
@@ -90,6 +93,9 @@ void BossEnemyStateController::Update(BossEnemy& owner) {
 		// particleは常に更新する
 		currentState->UpdateParticleEmitter(current_);
 	}
+
+	// 攻撃予兆の更新処理
+	attackSign_->Update();
 }
 
 void BossEnemyStateController::UpdatePhase() {

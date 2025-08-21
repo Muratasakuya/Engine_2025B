@@ -70,7 +70,7 @@ void BottomLevelAS::Build(ID3D12Device8* device,
 	// build実行
 	commandList->BuildRaytracingAccelerationStructure(&buildDesc_, 0, nullptr);
 
-	// バリア遷移
+	// UAVバリア
 	D3D12_RESOURCE_BARRIER uavBarrier{};
 	uavBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
 	uavBarrier.UAV.pResource = result_.GetResource();

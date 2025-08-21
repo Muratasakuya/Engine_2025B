@@ -3,8 +3,10 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Utility/GameTimer.h>
+#include <Engine/Config.h>
+#include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
 
 //============================================================================
@@ -24,14 +26,22 @@ void BossEnemyIState::LookTarget(BossEnemy& bossEnemy, const Vector3& target) {
 	bossEnemy.SetRotation(bossRotation);
 }
 
+Vector2 BossEnemyIState::ProjectToScreen(const Vector3& translation, const FollowCamera& camera) {
+
+	Matrix4x4 viewMatrix = camera.GetViewMatrix();
+	Matrix4x4 projectionMatrix = camera.GetProjectionMatrix();
+
+	Vector3 viewPos = Vector3::Transform(translation, viewMatrix);
+	Vector3 clipPos = Vector3::Transform(viewPos, projectionMatrix);
+
+	float screenX = (clipPos.x * 0.5f + 0.5f) * Config::kWindowWidthf;
+	float screenY = (1.0f - (clipPos.y * 0.5f + 0.5f)) * Config::kWindowHeightf;
+
+	return Vector2(screenX, screenY);
+}
+
 void BossEnemyIState::EmitTeleportParticle(const Vector3& translation) {
-
 	translation;
-
-	// 座標の設定
-	// システム変更で消えた
-	// 発生、更新
-	// システム変更で消えた
 }
 
 void BossEnemyIState::UpdateParticleEmitter(BossEnemyState state) {

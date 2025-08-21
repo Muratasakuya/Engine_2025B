@@ -5,9 +5,10 @@
 //============================================================================
 #include <Engine/Input/Input.h>
 #include <Engine/Utility/GameTimer.h>
-#include <Game/Objects/GameScene/Player/Entity/Player.h>
 #include <Engine/Utility/JsonAdapter.h>
 #include <Engine/Utility/EnumAdapter.h>
+#include <Game/Objects/GameScene/Player/Entity/Player.h>
+#include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
 
 // inputDevice
 #include <Game/Objects/GameScene/Player/Input/Device/PlayerKeyInput.h>
@@ -93,6 +94,8 @@ void PlayerStateController::SetBossEnemy(const BossEnemy* bossEnemy) {
 
 		state->SetBossEnemy(bossEnemy);
 	}
+	bossEnemy_ = nullptr;
+	bossEnemy_ = bossEnemy;
 }
 
 void PlayerStateController::SetFollowCamera(FollowCamera* followCamera) {
@@ -108,6 +111,17 @@ void PlayerStateController::SetForcedState(Player& owner, PlayerState state) {
 
 	// 同じ状態へは遷移不可
 	if (current_ == state) {
+		// パリィのみ例外
+		if (state == PlayerState::Parry) {
+			if (const auto& currentState = states_[current_].get()) {
+
+				currentState->Exit(owner);
+				currentState->Enter(owner);
+			}
+			currentEnterTime_ = GameTimer::GetTotalTime();
+			lastEnterTime_[current_] = currentEnterTime_;
+			owner.GetAttackCollision()->SetEnterState(current_);
+		}
 		return;
 	}
 
@@ -149,6 +163,9 @@ void PlayerStateController::Update(Player& owner) {
 	// 入力に応じた状態の遷移
 	UpdateInputState();
 
+	// パリィ処理
+	UpdateParryState(owner);
+
 	// 何か予約設定されて入れば状態遷移させる
 	if (queued_) {
 		bool canInterrupt = false;
@@ -170,6 +187,9 @@ void PlayerStateController::Update(Player& owner) {
 
 		ChangeState(owner);
 	}
+
+	// パリィの状態管理
+	RequestParryState();
 
 	// 敵がスタン中の状態遷移処理
 	HandleStunTransition(owner);
@@ -259,6 +279,79 @@ void PlayerStateController::UpdateInputState() {
 		if (inputMapper_->IsTriggered(PlayerInputAction::Skill)) {
 
 			Request(PlayerState::SkilAttack);
+		}
+	}
+
+	// パリィの入力判定
+	if (inputMapper_->IsTriggered(PlayerInputAction::Parry)) {
+
+		const ParryParameter& parryParam = bossEnemy_->GetParryParam();
+		if (parryParam.canParry) {
+
+			// 入力があればパリィ処理を予約する
+			parrySession_ = {};
+			parrySession_.done = 0;
+			parrySession_.active = true;
+			parrySession_.reserved = true;
+			parrySession_.total = std::max<uint32_t>(1, parryParam.continuousCount);
+			parrySession_.reservedStart = GameTimer::GetTotalTime();
+		}
+	}
+}
+
+void PlayerStateController::UpdateParryState(Player& owner) {
+
+	// 敵がパリィ可能かどうかチェック
+	if (parrySession_.active && parrySession_.reserved &&
+		bossEnemy_ && const_cast<BossEnemy*>(bossEnemy_)->ConsumeParryTiming()) {
+
+		++parrySession_.done;
+		const bool isLast = (parrySession_.done >= parrySession_.total);
+		if (const auto& parryState = static_cast<PlayerParryState*>(states_.at(PlayerState::Parry).get())) {
+
+			parryState->SetAllowAttack(isLast);
+		}
+
+		// パリィ状態に強制遷移させる
+		SetForcedState(owner, PlayerState::Parry);
+		parrySession_.reserved = !isLast;
+		parrySession_.reservedStart = GameTimer::GetTotalTime();
+
+		return;
+	}
+
+	// 予約を時間経過で削除
+	if (parrySession_.active && parrySession_.reserved) {
+
+		const bool windowClosed = bossEnemy_ && !bossEnemy_->GetParryParam().canParry;
+		const float now = GameTimer::GetTotalTime();
+		const float reservedEnd = 1.0f;
+		// 予約失効チェック
+		bool timeout = false;
+		if (parrySession_.total == 1) {
+
+			timeout = (now - parrySession_.reservedStart) > reservedEnd;
+		} else {
+
+			timeout = (now - parrySession_.reservedStart) > reservedEnd * static_cast<float>(parrySession_.total);
+		}
+
+		if (windowClosed || timeout) {
+
+			parrySession_.Init();
+		}
+	}
+}
+
+void PlayerStateController::RequestParryState() {
+
+	if (current_ == PlayerState::Parry && states_[current_]->GetCanExit()) {
+		if (parrySession_.done < parrySession_.total) {
+
+			parrySession_.reservedStart = GameTimer::GetTotalTime();
+		} else {
+
+			parrySession_.Init();
 		}
 	}
 }
@@ -430,6 +523,15 @@ bool PlayerStateController::IsStunProcessing() const {
 		current_ == PlayerState::StunAttack;
 }
 
+void PlayerStateController::ParrySession::Init() {
+
+	active = false;    // 処理中か
+	reserved = false;  // タイミング待ち
+	total = 0; // 連続回数
+	done = 0;  // 処理済み回数
+	reservedStart = 0.0f;
+}
+
 void PlayerStateController::ImGui(const Player& owner) {
 
 	// tool
@@ -444,8 +546,16 @@ void PlayerStateController::ImGui(const Player& owner) {
 
 		// ---- Runtime -------------------------------------------------
 		if (ImGui::BeginTabItem("Runtime")) {
+
 			ImGui::Text("Enter Time   : %.2f", currentEnterTime_);
 			ImGui::Text("Queued State : %s", queued_ ? EnumAdapter<PlayerState>::ToString(*queued_) : "None");
+
+			ImGui::SeparatorText("Parry");
+
+			ImGui::Text(std::format("active: {}", parrySession_.active).c_str());
+			ImGui::Text(std::format("reserved: {}", parrySession_.reserved).c_str());
+			ImGui::Text(std::format("total: {}", parrySession_.total).c_str());
+
 			ImGui::EndTabItem();
 		}
 

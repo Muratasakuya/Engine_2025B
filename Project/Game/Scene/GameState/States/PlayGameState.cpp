@@ -15,8 +15,8 @@ void PlayGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 	//	object
 	//========================================================================
 
-	context_->player->Update();
 	context_->boss->Update(currentState);
+	context_->player->Update();
 
 	//========================================================================
 	//	sprite

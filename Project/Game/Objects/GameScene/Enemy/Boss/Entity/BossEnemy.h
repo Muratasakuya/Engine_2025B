@@ -43,6 +43,12 @@ public:
 	// 衝突コールバック関数
 	void OnCollisionEnter([[maybe_unused]] const CollisionBody* collisionBody) override;
 
+	/*---------- parry ------------*/
+
+	bool ConsumeParryTiming();
+	void TellParryTiming();
+	void ResetParryTiming() { parryTimingTickets_ = 0; }
+
 	//--------- accessor -----------------------------------------------------
 
 	void SetPlayer(const Player* player);
@@ -57,10 +63,10 @@ public:
 
 	Vector3 GetWeaponTranslation() const;
 	bool IsCurrentStunState() const;
-	bool CanParry() const { return attackCollision_->CanParry(); }
 
 	int GetDamage() const;
 	bool IsDead() const;
+	const ParryParameter& GetParryParam() const { return stateController_->GetParryParam(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -85,7 +91,8 @@ private:
 
 	// parameters
 	Transform3D initTransform_; // 初期化時の値
-	BossEnemyStats stats_;               // ステータス
+	BossEnemyStats stats_;      // ステータス
+	uint32_t parryTimingTickets_ = 0;
 
 	// editor
 	int selectedPhaseIndex_;

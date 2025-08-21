@@ -14,35 +14,79 @@
 
 void BossEnemyLightAttackState::Enter(BossEnemy& bossEnemy) {
 
+	// 攻撃予兆アニメーションを設定
+	bossEnemy.SetNextAnimation("bossEnemy_lightAttackParrySign", false, nextAnimDuration_);
+
 	// 座標を設定
 	startPos_ = bossEnemy.GetTranslation();
-	const Vector3 playerPos = player_->GetTranslation();
-	Vector3 direction = (startPos_ - playerPos).Normalize();
-	targetPos_ = playerPos - direction * attackOffsetTranslation_;
-
-	// 開始時に一気playerの方を向かせる
-	LookTarget(bossEnemy, targetPos_);
-
 	canExit_ = false;
+
+	// 攻撃予兆を出す
+	Vector3 sign = bossEnemy.GetTranslation();
+	sign.y = 2.0f;
+	attackSign_->Emit(ProjectToScreen(sign, *followCamera_));
+
+	// パリィ可能にする
+	bossEnemy.ResetParryTiming();
+	parryParam_.continuousCount = 1;
+	parryParam_.canParry = true;
 }
 
 void BossEnemyLightAttackState::Update(BossEnemy& bossEnemy) {
 
+	// 状態に応じて更新
+	switch (currentState_) {
+	case BossEnemyLightAttackState::State::ParrySign: {
+
+		// プレイヤーの方を向きながら補間
+		UpdateParrySign(bossEnemy);
+		break;
+	}
+	case BossEnemyLightAttackState::State::Attack: {
+
+		// 攻撃、終了後状態を終了
+		UpdateAttack(bossEnemy);
+		break;
+	}
+	}
+}
+
+void BossEnemyLightAttackState::UpdateParrySign(BossEnemy& bossEnemy) {
+
+	// アニメーション終了時間で補間
 	lerpTimer_ += GameTimer::GetScaledDeltaTime();
-	float lerpT = std::clamp(lerpTimer_ / lerpTime_, 0.0f, 1.0f);
+	float lerpT = std::clamp(lerpTimer_ / bossEnemy.GetAnimationDuration(
+		"bossEnemy_lightAttackParrySign"), 0.0f, 1.0f);
 	lerpT = EasedValue(easingType_, lerpT);
 
+	// 目標座標を常に更新する
+	const Vector3 playerPos = player_->GetTranslation();
+	Vector3 direction = (bossEnemy.GetTranslation() - playerPos).Normalize();
+	Vector3 target = playerPos - direction * attackOffsetTranslation_;
+	LookTarget(bossEnemy, target);
+
 	// 座標補間
-	bossEnemy.SetTranslation(Vector3::Lerp(startPos_, targetPos_, lerpT));
+	bossEnemy.SetTranslation(Vector3::Lerp(startPos_, target, lerpT));
 
-	// 時間経過が過ぎたらその座標にとどめる
-	if (lerpTime_ < lerpTimer_ && !playAnimation_) {
+	// アニメーションが終了次第攻撃する
+	if (bossEnemy.IsAnimationFinished()) {
 
-		bossEnemy.SetTranslation(targetPos_);
-		// ここでanimationを変更する
+		bossEnemy.SetTranslation(target);
 		bossEnemy.SetNextAnimation("bossEnemy_lightAttack", false, nextAnimDuration_);
-		playAnimation_ = true;
+
+		// パリィを実行させる
+		bossEnemy.TellParryTiming();
+
+		// 状態を進める
+		currentState_ = State::Attack;
 	}
+}
+
+void BossEnemyLightAttackState::UpdateAttack(BossEnemy& bossEnemy) {
+
+	// 攻撃アニメーション中は受け付け無し
+	parryParam_.canParry = false;
+	bossEnemy.ResetParryTiming();
 
 	// animationが終了したら経過時間を進める
 	if (bossEnemy.IsAnimationFinished()) {
@@ -60,10 +104,9 @@ void BossEnemyLightAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 
 	// リセット
 	canExit_ = false;
-	playAnimation_ = false;
 	lerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
-	emitCount_ = 0;
+	currentState_ = State::ParrySign;
 }
 
 void BossEnemyLightAttackState::ImGui(const BossEnemy& bossEnemy) {
@@ -73,12 +116,9 @@ void BossEnemyLightAttackState::ImGui(const BossEnemy& bossEnemy) {
 
 	ImGui::DragFloat("attackOffsetTranslation", &attackOffsetTranslation_, 0.1f);
 	ImGui::DragFloat("exitTime", &exitTime_, 0.01f);
-	ImGui::DragFloat("lerpTime", &lerpTime_, 0.01f);
 
 	ImGui::Text(std::format("canExit: {}", canExit_).c_str());
-	ImGui::Text(std::format("emitCount: {}", emitCount_).c_str());
 	ImGui::Text("exitTimer: %.3f", exitTimer_);
-	ImGui::Text("lerpTime:  %.3f", lerpTime_);
 	Easing::SelectEasingType(easingType_);
 
 	// 座標を設定
@@ -98,7 +138,6 @@ void BossEnemyLightAttackState::ApplyJson(const Json& data) {
 
 	attackOffsetTranslation_ = JsonAdapter::GetValue<float>(data, "attackOffsetTranslation_");
 	exitTime_ = JsonAdapter::GetValue<float>(data, "exitTime_");
-	lerpTime_ = JsonAdapter::GetValue<float>(data, "lerpTime_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
 }
 
@@ -109,6 +148,5 @@ void BossEnemyLightAttackState::SaveJson(Json& data) {
 
 	data["attackOffsetTranslation_"] = attackOffsetTranslation_;
 	data["exitTime_"] = exitTime_;
-	data["lerpTime_"] = lerpTime_;
 	data["easingType_"] = static_cast<int>(easingType_);
 }

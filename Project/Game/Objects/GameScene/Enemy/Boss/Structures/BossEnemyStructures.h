@@ -22,7 +22,6 @@
 // []のなかでドロップダウンでComboを選択できるようにする
 // 各Comboの中のパラメータとしてstateが切り替わったときに、
 // また同じstate(Combo処理)になってもいいのかだめなのか設定できるようにする
-// これらは全てJsonで保存し、管理できるようにする
 // Phase0 [Idle][LightAttack]
 // Phase1 [Idle][LightAttack][Teleportation -> ChargeAttack]
 // Phase2 [Idle][LightAttack][StrongAttack][RushAttack]
@@ -94,4 +93,12 @@ struct BossEnemyStateTable {
 
 	void FromJson(const Json& data);
 	void ToJson(Json& data);
+};
+
+// パリィデータ
+// 連続パリィが可能な場合、すべて受けきった後に攻撃可能
+struct ParryParameter {
+
+	bool canParry = false;        // パリィ可能かどうか
+	uint32_t continuousCount = 0; // パリィ回数(連続パリィ)
 };
