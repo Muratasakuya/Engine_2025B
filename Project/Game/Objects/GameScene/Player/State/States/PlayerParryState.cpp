@@ -104,8 +104,9 @@ void PlayerParryState::CheckInput() {
 
 	// deltaTimeが元に戻った後どうするかを入力確認
 	// 攻撃を押していたらanimationが終了した後攻撃に移る
-	if (inputMapper_->IsTriggered(PlayerInputAction::Attack)) {
+	if (allowAttack_ && inputMapper_->IsTriggered(PlayerInputAction::Attack)) {
 
+		// 攻撃可能なら攻撃をリクエストする
 		request_ = RequestState::PlayAnimation;
 	}
 }
@@ -216,6 +217,7 @@ void PlayerParryState::Exit([[maybe_unused]] Player& player) {
 	parryLerp_.isFinised = false;
 	attackLerp_.isFinised = false;
 	canExit_ = false;
+	allowAttack_ = false;
 	parryEffect_->ResetEmitFlag();
 }
 

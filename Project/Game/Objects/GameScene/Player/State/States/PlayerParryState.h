@@ -32,6 +32,10 @@ public:
 	// json
 	void ApplyJson(const Json& data) override;
 	void SaveJson(Json& data) override;
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetAllowAttack(bool allow) { allowAttack_ = allow; }
 private:
 	//========================================================================
 	//	private Methods
@@ -56,6 +60,9 @@ private:
 	};
 
 	//--------- variables ----------------------------------------------------
+
+	// 攻撃制御
+	bool allowAttack_;
 
 	// parameters
 	LerpParameter parryLerp_;

@@ -25,6 +25,11 @@ void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
 	Vector3 sign = bossEnemy.GetTranslation();
 	sign.y = 2.0f;
 	attackSign_->Emit(ProjectToScreen(sign, *followCamera_));
+
+	// パリィ可能にする
+	bossEnemy.ResetParryTiming();
+	parryParam_.continuousCount = 2;
+	parryParam_.canParry = true;
 }
 
 void BossEnemyStrongAttackState::Update(BossEnemy& bossEnemy) {
@@ -73,8 +78,10 @@ void BossEnemyStrongAttackState::UpdateParrySign(BossEnemy& bossEnemy) {
 	if (bossEnemy.IsAnimationFinished()) {
 
 		bossEnemy.SetTranslation(target);
-		// ここでanimationを変更する
 		bossEnemy.SetNextAnimation("bossEnemy_strongAttack", false, nextAnimDuration_);
+
+		// パリィを実行させる
+		bossEnemy.TellParryTiming();
 
 		// 状態を進める
 		currentState_ = State::Attack1st;
@@ -87,12 +94,20 @@ void BossEnemyStrongAttackState::UpdateAttack1st(BossEnemy& bossEnemy) {
 	if (bossEnemy.IsAnimationFinished()) {
 
 		bossEnemy.SetNextAnimation("bossEnemy_lightAttack", false, attack2ndAnimDuration_);
+
+		// パリィを実行させる
+		bossEnemy.TellParryTiming();
+
 		// 状態を進める
 		currentState_ = State::Attack2nd;
 	}
 }
 
 void BossEnemyStrongAttackState::UpdateAttack2nd(BossEnemy& bossEnemy) {
+
+	// 攻撃アニメーション中は受け付け無し
+	parryParam_.canParry = false;
+	bossEnemy.ResetParryTiming();
 
 	// animationが終了したら経過時間を進める
 	if (bossEnemy.IsAnimationFinished()) {

@@ -48,7 +48,23 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	// パリィ処理
+	struct ParrySession {
+
+		bool active = false;    // 処理中か
+		bool reserved = false;  // タイミング待ち
+		uint32_t total = 0; // 連続回数
+		uint32_t done = 0;  // 処理済み回数
+		float reservedStart = 0.0f;
+
+		void Init();
+	};
+
 	//--------- variables ----------------------------------------------------
+
+	const BossEnemy* bossEnemy_;
 
 	const std::string kStateJsonPath_ = "Player/stateParameter.json";
 
@@ -56,6 +72,8 @@ private:
 	std::unique_ptr<InputMapper<PlayerInputAction>> inputMapper_;
 	// ステータス
 	PlayerStats stats_;
+	// パリィ処理
+	ParrySession parrySession_;
 
 	std::unordered_map<PlayerState, std::unique_ptr<PlayerIState>> states_;
 
@@ -84,6 +102,8 @@ private:
 
 	// update
 	void UpdateInputState();
+	void UpdateParryState(Player& owner);
+	void RequestParryState();
 
 	// helper
 	void SetStateValue();

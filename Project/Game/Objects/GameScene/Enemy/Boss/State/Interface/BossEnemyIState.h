@@ -49,6 +49,7 @@ public:
 	void SetAttackSign(BossEnemyAttackSign* attackSign) { attackSign_ = attackSign; }
 
 	virtual bool GetCanExit() const { return canExit_; }
+	const ParryParameter& GetParryParam() const { return parryParam_; }
 protected:
 	//========================================================================
 	//	protected Methods
@@ -64,6 +65,7 @@ protected:
 	float nextAnimDuration_; // 次のアニメーション遷移にかかる時間
 	bool canExit_ = true;    // 遷移可能かどうか
 	float rotationLerpRate_; // 回転補完割合
+	ParryParameter parryParam_;
 
 	//--------- functions ----------------------------------------------------
 
