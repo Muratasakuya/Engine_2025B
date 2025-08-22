@@ -61,9 +61,13 @@ private:
 	float exitTimer_; // 遷移可能にするまでの経過時間
 	float exitTime_;  // 遷移可能にするまでの時間
 
+	// debug
+	bool parried_;
+
 	//--------- functions ----------------------------------------------------
 
 	// update
 	void UpdateParrySign(BossEnemy& bossEnemy);
 	void UpdateAttack(BossEnemy& bossEnemy);
+	void UpdateParryTiming(BossEnemy& bossEnemy);
 };

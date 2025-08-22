@@ -348,6 +348,11 @@ void BossEnemy::DerivedImGui() {
 		animation_->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
 	}
 
+	ImGui::SeparatorText("Parry");
+
+	ImGui::Text("parryTimingTickets: %d", parryTimingTickets_);
+	ImGui::Text(std::format("ConsumeParryTiming: {}", ConsumeParryTiming()).c_str());
+
 	ImGui::Separator();
 
 	if (ImGui::BeginTabBar("BossEnemyTab")) {

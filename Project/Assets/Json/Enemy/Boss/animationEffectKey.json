@@ -9,10 +9,24 @@
             ]
         },
         {
+            "object": "bossEnemyArmature",
+            "action": "lightAttack",
+            "emitEffectFrames": [
+                12
+            ]
+        },
+        {
             "object": "<unlinked>",
             "action": "rushAttack",
             "emitEffectFrames": [
                 12
+            ]
+        },
+        {
+            "object": "bossEnemyArmature",
+            "action": "strongAttack",
+            "emitEffectFrames": [
+                9
             ]
         }
     ]

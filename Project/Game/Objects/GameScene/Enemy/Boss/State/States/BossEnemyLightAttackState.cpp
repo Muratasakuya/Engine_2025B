@@ -30,9 +30,14 @@ void BossEnemyLightAttackState::Enter(BossEnemy& bossEnemy) {
 	bossEnemy.ResetParryTiming();
 	parryParam_.continuousCount = 1;
 	parryParam_.canParry = true;
+
+	parried_ = false;
 }
 
 void BossEnemyLightAttackState::Update(BossEnemy& bossEnemy) {
+
+	// パリィ攻撃のタイミングを更新
+	UpdateParryTiming(bossEnemy);
 
 	// 状態に応じて更新
 	switch (currentState_) {
@@ -74,19 +79,12 @@ void BossEnemyLightAttackState::UpdateParrySign(BossEnemy& bossEnemy) {
 		bossEnemy.SetTranslation(target);
 		bossEnemy.SetNextAnimation("bossEnemy_lightAttack", false, nextAnimDuration_);
 
-		// パリィを実行させる
-		bossEnemy.TellParryTiming();
-
 		// 状態を進める
 		currentState_ = State::Attack;
 	}
 }
 
 void BossEnemyLightAttackState::UpdateAttack(BossEnemy& bossEnemy) {
-
-	// 攻撃アニメーション中は受け付け無し
-	parryParam_.canParry = false;
-	bossEnemy.ResetParryTiming();
 
 	// animationが終了したら経過時間を進める
 	if (bossEnemy.IsAnimationFinished()) {
@@ -100,6 +98,23 @@ void BossEnemyLightAttackState::UpdateAttack(BossEnemy& bossEnemy) {
 	}
 }
 
+
+void BossEnemyLightAttackState::UpdateParryTiming(BossEnemy& bossEnemy) {
+
+	// パリィ攻撃のタイミング
+	switch (currentState_) {
+	case BossEnemyLightAttackState::State::Attack: {
+
+		if (bossEnemy.IsEventKey(0)) {
+
+			bossEnemy.TellParryTiming();
+			parried_ = true;
+		}
+		break;
+	}
+	}
+}
+
 void BossEnemyLightAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 
 	// リセット
@@ -107,10 +122,12 @@ void BossEnemyLightAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 	lerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
 	currentState_ = State::ParrySign;
+	bossEnemy.ResetParryTiming();
 }
 
 void BossEnemyLightAttackState::ImGui(const BossEnemy& bossEnemy) {
 
+	ImGui::Text(std::format("parried: {}", parried_).c_str());
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
 

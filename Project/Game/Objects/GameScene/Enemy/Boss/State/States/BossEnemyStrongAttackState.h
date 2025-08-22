@@ -15,7 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	BossEnemyStrongAttackState() = default;
+	BossEnemyStrongAttackState();
 	~BossEnemyStrongAttackState() = default;
 
 	void Enter(BossEnemy& bossEnemy) override;
@@ -62,6 +62,10 @@ private:
 	float exitTimer_; // 遷移可能にするまでの経過時間
 	float exitTime_;  // 遷移可能にするまでの時間
 	float attack2ndAnimDuration_;
+	float attack2ndLerpTime_;
+
+	// debug
+	std::unordered_map<State, bool> parriedMaps_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -69,4 +73,5 @@ private:
 	void UpdateParrySign(BossEnemy& bossEnemy);
 	void UpdateAttack1st(BossEnemy& bossEnemy);
 	void UpdateAttack2nd(BossEnemy& bossEnemy);
+	void UpdateParryTiming(BossEnemy& bossEnemy);
 };

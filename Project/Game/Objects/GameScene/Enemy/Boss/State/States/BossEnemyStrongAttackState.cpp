@@ -12,6 +12,12 @@
 //	BossEnemyStrongAttackState classMethods
 //============================================================================
 
+BossEnemyStrongAttackState::BossEnemyStrongAttackState() {
+
+	parriedMaps_[State::Attack1st] = false;
+	parriedMaps_[State::Attack2nd] = false;
+}
+
 void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
 
 	// 攻撃予兆アニメーションを設定
@@ -20,7 +26,7 @@ void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
 	// 座標を設定
 	startPos_ = bossEnemy.GetTranslation();
 	canExit_ = false;
-	
+
 	// 攻撃予兆を出す
 	Vector3 sign = bossEnemy.GetTranslation();
 	sign.y = 2.0f;
@@ -30,9 +36,15 @@ void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
 	bossEnemy.ResetParryTiming();
 	parryParam_.continuousCount = 2;
 	parryParam_.canParry = true;
+
+	parriedMaps_[State::Attack1st] = false;
+	parriedMaps_[State::Attack2nd] = false;
 }
 
 void BossEnemyStrongAttackState::Update(BossEnemy& bossEnemy) {
+
+	// パリィ攻撃のタイミングを更新
+	UpdateParryTiming(bossEnemy);
 
 	// 状態に応じて更新
 	switch (currentState_) {
@@ -80,9 +92,6 @@ void BossEnemyStrongAttackState::UpdateParrySign(BossEnemy& bossEnemy) {
 		bossEnemy.SetTranslation(target);
 		bossEnemy.SetNextAnimation("bossEnemy_strongAttack", false, nextAnimDuration_);
 
-		// パリィを実行させる
-		bossEnemy.TellParryTiming();
-
 		// 状態を進める
 		currentState_ = State::Attack1st;
 	}
@@ -95,19 +104,30 @@ void BossEnemyStrongAttackState::UpdateAttack1st(BossEnemy& bossEnemy) {
 
 		bossEnemy.SetNextAnimation("bossEnemy_lightAttack", false, attack2ndAnimDuration_);
 
-		// パリィを実行させる
-		bossEnemy.TellParryTiming();
-
 		// 状態を進める
 		currentState_ = State::Attack2nd;
+		lerpTimer_ = 0.0f;
+
+		// 座標を設定
+		startPos_ = bossEnemy.GetTranslation();
 	}
 }
 
 void BossEnemyStrongAttackState::UpdateAttack2nd(BossEnemy& bossEnemy) {
 
-	// 攻撃アニメーション中は受け付け無し
-	parryParam_.canParry = false;
-	bossEnemy.ResetParryTiming();
+	// アニメーション終了時間で補間
+	lerpTimer_ += GameTimer::GetScaledDeltaTime();
+	float lerpT = std::clamp(lerpTimer_ / attack2ndLerpTime_, 0.0f, 1.0f);
+	lerpT = EasedValue(EasingType::EaseOutExpo, lerpT);
+
+	// 目標座標を常に更新する
+	const Vector3 playerPos = player_->GetTranslation();
+	Vector3 direction = (bossEnemy.GetTranslation() - playerPos).Normalize();
+	Vector3 target = playerPos - direction * attackOffsetTranslation_;
+	LookTarget(bossEnemy, target);
+
+	// 座標補間
+	bossEnemy.SetTranslation(Vector3::Lerp(startPos_, target, lerpT));
 
 	// animationが終了したら経過時間を進める
 	if (bossEnemy.IsAnimationFinished()) {
@@ -121,6 +141,31 @@ void BossEnemyStrongAttackState::UpdateAttack2nd(BossEnemy& bossEnemy) {
 	}
 }
 
+void BossEnemyStrongAttackState::UpdateParryTiming(BossEnemy& bossEnemy) {
+
+	// パリィ攻撃のタイミング
+	switch (currentState_) {
+	case BossEnemyStrongAttackState::State::Attack1st: {
+
+		if (bossEnemy.IsEventKey(0)) {
+
+			bossEnemy.TellParryTiming();
+			parriedMaps_[currentState_] = true;
+		}
+		break;
+	}
+	case BossEnemyStrongAttackState::State::Attack2nd: {
+
+		if (bossEnemy.IsEventKey(0)) {
+
+			bossEnemy.TellParryTiming();
+			parriedMaps_[currentState_] = true;
+		}
+		break;
+	}
+	}
+}
+
 void BossEnemyStrongAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 
 	// リセット
@@ -128,9 +173,13 @@ void BossEnemyStrongAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 	lerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
 	currentState_ = State::ParrySign;
+	bossEnemy.ResetParryTiming();
 }
 
 void BossEnemyStrongAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
+
+	ImGui::Text(std::format("parried: Attack1st: {}", parriedMaps_[State::Attack1st]).c_str());
+	ImGui::Text(std::format("parried: Attack2nd: {}", parriedMaps_[State::Attack2nd]).c_str());
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("attack2ndAnimDuration", &attack2ndAnimDuration_, 0.001f);
@@ -138,6 +187,7 @@ void BossEnemyStrongAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEne
 
 	ImGui::DragFloat("attackOffsetTranslation", &attackOffsetTranslation_, 0.1f);
 	ImGui::DragFloat("exitTime", &exitTime_, 0.01f);
+	ImGui::DragFloat("attack2ndLerpTime", &attack2ndLerpTime_, 0.01f);
 
 	ImGui::Text(std::format("canExit: {}", canExit_).c_str());
 	ImGui::Text("exitTimer: %.3f", exitTimer_);
@@ -157,6 +207,7 @@ void BossEnemyStrongAttackState::ApplyJson(const Json& data) {
 
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	attack2ndAnimDuration_ = data.value("attack2ndAnimDuration_", 0.4f);
+	attack2ndLerpTime_ = data.value("attack2ndLerpTime_", 0.4f);
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 
 	attackOffsetTranslation_ = JsonAdapter::GetValue<float>(data, "attackOffsetTranslation_");
@@ -168,6 +219,7 @@ void BossEnemyStrongAttackState::SaveJson(Json& data) {
 
 	data["nextAnimDuration_"] = nextAnimDuration_;
 	data["attack2ndAnimDuration_"] = attack2ndAnimDuration_;
+	data["attack2ndLerpTime_"] = attack2ndLerpTime_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
 
 	data["attackOffsetTranslation_"] = attackOffsetTranslation_;

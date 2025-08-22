@@ -320,23 +320,9 @@ void PlayerStateController::UpdateParryState(Player& owner) {
 		return;
 	}
 
-	// 予約を時間経過で削除
+	// パリィ受付をしていなければ初期化
 	if (parrySession_.active && parrySession_.reserved) {
-
-		const bool windowClosed = bossEnemy_ && !bossEnemy_->GetParryParam().canParry;
-		const float now = GameTimer::GetTotalTime();
-		const float reservedEnd = 1.0f;
-		// 予約失効チェック
-		bool timeout = false;
-		if (parrySession_.total == 1) {
-
-			timeout = (now - parrySession_.reservedStart) > reservedEnd;
-		} else {
-
-			timeout = (now - parrySession_.reservedStart) > reservedEnd * static_cast<float>(parrySession_.total);
-		}
-
-		if (windowClosed || timeout) {
+		if (bossEnemy_ && !bossEnemy_->GetParryParam().canParry) {
 
 			parrySession_.Init();
 		}
