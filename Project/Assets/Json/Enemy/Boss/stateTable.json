@@ -44,6 +44,14 @@
                 7
             ],
             "teleportType": 0
+        },
+        {
+            "allowRepeat": false,
+            "sequence": [
+                1,
+                8
+            ],
+            "teleportType": 1
         }
     ],
     "phases": [
@@ -52,6 +60,7 @@
             "comboIndices": [
                 0,
                 1,
+                2,
                 3
             ],
             "nextStateDuration": 0.6399999856948853
@@ -63,7 +72,8 @@
                 1,
                 2,
                 3,
-                4
+                4,
+                6
             ],
             "nextStateDuration": 0.5400000214576721
         },
@@ -74,7 +84,8 @@
                 1,
                 2,
                 4,
-                5
+                5,
+                6
             ],
             "nextStateDuration": 0.7200000286102295
         }
