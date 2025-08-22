@@ -115,7 +115,18 @@ void PlayerParryState::UpdateAnimation(Player& player) {
 
 	// 座標補間が終了するまでなにもしない
 	if (!parryLerp_.isFinised) {
-		return;
+
+		const bool hasAttackRequest =
+			request_.has_value() && request_.value() == RequestState::PlayAnimation;
+		const bool reachedHalf =
+			(parryLerp_.time > 0.0f) && (parryLerp_.timer >= parryLerp_.time * 0.5f);
+		// 半分以上時間経過していれば攻撃アニメーションを行えるようにする
+		if (hasAttackRequest && reachedHalf) {
+			
+			parryLerp_.isFinised = true;
+		} else {
+			return;
+		}
 	}
 
 	// 攻撃ボタンが押されていなければ状態を終了する
@@ -223,6 +234,7 @@ void PlayerParryState::Exit([[maybe_unused]] Player& player) {
 
 void PlayerParryState::ImGui(const Player& player) {
 
+	ImGui::Text(std::format("allowAttack: {}", allowAttack_).c_str());
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("deltaWaitTime", &deltaWaitTime_, 0.01f);
 

@@ -43,6 +43,7 @@ public:
 	PlayerState GetSwitchSelectState() const;
 
 	bool IsTriggerParry() const { return inputMapper_->IsTriggered(PlayerInputAction::Parry); }
+	bool IsActiveParry() const { return parrySession_.active; }
 private:
 	//========================================================================
 	//	private Methods

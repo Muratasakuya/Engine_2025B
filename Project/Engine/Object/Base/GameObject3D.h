@@ -62,6 +62,7 @@ public:
 	// animation
 	void SetNextAnimation(const std::string& nextAnimationName, bool loopAnimation, float transitionDuration);
 	void SetDebugViewBone(bool enable) { animation_->SetDebugViewBone(enable); }
+	void SetPlaybackSpeed(float playbackSpeed) { animation_->SetPlaybackSpeed(playbackSpeed); }
 
 	void ResetAnimation();
 	Vector3 GetJointWorldPos(const std::string& jointName) const;
@@ -69,6 +70,7 @@ public:
 	int GetAnimationRepeatCount() const { return animation_->GetRepeatCount(); }
 	float GetAnimationDuration(const std::string& animationName) const { return animation_->GetAnimationDuration(animationName); }
 	bool IsEventKey(uint32_t frameIndex) const { return animation_->IsEventKey(frameIndex); }
+	float GetPlaybackSpeed() const { return animation_->GetPlaybackSpeed(); }
 
 	/*---------- getter ----------*/
 

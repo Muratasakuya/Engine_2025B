@@ -24,6 +24,7 @@ void SkinnedAnimation::Init(const std::string& animationName, Asset* asset) {
 	isDisplayBone_ = false;
 
 	// 初期値
+	playbackSpeed_ = 1.0f;
 	transitionDuration_ = 0.4f;
 	prevFrameIndex_ = -1;
 	currentAnimationName_ = animationName;
@@ -70,11 +71,11 @@ void SkinnedAnimation::Update(const Matrix4x4& worldMatrix) {
 	//========================================================================
 	// 通常のAnimation再生
 	//========================================================================
+	float deltaTime = GameTimer::GetScaledDeltaTime() * playbackSpeed_;
 	if (!inTransition_) {
 		// ループ再生かしないか
 		if (roopAnimation_) {
 
-			float deltaTime = GameTimer::GetScaledDeltaTime();
 			float duration = animationData_[currentAnimationName_].duration;
 			if (currentAnimationTimer_ + deltaTime >= duration) {
 				++repeatCount_;
@@ -88,7 +89,7 @@ void SkinnedAnimation::Update(const Matrix4x4& worldMatrix) {
 			// 経過時間が最大にいくまで時間を進める
 			if (animationData_[currentAnimationName_].duration > currentAnimationTimer_) {
 
-				currentAnimationTimer_ += GameTimer::GetScaledDeltaTime();
+				currentAnimationTimer_ += deltaTime;
 			}
 
 			// 経過時間に達したら終了させる
@@ -162,6 +163,7 @@ void SkinnedAnimation::ImGui(float itemSize) {
 			repeatCount_ = 0;
 		}
 		ImGui::Text("RepeatCount: %d", repeatCount_);
+		ImGui::DragFloat("playbackSpeed", &playbackSpeed_, 0.01f);
 	}
 	ImGui::Separator();
 

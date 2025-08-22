@@ -36,6 +36,8 @@ void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
 	bossEnemy.ResetParryTiming();
 	parryParam_.continuousCount = 2;
 	parryParam_.canParry = true;
+	isFinishedParry_ = false;
+	isPlayerParried_ = std::nullopt;
 
 	parriedMaps_[State::Attack1st] = false;
 	parriedMaps_[State::Attack2nd] = false;
@@ -45,6 +47,8 @@ void BossEnemyStrongAttackState::Update(BossEnemy& bossEnemy) {
 
 	// パリィ攻撃のタイミングを更新
 	UpdateParryTiming(bossEnemy);
+	// アニメーション再生速度の更新
+	UpdatePlaybackSpeed(bossEnemy);
 
 	// 状態に応じて更新
 	switch (currentState_) {
@@ -110,24 +114,44 @@ void BossEnemyStrongAttackState::UpdateAttack1st(BossEnemy& bossEnemy) {
 
 		// 座標を設定
 		startPos_ = bossEnemy.GetTranslation();
+
+		if (isPlayerParried_.has_value()) {
+
+			playbackSpeed_ = parriedPlaybackSpeed_;
+			bossEnemy.SetPlaybackSpeed(playbackSpeed_);
+		} else {
+
+			playbackSpeed_ = 1.0f;
+		}
 	}
 }
 
 void BossEnemyStrongAttackState::UpdateAttack2nd(BossEnemy& bossEnemy) {
 
-	// アニメーション終了時間で補間
-	lerpTimer_ += GameTimer::GetScaledDeltaTime();
-	float lerpT = std::clamp(lerpTimer_ / attack2ndLerpTime_, 0.0f, 1.0f);
-	lerpT = EasedValue(EasingType::EaseOutExpo, lerpT);
+	if (!reachedPlayer_) {
 
-	// 目標座標を常に更新する
-	const Vector3 playerPos = player_->GetTranslation();
-	Vector3 direction = (bossEnemy.GetTranslation() - playerPos).Normalize();
-	Vector3 target = playerPos - direction * attackOffsetTranslation_;
-	LookTarget(bossEnemy, target);
+		lerpTimer_ += GameTimer::GetDeltaTime() * playbackSpeed_;
+		float lerpT = std::clamp(lerpTimer_ / attack2ndLerpTime_, 0.0f, 1.0f);
+		lerpT = EasedValue(EasingType::EaseOutExpo, lerpT);
 
-	// 座標補間
-	bossEnemy.SetTranslation(Vector3::Lerp(startPos_, target, lerpT));
+		// プレイヤー座標計算
+		const Vector3 playerPos = player_->GetTranslation();
+		Vector3 direction = (bossEnemy.GetTranslation() - playerPos).Normalize();
+		Vector3 target = playerPos - direction * attackOffsetTranslation_;
+		LookTarget(bossEnemy, target);
+
+		// 補間
+		Vector3 newPos = Vector3::Lerp(startPos_, target, lerpT);
+		bossEnemy.SetTranslation(newPos);
+
+		// プレイヤーに十分近づいたら補間しない
+		float dist = (playerPos - newPos).Length();
+		if (dist <= attackOffsetTranslation_) {
+
+			reachedPlayer_ = true;
+			bossEnemy.SetTranslation(target);
+		}
+	}
 
 	// animationが終了したら経過時間を進める
 	if (bossEnemy.IsAnimationFinished()) {
@@ -159,10 +183,38 @@ void BossEnemyStrongAttackState::UpdateParryTiming(BossEnemy& bossEnemy) {
 		if (bossEnemy.IsEventKey(0)) {
 
 			bossEnemy.TellParryTiming();
+			isFinishedParry_ = true;
 			parriedMaps_[currentState_] = true;
 		}
 		break;
 	}
+	}
+
+	// パリィされるのかチェック
+	if (!isPlayerParried_.has_value() && player_->IsActiveParry()) {
+
+		isPlayerParried_ = player_->IsActiveParry();
+	}
+}
+
+void BossEnemyStrongAttackState::UpdatePlaybackSpeed(BossEnemy& bossEnemy) {
+
+	if (!isPlayerParried_.has_value() || !isFinishedParry_) {
+		return;
+	}
+
+	// パリィ処理終了後、補間、アニメーション再生速度を元に戻す
+	returnPlayBackSpeedTimer_ += GameTimer::GetDeltaTime();
+	float t = std::clamp(returnPlayBackSpeedTimer_ / returnPlayBackSpeedTime_, 0.0f, 1.0f);
+
+	playbackSpeed_ = std::lerp(parriedPlaybackSpeed_, 1.0f, t);
+	bossEnemy.SetPlaybackSpeed(playbackSpeed_);
+
+	if (t <= 1.0f) {
+
+		playbackSpeed_ = 1.0f;
+		bossEnemy.SetPlaybackSpeed(playbackSpeed_);
+		isFinishedParry_ = false;
 	}
 }
 
@@ -170,8 +222,12 @@ void BossEnemyStrongAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 
 	// リセット
 	canExit_ = false;
+	reachedPlayer_ = false;
 	lerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
+	returnPlayBackSpeedTimer_ = 0.0f;
+	playbackSpeed_ = 1.0f;
+	bossEnemy.SetPlaybackSpeed(playbackSpeed_);
 	currentState_ = State::ParrySign;
 	bossEnemy.ResetParryTiming();
 }
@@ -180,6 +236,9 @@ void BossEnemyStrongAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEne
 
 	ImGui::Text(std::format("parried: Attack1st: {}", parriedMaps_[State::Attack1st]).c_str());
 	ImGui::Text(std::format("parried: Attack2nd: {}", parriedMaps_[State::Attack2nd]).c_str());
+	ImGui::Text(std::format("isFinishedParry: {}", isFinishedParry_).c_str());
+	ImGui::Text(std::format("playbackSpeed: {}", playbackSpeed_).c_str());
+	ImGui::Text(std::format("returnPlayBackSpeedTimer: {}", returnPlayBackSpeedTimer_).c_str());
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("attack2ndAnimDuration", &attack2ndAnimDuration_, 0.001f);
@@ -188,6 +247,8 @@ void BossEnemyStrongAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEne
 	ImGui::DragFloat("attackOffsetTranslation", &attackOffsetTranslation_, 0.1f);
 	ImGui::DragFloat("exitTime", &exitTime_, 0.01f);
 	ImGui::DragFloat("attack2ndLerpTime", &attack2ndLerpTime_, 0.01f);
+	ImGui::DragFloat("parriedPlaybackSpeed", &parriedPlaybackSpeed_, 0.01f);
+	ImGui::DragFloat("returnPlayBackSpeedTime", &returnPlayBackSpeedTime_, 0.01f);
 
 	ImGui::Text(std::format("canExit: {}", canExit_).c_str());
 	ImGui::Text("exitTimer: %.3f", exitTimer_);
@@ -208,6 +269,8 @@ void BossEnemyStrongAttackState::ApplyJson(const Json& data) {
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	attack2ndAnimDuration_ = data.value("attack2ndAnimDuration_", 0.4f);
 	attack2ndLerpTime_ = data.value("attack2ndLerpTime_", 0.4f);
+	parriedPlaybackSpeed_ = data.value("parriedPlaybackSpeed_", 1.0f);
+	returnPlayBackSpeedTime_ = data.value("returnPlayBackSpeedTime_", 0.4f);
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 
 	attackOffsetTranslation_ = JsonAdapter::GetValue<float>(data, "attackOffsetTranslation_");
@@ -221,6 +284,7 @@ void BossEnemyStrongAttackState::SaveJson(Json& data) {
 	data["attack2ndAnimDuration_"] = attack2ndAnimDuration_;
 	data["attack2ndLerpTime_"] = attack2ndLerpTime_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
+	data["parriedPlaybackSpeed_"] = parriedPlaybackSpeed_;
 
 	data["attackOffsetTranslation_"] = attackOffsetTranslation_;
 	data["exitTime_"] = exitTime_;

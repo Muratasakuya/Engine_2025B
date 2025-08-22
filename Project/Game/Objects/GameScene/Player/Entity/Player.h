@@ -55,6 +55,7 @@ public:
 	int GetDamage() const;
 	int GetToughness() const { return stats_.toughness; }
 	bool IsDead() const { return stats_.currentHP == 0; }
+	bool IsActiveParry() const { return stateController_->IsActiveParry(); }
 private:
 	//========================================================================
 	//	private Methods

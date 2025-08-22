@@ -49,15 +49,18 @@ public:
 	// 親として更新するjointを設定
 	void SetParentJoint(const std::string& jointName);
 
+	// 再生速度の設定
+	void SetPlaybackSpeed(float playbackSpeed) { playbackSpeed_ = playbackSpeed; }
+
 	bool IsTransition() const { return inTransition_; }
 	bool IsAnimationFinished() const { return animationFinish_; }
-	bool IsEventKey(uint32_t frameIndex);
 	int GetRepeatCount() const { return repeatCount_; }
+	bool IsEventKey(uint32_t frameIndex);
 	float GetAnimationDuration(const std::string& animationName) const;
+	float GetPlaybackSpeed() const { return playbackSpeed_; }
 
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
 	const Skeleton& GetSkeleton() const { return skeleton_; }
-
 	const Transform3D* FindJointTransform(const std::string& name) const;
 private:
 	//========================================================================
@@ -85,6 +88,7 @@ private:
 
 	bool animationFinish_; // 現在のanimationが終了したかどうか
 	int repeatCount_;      // リピート回数
+	float playbackSpeed_;  // アニメーションの再生速度
 
 	bool inTransition_;        // 遷移中かどうか
 	float transitionTimer_;    // 遷移管理タイマー

@@ -307,16 +307,16 @@ void PlayerStateController::UpdateParryState(Player& owner) {
 
 		++parrySession_.done;
 		const bool isLast = (parrySession_.done >= parrySession_.total);
+
+		// パリィ状態に強制遷移させる
+		SetForcedState(owner, PlayerState::Parry);
 		if (const auto& parryState = static_cast<PlayerParryState*>(states_.at(PlayerState::Parry).get())) {
 
 			parryState->SetAllowAttack(isLast);
 		}
 
-		// パリィ状態に強制遷移させる
-		SetForcedState(owner, PlayerState::Parry);
 		parrySession_.reserved = !isLast;
 		parrySession_.reservedStart = GameTimer::GetTotalTime();
-
 		return;
 	}
 

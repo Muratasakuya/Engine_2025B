@@ -51,18 +51,27 @@ private:
 	State currentState_;
 
 	// 座標
-	Vector3 startPos_;  // 開始座標
+	Vector3 startPos_; // 開始座標
 
 	// parameters
 	float lerpTimer_;       // 座標補間の際の経過時間
 	EasingType easingType_; // 補間の際のイージング
 
-	float attackOffsetTranslation_;  // 座標からのオフセット距離
+	float attackOffsetTranslation_; // 座標からのオフセット距離
 
 	float exitTimer_; // 遷移可能にするまでの経過時間
 	float exitTime_;  // 遷移可能にするまでの時間
-	float attack2ndAnimDuration_;
-	float attack2ndLerpTime_;
+
+	float attack2ndAnimDuration_; // 2回目のアニメーション補間時間
+	float attack2ndLerpTime_;     // 座標補間時間
+
+	float parriedPlaybackSpeed_;     // パリィされる時のアニメーション再生速度
+	float playbackSpeed_;
+	float returnPlayBackSpeedTimer_; // 元の再生速度に戻るまでの時間経過
+	float returnPlayBackSpeedTime_;  // 元の再生速度に戻るまでの時間
+	std::optional<bool> isPlayerParried_;
+	bool reachedPlayer_; // 近くまで来たかどうか
+	bool isFinishedParry_;
 
 	// debug
 	std::unordered_map<State, bool> parriedMaps_;
@@ -74,4 +83,5 @@ private:
 	void UpdateAttack1st(BossEnemy& bossEnemy);
 	void UpdateAttack2nd(BossEnemy& bossEnemy);
 	void UpdateParryTiming(BossEnemy& bossEnemy);
+	void UpdatePlaybackSpeed(BossEnemy& bossEnemy);
 };
