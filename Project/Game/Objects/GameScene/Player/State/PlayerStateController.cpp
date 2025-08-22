@@ -321,11 +321,10 @@ void PlayerStateController::UpdateParryState(Player& owner) {
 	}
 
 	// パリィ受付をしていなければ初期化
-	if (parrySession_.active && parrySession_.reserved) {
-		if (bossEnemy_ && !bossEnemy_->GetParryParam().canParry) {
+	if (parrySession_.active &&
+		bossEnemy_ && !bossEnemy_->GetParryParam().canParry) {
 
-			parrySession_.Init();
-		}
+		parrySession_.Init();
 	}
 }
 

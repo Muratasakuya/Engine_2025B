@@ -223,6 +223,7 @@ void BossEnemyStrongAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
 	// リセット
 	canExit_ = false;
 	reachedPlayer_ = false;
+	parryParam_.canParry = false;
 	lerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
 	returnPlayBackSpeedTimer_ = 0.0f;

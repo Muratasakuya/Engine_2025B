@@ -229,6 +229,11 @@ void Player::CheckBossEnemyStun() {
 
 void Player::OnCollisionEnter(const CollisionBody* collisionBody) {
 
+	// パリィ処理中なら攻撃を受けない
+	if (stateController_->IsActiveParry()) {
+		return;
+	}
+
 	// 敵から攻撃を受けた時のみ
 	if ((collisionBody->GetType() & (ColliderType::Type_BossWeapon | ColliderType::Type_BossBlade))
 		!= ColliderType::Type_None) {
