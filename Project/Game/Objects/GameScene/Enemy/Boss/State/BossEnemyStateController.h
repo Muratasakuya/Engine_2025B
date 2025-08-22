@@ -53,7 +53,7 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-		// jsonを保存するパス
+	// jsonを保存するパス
 	const std::string kStateJsonPath_ = "Enemy/Boss/stateParameter.json";
 	const std::string kStateTableJsonPath_ = "Enemy/Boss/stateTable.json";
 

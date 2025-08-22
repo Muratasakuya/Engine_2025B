@@ -10,6 +10,15 @@
         },
         {
             "object": "bossEnemyArmature",
+            "action": "continuousAttack",
+            "emitEffectFrames": [
+                8,
+                20,
+                39
+            ]
+        },
+        {
+            "object": "bossEnemyArmature",
             "action": "lightAttack",
             "emitEffectFrames": [
                 12

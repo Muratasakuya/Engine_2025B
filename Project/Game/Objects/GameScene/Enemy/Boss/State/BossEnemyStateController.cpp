@@ -18,6 +18,7 @@
 #include <Game/Objects/GameScene/Enemy/Boss/State/States/BossEnemyStrongAttackState.h>
 #include <Game/Objects/GameScene/Enemy/Boss/State/States/BossEnemyChargeAttackState.h>
 #include <Game/Objects/GameScene/Enemy/Boss/State/States/BossEnemyRushAttackState.h>
+#include <Game/Objects/GameScene/Enemy/Boss/State/States/BossEnemyContinuousAttackState.h>
 
 //============================================================================
 //	BossEnemyStateController classMethods
@@ -34,6 +35,7 @@ void BossEnemyStateController::Init(BossEnemy& owner) {
 	states_.emplace(BossEnemyState::StrongAttack, std::make_unique<BossEnemyStrongAttackState>());
 	states_.emplace(BossEnemyState::ChargeAttack, std::make_unique<BossEnemyChargeAttackState>());
 	states_.emplace(BossEnemyState::RushAttack, std::make_unique<BossEnemyRushAttackState>());
+	states_.emplace(BossEnemyState::ContinuousAttack, std::make_unique<BossEnemyContinuousAttackState>());
 
 	// json適応
 	ApplyJson();
@@ -96,6 +98,11 @@ void BossEnemyStateController::Update(BossEnemy& owner) {
 
 	// 攻撃予兆の更新処理
 	attackSign_->Update();
+
+	if (stateTable_.phases.back().comboIndices.size() == 0) {
+		int a = 0;
+		++a;
+	}
 }
 
 void BossEnemyStateController::UpdatePhase() {
@@ -192,7 +199,8 @@ void BossEnemyStateController::UpdateStateTimer() {
 			(current_ == BossEnemyState::LightAttack) ||
 			(current_ == BossEnemyState::StrongAttack) ||
 			(current_ == BossEnemyState::ChargeAttack) ||
-			(current_ == BossEnemyState::RushAttack);
+			(current_ == BossEnemyState::RushAttack) ||
+			(current_ == BossEnemyState::ContinuousAttack);
 		// 攻撃状態空の遷移でかつ強制遷移するなら
 		if (isAttack && phase.autoIdleAfterAttack) {
 
@@ -247,7 +255,6 @@ void BossEnemyStateController::ChangeState(BossEnemy& owner) {
 
 		currentState->Enter(owner);
 	}
-
 	owner.GetAttackCollision()->SetEnterState(current_);
 }
 
@@ -647,6 +654,10 @@ void BossEnemyStateController::ApplyJson() {
 		if (JsonAdapter::LoadCheck(kStateJsonPath_, data)) {
 			for (auto& [state, ptr] : states_) {
 
+				const auto& key = EnumAdapter<BossEnemyState>::ToString(state);
+				if (!data.contains(key)) {
+					continue;
+				}
 				ptr->ApplyJson(data[EnumAdapter<BossEnemyState>::ToString(state)]);
 			}
 		}

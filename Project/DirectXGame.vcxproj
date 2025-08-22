@@ -692,6 +692,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\State\States\BossEnemyContinuousAttackState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Environment\Collision\FieldWallCollision.cpp">
       <SubType>
       </SubType>
@@ -1502,6 +1506,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemy.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemyWeapon.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\HUD\BossEnemyAttackSign.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\State\States\BossEnemyContinuousAttackState.h">
       <SubType>
       </SubType>
     </ClInclude>

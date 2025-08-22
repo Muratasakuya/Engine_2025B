@@ -32,6 +32,7 @@ void BossEnemy::InitAnimations() {
 
 	// animationのデータを設定
 	animation_->SetAnimationData("bossEnemy_chargeAttack");
+	animation_->SetAnimationData("bossEnemy_continuousAttack");
 	animation_->SetAnimationData("bossEnemy_falter");
 	animation_->SetAnimationData("bossEnemy_lightAttack");
 	animation_->SetAnimationData("bossEnemy_lightAttackParrySign");
