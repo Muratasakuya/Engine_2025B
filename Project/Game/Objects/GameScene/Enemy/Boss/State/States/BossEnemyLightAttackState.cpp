@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
+#include <Engine/Effect/Game/Helper/GameEffectCommandHelper.h>
 #include <Engine/Utility/GameTimer.h>
 #include <Game/Objects/GameScene/Player/Entity/Player.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
@@ -105,7 +106,7 @@ void BossEnemyLightAttackState::UpdateParryTiming(BossEnemy& bossEnemy) {
 	switch (currentState_) {
 	case BossEnemyLightAttackState::State::Attack: {
 
-		if (bossEnemy.IsEventKey(0)) {
+		if (bossEnemy.IsEventKey("Parry", 0)) {
 
 			bossEnemy.TellParryTiming();
 			parried_ = true;
@@ -139,7 +140,6 @@ void BossEnemyLightAttackState::ImGui(const BossEnemy& bossEnemy) {
 	ImGui::Text("exitTimer: %.3f", exitTimer_);
 	Easing::SelectEasingType(easingType_);
 
-	// 座標を設定
 	// 座標を設定
 	Vector3 start = bossEnemy.GetTranslation();
 	const Vector3 playerPos = player_->GetTranslation();

@@ -193,8 +193,8 @@ void ParticleUpdatePrimitiveModule::ImGui() {
 	}
 	case ParticlePrimitiveType::Crescent: {
 
-		ImGui::DragInt("startDivide", &primitive_.start.crescent.divide, 1, 3, 30);
-		ImGui::DragInt("targetDivide", &primitive_.target.crescent.divide, 1, 3, 30);
+		ImGui::DragInt("startDivide", &primitive_.start.crescent.divide, 1, 3, 24);
+		ImGui::DragInt("targetDivide", &primitive_.target.crescent.divide, 1, 3, 24);
 
 		ImGui::DragInt("startUVMode", &primitive_.start.crescent.uvMode, 1, 0, 1);
 		ImGui::DragInt("targetUVMode", &primitive_.target.crescent.uvMode, 1, 0, 1);

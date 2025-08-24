@@ -4,11 +4,10 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Particle/Command/ParticleCommand.h>
+#include <Engine/Effect/Particle/System/ParticleSystem.h>
 
 // c++
 #include <string>
-// front
-class ParticleSystem;
 
 //============================================================================
 //	GameEffect class
@@ -37,6 +36,10 @@ public:
 	void FrequencyEmit();
 	// 強制発生
 	void Emit(bool emitOnce = false);
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetParent(const BaseTransform& parent);
 private:
 	//========================================================================
 	//	private Methods
@@ -48,4 +51,5 @@ private:
 
 	// 1回だけ発生させるか
 	bool emitOnce_;
+	bool hasParent_;
 };

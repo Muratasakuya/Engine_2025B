@@ -18,7 +18,7 @@ bool ParticleUpdateRotationModule::SetCommand(const ParticleCommand& command) {
 			setRotation_ = *rotation;
 		} else if (const auto& matrix = std::get_if<Matrix4x4>(&command.value)){
 
-			setRotation_ = matrix->GetRotationValue();
+			setRotationMatrix_ = *matrix;
 		}
 		return false;
 	}
@@ -92,8 +92,14 @@ void ParticleUpdateRotationModule::UpdateMatrix(
 	case ParticleBillboardType::None:
 	case ParticleBillboardType::YAxis:
 
-		// 回転行列の更新
-		particle.transform.rotationMatrix = Matrix4x4::MakeRotateMatrix(rotation);
+		if (setRotationMatrix_.has_value()) {
+
+			particle.transform.rotationMatrix = *setRotationMatrix_;
+		} else {
+
+			// 回転行列の更新
+			particle.transform.rotationMatrix = Matrix4x4::MakeRotateMatrix(rotation);
+		}
 		break;
 	case ParticleBillboardType::All:
 

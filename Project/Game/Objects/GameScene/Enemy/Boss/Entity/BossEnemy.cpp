@@ -49,6 +49,10 @@ void BossEnemy::InitAnimations() {
 	// keyEventを設定
 	animation_->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
 	animation_->Update(transform_->matrix.world);
+
+	// アニメーションに合わせて発生させるエフェクト
+	animationEffect_ = std::make_unique<BossEnemyAnimationEffect>();
+	animationEffect_->Init(*this);
 }
 
 void BossEnemy::InitCollision() {
@@ -235,11 +239,12 @@ void BossEnemy::UpdatePlayGame() {
 	// 衝突情報更新
 	Collider::UpdateAllBodies(*transform_);
 	attackCollision_->Update(*transform_);
+
+	// エフェクトの更新
+	animationEffect_->Update(*this);
 }
 
 void BossEnemy::UpdateEndGame() {
-
-
 }
 
 void BossEnemy::CheckSceneState(GameSceneState sceneState) {
@@ -421,6 +426,12 @@ void BossEnemy::DerivedImGui() {
 		if (ImGui::BeginTabItem("HUD")) {
 
 			hudSprites_->ImGui();
+			ImGui::EndTabItem();
+		}
+
+		if (ImGui::BeginTabItem("Effect")) {
+
+			animationEffect_->ImGui(*this);
 			ImGui::EndTabItem();
 		}
 

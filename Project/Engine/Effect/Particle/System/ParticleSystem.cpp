@@ -32,6 +32,18 @@ void ParticleSystem::Init(ID3D12Device* device,
 	allEmitTime_ = 1.0f;
 }
 
+void ParticleSystem::SetParent(const BaseTransform& parent) {
+
+	for (auto& group : gpuGroups_) {
+
+		group.group.SetParent(true, parent);
+	}
+	for (auto& group : cpuGroups_) {
+
+		group.group.SetParent(true, parent);
+	}
+}
+
 void ParticleSystem::Update() {
 
 	// 全ての同時発生

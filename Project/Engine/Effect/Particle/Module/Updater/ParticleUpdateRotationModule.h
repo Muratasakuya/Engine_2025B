@@ -73,6 +73,7 @@ private:
 
 	// 外部設定
 	std::optional<Vector3> setRotation_;
+	std::optional<Matrix4x4> setRotationMatrix_;
 
 	// ビルボードの種類
 	ParticleBillboardType billboardType_;

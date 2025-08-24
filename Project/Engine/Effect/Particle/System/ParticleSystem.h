@@ -62,6 +62,7 @@ public:
 	void SetName(const std::string& name) { name_ = name; }
 	void SetGroupName(uint32_t i, const std::string& name) { gpuGroups_[i].name = name; }
 	void SelectGroup(int index) { selected_.index = index; }
+	void SetParent(const BaseTransform& parent);
 
 	const std::string& GetName() const { return name_; }
 	const std::string& GetGroupName(uint32_t i) const { return gpuGroups_[i].name; }

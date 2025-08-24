@@ -26,7 +26,6 @@ void SkinnedAnimation::Init(const std::string& animationName, Asset* asset) {
 	// 初期値
 	playbackSpeed_ = 1.0f;
 	transitionDuration_ = 0.4f;
-	prevFrameIndex_ = -1;
 	currentAnimationName_ = animationName;
 
 	// 骨の情報とクラスターを渡す
@@ -207,15 +206,25 @@ void SkinnedAnimation::ImGui(float itemSize) {
 
 	ImGui::Separator();
 
-	if (auto it = eventKeyTables_.find(currentAnimationName_);
-		it != eventKeyTables_.end()) {
+	if (auto itAnim = eventKeyTables_.find(currentAnimationName_);
+		itAnim != eventKeyTables_.end() && !itAnim->second.empty()) {
 
-		const auto& frames = it->second;
+		const auto& kindMap = itAnim->second;
+		const std::vector<int>* framesPtr = nullptr;
+		auto itEffect = kindMap.find("Effect");
+		if (itEffect != kindMap.end()) {
+
+			framesPtr = &itEffect->second;
+		} else {
+
+			framesPtr = &kindMap.begin()->second;
+		}
+
 		int currentFrame = CurrentFrameIndex();
 		int totalFrames = static_cast<int>(animationData_[currentAnimationName_].duration * 30.0f);
 
 		ImGui::Text("Key Timeline");
-		DrawEventTimeline(frames, currentFrame, totalFrames, itemSize * 2.0f, 10.0f);
+		DrawEventTimeline(*framesPtr, currentFrame, totalFrames, itemSize * 2.0f, 10.0f);
 	}
 
 	ImGui::PopItemWidth();
@@ -474,6 +483,7 @@ void SkinnedAnimation::SetKeyframeEvent(const std::string& fileName) {
 
 	// リセット
 	eventKeyTables_.clear();
+	prevFrameIndexPerKey_.clear();
 
 	// animationの名前の前のmodelの名前を取得
 	std::string prefix = Algorithm::RemoveAfterUnderscore(currentAnimationName_);
@@ -481,11 +491,28 @@ void SkinnedAnimation::SetKeyframeEvent(const std::string& fileName) {
 
 	for (const auto& animJson : data["animations"]) {
 
-		const std::string& action = animJson["action"].get<std::string>();
-		std::string fullName = prefix + action;
+		if (animJson.contains("events")) {
 
-		auto& table = eventKeyTables_[fullName];
-		table = animJson["emitEffectFrames"].get<std::vector<int>>();
+			// アニメーションの名前をキーにする
+			const std::string& action = animJson["action"].get<std::string>();
+			std::string fullName = prefix + action;
+
+			auto& kindMap = eventKeyTables_[fullName];
+			kindMap.clear();
+			const auto& ev = animJson["events"];
+			for (auto it = ev.begin(); it != ev.end(); ++it) {
+
+				if (!it->is_array()) {
+					continue;
+				}
+				std::vector<int> frames = it->get<std::vector<int>>();
+				std::sort(frames.begin(), frames.end());
+				frames.erase(std::unique(frames.begin(), frames.end()), frames.end());
+				kindMap[it.key()] = std::move(frames);
+
+			}
+
+		}
 	}
 }
 
@@ -497,6 +524,7 @@ void SkinnedAnimation::SetPlayAnimation(const std::string& animationName, bool r
 	roopAnimation_ = roopAnimation;
 
 	animationFinish_ = false;
+	prevFrameIndexPerKey_.clear();
 }
 
 void SkinnedAnimation::ResetAnimation() {
@@ -504,12 +532,13 @@ void SkinnedAnimation::ResetAnimation() {
 	// animationリセット
 	repeatCount_ = 0;
 	animationFinish_ = false;
+	prevFrameIndexPerKey_.clear();
 }
 
 void SkinnedAnimation::SwitchAnimation(const std::string& nextAnimName,
 	bool loopAnimation, float transitionDuration) {
 
-	prevFrameIndex_ = -1;
+	prevFrameIndexPerKey_.clear();
 
 	// 現在のAnimationを設定
 	oldAnimationName_ = currentAnimationName_;
@@ -540,30 +569,38 @@ void SkinnedAnimation::SetParentJoint(const std::string& jointName) {
 	}
 }
 
-bool SkinnedAnimation::IsEventKey(uint32_t frameIndex) {
+bool SkinnedAnimation::IsEventKey(const std::string& keyEvent, uint32_t frameIndex) {
 
-	auto it = eventKeyTables_.find(currentAnimationName_);
-	if (it == eventKeyTables_.end()) {
+	// 対象アニメーションのイベント表
+	auto animIt = eventKeyTables_.find(currentAnimationName_);
+	if (animIt == eventKeyTables_.end()) {
 		return false;
 	}
 
-	const auto& frames = it->second;
+	// 種類ごとの配列
+	const auto& kindMap = animIt->second;
+	auto kindIt = kindMap.find(keyEvent);
+	if (kindIt == kindMap.end()) {
+		return false;
+	}
+
+	const auto& frames = kindIt->second;
 	if (frameIndex >= frames.size()) {
 		return false;
 	}
 
-	// 現在のフレームを取得
+	// 現在フレームと照合
 	const int current = CurrentFrameIndex();
 	const int target = frames[frameIndex];
 
-	// 現在のフレームが比較値と同じかどうか
-	const bool result = (current == target && prevFrameIndex_ != target);
+	const std::string prevKey = currentAnimationName_ + "|" + keyEvent;
+	int& prev = prevFrameIndexPerKey_[prevKey];
+
+	// 連続で発生させないようにする
+	const bool result = (current == target && prev != target);
 	if (result) {
-
-		// 前フレームの値を保存
-		prevFrameIndex_ = current;
+		prev = current;
 	}
-
 	return result;
 }
 

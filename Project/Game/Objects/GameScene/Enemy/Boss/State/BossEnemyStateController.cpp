@@ -77,6 +77,10 @@ void BossEnemyStateController::SetFollowCamera(const FollowCamera* followCamera)
 
 void BossEnemyStateController::Update(BossEnemy& owner) {
 
+	if (disableTransitions_) {
+		return;
+	}
+
 	// 状態切り替えの設定処理
 	UpdatePhase();
 	CheckStunToughness();

@@ -69,8 +69,9 @@ public:
 	bool IsAnimationFinished() const { return animation_->IsAnimationFinished(); }
 	int GetAnimationRepeatCount() const { return animation_->GetRepeatCount(); }
 	float GetAnimationDuration(const std::string& animationName) const { return animation_->GetAnimationDuration(animationName); }
-	bool IsEventKey(uint32_t frameIndex) const { return animation_->IsEventKey(frameIndex); }
+	bool IsEventKey(const std::string& keyEvent, uint32_t frameIndex) { return animation_->IsEventKey(keyEvent,frameIndex); }
 	float GetPlaybackSpeed() const { return animation_->GetPlaybackSpeed(); }
+	const std::string& GetCurrentAnimationName() const { return animation_->GetCurrentAnimationName(); }
 
 	/*---------- getter ----------*/
 

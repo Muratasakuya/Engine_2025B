@@ -120,7 +120,7 @@ private:
 	void UpdateAttack(BossEnemy& bossEnemy);
 	void UpdateCooldown(BossEnemy& bossEnemy, float deltaTime);
 
-	void UpdateBlade(const BossEnemy& bossEnemy);
+	void UpdateBlade(BossEnemy& bossEnemy);
 
 	// helper
 	Vector3 CalcBaseDir(const BossEnemy& bossEnemy) const;

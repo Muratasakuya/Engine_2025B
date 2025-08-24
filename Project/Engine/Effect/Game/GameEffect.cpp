@@ -13,6 +13,9 @@ void GameEffect::CreateParticleSystem(const std::string& filePath) {
 
 	// Managerに渡して作成
 	particleSystem_ = ParticleManager::GetInstance()->CreateParticleSystem(filePath);
+
+	// 初期化値
+	hasParent_ = false;
 }
 
 void GameEffect::ResetEmitFlag() {
@@ -44,4 +47,14 @@ void GameEffect::Emit(bool emitOnce) {
 	particleSystem_->Emit();
 
 	emitOnce_ = emitOnce;
+}
+
+void GameEffect::SetParent(const BaseTransform& parent) {
+
+	if (hasParent_) {
+		return;
+	}
+
+	particleSystem_->SetParent(parent);
+	hasParent_ = true;
 }

@@ -15,6 +15,8 @@
 #include <Game/Objects/GameScene/Enemy/Boss/Collision/BossEnemyAttackCollision.h>
 // HUD
 #include <Game/Objects/GameScene/Enemy/Boss/HUD/BossEnemyHUD.h>
+// effect
+#include <Game/Objects/GameScene/Enemy/Boss/Effect/BossEnemyAnimationEffect.h>
 
 // front
 class Player;
@@ -88,6 +90,9 @@ private:
 
 	// HUD
 	std::unique_ptr<BossEnemyHUD> hudSprites_;
+
+	// エフェクト
+	std::unique_ptr<BossEnemyAnimationEffect> animationEffect_;
 
 	// parameters
 	Transform3D initTransform_; // 初期化時の値

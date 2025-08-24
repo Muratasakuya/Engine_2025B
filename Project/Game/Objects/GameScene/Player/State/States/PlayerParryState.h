@@ -4,7 +4,7 @@
 //	include
 //============================================================================
 #include <Game/Objects/GameScene/Player/State/Interface/PlayerIState.h>
-#include <Engine/Effect/GameEffect.h>
+#include <Engine/Effect/Game/GameEffect.h>
 #include <Lib/Adapter/Easing.h>
 
 //============================================================================

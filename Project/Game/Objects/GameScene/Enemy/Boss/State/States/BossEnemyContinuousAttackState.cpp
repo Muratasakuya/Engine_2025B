@@ -133,7 +133,7 @@ void BossEnemyContinuousAttackState::UpdateParryTiming(BossEnemy& bossEnemy) {
 	switch (currentState_) {
 	case BossEnemyContinuousAttackState::State::Attack: {
 
-		if (bossEnemy.IsEventKey(keyEventIndex_)) {
+		if (bossEnemy.IsEventKey("Parry", keyEventIndex_)) {
 
 			bossEnemy.TellParryTiming();
 

@@ -16,6 +16,9 @@ BossEnemyStrongAttackState::BossEnemyStrongAttackState() {
 
 	parriedMaps_[State::Attack1st] = false;
 	parriedMaps_[State::Attack2nd] = false;
+
+	slashEffect_ = std::make_unique<GameEffect>();
+	slashEffect_->CreateParticleSystem("Particle/bossEnemySlash.json");
 }
 
 void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {
@@ -171,7 +174,7 @@ void BossEnemyStrongAttackState::UpdateParryTiming(BossEnemy& bossEnemy) {
 	switch (currentState_) {
 	case BossEnemyStrongAttackState::State::Attack1st: {
 
-		if (bossEnemy.IsEventKey(0)) {
+		if (bossEnemy.IsEventKey("Parry", 0)) {
 
 			bossEnemy.TellParryTiming();
 			parriedMaps_[currentState_] = true;
@@ -180,7 +183,7 @@ void BossEnemyStrongAttackState::UpdateParryTiming(BossEnemy& bossEnemy) {
 	}
 	case BossEnemyStrongAttackState::State::Attack2nd: {
 
-		if (bossEnemy.IsEventKey(0)) {
+		if (bossEnemy.IsEventKey("Parry", 0)) {
 
 			bossEnemy.TellParryTiming();
 			isFinishedParry_ = true;

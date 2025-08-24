@@ -3,40 +3,55 @@
         {
             "object": "<unlinked>",
             "action": "chargeAttack",
-            "emitEffectFrames": [
-                4,
-                34
-            ]
+            "events": {
+                "Attack": [
+                    34
+                ]
+            }
         },
         {
             "object": "bossEnemyArmature",
             "action": "continuousAttack",
-            "emitEffectFrames": [
-                8,
-                20,
-                39
-            ]
+            "events": {
+                "Parry": [
+                    8,
+                    22,
+                    39
+                ]
+            }
         },
         {
             "object": "bossEnemyArmature",
             "action": "lightAttack",
-            "emitEffectFrames": [
-                12
-            ]
+            "events": {
+                "Parry": [
+                    12
+                ],
+                "Effect": [
+                    12
+                ]
+            }
         },
         {
             "object": "<unlinked>",
             "action": "rushAttack",
-            "emitEffectFrames": [
-                12
-            ]
+            "events": {
+                "Attack": [
+                    12
+                ]
+            }
         },
         {
             "object": "bossEnemyArmature",
             "action": "strongAttack",
-            "emitEffectFrames": [
-                9
-            ]
+            "events": {
+                "Parry": [
+                    9
+                ],
+                "Effect": [
+                    6
+                ]
+            }
         }
     ]
 }

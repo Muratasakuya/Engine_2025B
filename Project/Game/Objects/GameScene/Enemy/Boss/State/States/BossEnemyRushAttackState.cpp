@@ -181,7 +181,7 @@ void BossEnemyRushAttackState::UpdateCooldown(BossEnemy& bossEnemy, float deltaT
 	}
 }
 
-void BossEnemyRushAttackState::UpdateBlade(const BossEnemy& bossEnemy) {
+void BossEnemyRushAttackState::UpdateBlade(BossEnemy& bossEnemy) {
 
 	if (currentAttackCount_ == maxAttackCount_) {
 		return;
@@ -191,12 +191,12 @@ void BossEnemyRushAttackState::UpdateBlade(const BossEnemy& bossEnemy) {
 	bool isLastAttack = (currentAttackCount_ == maxAttackCount_ - 1);
 
 	if (isLastAttack) {
-		if (bossEnemy.IsEventKey(1)) {
+		if (bossEnemy.IsEventKey("Attack", 1)) {
 
 			EmitSingleBlade(bossEnemy);
 		}
 	} else {
-		if (bossEnemy.IsEventKey(0)) {
+		if (bossEnemy.IsEventKey("Attack", 0)) {
 
 			EmitDivisionBlades(bossEnemy);
 		}

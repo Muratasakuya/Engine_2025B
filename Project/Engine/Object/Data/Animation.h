@@ -55,10 +55,11 @@ public:
 	bool IsTransition() const { return inTransition_; }
 	bool IsAnimationFinished() const { return animationFinish_; }
 	int GetRepeatCount() const { return repeatCount_; }
-	bool IsEventKey(uint32_t frameIndex);
+	bool IsEventKey(const std::string& keyEvent, uint32_t frameIndex);
 	float GetAnimationDuration(const std::string& animationName) const;
 	float GetPlaybackSpeed() const { return playbackSpeed_; }
 
+	const std::string& GetCurrentAnimationName() const { return currentAnimationName_; }
 	const std::vector<WellForGPU>& GetWellForGPU() const { return skinCluster_.mappedPalette; }
 	const Skeleton& GetSkeleton() const { return skeleton_; }
 	const Transform3D* FindJointTransform(const std::string& name) const;
@@ -79,8 +80,8 @@ private:
 	SkinCluster skinCluster_;
 
 	// keyframeイベント
-	std::unordered_map<std::string, std::vector<int>> eventKeyTables_;
-	int prevFrameIndex_;
+	std::unordered_map<std::string, std::unordered_map<std::string, std::vector<int>>> eventKeyTables_;
+	std::unordered_map<std::string, int> prevFrameIndexPerKey_;
 
 	std::string currentAnimationName_; // 現在のAnimationの名前
 	float currentAnimationTimer_;      // 現在のAnimation経過時間

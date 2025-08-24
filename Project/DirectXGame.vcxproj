@@ -205,7 +205,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
-    <ClCompile Include="Engine\Effect\GameEffect.cpp">
+    <ClCompile Include="Engine\Effect\Game\GameEffect.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
+    <ClCompile Include="Engine\Effect\Game\Helper\GameEffectCommandHelper.cpp">
       <SubType>
       </SubType>
     </ClCompile>
@@ -686,6 +690,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Effect\BossEnemyAnimationEffect.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemy.cpp" />
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Entity\BossEnemyWeapon.cpp" />
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\HUD\BossEnemyAttackSign.cpp">
@@ -929,7 +937,11 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClInclude>
-    <ClInclude Include="Engine\Effect\GameEffect.h">
+    <ClInclude Include="Engine\Effect\Game\GameEffect.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Game\Helper\GameEffectCommandHelper.h">
       <SubType>
       </SubType>
     </ClInclude>
@@ -1492,6 +1504,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     </ClInclude>
     <ClInclude Include="Game\Objects\Base\ITransition.h" />
     <ClInclude Include="Game\Objects\Common\GameButtonBlinkingUpdater.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Effect\BossEnemyAnimationEffect.h">
       <SubType>
       </SubType>
     </ClInclude>

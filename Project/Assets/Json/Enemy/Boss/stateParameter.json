@@ -26,7 +26,17 @@
         "easingType_": 4,
         "exitTime_": 0.07999999821186066,
         "nextAnimDuration_": 0.0,
-        "rotationLerpRate_": 14.0
+        "rotationLerpRate_": 14.0,
+        "slashEffectRotation_": {
+            "x": 1.8300000429153442,
+            "y": 1.149999976158142,
+            "z": 3.880000114440918
+        },
+        "slashEffectTranslaton_": {
+            "x": 3.200000047683716,
+            "y": 3.4800000190734863,
+            "z": 8.0
+        }
     },
     "RushAttack": {
         "attackCoolTime_": 0.8799999952316284,
