@@ -62,19 +62,31 @@ float4x4 MakeWorldMatrix(Transform transform, float4x4 billboardMatrix, float3 c
 	// yAxisBillboard
 	if (transform.billboardMode == 1) {
 		
-		float3 cameraDirection = normalize(cameraPos - transform.translation);
-		float3 forward = normalize(float3(cameraDirection.x, 0.0f, cameraDirection.z));
+		// オブジェクト→カメラの水平成分
+		float3 toCam = cameraPos - transform.translation;
+		float3 f = float3(toCam.x, 0.0f, toCam.z);
+		float eps = 1e-5f;
+		if (dot(f, f) < eps) {
 
-		float3 right = normalize(cross(float3(0.0f, 1.0f, 0.0f), forward));
+			f = float3(0.0f, 0.0f, 1.0f);
+		}
+		f = normalize(f);
 
-		float4x4 yBillboard;
-		yBillboard[0] = float4(right, 0.0f);
-		yBillboard[1] = float4(float3(0.0f, 1.0f, 0.0f), 0.0f);
-		yBillboard[2] = float4(forward, 0.0f);
-		yBillboard[3] = float4(0.0f, 0.0f, 0.0f, 1.0f);
+		// 右・上
+		float3 up = float3(0.0f, 1.0f, 0.0f);
+		float3 r = normalize(cross(up, f));
+		// 再直交化
+		float3 u = cross(f, r);
 
-		// この時rotationMatrixにはYaw成分を除いた行列を入れる
-		float4x4 world = mul(scaleMatrix, mul(yBillboard, transform.rotationMatrix));
+		// Y軸ビルボード行列(回転＋平行移動)
+		float4x4 Ry;
+		Ry[0] = float4(r, 0.0f); // X行: 右
+		Ry[1] = float4(u, 0.0f); // Y行: 上
+		Ry[2] = float4(f, 0.0f); // Z行: 前
+		// 平行移動
+		Ry[3] = float4(transform.translation, 1.0f);
+
+		float4x4 world = mul(scaleMatrix, mul(transform.rotationMatrix, Ry));
 		return world;
 	}
 	
