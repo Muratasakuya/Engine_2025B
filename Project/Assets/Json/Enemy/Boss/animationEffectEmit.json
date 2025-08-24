@@ -1,4 +1,16 @@
 {
+    "ChargeAttack": {
+        "circleTranslation": {
+            "x": 0.0,
+            "y": 5.400000095367432,
+            "z": -6.0
+        },
+        "starTranslation": {
+            "x": 0.0,
+            "y": 5.400000095367432,
+            "z": -8.0
+        }
+    },
     "LightAttack": {
         "rotation": {
             "x": 1.8300000429153442,

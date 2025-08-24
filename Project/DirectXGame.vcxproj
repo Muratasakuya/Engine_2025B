@@ -257,6 +257,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnModuleUpdater.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnPolygonVertexModule.cpp">
       <SubType>
       </SubType>
@@ -1006,6 +1010,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnHemisphereModule.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnModuleUpdater.h">
       <SubType>
       </SubType>
     </ClInclude>

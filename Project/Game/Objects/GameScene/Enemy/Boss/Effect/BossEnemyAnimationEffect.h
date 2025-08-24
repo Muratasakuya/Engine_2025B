@@ -39,6 +39,7 @@ private:
 		None,
 		LightAttack,
 		StrongAttack,
+		ChargeAttack,
 	};
 
 	// 斬撃
@@ -46,6 +47,13 @@ private:
 
 		Vector3 translation;
 		Vector3 rotation;
+		std::unique_ptr<GameEffect> effect;
+	};
+
+	// 発生
+	struct Emit {
+
+		Vector3 translation;
 		std::unique_ptr<GameEffect> effect;
 	};
 
@@ -59,6 +67,10 @@ private:
 	Slash lightSlash_;
 	Slash strongSlash_;
 
+	// チャージ
+	Emit chargeStar_;   // 星
+	Emit chargeCircle_; // 集まってくるエフェクト
+
 	//--------- functions ----------------------------------------------------
 
 	// json
@@ -68,4 +80,5 @@ private:
 	// update
 	void UpdateAnimationKey(BossEnemy& bossEnemy);
 	void UpdateEmit(BossEnemy& bossEnemy);
+	void UpdateAllways();
 };

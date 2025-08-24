@@ -9,6 +9,19 @@
 //	GameEffectCommandHelper classMethods
 //============================================================================
 
+void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect,
+	const Quaternion& parentRotation, const Vector3& localPos) {
+
+	// 回転を考慮した発生位置を計算
+	const Vector3 emitPos = Quaternion::RotateVector(localPos, parentRotation);
+
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetTranslation;
+	command.value = emitPos;
+	effect.SendCommand(command);
+}
+
 void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect, const Quaternion& parentRotation,
 	const Vector3& localPos, const Vector3& localEuler) {
 

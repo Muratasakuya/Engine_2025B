@@ -21,6 +21,10 @@ public:
 	~GameEffectCommandHelper() = default;
 
 	// 姿勢計算と発生を同時に行う
+	// 回転と座標
+	static void ApplyAndSend(GameEffect& effect, const Quaternion& parentRotation,
+		const Vector3& localPos);
+	// 座標
 	static void ApplyAndSend(GameEffect& effect, const Quaternion& parentRotation,
 		const Vector3& localPos, const Vector3& localEuler);
 };

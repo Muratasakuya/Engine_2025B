@@ -683,6 +683,9 @@
     <ClCompile Include="Game\Objects\GameScene\Enemy\Boss\Effect\BossEnemyAnimationEffect.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnModuleUpdater.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -949,6 +952,7 @@
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\State\States\BossEnemyContinuousAttackState.h" />
     <ClInclude Include="Engine\Effect\Game\Helper\GameEffectCommandHelper.h" />
     <ClInclude Include="Game\Objects\GameScene\Enemy\Boss\Effect\BossEnemyAnimationEffect.h" />
+    <ClInclude Include="Engine\Effect\Particle\Module\Spawner\ParticleSpawnModuleUpdater.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />
