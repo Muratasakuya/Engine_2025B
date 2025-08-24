@@ -17,9 +17,15 @@ void BossEnemyAnimationEffect::Init(const BossEnemy& bossEnemy) {
 	// エフェクト追加
 	// 弱攻撃
 	lightSlash_.effect = std::make_unique<GameEffect>();
-	lightSlash_.effect->CreateParticleSystem("Particle/bossEnemySlash.json");
+	lightSlash_.effect->CreateParticleSystem("Particle/bossEnemyLightSlash.json");
 	// 親を設定
 	lightSlash_.effect->SetParent(bossEnemy.GetTransform());
+
+	// 強攻撃
+	strongSlash_.effect = std::make_unique<GameEffect>();
+	strongSlash_.effect->CreateParticleSystem("Particle/bossEnemyStrongSlash.json");
+	// 親を設定
+	strongSlash_.effect->SetParent(bossEnemy.GetTransform());
 
 	// json適応
 	ApplyJson();
@@ -60,6 +66,7 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 
 		// エフェクトの発生をリセット
 		lightSlash_.effect->ResetEmitFlag();
+		strongSlash_.effect->ResetEmitFlag();
 		break;
 	}
 	case BossEnemyAnimationEffect::AnimationKey::LightAttack: {
@@ -74,6 +81,14 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 		break;
 	}
 	case BossEnemyAnimationEffect::AnimationKey::StrongAttack: {
+
+		if (bossEnemy.IsEventKey("Effect", 0)) {
+
+			// 座標回転、コマンドをセット
+			GameEffectCommandHelper::ApplyAndSend(*strongSlash_.effect, bossEnemy.GetRotation(),
+				strongSlash_.translation, strongSlash_.rotation);
+			strongSlash_.effect->Emit(true);
+		}
 		break;
 	}
 	}
@@ -104,6 +119,17 @@ void BossEnemyAnimationEffect::ImGui(const BossEnemy& bossEnemy) {
 		break;
 	}
 	case BossEnemyAnimationEffect::AnimationKey::StrongAttack: {
+
+		if (ImGui::Button("Emit")) {
+
+			// 座標回転、コマンドをセット
+			GameEffectCommandHelper::ApplyAndSend(*strongSlash_.effect, bossEnemy.GetRotation(),
+				strongSlash_.translation, strongSlash_.rotation);
+			strongSlash_.effect->Emit();
+		}
+
+		ImGui::DragFloat3("rotation", &strongSlash_.rotation.x, 0.01f);
+		ImGui::DragFloat3("translation", &strongSlash_.translation.x, 0.01f);
 		break;
 	}
 	}
@@ -119,6 +145,13 @@ void BossEnemyAnimationEffect::ApplyJson() {
 	auto key = EnumAdapter<AnimationKey>::ToString(AnimationKey::LightAttack);
 	lightSlash_.translation = Vector3::FromJson(data[key].value("translation", Json()));
 	lightSlash_.rotation = Vector3::FromJson(data[key].value("rotation", Json()));
+
+	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::StrongAttack);
+	if (data.contains(key)) {
+
+		strongSlash_.translation = Vector3::FromJson(data[key].value("translation", Json()));
+		strongSlash_.rotation = Vector3::FromJson(data[key].value("rotation", Json()));
+	}
 }
 
 void BossEnemyAnimationEffect::SaveJson() {
@@ -128,6 +161,10 @@ void BossEnemyAnimationEffect::SaveJson() {
 	auto key = EnumAdapter<AnimationKey>::ToString(AnimationKey::LightAttack);
 	data[key]["translation"] = lightSlash_.translation.ToJson();
 	data[key]["rotation"] = lightSlash_.rotation.ToJson();
+
+	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::StrongAttack);
+	data[key]["translation"] = strongSlash_.translation.ToJson();
+	data[key]["rotation"] = strongSlash_.rotation.ToJson();
 
 	JsonAdapter::Save("Enemy/Boss/animationEffectEmit.json", data);
 }

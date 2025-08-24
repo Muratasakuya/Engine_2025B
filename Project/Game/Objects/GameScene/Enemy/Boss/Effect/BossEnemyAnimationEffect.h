@@ -57,6 +57,7 @@ private:
 
 	// 弱斬撃
 	Slash lightSlash_;
+	Slash strongSlash_;
 
 	//--------- functions ----------------------------------------------------
 
