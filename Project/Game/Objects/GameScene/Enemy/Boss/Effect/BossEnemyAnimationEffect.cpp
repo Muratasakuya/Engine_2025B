@@ -39,6 +39,11 @@ void BossEnemyAnimationEffect::Init(const BossEnemy& bossEnemy) {
 	chargeCircle_.effect->CreateParticleSystem("Particle/bossEnemyChargeCircle.json");
 	// 親を設定
 	chargeCircle_.effect->SetParent(bossEnemy.GetTransform());
+	// 攻撃発生
+	chargeEmit_.effect = std::make_unique<GameEffect>();
+	chargeEmit_.effect->CreateParticleSystem("Particle/bossEnemyChargeEmit.json");
+	// 親を設定
+	chargeEmit_.effect->SetParent(bossEnemy.GetTransform());
 
 	// 移動時の巻き風
 	moveWind_.effect = std::make_unique<GameEffect>();
@@ -100,8 +105,6 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 	case BossEnemyAnimationEffect::AnimationKey::None: {
 
 		// エフェクトの発生をリセット
-		lightSlash_.effect->ResetEmitFlag();
-		strongSlash_.effect->ResetEmitFlag();
 		moveWind_.emitEnble = true;
 		break;
 	}
@@ -129,7 +132,7 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 			// 座標回転、コマンドをセット
 			GameEffectCommandHelper::ApplyAndSend(*lightSlash_.effect, bossEnemy.GetRotation(),
 				lightSlash_.translation, lightSlash_.rotation);
-			lightSlash_.effect->Emit(true);
+			lightSlash_.effect->Emit();
 		}
 		break;
 	}
@@ -140,7 +143,7 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 			// 座標回転、コマンドをセット
 			GameEffectCommandHelper::ApplyAndSend(*strongSlash_.effect, bossEnemy.GetRotation(),
 				strongSlash_.translation, strongSlash_.rotation);
-			strongSlash_.effect->Emit(true);
+			strongSlash_.effect->Emit();
 		}
 		break;
 	}
@@ -150,6 +153,13 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 
 			// 発生させる
 			EmitChargeEffect(bossEnemy);
+		}
+		if (bossEnemy.IsEventKey("Effect", 1)) {
+
+			// 発生させる
+			GameEffectCommandHelper::ApplyAndSend(*chargeEmit_.effect, bossEnemy.GetRotation(),
+				chargeEmit_.translation);
+			chargeEmit_.effect->Emit();
 		}
 		break;
 	}
@@ -232,6 +242,7 @@ void BossEnemyAnimationEffect::ImGui(const BossEnemy& bossEnemy) {
 
 		ImGui::DragFloat3("starTranslation", &chargeStar_.translation.x, 0.01f);
 		ImGui::DragFloat3("circleTranslation", &chargeCircle_.translation.x, 0.01f);
+		ImGui::DragFloat3("emitTranslation", &chargeEmit_.translation.x, 0.01f);
 		break;
 	}
 	}
@@ -260,6 +271,7 @@ void BossEnemyAnimationEffect::ApplyJson() {
 
 		chargeStar_.translation = Vector3::FromJson(data[key].value("starTranslation", Json()));
 		chargeCircle_.translation = Vector3::FromJson(data[key].value("circleTranslation", Json()));
+		chargeEmit_.translation = Vector3::FromJson(data[key].value("emitTranslation", Json()));
 	}
 
 	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::Move);
@@ -284,6 +296,7 @@ void BossEnemyAnimationEffect::SaveJson() {
 	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::ChargeAttack);
 	data[key]["starTranslation"] = chargeStar_.translation.ToJson();
 	data[key]["circleTranslation"] = chargeCircle_.translation.ToJson();
+	data[key]["emitTranslation"] = chargeEmit_.translation.ToJson();
 
 	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::Move);
 	data[key]["translation"] = moveWind_.translation.ToJson();

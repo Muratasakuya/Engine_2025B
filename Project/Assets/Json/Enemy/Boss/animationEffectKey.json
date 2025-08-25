@@ -1,14 +1,15 @@
 {
     "animations": [
         {
-            "object": "<unlinked>",
+            "object": "bossEnemyArmature",
             "action": "chargeAttack",
             "events": {
                 "Attack": [
                     34
                 ],
                 "Effect": [
-                    6
+                    6,
+                    34
                 ]
             }
         },
@@ -66,7 +67,7 @@
             }
         },
         {
-            "object": "bossEnemyArmature",
+            "object": "<unlinked>",
             "action": "strongAttackParrySign",
             "events": {
                 "Effect": [

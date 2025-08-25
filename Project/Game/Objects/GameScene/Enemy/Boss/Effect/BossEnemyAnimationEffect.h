@@ -80,6 +80,7 @@ private:
 	// チャージ
 	Emit chargeStar_;   // 星
 	Emit chargeCircle_; // 集まってくるエフェクト
+	Emit chargeEmit_;   // 攻撃発生
 
 	// 移動時の巻き風
 	Emit moveWind_;
