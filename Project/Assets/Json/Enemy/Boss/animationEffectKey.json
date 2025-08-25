@@ -1,16 +1,19 @@
 {
     "animations": [
         {
-            "object": "<unlinked>",
+            "object": "bossEnemyArmature",
             "action": "chargeAttack",
             "events": {
                 "Attack": [
                     34
+                ],
+                "Effect": [
+                    2
                 ]
             }
         },
         {
-            "object": "bossEnemyArmature",
+            "object": "<unlinked>",
             "action": "continuousAttack",
             "events": {
                 "Parry": [

@@ -4,10 +4,31 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Game/GameEffect.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
 
 //============================================================================
 //	GameEffectCommandHelper classMethods
 //============================================================================
+
+void GameEffectCommandHelper::SendSpawnerEmit(GameEffect& effect, bool emit) {
+
+	// 発生設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetEmitFlag;
+	command.value = emit;
+	effect.SendCommand(command);
+}
+
+void GameEffectCommandHelper::SendSpawnerBillboard(GameEffect& effect, const BaseCamera& camera) {
+
+	// ビルボード回転設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetBillboardRotation;
+	command.value = camera.GetBillboardMatrix();
+	effect.SendCommand(command);
+}
 
 void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect,
 	const Quaternion& parentRotation, const Vector3& localPos) {

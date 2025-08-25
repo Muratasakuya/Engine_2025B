@@ -6,6 +6,7 @@
 #include <Engine/Utility/JsonAdapter.h>
 #include <Engine/Utility/EnumAdapter.h>
 #include <Engine/Effect/Game/Helper/GameEffectCommandHelper.h>
+#include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
 
 //============================================================================
@@ -47,6 +48,12 @@ void BossEnemyAnimationEffect::Init(const BossEnemy& bossEnemy) {
 	editAnimationKey_ = AnimationKey::None;
 }
 
+void BossEnemyAnimationEffect::SetFollowCamera(const FollowCamera* followCamera) {
+
+	followCamera_ = nullptr;
+	followCamera_ = followCamera;
+}
+
 void BossEnemyAnimationEffect::Update(BossEnemy& bossEnemy) {
 
 	// 再生されているアニメーションを取得
@@ -70,6 +77,9 @@ void BossEnemyAnimationEffect::UpdateAnimationKey(BossEnemy& bossEnemy) {
 	} else if (name == "bossEnemy_strongAttack") {
 
 		currentAnimationKey_ = AnimationKey::StrongAttack;
+	} else if (name == "bossEnemy_chargeAttack") {
+
+		currentAnimationKey_ = AnimationKey::ChargeAttack;
 	}
 }
 
@@ -106,13 +116,39 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 		}
 		break;
 	}
+	case BossEnemyAnimationEffect::AnimationKey::ChargeAttack: {
+
+		if (bossEnemy.IsEventKey("Effect", 0)) {
+
+			// 発生させる
+			EmitChargeEffect(bossEnemy);
+		}
+		break;
+	}
 	}
 }
 
 void BossEnemyAnimationEffect::UpdateAllways() {
 
 	// 集まってくるエフェクト
+	GameEffectCommandHelper::SendSpawnerBillboard(*chargeCircle_.effect,
+		static_cast<const BaseCamera&>(*followCamera_));
 	chargeCircle_.effect->Emit();
+}
+
+void BossEnemyAnimationEffect::EmitChargeEffect(const BossEnemy& bossEnemy) {
+
+	// 座標、コマンドを設定
+	// 星
+	GameEffectCommandHelper::ApplyAndSend(*chargeStar_.effect, bossEnemy.GetRotation(),
+		chargeStar_.translation);
+	chargeStar_.effect->Emit();
+
+	// 集まってくるエフェクト
+	GameEffectCommandHelper::ApplyAndSend(*chargeCircle_.effect, bossEnemy.GetRotation(),
+		chargeCircle_.translation);
+	// フラグで発生
+	GameEffectCommandHelper::SendSpawnerEmit(*chargeCircle_.effect, true);
 }
 
 void BossEnemyAnimationEffect::ImGui(const BossEnemy& bossEnemy) {
@@ -122,6 +158,7 @@ void BossEnemyAnimationEffect::ImGui(const BossEnemy& bossEnemy) {
 		SaveJson();
 	}
 
+	ImGui::Text("currentKey: %s", EnumAdapter<AnimationKey>::ToString(currentAnimationKey_));
 	EnumAdapter<AnimationKey>::Combo("AnimationKey", &editAnimationKey_);
 
 	switch (editAnimationKey_) {
@@ -157,20 +194,7 @@ void BossEnemyAnimationEffect::ImGui(const BossEnemy& bossEnemy) {
 
 		if (ImGui::Button("Emit")) {
 
-			// 座標、コマンドを設定
-			// 星
-			GameEffectCommandHelper::ApplyAndSend(*chargeStar_.effect, bossEnemy.GetRotation(),
-				chargeStar_.translation);
-			chargeStar_.effect->Emit();
-			// 集まってくるエフェクト
-			GameEffectCommandHelper::ApplyAndSend(*chargeCircle_.effect, bossEnemy.GetRotation(),
-				chargeCircle_.translation);
-			// フラグで発生
-			ParticleCommand command{};
-			command.target = ParticleCommandTarget::Spawner;
-			command.id = ParticleCommandID::SetEmitFlag;
-			command.value = true;
-			chargeCircle_.effect->SendCommand(command);
+			EmitChargeEffect(bossEnemy);
 		}
 
 		ImGui::DragFloat3("starTranslation", &chargeStar_.translation.x, 0.01f);

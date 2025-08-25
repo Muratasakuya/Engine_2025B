@@ -7,6 +7,7 @@
 
 // front
 class GameEffect;
+class BaseCamera;
 
 //============================================================================
 //	GameEffectCommandHelper class
@@ -19,6 +20,13 @@ public:
 
 	GameEffectCommandHelper() = default;
 	~GameEffectCommandHelper() = default;
+
+	// 発生の設定
+	static void SendSpawnerEmit(GameEffect& effect, bool emit);
+
+	// ビルボードを発生モジュールに設定
+	static void SendSpawnerBillboard(GameEffect& effect,
+		const BaseCamera& camera);
 
 	// 姿勢計算と発生を同時に行う
 	// 回転と座標

@@ -70,6 +70,8 @@ private:
 
 	Vector3 emitterRotation_;
 	Vector3 translation_;
+	bool useBillboardRotation_ = false;
+	Matrix4x4 billboardRotation_;
 
 	// 多角形
 	int vertexCount_; // 頂点数

@@ -29,6 +29,13 @@ bool ParticleSpawnPolygonVertexModule::SetCommand(const ParticleCommand& command
 		return false;
 	}
 	case ParticleCommandID::SetBillboardRotation: {
+		if (const auto* matrix = std::get_if<Matrix4x4>(&command.value)) {
+
+			// ビルボード回転を取得
+			billboardRotation_ = *matrix;
+			useBillboardRotation_ = true;
+			return true;
+		}
 		return false;
 	}
 	case ParticleCommandID::SetEmitFlag: {
@@ -84,7 +91,17 @@ std::vector<Vector3> ParticleSpawnPolygonVertexModule::CalcVertices(
 	float scale, const Vector3& rotation) const {
 
 	std::vector<Vector3> vertices; vertices.reserve(vertexCount_);
-	Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(rotation);
+
+	// ビルボード回転か既存の回転を使用するか分岐
+	Matrix4x4 rotateMatrix = Matrix4x4::MakeIdentity4x4();
+	if (useBillboardRotation_) {
+
+		Matrix4x4 rollZ = Matrix4x4::MakeRotateMatrix(Vector3(0.0f, 0.0f, rotation.y));
+		rotateMatrix = Matrix4x4::Multiply(billboardRotation_, rollZ);
+	} else {
+
+		rotateMatrix = Matrix4x4::MakeRotateMatrix(rotation);
+	}
 	for (int i = 0; i < vertexCount_; ++i) {
 
 		float ang = 2.0f * pi * i / vertexCount_;

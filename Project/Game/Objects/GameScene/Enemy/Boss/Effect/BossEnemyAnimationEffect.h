@@ -7,6 +7,7 @@
 
 // front
 class BossEnemy;
+class FollowCamera;
 
 //============================================================================
 //	BossEnemyAnimationEffect class
@@ -26,6 +27,10 @@ public:
 
 	// editor
 	void ImGui(const BossEnemy& bossEnemy);
+
+	//--------- accessor -----------------------------------------------------
+
+	void SetFollowCamera(const FollowCamera* followCamera);
 private:
 	//========================================================================
 	//	private Methods
@@ -59,6 +64,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	const FollowCamera* followCamera_;
+
 	// 現在のアニメーション
 	AnimationKey currentAnimationKey_;
 	AnimationKey editAnimationKey_;
@@ -81,4 +88,7 @@ private:
 	void UpdateAnimationKey(BossEnemy& bossEnemy);
 	void UpdateEmit(BossEnemy& bossEnemy);
 	void UpdateAllways();
+
+	// helper
+	void EmitChargeEffect(const BossEnemy& bossEnemy);
 };

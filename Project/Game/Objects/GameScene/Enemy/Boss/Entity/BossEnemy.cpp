@@ -131,6 +131,7 @@ void BossEnemy::SetFollowCamera(const FollowCamera* followCamera) {
 
 	stateController_->SetFollowCamera(followCamera);
 	hudSprites_->SetFollowCamera(followCamera);
+	animationEffect_->SetFollowCamera(followCamera);
 }
 
 void BossEnemy::SetAlpha(float alpha) {
