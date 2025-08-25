@@ -25,6 +25,9 @@ void BossEnemyRushAttackState::InitBlade() {
 	// 1本の刃
 	singleBlade_ = std::make_unique<BossEnemyBladeCollision>();
 	singleBlade_->Init("singleBlade");
+	// エフェクト
+	singleBladeEffect_ = std::make_unique<BossEnemySingleBladeEffect>();
+	singleBladeEffect_->Init(singleBlade_->GetTransform());
 }
 
 BossEnemyRushAttackState::BossEnemyRushAttackState() {
@@ -57,6 +60,12 @@ void BossEnemyRushAttackState::Enter(BossEnemy& bossEnemy) {
 
 	// playerの方を向かせる
 	LookTarget(bossEnemy, player_->GetTranslation());
+}
+
+void BossEnemyRushAttackState::UpdateAlways([[maybe_unused]] BossEnemy& bossEnemy) {
+
+	// エフェクトの更新処理
+	singleBladeEffect_->Update();
 }
 
 void BossEnemyRushAttackState::Update(BossEnemy& bossEnemy) {
@@ -140,7 +149,6 @@ void BossEnemyRushAttackState::UpdateTeleport(BossEnemy& bossEnemy, float deltaT
 
 		Vector3 emitPos = bossEnemy.GetTranslation();
 		emitPos.y = emitParticleOffsetY_;
-		EmitTeleportParticle(emitPos);
 	}
 }
 
@@ -191,7 +199,7 @@ void BossEnemyRushAttackState::UpdateBlade(BossEnemy& bossEnemy) {
 	bool isLastAttack = (currentAttackCount_ == maxAttackCount_ - 1);
 
 	if (isLastAttack) {
-		if (bossEnemy.IsEventKey("Attack", 1)) {
+		if (bossEnemy.IsEventKey("Attack", 0)) {
 
 			EmitSingleBlade(bossEnemy);
 		}
@@ -238,6 +246,9 @@ void BossEnemyRushAttackState::EmitSingleBlade(const BossEnemy& bossEnemy) {
 	const Vector3 pos = bossEnemy.GetTranslation();
 	const Vector3 velocity = CalcBaseDir(bossEnemy) * singleBladeMoveSpeed_;
 	singleBlade_->EmitEffect(pos, velocity);
+
+	// エフェクトを発生
+	singleBladeEffect_->EmitEffect(singleBlade_->GetTransform());
 }
 
 void BossEnemyRushAttackState::Exit(BossEnemy& bossEnemy) {
@@ -252,7 +263,7 @@ void BossEnemyRushAttackState::Exit(BossEnemy& bossEnemy) {
 	bossEnemy.SetCastShadow(true);
 }
 
-void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
+void BossEnemyRushAttackState::ImGui(const BossEnemy& bossEnemy) {
 
 	if (ImGui::CollapsingHeader("RushAttackState")) {
 
@@ -324,6 +335,11 @@ void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy
 			divisionBlade->Update();
 		}
 		singleBlade_->Update();
+	}
+
+	if (ImGui::CollapsingHeader("Blade Effect")) {
+
+		singleBladeEffect_->ImGui();
 	}
 }
 

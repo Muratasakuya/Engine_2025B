@@ -30,6 +30,26 @@ void GameEffectCommandHelper::SendSpawnerBillboard(GameEffect& effect, const Bas
 	effect.SendCommand(command);
 }
 
+void GameEffectCommandHelper::SendSpawnerRotation(GameEffect& effect, const Matrix4x4& rotateMatrix) {
+
+	// 回転設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetRotation;
+	command.value = rotateMatrix;
+	effect.SendCommand(command);
+}
+
+void GameEffectCommandHelper::SendSpawnerTranslation(GameEffect& effect, const Vector3& translation) {
+
+	// 座標設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetTranslation;
+	command.value = translation;
+	effect.SendCommand(command);
+}
+
 void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect,
 	const Quaternion& parentRotation, const Vector3& localPos) {
 
@@ -66,7 +86,7 @@ void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect, const Quaternion&
 	{
 		ParticleCommand command{};
 		command.target = ParticleCommandTarget::Updater;
-		command.id = ParticleCommandID::SetEulerRotation;
+		command.id = ParticleCommandID::SetRotation;
 		command.filter.updaterId = ParticleUpdateModuleID::Rotation;
 		command.value = rotateMatrix;
 		effect.SendCommand(command);

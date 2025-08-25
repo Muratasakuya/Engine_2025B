@@ -48,7 +48,7 @@ void PlayerAttack_1stState::Update(Player& player) {
 	{
 		// 回転設定
 		command.target = ParticleCommandTarget::Updater;
-		command.id = ParticleCommandID::SetEulerRotation;
+		command.id = ParticleCommandID::SetRotation;
 		command.filter.updaterId = ParticleUpdateModuleID::Rotation;
 		command.value = PlayerBaseAttackState::GetPlayerOffsetRotation(player, slashEffectRotation_);
 		slashEffect_->SendCommand(command);

@@ -94,7 +94,7 @@ private:
 	// update
 	void UpdateAnimationKey(BossEnemy& bossEnemy);
 	void UpdateEmit(BossEnemy& bossEnemy);
-	void UpdateAllways();
+	void UpdateAlways();
 
 	// helper
 	void EmitChargeEffect(const BossEnemy& bossEnemy);

@@ -24,6 +24,13 @@ public:
 	// 発生の設定
 	static void SendSpawnerEmit(GameEffect& effect, bool emit);
 
+	// 回転の設定
+	static void SendSpawnerRotation(GameEffect& effect,
+		const Matrix4x4& rotateMatrix);
+	// 座標の設定
+	static void SendSpawnerTranslation(GameEffect& effect,
+		const Vector3& translation);
+
 	// ビルボードを発生モジュールに設定
 	static void SendSpawnerBillboard(GameEffect& effect,
 		const BaseCamera& camera);

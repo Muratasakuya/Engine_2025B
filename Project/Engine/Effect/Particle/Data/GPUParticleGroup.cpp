@@ -151,9 +151,31 @@ void GPUParticleGroup::SetIsForcedEmit(bool emit) {
 	isForcedEmit_ = emit;
 }
 
-void GPUParticleGroup::ApplyCommand([[maybe_unused]] const ParticleCommand& command) {
+void GPUParticleGroup::ApplyCommand(const ParticleCommand& command) {
 
+	// IDごとのコマンドを設定
+	switch (command.id) {
+	case ParticleCommandID::SetTranslation: {
+		if (const auto& translation = std::get_if<Vector3>(&command.value)) {
 
+			emitter_.sphere.translation = *translation;
+			emitter_.hemisphere.translation = *translation;
+			emitter_.box.translation = *translation;
+			emitter_.cone.translation = *translation;
+		}
+		break;
+	}
+	case ParticleCommandID::SetRotation: {
+		if (const auto& rotation = std::get_if<Vector3>(&command.value)) {
+
+			emitterRotation_ = *rotation;
+		} else if (const auto& matrix = std::get_if<Matrix4x4>(&command.value)) {
+
+			setRotationMatrix_ = *matrix;
+		}
+		break;
+	}
+	}
 }
 
 void GPUParticleGroup::UpdateEmitter() {
@@ -171,7 +193,13 @@ void GPUParticleGroup::UpdateEmitter() {
 	}
 	case ParticleEmitterShape::Hemisphere: {
 
-		emitter_.hemisphere.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+		if (setRotationMatrix_.has_value()) {
+
+			emitter_.hemisphere.rotationMatrix = setRotationMatrix_.value();
+		} else {
+
+			emitter_.hemisphere.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+		}
 
 		// buffer転送
 		emitterBuffer_.hemisphere.TransferData(emitter_.hemisphere);
@@ -179,7 +207,13 @@ void GPUParticleGroup::UpdateEmitter() {
 	}
 	case ParticleEmitterShape::Box: {
 
-		emitter_.box.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+		if (setRotationMatrix_.has_value()) {
+
+			emitter_.box.rotationMatrix = setRotationMatrix_.value();
+		} else {
+
+			emitter_.box.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+		}
 
 		// buffer転送
 		emitterBuffer_.box.TransferData(emitter_.box);
@@ -187,7 +221,13 @@ void GPUParticleGroup::UpdateEmitter() {
 	}
 	case ParticleEmitterShape::Cone: {
 
-		emitter_.cone.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+		if (setRotationMatrix_.has_value()) {
+
+			emitter_.cone.rotationMatrix = setRotationMatrix_.value();
+		} else {
+
+			emitter_.cone.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+		}
 
 		// buffer転送
 		emitterBuffer_.cone.TransferData(emitter_.cone);

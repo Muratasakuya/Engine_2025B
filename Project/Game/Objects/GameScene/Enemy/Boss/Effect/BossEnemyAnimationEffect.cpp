@@ -74,7 +74,7 @@ void BossEnemyAnimationEffect::Update(BossEnemy& bossEnemy) {
 	UpdateEmit(bossEnemy);
 
 	// 常に更新するエフェクト
-	UpdateAllways();
+	UpdateAlways();
 }
 
 void BossEnemyAnimationEffect::UpdateAnimationKey(BossEnemy& bossEnemy) {
@@ -166,7 +166,7 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 	}
 }
 
-void BossEnemyAnimationEffect::UpdateAllways() {
+void BossEnemyAnimationEffect::UpdateAlways() {
 
 	// 集まってくるエフェクト
 	GameEffectCommandHelper::SendSpawnerBillboard(*chargeCircle_.effect,

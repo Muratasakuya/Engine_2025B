@@ -27,8 +27,7 @@ enum class ParticleCommandTarget {
 enum class ParticleCommandID {
 
 	SetTranslation,       // 座標の設定
-	SetQRotation,         // Quaternion回転の設定
-	SetEulerRotation,     // オイラー角回転の設定
+	SetRotation,          // 回転の設定
 	SetBillboardRotation, // ビルボード回転の設定
 	SetEmitFlag,          // 発生の設定
 	SetParent,            // 親の設定
