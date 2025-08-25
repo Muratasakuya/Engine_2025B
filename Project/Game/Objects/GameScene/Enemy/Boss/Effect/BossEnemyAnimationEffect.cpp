@@ -40,6 +40,12 @@ void BossEnemyAnimationEffect::Init(const BossEnemy& bossEnemy) {
 	// 親を設定
 	chargeCircle_.effect->SetParent(bossEnemy.GetTransform());
 
+	// 移動時の巻き風
+	moveWind_.effect = std::make_unique<GameEffect>();
+	moveWind_.effect->CreateParticleSystem("Particle/bossEnemyMoveWind.json");
+	// 親を設定
+	moveWind_.effect->SetParent(bossEnemy.GetTransform());
+
 	// json適応
 	ApplyJson();
 
@@ -71,7 +77,11 @@ void BossEnemyAnimationEffect::UpdateAnimationKey(BossEnemy& bossEnemy) {
 	const auto& name = bossEnemy.GetCurrentAnimationName();
 
 	currentAnimationKey_ = AnimationKey::None;
-	if (name == "bossEnemy_lightAttack") {
+	if (name == "bossEnemy_lightAttackParrySign" ||
+		name == "bossEnemy_strongAttackParrySign") {
+
+		currentAnimationKey_ = AnimationKey::Move;
+	} else if (name == "bossEnemy_lightAttack") {
 
 		currentAnimationKey_ = AnimationKey::LightAttack;
 	} else if (name == "bossEnemy_strongAttack") {
@@ -92,6 +102,24 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 		// エフェクトの発生をリセット
 		lightSlash_.effect->ResetEmitFlag();
 		strongSlash_.effect->ResetEmitFlag();
+		moveWind_.emitEnble = true;
+		break;
+	}
+	case BossEnemyAnimationEffect::AnimationKey::Move: {
+
+		if (!moveWind_.emitEnble) {
+			return;
+		}
+
+		// この状態の間は一定間隔で発生させる
+		GameEffectCommandHelper::ApplyAndSend(*moveWind_.effect, bossEnemy.GetRotation(),
+			moveWind_.translation);
+		moveWind_.effect->FrequencyEmit();
+		// 指定キーイベントで発生を止める
+		if (bossEnemy.IsEventKey("Effect", 0)) {
+
+			moveWind_.emitEnble = false;
+		}
 		break;
 	}
 	case BossEnemyAnimationEffect::AnimationKey::LightAttack: {
@@ -162,6 +190,11 @@ void BossEnemyAnimationEffect::ImGui(const BossEnemy& bossEnemy) {
 	EnumAdapter<AnimationKey>::Combo("AnimationKey", &editAnimationKey_);
 
 	switch (editAnimationKey_) {
+	case BossEnemyAnimationEffect::AnimationKey::Move: {
+
+		ImGui::DragFloat3("windTranslation", &moveWind_.translation.x, 0.01f);
+		break;
+	}
 	case BossEnemyAnimationEffect::AnimationKey::LightAttack: {
 
 		if (ImGui::Button("Emit")) {
@@ -228,6 +261,12 @@ void BossEnemyAnimationEffect::ApplyJson() {
 		chargeStar_.translation = Vector3::FromJson(data[key].value("starTranslation", Json()));
 		chargeCircle_.translation = Vector3::FromJson(data[key].value("circleTranslation", Json()));
 	}
+
+	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::Move);
+	if (data.contains(key)) {
+
+		moveWind_.translation = Vector3::FromJson(data[key].value("translation", Json()));
+	}
 }
 
 void BossEnemyAnimationEffect::SaveJson() {
@@ -245,6 +284,9 @@ void BossEnemyAnimationEffect::SaveJson() {
 	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::ChargeAttack);
 	data[key]["starTranslation"] = chargeStar_.translation.ToJson();
 	data[key]["circleTranslation"] = chargeCircle_.translation.ToJson();
+
+	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::Move);
+	data[key]["translation"] = moveWind_.translation.ToJson();
 
 	JsonAdapter::Save("Enemy/Boss/animationEffectEmit.json", data);
 }

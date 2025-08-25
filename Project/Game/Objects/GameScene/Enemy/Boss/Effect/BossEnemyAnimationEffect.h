@@ -42,6 +42,7 @@ private:
 	enum class AnimationKey {
 
 		None,
+		Move,
 		LightAttack,
 		StrongAttack,
 		ChargeAttack,
@@ -58,6 +59,7 @@ private:
 	// 発生
 	struct Emit {
 
+		bool emitEnble = true;
 		Vector3 translation;
 		std::unique_ptr<GameEffect> effect;
 	};
@@ -72,11 +74,15 @@ private:
 
 	// 弱斬撃
 	Slash lightSlash_;
+	// 強斬撃
 	Slash strongSlash_;
 
 	// チャージ
 	Emit chargeStar_;   // 星
 	Emit chargeCircle_; // 集まってくるエフェクト
+
+	// 移動時の巻き風
+	Emit moveWind_;
 
 	//--------- functions ----------------------------------------------------
 
