@@ -46,6 +46,14 @@ private:
 		LightAttack,
 		StrongAttack,
 		ChargeAttack,
+		ContinuousAttack,
+	};
+
+	// 斬撃の種類
+	enum class SlashType {
+
+		Light,
+		Strong
 	};
 
 	// 斬撃
@@ -54,6 +62,15 @@ private:
 		Vector3 translation;
 		Vector3 rotation;
 		std::unique_ptr<GameEffect> effect;
+	};
+
+	// 連続斬撃
+	struct ContinuousSlash {
+
+		SlashType slashType;
+		float scaling;
+		Vector3 translation;
+		Vector3 rotation;
 	};
 
 	// 発生
@@ -76,6 +93,11 @@ private:
 	Slash lightSlash_;
 	// 強斬撃
 	Slash strongSlash_;
+	// 連続斬撃
+	static const uint32_t continuousCount_ = 3;
+	uint32_t continuousEventIndex_; // 現在のキーイベント
+	// エフェクトは弱斬撃か強斬撃を使用する
+	std::array<ContinuousSlash, continuousCount_> continuousSlashParams_;
 
 	// チャージ
 	Emit chargeStar_;   // 星
@@ -98,4 +120,5 @@ private:
 
 	// helper
 	void EmitChargeEffect(const BossEnemy& bossEnemy);
+	void EmitContinuousEffect(const BossEnemy& bossEnemy, const ContinuousSlash& param);
 };
