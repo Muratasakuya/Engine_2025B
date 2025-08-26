@@ -95,6 +95,9 @@ void BossEnemyAnimationEffect::UpdateAnimationKey(BossEnemy& bossEnemy) {
 	} else if (name == "bossEnemy_chargeAttack") {
 
 		currentAnimationKey_ = AnimationKey::ChargeAttack;
+	} else if (name == "bossEnemy_continuousAttack") {
+
+		currentAnimationKey_ = AnimationKey::ContinuousAttack;
 	}
 }
 
@@ -106,6 +109,7 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 
 		// エフェクトの発生をリセット
 		moveWind_.emitEnble = true;
+		continuousEventIndex_ = 0;
 		break;
 	}
 	case BossEnemyAnimationEffect::AnimationKey::Move: {
@@ -129,6 +133,9 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 
 		if (bossEnemy.IsEventKey("Effect", 0)) {
 
+			// スケーリング
+			GameEffectCommandHelper::SendScaling(*lightSlash_.effect, 1.0f);
+
 			// 座標回転、コマンドをセット
 			GameEffectCommandHelper::ApplyAndSend(*lightSlash_.effect, bossEnemy.GetRotation(),
 				lightSlash_.translation, lightSlash_.rotation);
@@ -139,6 +146,9 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 	case BossEnemyAnimationEffect::AnimationKey::StrongAttack: {
 
 		if (bossEnemy.IsEventKey("Effect", 0)) {
+
+			// スケーリング
+			GameEffectCommandHelper::SendScaling(*strongSlash_.effect, 1.0f);
 
 			// 座標回転、コマンドをセット
 			GameEffectCommandHelper::ApplyAndSend(*strongSlash_.effect, bossEnemy.GetRotation(),
@@ -160,6 +170,18 @@ void BossEnemyAnimationEffect::UpdateEmit(BossEnemy& bossEnemy) {
 			GameEffectCommandHelper::ApplyAndSend(*chargeEmit_.effect, bossEnemy.GetRotation(),
 				chargeEmit_.translation);
 			chargeEmit_.effect->Emit();
+		}
+		break;
+	}
+	case BossEnemyAnimationEffect::AnimationKey::ContinuousAttack: {
+
+		// イベントが発生するごとにインデックスを進める
+		if (bossEnemy.IsEventKey("Effect", continuousEventIndex_)) {
+
+			// 発生させる
+			EmitContinuousEffect(bossEnemy, continuousSlashParams_[continuousEventIndex_]);
+			// インデックスを進める
+			++continuousEventIndex_;
 		}
 		break;
 	}
@@ -187,6 +209,34 @@ void BossEnemyAnimationEffect::EmitChargeEffect(const BossEnemy& bossEnemy) {
 		chargeCircle_.translation);
 	// フラグで発生
 	GameEffectCommandHelper::SendSpawnerEmit(*chargeCircle_.effect, true);
+}
+
+void BossEnemyAnimationEffect::EmitContinuousEffect(const BossEnemy& bossEnemy, const ContinuousSlash& param) {
+
+	switch (param.slashType) {
+	case SlashType::Light: {
+
+		// スケーリング
+		GameEffectCommandHelper::SendScaling(*strongSlash_.effect, param.scaling);
+
+		// 座標回転、コマンドをセット
+		GameEffectCommandHelper::ApplyAndSend(*strongSlash_.effect, bossEnemy.GetRotation(),
+			param.translation, param.rotation);
+		strongSlash_.effect->Emit();
+		break;
+	}
+	case SlashType::Strong: {
+
+		// スケーリング
+		GameEffectCommandHelper::SendScaling(*lightSlash_.effect, param.scaling);
+
+		// 座標回転、コマンドをセット
+		GameEffectCommandHelper::ApplyAndSend(*lightSlash_.effect, bossEnemy.GetRotation(),
+			param.translation, param.rotation);
+		lightSlash_.effect->Emit();
+		break;
+	}
+	}
 }
 
 void BossEnemyAnimationEffect::ImGui(const BossEnemy& bossEnemy) {
@@ -245,6 +295,29 @@ void BossEnemyAnimationEffect::ImGui(const BossEnemy& bossEnemy) {
 		ImGui::DragFloat3("emitTranslation", &chargeEmit_.translation.x, 0.01f);
 		break;
 	}
+	case BossEnemyAnimationEffect::AnimationKey::ContinuousAttack: {
+
+		for (uint32_t index = 0; index < continuousCount_; ++index) {
+
+			ImGui::PushID(index);
+
+			ImGui::SeparatorText(("animIndex: " + std::to_string(index)).c_str());
+
+			auto& param = continuousSlashParams_[index];
+			if (ImGui::Button("Emit")) {
+
+				EmitContinuousEffect(bossEnemy, param);
+			}
+
+			EnumAdapter<SlashType>::Combo("SlashType", &param.slashType);
+			ImGui::DragFloat("scaling", &param.scaling, 0.01f);
+			ImGui::DragFloat3("rotation", &param.rotation.x, 0.01f);
+			ImGui::DragFloat3("translation", &param.translation.x, 0.01f);
+
+			ImGui::PopID();
+		}
+		break;
+	}
 	}
 }
 
@@ -279,6 +352,22 @@ void BossEnemyAnimationEffect::ApplyJson() {
 
 		moveWind_.translation = Vector3::FromJson(data[key].value("translation", Json()));
 	}
+
+	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::ContinuousAttack);
+	if (data.contains(key)) {
+
+		for (uint32_t index = 0; index < continuousCount_; ++index) {
+
+			auto& param = continuousSlashParams_[index];
+			std::string keyIndex = std::to_string(index);
+
+			const auto& slash = EnumAdapter<SlashType>::FromString(data[key][keyIndex]["slashType"]);
+			param.slashType = slash.value();
+			param.scaling = data[key][keyIndex].value("scaling", 1.0f);
+			param.translation = Vector3::FromJson(data[key][keyIndex].value("translation", Json()));
+			param.rotation = Vector3::FromJson(data[key][keyIndex].value("rotation", Json()));
+		}
+	}
 }
 
 void BossEnemyAnimationEffect::SaveJson() {
@@ -300,6 +389,19 @@ void BossEnemyAnimationEffect::SaveJson() {
 
 	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::Move);
 	data[key]["translation"] = moveWind_.translation.ToJson();
+
+	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::ContinuousAttack);
+
+	for (uint32_t index = 0; index < continuousCount_; ++index) {
+
+		auto& param = continuousSlashParams_[index];
+		std::string keyIndex = std::to_string(index);
+
+		data[key][keyIndex]["slashType"] = EnumAdapter<SlashType>::ToString(param.slashType);
+		data[key][keyIndex]["scaling"] = param.scaling;
+		data[key][keyIndex]["translation"] = param.translation.ToJson();
+		data[key][keyIndex]["rotation"] = param.rotation.ToJson();
+	}
 
 	JsonAdapter::Save("Enemy/Boss/animationEffectEmit.json", data);
 }
