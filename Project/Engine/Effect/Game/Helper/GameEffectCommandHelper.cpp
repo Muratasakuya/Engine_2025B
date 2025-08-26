@@ -50,6 +50,18 @@ void GameEffectCommandHelper::SendSpawnerTranslation(GameEffect& effect, const V
 	effect.SendCommand(command);
 }
 
+void GameEffectCommandHelper::SendScaling(GameEffect& effect, float scalingValue) {
+
+	// スケーリングを設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::Scaling;
+	command.value = scalingValue;
+	effect.SendCommand(command);
+	command.target = ParticleCommandTarget::Updater;
+	effect.SendCommand(command);
+}
+
 void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect,
 	const Quaternion& parentRotation, const Vector3& localPos) {
 

@@ -22,7 +22,7 @@ public:
 	BossEnemySingleBladeEffect() = default;
 	~BossEnemySingleBladeEffect() = default;
 
-	void Init(const BaseTransform& transform);
+	void Init(const BaseTransform& transform, const std::string& typeName);
 
 	void Update();
 
@@ -32,7 +32,7 @@ public:
 	//--------- accessor -----------------------------------------------------
 
 	// 発生させる
-	void EmitEffect(const BaseTransform& transform);
+	void EmitEffect(const BaseTransform& transform, float scalingValue = 1.0f);
 private:
 	//========================================================================
 	//	private Methods
@@ -56,6 +56,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	std::string fileName_;
+
 	// 状態
 	State currentState_;
 	// 発生時間
@@ -65,6 +67,7 @@ private:
 	Emit slash_;    // 真ん中の刃
 	Emit plane_;    // 光る部分
 	Emit particle_; // 後ろのパーティクル
+	float scalingValue_;
 
 	//--------- functions ----------------------------------------------------
 

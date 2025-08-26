@@ -107,6 +107,7 @@ private:
 	float singleBladeMoveSpeed_; // 刃の進む速度
 	// エフェクト
 	std::unique_ptr<BossEnemySingleBladeEffect> singleBladeEffect_;
+	float singleBladeEffectScalingValue_;
 
 	//--------- functions ----------------------------------------------------
 

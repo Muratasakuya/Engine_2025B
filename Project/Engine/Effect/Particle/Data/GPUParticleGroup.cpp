@@ -32,6 +32,7 @@ void GPUParticleGroup::Create(ID3D12Device* device, Asset* asset, ParticlePrimit
 	frequencyTime_ = 0.0f;
 	isInitialized_ = false;
 	blendMode_ = kBlendModeAdd;
+	scalingValue_ = 1.0f;
 
 	// 最初のテクスチャを設定
 	textureName_ = "redCircle";
@@ -165,6 +166,13 @@ void GPUParticleGroup::ApplyCommand(const ParticleCommand& command) {
 		}
 		break;
 	}
+	case ParticleCommandID::Scaling: {
+		if (const auto& scaling = std::get_if<float>(&command.value)) {
+
+			scalingValue_ = *scaling;
+		}
+		break;
+	}
 	case ParticleCommandID::SetRotation: {
 		if (const auto& rotation = std::get_if<Vector3>(&command.value)) {
 
@@ -187,8 +195,12 @@ void GPUParticleGroup::UpdateEmitter() {
 	switch (emitter_.shape) {
 	case ParticleEmitterShape::Sphere: {
 
+		ParticleEmitterSphere emitter{};
+		emitter = emitter_.sphere;
+		emitter.radius *= scalingValue_;
+
 		// buffer転送
-		emitterBuffer_.sphere.TransferData(emitter_.sphere);
+		emitterBuffer_.sphere.TransferData(emitter);
 		break;
 	}
 	case ParticleEmitterShape::Hemisphere: {
@@ -201,8 +213,12 @@ void GPUParticleGroup::UpdateEmitter() {
 			emitter_.hemisphere.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
 		}
 
+		ParticleEmitterHemisphere emitter{};
+		emitter = emitter_.hemisphere;
+		emitter.radius *= scalingValue_;
+
 		// buffer転送
-		emitterBuffer_.hemisphere.TransferData(emitter_.hemisphere);
+		emitterBuffer_.hemisphere.TransferData(emitter);
 		break;
 	}
 	case ParticleEmitterShape::Box: {
@@ -215,8 +231,12 @@ void GPUParticleGroup::UpdateEmitter() {
 			emitter_.box.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
 		}
 
+		ParticleEmitterBox emitter{};
+		emitter = emitter_.box;
+		emitter.size *= scalingValue_;
+
 		// buffer転送
-		emitterBuffer_.box.TransferData(emitter_.box);
+		emitterBuffer_.box.TransferData(emitter);
 		break;
 	}
 	case ParticleEmitterShape::Cone: {
@@ -228,6 +248,8 @@ void GPUParticleGroup::UpdateEmitter() {
 
 			emitter_.cone.rotationMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
 		}
+
+		// スケーリング見送り
 
 		// buffer転送
 		emitterBuffer_.cone.TransferData(emitter_.cone);

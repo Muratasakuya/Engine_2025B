@@ -59,14 +59,14 @@
                                     "shape": "Crescent"
                                 },
                                 "samplerType": 0,
-                                "textureName": "slashEffect1",
+                                "textureName": "bossEnemySlash",
                                 "useNoiseTexture": 0
                             },
                             "radius": 0.10000000149011612,
                             "translation": {
-                                "x": 0.0,
-                                "y": 0.0,
-                                "z": 0.0
+                                "x": 11.751376152038574,
+                                "y": 6.40000057220459,
+                                "z": -2.430055618286133
                             }
                         },
                         "type": "Sphere"

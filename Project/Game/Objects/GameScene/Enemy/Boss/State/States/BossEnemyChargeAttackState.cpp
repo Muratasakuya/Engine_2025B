@@ -11,20 +11,38 @@
 //	BossEnemyChargeAttackState classMethods
 //============================================================================
 
+BossEnemyChargeAttackState::BossEnemyChargeAttackState() {
+
+	// 1本の刃
+	singleBlade_ = std::make_unique<BossEnemyBladeCollision>();
+	singleBlade_->Init("singleBlade_Charge");
+	// エフェクト
+	singleBladeEffect_ = std::make_unique<BossEnemySingleBladeEffect>();
+	singleBladeEffect_->Init(singleBlade_->GetTransform(), "Charge");
+}
+
 void BossEnemyChargeAttackState::Enter(BossEnemy& bossEnemy) {
 
 	bossEnemy.SetNextAnimation("bossEnemy_chargeAttack", false, nextAnimDuration_);
 
-	Vector3 startPos = bossEnemy.GetTranslation();
-	Vector3 targetPos = player_->GetTranslation();
-
-	// 開始時に一気playerの方を向かせる
-	LookTarget(bossEnemy, targetPos);
-
 	canExit_ = false;
 }
 
+void BossEnemyChargeAttackState::UpdateAlways([[maybe_unused]] BossEnemy& bossEnemy) {
+
+	// 衝突更新
+	singleBlade_->Update();
+
+	// エフェクトの更新処理
+	singleBladeEffect_->Update();
+}
+
 void BossEnemyChargeAttackState::Update(BossEnemy& bossEnemy) {
+
+	// 常にプレイヤーの方を向くようにする
+	LookTarget(bossEnemy, player_->GetTranslation());
+	// 刃の更新処理
+	UpdateBlade(bossEnemy);
 
 	if (bossEnemy.IsAnimationFinished()) {
 
@@ -35,6 +53,27 @@ void BossEnemyChargeAttackState::Update(BossEnemy& bossEnemy) {
 			canExit_ = true;
 		}
 	}
+}
+
+void BossEnemyChargeAttackState::UpdateBlade(BossEnemy& bossEnemy) {
+
+	// キーイベントで攻撃を発生させる
+	if (bossEnemy.IsEventKey("Attack", 0)) {
+
+		// 発生処理
+		const Vector3 pos = bossEnemy.GetTranslation();
+		const Vector3 velocity = CalcBaseDir(bossEnemy) * singleBladeMoveSpeed_;
+		singleBlade_->EmitEffect(pos, velocity);
+
+		// エフェクトを発生
+		singleBladeEffect_->EmitEffect(singleBlade_->GetTransform(),
+			singleBladeEffectScalingValue_);
+	}
+}
+
+Vector3 BossEnemyChargeAttackState::CalcBaseDir(const BossEnemy& bossEnemy) const {
+
+	return (player_->GetTranslation() - bossEnemy.GetTranslation()).Normalize();
 }
 
 void BossEnemyChargeAttackState::Exit([[maybe_unused]] BossEnemy& bossEnemy) {
@@ -50,6 +89,32 @@ void BossEnemyChargeAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEne
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
 
 	ImGui::DragFloat("exitTime", &exitTime_, 0.01f);
+	ImGui::DragFloat("singleBladeMoveSpeed", &singleBladeMoveSpeed_, 0.1f);
+
+	if (ImGui::CollapsingHeader("Blade")) {
+		if (ImGui::Button("Emit SingleBlade")) {
+
+			// 発生処理
+			const Vector3 pos = bossEnemy.GetTranslation();
+			const Vector3 velocity = CalcBaseDir(bossEnemy) * singleBladeMoveSpeed_;
+			singleBlade_->EmitEffect(pos, velocity);
+
+			// エフェクトを発生
+			singleBladeEffect_->EmitEffect(singleBlade_->GetTransform(),
+				singleBladeEffectScalingValue_);
+		}
+
+		ImGui::Separator();
+
+		singleBlade_->ImGui();
+		singleBlade_->Update();
+	}
+
+	if (ImGui::CollapsingHeader("Blade Effect")) {
+
+		ImGui::DragFloat("singleBladeScaling", &singleBladeEffectScalingValue_, 0.01f);
+		singleBladeEffect_->ImGui();
+	}
 }
 
 void BossEnemyChargeAttackState::ApplyJson(const Json& data) {
@@ -58,6 +123,8 @@ void BossEnemyChargeAttackState::ApplyJson(const Json& data) {
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 
 	exitTime_ = JsonAdapter::GetValue<float>(data, "exitTime_");
+	singleBladeMoveSpeed_ = data.value("singleBladeMoveSpeed_", 1.0f);
+	singleBladeEffectScalingValue_ = data.value("singleBladeEffectScalingValue_", 1.0f);
 }
 
 void BossEnemyChargeAttackState::SaveJson(Json& data) {
@@ -66,4 +133,6 @@ void BossEnemyChargeAttackState::SaveJson(Json& data) {
 	data["rotationLerpRate_"] = rotationLerpRate_;
 
 	data["exitTime_"] = exitTime_;
+	data["singleBladeMoveSpeed_"] = singleBladeMoveSpeed_;
+	data["singleBladeEffectScalingValue_"] = singleBladeEffectScalingValue_;
 }

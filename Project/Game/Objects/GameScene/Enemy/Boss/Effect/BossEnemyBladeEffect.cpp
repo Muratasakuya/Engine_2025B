@@ -14,7 +14,10 @@
 //	BossEnemyBladeEffect classMethods
 //============================================================================
 
-void BossEnemySingleBladeEffect::Init(const BaseTransform& transform) {
+void BossEnemySingleBladeEffect::Init(const BaseTransform& transform, const std::string& typeName) {
+
+	// ファイルの名前を設定
+	fileName_ = "Enemy/Boss/singleBladeEffect" + typeName + ".json";
 
 	// エフェクト追加
 	// 真ん中の刃
@@ -40,15 +43,22 @@ void BossEnemySingleBladeEffect::Init(const BaseTransform& transform) {
 
 	// 初期化値
 	currentState_ = State::None;
+	scalingValue_ = 1.0f;
 }
 
-void BossEnemySingleBladeEffect::EmitEffect(const BaseTransform& transform) {
+void BossEnemySingleBladeEffect::EmitEffect(
+	const BaseTransform& transform, float scalingValue) {
 
 	// 座標、回転を設定して発生させる
 	// オイラー角を取得
 	Vector3 localRotation = Vector3::AnyInit(0.0f);
 	// X軸を固定
 	localRotation.x = pi / 2.0f;
+
+	// 全てのエフェクトにスケーリングをかける
+	GameEffectCommandHelper::SendScaling(*slash_.effect, scalingValue);
+	GameEffectCommandHelper::SendScaling(*plane_.effect, scalingValue);
+	GameEffectCommandHelper::SendScaling(*particle_.effect, scalingValue);
 
 	// 刃
 	GameEffectCommandHelper::ApplyAndSend(*slash_.effect, transform.rotation,
@@ -116,7 +126,7 @@ void BossEnemySingleBladeEffect::ImGui() {
 void BossEnemySingleBladeEffect::ApplyJson() {
 
 	Json data;
-	if (!JsonAdapter::LoadCheck("Enemy/Boss/singleBladeEffect.json", data)) {
+	if (!JsonAdapter::LoadCheck(fileName_, data)) {
 		return;
 	}
 
@@ -137,5 +147,5 @@ void BossEnemySingleBladeEffect::SaveJson() {
 
 	emitTimer_.ToJson(data["EmitTimer"]);
 
-	JsonAdapter::Save("Enemy/Boss/singleBladeEffect.json", data);
+	JsonAdapter::Save(fileName_, data);
 }

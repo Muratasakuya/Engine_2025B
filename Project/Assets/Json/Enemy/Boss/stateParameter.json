@@ -2,7 +2,9 @@
     "ChargeAttack": {
         "exitTime_": 0.05999999865889549,
         "nextAnimDuration_": 0.1599999964237213,
-        "rotationLerpRate_": 14.0
+        "rotationLerpRate_": 6.0,
+        "singleBladeEffectScalingValue_": 1.0,
+        "singleBladeMoveSpeed_": 32.0
     },
     "ContinuousAttack": {
         "attackOffsetTranslation_": -8.0,
@@ -42,6 +44,7 @@
         "nearRadius_": 20.0,
         "nextAnimDuration_": 0.03999999910593033,
         "rotationLerpRate_": 14.0,
+        "singleBladeEffectScalingValue_": 1.600000023841858,
         "singleBladeMoveSpeed_": 128.0
     },
     "StrongAttack": {

@@ -24,10 +24,10 @@ void BossEnemyRushAttackState::InitBlade() {
 
 	// 1本の刃
 	singleBlade_ = std::make_unique<BossEnemyBladeCollision>();
-	singleBlade_->Init("singleBlade");
+	singleBlade_->Init("singleBlade_Rush");
 	// エフェクト
 	singleBladeEffect_ = std::make_unique<BossEnemySingleBladeEffect>();
-	singleBladeEffect_->Init(singleBlade_->GetTransform());
+	singleBladeEffect_->Init(singleBlade_->GetTransform(), "Rush");
 }
 
 BossEnemyRushAttackState::BossEnemyRushAttackState() {
@@ -63,6 +63,13 @@ void BossEnemyRushAttackState::Enter(BossEnemy& bossEnemy) {
 }
 
 void BossEnemyRushAttackState::UpdateAlways([[maybe_unused]] BossEnemy& bossEnemy) {
+
+	// 衝突更新
+	for (const auto& divisionBlade : divisionBlades_) {
+
+		divisionBlade->Update();
+	}
+	singleBlade_->Update();
 
 	// エフェクトの更新処理
 	singleBladeEffect_->Update();
@@ -209,13 +216,6 @@ void BossEnemyRushAttackState::UpdateBlade(BossEnemy& bossEnemy) {
 			EmitDivisionBlades(bossEnemy);
 		}
 	}
-
-	// 衝突更新
-	for (const auto& divisionBlade : divisionBlades_) {
-
-		divisionBlade->Update();
-	}
-	singleBlade_->Update();
 }
 
 Vector3 BossEnemyRushAttackState::CalcBaseDir(const BossEnemy& bossEnemy) const {
@@ -248,7 +248,8 @@ void BossEnemyRushAttackState::EmitSingleBlade(const BossEnemy& bossEnemy) {
 	singleBlade_->EmitEffect(pos, velocity);
 
 	// エフェクトを発生
-	singleBladeEffect_->EmitEffect(singleBlade_->GetTransform());
+	singleBladeEffect_->EmitEffect(singleBlade_->GetTransform(),
+		singleBladeEffectScalingValue_);
 }
 
 void BossEnemyRushAttackState::Exit(BossEnemy& bossEnemy) {
@@ -339,6 +340,7 @@ void BossEnemyRushAttackState::ImGui(const BossEnemy& bossEnemy) {
 
 	if (ImGui::CollapsingHeader("Blade Effect")) {
 
+		ImGui::DragFloat("singleBladeScaling", &singleBladeEffectScalingValue_, 0.01f);
 		singleBladeEffect_->ImGui();
 	}
 }
@@ -359,6 +361,7 @@ void BossEnemyRushAttackState::ApplyJson(const Json& data) {
 	divisionBladeMoveSpeed_ = JsonAdapter::GetValue<float>(data, "divisionBladeMoveSpeed_");
 	singleBladeMoveSpeed_ = JsonAdapter::GetValue<float>(data, "singleBladeMoveSpeed_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
+	singleBladeEffectScalingValue_ = data.value("singleBladeEffectScalingValue_", 1.0f);
 
 	{
 		Json clampData;
@@ -384,5 +387,6 @@ void BossEnemyRushAttackState::SaveJson(Json& data) {
 	data["divisionOffsetAngle_"] = divisionOffsetAngle_;
 	data["divisionBladeMoveSpeed_"] = divisionBladeMoveSpeed_;
 	data["singleBladeMoveSpeed_"] = singleBladeMoveSpeed_;
+	data["singleBladeEffectScalingValue_"] = singleBladeEffectScalingValue_;
 	data["easingType_"] = static_cast<int>(easingType_);
 }

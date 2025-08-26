@@ -30,6 +30,8 @@ public:
 	// 座標の設定
 	static void SendSpawnerTranslation(GameEffect& effect,
 		const Vector3& translation);
+	// スケーリングの設定
+	static void SendScaling(GameEffect& effect, float scalingValue);
 
 	// ビルボードを発生モジュールに設定
 	static void SendSpawnerBillboard(GameEffect& effect,

@@ -31,6 +31,7 @@ enum class ParticleCommandID {
 	SetBillboardRotation, // ビルボード回転の設定
 	SetEmitFlag,          // 発生の設定
 	SetParent,            // 親の設定
+	Scaling,              // スケーリング処理
 };
 
 // 特定のIDの指定

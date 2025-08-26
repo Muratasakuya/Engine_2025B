@@ -51,7 +51,7 @@
                             "translation": {
                                 "x": 0.0,
                                 "y": 6.400000095367432,
-                                "z": -7.349999904632568
+                                "z": 0.0
                             }
                         },
                         "type": "Sphere"
@@ -154,8 +154,8 @@
                                 },
                                 "easingType": "EaseInSine",
                                 "intencity": {
-                                    "start": 1.0,
-                                    "target": 1.0099999904632568
+                                    "start": 0.3199999928474426,
+                                    "target": 0.3199999928474426
                                 }
                             },
                             "type": "Emissive"
@@ -167,6 +167,6 @@
             "textureName": ""
         }
     ],
-    "name": "bossEnemyChargeSlash",
+    "name": "bossEnemyChargePlne",
     "primitiveType": "Plane"
 }

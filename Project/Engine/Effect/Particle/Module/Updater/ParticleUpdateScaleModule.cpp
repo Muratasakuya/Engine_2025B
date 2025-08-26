@@ -9,11 +9,26 @@
 //	ParticleUpdateScaleModule classMethods
 //============================================================================
 
+bool ParticleUpdateScaleModule::SetCommand(const ParticleCommand& command) {
+
+	switch (command.id) {
+	case ParticleCommandID::Scaling: {
+		if (const auto& scaling = std::get_if<float>(&command.value)) {
+
+			scalingValue_ = Vector3::AnyInit(*scaling);
+		}
+		return false;
+	}
+	}
+	return false;
+}
+
 void ParticleUpdateScaleModule::Init() {
 
 	// 初期化値
 	scale_.start = Vector3::AnyInit(1.0f);
 	scale_.target = Vector3::AnyInit(0.0f);
+	scalingValue_ = Vector3::AnyInit(1.0f);
 }
 
 void ParticleUpdateScaleModule::Execute(
@@ -23,7 +38,8 @@ void ParticleUpdateScaleModule::Execute(
 	const float lerpT = LoopedT(particle.progress);
 
 	// 色を補間
-	particle.transform.scale = Vector3::Lerp(scale_.start, scale_.target,
+	particle.transform.scale = Vector3::Lerp(scale_.start * scalingValue_,
+		scale_.target * scalingValue_,
 		EasedValue(easing_, lerpT));
 }
 
