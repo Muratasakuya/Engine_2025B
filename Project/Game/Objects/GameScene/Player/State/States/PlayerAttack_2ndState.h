@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Game/Objects/GameScene/Player/State/Interface/PlayerBaseAttackState.h>
-#include <Engine/Effect/Game/GameEffect.h>
 
 // c++
 #include <array>
@@ -49,7 +48,9 @@ private:
 
 	// 敵との距離に応じた処理を行うフラグ
 	bool approachPhase_;
+	bool loopApproach_ = false;
 
+	// parameters
 	Vector3 startTranslation_;                    // 移動開始地点
 	std::array<Vector3, kNumSegments> wayPoints_; // 移動する点の数
 	size_t currentIndex_; // 現在の区間
@@ -60,21 +61,23 @@ private:
 	float leftPointAngle_;  // 左の座標の角度
 	float rightPointAngle_; // 右の座標の角度
 
-	// parameters
-	// 斬撃エフェクト
-	std::array<Vector3, kNumSegments> slashEffectRotations_;   // 回転
-	std::array<Vector3, kNumSegments> slashEffectTranslatons_; // 座標
-	bool emittedThisSegment_;
-
-	// 斬撃
-	std::unique_ptr<GameEffect> slashEffect_;
+	// 座標補間を行わないときの処理
+	float approachForwardDistance_; // 前方に進む距離
+	float approachSwayLength_;      // 左右振れ幅
+	float approachLeftPointAngle_;  // 左の角度
+	float approachRightPointAngle_; // 右の角度
 
 	// debug
-	std::array<Vector3, 3> debugWayPoints_;
+	std::array<Vector3, kNumSegments> debugWayPoints_;
+	std::array<Vector3, kNumSegments> debugApproachWayPoints_;
 
 	//--------- functions ----------------------------------------------------
 
-	void CalcWayPoints(const Player& player, std::array<Vector3, 3>& dstWayPoints);
-
-	void EmitSlashEffectForCurrentIndex(Player& player);
+	// helper
+	void CalcWayPoints(const Player& player, std::array<Vector3, kNumSegments>& dstWayPoints);
+	void CalcWayPointsToTarget(const Vector3& start, const Vector3& target,
+		float leftT, float rightT, float swayLength,
+		std::array<Vector3, kNumSegments>& dstWayPoints);
+	void CalcApproachWayPoints(const Player& player, std::array<Vector3, kNumSegments>& dstWayPoints);
+	bool LerpAlongSegments(Player& player);
 };

@@ -724,6 +724,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameScene\Player\Effect\PlayerAnimationEffect.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Player\Entity\PlayerWeapon.cpp">
       <SubType>
       </SubType>
@@ -1554,6 +1558,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
       </SubType>
     </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Player\Collision\PlayerAttackCollision.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
+    <ClInclude Include="Game\Objects\GameScene\Player\Effect\PlayerAnimationEffect.h">
       <SubType>
       </SubType>
     </ClInclude>

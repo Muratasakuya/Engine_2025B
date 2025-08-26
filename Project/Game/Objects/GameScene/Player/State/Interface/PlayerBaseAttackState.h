@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Utility/StateTimer.h>
 #include <Game/Objects/GameScene/Player/State/Interface/PlayerIState.h>
 #include <Lib/Adapter/Easing.h>
 
@@ -54,6 +55,7 @@ protected:
 	void AttackAssist(Player& player, bool onceTarget = false);
 
 	// helper
+	bool CheckInRange(float range, float distance);
 	Vector3 GetPlayerOffsetPos(const Player& player, const Vector3& offsetTranslation) const;
 	Matrix4x4 GetPlayerOffsetRotation(const Player& player, const Vector3& offsetRotation) const;
 

@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Game/Objects/GameScene/Player/State/Interface/PlayerBaseAttackState.h>
-#include <Engine/Effect/Game/GameEffect.h>
 
 //============================================================================
 //	PlayerAttack_1stState class
@@ -42,11 +41,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// parameters
-	// 斬撃エフェクト
-	Vector3 slashEffectRotation_;   // 回転
-	Vector3 slashEffectTranslaton_; // 座標
+	bool assisted_;
 
-	// 斬撃
-	std::unique_ptr<GameEffect> slashEffect_;
+	// parameters
+	// 座標補間を行わないときの処理
+	StateTimer moveTimer_;
+	float moveValue_;   // 移動量
+	Vector3 startPos_;  // 開始座標
+	Vector3 targetPos_; // 目標座標
 };

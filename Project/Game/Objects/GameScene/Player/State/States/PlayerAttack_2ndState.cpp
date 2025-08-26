@@ -13,10 +13,6 @@
 //============================================================================
 
 PlayerAttack_2ndState::PlayerAttack_2ndState() {
-
-	// effect作成
-	slashEffect_ = std::make_unique<GameEffect>();
-	slashEffect_->CreateParticleSystem("Particle/playerSlash.json");
 }
 
 void PlayerAttack_2ndState::Enter(Player& player) {
@@ -28,22 +24,22 @@ void PlayerAttack_2ndState::Enter(Player& player) {
 	const float dist = (bossEnemy_->GetTranslation() - player.GetTranslation()).Length();
 	approachPhase_ = (dist > attackPosLerpCircleRange_);
 
-	if (!approachPhase_) {
-
-		CalcWayPoints(player, wayPoints_);
-		currentIndex_ = 0;
-		segmentTimer_ = 0.0f;
-		segmentTime_ = attackPosLerpTime_ / 3.0f;
-
-		// effectを発生させる
-		EmitSlashEffectForCurrentIndex(player);
-	}
-
 	// 初期化
 	currentIndex_ = 0;
 	segmentTimer_ = 0.0f;
 	segmentTime_ = attackPosLerpTime_ / 3.0f;
-	emittedThisSegment_ = false;
+
+	if (approachPhase_) {
+
+		// 範囲外のとき
+		CalcApproachWayPoints(player, wayPoints_);
+		startTranslation_ = player.GetTranslation();
+	} else {
+
+		// 範囲内のとき
+		CalcWayPoints(player, wayPoints_);
+		startTranslation_ = player.GetTranslation();
+	}
 }
 
 void PlayerAttack_2ndState::Update(Player& player) {
@@ -56,110 +52,122 @@ void PlayerAttack_2ndState::Update(Player& player) {
 		exitTimer_ += GameTimer::GetScaledDeltaTime();
 	}
 
+	// 区間補間処理
+	const bool finished = LerpAlongSegments(player);
+	if (!finished) { 
+		return;
+	}
+
+	// 区間完了ごとに次の経路を決める
 	if (approachPhase_) {
 
-		// 回転を設定
-		AttackAssist(player);
-		const float distance = (bossEnemy_->GetTranslation() - player.GetTranslation()).Length();
-		if (distance <= attackPosLerpCircleRange_) {
+		if (!loopApproach_) {
+			if (targetTranslation_.has_value()) {
 
-			// 距離が近くなればば遷移処理を行う
-			CalcWayPoints(player, wayPoints_);
-			currentIndex_ = 0;
-			segmentTimer_ = 0.0f;
-			segmentTime_ = attackPosLerpTime_ / 3.0f;
-			startTranslation_ = player.GetTranslation();
+				player.SetTranslation(*targetTranslation_);
+			}
+			approachPhase_ = false; // これ以上補間処理を行わない
+			return;
+		}
+
+		// 範囲内になったら敵補間へ切り替え
+		const float dist = (bossEnemy_->GetTranslation() - player.GetTranslation()).Length();
+		if (dist <= attackPosLerpCircleRange_) {
 
 			approachPhase_ = false;
+			CalcWayPoints(player, wayPoints_);
+			startTranslation_ = player.GetTranslation();
+		} else {
 
-			// effectを発生させる
-			emittedThisSegment_ = false;
-			slashEffect_->ResetEmitFlag();
-			EmitSlashEffectForCurrentIndex(player);
-			emittedThisSegment_ = true;
+			// 範囲外
+			CalcApproachWayPoints(player, wayPoints_);
+			startTranslation_ = player.GetTranslation();
 		}
-		return;
-	}
-
-	// 遷移が終了したら目標座標を設定する
-	if (wayPoints_.size() <= currentIndex_) {
-
-		player.SetTranslation(*targetTranslation_);
-		return;
-	}
-
-	// 区間開始フレームでまだ発生していなければ発生させる
-	if (!emittedThisSegment_ && currentIndex_ < kNumSegments && segmentTimer_ == 0.0f) {
-
-		slashEffect_->ResetEmitFlag();
-		EmitSlashEffectForCurrentIndex(player);
-		emittedThisSegment_ = true;
-	}
-
-	// 各区間を順に補間する
-	segmentTimer_ += GameTimer::GetScaledDeltaTime();
-
-	float lerpT = std::clamp(segmentTimer_ / segmentTime_, 0.0f, 1.0f);
-	lerpT = EasedValue(attackPosEaseType_, lerpT);
-
-	Vector3 segmentStart = (currentIndex_ == 0) ? startTranslation_ : wayPoints_[currentIndex_ - 1];
-	Vector3 segmentEnd = wayPoints_[currentIndex_];
-
-	player.SetTranslation(Vector3::Lerp(segmentStart, segmentEnd, lerpT));
-
-	// 遷移が完了したら次の区間に進む
-	if (segmentTime_ <= segmentTimer_) {
 
 		// リセット
+		currentIndex_ = 0;
 		segmentTimer_ = 0.0f;
-		++currentIndex_;
-		emittedThisSegment_ = false;
+		segmentTime_ = attackPosLerpTime_ / 3.0f;
+	} else {
+
+		// 範囲内の経路完走後は最終点へ固定
+		player.SetTranslation(*targetTranslation_);
 	}
 }
 
-void PlayerAttack_2ndState::CalcWayPoints(const Player& player, std::array<Vector3, 3>& dstWayPoints) {
+void PlayerAttack_2ndState::CalcWayPoints(const Player& player, std::array<Vector3, kNumSegments>& dstWayPoints) {
 
 	// 目標座標を設定
 	startTranslation_ = player.GetTranslation();
 	const Vector3 enemyPos = bossEnemy_->GetTranslation();
-	Vector3 direction = (enemyPos - startTranslation_).Normalize();
-	targetTranslation_ = enemyPos - direction * attackOffsetTranslation_;
+	Vector3 dir = (enemyPos - startTranslation_).Normalize();
+	targetTranslation_ = enemyPos - dir * attackOffsetTranslation_;
 
-	// 目標までの直線距離
+	//距離に応じて振れ幅を変更する
 	const float distance = (*targetTranslation_ - startTranslation_).Length();
-	// 左右振れ幅を計算
-	Vector3 right = Vector3::Cross(direction, Vector3(0.0f, 1.0f, 0.0f)).Normalize();
-	float swayLength = (std::max)(0.0f, (attackPosLerpCircleRange_ - distance)) * swayRate_;
+	const float swayLength = (std::max)(0.0f, (attackPosLerpCircleRange_ - distance)) * swayRate_;
 
-	// 経由点
-	dstWayPoints[0] = Vector3::Lerp(startTranslation_, *targetTranslation_, leftPointAngle_) - right * swayLength;  // 左
-	dstWayPoints[1] = Vector3::Lerp(startTranslation_, *targetTranslation_, rightPointAngle_) + right * swayLength; // 右
-	dstWayPoints[2] = *targetTranslation_;
+	// 補間先を設定する
+	CalcWayPointsToTarget(startTranslation_, *targetTranslation_,
+		leftPointAngle_, rightPointAngle_, swayLength,
+		dstWayPoints);
 }
 
-void PlayerAttack_2ndState::EmitSlashEffectForCurrentIndex(Player& player) {
+void PlayerAttack_2ndState::CalcWayPointsToTarget(const Vector3& start, const Vector3& target,
+	float leftT, float rightT, float swayLength, std::array<Vector3, kNumSegments>& dstWayPoints) {
 
-	const size_t key = (std::min)(currentIndex_, kNumSegments - 1);
+	Vector3 dir = (target - start).Normalize();
+	Vector3 right = Vector3::Cross(dir, Vector3(0.0f, 1.0f, 0.0f)).Normalize();
 
-	// コマンドに設定
-	ParticleCommand command{};
-	{
-		// 座標設定
-		command.target = ParticleCommandTarget::Spawner;
-		command.id = ParticleCommandID::SetTranslation;
-		command.value = PlayerBaseAttackState::GetPlayerOffsetPos(player, slashEffectTranslatons_[key]);
-		slashEffect_->SendCommand(command);
+	dstWayPoints[0] = Vector3::Lerp(start, target, leftT) - right * swayLength;  // 左
+	dstWayPoints[1] = Vector3::Lerp(start, target, rightT) + right * swayLength; // 右
+	dstWayPoints[2] = target;
+}
+
+void PlayerAttack_2ndState::CalcApproachWayPoints(const Player& player,
+	std::array<Vector3, kNumSegments>& dstWayPoints) {
+
+	// プレイヤーの前方向に向かってジグザグ移動させる
+	startTranslation_ = player.GetTranslation();
+	Vector3 forward = player.GetTransform().GetForward().Normalize();
+	Vector3 target = startTranslation_ + forward * approachForwardDistance_;
+	targetTranslation_ = target;
+
+	// 補間先を設定する
+	CalcWayPointsToTarget(startTranslation_, target,
+		approachLeftPointAngle_, approachRightPointAngle_,
+		approachSwayLength_, dstWayPoints);
+}
+
+bool PlayerAttack_2ndState::LerpAlongSegments(Player& player) {
+
+	if (wayPoints_.size() <= currentIndex_) {
+		if (targetTranslation_.has_value()) {
+
+			player.SetTranslation(*targetTranslation_);
+		}
+		return true;
 	}
-	{
-		// 回転設定
-		command.target = ParticleCommandTarget::Updater;
-		command.id = ParticleCommandID::SetRotation;
-		command.filter.updaterId = ParticleUpdateModuleID::Rotation;
-		command.value = PlayerBaseAttackState::GetPlayerOffsetRotation(player, slashEffectRotations_[key]);
-		slashEffect_->SendCommand(command);
+
+	// 区間更新
+	segmentTimer_ += GameTimer::GetScaledDeltaTime();
+	float t = std::clamp(segmentTimer_ / segmentTime_, 0.0f, 1.0f);
+	t = EasedValue(attackPosEaseType_, t);
+
+	Vector3 segStart = (currentIndex_ == 0) ? startTranslation_ : wayPoints_[currentIndex_ - 1];
+	Vector3 segEnd = wayPoints_[currentIndex_];
+
+	Vector3 pos = Vector3::Lerp(segStart, segEnd, t);
+	player.SetTranslation(pos);
+
+	// 補間が終了したら次の区間に進める
+	if (segmentTime_ <= segmentTimer_) {
+
+		segmentTimer_ = 0.0f;
+		++currentIndex_;
+		return (currentIndex_ >= wayPoints_.size());
 	}
-	// 発生させる
-	slashEffect_->Emit(true);
+	return false;
 }
 
 void PlayerAttack_2ndState::Exit([[maybe_unused]] Player& player) {
@@ -167,8 +175,6 @@ void PlayerAttack_2ndState::Exit([[maybe_unused]] Player& player) {
 	// リセット
 	attackPosLerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
-
-	slashEffect_->ResetEmitFlag();
 }
 
 void PlayerAttack_2ndState::ImGui(const Player& player) {
@@ -182,27 +188,39 @@ void PlayerAttack_2ndState::ImGui(const Player& player) {
 
 	PlayerBaseAttackState::ImGui(player);
 
+	// 範囲内
 	CalcWayPoints(player, debugWayPoints_);
-	LineRenderer* lineRenderer = LineRenderer::GetInstance();
-
-	Vector3 prev = player.GetTranslation();
-	for (uint32_t i = 0; i < debugWayPoints_.size(); ++i) {
-
-		debugWayPoints_[i].y = 2.0f;
-		lineRenderer->DrawSphere(8, 2.0f, debugWayPoints_[i], Color::Red());
-		lineRenderer->DrawLine3D(debugWayPoints_[i], debugWayPoints_[i] + Vector3(0.0f, 2.0f, 0.0f), Color::White());
-		lineRenderer->DrawLine3D(prev, debugWayPoints_[i], Color::White());
-		prev = debugWayPoints_[i];
+	{
+		LineRenderer* renderer = LineRenderer::GetInstance();
+		Vector3 prev = player.GetTranslation();
+		for (auto& p : debugWayPoints_) {
+			p.y = 2.0f;
+			renderer->DrawSphere(8, 2.0f, p, Color::Red());
+			renderer->DrawLine3D(p, p + Vector3(0, 2, 0), Color::White());
+			renderer->DrawLine3D(prev, p, Color::White());
+			prev = p;
+		}
 	}
 
-	ImGui::SeparatorText("Effect");
-	for (size_t i = 0; i < kNumSegments; ++i) {
+	// 範囲外
+	ImGui::SeparatorText("Approach (Out of Range)");
+	ImGui::DragFloat("approachForwardDistance", &approachForwardDistance_, 0.1f);
+	ImGui::DragFloat("approachSwayLength", &approachSwayLength_, 0.01f);
+	ImGui::DragFloat("approachLeftPointAngle", &approachLeftPointAngle_, 0.01f, 0.0f, 1.0f);
+	ImGui::DragFloat("approachRightPointAngle", &approachRightPointAngle_, 0.01f, 0.0f, 1.0f);
 
-		ImGui::PushID(static_cast<int>(i));
-		ImGui::Text("Key %zu", i);
-		ImGui::DragFloat3("rotation", &slashEffectRotations_[i].x, 0.01f);
-		ImGui::DragFloat3("translation", &slashEffectTranslatons_[i].x, 0.01f);
-		ImGui::PopID();
+	CalcApproachWayPoints(player, debugApproachWayPoints_);
+	{
+		LineRenderer* renderer = LineRenderer::GetInstance();
+		Vector3 prev = player.GetTranslation();
+		for (auto& p : debugApproachWayPoints_) {
+
+			p.y = 2.0f;
+			renderer->DrawSphere(8, 2.0f, p, Color::Green());
+			renderer->DrawLine3D(p, p + Vector3(0, 2, 0), Color::White());
+			renderer->DrawLine3D(prev, p, Color::White());
+			prev = p;
+		}
 	}
 }
 
@@ -215,23 +233,10 @@ void PlayerAttack_2ndState::ApplyJson(const Json& data) {
 	leftPointAngle_ = JsonAdapter::GetValue<float>(data, "leftPointAngle_");
 	rightPointAngle_ = JsonAdapter::GetValue<float>(data, "rightPointAngle_");
 
-	if (data.contains("slashEffectRotations_")) {
-
-		const auto& array = data["slashEffectRotations_"];
-		const size_t n = (std::min)(array.size(), kNumSegments);
-		for (size_t i = 0; i < n; ++i) {
-
-			slashEffectRotations_[i] = slashEffectRotations_[i].FromJson(array[i]);
-		}
-	}
-	if (data.contains("slashEffectTranslatons_")) {
-		const auto& array = data["slashEffectTranslatons_"];
-		const size_t n = (std::min)(array.size(), kNumSegments);
-		for (size_t i = 0; i < n; ++i) {
-
-			slashEffectTranslatons_[i] = slashEffectTranslatons_[i].FromJson(array[i]);
-		}
-	}
+	approachForwardDistance_ = data.value("approachForwardDistance_", approachForwardDistance_);
+	approachSwayLength_ = data.value("approachSwayLength_", approachSwayLength_);
+	approachLeftPointAngle_ = data.value("approachLeftPointAngle_", approachLeftPointAngle_);
+	approachRightPointAngle_ = data.value("approachRightPointAngle_", approachRightPointAngle_);
 
 	PlayerBaseAttackState::ApplyJson(data);
 }
@@ -245,15 +250,10 @@ void PlayerAttack_2ndState::SaveJson(Json& data) {
 	data["leftPointAngle_"] = leftPointAngle_;
 	data["rightPointAngle_"] = rightPointAngle_;
 
-	Json rotArray = Json::array();
-	Json transArray = Json::array();
-	for (size_t i = 0; i < kNumSegments; ++i) {
-		
-		rotArray.push_back(slashEffectRotations_[i].ToJson());
-		transArray.push_back(slashEffectTranslatons_[i].ToJson());
-	}
-	data["slashEffectRotations_"] = rotArray;
-	data["slashEffectTranslatons_"] = transArray;
+	data["approachForwardDistance_"] = approachForwardDistance_;
+	data["approachSwayLength_"] = approachSwayLength_;
+	data["approachLeftPointAngle_"] = approachLeftPointAngle_;
+	data["approachRightPointAngle_"] = approachRightPointAngle_;
 
 	PlayerBaseAttackState::SaveJson(data);
 }

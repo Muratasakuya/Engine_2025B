@@ -16,7 +16,7 @@
 void StateTimer::Update() {
 
 	current_ += GameTimer::GetDeltaTime();
-	t_ = current_ / target_;
+	t_ = std::clamp(current_ / target_, 0.0f, 1.0f);
 	easedT_ = EasedValue(easeingType_, t_);
 }
 
@@ -47,9 +47,13 @@ void StateTimer::ImGui(const std::string& name) {
 
 void StateTimer::FromJson(const Json& data) {
 
+	if (data.empty()) {
+		return;
+	}
+
 	target_ = data.value("target_", 0.8f);
-	
-	const auto& easing = EnumAdapter<EasingType>::FromString(data["easeingType_"]);
+
+	const auto& easing = EnumAdapter<EasingType>::FromString(data.value("easeingType_", "EaseInSine"));
 	easeingType_ = easing.value();
 }
 
