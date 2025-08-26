@@ -4,7 +4,7 @@
         "nextAnimDuration_": 0.1599999964237213,
         "rotationLerpRate_": 6.0,
         "singleBladeEffectScalingValue_": 1.0,
-        "singleBladeMoveSpeed_": 32.0
+        "singleBladeMoveSpeed_": 64.0
     },
     "ContinuousAttack": {
         "attackOffsetTranslation_": -8.0,
