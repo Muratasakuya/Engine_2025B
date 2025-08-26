@@ -20,6 +20,7 @@ enum class PlayerState {
 	Attack_1st,    // 通常攻撃1段目...  左クリック/Xボタン
 	Attack_2nd,    // 通常攻撃2段目...  左クリック/Xボタン(1段目攻撃中にのみ入力受付)
 	Attack_3rd,    // 通常攻撃3段目...  左クリック/Xボタン(2段目攻撃中にのみ入力受付)
+	Attack_4th,    // 通常攻撃4段目...  左クリック/Xボタン(3段目攻撃中にのみ入力受付)
 	SkilAttack,    // スキル攻撃...     E/Yボタン
 	Parry,         // 攻撃カウンター...  Space/ショルダーボタン
 	SwitchAlly,    // 味方を切り替えるか入力(Idle or StunAttack)

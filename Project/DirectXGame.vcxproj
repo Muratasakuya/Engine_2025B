@@ -786,6 +786,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClCompile Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_1stState.cpp" />
     <ClCompile Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_2ndState.cpp" />
     <ClCompile Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_3rdState.cpp" />
+    <ClCompile Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_4thState.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
     <ClCompile Include="Game\Objects\GameScene\Player\State\States\PlayerAvoidSatate.cpp">
       <SubType>
       </SubType>
@@ -1624,6 +1628,10 @@ copy "$(WindowsSdkDir)bin\$(TargetPlatformVersion)\x64\dxil.dll" "$(TargetDir)dx
     <ClInclude Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_1stState.h" />
     <ClInclude Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_2ndState.h" />
     <ClInclude Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_3rdState.h" />
+    <ClInclude Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_4thState.h">
+      <SubType>
+      </SubType>
+    </ClInclude>
     <ClInclude Include="Game\Objects\GameScene\Player\State\States\PlayerAvoidSatate.h">
       <SubType>
       </SubType>
