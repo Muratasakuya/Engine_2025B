@@ -55,9 +55,11 @@ private:
 		bool isMoveStart;      // 移動開始フラグ
 		StateTimer moveTimer;  // 共通から値を受け取る
 		float moveValue;       // 移動量
+		float rotateSpeed;     // 回転速度
 		float offsetRotationY; // 進行方向のオフセットY回転
 		Vector3 startPos;  // 開始座標(親子付けを外した瞬間のワールド座標)
 		Vector3 targetPos; // 目標座標
+		Vector3 rotation;  // 回転
 	};
 
 	//--------- variables ----------------------------------------------------

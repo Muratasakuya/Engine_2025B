@@ -79,6 +79,26 @@ void PlayerAttack_3rdState::LerpWeapon(Player& player, PlayerWeaponType type) {
 
 		player.GetWeapon(type)->SetTranslation(weaponParams_[type].targetPos);
 	}
+
+
+	switch (type) {
+	case PlayerWeaponType::Left:
+
+		// 回転
+		weaponParams_[type].rotation.z = pi / 2.0f;
+		weaponParams_[type].rotation.y += weaponParams_[type].rotateSpeed;
+		player.GetWeapon(type)->SetRotation(Quaternion::Normalize(
+			Quaternion::EulerToQuaternion(weaponParams_[type].rotation)));
+		break;
+	case PlayerWeaponType::Right:
+
+		// 回転
+		weaponParams_[type].rotation.x = pi / 2.0f;
+		weaponParams_[type].rotation.y += weaponParams_[type].rotateSpeed;
+		player.GetWeapon(type)->SetRotation(Quaternion::Normalize(
+			Quaternion::EulerToQuaternion(weaponParams_[type].rotation)));
+		break;
+	}
 }
 
 void PlayerAttack_3rdState::LerpPlayer(Player& player) {
@@ -188,6 +208,7 @@ void PlayerAttack_3rdState::Exit([[maybe_unused]] Player& player) {
 
 		param.isMoveStart = false;
 		param.moveTimer.Reset();
+		param.rotation.Init();
 	}
 }
 
@@ -216,6 +237,7 @@ void PlayerAttack_3rdState::ImGui(const Player& player) {
 
 		ImGui::Text(std::format("isMoveStart: {}", param.isMoveStart).c_str());
 		ImGui::DragFloat("moveValue", &param.moveValue, 0.1f);
+		ImGui::DragFloat("rotateSpeed", &param.rotateSpeed, 0.01f);
 		ImGui::DragFloat("offsetRotationY", &param.offsetRotationY, 0.1f);
 
 		ImGui::PopID();
@@ -243,6 +265,7 @@ void PlayerAttack_3rdState::ApplyJson(const Json& data) {
 
 			const auto& key = EnumAdapter<PlayerWeaponType>::ToString(type);
 			param.moveValue = data["Weapon"][key]["moveValue"];
+			param.rotateSpeed = data["Weapon"][key].value("rotateSpeed", 1.0f);
 			param.offsetRotationY = data["Weapon"][key]["offsetRotationY"];
 		}
 	}
@@ -266,6 +289,7 @@ void PlayerAttack_3rdState::SaveJson(Json& data) {
 
 		const auto& key = EnumAdapter<PlayerWeaponType>::ToString(type);
 		data["Weapon"][key]["moveValue"] = param.moveValue;
+		data["Weapon"][key]["rotateSpeed"] = param.rotateSpeed;
 		data["Weapon"][key]["offsetRotationY"] = param.offsetRotationY;
 	}
 }
