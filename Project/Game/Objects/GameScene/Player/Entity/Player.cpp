@@ -48,6 +48,7 @@ void Player::InitAnimations() {
 	animation_->SetAnimationData("player_attack_1st");
 	animation_->SetAnimationData("player_attack_2nd");
 	animation_->SetAnimationData("player_attack_3rd");
+	animation_->SetAnimationData("player_attack_4th");
 	animation_->SetAnimationData("player_skilAttack");
 	animation_->SetAnimationData("player_stunAttack");
 	animation_->SetAnimationData("player_parry");
