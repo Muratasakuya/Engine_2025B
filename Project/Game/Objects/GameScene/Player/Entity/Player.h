@@ -44,6 +44,7 @@ public:
 	void SetBossEnemy(const BossEnemy* bossEnemy);
 	void SetFollowCamera(FollowCamera* followCamera);
 	void SetReverseWeapon(bool isReverse, PlayerWeaponType type);
+	void ResetWeaponTransform();
 
 	PlayerState GetCurrentState() const { return stateController_->GetCurrentState(); }
 
@@ -51,6 +52,7 @@ public:
 	GameObject3D* GetAlly() const { return ally_.get(); }
 	PlayerHUD* GetHUD() const { return hudSprites_.get(); }
 	PlayerStunHUD* GetStunHUD() const { return stunHudSprites_.get(); }
+	PlayerWeapon* GetWeapon(PlayerWeaponType type) const;
 
 	int GetDamage() const;
 	int GetToughness() const { return stats_.toughness; }
@@ -87,6 +89,9 @@ private:
 
 	// 敵のスタン中の更新になったか
 	bool isStunUpdate_;
+
+	// json
+	Json cacheJsonData_;
 
 	// editor
 	PlayerState editingState_;

@@ -32,11 +32,34 @@
         "swayRate_": -0.1599999964237213
     },
     "Attack_3rd": {
+        "BackMoveTimer": {
+            "easeingType_": "EaseInExpo",
+            "target_": 0.11999999731779099
+        },
+        "CatchMoveTimer": {
+            "easeingType_": "EaseOutExpo",
+            "target_": 0.1599999964237213
+        },
+        "Weapon": {
+            "Left": {
+                "moveValue": 20.0,
+                "offsetRotationY": 0.0
+            },
+            "Right": {
+                "moveValue": 80.0,
+                "offsetRotationY": 0.0
+            }
+        },
+        "WeaponMoveTimer": {
+            "easeingType_": "EaseOutExpo",
+            "target_": 0.09000000357627869
+        },
         "attackLookAtCircleRange_": 108.0,
         "attackOffsetTranslation_": 8.0,
         "attackPosEaseType_": 14,
         "attackPosLerpCircleRange_": 40.0,
         "attackPosLerpTime_": 0.4399999976158142,
+        "backMoveValue_": -48.0,
         "exitTime_": 0.019999999552965164,
         "nextAnimDuration_": 0.07999999821186066,
         "rotationLerpRate_": 0.46000000834465027

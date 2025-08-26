@@ -175,6 +175,17 @@ Vector3 GameObject3D::GetJointWorldPos(const std::string& jointName) const {
 	return world.GetTranslationValue();
 }
 
+void GameObject3D::SetParent(const Transform3D& parent, bool isNull) {
+
+	if (isNull) {
+
+		transform_->parent = nullptr;
+		return;
+	}
+	transform_->parent = nullptr;
+	transform_->parent = &parent;
+}
+
 const Transform3D* GameObject3D::GetJointTransform(const std::string& jointName) const {
 
 	return animation_ ? animation_->FindJointTransform(jointName) : nullptr;

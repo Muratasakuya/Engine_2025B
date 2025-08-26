@@ -48,7 +48,7 @@ public:
 	void SetRotation(const Quaternion& rotation) { transform_->rotation = rotation; }
 	void SetTranslation(const Vector3& translation) { transform_->translation = translation; }
 	// 親
-	void SetParent(const Transform3D& parent) { transform_->parent = &parent; }
+	void SetParent(const Transform3D& parent, bool isNull = false);
 	const Transform3D* GetJointTransform(const std::string& jointName) const;
 
 	// material
@@ -69,7 +69,7 @@ public:
 	bool IsAnimationFinished() const { return animation_->IsAnimationFinished(); }
 	int GetAnimationRepeatCount() const { return animation_->GetRepeatCount(); }
 	float GetAnimationDuration(const std::string& animationName) const { return animation_->GetAnimationDuration(animationName); }
-	bool IsEventKey(const std::string& keyEvent, uint32_t frameIndex) { return animation_->IsEventKey(keyEvent,frameIndex); }
+	bool IsEventKey(const std::string& keyEvent, uint32_t frameIndex) { return animation_->IsEventKey(keyEvent, frameIndex); }
 	float GetPlaybackSpeed() const { return animation_->GetPlaybackSpeed(); }
 	const std::string& GetCurrentAnimationName() const { return animation_->GetCurrentAnimationName(); }
 
