@@ -80,7 +80,6 @@ void BossEnemyTeleportationState::Update(BossEnemy& bossEnemy) {
 
 		Vector3 emitPos = bossEnemy.GetTranslation();
 		emitPos.y = emitParticleOffsetY_;
-		EmitTeleportParticle(emitPos);
 	}
 }
 

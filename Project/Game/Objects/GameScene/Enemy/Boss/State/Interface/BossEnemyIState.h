@@ -30,7 +30,7 @@ public:
 
 	// 更新処理
 	virtual void Update(BossEnemy& bossEnemy) = 0;
-	void UpdateParticleEmitter(BossEnemyState state);
+	virtual void UpdateAlways([[maybe_unused]] BossEnemy& bossEnemy) {}
 
 	// 状態終了時
 	virtual void Exit(BossEnemy& bossEnemy) = 0;
@@ -71,6 +71,5 @@ protected:
 
 	// helper
 	void LookTarget(BossEnemy& bossEnemy, const Vector3& target);
-	void EmitTeleportParticle(const Vector3& translation);
 	Vector2 ProjectToScreen(const Vector3& translation, const FollowCamera& camera);
 };

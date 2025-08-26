@@ -1,16 +1,20 @@
 {
     "animations": [
         {
-            "object": "<unlinked>",
+            "object": "bossEnemyArmature",
             "action": "chargeAttack",
             "events": {
                 "Attack": [
+                    34
+                ],
+                "Effect": [
+                    6,
                     34
                 ]
             }
         },
         {
-            "object": "bossEnemyArmature",
+            "object": "<unlinked>",
             "action": "continuousAttack",
             "events": {
                 "Parry": [
@@ -34,6 +38,15 @@
         },
         {
             "object": "<unlinked>",
+            "action": "lightAttackParrySign",
+            "events": {
+                "Effect": [
+                    14
+                ]
+            }
+        },
+        {
+            "object": "<unlinked>",
             "action": "rushAttack",
             "events": {
                 "Attack": [
@@ -50,6 +63,15 @@
                 ],
                 "Effect": [
                     6
+                ]
+            }
+        },
+        {
+            "object": "<unlinked>",
+            "action": "strongAttackParrySign",
+            "events": {
+                "Effect": [
+                    16
                 ]
             }
         }

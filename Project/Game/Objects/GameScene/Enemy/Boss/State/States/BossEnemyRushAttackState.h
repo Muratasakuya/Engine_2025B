@@ -5,15 +5,10 @@
 //============================================================================
 #include <Game/Objects/GameScene/Enemy/Boss/State/Interface/BossEnemyIState.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Collision/BossEnemyBladeCollision.h>
+#include <Game/Objects/GameScene/Enemy/Boss/Effect/BossEnemyBladeEffect.h>
 
 // c++
 #include <array>
-
-// memo
-// 計n回テレポートし、その都度設定された攻撃を行う
-// 1回目: farにテレポートし3本の刃の攻撃
-// 2回目: farにテレポートし3本の刃の攻撃
-// 3回目: farにテレポートしチャージ攻撃
 
 //============================================================================
 //	BossEnemyRushAttackState class
@@ -31,6 +26,7 @@ public:
 	void Enter(BossEnemy& bossEnemy) override;
 
 	void Update(BossEnemy& bossEnemy) override;
+	void UpdateAlways(BossEnemy& bossEnemy) override;
 
 	void Exit(BossEnemy& bossEnemy) override;
 
@@ -109,6 +105,9 @@ private:
 	// 1本の刃
 	std::unique_ptr<BossEnemyBladeCollision> singleBlade_;
 	float singleBladeMoveSpeed_; // 刃の進む速度
+	// エフェクト
+	std::unique_ptr<BossEnemySingleBladeEffect> singleBladeEffect_;
+	float singleBladeEffectScalingValue_;
 
 	//--------- functions ----------------------------------------------------
 

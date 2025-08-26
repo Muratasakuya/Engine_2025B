@@ -77,7 +77,10 @@ void SkinnedAnimation::Update(const Matrix4x4& worldMatrix) {
 
 			float duration = animationData_[currentAnimationName_].duration;
 			if (currentAnimationTimer_ + deltaTime >= duration) {
+
+				// 再生カウントをインクリメント
 				++repeatCount_;
+				prevFrameIndexPerKey_.clear();
 			}
 
 			currentAnimationTimer_ = std::fmod(currentAnimationTimer_ + deltaTime, duration);

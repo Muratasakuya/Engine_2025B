@@ -3,40 +3,41 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Effect/Particle/Module/Base/ICPUParticleUpdateModule.h>
+#include <Engine/Utility/StateTimer.h>
 #include <Lib/Adapter/Easing.h>
+#include <Lib/MathUtils/Vector3.h>
 
 //============================================================================
-//	ParticleUpdateUVModule class
+//	ParticleSpawnModuleUpdater
 //============================================================================
-class ParticleUpdateUVModule :
-	public ICPUParticleUpdateModule {
+
+// 多角形頂点発生モジュール
+class ParticlePolygonVertexUpdater {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ParticleUpdateUVModule() = default;
-	~ParticleUpdateUVModule() = default;
+	// 値の補間
+	void Update(float& scale, Vector3& rotation);
 
-	void Init() override;
-
-	void Execute(CPUParticle::ParticleData& particle, float deltaTime) override;
-
-	void ImGui() override;
+	// editor
+	void ImGui();
 
 	// json
-	Json ToJson() override;
-	void FromJson(const Json& data) override;
+	void FromJson(const Json& data);
+	void ToJson(Json& data);
 
 	//--------- accessor -----------------------------------------------------
 
-	const char* GetName() const override { return "UV"; }
+	void SetOffsetRotation(Vector3 offsetRotation);
 
-	//-------- registryID ----------------------------------------------------
+	float GetStartScale() const { return scale_.start; }
+	Vector3 GetStartRotation() const { return rotation_.start; }
 
-	static constexpr ParticleUpdateModuleID ID = ParticleUpdateModuleID::UV;
-	ParticleUpdateModuleID GetID() const override { return ID; }
+	bool CanEmit() const { return timer_.t_ != 0.0f; }
+	bool IsFinished() const { return timer_.IsReached(); }
+	void Reset() { timer_.Reset(); }
 private:
 	//========================================================================
 	//	private Methods
@@ -44,22 +45,21 @@ private:
 
 	//--------- structure ----------------------------------------------------
 
-	// 更新の種類
-	enum class UpdateType {
+	template <typename T>
+	struct LerpValue {
 
-		Lerp,
-		Scroll
+		T start;
+		T target;
+		EasingType easing;
 	};
 
 	//--------- variables ----------------------------------------------------
 
-	// UV座標
-	ParticleCommon::LerpValue<Vector3> translation_;
-	ParticleCommon::LerpValue<float> rotation_;
+	// 時間経過
+	StateTimer timer_;
 
-	// スクロール加算値
-	Vector2 scrollValue_;
-
-	EasingType easing_;
-	UpdateType updateType_;
+	// スケール
+	LerpValue<float> scale_;
+	// 回転
+	LerpValue<Vector3> rotation_;
 };

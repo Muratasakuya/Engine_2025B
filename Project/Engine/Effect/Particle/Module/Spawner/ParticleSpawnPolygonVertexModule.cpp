@@ -20,10 +20,41 @@ bool ParticleSpawnPolygonVertexModule::SetCommand(const ParticleCommand& command
 		}
 		return false;
 	}
-	case ParticleCommandID::SetEulerRotation: {
+	case ParticleCommandID::SetRotation: {
 		if (const auto& rotation = std::get_if<Vector3>(&command.value)) {
 
 			emitterRotation_ = *rotation;
+			return true;
+		}
+		return false;
+	}
+	case ParticleCommandID::SetBillboardRotation: {
+		if (const auto* matrix = std::get_if<Matrix4x4>(&command.value)) {
+
+			// ビルボード回転を取得
+			billboardRotation_ = *matrix;
+			useBillboardRotation_ = true;
+			return true;
+		}
+		return false;
+	}
+	case ParticleCommandID::SetEmitFlag: {
+		if (const auto& flag = std::get_if<bool>(&command.value)) {
+
+			bool emit = flag;
+			// trueならリセットして発生させる
+			if (emit) {
+				
+				spawnTimer_.Reset();
+				spawned_ = 0;
+				instances_.clear();
+				multiEmit_ = true;
+				updateEnable_ = true;
+			} else {
+
+				multiEmit_ = false;
+				updateEnable_ = false;
+			}
 			return true;
 		}
 		return false;
@@ -53,18 +84,158 @@ void ParticleSpawnPolygonVertexModule::Init() {
 
 std::vector<Vector3> ParticleSpawnPolygonVertexModule::CalcVertices() const {
 
-	std::vector<Vector3> vertices{};
-	vertices.reserve(vertexCount_);
-	Matrix4x4 rotateMatrix = Matrix4x4::MakeRotateMatrix(emitterRotation_);
+	return CalcVertices(scale_, emitterRotation_);
+}
+
+std::vector<Vector3> ParticleSpawnPolygonVertexModule::CalcVertices(
+	float scale, const Vector3& rotation) const {
+
+	std::vector<Vector3> vertices; vertices.reserve(vertexCount_);
+
+	// ビルボード回転か既存の回転を使用するか分岐
+	Matrix4x4 rotateMatrix = Matrix4x4::MakeIdentity4x4();
+	if (useBillboardRotation_) {
+
+		Matrix4x4 rollZ = Matrix4x4::MakeRotateMatrix(Vector3(0.0f, 0.0f, rotation.y));
+		rotateMatrix = Matrix4x4::Multiply(billboardRotation_, rollZ);
+	} else {
+
+		rotateMatrix = Matrix4x4::MakeRotateMatrix(rotation);
+	}
 	for (int i = 0; i < vertexCount_; ++i) {
 
-		float angle = 2.0f * pi * i / vertexCount_;
-		Vector3 local = Vector3(std::cos(angle) * scale_, 0.0f, std::sin(angle) * scale_);
+		float ang = 2.0f * pi * i / vertexCount_;
+		Vector3 local(std::cos(ang) * scale, 0.0f, std::sin(ang) * scale);
 
 		// 回転適応後の頂点座標
 		vertices.push_back(rotateMatrix.TransformPoint(local) + translation_);
 	}
 	return vertices;
+}
+
+void ParticleSpawnPolygonVertexModule::SpawnInstance() {
+
+	if (maxConcurrent_ && maxConcurrent_ <= instances_.size()) {
+		return;
+	}
+
+	// 新しいインスタンスの設定
+	PolygonInstance instance{};
+	instance.updater = updater_;
+	// オフセット回転をかける
+	if (offsetRotation_.Length() != 0.0f) {
+
+		Vector3 step = offsetRotation_ * static_cast<float>(spawned_);
+		instance.updater.SetOffsetRotation(step);
+	}
+	instance.updater.Reset();
+
+	// 始姿勢で固めて prev を作る
+	instance.scale = instance.updater.GetStartScale();
+	instance.rotation = instance.updater.GetStartRotation();
+	instance.prevVertices = CalcVertices(instance.scale, instance.rotation);
+	instances_.push_back(std::move(instance));
+}
+
+void ParticleSpawnPolygonVertexModule::EmitForInstance(PolygonInstance& instance,
+	std::list<CPUParticle::ParticleData>& particles) {
+
+	const auto current = CalcVertices(instance.scale, instance.rotation);
+
+	// 動いていないときは発生させない
+	if (notMoveEmit_) {
+		bool moved = false;
+		for (size_t i = 0, n = (std::min)(current.size(), instance.prevVertices.size()); i < n; ++i) {
+			if (std::numeric_limits<float>::epsilon() < (current[i] - instance.prevVertices[i]).Length()) {
+
+				moved = true;
+				break;
+			}
+		}
+		if (!moved) {
+			return;
+		}
+	}
+
+	if (isInterpolate_) {
+
+		const float spacing = interpolateSpacing_.GetValue();
+		const uint32_t emitPerVertex = emitPerVertex_.GetValue();
+		if (instance.prevVertices.size() != current.size()) {
+
+			instance.prevVertices = current;
+		}
+
+		for (uint32_t v = 0; v < current.size(); ++v) {
+
+			const Vector3 diff = current[v] - instance.prevVertices[v];
+			const float   len = diff.Length();
+			if (len < spacing || len < std::numeric_limits<float>::epsilon()) {
+
+				Vector3 velocity = Vector3::Normalize(diff) * moveSpeed_.GetValue();
+				for (uint32_t n = 0; n < emitPerVertex; ++n) {
+
+					CPUParticle::ParticleData particle{};
+					ICPUParticleSpawnModule::SetCommonData(particle);
+					particle.velocity = velocity;
+					particle.transform.translation = current[v];
+					particles.push_back(particle);
+				}
+				continue;
+			}
+
+			const uint32_t interpCount = static_cast<uint32_t>(len / spacing);
+			const Vector3 direction = diff / len;
+			const float step = spacing;
+			const Vector3 velocity = direction * moveSpeed_.GetValue();
+
+			for (uint32_t i = 1; i <= interpCount; ++i) {
+
+				const Vector3 pos = instance.prevVertices[v] + direction * step * static_cast<float>(i);
+				for (uint32_t n = 0; n < emitPerVertex; ++n) {
+
+					CPUParticle::ParticleData particle{};
+					ICPUParticleSpawnModule::SetCommonData(particle);
+					particle.velocity = velocity;
+					particle.transform.translation = pos;
+					particles.push_back(particle);
+				}
+			}
+			for (uint32_t n = 0; n < emitPerVertex; ++n) {
+
+				CPUParticle::ParticleData particle{};
+				ICPUParticleSpawnModule::SetCommonData(particle);
+				particle.velocity = velocity;
+				particle.transform.translation = current[v];
+				particles.push_back(particle);
+			}
+		}
+	} else {
+
+		const uint32_t emitPerVertex = emitPerVertex_.GetValue();
+		if (instance.prevVertices.size() != current.size()) {
+			instance.prevVertices = current;
+		}
+
+		for (uint32_t i = 0; i < current.size(); ++i) {
+
+			Vector3 direction = Vector3::Normalize(current[i] - instance.prevVertices[i]);
+			bool moving = direction.Length() > std::numeric_limits<float>::epsilon();
+			Vector3 vellocity = moving ? direction * moveSpeed_.GetValue() : Vector3(0.0f, 0.0f, moveSpeed_.GetValue());
+
+			for (uint32_t n = 0; n < emitPerVertex; ++n) {
+
+				CPUParticle::ParticleData particle{};
+				ICPUParticleSpawnModule::SetCommonData(particle);
+				particle.velocity = vellocity;
+				particle.transform.translation = current[i];
+				particles.push_back(particle);
+			}
+		}
+	}
+
+	// 次フレーム用の値を保持
+	instance.prevVertices = current;
 }
 
 void ParticleSpawnPolygonVertexModule::UpdateEmitter() {
@@ -75,18 +246,80 @@ void ParticleSpawnPolygonVertexModule::UpdateEmitter() {
 
 void ParticleSpawnPolygonVertexModule::Execute(std::list<CPUParticle::ParticleData>& particles) {
 
-	// 発生判定
-	if (!EnableEmit()) {
+	if (!updateEnable_) {
 		return;
 	}
 
-	// 補間処理を行う場合
+	if (useMulti_) {
+		if (!multiEmit_) {
+			return;
+		}
+
+		// 複数発生時間更新
+		spawnTimer_.Update();
+		// 初回即時起動したい場合
+		if (spawned_ == 0 && (spawnBurstCount_ == 0 || spawned_ < spawnBurstCount_)) {
+
+			SpawnInstance();
+			++spawned_;
+		}
+		// 最大数にインスタンス数が行くまで発生
+		if (spawnTimer_.IsReached() && (spawnBurstCount_ == 0 || spawned_ < spawnBurstCount_)) {
+
+			SpawnInstance();
+			++spawned_;
+			spawnTimer_.Reset();
+		}
+
+		// 各インスタンスを更新、発生
+		for (size_t i = 0; i < instances_.size();) {
+
+			auto& inst = instances_[i];
+			inst.updater.Update(inst.scale, inst.rotation);
+			if (!inst.updater.CanEmit()) {
+				++i;
+				continue;
+			}
+
+			// 各インスタンスを発生させる
+			EmitForInstance(inst, particles);
+
+			// アニメ終了で破棄
+			if (inst.updater.IsFinished()) {
+
+				instances_.erase(instances_.begin() + i);
+			} else {
+
+				++i;
+			}
+		}
+		return;
+	}
+
+	if (isSelfUpdate_) {
+
+		const bool startThisFrame = !updater_.CanEmit();
+		if (startThisFrame) {
+
+			const float savedScale = scale_;
+			const Vector3 savedRot = emitterRotation_;
+			scale_ = updater_.GetStartScale();
+			emitterRotation_ = updater_.GetStartRotation();
+			prevVertices_ = CalcVertices();
+			scale_ = savedScale;
+			emitterRotation_ = savedRot;
+		}
+		updater_.Update(scale_, emitterRotation_);
+	}
+
+	if (!EnableEmit()) {
+
+		return;
+	}
 	if (isInterpolate_) {
 
 		InterpolateEmit(particles);
-	}
-	// 補間処理をしない場合
-	else {
+	} else {
 
 		NoneEmit(particles);
 	}
@@ -232,6 +465,7 @@ void ParticleSpawnPolygonVertexModule::NoneEmit(std::list<CPUParticle::ParticleD
 
 void ParticleSpawnPolygonVertexModule::ImGui() {
 
+	ImGui::Checkbox("updateEnable", &updateEnable_);
 	ImGui::Checkbox("notMoveEmit", &notMoveEmit_);
 	ImGui::Checkbox("isInterpolate", &isInterpolate_);
 
@@ -247,6 +481,34 @@ void ParticleSpawnPolygonVertexModule::ImGui() {
 	}
 
 	interpolateSpacing_.EditDragValue("spacing");
+
+	ImGui::Checkbox("isSelfUpdate", &isSelfUpdate_);
+	if (isSelfUpdate_) {
+
+		updater_.ImGui();
+	}
+
+	ImGui::SeparatorText("Multi Emit");
+
+	ImGui::Checkbox("useMulti", &useMulti_);
+	if (!useMulti_) {
+		return;
+	}
+
+	ImGui::Checkbox("multiEmit_", &multiEmit_);
+	if (ImGui::Button("Reset##MultiSpawn")) {
+
+		spawnTimer_.Reset();
+		spawned_ = 0;
+		instances_.clear();
+	}
+
+	ImGui::Text("spawned: %d", spawned_);
+	ImGui::DragInt("spawnBurstCount", &spawnBurstCount_, 1, 1, 12);
+	ImGui::DragInt("maxConcurrent", &maxConcurrent_, 1, 1, 12);
+	ImGui::DragFloat3("offsetRotation", &offsetRotation_.x, 0.01f);
+
+	spawnTimer_.ImGui("MultiSpawn");
 }
 
 void ParticleSpawnPolygonVertexModule::DrawEmitter() {
@@ -289,13 +551,20 @@ Json ParticleSpawnPolygonVertexModule::ToJson() {
 
 	data["isInterpolate"] = isInterpolate_;
 	data["notMoveEmit"] = notMoveEmit_;
+	data["isSelfUpdate"] = isSelfUpdate_;
 	data["vertexCount"] = vertexCount_;
 	data["scale"] = scale_;
+	data["useMulti"] = useMulti_;
+	data["spawnBurstCount"] = spawnBurstCount_;
+	data["maxConcurrent"] = maxConcurrent_;
 	data["emitterRotation"] = emitterRotation_.ToJson();
 	data["translation"] = translation_.ToJson();
+	data["offsetRotation"] = offsetRotation_.ToJson();
 
 	emitPerVertex_.SaveJson(data, "emitPerVertex");
 	interpolateSpacing_.SaveJson(data, "interpolateSpacing");
+	updater_.ToJson(data["SelfUpdater"]);
+	spawnTimer_.ToJson(data["MultiSpawn"]);
 
 	return data;
 }
@@ -307,6 +576,7 @@ void ParticleSpawnPolygonVertexModule::FromJson(const Json& data) {
 
 	isInterpolate_ = data.value("isInterpolate", false);
 	notMoveEmit_ = data.value("notMoveEmit", false);
+	isSelfUpdate_ = data.value("isSelfUpdate", false);
 	vertexCount_ = data.value("vertexCount", 3);
 	scale_ = data.value("scale", 1.0f);
 
@@ -315,4 +585,18 @@ void ParticleSpawnPolygonVertexModule::FromJson(const Json& data) {
 
 	emitPerVertex_.ApplyJson(data, "emitPerVertex");
 	interpolateSpacing_.ApplyJson(data, "interpolateSpacing");
+
+	if (data.contains("SelfUpdater")) {
+
+		updater_.FromJson(data["SelfUpdater"]);
+	}
+
+	useMulti_ = data.value("useMulti", false);
+	spawnBurstCount_ = data.value("spawnBurstCount", 1);
+	maxConcurrent_ = data.value("maxConcurrent", 1);
+	offsetRotation_ = Vector3::FromJson(data.value("offsetRotation", Json()));
+	if (data.contains("MultiSpawn")) {
+
+		spawnTimer_.FromJson(data["MultiSpawn"]);
+	}
 }

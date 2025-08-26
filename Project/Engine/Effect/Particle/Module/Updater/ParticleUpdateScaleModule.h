@@ -30,6 +30,8 @@ public:
 
 	//--------- accessor -----------------------------------------------------
 
+	bool SetCommand(const ParticleCommand& command) override;
+
 	const char* GetName() const override { return "Scale"; }
 
 	//-------- registryID ----------------------------------------------------
@@ -44,6 +46,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	ParticleCommon::LerpValue<Vector3> scale_;
+	Vector3 scalingValue_;
 
 	EasingType easing_;
 };

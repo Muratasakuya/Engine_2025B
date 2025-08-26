@@ -2,7 +2,9 @@
     "ChargeAttack": {
         "exitTime_": 0.05999999865889549,
         "nextAnimDuration_": 0.1599999964237213,
-        "rotationLerpRate_": 14.0
+        "rotationLerpRate_": 6.0,
+        "singleBladeEffectScalingValue_": 1.0,
+        "singleBladeMoveSpeed_": 32.0
     },
     "ContinuousAttack": {
         "attackOffsetTranslation_": -8.0,
@@ -26,21 +28,11 @@
         "easingType_": 4,
         "exitTime_": 0.07999999821186066,
         "nextAnimDuration_": 0.0,
-        "rotationLerpRate_": 14.0,
-        "slashEffectRotation_": {
-            "x": 1.8300000429153442,
-            "y": 1.149999976158142,
-            "z": 3.880000114440918
-        },
-        "slashEffectTranslaton_": {
-            "x": 3.200000047683716,
-            "y": 3.4800000190734863,
-            "z": 8.0
-        }
+        "rotationLerpRate_": 14.0
     },
     "RushAttack": {
         "attackCoolTime_": 0.8799999952316284,
-        "divisionBladeMoveSpeed_": 80.0,
+        "divisionBladeMoveSpeed_": 96.0,
         "divisionOffsetAngle_": 7.199999809265137,
         "easingType_": 14,
         "emitParticleOffsetY_": 8.0,
@@ -52,7 +44,8 @@
         "nearRadius_": 20.0,
         "nextAnimDuration_": 0.03999999910593033,
         "rotationLerpRate_": 14.0,
-        "singleBladeMoveSpeed_": 64.0
+        "singleBladeEffectScalingValue_": 1.600000023841858,
+        "singleBladeMoveSpeed_": 128.0
     },
     "StrongAttack": {
         "attack2ndAnimDuration_": 0.05999999865889549,

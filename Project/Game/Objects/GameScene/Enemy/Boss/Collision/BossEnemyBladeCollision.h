@@ -29,6 +29,8 @@ public:
 
 	// 発生させて動かす
 	void EmitEffect(const Vector3& emitPos, const Vector3& velocity);
+
+	const BaseTransform& GetTransform() const { return transform_; }
 private:
 	//========================================================================
 	//	private Methods

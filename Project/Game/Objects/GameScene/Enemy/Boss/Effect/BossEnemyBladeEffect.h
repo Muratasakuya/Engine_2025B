@@ -4,33 +4,35 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Game/GameEffect.h>
+#include <Engine/Object/Data/Transform.h>
+#include <Engine/Utility/StateTimer.h>
 
-// front
-class BossEnemy;
-class FollowCamera;
+// c++
+#include <memory>
 
 //============================================================================
-//	BossEnemyAnimationEffect class
+//	BossEnemySingleBladeEffect class
 //============================================================================
-class BossEnemyAnimationEffect {
+class BossEnemySingleBladeEffect {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	BossEnemyAnimationEffect() = default;
-	~BossEnemyAnimationEffect() = default;
+	BossEnemySingleBladeEffect() = default;
+	~BossEnemySingleBladeEffect() = default;
 
-	void Init(const BossEnemy& bossEnemy);
+	void Init(const BaseTransform& transform, const std::string& typeName);
 
-	void Update(BossEnemy& bossEnemy);
+	void Update();
 
 	// editor
-	void ImGui(const BossEnemy& bossEnemy);
+	void ImGui();
 
 	//--------- accessor -----------------------------------------------------
 
-	void SetFollowCamera(const FollowCamera* followCamera);
+	// 発生させる
+	void EmitEffect(const BaseTransform& transform, float scalingValue = 1.0f);
 private:
 	//========================================================================
 	//	private Methods
@@ -38,64 +40,38 @@ private:
 
 	//--------- stricture ----------------------------------------------------
 
-	// アニメーションの名前
-	enum class AnimationKey {
+	// 現在の状態
+	enum class State {
 
-		None,
-		Move,
-		LightAttack,
-		StrongAttack,
-		ChargeAttack,
-	};
-
-	// 斬撃
-	struct Slash {
-
-		Vector3 translation;
-		Vector3 rotation;
-		std::unique_ptr<GameEffect> effect;
+		None,  // 何もない
+		Emited // 発生中
 	};
 
 	// 発生
 	struct Emit {
 
-		bool emitEnble = true;
 		Vector3 translation;
 		std::unique_ptr<GameEffect> effect;
 	};
 
 	//--------- variables ----------------------------------------------------
 
-	const FollowCamera* followCamera_;
+	std::string fileName_;
 
-	// 現在のアニメーション
-	AnimationKey currentAnimationKey_;
-	AnimationKey editAnimationKey_;
+	// 状態
+	State currentState_;
+	// 発生時間
+	StateTimer emitTimer_;
 
-	// 弱斬撃
-	Slash lightSlash_;
-	// 強斬撃
-	Slash strongSlash_;
-
-	// チャージ
-	Emit chargeStar_;   // 星
-	Emit chargeCircle_; // 集まってくるエフェクト
-	Emit chargeEmit_;   // 攻撃発生
-
-	// 移動時の巻き風
-	Emit moveWind_;
+	// エフェクト
+	Emit slash_;    // 真ん中の刃
+	Emit plane_;    // 光る部分
+	Emit particle_; // 後ろのパーティクル
+	float scalingValue_;
 
 	//--------- functions ----------------------------------------------------
 
 	// json
 	void ApplyJson();
 	void SaveJson();
-
-	// update
-	void UpdateAnimationKey(BossEnemy& bossEnemy);
-	void UpdateEmit(BossEnemy& bossEnemy);
-	void UpdateAlways();
-
-	// helper
-	void EmitChargeEffect(const BossEnemy& bossEnemy);
 };

@@ -45,7 +45,8 @@
     "chainPlayerIconRing",
     "mouseCancel",
     "gamepadCancel",
-    "slashEffect1"
+    "slashEffect1",
+    "bossEnemySlash"
   ],
   "Models": [
     "field",

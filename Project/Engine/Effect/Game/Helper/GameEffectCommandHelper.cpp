@@ -4,10 +4,76 @@
 //	include
 //============================================================================
 #include <Engine/Effect/Game/GameEffect.h>
+#include <Engine/Scene/Camera/BaseCamera.h>
 
 //============================================================================
 //	GameEffectCommandHelper classMethods
 //============================================================================
+
+void GameEffectCommandHelper::SendSpawnerEmit(GameEffect& effect, bool emit) {
+
+	// 発生設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetEmitFlag;
+	command.value = emit;
+	effect.SendCommand(command);
+}
+
+void GameEffectCommandHelper::SendSpawnerBillboard(GameEffect& effect, const BaseCamera& camera) {
+
+	// ビルボード回転設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetBillboardRotation;
+	command.value = camera.GetBillboardMatrix();
+	effect.SendCommand(command);
+}
+
+void GameEffectCommandHelper::SendSpawnerRotation(GameEffect& effect, const Matrix4x4& rotateMatrix) {
+
+	// 回転設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetRotation;
+	command.value = rotateMatrix;
+	effect.SendCommand(command);
+}
+
+void GameEffectCommandHelper::SendSpawnerTranslation(GameEffect& effect, const Vector3& translation) {
+
+	// 座標設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetTranslation;
+	command.value = translation;
+	effect.SendCommand(command);
+}
+
+void GameEffectCommandHelper::SendScaling(GameEffect& effect, float scalingValue) {
+
+	// スケーリングを設定
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::Scaling;
+	command.value = scalingValue;
+	effect.SendCommand(command);
+	command.target = ParticleCommandTarget::Updater;
+	effect.SendCommand(command);
+}
+
+void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect,
+	const Quaternion& parentRotation, const Vector3& localPos) {
+
+	// 回転を考慮した発生位置を計算
+	const Vector3 emitPos = Quaternion::RotateVector(localPos, parentRotation);
+
+	ParticleCommand command{};
+	command.target = ParticleCommandTarget::Spawner;
+	command.id = ParticleCommandID::SetTranslation;
+	command.value = emitPos;
+	effect.SendCommand(command);
+}
 
 void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect, const Quaternion& parentRotation,
 	const Vector3& localPos, const Vector3& localEuler) {
@@ -32,7 +98,7 @@ void GameEffectCommandHelper::ApplyAndSend(GameEffect& effect, const Quaternion&
 	{
 		ParticleCommand command{};
 		command.target = ParticleCommandTarget::Updater;
-		command.id = ParticleCommandID::SetEulerRotation;
+		command.id = ParticleCommandID::SetRotation;
 		command.filter.updaterId = ParticleUpdateModuleID::Rotation;
 		command.value = rotateMatrix;
 		effect.SendCommand(command);

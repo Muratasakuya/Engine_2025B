@@ -34,6 +34,7 @@ protected:
 
 	// emitter
 	Vector3 emitterRotation_;     // 回転(すべて共通)
+	std::optional<Matrix4x4> setRotationMatrix_;
 	ParticleEmitterData emitter_; // 各形状
 
 	// commonBuffers

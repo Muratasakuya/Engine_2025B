@@ -78,6 +78,12 @@ void BossEnemyStateController::SetFollowCamera(const FollowCamera* followCamera)
 void BossEnemyStateController::Update(BossEnemy& owner) {
 
 	if (disableTransitions_) {
+
+		// 常に更新する値
+		for (const auto& state : std::views::values(states_)) {
+
+			state->UpdateAlways(owner);
+		}
 		return;
 	}
 
@@ -96,8 +102,12 @@ void BossEnemyStateController::Update(BossEnemy& owner) {
 	if (BossEnemyIState* currentState = states_[current_].get()) {
 
 		currentState->Update(owner);
-		// particleは常に更新する
-		currentState->UpdateParticleEmitter(current_);
+	}
+
+	// 常に更新する値
+	for (const auto& state : std::views::values(states_)) {
+
+		state->UpdateAlways(owner);
 	}
 
 	// 攻撃予兆の更新処理

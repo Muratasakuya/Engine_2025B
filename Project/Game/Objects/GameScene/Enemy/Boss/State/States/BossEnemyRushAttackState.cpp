@@ -24,7 +24,10 @@ void BossEnemyRushAttackState::InitBlade() {
 
 	// 1本の刃
 	singleBlade_ = std::make_unique<BossEnemyBladeCollision>();
-	singleBlade_->Init("singleBlade");
+	singleBlade_->Init("singleBlade_Rush");
+	// エフェクト
+	singleBladeEffect_ = std::make_unique<BossEnemySingleBladeEffect>();
+	singleBladeEffect_->Init(singleBlade_->GetTransform(), "Rush");
 }
 
 BossEnemyRushAttackState::BossEnemyRushAttackState() {
@@ -57,6 +60,19 @@ void BossEnemyRushAttackState::Enter(BossEnemy& bossEnemy) {
 
 	// playerの方を向かせる
 	LookTarget(bossEnemy, player_->GetTranslation());
+}
+
+void BossEnemyRushAttackState::UpdateAlways([[maybe_unused]] BossEnemy& bossEnemy) {
+
+	// 衝突更新
+	for (const auto& divisionBlade : divisionBlades_) {
+
+		divisionBlade->Update();
+	}
+	singleBlade_->Update();
+
+	// エフェクトの更新処理
+	singleBladeEffect_->Update();
 }
 
 void BossEnemyRushAttackState::Update(BossEnemy& bossEnemy) {
@@ -140,7 +156,6 @@ void BossEnemyRushAttackState::UpdateTeleport(BossEnemy& bossEnemy, float deltaT
 
 		Vector3 emitPos = bossEnemy.GetTranslation();
 		emitPos.y = emitParticleOffsetY_;
-		EmitTeleportParticle(emitPos);
 	}
 }
 
@@ -191,7 +206,7 @@ void BossEnemyRushAttackState::UpdateBlade(BossEnemy& bossEnemy) {
 	bool isLastAttack = (currentAttackCount_ == maxAttackCount_ - 1);
 
 	if (isLastAttack) {
-		if (bossEnemy.IsEventKey("Attack", 1)) {
+		if (bossEnemy.IsEventKey("Attack", 0)) {
 
 			EmitSingleBlade(bossEnemy);
 		}
@@ -201,13 +216,6 @@ void BossEnemyRushAttackState::UpdateBlade(BossEnemy& bossEnemy) {
 			EmitDivisionBlades(bossEnemy);
 		}
 	}
-
-	// 衝突更新
-	for (const auto& divisionBlade : divisionBlades_) {
-
-		divisionBlade->Update();
-	}
-	singleBlade_->Update();
 }
 
 Vector3 BossEnemyRushAttackState::CalcBaseDir(const BossEnemy& bossEnemy) const {
@@ -238,6 +246,10 @@ void BossEnemyRushAttackState::EmitSingleBlade(const BossEnemy& bossEnemy) {
 	const Vector3 pos = bossEnemy.GetTranslation();
 	const Vector3 velocity = CalcBaseDir(bossEnemy) * singleBladeMoveSpeed_;
 	singleBlade_->EmitEffect(pos, velocity);
+
+	// エフェクトを発生
+	singleBladeEffect_->EmitEffect(singleBlade_->GetTransform(),
+		singleBladeEffectScalingValue_);
 }
 
 void BossEnemyRushAttackState::Exit(BossEnemy& bossEnemy) {
@@ -252,7 +264,7 @@ void BossEnemyRushAttackState::Exit(BossEnemy& bossEnemy) {
 	bossEnemy.SetCastShadow(true);
 }
 
-void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy) {
+void BossEnemyRushAttackState::ImGui(const BossEnemy& bossEnemy) {
 
 	if (ImGui::CollapsingHeader("RushAttackState")) {
 
@@ -325,6 +337,12 @@ void BossEnemyRushAttackState::ImGui([[maybe_unused]] const BossEnemy& bossEnemy
 		}
 		singleBlade_->Update();
 	}
+
+	if (ImGui::CollapsingHeader("Blade Effect")) {
+
+		ImGui::DragFloat("singleBladeScaling", &singleBladeEffectScalingValue_, 0.01f);
+		singleBladeEffect_->ImGui();
+	}
 }
 
 void BossEnemyRushAttackState::ApplyJson(const Json& data) {
@@ -343,6 +361,7 @@ void BossEnemyRushAttackState::ApplyJson(const Json& data) {
 	divisionBladeMoveSpeed_ = JsonAdapter::GetValue<float>(data, "divisionBladeMoveSpeed_");
 	singleBladeMoveSpeed_ = JsonAdapter::GetValue<float>(data, "singleBladeMoveSpeed_");
 	easingType_ = static_cast<EasingType>(JsonAdapter::GetValue<int>(data, "easingType_"));
+	singleBladeEffectScalingValue_ = data.value("singleBladeEffectScalingValue_", 1.0f);
 
 	{
 		Json clampData;
@@ -368,5 +387,6 @@ void BossEnemyRushAttackState::SaveJson(Json& data) {
 	data["divisionOffsetAngle_"] = divisionOffsetAngle_;
 	data["divisionBladeMoveSpeed_"] = divisionBladeMoveSpeed_;
 	data["singleBladeMoveSpeed_"] = singleBladeMoveSpeed_;
+	data["singleBladeEffectScalingValue_"] = singleBladeEffectScalingValue_;
 	data["easingType_"] = static_cast<int>(easingType_);
 }

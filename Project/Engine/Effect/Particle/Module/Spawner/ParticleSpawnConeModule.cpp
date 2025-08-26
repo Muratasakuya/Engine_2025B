@@ -21,7 +21,7 @@ bool ParticleSpawnConeModule::SetCommand(const ParticleCommand& command) {
 		}
 		return false;
 	}
-	case ParticleCommandID::SetEulerRotation: {
+	case ParticleCommandID::SetRotation: {
 		if (const auto& rotation = std::get_if<Vector3>(&command.value)) {
 
 			emitterRotation_ = *rotation;

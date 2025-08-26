@@ -16,9 +16,6 @@ BossEnemyStrongAttackState::BossEnemyStrongAttackState() {
 
 	parriedMaps_[State::Attack1st] = false;
 	parriedMaps_[State::Attack2nd] = false;
-
-	slashEffect_ = std::make_unique<GameEffect>();
-	slashEffect_->CreateParticleSystem("Particle/bossEnemySlash.json");
 }
 
 void BossEnemyStrongAttackState::Enter(BossEnemy& bossEnemy) {

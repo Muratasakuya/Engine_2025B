@@ -115,6 +115,9 @@ private:
 	DxStructuredBuffer<uint32_t> freeListIndexBuffer_;
 	DxStructuredBuffer<uint32_t> freeListBuffer_;
 
+	// parameters
+	float scalingValue_;
+
 	// 更新の種類
 	GPUParticle::UpdateType updateType_;
 

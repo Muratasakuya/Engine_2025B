@@ -137,7 +137,8 @@ void ImGuiObjectEditor::EditObjects() {
 	if (!selected3D_) return;
 	uint32_t id = selected3D_.value();
 
-	if (Algorithm::Find(objectsMap_, id)) {
+	const auto* tag = tagSystem_->Tags().at(id);
+	if (tag->name != "skybox" && Algorithm::Find(objectsMap_, id)) {
 
 		objectsMap_[id].value()->ImGui();
 		return;
@@ -145,7 +146,6 @@ void ImGuiObjectEditor::EditObjects() {
 
 	if (ImGui::BeginTabBar("Obj3DTab")) {
 
-		const auto* tag = tagSystem_->Tags().at(id);
 		// skyboxの時と他のオブジェクトで分岐
 		if (tag->name == "skybox") {
 

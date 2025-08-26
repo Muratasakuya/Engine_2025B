@@ -4,7 +4,6 @@
 //	include
 //============================================================================
 #include <Game/Objects/GameScene/Enemy/Boss/State/Interface/BossEnemyIState.h>
-#include <Engine/Effect/Game/GameEffect.h>
 
 //============================================================================
 //	BossEnemyStrongAttackState class
@@ -73,11 +72,6 @@ private:
 	std::optional<bool> isPlayerParried_;
 	bool reachedPlayer_; // 近くまで来たかどうか
 	bool isFinishedParry_;
-
-	// 斬撃エフェクト
-	Vector3 slashEffectRotation_;   // 回転
-	Vector3 slashEffectTranslaton_; // 座標
-	std::unique_ptr<GameEffect> slashEffect_;
 
 	// debug
 	std::unordered_map<State, bool> parriedMaps_;

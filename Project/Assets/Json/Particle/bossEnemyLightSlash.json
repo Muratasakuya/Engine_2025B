@@ -294,6 +294,6 @@
             "textureName": ""
         }
     ],
-    "name": "bossEnemySlash",
+    "name": "bossEnemyLightSlash",
     "primitiveType": "Crescent"
 }
