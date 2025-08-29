@@ -42,7 +42,7 @@ void PlayerBaseAttackState::AttackAssist(Player& player, bool onceTarget) {
 	}
 
 	// 指定円の中に敵がいれば敵の座標まで補間する
-	if (attackPosLerpCircleRange_ > epsilon_ && distance <= attackPosLerpCircleRange_) {
+	if (CheckInRange(attackPosLerpCircleRange_, distance)) {
 
 		// 補間先
 		Vector3 translation = Vector3::Lerp(playerPos, *targetTranslation_, std::clamp(lerpT, 0.0f, 1.0f));
@@ -50,11 +50,17 @@ void PlayerBaseAttackState::AttackAssist(Player& player, bool onceTarget) {
 	}
 
 	// 指定円の中に敵がいれば敵の方向に向かせる
-	if (attackLookAtCircleRange_ > epsilon_ && distance <= attackLookAtCircleRange_) {
+	if (CheckInRange(attackLookAtCircleRange_, distance)) {
 
 		Quaternion currentRotation = player.GetRotation();
 		player.SetRotation(Quaternion::Slerp(currentRotation, *targetRotation_, std::clamp(rotationLerpRate_, 0.0f, 1.0f)));
 	}
+}
+
+bool PlayerBaseAttackState::CheckInRange(float range, float distance) {
+
+	bool result = range > epsilon_ && distance <= range;
+	return result;
 }
 
 Vector3 PlayerBaseAttackState::GetPlayerOffsetPos(

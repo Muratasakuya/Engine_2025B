@@ -1,55 +1,50 @@
-#include "PlayerSkilAttackState.h"
+#include "PlayerAttack_4thState.h"
 
 //============================================================================
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Utility/GameTimer.h>
-#include <Game/Objects/GameScene/Player/Entity/Player.h>
+#include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
+#include <Game/Objects/GameScene/Player/Entity/Player.h>
 
 //============================================================================
-//	PlayerSkilAttackState classMethods
+//	PlayerAttack_4thState classMethods
 //============================================================================
 
-void PlayerSkilAttackState::Enter(Player& player) {
+void PlayerAttack_4thState::Enter(Player& player) {
+
+	player.SetNextAnimation("player_attack_4th", false, nextAnimDuration_);
+	canExit_ = false;
 
 	// 敵が攻撃可能範囲にいるかチェック
 	const Vector3 playerPos = player.GetTranslation();
-	const Vector3 bossEnemyPos = bossEnemy_->GetTranslation();
-	Vector3 direction = bossEnemyPos - playerPos;
 	assisted_ = CheckInRange(attackPosLerpCircleRange_,
-		Vector3(direction).Length());
+		Vector3(bossEnemy_->GetTranslation() - playerPos).Length());
 
-	// 範囲内にいない場合はスキル攻撃を出来ない
-	if (assisted_) {
+	// 補間座標を設定
+	if (!assisted_) {
 
-		// 補完座標を設定
 		startPos_ = playerPos;
-		direction = direction.Normalize();
-		targetPos_ = bossEnemyPos + direction * moveValue_;
-		// アニメーションを設定
-		player.SetNextAnimation("player_skilAttack", false, nextAnimDuration_);
-		// 敵の方を向ける
-		player.SetRotation(Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f)));
-	} else {
-
-		canExit_ = true;
-		// 確実に終了するようにする
-		exitTimer_ = exitTime_ * 2.0f;
+		targetPos_ = startPos_ + player.GetTransform().GetForward() * moveValue_;
 	}
 }
 
-void PlayerSkilAttackState::Update(Player& player) {
+void PlayerAttack_4thState::Update(Player& player) {
 
-	if (!assisted_) {
-		return;
+	// 範囲内にいるときは敵に向かって補間させる
+	if (assisted_) {
+
+		// 座標、回転補間
+		AttackAssist(player);
+	} else {
+
+		// 前に前進させる
+		moveTimer_.Update();
+		Vector3 pos = Vector3::Lerp(startPos_, targetPos_, moveTimer_.easedT_);
+		player.SetTranslation(pos);
 	}
-
-	// 前に前進させる
-	moveTimer_.Update();
-	Vector3 pos = Vector3::Lerp(startPos_, targetPos_, moveTimer_.easedT_);
-	player.SetTranslation(pos);
 
 	// animationが終わったかチェック
 	canExit_ = player.IsAnimationFinished();
@@ -60,20 +55,15 @@ void PlayerSkilAttackState::Update(Player& player) {
 	}
 }
 
-void PlayerSkilAttackState::Exit(Player& player) {
+void PlayerAttack_4thState::Exit([[maybe_unused]] Player& player) {
 
 	// リセット
-	canExit_ = false;
+	attackPosLerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
 	moveTimer_.Reset();
-
-	if (assisted_) {
-
-		player.ResetAnimation();
-	}
 }
 
-void PlayerSkilAttackState::ImGui(const Player& player) {
+void PlayerAttack_4thState::ImGui(const Player& player) {
 
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
@@ -83,20 +73,9 @@ void PlayerSkilAttackState::ImGui(const Player& player) {
 
 	moveTimer_.ImGui("MoveTimer");
 	ImGui::DragFloat("moveValue", &moveValue_, 0.1f);
-
-	LineRenderer* renderer = LineRenderer::GetInstance();
-
-	Vector3 start = player.GetTranslation();
-	const Vector3 bossEnemyPos = bossEnemy_->GetTranslation();
-	Vector3 direction = Vector3(bossEnemyPos - start).Normalize();
-	Vector3 target = bossEnemyPos + direction * moveValue_;
-	start.y = 2.0f;
-	target.y = 2.0f;
-	renderer->DrawLine3D(start, target, Color::Cyan());
-	renderer->DrawSphere(8, 4.0f, target, Color::Cyan());
 }
 
-void PlayerSkilAttackState::ApplyJson(const Json& data) {
+void PlayerAttack_4thState::ApplyJson(const Json& data) {
 
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
@@ -108,7 +87,7 @@ void PlayerSkilAttackState::ApplyJson(const Json& data) {
 	moveValue_ = data.value("moveValue_", 1.0f);
 }
 
-void PlayerSkilAttackState::SaveJson(Json& data) {
+void PlayerAttack_4thState::SaveJson(Json& data) {
 
 	data["nextAnimDuration_"] = nextAnimDuration_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
@@ -120,7 +99,7 @@ void PlayerSkilAttackState::SaveJson(Json& data) {
 	data["moveValue_"] = moveValue_;
 }
 
-bool PlayerSkilAttackState::GetCanExit() const {
+bool PlayerAttack_4thState::GetCanExit() const {
 
 	// 経過時間が過ぎたら
 	bool canExit = exitTimer_ > exitTime_;

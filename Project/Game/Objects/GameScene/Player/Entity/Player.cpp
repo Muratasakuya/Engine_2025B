@@ -48,6 +48,7 @@ void Player::InitAnimations() {
 	animation_->SetAnimationData("player_attack_1st");
 	animation_->SetAnimationData("player_attack_2nd");
 	animation_->SetAnimationData("player_attack_3rd");
+	animation_->SetAnimationData("player_attack_4th");
 	animation_->SetAnimationData("player_skilAttack");
 	animation_->SetAnimationData("player_stunAttack");
 	animation_->SetAnimationData("player_parry");
@@ -159,6 +160,37 @@ void Player::SetReverseWeapon(bool isReverse, PlayerWeaponType type) {
 			rightWeapon_->SetRotation(Quaternion::MakeRotateAxisAngleQuaternion(
 				Vector3(1.0f, 0.0f, 0.0f), 0.0f));
 		}
+	}
+}
+
+void Player::ResetWeaponTransform() {
+
+	// 武器の位置を元に戻す
+	rightWeapon_->ApplyJson(cacheJsonData_["RightWeapon"]);
+	leftWeapon_->ApplyJson(cacheJsonData_["LeftWeapon"]);
+
+	// 武器を手を親として動かす
+	if (const auto& hand = GetJointTransform("rightHand")) {
+
+		rightWeapon_->SetParent(*hand);
+	}
+	if (const auto& hand = GetJointTransform("leftHand")) {
+
+		leftWeapon_->SetParent(*hand);
+	}
+}
+
+PlayerWeapon* Player::GetWeapon(PlayerWeaponType type) const {
+
+	switch (type) {
+	case PlayerWeaponType::Left:
+
+		return leftWeapon_.get();
+	case PlayerWeaponType::Right:
+
+		return rightWeapon_.get();
+	default:
+		return nullptr;
 	}
 }
 
@@ -326,38 +358,37 @@ void Player::DerivedImGui() {
 
 void Player::ApplyJson() {
 
-	Json data;
-	if (!JsonAdapter::LoadCheck("Player/initParameter.json", data)) {
+	if (!JsonAdapter::LoadCheck("Player/initParameter.json", cacheJsonData_)) {
 		return;
 	}
 
-	initTransform_.FromJson(data["Transform"]);
+	initTransform_.FromJson(cacheJsonData_["Transform"]);
 	SetInitTransform();
 
-	GameObject3D::ApplyMaterial(data);
-	Collider::ApplyBodyOffset(data);
+	GameObject3D::ApplyMaterial(cacheJsonData_);
+	Collider::ApplyBodyOffset(cacheJsonData_);
 
 	// 武器
-	rightWeapon_->ApplyJson(data["RightWeapon"]);
-	leftWeapon_->ApplyJson(data["LeftWeapon"]);
+	rightWeapon_->ApplyJson(cacheJsonData_["RightWeapon"]);
+	leftWeapon_->ApplyJson(cacheJsonData_["LeftWeapon"]);
 
 	// 衝突
-	attackCollision_->ApplyJson(data["AttackCollision"]);
+	attackCollision_->ApplyJson(cacheJsonData_["AttackCollision"]);
 
-	stats_.maxHP = JsonAdapter::GetValue<int>(data, "maxHP");
-	stats_.maxSkilPoint = JsonAdapter::GetValue<int>(data, "maxSkilPoint");
+	stats_.maxHP = JsonAdapter::GetValue<int>(cacheJsonData_, "maxHP");
+	stats_.maxSkilPoint = JsonAdapter::GetValue<int>(cacheJsonData_, "maxSkilPoint");
 	// 初期化時は最大と同じ値にする
 	stats_.currentHP = stats_.maxHP;
 	stats_.currentSkilPoint = stats_.maxSkilPoint;
 
-	for (const auto& [key, value] : data["Damages"].items()) {
+	for (const auto& [key, value] : cacheJsonData_["Damages"].items()) {
 
 		PlayerState state = static_cast<PlayerState>(std::stoi(key));
 		stats_.damages[state] = value.get<int>();
 	}
 
-	stats_.damageRandomRange = JsonAdapter::GetValue<int>(data, "DamageRandomRange");
-	stats_.toughness = JsonAdapter::GetValue<int>(data, "toughness");
+	stats_.damageRandomRange = JsonAdapter::GetValue<int>(cacheJsonData_, "DamageRandomRange");
+	stats_.toughness = JsonAdapter::GetValue<int>(cacheJsonData_, "toughness");
 }
 
 void Player::SaveJson() {

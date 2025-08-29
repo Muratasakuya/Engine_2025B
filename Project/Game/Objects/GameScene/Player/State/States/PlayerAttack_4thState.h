@@ -6,17 +6,17 @@
 #include <Game/Objects/GameScene/Player/State/Interface/PlayerBaseAttackState.h>
 
 //============================================================================
-//	PlayerAttack_1stState class
+//	PlayerAttack_4thState class
 //============================================================================
-class PlayerAttack_1stState :
+class PlayerAttack_4thState :
 	public PlayerBaseAttackState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	PlayerAttack_1stState();
-	~PlayerAttack_1stState() = default;
+	PlayerAttack_4thState() = default;
+	~PlayerAttack_4thState() = default;
 
 	void Enter(Player& player) override;
 

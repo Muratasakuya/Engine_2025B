@@ -672,7 +672,7 @@ void BossEnemyStateController::ApplyJson() {
 				if (!data.contains(key)) {
 					continue;
 				}
-				ptr->ApplyJson(data[EnumAdapter<BossEnemyState>::ToString(state)]);
+				ptr->ApplyJson(data[key]);
 			}
 		}
 	}

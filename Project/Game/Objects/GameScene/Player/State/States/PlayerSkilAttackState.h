@@ -3,14 +3,13 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Game/Objects/GameScene/Player/State/Interface/PlayerIState.h>
-#include <Lib/Adapter/Easing.h>
+#include <Game/Objects/GameScene/Player/State/Interface/PlayerBaseAttackState.h>
 
 //============================================================================
 //	PlayerSkilAttackState class
 //============================================================================
 class PlayerSkilAttackState :
-	public PlayerIState {
+	public PlayerBaseAttackState {
 public:
 	//========================================================================
 	//	public Methods
@@ -31,45 +30,23 @@ public:
 	// json
 	void ApplyJson(const Json& data) override;
 	void SaveJson(Json& data) override;
+
+	//--------- accessor -----------------------------------------------------
+
+	bool GetCanExit() const override;
 private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
 
-	//--------- structure ----------------------------------------------------
-
-	// 状態
-	enum class State {
-
-		Approach, // 近づく
-		Leave,    // 離れる
-	};
-
-	// 補間
-	struct LerpParameter {
-
-		float timer;
-		float time;
-		EasingType easingType;
-
-		Vector3 Update(const Vector3& start, const Vector3& target);
-		void ImGui(const std::string& label);
-	};
-
 	//--------- variables ----------------------------------------------------
 
-	// 現在の状態
-	State currentState_;
+	bool assisted_;
 
 	// parameters
-	LerpParameter approach_; // 近づくとき
-	LerpParameter leave_;    // 離れるとき
-	float moveDistance_;     // 移動距離
-
+	// 座標補間を行わないときの処理
+	StateTimer moveTimer_;
+	float moveValue_;   // 移動量
 	Vector3 startPos_;  // 開始座標
 	Vector3 targetPos_; // 目標座標
-
-	//--------- functions ----------------------------------------------------
-
-	void UpdateState(Player& player);
 };

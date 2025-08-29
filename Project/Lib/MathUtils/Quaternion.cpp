@@ -35,7 +35,7 @@ Quaternion Quaternion::operator*(float scalar) const {
 
 Vector3 Quaternion::operator*(const Vector3& v) const {
 
-	Quaternion qv(0, v.x, v.y, v.z);
+	Quaternion qv(v.x, v.y, v.z, 0.0f);
 	Quaternion qConjugate = this->Inverse(Quaternion(*this));
 
 	Quaternion result = (*this) * qv * qConjugate;

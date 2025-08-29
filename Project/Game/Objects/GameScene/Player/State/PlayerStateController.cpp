@@ -22,6 +22,7 @@
 #include <Game/Objects/GameScene/Player/State/States/PlayerAttack_1stState.h>
 #include <Game/Objects/GameScene/Player/State/States/PlayerAttack_2ndState.h>
 #include <Game/Objects/GameScene/Player/State/States/PlayerAttack_3rdState.h>
+#include <Game/Objects/GameScene/Player/State/States/PlayerAttack_4thState.h>
 #include <Game/Objects/GameScene/Player/State/States/PlayerSkilAttackState.h>
 #include <Game/Objects/GameScene/Player/State/States/PlayerParryState.h>
 #include <Game/Objects/GameScene/Player/State/States/PlayerSwitchAllyState.h>
@@ -47,6 +48,7 @@ void PlayerStateController::Init(Player& owner) {
 	states_.emplace(PlayerState::Attack_1st, std::make_unique<PlayerAttack_1stState>());
 	states_.emplace(PlayerState::Attack_2nd, std::make_unique<PlayerAttack_2ndState>());
 	states_.emplace(PlayerState::Attack_3rd, std::make_unique<PlayerAttack_3rdState>());
+	states_.emplace(PlayerState::Attack_4th, std::make_unique<PlayerAttack_4thState>());
 	states_.emplace(PlayerState::SkilAttack, std::make_unique<PlayerSkilAttackState>());
 	states_.emplace(PlayerState::Parry, std::make_unique<PlayerParryState>());
 	states_.emplace(PlayerState::SwitchAlly, std::make_unique<PlayerSwitchAllyState>());
@@ -269,6 +271,10 @@ void PlayerStateController::UpdateInputState() {
 			else if (current_ == PlayerState::Attack_2nd) {
 				Request(PlayerState::Attack_3rd);
 			}
+			// 3段 -> 4段
+			else if (current_ == PlayerState::Attack_3rd) {
+				Request(PlayerState::Attack_4th);
+			}
 			// 1段目
 			else {
 				Request(PlayerState::Attack_1st);
@@ -483,6 +489,7 @@ bool PlayerStateController::IsCombatState(PlayerState state) const {
 	case PlayerState::Attack_1st:
 	case PlayerState::Attack_2nd:
 	case PlayerState::Attack_3rd:
+	case PlayerState::Attack_4th:
 	case PlayerState::SkilAttack:
 	case PlayerState::Parry:
 		return true;
@@ -643,11 +650,12 @@ void PlayerStateController::ApplyJson() {
 		}
 
 		for (auto& [state, ptr] : states_) {
-			if (state == PlayerState::None) {
+			
+			const auto& key = EnumAdapter<PlayerState>::ToString(state);
+			if (!data.contains(key)) {
 				continue;
 			}
-
-			ptr->ApplyJson(data[EnumAdapter<PlayerState>::ToString(state)]);
+			ptr->ApplyJson(data[key]);
 		}
 
 		if (!data.contains("Conditions")) {
@@ -655,16 +663,13 @@ void PlayerStateController::ApplyJson() {
 		}
 		const Json& condRoot = data["Conditions"];
 		for (auto& [state, ptr] : states_) {
-			if (state == PlayerState::None) {
-				continue;
-			}
 
-			const char* key = EnumAdapter<PlayerState>::ToString(state);
+			const auto& key = EnumAdapter<PlayerState>::ToString(state);
 			if (!condRoot.contains(key)) {
 				continue;
 			}
 
-			PlayerStateCondition condition;
+			PlayerStateCondition condition{};
 			condition.FromJson(condRoot[key]);
 			conditions_[state] = std::move(condition);
 		}

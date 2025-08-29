@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Utility/GameTimer.h>
+#include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
 #include <Game/Objects/GameScene/Player/Entity/Player.h>
 
 //============================================================================
@@ -11,19 +12,40 @@
 //============================================================================
 
 PlayerAttack_1stState::PlayerAttack_1stState() {
-
-	// effect作成
-	slashEffect_ = std::make_unique<GameEffect>();
-	slashEffect_->CreateParticleSystem("Particle/playerSlash.json");
 }
 
 void PlayerAttack_1stState::Enter(Player& player) {
 
 	player.SetNextAnimation("player_attack_1st", false, nextAnimDuration_);
 	canExit_ = false;
+
+	// 敵が攻撃可能範囲にいるかチェック
+	const Vector3 playerPos = player.GetTranslation();
+	assisted_ = CheckInRange(attackPosLerpCircleRange_,
+		Vector3(bossEnemy_->GetTranslation() - playerPos).Length());
+
+	// 補間座標を設定
+	if (!assisted_) {
+
+		startPos_ = playerPos;
+		targetPos_ = startPos_ + player.GetTransform().GetForward() * moveValue_;
+	}
 }
 
 void PlayerAttack_1stState::Update(Player& player) {
+
+	// 範囲内にいるときは敵に向かって補間させる
+	if (assisted_) {
+
+		// 座標、回転補間
+		AttackAssist(player);
+	} else {
+
+		// 前に前進させる
+		moveTimer_.Update();
+		Vector3 pos = Vector3::Lerp(startPos_, targetPos_, moveTimer_.easedT_);
+		player.SetTranslation(pos);
+	}
 
 	// animationが終わったかチェック
 	canExit_ = player.IsAnimationFinished();
@@ -32,29 +54,6 @@ void PlayerAttack_1stState::Update(Player& player) {
 
 		exitTimer_ += GameTimer::GetScaledDeltaTime();
 	}
-
-	// 座標、回転補間
-	AttackAssist(player);
-
-	// コマンドに設定
-	ParticleCommand command{};
-	{
-		// 座標設定
-		command.target = ParticleCommandTarget::Spawner;
-		command.id = ParticleCommandID::SetTranslation;
-		command.value = PlayerBaseAttackState::GetPlayerOffsetPos(player, slashEffectTranslaton_);
-		slashEffect_->SendCommand(command);
-	}
-	{
-		// 回転設定
-		command.target = ParticleCommandTarget::Updater;
-		command.id = ParticleCommandID::SetRotation;
-		command.filter.updaterId = ParticleUpdateModuleID::Rotation;
-		command.value = PlayerBaseAttackState::GetPlayerOffsetRotation(player, slashEffectRotation_);
-		slashEffect_->SendCommand(command);
-	}
-	// 発生させる
-	slashEffect_->Emit(true);
 }
 
 void PlayerAttack_1stState::Exit([[maybe_unused]] Player& player) {
@@ -62,7 +61,7 @@ void PlayerAttack_1stState::Exit([[maybe_unused]] Player& player) {
 	// リセット
 	attackPosLerpTimer_ = 0.0f;
 	exitTimer_ = 0.0f;
-	slashEffect_->ResetEmitFlag();
+	moveTimer_.Reset();
 }
 
 void PlayerAttack_1stState::ImGui(const Player& player) {
@@ -73,10 +72,8 @@ void PlayerAttack_1stState::ImGui(const Player& player) {
 
 	PlayerBaseAttackState::ImGui(player);
 
-	ImGui::SeparatorText("Effect");
-
-	ImGui::DragFloat3("slashEffectRotation", &slashEffectRotation_.x, 0.01f);
-	ImGui::DragFloat3("slashEffectTranslaton", &slashEffectTranslaton_.x, 0.01f);
+	moveTimer_.ImGui("MoveTimer");
+	ImGui::DragFloat("moveValue", &moveValue_, 0.1f);
 }
 
 void PlayerAttack_1stState::ApplyJson(const Json& data) {
@@ -85,13 +82,10 @@ void PlayerAttack_1stState::ApplyJson(const Json& data) {
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 	exitTime_ = JsonAdapter::GetValue<float>(data, "exitTime_");
 
-	if (data.contains("slashEffectRotation_")) {
-
-		slashEffectRotation_ = slashEffectRotation_.FromJson(data["slashEffectRotation_"]);
-		slashEffectTranslaton_ = slashEffectTranslaton_.FromJson(data["slashEffectTranslaton_"]);
-	}
-
 	PlayerBaseAttackState::ApplyJson(data);
+
+	moveTimer_.FromJson(data.value("MoveTimer", Json()));
+	moveValue_ = data.value("moveValue_", 1.0f);
 }
 
 void PlayerAttack_1stState::SaveJson(Json& data) {
@@ -100,10 +94,10 @@ void PlayerAttack_1stState::SaveJson(Json& data) {
 	data["rotationLerpRate_"] = rotationLerpRate_;
 	data["exitTime_"] = exitTime_;
 
-	data["slashEffectRotation_"] = slashEffectRotation_.ToJson();
-	data["slashEffectTranslaton_"] = slashEffectTranslaton_.ToJson();
-
 	PlayerBaseAttackState::SaveJson(data);
+
+	moveTimer_.ToJson(data["MoveTimer"]);
+	data["moveValue_"] = moveValue_;
 }
 
 bool PlayerAttack_1stState::GetCanExit() const {
