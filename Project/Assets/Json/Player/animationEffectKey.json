@@ -2,6 +2,25 @@
     "animations": [
         {
             "object": "playerArmature",
+            "action": "attack_1st",
+            "events": {
+                "Effect": [
+                    4
+                ]
+            }
+        },
+        {
+            "object": "playerArmature",
+            "action": "attack_2nd",
+            "events": {
+                "Effect": [
+                    2,
+                    5
+                ]
+            }
+        },
+        {
+            "object": "playerArmature",
             "action": "attack_3rd",
             "events": {
                 "OutSword": [

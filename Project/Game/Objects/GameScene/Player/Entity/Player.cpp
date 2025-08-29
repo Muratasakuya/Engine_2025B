@@ -60,6 +60,10 @@ void Player::InitAnimations() {
 	// keyEventを設定
 	animation_->SetKeyframeEvent("Player/animationEffectKey.json");
 	animation_->Update(transform_->matrix.world);
+
+	// アニメーションに合わせて発生させるエフェクト
+	animationEffect_ = std::make_unique<PlayerAnimationEffect>();
+	animationEffect_->Init(*this);
 }
 
 void Player::InitCollision() {
@@ -233,8 +237,8 @@ void Player::Update() {
 	Collider::UpdateAllBodies(*transform_);
 	attackCollision_->Update(*transform_);
 
-	// particle更新
-	// システム変更で消えた
+	// エフェクトの更新
+	animationEffect_->Update(*this);
 }
 
 void Player::CheckBossEnemyStun() {
@@ -347,6 +351,13 @@ void Player::DerivedImGui() {
 		}
 		if (ImGui::BeginTabItem("StunHUD")) {
 			stunHudSprites_->ImGui();
+			ImGui::EndTabItem();
+		}
+
+		// ---- Effect ---------------------------------------------------
+		if (ImGui::BeginTabItem("Effect")) {
+
+			animationEffect_->ImGui(*this);
 			ImGui::EndTabItem();
 		}
 		ImGui::EndTabBar();

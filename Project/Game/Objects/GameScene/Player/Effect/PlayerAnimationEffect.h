@@ -39,7 +39,9 @@ private:
 		None,
 		Attack_1st,
 		Attack_2nd,
-		Attack_3rd
+		Attack_3rd,
+		Attack_4th,
+		Skil
 	};
 
 	// 斬撃
@@ -52,17 +54,19 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	// 現在のアニメーション
+	AnimationKey currentAnimationKey_;
+	AnimationKey editAnimationKey_;
+
 	// 斬撃
-	std::unique_ptr<GameEffect> slashEffect;
+	std::unique_ptr<GameEffect> slashEffect_;
 
 	// 1段目の攻撃
 	Slash firstSlashParam_;
 	// 2段目の攻撃
 	static const uint32_t secondSlashCount_ = 2;
+	uint32_t secondAttackEventIndex_; // 現在のキーイベント
 	std::array<Slash, secondSlashCount_> secondSlashParams_;
-	// 3段階目の攻撃
-	// 保留、アクションを完成しきってからエフェクトを追加する
-	Slash thirdSlashParam_;
 
 	//--------- functions ----------------------------------------------------
 
