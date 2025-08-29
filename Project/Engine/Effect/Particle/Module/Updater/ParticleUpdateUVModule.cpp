@@ -13,6 +13,9 @@ void ParticleUpdateUVModule::Init() {
 
 	// 初期化値
 	updateType_ = UpdateType::Lerp;
+
+	scale_.start = Vector3::AnyInit(1.0f);
+	scale_.target = Vector3::AnyInit(1.0f);
 }
 
 void ParticleUpdateUVModule::Execute(
@@ -38,10 +41,13 @@ void ParticleUpdateUVModule::Execute(
 	// 回転
 	float rotationZ = std::lerp(rotation_.start,
 		rotation_.target, EasedValue(easing_, particle.progress));
+	// スケール
+	Vector3 scale = Vector3::Lerp(scale_.start,
+		scale_.target, EasedValue(easing_, particle.progress));
 
 	// uvMatrixの更新
 	particle.material.uvTransform = Matrix4x4::MakeAffineMatrix(
-		Vector3::AnyInit(1.0f), Vector3(0.0f, 0.0f, rotationZ), translation);
+		scale, Vector3(0.0f, 0.0f, rotationZ), translation);
 }
 
 void ParticleUpdateUVModule::ImGui() {
@@ -68,6 +74,11 @@ void ParticleUpdateUVModule::ImGui() {
 
 	ImGui::DragFloat("startRotation", &rotation_.start, 0.01f);
 	ImGui::DragFloat("targetRotation", &rotation_.target, 0.01f);
+
+	ImGui::SeparatorText("Scale");
+
+	ImGui::DragFloat2("startScale", &scale_.start.x, 0.01f);
+	ImGui::DragFloat2("targetScale", &scale_.target.x, 0.01f);
 }
 
 Json ParticleUpdateUVModule::ToJson() {
@@ -82,6 +93,9 @@ Json ParticleUpdateUVModule::ToJson() {
 
 	data["rotation"]["start"] = rotation_.start;
 	data["rotation"]["target"] = rotation_.target;
+
+	data["scale"]["start"] = scale_.start.ToJson();
+	data["scale"]["target"] = scale_.target.ToJson();
 
 	data["scrollValue"] = scrollValue_.ToJson();
 
@@ -104,6 +118,12 @@ void ParticleUpdateUVModule::FromJson(const Json& data) {
 
 		rotation_.start = data["rotation"]["start"];
 		rotation_.target = data["rotation"]["target"];
+	}
+
+	if (data.contains("scale")) {
+
+		scale_.start = Vector3::FromJson(data["scale"]["start"]);
+		scale_.target = Vector3::FromJson(data["scale"]["target"]);
 	}
 
 	scrollValue_ = scrollValue_.FromJson(data["scrollValue"]);

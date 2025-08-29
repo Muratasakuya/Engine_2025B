@@ -17,7 +17,7 @@
                                     "valueType": 0
                                 },
                                 "lifeTime": {
-                                    "constant": 0.5400000214576721,
+                                    "constant": 0.44,
                                     "randomMax": 0.800000011920929,
                                     "randomMin": 0.800000011920929,
                                     "valueType": 0
@@ -112,14 +112,14 @@
                                 },
                                 "scale": {
                                     "start": {
-                                        "x": 2.5999999046325684,
-                                        "y": 2.5999999046325684,
+                                        "x": 2.0,
+                                        "y": 2.0,
                                         "z": 1.0
                                     },
                                     "target": {
                                         "x": 3.200000047683716,
                                         "y": 3.200000047683716,
-                                        "z": 2.0
+                                        "z": 1.0
                                     }
                                 }
                             },
@@ -128,13 +128,13 @@
                         {
                             "params": {
                                 "crescent": {
-                                    "startDivide": 24,
+                                    "startDivide": 12,
                                     "startEndAngle": 6.28000020980835,
                                     "startInnerColor": {
                                         "a": 1.0,
-                                        "b": 0.08075656741857529,
-                                        "g": 0.304890900850296,
-                                        "r": 0.9321953058242798
+                                        "b": 0.7766432762145996,
+                                        "g": 0.11994107067584991,
+                                        "r": 0.33765414357185364
                                     },
                                     "startInnerRadius": 4.0,
                                     "startLattice": 0.5,
@@ -150,15 +150,15 @@
                                         "y": 0.5
                                     },
                                     "startStartAngle": -2.0,
-                                    "startThickness": 0.6000000238418579,
+                                    "startThickness": 2.0,
                                     "startUVMode": 1,
                                     "targetDivide": 24,
                                     "targetEndAngle": 6.28000020980835,
                                     "targetInnerColor": {
                                         "a": 1.0,
-                                        "b": 0.08075656741857529,
-                                        "g": 0.304890900850296,
-                                        "r": 0.9321953058242798
+                                        "b": 0.7766432762145996,
+                                        "g": 0.11994107067584991,
+                                        "r": 0.33765414357185364
                                     },
                                     "targetInnerRadius": 4.0,
                                     "targetLattice": 0.5,
@@ -174,7 +174,7 @@
                                         "y": 0.5
                                     },
                                     "targetStartAngle": -2.0,
-                                    "targetThickness": 0.6000000238418579,
+                                    "targetThickness": 2.0,
                                     "targetUVMode": 1
                                 },
                                 "cylinder": {
@@ -234,7 +234,7 @@
                                 },
                                 "easingType": "EaseOutSine",
                                 "intencity": {
-                                    "start": 0.0,
+                                    "start": 0.8600000143051147,
                                     "target": 0.8600000143051147
                                 }
                             },
@@ -242,7 +242,7 @@
                         },
                         {
                             "params": {
-                                "easingType": "EaseOutExpo",
+                                "easingType": "EaseInQuint",
                                 "rotation": {
                                     "start": 0.0,
                                     "target": 0.0
@@ -272,9 +272,9 @@
                                 "color": {
                                     "start": {
                                         "a": 1.0,
-                                        "b": 0.7739884853363037,
-                                        "g": 0.8185290098190308,
-                                        "r": 0.8484364748001099
+                                        "b": 0.7447351217269897,
+                                        "g": 0.2621110677719116,
+                                        "r": 0.1625395268201828
                                     },
                                     "target": {
                                         "a": 0.0,
@@ -285,7 +285,7 @@
                                 },
                                 "easingType": "EaseOutExpo",
                                 "loop": {
-                                    "loopCount": 3,
+                                    "loopCount": 1,
                                     "type": "PingPong"
                                 }
                             },
@@ -308,13 +308,13 @@
                         "params": {
                             "common": {
                                 "emitCount": {
-                                    "constant": 1,
+                                    "constant": 3,
                                     "randomMax": 4,
                                     "randomMin": 4,
                                     "valueType": 0
                                 },
                                 "lifeTime": {
-                                    "constant": 0.5400000214576721,
+                                    "constant": 0.44,
                                     "randomMax": 0.800000011920929,
                                     "randomMin": 0.800000011920929,
                                     "valueType": 0
@@ -425,13 +425,13 @@
                         {
                             "params": {
                                 "crescent": {
-                                    "startDivide": 24,
+                                    "startDivide": 14,
                                     "startEndAngle": 4.800000190734863,
                                     "startInnerColor": {
                                         "a": 1.0,
-                                        "b": 0.07019791752099991,
-                                        "g": 0.4033087193965912,
-                                        "r": 0.9401723146438599
+                                        "b": 0.054261770099401474,
+                                        "g": 0.11671876907348633,
+                                        "r": 0.9242182374000549
                                     },
                                     "startInnerRadius": 4.0,
                                     "startLattice": 0.5,
@@ -446,32 +446,32 @@
                                         "x": 0.5,
                                         "y": 0.5
                                     },
-                                    "startStartAngle": -3.1700000762939453,
-                                    "startThickness": 0.36000001430511475,
+                                    "startStartAngle": -3.1500000953674316,
+                                    "startThickness": 0.10000000149011612,
                                     "startUVMode": 1,
                                     "targetDivide": 24,
                                     "targetEndAngle": 4.800000190734863,
                                     "targetInnerColor": {
                                         "a": 1.0,
-                                        "b": 0.07019791752099991,
-                                        "g": 0.4033087193965912,
-                                        "r": 0.9401723146438599
+                                        "b": 0.9242182374000549,
+                                        "g": 0.11977217346429825,
+                                        "r": 0.054261770099401474
                                     },
                                     "targetInnerRadius": 4.0,
                                     "targetLattice": 0.5,
                                     "targetOuterColor": {
                                         "a": 1.0,
-                                        "b": 0.054261770099401474,
-                                        "g": 0.11671876907348633,
-                                        "r": 0.9242182374000549
+                                        "b": 0.9242182374000549,
+                                        "g": 0.11977217346429825,
+                                        "r": 0.054261770099401474
                                     },
                                     "targetOuterRadius": 4.0,
                                     "targetPivot": {
                                         "x": 0.5,
                                         "y": 0.5
                                     },
-                                    "targetStartAngle": -3.1700000762939453,
-                                    "targetThickness": 0.10999999940395355,
+                                    "targetStartAngle": -3.1500000953674316,
+                                    "targetThickness": 0.10000000149011612,
                                     "targetUVMode": 1
                                 },
                                 "cylinder": {
@@ -484,7 +484,7 @@
                                     "targetHeight": 4.0,
                                     "targetTopRadius": 4.0
                                 },
-                                "easingType": "EaseInSine",
+                                "easingType": "EaseOutExpo",
                                 "plane": {
                                     "mode": "XY",
                                     "startPivot": {
@@ -519,9 +519,9 @@
                             "params": {
                                 "color": {
                                     "start": {
-                                        "x": 0.6131142377853394,
-                                        "y": 0.17782732844352722,
-                                        "z": 0.04088732600212097
+                                        "x": 0.040887363255023956,
+                                        "y": 0.11136575788259506,
+                                        "z": 0.6131142377853394
                                     },
                                     "target": {
                                         "x": 0.12284401059150696,
@@ -532,14 +532,14 @@
                                 "easingType": "EaseOutSine",
                                 "intencity": {
                                     "start": 4.0,
-                                    "target": 4.0
+                                    "target": 1.0
                                 }
                             },
                             "type": "Emissive"
                         },
                         {
                             "params": {
-                                "easingType": "EaseOutExpo",
+                                "easingType": "EaseInQuint",
                                 "rotation": {
                                     "start": 0.0,
                                     "target": 0.0
@@ -556,7 +556,7 @@
                                     },
                                     "target": {
                                         "x": 0.0,
-                                        "y": 1.5199999809265137,
+                                        "y": 0.4000000059604645,
                                         "z": 0.0
                                     }
                                 },
@@ -569,12 +569,12 @@
                                 "color": {
                                     "start": {
                                         "a": 1.0,
-                                        "b": 0.10262402892112732,
-                                        "g": 0.45825153589248657,
-                                        "r": 0.928206741809845
+                                        "b": 0.7527121901512146,
+                                        "g": 0.24639949202537537,
+                                        "r": 0.06220565363764763
                                     },
                                     "target": {
-                                        "a": 0.0,
+                                        "a": 1.0,
                                         "b": 0.7490196228027344,
                                         "g": 0.7490196228027344,
                                         "r": 0.7490196228027344
