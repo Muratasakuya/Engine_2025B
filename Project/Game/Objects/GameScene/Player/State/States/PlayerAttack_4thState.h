@@ -41,8 +41,12 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	bool assisted_;
 
-
-	//--------- functions ----------------------------------------------------
-
+	// parameters
+	// 座標補間を行わないときの処理
+	StateTimer moveTimer_;
+	float moveValue_;   // 移動量
+	Vector3 startPos_;  // 開始座標
+	Vector3 targetPos_; // 目標座標
 };

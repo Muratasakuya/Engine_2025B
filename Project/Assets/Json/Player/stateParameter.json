@@ -69,12 +69,17 @@
         "weaponPosY_": 2.0
     },
     "Attack_4th": {
+        "MoveTimer": {
+            "easeingType_": "EaseOutExpo",
+            "target_": 0.800000011920929
+        },
         "attackLookAtCircleRange_": 108.0,
         "attackOffsetTranslation_": 8.0,
         "attackPosEaseType_": 14,
         "attackPosLerpCircleRange_": 40.0,
         "attackPosLerpTime_": 0.4399999976158142,
         "exitTime_": 0.4000000059604645,
+        "moveValue_": 24.0,
         "nextAnimDuration_": 0.07999999821186066,
         "rotationLerpRate_": 0.46000000834465027
     },

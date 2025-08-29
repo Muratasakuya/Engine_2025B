@@ -249,7 +249,7 @@ Vector3 PlayerAttack_3rdState::RotateYOffset(const Vector3& direction, float off
 	return rotated;
 }
 
-void PlayerAttack_3rdState::Exit([[maybe_unused]] Player& player) {
+void PlayerAttack_3rdState::Exit(Player& player) {
 
 	// リセット
 	attackPosLerpTimer_ = 0.0f;
@@ -262,6 +262,12 @@ void PlayerAttack_3rdState::Exit([[maybe_unused]] Player& player) {
 		param.isMoveStart = false;
 		param.moveTimer.Reset();
 		param.rotation.Init();
+	}
+
+	// 剣の親子付けを戻す
+	if (currentState_ != State::None) {
+
+		player.ResetWeaponTransform();
 	}
 }
 
