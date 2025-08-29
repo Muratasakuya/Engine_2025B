@@ -194,7 +194,7 @@ void GPUParticleUpdater::DispatchUpdate(const GPUParticleGroup& group, DxCommand
 	}
 
 	// 実行
-	commandList->Dispatch(DxUtils::RoundUp(kMaxParticles, THREAD_UPDATE_GROUP), 1, 1);
+	commandList->Dispatch(DxUtils::RoundUp(kMaxGPUParticles, THREAD_UPDATE_GROUP), 1, 1);
 
 	//============================================================================
 	// バリア遷移処理

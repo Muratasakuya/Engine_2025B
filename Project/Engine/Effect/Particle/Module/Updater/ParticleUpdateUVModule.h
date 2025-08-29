@@ -56,6 +56,7 @@ private:
 	// UV座標
 	ParticleCommon::LerpValue<Vector3> translation_;
 	ParticleCommon::LerpValue<float> rotation_;
+	ParticleCommon::LerpValue<Vector3> scale_;
 
 	// スクロール加算値
 	Vector2 scrollValue_;

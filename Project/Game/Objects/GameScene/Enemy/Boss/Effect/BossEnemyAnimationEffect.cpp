@@ -391,7 +391,6 @@ void BossEnemyAnimationEffect::SaveJson() {
 	data[key]["translation"] = moveWind_.translation.ToJson();
 
 	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::ContinuousAttack);
-
 	for (uint32_t index = 0; index < continuousCount_; ++index) {
 
 		auto& param = continuousSlashParams_[index];

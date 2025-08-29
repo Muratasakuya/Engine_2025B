@@ -46,6 +46,7 @@ bool ParticleSpawnPolygonVertexModule::SetCommand(const ParticleCommand& command
 			if (emit) {
 				
 				spawnTimer_.Reset();
+				updater_.Reset();
 				spawned_ = 0;
 				instances_.clear();
 				multiEmit_ = true;

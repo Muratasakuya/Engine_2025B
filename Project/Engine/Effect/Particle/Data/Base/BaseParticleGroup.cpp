@@ -59,7 +59,7 @@ D3D12_GPU_VIRTUAL_ADDRESS BaseParticleGroup::GetPrimitiveBufferAdress() const {
 }
 
 void BaseParticleGroup::CreatePrimitiveBuffer(
-	ID3D12Device* device, ParticlePrimitiveType primitiveType) {
+	ID3D12Device* device, ParticlePrimitiveType primitiveType, uint32_t maxParticle) {
 
 	primitiveBuffer_.type = primitiveType;
 
@@ -70,8 +70,8 @@ void BaseParticleGroup::CreatePrimitiveBuffer(
 		PlaneForGPU plane{};
 		plane.Init();
 
-		std::vector<PlaneForGPU> planes(kMaxParticles, plane);
-		primitiveBuffer_.plane.CreateSRVBuffer(device, kMaxParticles);
+		std::vector<PlaneForGPU> planes(maxParticle, plane);
+		primitiveBuffer_.plane.CreateSRVBuffer(device, maxParticle);
 		primitiveBuffer_.plane.TransferData(planes);
 		break;
 	}
@@ -80,8 +80,8 @@ void BaseParticleGroup::CreatePrimitiveBuffer(
 		RingForGPU ring{};
 		ring.Init();
 
-		std::vector<RingForGPU> rings(kMaxParticles, ring);
-		primitiveBuffer_.ring.CreateSRVBuffer(device, kMaxParticles);
+		std::vector<RingForGPU> rings(maxParticle, ring);
+		primitiveBuffer_.ring.CreateSRVBuffer(device, maxParticle);
 		primitiveBuffer_.ring.TransferData(rings);
 		break;
 	}
@@ -90,8 +90,8 @@ void BaseParticleGroup::CreatePrimitiveBuffer(
 		CylinderForGPU cylinder{};
 		cylinder.Init();
 
-		std::vector<CylinderForGPU> cylinders(kMaxParticles, cylinder);
-		primitiveBuffer_.cylinder.CreateSRVBuffer(device, kMaxParticles);
+		std::vector<CylinderForGPU> cylinders(maxParticle, cylinder);
+		primitiveBuffer_.cylinder.CreateSRVBuffer(device, maxParticle);
 		primitiveBuffer_.cylinder.TransferData(cylinders);
 		break;
 	}
@@ -100,8 +100,8 @@ void BaseParticleGroup::CreatePrimitiveBuffer(
 		CrescentForGPU crescent{};
 		crescent.Init();
 
-		std::vector<CrescentForGPU> crescents(kMaxParticles, crescent);
-		primitiveBuffer_.crescent.CreateSRVBuffer(device, kMaxParticles);
+		std::vector<CrescentForGPU> crescents(maxParticle, crescent);
+		primitiveBuffer_.crescent.CreateSRVBuffer(device, maxParticle);
 		primitiveBuffer_.crescent.TransferData(crescents);
 		break;
 	}

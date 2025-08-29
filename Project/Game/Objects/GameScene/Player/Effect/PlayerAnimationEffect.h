@@ -39,7 +39,9 @@ private:
 		None,
 		Attack_1st,
 		Attack_2nd,
-		Attack_3rd
+		Attack_3rd,
+		Attack_4th,
+		Skil
 	};
 
 	// 斬撃
@@ -50,19 +52,39 @@ private:
 		Vector3 rotation;
 	};
 
+	// 剣
+	struct Sword {
+
+		std::unique_ptr<GameEffect> slashEffect;
+		std::unique_ptr<GameEffect> sparkEffect;
+	};
+
 	//--------- variables ----------------------------------------------------
 
+	// 現在のアニメーション
+	AnimationKey currentAnimationKey_;
+	AnimationKey preAnimationKey_;
+	AnimationKey editAnimationKey_;
+
 	// 斬撃
-	std::unique_ptr<GameEffect> slashEffect;
+	std::unique_ptr<GameEffect> slashEffect_;
+	std::unique_ptr<GameEffect> rotateSlashEffect_;
+	// 回転する剣の周り
+	// 1つに出来たらしたい
+	Sword leftSword_;
+	Sword rightSword_;
 
 	// 1段目の攻撃
 	Slash firstSlashParam_;
 	// 2段目の攻撃
 	static const uint32_t secondSlashCount_ = 2;
+	uint32_t secondAttackEventIndex_; // 現在のキーイベント
 	std::array<Slash, secondSlashCount_> secondSlashParams_;
-	// 3段階目の攻撃
-	// 保留、アクションを完成しきってからエフェクトを追加する
+	// 3段目の攻撃、2つの剣で共通
 	Slash thirdSlashParam_;
+	Vector3 thirdParticleTranslation_;
+	// 4段目の攻撃
+	Slash fourthSlashParam_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -73,4 +95,5 @@ private:
 	// update
 	void UpdateAnimationKey(Player& player);
 	void UpdateEmit(Player& player);
+	void UpdateAlways();
 };

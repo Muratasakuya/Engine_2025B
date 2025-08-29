@@ -186,6 +186,8 @@ void PlayerAttack_3rdState::UpdateAnimKeyEvent(Player& player) {
 
 void PlayerAttack_3rdState::StartMoveWeapon(Player& player, PlayerWeaponType type) {
 
+	// α値を下げる
+	player.GetWeapon(type)->SetAlpha(0.5f);
 	// 剣の親子付けを解除する
 	player.GetWeapon(type)->SetParent(Transform3D(), true);
 	// この時点のワールド座標を補間開始座標にする

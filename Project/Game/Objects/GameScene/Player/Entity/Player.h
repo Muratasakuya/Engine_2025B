@@ -14,6 +14,8 @@
 // HUD
 #include <Game/Objects/GameScene/Player/HUD/PlayerHUD.h>
 #include <Game/Objects/GameScene/Player/HUD/PlayerStunHUD.h>
+// effect
+#include <Game/Objects/GameScene/Player/Effect/PlayerAnimationEffect.h>
 
 //============================================================================
 //	Player class
@@ -82,6 +84,9 @@ private:
 	// HUD
 	std::unique_ptr<PlayerHUD> hudSprites_;
 	std::unique_ptr<PlayerStunHUD> stunHudSprites_;
+
+	// エフェクト
+	std::unique_ptr<PlayerAnimationEffect> animationEffect_;
 
 	// parameters
 	Transform3D initTransform_; // 初期化時の値

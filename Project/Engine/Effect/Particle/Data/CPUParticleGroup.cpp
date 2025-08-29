@@ -23,11 +23,11 @@ void CPUParticleGroup::Create(ID3D12Device* device,
 	blendMode_ = kBlendModeAdd;
 
 	// buffer作成
-	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveType);
+	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveType, kMaxCPUParticles);
 	// structuredBuffer(SRV)
-	transformBuffer_.CreateSRVBuffer(device, kMaxParticles);
-	materialBuffer_.CreateSRVBuffer(device, kMaxParticles);
-	textureInfoBuffer_.CreateSRVBuffer(device, kMaxParticles);
+	transformBuffer_.CreateSRVBuffer(device, kMaxCPUParticles);
+	materialBuffer_.CreateSRVBuffer(device, kMaxCPUParticles);
+	textureInfoBuffer_.CreateSRVBuffer(device, kMaxCPUParticles);
 }
 
 void CPUParticleGroup::CreateFromJson(ID3D12Device* device, Asset* asset, const Json& data) {
@@ -43,11 +43,11 @@ void CPUParticleGroup::CreateFromJson(ID3D12Device* device, Asset* asset, const 
 	FromJson(data, asset_);
 
 	// buffer作成
-	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveBuffer_.type);
+	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveBuffer_.type, kMaxCPUParticles);
 	// structuredBuffer(SRV)
-	transformBuffer_.CreateSRVBuffer(device, kMaxParticles);
-	materialBuffer_.CreateSRVBuffer(device, kMaxParticles);
-	textureInfoBuffer_.CreateSRVBuffer(device, kMaxParticles);
+	transformBuffer_.CreateSRVBuffer(device, kMaxCPUParticles);
+	materialBuffer_.CreateSRVBuffer(device, kMaxCPUParticles);
+	textureInfoBuffer_.CreateSRVBuffer(device, kMaxCPUParticles);
 }
 
 void CPUParticleGroup::Update() {
@@ -281,7 +281,7 @@ void CPUParticleGroup::AddPhase() {
 
 void CPUParticleGroup::ImGui() {
 
-	ImGui::Text("numInstance: %d / %d", numInstance_, kMaxParticles);
+	ImGui::Text("numInstance: %d / %d", numInstance_, kMaxCPUParticles);
 
 	ImGui::SeparatorText("Phases");
 
