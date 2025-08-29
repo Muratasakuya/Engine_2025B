@@ -51,7 +51,7 @@ SamplerState gSampler : register(s0);
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	uint particleIndex = DTid.x;
-	if (kMaxParticles <= particleIndex) {
+	if (kMaxGPUParticles <= particleIndex) {
 		return;
 	}
 	
@@ -96,7 +96,7 @@ void main(uint3 DTid : SV_DispatchThreadID) {
 	InterlockedAdd(gFreeListIndex[0], 1, posPrev);
 	uint writePos = posPrev + 1;
 
-	if (writePos < kMaxParticles) {
+	if (writePos < kMaxGPUParticles) {
 		
 		gFreeList[writePos] = particleIndex;
 	} else {

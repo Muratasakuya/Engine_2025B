@@ -39,19 +39,19 @@ void GPUParticleGroup::Create(ID3D12Device* device, Asset* asset, ParticlePrimit
 	noiseTextureName_ = "noise";
 
 	// buffer作成
-	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveType);
+	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveType, kMaxGPUParticles);
 	parentBuffer_.CreateBuffer(device);
 	noiseBuffer_.CreateBuffer(device);
 	// 球でデフォルトで作成
 	emitterBuffer_.common.CreateBuffer(device);
 	emitterBuffer_.sphere.CreateBuffer(device);
 	// structuredBuffer(UAV)
-	transformBuffer_.CreateUAVBuffer(device, kMaxParticles);
-	materialBuffer_.CreateUAVBuffer(device, kMaxParticles);
-	particleBuffer_.CreateUAVBuffer(device, kMaxParticles);
+	transformBuffer_.CreateUAVBuffer(device, kMaxGPUParticles);
+	materialBuffer_.CreateUAVBuffer(device, kMaxGPUParticles);
+	particleBuffer_.CreateUAVBuffer(device, kMaxGPUParticles);
 	// freeList
 	freeListIndexBuffer_.CreateUAVBuffer(device, 1);
-	freeListBuffer_.CreateUAVBuffer(device, kMaxParticles);
+	freeListBuffer_.CreateUAVBuffer(device, kMaxGPUParticles);
 }
 
 void GPUParticleGroup::CreateFromJson(ID3D12Device* device, Asset* asset, const Json& data) {
@@ -63,7 +63,7 @@ void GPUParticleGroup::CreateFromJson(ID3D12Device* device, Asset* asset, const 
 	FromJson(data);
 
 	// buffer作成
-	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveBuffer_.type);
+	BaseParticleGroup::CreatePrimitiveBuffer(device, primitiveBuffer_.type, kMaxGPUParticles);
 	parentBuffer_.CreateBuffer(device);
 	noiseBuffer_.CreateBuffer(device);
 	// 形状別に作成
@@ -92,12 +92,12 @@ void GPUParticleGroup::CreateFromJson(ID3D12Device* device, Asset* asset, const 
 	}
 
 	// structuredBuffer(UAV)
-	transformBuffer_.CreateUAVBuffer(device, kMaxParticles);
-	materialBuffer_.CreateUAVBuffer(device, kMaxParticles);
-	particleBuffer_.CreateUAVBuffer(device, kMaxParticles);
+	transformBuffer_.CreateUAVBuffer(device, kMaxGPUParticles);
+	materialBuffer_.CreateUAVBuffer(device, kMaxGPUParticles);
+	particleBuffer_.CreateUAVBuffer(device, kMaxGPUParticles);
 	// freeList
 	freeListIndexBuffer_.CreateUAVBuffer(device, 1);
-	freeListBuffer_.CreateUAVBuffer(device, kMaxParticles);
+	freeListBuffer_.CreateUAVBuffer(device, kMaxGPUParticles);
 }
 
 void GPUParticleGroup::Update() {
@@ -284,7 +284,7 @@ void GPUParticleGroup::UpdateNoise() {
 
 void GPUParticleGroup::ImGui(ID3D12Device* device) {
 
-	ImGui::Text("kMaxParticle: %d", kMaxParticles);
+	ImGui::Text("kMaxParticle: %d", kMaxGPUParticles);
 
 	if (ImGui::BeginTabBar("GPUParticleGroupTab")) {
 		if (ImGui::BeginTabItem("Render")) {
@@ -316,7 +316,7 @@ void GPUParticleGroup::ImGui(ID3D12Device* device) {
 		}
 		if (ImGui::BeginTabItem("Common")) {
 
-			ImGui::DragInt("count", &emitter_.common.count, 1, 0, kMaxParticles);
+			ImGui::DragInt("count", &emitter_.common.count, 1, 0, kMaxGPUParticles);
 			ImGui::DragFloat("lifeTime", &emitter_.common.lifeTime, 0.01f);
 			ImGui::DragFloat("frequency", &frequency_, 0.01f);
 			ImGui::DragFloat("moveSpeed", &emitter_.common.moveSpeed, 0.01f);

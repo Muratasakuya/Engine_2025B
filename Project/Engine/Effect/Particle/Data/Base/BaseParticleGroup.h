@@ -51,7 +51,8 @@ protected:
 	//--------- functions ----------------------------------------------------
 
 	// create
-	void CreatePrimitiveBuffer(ID3D12Device* device, ParticlePrimitiveType primitiveType);
+	void CreatePrimitiveBuffer(ID3D12Device* device,
+		ParticlePrimitiveType primitiveType, uint32_t maxParticle);
 
 	// emitter
 	void DrawEmitter();

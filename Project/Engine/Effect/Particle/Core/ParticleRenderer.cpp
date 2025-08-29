@@ -105,7 +105,7 @@ void ParticleRenderer::Rendering(bool debugEnable, const GPUParticleGroup& group
 	// textureTable
 	commandList->SetGraphicsRootDescriptorTable(4, asset_->GetGPUHandle(group.GetTextureName()));
 	// 描画
-	commandList->DispatchMesh(kMaxParticles, 1, 1);
+	commandList->DispatchMesh(kMaxGPUParticles, 1, 1);
 
 	// バリア遷移処理
 	ToCompute(debugEnable, group, dxCommand);
