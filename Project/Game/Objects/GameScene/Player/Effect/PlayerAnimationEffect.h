@@ -60,6 +60,10 @@ private:
 
 	// 斬撃
 	std::unique_ptr<GameEffect> slashEffect_;
+	// 回転する剣の周り
+	// 1つに出来たらしたい
+	std::unique_ptr<GameEffect> rotateLeftSwordSlashEffect_;
+	std::unique_ptr<GameEffect> rotateRightSwordSlashEffect_;
 
 	// 1段目の攻撃
 	Slash firstSlashParam_;
@@ -67,6 +71,8 @@ private:
 	static const uint32_t secondSlashCount_ = 2;
 	uint32_t secondAttackEventIndex_; // 現在のキーイベント
 	std::array<Slash, secondSlashCount_> secondSlashParams_;
+	// 3段目の攻撃、2つの剣で共通
+	Slash thirdSlashParam_;
 
 	//--------- functions ----------------------------------------------------
 

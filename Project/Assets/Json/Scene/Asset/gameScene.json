@@ -46,7 +46,8 @@
     "mouseCancel",
     "gamepadCancel",
     "slashEffect1",
-    "bossEnemySlash"
+    "bossEnemySlash",
+    "lightning"
   ],
   "Models": [
     "field",

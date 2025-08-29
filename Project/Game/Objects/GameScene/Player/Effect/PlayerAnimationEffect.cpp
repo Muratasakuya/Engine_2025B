@@ -13,10 +13,21 @@
 void PlayerAnimationEffect::Init(const Player& player) {
 
 	// エフェクト追加
+	// 斬撃
 	slashEffect_ = std::make_unique<GameEffect>();
 	slashEffect_->CreateParticleSystem("Particle/playerSlash.json");
 	// 親を設定
 	slashEffect_->SetParent(player.GetTransform());
+	// 回転する剣の周り
+	rotateLeftSwordSlashEffect_ = std::make_unique<GameEffect>();
+	rotateLeftSwordSlashEffect_->CreateParticleSystem("Particle/playerLeftSwordSlash.json");
+	rotateRightSwordSlashEffect_ = std::make_unique<GameEffect>();
+	rotateRightSwordSlashEffect_->CreateParticleSystem("Particle/playerRightSwordSlash.json");
+	// 親を設定
+	rotateLeftSwordSlashEffect_->SetParent(
+		player.GetWeapon(PlayerWeaponType::Left)->GetTransform());
+	rotateRightSwordSlashEffect_->SetParent(
+		player.GetWeapon(PlayerWeaponType::Right)->GetTransform());
 
 	// json適応
 	ApplyJson();
@@ -100,6 +111,29 @@ void PlayerAnimationEffect::UpdateEmit(Player& player) {
 		break;
 	}
 	case PlayerAnimationEffect::AnimationKey::Attack_3rd: {
+
+		// 左手
+		if (player.IsEventKey("Effect", 0)) {
+
+			// スケーリング
+			GameEffectCommandHelper::SendScaling(*rotateLeftSwordSlashEffect_, thirdSlashParam_.scaling);
+
+			// 座標回転、コマンドをセット
+			GameEffectCommandHelper::ApplyAndSend(*rotateLeftSwordSlashEffect_, player.GetRotation(),
+				thirdSlashParam_.translation, thirdSlashParam_.rotation);
+			rotateLeftSwordSlashEffect_->Emit();
+		}
+		// 右手
+		if (player.IsEventKey("Effect", 1)) {
+
+			// スケーリング
+			GameEffectCommandHelper::SendScaling(*rotateRightSwordSlashEffect_, thirdSlashParam_.scaling);
+
+			// 座標回転、コマンドをセット
+			GameEffectCommandHelper::ApplyAndSend(*rotateRightSwordSlashEffect_, player.GetRotation(),
+				thirdSlashParam_.translation, thirdSlashParam_.rotation);
+			rotateRightSwordSlashEffect_->Emit();
+		}
 		break;
 	}
 	case PlayerAnimationEffect::AnimationKey::Attack_4th: {
@@ -169,6 +203,21 @@ void PlayerAnimationEffect::ImGui(const Player& player) {
 		break;
 	}
 	case PlayerAnimationEffect::AnimationKey::Attack_3rd: {
+
+		if (ImGui::Button("Emit")) {
+
+			// スケーリング
+			GameEffectCommandHelper::SendScaling(*rotateLeftSwordSlashEffect_, thirdSlashParam_.scaling);
+
+			// 座標回転、コマンドをセット
+			GameEffectCommandHelper::ApplyAndSend(*rotateLeftSwordSlashEffect_, player.GetRotation(),
+				thirdSlashParam_.translation, thirdSlashParam_.rotation);
+			rotateLeftSwordSlashEffect_->Emit();
+		}
+
+		ImGui::DragFloat("scaling", &thirdSlashParam_.scaling, 0.01f);
+		ImGui::DragFloat3("rotation", &thirdSlashParam_.rotation.x, 0.01f);
+		ImGui::DragFloat3("translation", &thirdSlashParam_.translation.x, 0.01f);
 		break;
 	}
 	case PlayerAnimationEffect::AnimationKey::Attack_4th: {
@@ -193,17 +242,22 @@ void PlayerAnimationEffect::ApplyJson() {
 	firstSlashParam_.rotation = Vector3::FromJson(data[key].value("rotation", Json()));
 
 	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::Attack_2nd);
+	for (uint32_t index = 0; index < secondSlashCount_; ++index) {
+
+		auto& param = secondSlashParams_[index];
+		std::string keyIndex = std::to_string(index);
+
+		param.scaling = data[key][keyIndex].value("scaling", 1.0f);
+		param.translation = Vector3::FromJson(data[key][keyIndex].value("translation", Json()));
+		param.rotation = Vector3::FromJson(data[key][keyIndex].value("rotation", Json()));
+	}
+
+	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::Attack_3rd);
 	if (data.contains(key)) {
 
-		for (uint32_t index = 0; index < secondSlashCount_; ++index) {
-
-			auto& param = secondSlashParams_[index];
-			std::string keyIndex = std::to_string(index);
-
-			param.scaling = data[key][keyIndex].value("scaling", 1.0f);
-			param.translation = Vector3::FromJson(data[key][keyIndex].value("translation", Json()));
-			param.rotation = Vector3::FromJson(data[key][keyIndex].value("rotation", Json()));
-		}
+		thirdSlashParam_.scaling = data[key].value("scaling", 1.0f);
+		thirdSlashParam_.translation = Vector3::FromJson(data[key].value("translation", Json()));
+		thirdSlashParam_.rotation = Vector3::FromJson(data[key].value("rotation", Json()));
 	}
 }
 
@@ -226,6 +280,11 @@ void PlayerAnimationEffect::SaveJson() {
 		data[key][keyIndex]["translation"] = param.translation.ToJson();
 		data[key][keyIndex]["rotation"] = param.rotation.ToJson();
 	}
+
+	key = EnumAdapter<AnimationKey>::ToString(AnimationKey::Attack_3rd);
+	data[key]["scaling"] = thirdSlashParam_.scaling;
+	data[key]["translation"] = thirdSlashParam_.translation.ToJson();
+	data[key]["rotation"] = thirdSlashParam_.rotation.ToJson();
 
 	JsonAdapter::Save("Player/animationEffectEmit.json", data);
 }
