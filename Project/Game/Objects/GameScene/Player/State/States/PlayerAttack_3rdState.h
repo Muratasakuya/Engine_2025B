@@ -64,6 +64,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
+	bool assisted_;
+
 	// プレイヤーの現在の状態
 	State currentState_;
 	float initPosY_;
@@ -82,6 +84,11 @@ private:
 	std::unordered_map<PlayerWeaponType, WeaponParam> weaponParams_;
 	// 共通
 	StateTimer weaponMoveTimer_; // 剣が目標座標に行くまでの時間
+	float bossEnemyDistance_;
+	float weaponPosY_;
+
+	// debug
+	std::unordered_map<PlayerWeaponType, Vector3> debugForward_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -92,4 +99,5 @@ private:
 
 	// helper
 	void StartMoveWeapon(Player& player, PlayerWeaponType type);
+	Vector3 RotateYOffset(const Vector3& direction, float offsetRotationY);
 };

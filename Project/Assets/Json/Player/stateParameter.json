@@ -42,13 +42,13 @@
         },
         "Weapon": {
             "Left": {
-                "moveValue": 20.0,
-                "offsetRotationY": 0.0,
+                "moveValue": 80.0,
+                "offsetRotationY": 0.5400000214576721,
                 "rotateSpeed": 1.600000023841858
             },
             "Right": {
                 "moveValue": 80.0,
-                "offsetRotationY": 0.0,
+                "offsetRotationY": -0.5400000214576721,
                 "rotateSpeed": 1.600000023841858
             }
         },
@@ -62,9 +62,11 @@
         "attackPosLerpCircleRange_": 40.0,
         "attackPosLerpTime_": 0.4399999976158142,
         "backMoveValue_": -48.0,
+        "bossEnemyDistance_": -9.600000381469727,
         "exitTime_": 0.019999999552965164,
         "nextAnimDuration_": 0.07999999821186066,
-        "rotationLerpRate_": 0.46000000834465027
+        "rotationLerpRate_": 0.46000000834465027,
+        "weaponPosY_": 2.0
     },
     "Attack_4th": {
         "attackLookAtCircleRange_": 108.0,

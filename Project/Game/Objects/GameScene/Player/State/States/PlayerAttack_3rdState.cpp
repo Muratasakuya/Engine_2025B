@@ -14,6 +14,10 @@
 //============================================================================
 
 PlayerAttack_3rdState::PlayerAttack_3rdState() {
+
+	// debug
+	debugForward_.emplace(PlayerWeaponType::Left, Vector3::AnyInit(0.0f));
+	debugForward_.emplace(PlayerWeaponType::Right, Vector3::AnyInit(0.0f));
 }
 
 void PlayerAttack_3rdState::Enter(Player& player) {
@@ -29,6 +33,10 @@ void PlayerAttack_3rdState::Enter(Player& player) {
 
 	// Y座標の固定値
 	initPosY_ = player.GetTranslation().y;
+
+	// 敵が攻撃可能範囲にいるかチェック
+	assisted_ = CheckInRange(attackPosLerpCircleRange_,
+		Vector3(bossEnemy_->GetTranslation() - backStartPos_).Length());
 }
 
 void PlayerAttack_3rdState::Update(Player& player) {
@@ -44,15 +52,14 @@ void PlayerAttack_3rdState::Update(Player& player) {
 	// プレイヤーの補間処理
 	LerpPlayer(player);
 
-	// 武器補間処理
-	LerpWeapon(player, PlayerWeaponType::Left);
-	LerpWeapon(player, PlayerWeaponType::Right);
-
+	// 座標、回転補間
+	AttackAssist(player);
 	// キーイベント処理
 	UpdateAnimKeyEvent(player);
 
-	// 座標、回転補間
-	AttackAssist(player);
+	// 武器補間処理
+	LerpWeapon(player, PlayerWeaponType::Left);
+	LerpWeapon(player, PlayerWeaponType::Right);
 }
 
 void PlayerAttack_3rdState::LerpWeapon(Player& player, PlayerWeaponType type) {
@@ -161,6 +168,7 @@ void PlayerAttack_3rdState::UpdateAnimKeyEvent(Player& player) {
 
 		// 補間開始
 		StartMoveWeapon(player, PlayerWeaponType::Right);
+		return;
 	}
 
 	// 剣を取りに行く
@@ -183,17 +191,62 @@ void PlayerAttack_3rdState::StartMoveWeapon(Player& player, PlayerWeaponType typ
 	// この時点のワールド座標を補間開始座標にする
 	weaponParams_[type].startPos =
 		player.GetWeapon(type)->GetTransform().GetWorldPos();
+	weaponParams_[type].startPos.y = weaponPosY_;
 	// 開始座標として設定しておく
 	player.GetWeapon(type)->SetTranslation(
 		weaponParams_[type].startPos);
 
 	// 目標座標を設定する
-	weaponParams_[type].targetPos = weaponParams_[type].startPos +
-		player.GetTransform().GetForward() * weaponParams_[type].moveValue;
+	if (assisted_) {
+
+		// 敵への向き
+		Vector3 toEnemy = bossEnemy_->GetTranslation() - player.GetTranslation();
+		toEnemy.y = 0.0f;
+		toEnemy = toEnemy.Normalize();
+
+		// Y軸回転オフセットをかける
+		Vector3 rotated = RotateYOffset(toEnemy, weaponParams_[type].offsetRotationY);
+
+		// 敵を中心に一定距離だけオフセット
+		weaponParams_[type].targetPos = bossEnemy_->GetTranslation() + rotated * bossEnemyDistance_;
+		weaponParams_[type].targetPos.y = weaponPosY_;
+
+		// デバッグ用
+		debugForward_[type] = rotated;
+	} else {
+
+		// 前方ベクトル
+		Vector3 forward = Quaternion::RotateVector(Vector3(0.0f, 0.0f, 1.0f), player.GetRotation());
+		forward.y = 0.0f;
+		forward = forward.Normalize();
+
+		// Y軸回転オフセットをかける
+		Vector3 rotated = RotateYOffset(forward, weaponParams_[type].offsetRotationY / 6.0f);
+
+		// 目標座標
+		weaponParams_[type].targetPos = player.GetTranslation() + rotated * weaponParams_[type].moveValue;
+		weaponParams_[type].targetPos.y = weaponPosY_;
+
+		// デバッグ用
+		debugForward_[type] = rotated;
+	}
 
 	// 補間開始
 	weaponParams_[type].isMoveStart = true;
 	weaponParams_[type].moveTimer = weaponMoveTimer_;
+}
+
+Vector3 PlayerAttack_3rdState::RotateYOffset(const Vector3& direction, float offsetRotationY) {
+
+	float cos = std::cos(offsetRotationY);
+	float sin = std::sin(offsetRotationY);
+
+	Vector3 rotated{};
+	rotated.x = direction.x * cos - direction.z * sin;
+	rotated.y = 0.0f;
+	rotated.z = direction.x * sin + direction.z * cos;
+
+	return rotated;
 }
 
 void PlayerAttack_3rdState::Exit([[maybe_unused]] Player& player) {
@@ -217,6 +270,8 @@ void PlayerAttack_3rdState::ImGui(const Player& player) {
 	ImGui::DragFloat("nextAnimDuration", &nextAnimDuration_, 0.001f);
 	ImGui::DragFloat("rotationLerpRate", &rotationLerpRate_, 0.001f);
 	ImGui::DragFloat("exitTime", &exitTime_, 0.01f);
+	ImGui::DragFloat("bossEnemyDistance", &bossEnemyDistance_, 0.01f);
+	ImGui::DragFloat("weaponPosY", &weaponPosY_, 0.01f);
 
 	PlayerBaseAttackState::ImGui(player);
 
@@ -238,7 +293,8 @@ void PlayerAttack_3rdState::ImGui(const Player& player) {
 		ImGui::Text(std::format("isMoveStart: {}", param.isMoveStart).c_str());
 		ImGui::DragFloat("moveValue", &param.moveValue, 0.1f);
 		ImGui::DragFloat("rotateSpeed", &param.rotateSpeed, 0.01f);
-		ImGui::DragFloat("offsetRotationY", &param.offsetRotationY, 0.1f);
+		ImGui::DragFloat("offsetRotationY", &param.offsetRotationY, 0.01f);
+		ImGui::DragFloat3("forward", &debugForward_[type].x);
 
 		ImGui::PopID();
 	}
@@ -249,6 +305,8 @@ void PlayerAttack_3rdState::ApplyJson(const Json& data) {
 	nextAnimDuration_ = JsonAdapter::GetValue<float>(data, "nextAnimDuration_");
 	rotationLerpRate_ = JsonAdapter::GetValue<float>(data, "rotationLerpRate_");
 	exitTime_ = JsonAdapter::GetValue<float>(data, "exitTime_");
+	bossEnemyDistance_ = JsonAdapter::GetValue<float>(data, "bossEnemyDistance_");
+	weaponPosY_ = JsonAdapter::GetValue<float>(data, "weaponPosY_");
 
 	PlayerBaseAttackState::ApplyJson(data);
 
@@ -276,6 +334,8 @@ void PlayerAttack_3rdState::SaveJson(Json& data) {
 	data["nextAnimDuration_"] = nextAnimDuration_;
 	data["rotationLerpRate_"] = rotationLerpRate_;
 	data["exitTime_"] = exitTime_;
+	data["bossEnemyDistance_"] = bossEnemyDistance_;
+	data["weaponPosY_"] = weaponPosY_;
 
 	PlayerBaseAttackState::SaveJson(data);
 
