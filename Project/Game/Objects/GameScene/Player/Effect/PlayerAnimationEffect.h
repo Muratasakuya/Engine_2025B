@@ -52,6 +52,13 @@ private:
 		Vector3 rotation;
 	};
 
+	// 剣
+	struct Sword {
+
+		std::unique_ptr<GameEffect> slashEffect;
+		std::unique_ptr<GameEffect> sparkEffect;
+	};
+
 	//--------- variables ----------------------------------------------------
 
 	// 現在のアニメーション
@@ -62,8 +69,8 @@ private:
 	std::unique_ptr<GameEffect> slashEffect_;
 	// 回転する剣の周り
 	// 1つに出来たらしたい
-	std::unique_ptr<GameEffect> rotateLeftSwordSlashEffect_;
-	std::unique_ptr<GameEffect> rotateRightSwordSlashEffect_;
+	Sword leftSword_;
+	Sword rightSword_;
 
 	// 1段目の攻撃
 	Slash firstSlashParam_;
@@ -73,6 +80,7 @@ private:
 	std::array<Slash, secondSlashCount_> secondSlashParams_;
 	// 3段目の攻撃、2つの剣で共通
 	Slash thirdSlashParam_;
+	Vector3 thirdParticleTranslation_;
 
 	//--------- functions ----------------------------------------------------
 
@@ -83,4 +91,5 @@ private:
 	// update
 	void UpdateAnimationKey(Player& player);
 	void UpdateEmit(Player& player);
+	void UpdateAlways();
 };

@@ -47,6 +47,11 @@
             "z": 0.0
         },
         "scaling": 0.699999988079071,
+        "thirdParticleTranslation_": {
+            "x": 0.0,
+            "y": 0.0,
+            "z": 0.0
+        },
         "translation": {
             "x": 0.0,
             "y": 0.0,

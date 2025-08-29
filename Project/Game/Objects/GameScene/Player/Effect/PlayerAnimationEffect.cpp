@@ -19,14 +19,24 @@ void PlayerAnimationEffect::Init(const Player& player) {
 	// 親を設定
 	slashEffect_->SetParent(player.GetTransform());
 	// 回転する剣の周り
-	rotateLeftSwordSlashEffect_ = std::make_unique<GameEffect>();
-	rotateLeftSwordSlashEffect_->CreateParticleSystem("Particle/playerLeftSwordSlash.json");
-	rotateRightSwordSlashEffect_ = std::make_unique<GameEffect>();
-	rotateRightSwordSlashEffect_->CreateParticleSystem("Particle/playerRightSwordSlash.json");
+	// 左
+	leftSword_.slashEffect = std::make_unique<GameEffect>();
+	leftSword_.slashEffect->CreateParticleSystem("Particle/playerLeftSwordSlash.json");
+	leftSword_.sparkEffect = std::make_unique<GameEffect>();
+	leftSword_.sparkEffect->CreateParticleSystem("Particle/rotateDispersionParticle_0.json");
+	// 右
+	rightSword_.slashEffect = std::make_unique<GameEffect>();
+	rightSword_.slashEffect->CreateParticleSystem("Particle/playerRightSwordSlash.json");
+	rightSword_.sparkEffect = std::make_unique<GameEffect>();
+	rightSword_.sparkEffect->CreateParticleSystem("Particle/rotateDispersionParticle_1.json");
 	// 親を設定
-	rotateLeftSwordSlashEffect_->SetParent(
+	leftSword_.slashEffect->SetParent(
 		player.GetWeapon(PlayerWeaponType::Left)->GetTransform());
-	rotateRightSwordSlashEffect_->SetParent(
+	leftSword_.sparkEffect->SetParent(
+		player.GetWeapon(PlayerWeaponType::Left)->GetTransform());
+	rightSword_.slashEffect->SetParent(
+		player.GetWeapon(PlayerWeaponType::Right)->GetTransform());
+	rightSword_.sparkEffect->SetParent(
 		player.GetWeapon(PlayerWeaponType::Right)->GetTransform());
 
 	// json適応
@@ -44,6 +54,9 @@ void PlayerAnimationEffect::Update(Player& player) {
 
 	// 現在のアニメーションに応じてエフェクトを発生
 	UpdateEmit(player);
+
+	// 常に更新するエフェクト
+	UpdateAlways();
 }
 
 void PlayerAnimationEffect::UpdateAnimationKey(Player& player) {
@@ -116,23 +129,35 @@ void PlayerAnimationEffect::UpdateEmit(Player& player) {
 		if (player.IsEventKey("Effect", 0)) {
 
 			// スケーリング
-			GameEffectCommandHelper::SendScaling(*rotateLeftSwordSlashEffect_, thirdSlashParam_.scaling);
+			GameEffectCommandHelper::SendScaling(*leftSword_.slashEffect, thirdSlashParam_.scaling);
 
 			// 座標回転、コマンドをセット
-			GameEffectCommandHelper::ApplyAndSend(*rotateLeftSwordSlashEffect_, player.GetRotation(),
+			GameEffectCommandHelper::ApplyAndSend(*leftSword_.slashEffect, player.GetRotation(),
 				thirdSlashParam_.translation, thirdSlashParam_.rotation);
-			rotateLeftSwordSlashEffect_->Emit();
+			leftSword_.slashEffect->Emit();
+
+			// 火花
+			GameEffectCommandHelper::ApplyAndSend(*leftSword_.sparkEffect, player.GetRotation(),
+				thirdParticleTranslation_);
+			// フラグで発生
+			GameEffectCommandHelper::SendSpawnerEmit(*leftSword_.sparkEffect, true);
 		}
 		// 右手
 		if (player.IsEventKey("Effect", 1)) {
 
 			// スケーリング
-			GameEffectCommandHelper::SendScaling(*rotateRightSwordSlashEffect_, thirdSlashParam_.scaling);
+			GameEffectCommandHelper::SendScaling(*rightSword_.slashEffect, thirdSlashParam_.scaling);
 
 			// 座標回転、コマンドをセット
-			GameEffectCommandHelper::ApplyAndSend(*rotateRightSwordSlashEffect_, player.GetRotation(),
+			GameEffectCommandHelper::ApplyAndSend(*rightSword_.slashEffect, player.GetRotation(),
 				thirdSlashParam_.translation, thirdSlashParam_.rotation);
-			rotateRightSwordSlashEffect_->Emit();
+			rightSword_.slashEffect->Emit();
+
+			// 火花
+			GameEffectCommandHelper::ApplyAndSend(*rightSword_.sparkEffect, player.GetRotation(),
+				thirdParticleTranslation_);
+			// フラグで発生
+			GameEffectCommandHelper::SendSpawnerEmit(*rightSword_.sparkEffect, true);
 		}
 		break;
 	}
@@ -143,6 +168,13 @@ void PlayerAnimationEffect::UpdateEmit(Player& player) {
 		break;
 	}
 	}
+}
+
+void PlayerAnimationEffect::UpdateAlways() {
+
+	// 集まってくるエフェクト
+	leftSword_.sparkEffect->Emit();
+	rightSword_.sparkEffect->Emit();
 }
 
 void PlayerAnimationEffect::ImGui(const Player& player) {
@@ -207,17 +239,24 @@ void PlayerAnimationEffect::ImGui(const Player& player) {
 		if (ImGui::Button("Emit")) {
 
 			// スケーリング
-			GameEffectCommandHelper::SendScaling(*rotateLeftSwordSlashEffect_, thirdSlashParam_.scaling);
+			GameEffectCommandHelper::SendScaling(*leftSword_.slashEffect, thirdSlashParam_.scaling);
 
 			// 座標回転、コマンドをセット
-			GameEffectCommandHelper::ApplyAndSend(*rotateLeftSwordSlashEffect_, player.GetRotation(),
+			GameEffectCommandHelper::ApplyAndSend(*leftSword_.slashEffect, player.GetRotation(),
 				thirdSlashParam_.translation, thirdSlashParam_.rotation);
-			rotateLeftSwordSlashEffect_->Emit();
+			leftSword_.slashEffect->Emit();
+
+			// 火花
+			GameEffectCommandHelper::ApplyAndSend(*leftSword_.sparkEffect, player.GetRotation(),
+				thirdParticleTranslation_);
+			// フラグで発生
+			GameEffectCommandHelper::SendSpawnerEmit(*leftSword_.sparkEffect, true);
 		}
 
 		ImGui::DragFloat("scaling", &thirdSlashParam_.scaling, 0.01f);
 		ImGui::DragFloat3("rotation", &thirdSlashParam_.rotation.x, 0.01f);
 		ImGui::DragFloat3("translation", &thirdSlashParam_.translation.x, 0.01f);
+		ImGui::DragFloat3("particleTranslation", &thirdParticleTranslation_.x, 0.01f);
 		break;
 	}
 	case PlayerAnimationEffect::AnimationKey::Attack_4th: {
@@ -258,6 +297,7 @@ void PlayerAnimationEffect::ApplyJson() {
 		thirdSlashParam_.scaling = data[key].value("scaling", 1.0f);
 		thirdSlashParam_.translation = Vector3::FromJson(data[key].value("translation", Json()));
 		thirdSlashParam_.rotation = Vector3::FromJson(data[key].value("rotation", Json()));
+		thirdParticleTranslation_ = Vector3::FromJson(data[key].value("thirdParticleTranslation_", Json()));
 	}
 }
 
@@ -285,6 +325,7 @@ void PlayerAnimationEffect::SaveJson() {
 	data[key]["scaling"] = thirdSlashParam_.scaling;
 	data[key]["translation"] = thirdSlashParam_.translation.ToJson();
 	data[key]["rotation"] = thirdSlashParam_.rotation.ToJson();
+	data[key]["thirdParticleTranslation_"] = thirdParticleTranslation_.ToJson();
 
 	JsonAdapter::Save("Player/animationEffectEmit.json", data);
 }

@@ -100,8 +100,8 @@
                             "scale": 8.0,
                             "spawnBurstCount": 0,
                             "translation": {
-                                "x": 17.049999237060547,
-                                "y": 5.099999904632568,
+                                "x": 0.0,
+                                "y": 0.0,
                                 "z": 0.0
                             },
                             "useMulti": false,
@@ -154,9 +154,9 @@
                                 },
                                 "scale": {
                                     "start": {
-                                        "x": 3.200000047683716,
-                                        "y": 3.200000047683716,
-                                        "z": 3.200000047683716
+                                        "x": 1.0,
+                                        "y": 1.0,
+                                        "z": 1.0
                                     },
                                     "target": {
                                         "x": 0.0,
@@ -178,9 +178,9 @@
                                     },
                                     "target": {
                                         "a": 1.0,
-                                        "b": 0.8745098114013672,
-                                        "g": 0.38425499200820923,
-                                        "r": 0.13333332538604736
+                                        "b": 0.13333332538604736,
+                                        "g": 0.29296770691871643,
+                                        "r": 0.8745098114013672
                                     }
                                 },
                                 "easingType": "EaseOutExpo",
@@ -207,8 +207,8 @@
                                 },
                                 "easingType": "EaseInSine",
                                 "intencity": {
-                                    "start": 1.059999942779541,
-                                    "target": 1.059999942779541
+                                    "start": 0.4000000059604645,
+                                    "target": 0.4000000059604645
                                 }
                             },
                             "type": "Emissive"
@@ -220,6 +220,6 @@
             "textureName": ""
         }
     ],
-    "name": "rotateDispersionParticle",
+    "name": "rotateDispersionParticle0",
     "primitiveType": "Plane"
 }
