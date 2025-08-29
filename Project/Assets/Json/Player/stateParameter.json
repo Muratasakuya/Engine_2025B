@@ -235,12 +235,18 @@
         "parryLerp_.time": 0.800000011920929
     },
     "SkilAttack": {
-        "approach_.easingType": 14,
-        "approach_.time": 0.1599999964237213,
-        "leave_.easingType": 1,
-        "leave_.time": 0.1599999964237213,
-        "moveDistance_": 5.099999904632568,
-        "nextAnimDuration_": 0.0,
+        "MoveTimer": {
+            "easeingType_": "EaseOutExpo",
+            "target_": 0.10999999940395355
+        },
+        "attackLookAtCircleRange_": 108.0,
+        "attackOffsetTranslation_": 8.0,
+        "attackPosEaseType_": 0,
+        "attackPosLerpCircleRange_": 95.4000015258789,
+        "attackPosLerpTime_": 0.4399999976158142,
+        "exitTime_": 0.029999999329447746,
+        "moveValue_": 26.799999237060547,
+        "nextAnimDuration_": 0.029999999329447746,
         "rotationLerpRate_": 0.3199999928474426
     },
     "StunAttack": {
