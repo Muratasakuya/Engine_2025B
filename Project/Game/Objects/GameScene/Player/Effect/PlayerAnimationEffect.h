@@ -63,10 +63,12 @@ private:
 
 	// 現在のアニメーション
 	AnimationKey currentAnimationKey_;
+	AnimationKey preAnimationKey_;
 	AnimationKey editAnimationKey_;
 
 	// 斬撃
 	std::unique_ptr<GameEffect> slashEffect_;
+	std::unique_ptr<GameEffect> rotateSlashEffect_;
 	// 回転する剣の周り
 	// 1つに出来たらしたい
 	Sword leftSword_;
@@ -81,6 +83,8 @@ private:
 	// 3段目の攻撃、2つの剣で共通
 	Slash thirdSlashParam_;
 	Vector3 thirdParticleTranslation_;
+	// 4段目の攻撃
+	Slash fourthSlashParam_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -35,6 +35,15 @@
                     8
                 ]
             }
+        },
+        {
+            "object": "playerArmature",
+            "action": "attack_4th",
+            "events": {
+                "Effect": [
+                    0
+                ]
+            }
         }
     ]
 }
