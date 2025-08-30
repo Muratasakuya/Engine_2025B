@@ -1,0 +1,19 @@
+{
+    "RandomDisplayTime": {
+        "easeingType_": "EaseInSine",
+        "target_": 4.0
+    },
+    "timerOffsetX_": 168.0,
+    "timerSize_": {
+        "x": 320.0,
+        "y": 320.0
+    },
+    "timerSymbolSize_": {
+        "x": 192.0,
+        "y": 192.0
+    },
+    "timerTranslation_": {
+        "x": 268.0,
+        "y": 540.0
+    }
+}

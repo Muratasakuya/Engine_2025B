@@ -75,6 +75,9 @@ void StartGameState::Init(SceneView* sceneView) {
 	// 衝突応答にプレイヤー、ボスをセット
 	context_->fieldBoundary->SetPushBackTarget(context_->player, context_->boss);
 
+	// リザルト画面
+	context_->result->Init();
+
 	//========================================================================
 	//	sprites
 	//========================================================================

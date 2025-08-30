@@ -698,6 +698,9 @@
     <ClCompile Include="Game\Scene\GameState\States\ResultGameState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Game\Objects\GameScene\Result\GameResultDisplay.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Asset\AnimationManager.h" />
@@ -969,6 +972,7 @@
     <ClInclude Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_4thState.h" />
     <ClInclude Include="Game\Camera\ResultCamera\ClearResultCamera.h" />
     <ClInclude Include="Game\Scene\GameState\States\ResultGameState.h" />
+    <ClInclude Include="Game\Objects\GameScene\Result\GameResultDisplay.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

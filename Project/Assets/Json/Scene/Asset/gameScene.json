@@ -19,6 +19,7 @@
     "playerDamageNumber",
     "timeNumber",
     "timeSymbol",
+    "toughnessTimeSymbol",
     "bossName",
     "playerHPBackground",
     "playerHPBar",

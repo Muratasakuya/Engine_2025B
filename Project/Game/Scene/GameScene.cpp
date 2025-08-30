@@ -27,6 +27,7 @@ void GameScene::InitStates() {
 	// object
 	context_.player = player_.get();
 	context_.boss = bossEnemy_.get();
+	context_.result = result_.get();
 	// sprite
 	context_.fadeSprite = fadeSprite_.get();
 	// editor
@@ -77,6 +78,7 @@ void GameScene::Init() {
 
 	player_ = std::make_unique<Player>();
 	bossEnemy_ = std::make_unique<BossEnemy>();
+	result_ = std::make_unique<GameResultDisplay>();
 
 	fadeSprite_ = std::make_unique<FadeSprite>();
 
@@ -150,6 +152,9 @@ void GameScene::Update() {
 		if (states_[stateIndex]->IsRequestNext()) {
 
 			RequestNextState(GameSceneState::Result);
+			// プレイヤーと敵を消す
+			player_.reset();
+			bossEnemy_.reset();
 		}
 		break;
 	}
