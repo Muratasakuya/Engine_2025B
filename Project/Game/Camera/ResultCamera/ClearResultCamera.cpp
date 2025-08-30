@@ -14,7 +14,6 @@
 
 void ClearResultCamera::Init() {
 
-	displayFrustum_ = true;
 	initRotateX_ = transform_.eulerRotate.x;
 
 	// json適応

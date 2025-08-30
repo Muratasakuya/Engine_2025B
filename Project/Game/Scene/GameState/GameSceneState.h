@@ -11,6 +11,7 @@ enum class GameSceneState {
 	BeginGame, // ゲーム開始演出
 	PlayGame,  // ゲーム中
 	EndGame,   // 敵を倒した OR プレイヤーが負けた
+	Result,    // リザルト画面表示
 	Pause,     // ポーズ中
 	Count,
 };

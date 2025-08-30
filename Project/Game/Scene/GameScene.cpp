@@ -11,6 +11,7 @@
 #include <Game/Scene/GameState/States/BeginGameState.h>
 #include <Game/Scene/GameState/States/PlayGameState.h>
 #include <Game/Scene/GameState/States/EndGameState.h>
+#include <Game/Scene/GameState/States/ResultGameState.h>
 #include <Game/Scene/GameState/States/PauseState.h>
 
 //============================================================================
@@ -43,6 +44,9 @@ void GameScene::InitStates() {
 
 	states_[static_cast<uint32_t>(GameSceneState::EndGame)] = std::make_unique<EndGameState>(&context_);
 	states_[static_cast<uint32_t>(GameSceneState::EndGame)]->Init(sceneView_);
+
+	states_[static_cast<uint32_t>(GameSceneState::Result)] = std::make_unique<ResultGameState>(&context_);
+	states_[static_cast<uint32_t>(GameSceneState::Result)]->Init(sceneView_);
 
 	states_[static_cast<uint32_t>(GameSceneState::Pause)] = std::make_unique<PauseState>(&context_);
 	states_[static_cast<uint32_t>(GameSceneState::Pause)]->Init(sceneView_);
@@ -142,10 +146,22 @@ void GameScene::Update() {
 
 		states_[stateIndex]->Update(nullptr);
 
-		// 終了演出後、クリアシーンに遷移させる
-		if (states_[stateIndex]->IsRequestNext() && fadeTransition_) {
+		// 終了演出後リザルト画面に遷移させる
+		if (states_[stateIndex]->IsRequestNext()) {
 
-			sceneManager_->SetNextScene(Scene::Clear, std::move(fadeTransition_));
+			RequestNextState(GameSceneState::Result);
+		}
+		break;
+	}
+		//========================================================================
+		//	リザルト画面の処理
+		//========================================================================
+	case GameSceneState::Result: {
+
+		states_[stateIndex]->Update(nullptr);
+
+		// 入力に応じて遷移先を決定する
+		if (states_[stateIndex]->IsRequestNext() && fadeTransition_) {
 		}
 		break;
 	}

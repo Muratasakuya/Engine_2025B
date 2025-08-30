@@ -140,8 +140,8 @@ public:
 	//--------- properties ---------------------------------------------------
 
 	Vector2 center = Vector2::AnyInit(0.5f);
-	int numSamples = 8;
-	float width = 0.01f;
+	int numSamples = 0;
+	float width = 0.0f;
 };
 
 class HorizonBlurForGPU {

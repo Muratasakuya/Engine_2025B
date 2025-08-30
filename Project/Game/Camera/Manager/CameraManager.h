@@ -11,6 +11,7 @@
 #include <Game/Camera/Follow/FollowCamera.h>
 #include <Game/Camera/BeginGame/BeginGameCamera.h>
 #include <Game/Camera/EndGame/EndGameCamera.h>
+#include <Game/Camera/ResultCamera/ClearResultCamera.h>
 // front
 class Player;
 class SceneView;
@@ -58,6 +59,8 @@ private:
 	std::unique_ptr<BeginGameCamera> beginGameCamera_;
 	// ゲーム終了時のカメラ
 	std::unique_ptr<EndGameCamera> endGameCamera_;
+	// リザルト画面のカメラ
+	std::unique_ptr<ClearResultCamera> resultCamera_;
 
 	//--------- functions ----------------------------------------------------
 

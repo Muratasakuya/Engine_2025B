@@ -608,9 +608,6 @@
     <ClCompile Include="Engine\Utility\ImGuiHelper.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Game\Scene\ClearScene.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\Core\Graphics\DxObject\DxUploadCommand.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -696,6 +693,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Game\Camera\ResultCamera\ClearResultCamera.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Game\Scene\GameState\States\ResultGameState.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
@@ -930,7 +930,6 @@
     <ClInclude Include="Engine\Effect\Particle\Module\ParticleModuleID.h" />
     <ClInclude Include="Engine\Utility\ImGuiHelper.h" />
     <ClInclude Include="Engine\Asset\AssetEditorPayloadData.h" />
-    <ClInclude Include="Game\Scene\ClearScene.h" />
     <ClInclude Include="Engine\Core\Graphics\DxObject\DxUploadCommand.h" />
     <ClInclude Include="Engine\Asset\Async\AssetAsyncQueue.h" />
     <ClInclude Include="Engine\Asset\Async\AssetLoadWorker.h" />
@@ -969,6 +968,7 @@
     <ClInclude Include="Game\Objects\GameScene\Player\Effect\PlayerAnimationEffect.h" />
     <ClInclude Include="Game\Objects\GameScene\Player\State\States\PlayerAttack_4thState.h" />
     <ClInclude Include="Game\Camera\ResultCamera\ClearResultCamera.h" />
+    <ClInclude Include="Game\Scene\GameState\States\ResultGameState.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />
