@@ -60,6 +60,13 @@ private:
 	// parameters
 	// BeginTime
 	StateTimer randomDisplayTimer_; // 時間をランダムで表示する時間
+	float randomTimeMax_;    // 乱数の最大値
+	int randomSwitchCount_;  // 数字が切り替わる回数
+	int randomSwitchIndex_;  // 現在の切り替え回数
+	float randomSwitchBias_; // 切り替え間隔
+	float nextSwitchT_;      // 次の切り替え閾値
+	float lastRandomTime_;   // 直近に表示している乱数
+
 	Vector2 timerTranslation_; // タイマーの座標
 	float timerOffsetX_;       // タイマーの間の間隔X
 	Vector2 timerSize_;        // タイマーのサイズ

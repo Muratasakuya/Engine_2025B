@@ -1,8 +1,11 @@
 {
     "RandomDisplayTime": {
         "easeingType_": "EaseInSine",
-        "target_": 4.0
+        "target_": 2.319999933242798
     },
+    "randomSwitchBias_": 3.200000047683716,
+    "randomSwitchCount_": 32,
+    "randomTimeMax_": 1000000.0,
     "timerOffsetX_": 168.0,
     "timerSize_": {
         "x": 320.0,
