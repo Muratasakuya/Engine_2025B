@@ -19,9 +19,9 @@ void ClearScene::Init() {
 	//========================================================================
 
 	// カメラの設定
-	camera3D_ = std::make_unique<BaseCamera>();
-	camera3D_->UpdateView();
-	sceneView_->SetGameCamera(camera3D_.get());
+	resultCamera_ = std::make_unique<ClearResultCamera>();
+	resultCamera_->Init();
+	sceneView_->SetGameCamera(resultCamera_.get());
 
 	// ライトの設定
 	light_ = std::make_unique<PunctualLight>();
@@ -34,6 +34,13 @@ void ClearScene::Init() {
 }
 
 void ClearScene::Update() {
+
+	//========================================================================
+	//	scene
+	//========================================================================
+	
+	// カメラの更新
+	resultCamera_->Update();
 
 	//========================================================================
 	//	sceneEvent

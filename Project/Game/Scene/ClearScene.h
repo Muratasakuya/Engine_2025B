@@ -6,8 +6,8 @@
 #include <Engine/Scene/Methods/IScene.h>
 
 // scene
-#include <Engine/Scene/Camera/BaseCamera.h>
 #include <Engine/Scene/Light/PunctualLight.h>
+#include <Game/Camera/ResultCamera/ClearResultCamera.h>
 #include <Game/Objects/SceneTransition/FadeTransition.h>
 
 //============================================================================
@@ -34,7 +34,7 @@ private:
 	//--------- variables ----------------------------------------------------
 
 	// scene
-	std::unique_ptr<BaseCamera> camera3D_;
+	std::unique_ptr<ClearResultCamera> resultCamera_;
 	std::unique_ptr<PunctualLight> light_;
 	std::unique_ptr<FadeTransition> fadeTransition_;
 };
