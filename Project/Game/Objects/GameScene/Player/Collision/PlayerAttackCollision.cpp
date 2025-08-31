@@ -81,6 +81,7 @@ void PlayerAttackCollision::SetEnterState(PlayerState state) {
 	if (Algorithm::Find(table_, state)) {
 
 		currentParameter_ = &table_[state];
+		reHitTimer_ = 0.0f;
 	}
 
 	// 無効状態を設定
