@@ -73,6 +73,8 @@ private:
 	// 1つに出来たらしたい
 	Sword leftSword_;
 	Sword rightSword_;
+	// 地割れ
+	std::unique_ptr<GameEffect> groundEffect_;
 
 	// 1段目の攻撃
 	Slash firstSlashParam_;
@@ -85,6 +87,7 @@ private:
 	Vector3 thirdParticleTranslation_;
 	// 4段目の攻撃
 	Slash fourthSlashParam_;
+	Vector3 fourthGroundTranslation_;
 
 	//--------- functions ----------------------------------------------------
 

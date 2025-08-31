@@ -41,7 +41,8 @@
             "action": "attack_4th",
             "events": {
                 "Effect": [
-                    0
+                    0,
+                    9
                 ]
             }
         }

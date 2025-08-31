@@ -44,6 +44,12 @@ void PlayerAnimationEffect::Init(const Player& player) {
 	rightSword_.sparkEffect->SetParent(
 		player.GetWeapon(PlayerWeaponType::Right)->GetTransform());
 
+	// 地割れ
+	groundEffect_ = std::make_unique<GameEffect>();
+	groundEffect_->CreateParticleSystem("Particle/playerAttackGround.json");
+	// 親を設定
+	groundEffect_->SetParent(player.GetTransform());
+
 	// json適応
 	ApplyJson();
 
@@ -71,6 +77,8 @@ void PlayerAnimationEffect::UpdateAnimationKey(Player& player) {
 	if (name == "player_attack_1st") {
 
 		currentAnimationKey_ = AnimationKey::Attack_1st;
+		// エフェクトの発生をリセット
+		secondAttackEventIndex_ = 0;
 	} else if (name == "player_attack_2nd") {
 
 		currentAnimationKey_ = AnimationKey::Attack_2nd;
@@ -178,6 +186,15 @@ void PlayerAnimationEffect::UpdateEmit(Player& player) {
 			GameEffectCommandHelper::ApplyAndSend(*rotateSlashEffect_, player.GetRotation(),
 				fourthSlashParam_.translation, fourthSlashParam_.rotation);
 			rotateSlashEffect_->Emit();
+		}
+
+		// 地割れ
+		if (player.IsEventKey("Effect", 1)) {
+
+			// 座標を設定
+			GameEffectCommandHelper::ApplyAndSend(*groundEffect_, player.GetRotation(),
+				fourthGroundTranslation_);
+			groundEffect_->Emit();
 		}
 		break;
 	}
@@ -295,6 +312,7 @@ void PlayerAnimationEffect::ImGui(const Player& player) {
 		ImGui::DragFloat("scaling", &fourthSlashParam_.scaling, 0.01f);
 		ImGui::DragFloat3("rotation", &fourthSlashParam_.rotation.x, 0.01f);
 		ImGui::DragFloat3("translation", &fourthSlashParam_.translation.x, 0.01f);
+		ImGui::DragFloat3("groundTranslation", &fourthGroundTranslation_.x, 0.01f);
 		break;
 	}
 	case PlayerAnimationEffect::AnimationKey::Skil: {
@@ -341,6 +359,7 @@ void PlayerAnimationEffect::ApplyJson() {
 		fourthSlashParam_.scaling = data[key].value("scaling", 1.0f);
 		fourthSlashParam_.translation = Vector3::FromJson(data[key].value("translation", Json()));
 		fourthSlashParam_.rotation = Vector3::FromJson(data[key].value("rotation", Json()));
+		fourthGroundTranslation_ = Vector3::FromJson(data[key].value("fourthGroundTranslation_", Json()));
 	}
 }
 
@@ -374,6 +393,7 @@ void PlayerAnimationEffect::SaveJson() {
 	data[key]["scaling"] = fourthSlashParam_.scaling;
 	data[key]["translation"] = fourthSlashParam_.translation.ToJson();
 	data[key]["rotation"] = fourthSlashParam_.rotation.ToJson();
+	data[key]["fourthGroundTranslation_"] = fourthGroundTranslation_.ToJson();
 
 	JsonAdapter::Save("Player/animationEffectEmit.json", data);
 }
