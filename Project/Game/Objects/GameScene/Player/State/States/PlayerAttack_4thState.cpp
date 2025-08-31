@@ -52,6 +52,8 @@ void PlayerAttack_4thState::Update(Player& player) {
 	if (canExit_) {
 
 		exitTimer_ += GameTimer::GetScaledDeltaTime();
+		// 画面シェイクを行わせる
+		followCamera_->SetScreenShake(true);
 	}
 }
 
