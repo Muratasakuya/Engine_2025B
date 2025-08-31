@@ -39,7 +39,7 @@ void PlayerStateController::Init(Player& owner) {
 	inputMapper_ = std::make_unique<InputMapper<PlayerInputAction>>();
 	inputMapper_->AddDevice(std::make_unique<PlayerGamePadInput>(input));
 
-#ifdef NDEBUG
+#ifdef _RELEASE
 	inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>(input));
 #endif
 

@@ -47,6 +47,10 @@ void PlayGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 		context_->boss->IsDead()) {
 
 		requestNext_ = true;
+
+		// HUDの表示を消す
+		context_->player->GetHUD()->SetDisable();
+		context_->boss->GetHUD()->SetDisable();
 	}
 }
 

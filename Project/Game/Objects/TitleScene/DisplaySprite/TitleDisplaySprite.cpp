@@ -134,7 +134,7 @@ void TitleDisplaySprite::CheckGameStart() {
 	// 入力状態に応じて判定方法を変える
 	const auto& inputType = Input::GetInstance()->GetType();
 	if (inputType == InputType::Keyboard) {
-#ifdef NDEBUG
+#ifdef _RELEASE
 		// 電源ボタン以外の場所を左クリックしたら開始
 		if (finishUI_->GetPowerButton()->GetCurrentHover()) {
 			return;
