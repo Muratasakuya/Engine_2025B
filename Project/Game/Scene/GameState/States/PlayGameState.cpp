@@ -18,6 +18,9 @@ void PlayGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 	context_->boss->Update(currentState);
 	context_->player->Update();
 
+	// 時間経過を計測
+	context_->result->Measurement();
+
 	//========================================================================
 	//	sprite
 	//========================================================================

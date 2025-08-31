@@ -7,6 +7,7 @@
 #include <Game/Objects/GameScene/Player/Entity/Player.h>
 #include <Engine/Utility/JsonAdapter.h>
 #include <Engine/Utility/EnumAdapter.h>
+#include <Engine/Input/Input.h>
 #include <Lib/Adapter/RandomGenerator.h>
 
 //============================================================================
@@ -91,6 +92,20 @@ void BossEnemy::SetInitTransform() {
 	transform_->eulerRotate = initTransform_.eulerRotate;
 	transform_->rotation = initTransform_.rotation;
 	transform_->translation = initTransform_.translation;
+}
+
+void BossEnemy::DebugCommand() {
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+
+	// キルコマンド
+	if (Input::GetInstance()->PushKey(DIK_0)) {
+		if (Input::GetInstance()->TriggerKey(DIK_1)) {
+
+			stats_.currentHP = 0;
+		}
+	}
+#endif
 }
 
 void BossEnemy::DerivedInit() {
@@ -243,6 +258,9 @@ void BossEnemy::UpdatePlayGame() {
 
 	// エフェクトの更新
 	animationEffect_->Update(*this);
+
+	// デバッグ用コマンド
+	DebugCommand();
 }
 
 void BossEnemy::UpdateEndGame() {

@@ -3,29 +3,28 @@
 //============================================================================
 //	include
 //============================================================================
-#include <Engine/Scene/Methods/IScene.h>
-
-// scene
-#include <Engine/Scene/Light/PunctualLight.h>
-#include <Game/Camera/ResultCamera/ClearResultCamera.h>
-#include <Game/Objects/SceneTransition/FadeTransition.h>
+#include <Game/Scene/GameState/Interface/IGameSceneState.h>
 
 //============================================================================
-//	ClearScene class
+//	ResultGameState class
 //============================================================================
-class ClearScene :
-	public IScene {
+class ResultGameState :
+	public IGameSceneState {
 public:
 	//========================================================================
 	//	public Methods
 	//========================================================================
 
-	ClearScene() = default;
-	~ClearScene() = default;
+	ResultGameState(GameContext* context) :IGameSceneState(context) {}
+	~ResultGameState() = default;
 
-	void Init() override;
+	void Init(SceneView* sceneView) override;
 
-	void Update() override;
+	void Update(SceneManager* sceneManager) override;
+	void NonActiveUpdate(SceneManager* sceneManager) override;
+
+	// 遷移開始時
+	void Enter() override;
 private:
 	//========================================================================
 	//	private Methods
@@ -33,8 +32,8 @@ private:
 
 	//--------- variables ----------------------------------------------------
 
-	// scene
-	std::unique_ptr<ClearResultCamera> resultCamera_;
-	std::unique_ptr<PunctualLight> light_;
-	std::unique_ptr<FadeTransition> fadeTransition_;
+
+
+	//--------- functions ----------------------------------------------------
+
 };

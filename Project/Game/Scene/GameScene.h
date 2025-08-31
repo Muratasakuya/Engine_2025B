@@ -53,6 +53,7 @@ private:
 	// objects
 	std::unique_ptr<Player> player_;
 	std::unique_ptr<BossEnemy> bossEnemy_;
+	std::unique_ptr<GameResultDisplay> result_;
 
 	// sprites
 	std::unique_ptr<FadeSprite> fadeSprite_;
@@ -64,6 +65,9 @@ private:
 
 	// init
 	void InitStates();
+
+	// update
+	void UpdateAlways();
 
 	// helper
 	void RequestNextState(GameSceneState next);

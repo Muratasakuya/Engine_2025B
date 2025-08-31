@@ -22,7 +22,8 @@ void TitleScene::Init() {
 	PostProcessSystem::GetInstance()->Create({
 		PostProcessType::RadialBlur,
 		PostProcessType::Bloom,
-		PostProcessType::CRTDisplay });
+		PostProcessType::CRTDisplay,
+		PostProcessType::Grayscale });
 
 	//========================================================================
 	//	controller(objects)

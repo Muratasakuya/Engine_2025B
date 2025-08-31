@@ -17,6 +17,8 @@ void GamecButtonFocusNavigator::Init(ButtonFocusGroup group, const std::vector<G
 	items_ = items;
 	index_ = 0;
 	defaultIndex_ = 0;
+	hasFocus_ = false;
+	axisLatched_ = false;
 	ClearFocus();
 }
 

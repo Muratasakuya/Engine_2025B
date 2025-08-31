@@ -5,7 +5,6 @@
 //============================================================================
 #include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Core/Graphics/PostProcess/PostProcessSystem.h>
-#include <Engine/Core/Graphics/PostProcess/Buffer/PostProcessBufferSize.h>
 #include <Engine/Object/Core/ObjectManager.h>
 #include <Engine/Scene/SceneView.h>
 
@@ -15,26 +14,13 @@
 
 void StartGameState::Init(SceneView* sceneView) {
 
-	// ゲーム開始時、全ての初期化を行う
-
 	//========================================================================
 	//	postProcess
 	//========================================================================
 
 	PostProcessSystem* postProcessSystem = PostProcessSystem::GetInstance();
-
-	postProcessSystem->Create({
-			PostProcessType::RadialBlur,
-			PostProcessType::Bloom });
 	postProcessSystem->AddProcess(PostProcessType::RadialBlur);
 	postProcessSystem->AddProcess(PostProcessType::Bloom);
-
-	// ブラーの値を0.0fで初期化
-	RadialBlurForGPU radialBlurParam{};
-	radialBlurParam.center = Vector2(0.5f, 0.5f);
-	radialBlurParam.numSamples = 0;
-	radialBlurParam.width = 0.0f;
-	postProcessSystem->SetParameter(radialBlurParam, PostProcessType::RadialBlur);
 
 	//========================================================================
 	//	sceneObject
@@ -88,6 +74,9 @@ void StartGameState::Init(SceneView* sceneView) {
 
 	// 衝突応答にプレイヤー、ボスをセット
 	context_->fieldBoundary->SetPushBackTarget(context_->player, context_->boss);
+
+	// リザルト画面
+	context_->result->Init();
 
 	//========================================================================
 	//	sprites

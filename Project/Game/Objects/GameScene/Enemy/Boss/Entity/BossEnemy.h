@@ -124,4 +124,5 @@ private:
 
 	// helper
 	void SetInitTransform();
+	void DebugCommand();
 };

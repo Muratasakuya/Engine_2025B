@@ -12,6 +12,7 @@
 // object
 #include <Game/Objects/GameScene/Player/Entity/Player.h>
 #include <Game/Objects/GameScene/Enemy/Boss/Entity/BossEnemy.h>
+#include <Game/Objects/GameScene/Result/GameResultDisplay.h>
 
 // sprite
 #include <Game/Objects/GameScene/SpriteEffect/FadeSprite.h>
@@ -34,7 +35,8 @@ struct GameContext {
 	// object
 	Player* player = nullptr;
 	BossEnemy* boss = nullptr;
-	
+	GameResultDisplay* result = nullptr;
+
 	// sprite
 	FadeSprite* fadeSprite = nullptr;
 

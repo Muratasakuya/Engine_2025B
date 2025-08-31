@@ -21,7 +21,7 @@ void EndGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 	//	sceneEvent
 	//========================================================================
 
-	// カメラの演出が終了次第クリアシーンに移す
+	// カメラの演出が終了次第リザルト画面に遷移させる
 	if (context_->camera->GetEndGameCamera()->IsFinished()) {
 
 		requestNext_ = true;

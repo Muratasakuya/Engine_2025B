@@ -11,6 +11,7 @@
 #include <Game/Scene/GameState/States/BeginGameState.h>
 #include <Game/Scene/GameState/States/PlayGameState.h>
 #include <Game/Scene/GameState/States/EndGameState.h>
+#include <Game/Scene/GameState/States/ResultGameState.h>
 #include <Game/Scene/GameState/States/PauseState.h>
 
 //============================================================================
@@ -26,6 +27,7 @@ void GameScene::InitStates() {
 	// object
 	context_.player = player_.get();
 	context_.boss = bossEnemy_.get();
+	context_.result = result_.get();
 	// sprite
 	context_.fadeSprite = fadeSprite_.get();
 	// editor
@@ -43,6 +45,9 @@ void GameScene::InitStates() {
 
 	states_[static_cast<uint32_t>(GameSceneState::EndGame)] = std::make_unique<EndGameState>(&context_);
 	states_[static_cast<uint32_t>(GameSceneState::EndGame)]->Init(sceneView_);
+
+	states_[static_cast<uint32_t>(GameSceneState::Result)] = std::make_unique<ResultGameState>(&context_);
+	states_[static_cast<uint32_t>(GameSceneState::Result)]->Init(sceneView_);
 
 	states_[static_cast<uint32_t>(GameSceneState::Pause)] = std::make_unique<PauseState>(&context_);
 	states_[static_cast<uint32_t>(GameSceneState::Pause)]->Init(sceneView_);
@@ -73,6 +78,7 @@ void GameScene::Init() {
 
 	player_ = std::make_unique<Player>();
 	bossEnemy_ = std::make_unique<BossEnemy>();
+	result_ = std::make_unique<GameResultDisplay>();
 
 	fadeSprite_ = std::make_unique<FadeSprite>();
 
@@ -142,10 +148,34 @@ void GameScene::Update() {
 
 		states_[stateIndex]->Update(nullptr);
 
-		// 終了演出後、クリアシーンに遷移させる
+		// 終了演出後リザルト画面に遷移させる
+		if (states_[stateIndex]->IsRequestNext()) {
+
+			RequestNextState(GameSceneState::Result);
+			// プレイヤーと敵を消す
+			player_.reset();
+			bossEnemy_.reset();
+		}
+		break;
+	}
+		//========================================================================
+		//	リザルト画面の処理
+		//========================================================================
+	case GameSceneState::Result: {
+
+		states_[stateIndex]->Update(nullptr);
+
+		// 入力に応じて遷移先を決定する
 		if (states_[stateIndex]->IsRequestNext() && fadeTransition_) {
 
-			sceneManager_->SetNextScene(Scene::Clear, std::move(fadeTransition_));
+			ResultGameState* state = static_cast<ResultGameState*>(states_[stateIndex].get());
+			if (state->GetResultSelect() == ResultSelect::Retry) {
+
+				sceneManager_->SetNextScene(Scene::Game, std::move(fadeTransition_));
+			} else if (state->GetResultSelect() == ResultSelect::Title) {
+
+				sceneManager_->SetNextScene(Scene::Title, std::move(fadeTransition_));
+			}
 		}
 		break;
 	}
