@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Object/Base/GameObject2D.h>
 #include <Game/Scene/GameState/Interface/IGameSceneState.h>
 
 //============================================================================
@@ -23,6 +24,8 @@ public:
 	void Update(SceneManager* sceneManager) override;
 	void NonActiveUpdate(SceneManager* sceneManager) override;
 
+	void Exit() override;
+
 	void ImGui() override;
 private:
 	//========================================================================
@@ -30,6 +33,9 @@ private:
 	//========================================================================
 
 	//--------- variables ----------------------------------------------------
+
+	// プレイヤーの移動する方向
+	std::unique_ptr<GameObject2D> playerToBossText_;
 
 	// 指定の範囲に入ったら次の状態に遷移させる
 	std::unique_ptr<Collider> nextStateEvent_;

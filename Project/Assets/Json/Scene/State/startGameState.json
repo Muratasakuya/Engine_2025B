@@ -14,5 +14,13 @@
                 }
             }
         }
+    },
+    "playerToBossText_Pos": {
+        "x": 964.0,
+        "y": 980.0
+    },
+    "playerToBossText_Size": {
+        "x": 346.0,
+        "y": 64.0
     }
 }
