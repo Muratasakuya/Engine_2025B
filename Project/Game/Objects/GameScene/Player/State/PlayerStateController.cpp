@@ -201,6 +201,12 @@ void PlayerStateController::Update(Player& owner) {
 
 		currentState->Update(owner);
 	}
+
+	// 常に更新する値
+	for (const auto& state : std::views::values(states_)) {
+
+		state->UpdateAlways(owner);
+	}
 }
 
 void PlayerStateController::UpdateInputState() {

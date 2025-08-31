@@ -22,14 +22,18 @@ PlayerIdleState::PlayerIdleState() {
 void PlayerIdleState::Enter(Player& player) {
 
 	canExit_ = false;
-	player.SetNextAnimation("player_idle",true, nextAnimDuration_);
+	player.SetNextAnimation("player_idle", true, nextAnimDuration_);
 }
 
 void PlayerIdleState::Update([[maybe_unused]] Player& player) {
 
+	canExit_ = true;
+}
+
+void PlayerIdleState::UpdateAlways(Player& player) {
+
 	// 前状態が切り替えでブラーがかかった状態なら元に戻す処理を行う
 	if (preState_ != PlayerState::SwitchAlly) {
-		canExit_ = true;
 		return;
 	}
 

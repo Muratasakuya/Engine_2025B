@@ -30,6 +30,7 @@ public:
 
 	// 更新処理
 	virtual void Update(Player& player) = 0;
+	virtual void UpdateAlways(Player& player) {}
 
 	// 状態終了時
 	virtual void Exit(Player& player) = 0;

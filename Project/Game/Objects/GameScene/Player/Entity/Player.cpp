@@ -257,7 +257,6 @@ void Player::CheckBossEnemyStun() {
 		return;
 	}
 
-
 	// スタン状態になったら状態を切り替え状態に強制的に遷移させる
 	isStunUpdate_ = true;
 	stateController_->SetForcedState(*this, PlayerState::SwitchAlly);
