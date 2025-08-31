@@ -137,6 +137,9 @@ void BossEnemyBladeCollision::ApplyJson() {
 	lifeTime_ = JsonAdapter::GetValue<float>(data, "lifeTime_");
 	outsideTranslationY_ = JsonAdapter::GetValue<float>(data, "outsideTranslationY_");
 	scale_ = JsonAdapter::ToObject<Vector3>(data["scale_"]);
+
+	transform_.translation.y = outsideTranslationY_;
+	Collider::UpdateAllBodies(transform_);
 }
 
 void BossEnemyBladeCollision::SaveJson() {
