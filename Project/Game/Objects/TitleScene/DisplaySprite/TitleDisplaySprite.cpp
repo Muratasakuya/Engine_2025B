@@ -26,6 +26,9 @@ void TitleDisplaySprite::InitSprites() {
 		std::make_unique<GameButtonBlinkingUpdater>());
 	start_->RegisterUpdater(GameButtonResponseType::Focus,
 		std::make_unique<GameButtonBlinkingUpdater>());
+
+	operateDevice_ = std::make_unique<GameObject2D>();
+	operateDevice_->Init("gamePadOrMouse", "gamePadOrMouse", groupName);
 }
 
 void TitleDisplaySprite::InitNavigator() {
@@ -203,6 +206,8 @@ void TitleDisplaySprite::ApplyJson() {
 
 	name_->SetSize(JsonAdapter::ToObject<Vector2>(data["name_Size"]));
 	start_->SetSize(JsonAdapter::ToObject<Vector2>(data["start_Size"]));
+	operateDevice_->SetSize(Vector2::FromJson(data.value("device_Size", Json())));
+	operateDevice_->SetTranslation(Vector2::FromJson(data.value("device_Pos", Json())));
 
 	finishUI_->ApplyJson(data["FinishUI"]);
 
@@ -221,6 +226,8 @@ void TitleDisplaySprite::SaveJson() {
 
 	data["name_Size"] = name_->GetSize().ToJson();
 	data["start_Size"] = start_->GetSize().ToJson();
+	data["device_Size"] = operateDevice_->GetSize().ToJson();
+	data["device_Pos"] = operateDevice_->GetTranslation().ToJson();
 
 	finishUI_->SaveJson(data["FinishUI"]);
 
