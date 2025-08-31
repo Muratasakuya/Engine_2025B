@@ -142,7 +142,7 @@ void PlayerParryState::UpdateAnimation(Player& player) {
 	case RequestState::PlayAnimation: {
 
 		// 3段目の攻撃を再生させる
-		player.SetNextAnimation("player_attack_3rd", false, nextAnimDuration_);
+		player.SetNextAnimation("player_attack_4th", false, nextAnimDuration_);
 
 		// 補間先の座標を再設定する
 		SetLerpValue(startPos_, targetPos_,

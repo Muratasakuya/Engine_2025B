@@ -30,7 +30,7 @@ void PlayerIdleState::Update([[maybe_unused]] Player& player) {
 	canExit_ = true;
 }
 
-void PlayerIdleState::UpdateAlways(Player& player) {
+void PlayerIdleState::UpdateAlways([[maybe_unused]] Player& player) {
 
 	// 前状態が切り替えでブラーがかかった状態なら元に戻す処理を行う
 	if (preState_ != PlayerState::SwitchAlly) {

@@ -37,8 +37,11 @@ void PlayerStateController::Init(Player& owner) {
 	// 入力クラスを初期化
 	Input* input = Input::GetInstance();
 	inputMapper_ = std::make_unique<InputMapper<PlayerInputAction>>();
-	//inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>(input));
 	inputMapper_->AddDevice(std::make_unique<PlayerGamePadInput>(input));
+
+#ifdef NDEBUG
+	inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>(input));
+#endif
 
 	// 各状態を初期化
 	states_.emplace(PlayerState::Idle, std::make_unique<PlayerIdleState>());

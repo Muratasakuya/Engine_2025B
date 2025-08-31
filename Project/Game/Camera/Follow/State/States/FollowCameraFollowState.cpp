@@ -94,6 +94,7 @@ void FollowCameraFollowState::ImGui([[maybe_unused]] const FollowCamera& followC
 
 	ImGui::DragFloat2("mouseSensitivity", &mouseSensitivity_.x, 0.001f);
 	ImGui::DragFloat2("padSensitivity", &padSensitivity_.x, 0.001f);
+	ImGui::DragFloat2("smoothedInput", &smoothedInput_.x, 0.001f);
 
 	ImGui::DragFloat("fovYLerpRate", &fovYLerpRate_, 0.001f);
 	ImGui::DragFloat("offsetZLerpRate", &offsetZLerpRate_, 0.001f);
