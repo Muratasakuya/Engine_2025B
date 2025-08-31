@@ -337,6 +337,14 @@ inline void SimpleAnimation<T>::UpdateLerpValue(T& value) {
 
 	// ループが終了しているときは何も処理をしない
 	if (loop_.isEnd) {
+
+		if (type_ == SimpleAnimationType::None) {
+
+			value = move_.end;
+		} else if (type_ == SimpleAnimationType::Return) {
+
+			value = move_.start;
+		}
 		return;
 	}
 
@@ -402,7 +410,7 @@ inline void SimpleAnimation<T>::UpdateMoveValue(T& value) {
 	}
 
 	// 1ループ終了
-	if (value >= move_.end) {
+	if (move_.end <= value) {
 
 		// ループの終了フラグを立てる
 		value = move_.end;
@@ -496,6 +504,10 @@ inline void SimpleAnimation<T>::ToJson(Json& data) {
 
 template<typename T>
 inline void SimpleAnimation<T>::FromJson(const Json& data) {
+
+	if (data.empty()) {
+		return;
+	}
 
 	// loopの値を適応
 	loop_.isLoop = JsonAdapter::GetValue<bool>(data, "loop_.isLoop");

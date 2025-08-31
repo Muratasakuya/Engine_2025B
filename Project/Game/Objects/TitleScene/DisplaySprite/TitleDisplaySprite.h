@@ -49,7 +49,7 @@ private:
 
 	std::unique_ptr<GameFinishUI> finishUI_; // 終了表示
 
-	// パッド操作入力管理
+	// 入力管理
 	std::unique_ptr<GamecButtonFocusNavigator> buttonFocusNavigator_;
 	ButtonFocusGroup currentFocusGroup_;
 

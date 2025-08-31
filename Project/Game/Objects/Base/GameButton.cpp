@@ -212,6 +212,10 @@ void GameButton::ImGui() {
 
 void GameButton::FromJson(const Json& data) {
 
+	if (data.empty()) {
+		return;
+	}
+
 	checkCollisionEnable_ = data["checkCollisionEnable_"];
 	collisionSize_ = collisionSize_.FromJson(data["collisionSize_"]);
 

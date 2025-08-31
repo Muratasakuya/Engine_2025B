@@ -167,6 +167,15 @@ void GameScene::Update() {
 
 		// 入力に応じて遷移先を決定する
 		if (states_[stateIndex]->IsRequestNext() && fadeTransition_) {
+
+			ResultGameState* state = static_cast<ResultGameState*>(states_[stateIndex].get());
+			if (state->GetResultSelect() == ResultSelect::Retry) {
+
+				sceneManager_->SetNextScene(Scene::Game, std::move(fadeTransition_));
+			} else if (state->GetResultSelect() == ResultSelect::Title) {
+
+				sceneManager_->SetNextScene(Scene::Title, std::move(fadeTransition_));
+			}
 		}
 		break;
 	}

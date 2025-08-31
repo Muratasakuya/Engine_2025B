@@ -48,7 +48,11 @@
     "gamepadCancel",
     "slashEffect1",
     "bossEnemySlash",
-    "lightning"
+    "lightning",
+    "clearText",
+    "bgCheckerboard",
+    "titleButton",
+    "retryButton"
   ],
   "Models": [
     "field",

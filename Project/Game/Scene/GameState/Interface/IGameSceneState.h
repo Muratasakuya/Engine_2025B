@@ -40,6 +40,7 @@ public:
 
 	bool IsRequestNext() const { return requestNext_; }
 	void ClearRequestNext() { requestNext_ = false; }
+	ResultSelect GetResultSelect() const { return context_->result->GetResultSelect(); }
 protected:
 	//========================================================================
 	//	protected Methods

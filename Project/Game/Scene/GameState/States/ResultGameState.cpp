@@ -53,6 +53,10 @@ void ResultGameState::Update([[maybe_unused]] SceneManager* sceneManager) {
 	//========================================================================
 
 	// 入力に応じて遷移先を決定する
+	if (context_->result->GetResultSelect() != ResultSelect::None) {
+
+		requestNext_ = true;
+	}
 }
 
 void ResultGameState::NonActiveUpdate([[maybe_unused]] SceneManager* sceneManager) {
