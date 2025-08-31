@@ -40,7 +40,7 @@ void PlayerStateController::Init(Player& owner) {
 	inputMapper_->AddDevice(std::make_unique<PlayerGamePadInput>(input));
 
 #ifdef _RELEASE
-	inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>(input));
+	//inputMapper_->AddDevice(std::make_unique<PlayerKeyInput>(input));
 #endif
 
 	// 各状態を初期化

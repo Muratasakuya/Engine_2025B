@@ -36,7 +36,7 @@ void FollowCameraStateController::Init(FollowCamera& owner) {
 	inputMapper_->AddDevice(std::make_unique<FollowCameraGamePadInput>(input));
 
 #ifdef _RELEASE
-	inputMapper_->AddDevice(std::make_unique<FollowCameraKeyInput>(input));
+	//inputMapper_->AddDevice(std::make_unique<FollowCameraKeyInput>(input));
 #endif
 	// 各状態を初期化
 	states_.emplace(FollowCameraState::Follow, std::make_unique<FollowCameraFollowState>(owner.GetFovY()));
