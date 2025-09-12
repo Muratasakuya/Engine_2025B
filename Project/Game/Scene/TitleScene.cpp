@@ -23,7 +23,10 @@ void TitleScene::Init() {
 		PostProcessType::RadialBlur,
 		PostProcessType::Bloom,
 		PostProcessType::CRTDisplay,
+		PostProcessType::Glitch,
 		PostProcessType::Grayscale });
+
+	PostProcessSystem::GetInstance()->InputProcessTexture("noise", PostProcessType::Glitch);
 
 	//========================================================================
 	//	controller(objects)

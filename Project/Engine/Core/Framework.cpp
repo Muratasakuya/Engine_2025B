@@ -89,13 +89,13 @@ Framework::Framework() {
 
 	SRVDescriptor* srvDescriptor = renderEngine_->GetSRVDescriptor();
 
-	PostProcessSystem* postProcessSystem = PostProcessSystem::GetInstance();
-	postProcessSystem->Init(device, shaderCompiler, srvDescriptor);
-	postProcessSystem->SetDepthFrameBufferGPUHandle(renderEngine_->GetDepthGPUHandle());
-
 	// asset機能初期化
 	asset_ = std::make_unique<Asset>();
 	asset_->Init(device, dxCommand, srvDescriptor);
+
+	PostProcessSystem* postProcessSystem = PostProcessSystem::GetInstance();
+	postProcessSystem->Init(device, shaderCompiler, srvDescriptor, asset_.get());
+	postProcessSystem->SetDepthFrameBufferGPUHandle(renderEngine_->GetDepthGPUHandle());
 
 	// fullScreen設定
 	winApp_->SetFullscreen(fullscreenEnable_);

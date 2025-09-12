@@ -17,6 +17,7 @@
 class SRVDescriptor;
 class SceneView;
 class DxCommand;
+class Asset;
 
 //============================================================================
 //	PostProcessSystem class
@@ -29,7 +30,7 @@ public:
 	//========================================================================
 
 	void Init(ID3D12Device8* device, class DxShaderCompiler* shaderComplier,
-		SRVDescriptor* srvDescriptor);
+		SRVDescriptor* srvDescriptor, Asset* asset);
 
 	void Update(SceneView* sceneView);
 
@@ -54,7 +55,7 @@ public:
 	void ClearProcess();
 
 	// postProcessに使うtextureの設定
-	void InputProcessTexture(const std::string& textureName, PostProcessType process, class Asset* asset);
+	void InputProcessTexture(const std::string& textureName, PostProcessType process);
 
 	//--------- accessor -----------------------------------------------------
 
@@ -79,6 +80,7 @@ private:
 	uint32_t height_;
 	ID3D12Device* device_;
 	SRVDescriptor* srvDescriptor_;
+	Asset* asset_;
 
 	//--------- variables ----------------------------------------------------
 

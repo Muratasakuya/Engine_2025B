@@ -63,17 +63,17 @@ void PostProcessSystem::ClearProcess() {
 }
 
 void PostProcessSystem::InputProcessTexture(
-	const std::string& textureName, PostProcessType process, Asset* asset) {
+	const std::string& textureName, PostProcessType process) {
 
 	// texture設定
 	if (Algorithm::Find(initProcesses_, process, true)) {
 
-		processors_[process]->SetProcessTexureGPUHandle(asset->GetGPUHandle(textureName));
+		processors_[process]->SetProcessTexureGPUHandle(asset_->GetGPUHandle(textureName));
 	}
 }
 
 void PostProcessSystem::Init(ID3D12Device8* device,
-	DxShaderCompiler* shaderComplier, SRVDescriptor* srvDescriptor) {
+	DxShaderCompiler* shaderComplier, SRVDescriptor* srvDescriptor, Asset* asset) {
 
 	width_ = Config::kWindowWidth;
 	height_ = Config::kWindowHeight;
@@ -83,6 +83,9 @@ void PostProcessSystem::Init(ID3D12Device8* device,
 
 	srvDescriptor_ = nullptr;
 	srvDescriptor_ = srvDescriptor;
+
+	asset_ = nullptr;
+	asset_ = asset;
 
 	// pipeline初期化
 	pipeline_ = std::make_unique<PostProcessPipeline>();
