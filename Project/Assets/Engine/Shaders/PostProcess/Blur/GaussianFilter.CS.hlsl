@@ -1,16 +1,12 @@
+//============================================================================
+//	include
+//============================================================================
 
-//============================================================================*/
-//	GaussianFilter.CS
-//============================================================================*/
+#include "../../../../../Engine/Core/Graphics/PostProcess/PostProcessConfig.h"
 
-struct GaussParameter {
-	
-	float sigma; // 標準偏差 ぼかしの強さ
-};
-
-RWTexture2D<float4> gOutputTexture : register(u0);
-Texture2D<float4> gTexture : register(t0);
-ConstantBuffer<GaussParameter> gGauss : register(b0);
+//============================================================================
+//	Constant
+//============================================================================
 
 // 3x3 のオフセット
 static const int2 kIndex3x3[3][3] = {
@@ -30,7 +26,27 @@ float Gauss(float x, float y, float sigma) {
 	return exp(exponent) / denominator;
 }
 
-[numthreads(8, 8, 1)]
+//============================================================================
+//	CBuffer
+//============================================================================
+
+struct GaussParameter {
+	
+	float sigma; // 標準偏差 ぼかしの強さ
+};
+ConstantBuffer<GaussParameter> gGauss : register(b0);
+
+//============================================================================
+//	buffer
+//============================================================================
+
+RWTexture2D<float4> gOutputTexture : register(u0);
+Texture2D<float4> gTexture : register(t0);
+
+//============================================================================
+//	Main
+//============================================================================
+[numthreads(THREAD_POSTPROCESS_GROUP, THREAD_POSTPROCESS_GROUP, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	uint width, height;

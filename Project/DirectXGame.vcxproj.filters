@@ -973,6 +973,7 @@
     <ClInclude Include="Game\Camera\ResultCamera\ClearResultCamera.h" />
     <ClInclude Include="Game\Scene\GameState\States\ResultGameState.h" />
     <ClInclude Include="Game\Objects\GameScene\Result\GameResultDisplay.h" />
+    <ClInclude Include="Engine\Core\Graphics\PostProcess\PostProcessConfig.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Assets\Engine\Shaders\PostProcess\Copy\CopyTexture.CS.hlsl" />

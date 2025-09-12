@@ -1,16 +1,12 @@
+//============================================================================
+//	include
+//============================================================================
 
-//============================================================================*/
-//	LuminanceBasedOutline.CS
-//============================================================================*/
+#include "../../../../../Engine/Core/Graphics/PostProcess/PostProcessConfig.h"
 
-struct EdgeParameter {
-	
-	float strength; // エッジの強さ
-};
-
-RWTexture2D<float4> gOutputTexture : register(u0);
-Texture2D<float4> gTexture : register(t0);
-ConstantBuffer<EdgeParameter> gEdge : register(b0);
+//============================================================================
+//	Constant
+//============================================================================
 
 // 3x3 のオフセット
 static const int2 kIndex3x3[3][3] = {
@@ -33,12 +29,36 @@ static const float kPrewittVerticalKernel[3][3] = {
 	{ 1.0f / 6.0f, 1.0f / 6.0f, 1.0f / 6.0f }
 };
 
+//============================================================================
+//	CBuffer
+//============================================================================
+
+struct EdgeParameter {
+	
+	float strength; // エッジの強さ
+};
+ConstantBuffer<EdgeParameter> gEdge : register(b0);
+
+//============================================================================
+//	buffer
+//============================================================================
+
+RWTexture2D<float4> gOutputTexture : register(u0);
+Texture2D<float4> gTexture : register(t0);
+
+//============================================================================
+//	Function
+//============================================================================
+
 // RGB → 輝度変換
 float Luminance(float3 v) {
 	return dot(v, float3(0.2125f, 0.7145f, 0.0721f));
 }
 
-[numthreads(8, 8, 1)]
+//============================================================================
+//	Main
+//============================================================================
+[numthreads(THREAD_POSTPROCESS_GROUP, THREAD_POSTPROCESS_GROUP, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	uint width, height;

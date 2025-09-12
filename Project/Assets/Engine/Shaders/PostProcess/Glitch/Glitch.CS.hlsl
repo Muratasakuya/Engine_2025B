@@ -3,6 +3,7 @@
 //============================================================================
 
 #include "../../Math/Math.hlsli"
+#include "../../../../../Engine/Core/Graphics/PostProcess/PostProcessConfig.h"
 
 //============================================================================
 //	CBuffer
@@ -32,7 +33,7 @@ SamplerState gSampler : register(s0);
 //============================================================================
 //	main
 //============================================================================
-[numthreads(8, 8, 1)]
+[numthreads(THREAD_POSTPROCESS_GROUP, THREAD_POSTPROCESS_GROUP, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	uint width, height;

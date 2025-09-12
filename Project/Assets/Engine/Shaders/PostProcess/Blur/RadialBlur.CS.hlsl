@@ -1,7 +1,12 @@
+//============================================================================
+//	include
+//============================================================================
 
-//============================================================================*/
-//	RadialBlur.CS
-//============================================================================*/
+#include "../../../../../Engine/Core/Graphics/PostProcess/PostProcessConfig.h"
+
+//============================================================================
+//	CBuffer
+//============================================================================
 
 struct BlurParameter {
 	
@@ -9,13 +14,20 @@ struct BlurParameter {
 	int numSamples; // ÉTÉìÉvÉäÉìÉOêî
 	float width; // Ç⁄Ç©ÇµÇÃïù
 };
+ConstantBuffer<BlurParameter> gBlur : register(b0);
+
+//============================================================================
+//	buffer
+//============================================================================
 
 RWTexture2D<float4> gOutputTexture : register(u0);
 Texture2D<float4> gTexture : register(t0);
 SamplerState gSampler : register(s0);
-ConstantBuffer<BlurParameter> gBlur : register(b0);
 
-[numthreads(8, 8, 1)]
+//============================================================================
+//	Main
+//============================================================================
+[numthreads(THREAD_POSTPROCESS_GROUP, THREAD_POSTPROCESS_GROUP, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	uint width, height;
