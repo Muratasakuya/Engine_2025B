@@ -165,6 +165,7 @@ void InstancedMeshSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 
 	// bufferクリア
 	instancedBuffer_->Reset();
+	objectIDsPerModel_.clear();
 
 	const auto& view = ObjectPoolManager.View(Signature());
 
@@ -181,6 +182,7 @@ void InstancedMeshSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 		}
 		instancedBuffer_->SetUploadData(
 			instancingName, transform->matrix, *materials, *animation);
+		objectIDsPerModel_[instancingName].emplace_back(object);
 	}
 
 	// buffer転送
@@ -190,7 +192,6 @@ void InstancedMeshSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 std::vector<RayTracingInstance> InstancedMeshSystem::CollectRTInstances(const RaytracingScene* scene) const {
 
 	std::vector<RayTracingInstance> out;
-	UINT instanceCounter = 0;
 
 	const auto& meshes = meshRegistry_->GetMeshes();
 	const auto& instanceMap = instancedBuffer_->GetInstancingData();
@@ -204,9 +205,9 @@ std::vector<RayTracingInstance> InstancedMeshSystem::CollectRTInstances(const Ra
 
 		const MeshInstancingData& instData = instIt->second;
 		const uint32_t subMeshCount = meshPtr->GetMeshCount();
-		const size_t numInst = instData.matrixUploadData.size();
+		const size_t numInstance = instData.matrixUploadData.size();
 		const std::vector<std::vector<LightingForGPU>>& lightingData = instData.lightingUploadData;
-		for (uint32_t j = 0; j < numInst; ++j) {
+		for (uint32_t j = 0; j < numInstance; ++j) {
 
 			const Matrix4x4& world = instData.matrixUploadData[j].world;
 			for (uint32_t sub = 0; sub < subMeshCount; ++sub) {
@@ -214,7 +215,7 @@ std::vector<RayTracingInstance> InstancedMeshSystem::CollectRTInstances(const Ra
 				RayTracingInstance instance{};
 				const LightingForGPU& lighting = lightingData[sub][j];
 				instance.matrix = world;
-				instance.instanceID = ++instanceCounter;
+				instance.instanceID = objectIDsPerModel_.at(modelName)[j];
 				instance.mask = lighting.castShadow ? 0xFF : 0x01;
 				instance.hitGroupIdx = 0;
 				instance.flags = 0;
@@ -224,6 +225,5 @@ std::vector<RayTracingInstance> InstancedMeshSystem::CollectRTInstances(const Ra
 			}
 		}
 	}
-
 	return out;
 }

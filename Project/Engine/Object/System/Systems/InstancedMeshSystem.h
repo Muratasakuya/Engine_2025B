@@ -81,6 +81,7 @@ private:
 
 	std::unique_ptr<MeshRegistry> meshRegistry_;
 	std::unique_ptr<InstancedMeshBuffer> instancedBuffer_;
+	std::unordered_map<std::string, std::vector<uint32_t>> objectIDsPerModel_;
 
 	AssetLoadWorker<MeshBuildJob> buildWorker_;
 	// 重複処理回避用
