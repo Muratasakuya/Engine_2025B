@@ -29,6 +29,7 @@ void ImGuiManager::Init(HWND hwnd, UINT bufferCount, ID3D12Device* device, SRVDe
 		srvDescriptor->GetDescriptorHeap()->GetCPUDescriptorHandleForHeapStart(),
 		srvDescriptor->GetDescriptorHeap()->GetGPUDescriptorHandleForHeapStart());
 
+	// SRVを進める
 	srvDescriptor->IncrementIndex();
 
 	//========================================================================

@@ -98,7 +98,10 @@ Framework::Framework() {
 	postProcessSystem->SetDepthFrameBufferGPUHandle(renderEngine_->GetDepthGPUHandle());
 
 	// fullScreen設定
-	winApp_->SetFullscreen(fullscreenEnable_);
+	if (fullscreenEnable_) {
+
+		winApp_->SetFullscreen(fullscreenEnable_);
+	}
 
 	// srvDescriptorHeap設定、最初のみ設定
 	dxCommand->SetDescriptorHeaps({ srvDescriptor->GetDescriptorHeap() });
