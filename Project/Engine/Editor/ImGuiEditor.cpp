@@ -93,7 +93,7 @@ void ImGuiEditor::EditLayout() {
 
 void ImGuiEditor::MainWindow() {
 
-	ImGui::Begin("Scene", nullptr, windowFlag_);
+	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoMove);
 
 	ImGui::Image(ImTextureID(debugSceneRenderTextureGPUHandle_.ptr), debugViewSize_);
 

@@ -21,7 +21,7 @@ cbuffer PickingBuffer : register(b0) {
 // ピッキング結果を格納する構造体
 struct Pick {
 
-	uint id;
+	int id;
 };
 
 RaytracingAccelerationStructure gScene : register(t0);

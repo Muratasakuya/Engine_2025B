@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
+#include <Engine/Editor/ImGuiObjectEditor.h>
 #include <Engine/Scene/SceneView.h>
 
 //============================================================================
@@ -25,6 +26,7 @@ void GPUPixelPicker::Init(ID3D12Device8* device,
 	// ピッキング処理用データ
 	pickingBuffer_.CreateBuffer(device);
 	readbackIDBuffer_.CreateBuffer(device);
+	pickedID_ = 0;
 }
 
 void GPUPixelPicker::Update(SceneView* sceneView,
@@ -76,6 +78,9 @@ void GPUPixelPicker::Execute(DxCommand* dxCommand, ID3D12Resource* tlasResource)
 
 	// リソースのコピー処理、CPUで扱えるようにする
 	CopyReadbackResource(dxCommand);
+
+	// エディターに通知
+	SetPickObject();
 }
 
 void GPUPixelPicker::CopyReadbackResource(DxCommand* dxCommand) {
@@ -93,10 +98,12 @@ void GPUPixelPicker::CopyReadbackResource(DxCommand* dxCommand) {
 
 	// IDをCPUで扱えるようにする
 	pickedID_ = readbackIDBuffer_.GetReadbackData();
+}
 
-	ImGui::Begin("DebugView");
+void GPUPixelPicker::SetPickObject() {
 
-	ImGui::Text("pickedID: %d", pickedID_);
+	if (pickedID_ != 0u) {
 
-	ImGui::End();
+		ImGuiObjectEditor::GetInstance()->SelectById(pickedID_);
+	}
 }

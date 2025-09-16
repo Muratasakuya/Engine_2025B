@@ -31,9 +31,6 @@ public:
 	void Update(SceneView* sceneView, const Vector2& textureSize, const Vector2& input);
 
 	void Execute(DxCommand* dxCommand, ID3D12Resource* tlasResource);
-
-	//--------- accessor -----------------------------------------------------
-
 private:
 	//========================================================================
 	//	private Methods
@@ -58,16 +55,17 @@ private:
 	std::unique_ptr<PipelineState> pipeline_;
 
 	// ピッキング処理で取得した情報
-	uint32_t pickedID_;
+	int pickedID_;
 
 	// buffers
 	DxStructuredBuffer<uint32_t> outputIDBuffer_;
 	DxConstBuffer<PickingData> pickingBuffer_;
-	DxReadbackBuffer<uint32_t> readbackIDBuffer_;
+	DxReadbackBuffer<int> readbackIDBuffer_;
 	PickingData pickingData_;
 
 	//--------- functions ----------------------------------------------------
 
 	// helper
 	void CopyReadbackResource(DxCommand* dxCommand);
+	void SetPickObject();
 };

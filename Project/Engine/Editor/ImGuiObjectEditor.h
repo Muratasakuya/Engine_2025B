@@ -36,10 +36,12 @@ public:
 
 	// 選択全解除
 	void Reset();
-
 	void Registerobject(uint32_t id, IGameObject* object);
 
 	//--------- accessor -----------------------------------------------------
+
+	// 外部からフォーカスするIDを設定
+	void SelectById(uint32_t id);
 
 	// singleton
 	static ImGuiObjectEditor* GetInstance();

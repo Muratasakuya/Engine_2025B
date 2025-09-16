@@ -183,7 +183,7 @@ void RenderEngine::UpdateGPUBuffer(SceneView* sceneView, bool enableMesh) {
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 
 	const RenderTarget renderTarget = renderTextures_[ViewType::Debug]->GetRenderTarget();
-	Vector2 pixelInput= Vector2::AnyInit(0.0f);
+	Vector2 pixelInput = Vector2::AnyInit(0.0f);
 	if (Input::GetInstance()->IsMouseOnView(InputViewArea::Scene)) {
 
 		pixelInput = Input::GetInstance()->GetMousePosInView(InputViewArea::Scene).value();
@@ -246,8 +246,9 @@ void RenderEngine::Renderers(ViewType type, bool enableMesh) {
 	// model描画後
 	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PostModel, sceneBuffer_.get(), dxCommand_);
 
-	// ピッキング処理
-	if (type == ViewType::Debug) {
+	// ピッキング処理、左クリックしたときのみ更新
+	if (type == ViewType::Debug &&
+		Input::GetInstance()->TriggerMouse(MouseButton::Left)) {
 
 		pixelPicker_->Execute(dxCommand_, meshRenderer_->GetTLASResource());
 	}

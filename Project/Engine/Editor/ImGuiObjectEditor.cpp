@@ -51,6 +51,20 @@ void ImGuiObjectEditor::Init() {
 	tagSystem_ = ObjectManager_->GetSystem<TagSystem>();
 }
 
+void ImGuiObjectEditor::SelectById(uint32_t id) {
+
+	// フォーカス先を設定
+	if (Is3D(id)) {
+
+		selected3D_ = id;
+		selected2D_.reset();
+	} else if (Is2D(id)) {
+
+		selected2D_ = id;
+		selected3D_.reset();
+	}
+}
+
 void ImGuiObjectEditor::SelectObject() {
 
 	CreateGroup();
