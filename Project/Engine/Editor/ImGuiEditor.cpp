@@ -183,10 +183,4 @@ void ImGuiEditor::SetInputArea(InputViewArea viewArea, const ImVec2& imMin, cons
 	Vector2 min = Vector2(imMin.x, imMin.y);
 	Vector2 size = Vector2(imSize.x, imSize.y);
 	input->SetViewRect(viewArea, min, size);
-
-	if (input->IsMouseOnView(viewArea)) {
-
-		ImGui::Text("mousePos: %.3f,%.3f", input->GetMousePosInView(viewArea).value().x,
-			input->GetMousePosInView(viewArea).value().y);
-	}
 }

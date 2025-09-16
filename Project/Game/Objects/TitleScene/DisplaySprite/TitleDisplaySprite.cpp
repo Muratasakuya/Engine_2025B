@@ -134,16 +134,12 @@ void TitleDisplaySprite::CheckGameStart() {
 	// 入力状態に応じて判定方法を変える
 	const auto& inputType = Input::GetInstance()->GetType();
 	if (inputType == InputType::Keyboard) {
-#ifdef _RELEASE
-		// 電源ボタン以外の場所を左クリックしたら開始
-		if (finishUI_->GetPowerButton()->GetCurrentHover()) {
-			return;
-		}
-		if (Input::GetInstance()->TriggerMouseLeft()) {
+
+		// マウス入力があれば
+		if (start_->GetHoverAtRelease()) {
 
 			isGameStart_ = true;
 		}
-#endif
 	} else if (inputType == InputType::GamePad) {
 
 		// 開始にフォーカスが合っている状態でAボタンで開始

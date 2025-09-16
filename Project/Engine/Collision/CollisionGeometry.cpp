@@ -209,8 +209,12 @@ bool Collision::RectToMouse(const Vector2& center,
 	const Vector2& size, const Vector2& anchor) {
 
 	Input* input = Input::GetInstance();
+	if (!input->IsMouseOnView(InputViewArea::Game)) {
+		return false;
+	}
+	
 	// マウス位置
-	Vector2 mousePos = input->GetMousePos();
+	Vector2 mousePos = input->GetMousePosInView(InputViewArea::Game).value();
 
 	// 矩形左上
 	Vector2 topLeft = center - Vector2(size.x * anchor.x, size.y * anchor.y);
@@ -220,6 +224,5 @@ bool Collision::RectToMouse(const Vector2& center,
 
 		return true;
 	}
-
 	return false;
 }

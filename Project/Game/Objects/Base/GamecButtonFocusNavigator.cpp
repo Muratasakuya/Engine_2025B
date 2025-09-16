@@ -114,7 +114,9 @@ void GamecButtonFocusNavigator::Update() {
 
 			index_ = defaultIndex_;
 			hasFocus_ = true;
-			if (axisLeft || axisRight) axisLatched_ = true;
+			if (axisLeft || axisRight) {
+				axisLatched_ = true;
+			}
 			ApplyVisuals();
 			return;
 		}
