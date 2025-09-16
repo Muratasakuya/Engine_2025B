@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Window/WinApp.h>
+#include <Engine/Input/Input.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Renderer/LineRenderer.h>
 #include <Engine/Object/Core/ObjectManager.h>
@@ -123,6 +124,9 @@ void RenderEngine::Init(WinApp* winApp, ID3D12Device8* device, DxShaderCompiler*
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
 	imguiManager_ = std::make_unique<ImGuiManager>();
 	imguiManager_->Init(winApp->GetHwnd(), dxSwapChain_->GetDesc().BufferCount, device, srvDescriptor_.get());
+
+	pixelPicker_ = std::make_unique<GPUPixelPicker>();
+	pixelPicker_->Init(device, shaderCompiler, srvDescriptor_.get());
 #endif
 
 	// renderTexture初期化
@@ -175,6 +179,18 @@ void RenderEngine::UpdateGPUBuffer(SceneView* sceneView, bool enableMesh) {
 			meshRenderer_->UpdateRayScene(dxCommand_);
 		}
 	}
+
+#if defined(_DEBUG) || defined(_DEVELOPBUILD)
+
+	const RenderTarget renderTarget = renderTextures_[ViewType::Debug]->GetRenderTarget();
+	Vector2 pixelInput= Vector2::AnyInit(0.0f);
+	if (Input::GetInstance()->IsMouseOnView(InputViewArea::Scene)) {
+
+		pixelInput = Input::GetInstance()->GetMousePosInView(InputViewArea::Scene).value();
+	}
+	pixelPicker_->Update(sceneView, Vector2(static_cast<float>(renderTarget.width),
+		static_cast<float>(renderTarget.height)), pixelInput);
+#endif
 }
 
 void RenderEngine::Rendering(ViewType type, bool enableMesh) {
@@ -229,6 +245,12 @@ void RenderEngine::Renderers(ViewType type, bool enableMesh) {
 	// sprite描画、postPrecess適用
 	// model描画後
 	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PostModel, sceneBuffer_.get(), dxCommand_);
+
+	// ピッキング処理
+	if (type == ViewType::Debug) {
+
+		pixelPicker_->Execute(dxCommand_, meshRenderer_->GetTLASResource());
+	}
 }
 
 void RenderEngine::BeginRenderFrameBuffer() {
@@ -271,7 +293,7 @@ void RenderEngine::EndRenderFrameBuffer() {
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 }
 
-void RenderEngine::BeginRenderTarget(RenderTexture* renderTexture) {						
+void RenderEngine::BeginRenderTarget(RenderTexture* renderTexture) {
 
 	const RenderTarget renderTarget = renderTexture->GetRenderTarget();
 

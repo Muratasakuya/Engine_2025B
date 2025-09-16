@@ -1,0 +1,14 @@
+{
+    "ShaderPass":[
+        {
+            "Type": "Compute",
+            "ComputeShader": "PickMeshInstance.CS.hlsl",
+            "IsDXR": true
+        }
+    ],
+    "RootParameter": [
+        { "RootIndex": 0, "Type": "SRV", "Visibility": "COMPUTE", "ShaderRegister": 0 },
+        { "RootIndex": 1, "Type": "UAV", "Visibility": "COMPUTE", "ShaderRegister": 0 },
+        { "RootIndex": 2, "Type": "CBV", "Visibility": "COMPUTE", "ShaderRegister": 0 }
+    ]
+}

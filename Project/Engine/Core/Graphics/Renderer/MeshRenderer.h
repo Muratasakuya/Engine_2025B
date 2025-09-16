@@ -34,6 +34,10 @@ public:
 	void UpdateRayScene(DxCommand* dxCommand);
 
 	void Rendering(bool debugEnable, SceneConstBuffer* sceneBuffer, DxCommand* dxCommand);
+
+	//--------- accessor -----------------------------------------------------
+
+	ID3D12Resource* GetTLASResource() const { return rayScene_->GetTLASResource(); }
 private:
 	//========================================================================
 	//	private Methods

@@ -218,6 +218,14 @@ void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources
 	commandList_->ResourceBarrier(static_cast<UINT>(barriers.size()), barriers.data());
 }
 
+void DxCommand::UAVBarrier(ID3D12Resource* resource) {
+
+	D3D12_RESOURCE_BARRIER barrier{};
+	barrier.Type = D3D12_RESOURCE_BARRIER_TYPE_UAV;
+	barrier.UAV.pResource = resource;
+	commandList_->ResourceBarrier(1, &barrier);
+}
+
 void DxCommand::UAVBarrierAll() {
 
 	D3D12_RESOURCE_BARRIER barrier{};

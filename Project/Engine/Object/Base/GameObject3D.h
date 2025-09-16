@@ -108,6 +108,7 @@ private:
 	//--------- functions ----------------------------------------------------
 
 	// imgui
+	void InformationImGui();
 	void TransformImGui();
 	void MaterialImGui();
 	void AnimationImGui();

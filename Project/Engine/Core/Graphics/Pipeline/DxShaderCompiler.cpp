@@ -89,10 +89,17 @@ void DxShaderCompiler::Compile(const Json& json, std::vector<ComPtr<IDxcBlob>>& 
 				// computeShaderのcompile
 				std::string computeShader = shaderPass["ComputeShader"];
 				if (Filesystem::Found(basePath, computeShader, fullPath)) {
+					if (shaderPass.contains("IsDXR")) {
 
-					ComPtr<IDxcBlob> computeShaderBlob;
-					CompileShader(fullPath.string(), fullPath.wstring(), L"cs_6_0", computeShaderBlob, L"main");
-					shaderBlobs.push_back(computeShaderBlob);
+						ComPtr<IDxcBlob> computeShaderBlob;
+						CompileShader(fullPath.string(), fullPath.wstring(), L"cs_6_5", computeShaderBlob, L"main");
+						shaderBlobs.push_back(computeShaderBlob);
+					} else {
+
+						ComPtr<IDxcBlob> computeShaderBlob;
+						CompileShader(fullPath.string(), fullPath.wstring(), L"cs_6_0", computeShaderBlob, L"main");
+						shaderBlobs.push_back(computeShaderBlob);
+					}
 				} else {
 
 					ASSERT(false, "Failed to find HLSL file: " + computeShader);

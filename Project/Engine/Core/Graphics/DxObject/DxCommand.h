@@ -50,6 +50,7 @@ public:
 	void TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
 		D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter);
 
+	void UAVBarrier(ID3D12Resource* resource);
 	void UAVBarrierAll();
 
 	void CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,

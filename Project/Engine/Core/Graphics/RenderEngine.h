@@ -12,6 +12,7 @@
 
 // scene
 #include <Engine/Core/Graphics/GPUObject/SceneConstBuffer.h>
+#include <Engine/Core/Graphics/GPUObject/GPUPixelPicker.h>
 
 // renderer
 #include <Engine/Core/Graphics/Renderer/MeshRenderer.h>
@@ -111,6 +112,7 @@ private:
 
 	// imgui
 	std::unique_ptr<ImGuiManager> imguiManager_;
+	std::unique_ptr<GPUPixelPicker> pixelPicker_;
 
 	//--------- functions ----------------------------------------------------
 

@@ -3,7 +3,6 @@
 //============================================================================
 //	include
 //============================================================================
-// Graphics
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Core/Graphics/PostProcess/RenderTexture.h>

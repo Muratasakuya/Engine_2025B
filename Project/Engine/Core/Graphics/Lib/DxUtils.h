@@ -7,6 +7,7 @@
 
 // directX
 #include <d3d12.h>
+#include <Externals/DirectX12/d3dx12.h>
 // c++
 #include <cstdint>
 
@@ -22,6 +23,7 @@ namespace DxUtils {
 
 	void CreateBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, size_t sizeInBytes);
 	void CreateUavBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, size_t sizeInBytes);
+	void CreateReadbackBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>& resource, size_t sizeInBytes);
 
 	bool CanAllocateIndex(uint32_t useIndex, uint32_t kMaxCount);
 

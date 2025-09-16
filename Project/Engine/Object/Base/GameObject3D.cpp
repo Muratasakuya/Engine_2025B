@@ -40,6 +40,12 @@ void GameObject3D::ImGui() {
 
 	if (ImGui::BeginTabBar("GameObject3DTab")) {
 
+		if (ImGui::BeginTabItem("Information")) {
+
+			InformationImGui();
+			ImGui::EndTabItem();
+		}
+
 		if (ImGui::BeginTabItem("Transform")) {
 
 			TransformImGui();
@@ -91,6 +97,11 @@ void GameObject3D::SaveMaterial(Json& data) {
 
 		(*materials_)[meshIndex].ToJson(data[Algorithm::GetIndexLabel("Material", meshIndex)]);
 	}
+}
+
+void GameObject3D::InformationImGui() {
+
+	ImGui::Text("objectID: %d", objectId_);
 }
 
 void GameObject3D::TransformImGui() {
