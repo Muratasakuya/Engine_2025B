@@ -3,6 +3,7 @@
 //============================================================================
 //	include
 //============================================================================
+#include <Engine/Input/InputStructures.h>
 
 // directX
 #include <d3d12.h>
@@ -67,4 +68,7 @@ private:
 
 	// asset
 	void Asset();
+
+	// helper
+	void SetInputArea(InputViewArea viewArea, const ImVec2& imMin, const ImVec2& imSize);
 };

@@ -29,7 +29,7 @@ void WinApp::Create() {
 	windowRect_.right = Config::kWindowWidth;
 	windowRect_.bottom = Config::kWindowHeight;
 
-	windowStyle_ = WS_OVERLAPPED | WS_CAPTION | WS_SYSMENU | WS_MINIMIZEBOX;
+	windowStyle_ = WS_OVERLAPPEDWINDOW;
 
 	AdjustWindowRect(&windowRect_, windowStyle_, false);
 
@@ -46,14 +46,7 @@ void WinApp::Create() {
 		GetModuleHandle(nullptr),
 		nullptr);
 
-	ShowWindow(hwnd_, SW_SHOW);
-
-	// 1920*1080にした時のウィンドウの座標
-	// ずれないように補正
-	if (windowRect_.right == 1920 && windowRect_.bottom == 1080) {
-
-		SetWindowPos(hwnd_, nullptr, -8, -2, 0, 0, SWP_NOZORDER | SWP_NOSIZE | SWP_NOACTIVATE);
-	}
+	ShowWindow(hwnd_, SW_MAXIMIZE);
 }
 
 bool WinApp::ProcessMessage() {

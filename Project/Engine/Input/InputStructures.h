@@ -44,3 +44,10 @@ enum class InputType {
 	Keyboard,
 	GamePad
 };
+
+// 入力検知位置
+enum class InputViewArea {
+
+	Game,
+	Scene
+};

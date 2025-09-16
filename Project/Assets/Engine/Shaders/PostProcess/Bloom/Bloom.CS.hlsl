@@ -1,6 +1,8 @@
 //============================================================================
-//	Bloom.CS
+//	include
 //============================================================================
+
+#include "../../../../../Engine/Core/Graphics/PostProcess/PostProcessConfig.h"
 
 //============================================================================
 //	CBuffer
@@ -33,7 +35,7 @@ float Gaussian(float x, float s) {
 //============================================================================
 //	Main
 //============================================================================
-[numthreads(8, 8, 1)]
+[numthreads(THREAD_POSTPROCESS_GROUP, THREAD_POSTPROCESS_GROUP, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	uint width, height;

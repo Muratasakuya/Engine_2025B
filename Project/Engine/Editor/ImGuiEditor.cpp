@@ -22,10 +22,7 @@ void ImGuiEditor::Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle
 	debugSceneRenderTextureGPUHandle_ = debugSceneRenderTextureGPUHandle;
 
 	// サイズの変更、移動不可
-	windowFlag_ =
-		ImGuiWindowFlags_NoResize |
-		ImGuiWindowFlags_AlwaysAutoResize |
-		ImGuiWindowFlags_NoMove;
+	windowFlag_ = ImGuiWindowFlags_None;
 
 	// 初期状態は表示
 	displayEnable_ = true;
@@ -95,11 +92,14 @@ void ImGuiEditor::MainWindow() {
 
 	ImGui::Image(ImTextureID(debugSceneRenderTextureGPUHandle_.ptr), debugViewSize_);
 
+	SetInputArea(InputViewArea::Scene, ImGui::GetItemRectMin(), ImGui::GetItemRectSize());
 	ImGui::End();
 
 	ImGui::Begin("Game", nullptr, windowFlag_);
 
 	ImGui::Image(ImTextureID(renderTextureGPUHandle_.ptr), gameViewSize_);
+
+	SetInputArea(InputViewArea::Game, ImGui::GetItemRectMin(), ImGui::GetItemRectSize());
 	ImGui::End();
 }
 
@@ -174,4 +174,13 @@ void ImGuiEditor::Asset() {
 	AssetEditor::GetInstance()->ImGui();
 
 	ImGui::End();
+}
+
+void ImGuiEditor::SetInputArea(InputViewArea viewArea, const ImVec2& imMin, const ImVec2& imSize) {
+
+	Input* input = Input::GetInstance();
+
+	Vector2 min = Vector2(imMin.x, imMin.y);
+	Vector2 size = Vector2(imSize.x, imSize.y);
+	input->SetViewRect(viewArea, min, size);
 }

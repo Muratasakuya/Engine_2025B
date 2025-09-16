@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/PostProcess/ComputePostProcessor.h>
+#include <Engine/Core/Graphics/PostProcess/PostProcessConfig.h>
 #include <Engine/Core/Graphics/Lib/DxUtils.h>
 
 //============================================================================
@@ -14,9 +15,8 @@ void PostProcessCommandContext::Execute(PostProcessType type,
 	ID3D12GraphicsCommandList* commandList, ComputePostProcessor* processor,
 	const D3D12_GPU_DESCRIPTOR_HANDLE& inputTextureGPUHandle) {
 
-	const UINT kThreadGroupSize = 8;
-	UINT threadGroupCountX = DxUtils::RoundUp(static_cast<UINT>(processor->GetTextureSize().x), kThreadGroupSize);
-	UINT threadGroupCountY = DxUtils::RoundUp(static_cast<UINT>(processor->GetTextureSize().y), kThreadGroupSize);
+	UINT threadGroupCountX = DxUtils::RoundUp(static_cast<UINT>(processor->GetTextureSize().x), THREAD_POSTPROCESS_GROUP);
+	UINT threadGroupCountY = DxUtils::RoundUp(static_cast<UINT>(processor->GetTextureSize().y), THREAD_POSTPROCESS_GROUP);
 
 	// typeごとに処理
 	switch (type) {

@@ -1,7 +1,12 @@
+//============================================================================
+//	include
+//============================================================================
 
-//============================================================================*/
-//	Vignette.CS
-//============================================================================*/
+#include "../../../../../Engine/Core/Graphics/PostProcess/PostProcessConfig.h"
+
+//============================================================================
+//	CBuffer
+//============================================================================
 
 struct VignetteParameter {
 	
@@ -9,12 +14,19 @@ struct VignetteParameter {
 	float power;  // 乗算パラメータ
 	float3 color; // 色
 };
+ConstantBuffer<VignetteParameter> gVignette : register(b0);
+
+//============================================================================
+//	buffer
+//============================================================================
 
 RWTexture2D<float4> gOutputTexture : register(u0);
 Texture2D<float4> gTexture : register(t0);
-ConstantBuffer<VignetteParameter> gVignette : register(b0);
 
-[numthreads(8, 8, 1)]
+//============================================================================
+//	Main
+//============================================================================
+[numthreads(THREAD_POSTPROCESS_GROUP, THREAD_POSTPROCESS_GROUP, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	uint width, height;

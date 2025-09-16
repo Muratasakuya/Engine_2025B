@@ -6,6 +6,7 @@
 #include <Engine/Core/Window/WinApp.h>
 #include <Engine/Core/Debug/SpdLogger.h>
 #include <Engine/Utility/EnumAdapter.h>
+#include <Engine/Config.h>
 
 #pragma comment(lib,"dInput8.lib")
 #pragma comment(lib,"dxguid.lib")
@@ -100,6 +101,32 @@ namespace {
 }
 
 Input* Input::instance_ = nullptr;
+
+void Input::SetViewRect(InputViewArea viewArea, const Vector2& dstPos, Vector2 dstSize) {
+
+	viewRects_[viewArea].dstPos = dstPos;
+	viewRects_[viewArea].dstSize = dstSize;
+}
+
+bool Input::IsMouseOnView(InputViewArea viewArea) const {
+
+	Vector2 mouse = GetMousePos();
+	const ViewRect rect = viewRects_.at(viewArea);
+	return (mouse.x >= rect.dstPos.x && mouse.y >= rect.dstPos.y &&
+		mouse.x < rect.dstPos.x + rect.dstSize.x &&
+		mouse.y < rect.dstPos.y + rect.dstSize.y);
+}
+
+std::optional<Vector2> Input::GetMousePosInView(InputViewArea viewArea) const {
+
+	if (!IsMouseOnView(viewArea)) {
+		return std::nullopt;
+	}
+	Vector2 mouse = GetMousePos();
+	const ViewRect rect = viewRects_.at(viewArea);
+	Vector2 local = Vector2(mouse.x - rect.dstPos.x, mouse.y - rect.dstPos.y);
+	return local * (rect.srcSize / rect.dstSize);
+}
 
 Input* Input::GetInstance() {
 
@@ -402,6 +429,14 @@ void Input::Init(WinApp* winApp) {
 
 	// マウスの取得開始
 	hr = mouse_->Acquire();
+
+	// 初期化値
+	viewRects_[InputViewArea::Game].dstPos = Vector2::AnyInit(0.0f);
+	viewRects_[InputViewArea::Game].dstSize = Vector2::AnyInit(0.0f);
+	viewRects_[InputViewArea::Game].srcSize = Vector2(Config::kWindowWidthf, Config::kWindowHeightf);
+	viewRects_[InputViewArea::Scene].dstPos = Vector2::AnyInit(0.0f);
+	viewRects_[InputViewArea::Scene].dstSize = Vector2::AnyInit(0.0f);
+	viewRects_[InputViewArea::Scene].srcSize = Vector2(Config::kWindowWidthf, Config::kWindowHeightf);
 }
 
 void Input::Update() {

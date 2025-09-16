@@ -3,6 +3,7 @@
 //============================================================================
 
 #include "../../Math/Math.hlsli"
+#include "../../../../../Engine/Core/Graphics/PostProcess/PostProcessConfig.h"
 
 //============================================================================
 //	CBuffer
@@ -136,7 +137,7 @@ float3 AddGrain(float3 col, float2 uv, float time, float amount) {
 //============================================================================
 //	main
 //============================================================================
-[numthreads(8, 8, 1)]
+[numthreads(THREAD_POSTPROCESS_GROUP, THREAD_POSTPROCESS_GROUP, 1)]
 void main(uint3 DTid : SV_DispatchThreadID) {
 	
 	// 範囲外アクセス回避
