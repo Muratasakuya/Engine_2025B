@@ -74,6 +74,11 @@ public:
 	void SetDeadZone(float deadZone);
 	float GetDeadZone() const { return deadZone_; }
 
+	// view
+	void SetViewRect(InputViewArea viewArea, const Vector2& dstPos, Vector2 dstSize);
+	bool IsMouseOnView(InputViewArea viewArea) const;
+	std::optional<Vector2> GetMousePosInView(InputViewArea viewArea) const;
+
 	// singleton
 	static Input* GetInstance();
 	static void Finalize();
@@ -81,6 +86,16 @@ private:
 	//========================================================================
 	//	private Methods
 	//========================================================================
+
+	//--------- structure ----------------------------------------------------
+
+	// 描画矩形
+	struct ViewRect {
+
+		Vector2 dstPos;   // ウィンドウ内の貼り付け左上
+		Vector2 dstSize;  // ウィンドウ内の貼り付けサイズ
+		Vector2 srcSize;  // 元サイズ
+	};
 
 	//--------- variables ----------------------------------------------------
 
@@ -137,6 +152,9 @@ private:
 	Vector2 mousePos_;                    // マウスの座標
 	Vector2 mousePrePos_;                 // マウスの前座標
 	float wheelValue_;                    // ホイール移動量
+
+	// 描画矩形範囲
+	std::unordered_map<InputViewArea, ViewRect> viewRects_;
 
 	//--------- functions ----------------------------------------------------
 

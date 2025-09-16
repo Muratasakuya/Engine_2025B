@@ -271,7 +271,7 @@ void RenderEngine::EndRenderFrameBuffer() {
 		D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PRESENT);
 }
 
-void RenderEngine::BeginRenderTarget(RenderTexture* renderTexture) {
+void RenderEngine::BeginRenderTarget(RenderTexture* renderTexture) {						
 
 	const RenderTarget renderTarget = renderTexture->GetRenderTarget();
 
