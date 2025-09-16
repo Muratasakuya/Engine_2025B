@@ -11,6 +11,9 @@
 #include <Engine/Editor/Manager/GameEditorManager.h>
 #include <Engine/Utility/GameTimer.h>
 
+// imgui
+#include <ImGuizmo.h>
+
 //============================================================================
 //	ImGuiEditor classMethods
 //============================================================================
@@ -56,6 +59,8 @@ void ImGuiEditor::Display() {
 	// ドッキング設定
 	ImGui::DockSpaceOverViewport
 	(ImGui::GetMainViewport()->ID, ImGui::GetMainViewport(), ImGuiDockNodeFlags_None);
+	// Guizmo
+	ImGuizmo::BeginFrame();
 
 	// layout操作
 	EditLayout();
