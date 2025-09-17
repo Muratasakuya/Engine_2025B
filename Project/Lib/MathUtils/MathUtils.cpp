@@ -78,3 +78,23 @@ Vector3 Math::RotateY(const Vector3& v, float rad) {
 	Matrix4x4 rotate = Matrix4x4::MakeYawMatrix(rad);
 	return Vector3::Transform(v, rotate).Normalize();
 }
+
+void Math::ToColumnMajor(const Matrix4x4& matrix, float out[16]) {
+
+	for (int r = 0; r < 4; ++r) {
+		for (int c = 0; c < 4; ++c) {
+
+			out[c * 4 + r] = matrix.m[r][c];
+		}
+	}
+}
+
+void Math::FromColumnMajor(const float in[16], Matrix4x4& matrix) {
+
+	for (int r = 0; r < 4; ++r) {
+		for (int c = 0; c < 4; ++c) {
+
+			matrix.m[r][c] = in[c * 4 + r];
+		}
+	}
+}

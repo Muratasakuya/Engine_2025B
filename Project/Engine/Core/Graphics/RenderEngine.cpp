@@ -247,10 +247,12 @@ void RenderEngine::Renderers(ViewType type, bool enableMesh) {
 	spriteRenderer_->ApplyPostProcessRendering(SpriteLayer::PostModel, sceneBuffer_.get(), dxCommand_);
 
 	// ピッキング処理、左クリックしたときのみ更新
-	if (type == ViewType::Debug &&
-		Input::GetInstance()->TriggerMouse(MouseButton::Left)) {
+	if (Input::GetInstance()->IsMouseOnView(InputViewArea::Scene)) {
+		if (type == ViewType::Debug &&
+			Input::GetInstance()->TriggerMouse(MouseButton::Left)) {
 
-		pixelPicker_->Execute(dxCommand_, meshRenderer_->GetTLASResource());
+			pixelPicker_->Execute(dxCommand_, meshRenderer_->GetTLASResource());
+		}
 	}
 }
 

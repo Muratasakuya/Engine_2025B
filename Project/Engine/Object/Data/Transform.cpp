@@ -5,6 +5,7 @@
 //============================================================================
 #include <Engine/Config.h>
 #include <Engine/Utility/JsonAdapter.h>
+#include <Engine/Editor/ImGuiObjectEditor.h>
 
 // imgui
 #include <imgui.h>
@@ -115,6 +116,9 @@ void BaseTransform::ImGui(float itemSize) {
 	}
 
 	ImGui::PopItemWidth();
+
+	// Gizmo
+	ImGuiObjectEditor::GetInstance()->GizmoToolbar();
 }
 
 void BaseTransform::ToJson(Json& data) {

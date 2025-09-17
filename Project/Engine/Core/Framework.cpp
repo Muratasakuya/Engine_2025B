@@ -162,7 +162,7 @@ void Framework::Update() {
 
 	// imgui表示更新
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
-	imguiEditor_->Display();
+	imguiEditor_->Display(sceneView_.get());
 #endif
 	// scene更新
 	UpdateScene();

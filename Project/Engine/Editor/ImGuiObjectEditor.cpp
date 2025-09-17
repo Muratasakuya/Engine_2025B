@@ -8,6 +8,7 @@
 #include <Engine/Object/System/Systems/TagSystem.h>
 #include <Engine/Object/Base/Interface/IGameObject.h>
 #include <Lib/MathUtils/Algorithm.h>
+#include <Lib/MathUtils/MathUtils.h>
 
 // data
 #include <Engine/Object/Data/Transform.h>
@@ -16,9 +17,6 @@
 #include <Engine/Object/Data/ObjectTag.h>
 #include <Engine/Object/Data/Sprite.h>
 #include <Engine/Object/Data/Skybox.h>
-
-// imgui
-#include <imgui.h>
 
 //============================================================================
 //	ImGuiObjectEditor classMethods
@@ -45,10 +43,10 @@ void ImGuiObjectEditor::Finalize() {
 
 void ImGuiObjectEditor::Init() {
 
-	ObjectManager_ = nullptr;
-	ObjectManager_ = ObjectManager::GetInstance();
+	objectManager_ = nullptr;
+	objectManager_ = ObjectManager::GetInstance();
 	tagSystem_ = nullptr;
-	tagSystem_ = ObjectManager_->GetSystem<TagSystem>();
+	tagSystem_ = objectManager_->GetSystem<TagSystem>();
 }
 
 void ImGuiObjectEditor::SelectById(uint32_t id) {
@@ -73,13 +71,13 @@ void ImGuiObjectEditor::SelectObject() {
 
 bool ImGuiObjectEditor::Is3D(uint32_t object) const {
 
-	return ObjectManager_->GetData<Transform3D>(object) != nullptr ||
-		ObjectManager_->GetData<Skybox>(object) != nullptr;
+	return objectManager_->GetData<Transform3D>(object) != nullptr ||
+		objectManager_->GetData<Skybox>(object) != nullptr;
 }
 
 bool ImGuiObjectEditor::Is2D(uint32_t object) const {
 
-	return ObjectManager_->GetData<Transform2D>(object) != nullptr;
+	return objectManager_->GetData<Transform2D>(object) != nullptr;
 }
 
 void ImGuiObjectEditor::DrawSelectable(uint32_t object, const std::string& name) {
@@ -146,18 +144,120 @@ void ImGuiObjectEditor::Registerobject(uint32_t id, IGameObject* object) {
 	objectsMap_[id] = object;
 }
 
+void ImGuiObjectEditor::DrawManipulateGizmo(const GizmoContext& context) {
+
+	// 描画先の設定
+	ImGuizmo::SetDrawlist(context.drawlist);
+	ImGuizmo::SetRect(context.rectMin.x, context.rectMin.y, context.rectSize.x, context.rectSize.y);
+	ImGuizmo::SetOrthographic(context.orthographic);
+
+	// 操作対象を決定
+	uint32_t id = 0;
+	bool is3D = false;
+	bool is2D = false;
+	if (selected3D_) {
+		id = *selected3D_;
+		is3D = true;
+	} else if (selected2D_) {
+		id = *selected2D_;
+		is2D = true;
+	} else {
+		return;
+	}
+
+	// ワールド行列をcolumn-majorに
+	float model[16];
+	if (is3D) {
+
+		auto* transform = objectManager_->GetData<Transform3D>(id);
+		Math::ToColumnMajor(Matrix4x4::Transpose(transform->matrix.world), model);
+	} else {
+
+		auto* transform = objectManager_->GetData<Transform2D>(id);
+		Math::ToColumnMajor(transform->matrix, model);
+	}
+
+	// 操作モード
+	ImGuizmo::OPERATION option = currentOption_; // TRANSLATE / ROTATE / SCALE
+	ImGuizmo::MODE mode = currentMode_;          // WORLD / LOCAL
+	float snap[3] = { snapMove_, snapRotate_, snapScale_ };
+
+	// 実行
+	isUsingGuizmo_ = ImGuizmo::Manipulate(context.view, context.projection, option, mode, model,
+		nullptr, useSnap_ ? snap : nullptr);
+
+	// 変更があればSRTを書き戻す
+	if (isUsingGuizmo_ && ImGuizmo::IsUsing()) {
+
+		float scale[3]{};
+		float rotate[3]{};
+		float translate[3]{};
+		ImGuizmo::DecomposeMatrixToComponents(model, translate, rotate, scale);
+		if (is3D) {
+
+			auto* transform = objectManager_->GetData<Transform3D>(id);
+			transform->translation = Vector3(translate[0], translate[1], translate[2]);
+			transform->eulerRotate = Vector3(rotate[0] * radian, rotate[1] * radian, rotate[2] * radian);
+			transform->rotation = Quaternion::Normalize(Quaternion::EulerToQuaternion(transform->eulerRotate));
+			transform->scale = Vector3(scale[0], scale[1], scale[2]);
+			transform->SetIsDirty(true);
+		} else {
+
+			auto* transform = objectManager_->GetData<Transform2D>(id);
+			transform->translation = Vector2(translate[0], translate[1]);
+			transform->rotation = rotate[2];
+			transform->size = Vector2(scale[0], scale[1]);
+		}
+	}
+
+	// Guizmo状にマウスがあるかどうか
+	isUsingGuizmo_ |= ImGuizmo::IsOver();
+}
+
+void ImGuiObjectEditor::GizmoToolbar() {
+
+	ImGui::SeparatorText("Gizmo");
+	if (ImGui::RadioButton("Translate", currentOption_ == ImGuizmo::TRANSLATE)) {
+		currentOption_ = ImGuizmo::TRANSLATE;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rotate", currentOption_ == ImGuizmo::ROTATE)) {
+		currentOption_ = ImGuizmo::ROTATE;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Scale", currentOption_ == ImGuizmo::SCALE)) {
+		currentOption_ = ImGuizmo::SCALE;
+	}
+
+	if (ImGui::RadioButton("World", currentMode_ == ImGuizmo::WORLD)) {
+		currentMode_ = ImGuizmo::WORLD;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Local", currentMode_ == ImGuizmo::LOCAL)) {
+		currentMode_ = ImGuizmo::LOCAL;
+	}
+
+	ImGui::Checkbox("Snap", &useSnap_);
+	if (useSnap_) {
+
+		ImGui::DragFloat("Move##Snap", &snapMove_, 0.01f);
+		ImGui::DragFloat("Rotate##Snap", &snapRotate_, 0.5f * (3.14159f / 180.f));
+		ImGui::DragFloat("Scale##Snap", &snapScale_, 0.01f);
+	}
+}
+
 void ImGuiObjectEditor::EditObjects() {
 
-	if (!selected3D_) return;
+	if (!selected3D_) {
+		return;
+	}
 	uint32_t id = selected3D_.value();
-
 	const auto* tag = tagSystem_->Tags().at(id);
 	if (tag->name != "skybox" && Algorithm::Find(objectsMap_, id)) {
 
 		objectsMap_[id].value()->ImGui();
 		return;
 	}
-
 	if (ImGui::BeginTabBar("Obj3DTab")) {
 
 		// skyboxの時と他のオブジェクトで分岐
@@ -206,20 +306,20 @@ void ImGuiObjectEditor::ObjectsInformation() {
 
 	if (ImGui::Button("Remove")) {
 
-		ObjectManager_->Destroy(id);
+		objectManager_->Destroy(id);
 		selected3D_.reset();
 	}
 }
 
 void ImGuiObjectEditor::ObjectsTransform() {
 
-	auto* transform = ObjectManager_->GetData<Transform3D>(*selected3D_);
+	auto* transform = objectManager_->GetData<Transform3D>(*selected3D_);
 	transform->ImGui(itemWidth_);
 }
 
 void ImGuiObjectEditor::ObjectsMaterial() {
 
-	auto* matsPtr = ObjectManager_->GetData<Material, true>(*selected3D_);
+	auto* matsPtr = objectManager_->GetData<Material, true>(*selected3D_);
 	auto& materials = *matsPtr;
 
 	ImGui::PushItemWidth(itemWidth_);
@@ -251,7 +351,7 @@ void ImGuiObjectEditor::ObjectsMaterial() {
 
 void ImGuiObjectEditor::EditSkybox() {
 
-	auto* skybox = ObjectManager_->GetData<Skybox>(*selected3D_);
+	auto* skybox = objectManager_->GetData<Skybox>(*selected3D_);
 	skybox->ImGui(itemWidth_);
 }
 
@@ -307,25 +407,25 @@ void ImGuiObjectEditor::Object2DInformation() {
 
 	if (ImGui::Button("Remove")) {
 
-		ObjectManager_->Destroy(id);
+		objectManager_->Destroy(id);
 		selected2D_.reset();
 	}
 }
 
 void ImGuiObjectEditor::Object2DSprite() {
 
-	auto* sprite = ObjectManager_->GetData<Sprite>(*selected2D_);
+	auto* sprite = objectManager_->GetData<Sprite>(*selected2D_);
 	sprite->ImGui(itemWidth_);
 }
 
 void ImGuiObjectEditor::Object2DTransform() {
 
-	auto* transform = ObjectManager_->GetData<Transform2D>(*selected2D_);
+	auto* transform = objectManager_->GetData<Transform2D>(*selected2D_);
 	transform->ImGui(itemWidth_);
 }
 
 void ImGuiObjectEditor::Object2DMaterial() {
 
-	auto* material = ObjectManager_->GetData<SpriteMaterial>(*selected2D_);
+	auto* material = objectManager_->GetData<SpriteMaterial>(*selected2D_);
 	material->ImGui(itemWidth_);
 }

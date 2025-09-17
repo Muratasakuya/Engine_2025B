@@ -4,6 +4,8 @@
 //	include
 //============================================================================
 #include <Engine/Input/Input.h>
+#include <Engine/Scene/SceneView.h>
+#include <Lib/MathUtils/MathUtils.h>
 
 // imgui表示
 #include <Engine/Asset/AssetEditor.h>
@@ -35,7 +37,7 @@ void ImGuiEditor::Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle
 	debugViewSize_ = ImVec2(832.0f, 486.0f);
 }
 
-void ImGuiEditor::Display() {
+void ImGuiEditor::Display(SceneView* sceneView) {
 
 	// imguiの表示切り替え
 	// F11で行う
@@ -66,7 +68,7 @@ void ImGuiEditor::Display() {
 	EditLayout();
 
 	// imguiの表示
-	MainWindow();
+	MainWindow(sceneView);
 
 	Console();
 
@@ -91,13 +93,24 @@ void ImGuiEditor::EditLayout() {
 	ImGui::End();
 }
 
-void ImGuiEditor::MainWindow() {
+void ImGuiEditor::MainWindow(SceneView* sceneView) {
 
 	ImGui::Begin("Scene", nullptr, ImGuiWindowFlags_NoMove);
 
 	ImGui::Image(ImTextureID(debugSceneRenderTextureGPUHandle_.ptr), debugViewSize_);
 
 	SetInputArea(InputViewArea::Scene, ImGui::GetItemRectMin(), ImGui::GetItemRectSize());
+
+	// ギズモ呼び出し
+	GizmoContext gizmoContext{};
+	gizmoContext.drawlist = ImGui::GetWindowDrawList();
+	gizmoContext.rectMin = ImGui::GetItemRectMin();
+	gizmoContext.rectSize = ImGui::GetItemRectSize();
+	gizmoContext.orthographic = false;
+	Math::ToColumnMajor(Matrix4x4::Transpose(sceneView->GetSceneCamera()->GetViewMatrix()), gizmoContext.view);
+	Math::ToColumnMajor(Matrix4x4::Transpose(sceneView->GetSceneCamera()->GetProjectionMatrix()), gizmoContext.projection);
+	ImGuiObjectEditor::GetInstance()->DrawManipulateGizmo(gizmoContext);
+
 	ImGui::End();
 
 	ImGui::Begin("Game", nullptr, windowFlag_);

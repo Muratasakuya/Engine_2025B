@@ -10,7 +10,7 @@
 // imgui
 #include <imgui.h>
 // front
-class CameraManager;
+class SceneView;
 
 //============================================================================
 //	ImGuiEditor class
@@ -27,7 +27,7 @@ public:
 	void Init(const D3D12_GPU_DESCRIPTOR_HANDLE& renderTextureGPUHandle,
 		const D3D12_GPU_DESCRIPTOR_HANDLE& debugSceneRenderTextureGPUHandle);
 
-	void Display();
+	void Display(SceneView* sceneView);
 private:
 	//========================================================================
 	//	private Methods
@@ -55,7 +55,7 @@ private:
 	void EditLayout();
 
 	// renderTextureの描画
-	void MainWindow();
+	void MainWindow(SceneView* sceneView);
 
 	// console
 	void Console();

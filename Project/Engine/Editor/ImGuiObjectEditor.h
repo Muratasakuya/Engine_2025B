@@ -13,10 +13,27 @@
 #include <unordered_map>
 #include <algorithm>
 #include <functional>
+// imgui
+#include <imgui.h>
+#include <ImGuizmo.h>
 // front
 class TagSystem;
 class ObjectManager;
 class IGameObject;
+
+//============================================================================
+//	ImGuiObjectEditor structure
+//============================================================================
+
+struct GizmoContext {
+
+	ImDrawList* drawlist; // ウィンドウのDrawList
+	ImVec2 rectMin;       // ImGui::Imageの左上
+	ImVec2 rectSize;      // サイズ
+	float view[16];
+	float projection[16];
+	bool orthographic;
+};
 
 //============================================================================
 //	ImGuiObjectEditor class
@@ -37,6 +54,11 @@ public:
 	// 選択全解除
 	void Reset();
 	void Registerobject(uint32_t id, IGameObject* object);
+
+	// ギズモ呼び出し
+	void DrawManipulateGizmo(const GizmoContext& context);
+	void GizmoToolbar();
+	bool IsUsingGuizmo() const { return isUsingGuizmo_; }
 
 	//--------- accessor -----------------------------------------------------
 
@@ -65,7 +87,7 @@ private:
 	static ImGuiObjectEditor* instance_;
 
 	TagSystem* tagSystem_;
-	ObjectManager* ObjectManager_;
+	ObjectManager* objectManager_;
 
 	std::unordered_map<std::string, std::vector<uint32_t>> groups_;
 
@@ -77,7 +99,17 @@ private:
 	std::optional<uint32_t> selected2D_;
 	int  selectedSpriteIndex_ = 0;
 
-	const float itemWidth_ = 224.0f;
+	// Guizmo
+	ImGuizmo::OPERATION currentOption_ = ImGuizmo::TRANSLATE;
+	ImGuizmo::MODE currentMode_ = ImGuizmo::WORLD;
+	bool isUsingGuizmo_ = false;
+	// 操作感度
+	bool useSnap_ = false;
+	float snapMove_ = 0.1f;
+	float snapRotate_ = 0.01f;
+	float snapScale_ = 0.1f;
+
+	const float itemWidth_ = 192.0f;
 
 	//--------- functions ----------------------------------------------------
 

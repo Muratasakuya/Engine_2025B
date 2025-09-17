@@ -33,4 +33,7 @@ namespace Math {
 		float clampHalfSize, int tryCount = 12);
 
 	Vector3 RotateY(const Vector3& v, float rad);
+
+	void ToColumnMajor(const Matrix4x4& matrix, float out[16]);
+	void FromColumnMajor(const float in[16], Matrix4x4& matrix);
 }

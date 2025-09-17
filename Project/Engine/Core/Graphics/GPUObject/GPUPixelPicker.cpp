@@ -102,7 +102,7 @@ void GPUPixelPicker::CopyReadbackResource(DxCommand* dxCommand) {
 
 void GPUPixelPicker::SetPickObject() {
 
-	if (pickedID_ != 0u) {
+	if (pickedID_ != 0u && !ImGuiObjectEditor::GetInstance()->IsUsingGuizmo()) {
 
 		ImGuiObjectEditor::GetInstance()->SelectById(pickedID_);
 	}
