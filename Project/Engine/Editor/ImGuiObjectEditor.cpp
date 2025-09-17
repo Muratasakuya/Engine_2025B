@@ -241,7 +241,7 @@ void ImGuiObjectEditor::GizmoToolbar() {
 	if (useSnap_) {
 
 		ImGui::DragFloat("Move##Snap", &snapMove_, 0.01f);
-		ImGui::DragFloat("Rotate##Snap", &snapRotate_, 0.5f * (3.14159f / 180.f));
+		ImGui::DragFloat("Rotate##Snap", &snapRotate_, 0.5f * radian);
 		ImGui::DragFloat("Scale##Snap", &snapScale_, 0.01f);
 	}
 }
