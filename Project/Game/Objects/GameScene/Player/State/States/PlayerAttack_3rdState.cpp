@@ -25,18 +25,22 @@ void PlayerAttack_3rdState::Enter(Player& player) {
 	player.SetNextAnimation("player_attack_3rd", false, nextAnimDuration_);
 	canExit_ = false;
 
+	// 敵が攻撃可能範囲にいるかチェック
+	assisted_ = CheckInRange(attackPosLerpCircleRange_,
+		Vector3(bossEnemy_->GetTranslation() - backStartPos_).Length());
+
 	// 補間座標を設定
 	backStartPos_ = player.GetTranslation();
-	backTargetPos_ = backStartPos_ + (bossEnemy_->GetTranslation() -
-		backStartPos_).Normalize() * backMoveValue_;
+	Vector3 direction = (bossEnemy_->GetTranslation() - backStartPos_).Normalize();
+	// 補間先がいなければ正面向き
+	if (!assisted_) {
+		direction = player.GetTransform().GetForward();
+	}
+	backTargetPos_ = backStartPos_ + direction * backMoveValue_;
 	currentState_ = State::MoveBack;
 
 	// Y座標の固定値
 	initPosY_ = player.GetTranslation().y;
-
-	// 敵が攻撃可能範囲にいるかチェック
-	assisted_ = CheckInRange(attackPosLerpCircleRange_,
-		Vector3(bossEnemy_->GetTranslation() - backStartPos_).Length());
 }
 
 void PlayerAttack_3rdState::Update(Player& player) {

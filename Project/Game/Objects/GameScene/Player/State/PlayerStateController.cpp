@@ -206,9 +206,12 @@ void PlayerStateController::Update(Player& owner) {
 	}
 
 	// 常に更新する値
-	for (const auto& state : std::views::values(states_)) {
+	for (const auto& [state, ptr] : states_) {
 
-		state->UpdateAlways(owner);
+		if (state == PlayerState::None) {
+			continue;
+		}
+		ptr->UpdateAlways(owner);
 	}
 }
 
@@ -659,7 +662,7 @@ void PlayerStateController::ApplyJson() {
 		}
 
 		for (auto& [state, ptr] : states_) {
-			
+
 			const auto& key = EnumAdapter<PlayerState>::ToString(state);
 			if (!data.contains(key)) {
 				continue;
