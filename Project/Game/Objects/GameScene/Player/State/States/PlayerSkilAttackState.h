@@ -48,11 +48,6 @@ private:
 		Return,    // 戻る
 		JumpAttack // 戻った反動でジャンプして敵に攻撃
 	};
-	enum class RotateState {
-
-		RotateX,
-		LookEnemy
-	};
 
 	// 各状態
 	struct StateMoveParam {
@@ -85,11 +80,8 @@ private:
 
 	// 現在の状態
 	State currentState_;
-	RotateState rotateState_;
 	// 範囲内にいるか
 	bool assisted_;
-	// 現在のジャンプ力Y
-	float velocityY_;
 
 	// parameters
 	// Rush
@@ -97,13 +89,11 @@ private:
 	// Return
 	StateMoveParam returnMoveParam_;
 	// 回転
-	StateTimer rotateXTimer_;   // 1回転する時間
+	float lookStartProgress_;   // 回転補間開始する経過率
+	bool isStratLookEnemy_;     // 敵の方向を向くか
 	StateTimer lookEnemyTimer_; // 敵の方向を向くまでの時間
-	Quaternion stratRotation;   // 初期回転
 	Quaternion yawLerpStart_; // 補間開始
 	Quaternion yawLerpEnd_;   // 補間目標
-	// ジャンプ
-	JumpParam returnJumpParam_; // 戻るときのジャンプ
 	// JumpAttack
 	StateMoveParam jumpAttackMoveParam_;
 

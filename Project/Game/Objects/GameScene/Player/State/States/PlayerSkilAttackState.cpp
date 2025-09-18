@@ -19,19 +19,17 @@ PlayerSkilAttackState::PlayerSkilAttackState() {
 	returnMoveParam_.name = "ReturnMove";
 	jumpAttackMoveParam_.name = "JumpAttack";
 
-	returnJumpParam_.name = "ReturnJump";
-
 	rushMoveParam_.timer.Reset();
 	returnMoveParam_.timer.Reset();
 	jumpAttackMoveParam_.timer.Reset();
 	canExit_ = false;
+	isStratLookEnemy_ = false;
 }
 
 void PlayerSkilAttackState::Enter(Player& player) {
 
 	// 初期状態を設定
 	currentState_ = State::Rush;
-	rotateState_ = RotateState::RotateX;
 
 	// 敵が攻撃可能範囲にいるかチェック
 	const Vector3 playerPos = player.GetTranslation();
@@ -105,18 +103,14 @@ void PlayerSkilAttackState::UpdateRush(Player& player) {
 
 		// 次の補間座標を設定
 		returnMoveParam_.start = rushMoveParam_.target;
+		returnMoveParam_.start.y = 0.0f;
 		returnMoveParam_.target = bossEnemyPos + direction * returnMoveParam_.moveValue;
+		returnMoveParam_.target.y = 0.0f;
 
 		// アニメーションを設定
 		player.SetNextAnimation("player_skilAttack_2nd", false, returnMoveParam_.nextAnim);
 		// 敵の方を向ける
 		player.SetRotation(Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f)));
-
-		// 現在の回転を記録
-		stratRotation = player.GetRotation();
-
-		// ジャンプ力を設定
-		velocityY_ = returnJumpParam_.power;
 
 		// 次に進める
 		currentState_ = State::Return;
@@ -126,62 +120,29 @@ void PlayerSkilAttackState::UpdateRush(Player& player) {
 void PlayerSkilAttackState::UpdateReturn(Player& player) {
 
 	// 座標を補間する
-	{
-		returnMoveParam_.timer.Update();
-		player.SetTranslation(Vector3::Lerp(returnMoveParam_.start,
-			returnMoveParam_.target, returnMoveParam_.timer.easedT_));
-	}
-
-	// ジャンプ処理
-	{
-		// 重力を適応
-		velocityY_ += returnJumpParam_.gravity * GameTimer::GetScaledDeltaTime();
-		Vector3 playerTranslation = player.GetTranslation();
-		playerTranslation.y += velocityY_ * GameTimer::GetScaledDeltaTime();
-		if (playerTranslation.y <= 0.0f) {
-			playerTranslation.y = 0.0f;
-		}
-		player.SetTranslation(playerTranslation);
-	}
+	returnMoveParam_.timer.Update();
+	player.SetTranslation(Vector3::Lerp(returnMoveParam_.start,
+		returnMoveParam_.target, returnMoveParam_.timer.easedT_));
 
 	// 回転補間
-	{
-		switch (rotateState_) {
-		case PlayerSkilAttackState::RotateState::RotateX: {
+	// 一定の経過率後回転補間を開始する
+	if (lookStartProgress_ < returnMoveParam_.timer.t_ &&
+		!isStratLookEnemy_) {
 
-			rotateXTimer_.Update();
-			// +X軸方向に1回転させる
-			const float angle = 2.0f * pi * rotateXTimer_.easedT_;
-			Matrix4x4 startRotateMatrix = Quaternion::MakeRotateMatrix(stratRotation);
-			// X軸回転
-			Matrix4x4 rotateXMatrix = Matrix4x4::MakeRotateMatrix(Vector3(angle, 0.0f, 0.0f));
-			// 回転を合成
-			Matrix4x4 rotationMatrix = startRotateMatrix * rotateXMatrix;
-			player.SetRotation(Quaternion::Normalize(Quaternion::FromRotationMatrix(rotationMatrix)));
+		// 現在の回転、位置から敵への回転補間を設定
+		yawLerpStart_ = player.GetRotation();
+		const Vector3 playerPos = player.GetTranslation();
+		const Vector3 bossEnemyPos = bossEnemy_->GetTranslation();
+		Vector3 directionXZ = Vector3(bossEnemyPos.x - playerPos.x, 0.0f, bossEnemyPos.z - playerPos.z).Normalize();
+		yawLerpEnd_ = Quaternion::LookRotation(directionXZ, Vector3(0.0f, 1.0f, 0.0f));
 
-			// 補間終了後敵の方に向くようにY軸を補間する
-			if (rotateXTimer_.IsReached()) {
+		isStratLookEnemy_ = true;
+	}
+	if (isStratLookEnemy_) {
 
-				// 現在の回転、位置から敵への回転補間を設定
-				yawLerpStart_ = player.GetRotation();
-				const Vector3 playerPos = player.GetTranslation();
-				const Vector3 bossEnemyPos = bossEnemy_->GetTranslation();
-				Vector3 directionXZ = Vector3(bossEnemyPos.x - playerPos.x, 0.0f, bossEnemyPos.z - playerPos.z).Normalize();
-				yawLerpEnd_ = Quaternion::LookRotation(directionXZ, Vector3(0.0f, 1.0f, 0.0f));
-
-				// 次に進める
-				rotateState_ = RotateState::LookEnemy;
-			}
-			break;
-		}
-		case PlayerSkilAttackState::RotateState::LookEnemy: {
-
-			// 敵方向へ補間
-			lookEnemyTimer_.Update();
-			player.SetRotation(Quaternion::Slerp(yawLerpStart_, yawLerpEnd_, lookEnemyTimer_.easedT_));
-			break;
-		}
-		}
+		// 敵方向へ補間
+		lookEnemyTimer_.Update();
+		player.SetRotation(Quaternion::Slerp(yawLerpStart_, yawLerpEnd_, lookEnemyTimer_.easedT_));
 	}
 
 	// 終了後次の状態に進める
@@ -197,7 +158,6 @@ void PlayerSkilAttackState::UpdateReturn(Player& player) {
 
 		// アニメーションを設定
 		player.SetNextAnimation("player_skilAttack_3rd", false, jumpAttackMoveParam_.nextAnim);
-
 		// 敵の方を向ける
 		player.SetRotation(Quaternion::LookRotation(direction, Vector3(0.0f, 1.0f, 0.0f)));
 
@@ -226,11 +186,11 @@ void PlayerSkilAttackState::Exit(Player& player) {
 
 	// リセット
 	canExit_ = false;
+	isStratLookEnemy_ = false;
 	exitTimer_ = 0.0f;
 	rushMoveParam_.timer.Reset();
 	returnMoveParam_.timer.Reset();
 	jumpAttackMoveParam_.timer.Reset();
-	rotateXTimer_.Reset();
 	lookEnemyTimer_.Reset();
 
 	// Y座標を元に戻す
@@ -265,20 +225,12 @@ void PlayerSkilAttackState::ImGui(const Player& player) {
 		break;
 	case PlayerSkilAttackState::State::Return:
 
-		ImGui::Text("velocityY: %.3f", velocityY_);
-		ImGui::Text("platerY: %.3f", player.GetTranslation().y);
+		ImGui::DragFloat("lookStartProgress", &lookStartProgress_, 0.01f);
 
 		ImGui::SeparatorText("Move");
 
 		returnMoveParam_.ImGui(player, *bossEnemy_);
 
-		ImGui::SeparatorText("Jump");
-
-		returnJumpParam_.ImGui();
-
-		ImGui::SeparatorText("Rotate");
-
-		rotateXTimer_.ImGui("RotateX");
 		lookEnemyTimer_.ImGui("LookEnemy");
 		break;
 	case PlayerSkilAttackState::State::JumpAttack:
@@ -360,9 +312,8 @@ void PlayerSkilAttackState::ApplyJson(const Json& data) {
 	returnMoveParam_.ApplyJson(data);
 	jumpAttackMoveParam_.ApplyJson(data);
 
-	returnJumpParam_.ApplyJson(data);
-	rotateXTimer_.FromJson(data.value("RotateX", Json()));
 	lookEnemyTimer_.FromJson(data.value("LookEnemy", Json()));
+	lookStartProgress_ = data.value("lookStartProgress_", 0.8f);
 }
 
 void PlayerSkilAttackState::SaveJson(Json& data) {
@@ -377,9 +328,8 @@ void PlayerSkilAttackState::SaveJson(Json& data) {
 	returnMoveParam_.SaveJson(data);
 	jumpAttackMoveParam_.SaveJson(data);
 
-	returnJumpParam_.SaveJson(data);
-	rotateXTimer_.ToJson(data["RotateX"]);
 	lookEnemyTimer_.ToJson(data["LookEnemy"]);
+	data["lookStartProgress_"] = lookStartProgress_;
 }
 
 bool PlayerSkilAttackState::GetCanExit() const {
