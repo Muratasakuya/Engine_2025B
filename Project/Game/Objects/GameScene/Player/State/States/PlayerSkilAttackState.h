@@ -15,7 +15,7 @@ public:
 	//	public Methods
 	//========================================================================
 
-	PlayerSkilAttackState() = default;
+	PlayerSkilAttackState();
 	~PlayerSkilAttackState() = default;
 
 	void Enter(Player& player) override;
@@ -39,14 +39,53 @@ private:
 	//	private Methods
 	//========================================================================
 
+	//--------- structure ----------------------------------------------------
+
+	// 状態
+	enum class State {
+
+		Rush,      // 突進
+		Return,    // 戻る
+		JumpAttack // 戻った反動でジャンプして敵に攻撃
+	};
+
+	// 各状態
+	struct StateMoveParam {
+
+		StateTimer timer; // 状態処理時間
+		float moveValue;  // 移動量
+		Vector3 start;    // 開始
+		Vector3 target;   // 目標
+		std::string name; // 名前
+
+		void ImGui(const Player& player, const BossEnemy& bossEnemy);
+		void ApplyJson(const Json& data);
+		void SaveJson(Json& data);
+	};
+
 	//--------- variables ----------------------------------------------------
 
+	// 現在の状態
+	State currentState_;
+	// 範囲内にいるか
 	bool assisted_;
 
 	// parameters
-	// 座標補間を行わないときの処理
-	StateTimer moveTimer_;
-	float moveValue_;   // 移動量
-	Vector3 startPos_;  // 開始座標
-	Vector3 targetPos_; // 目標座標
+	// Rush
+	StateMoveParam rushMoveParam_;
+	// Return
+	StateMoveParam returnMoveParam_;
+	// JumpAttack
+	StateMoveParam jumpAttackMoveParam_;
+
+	// エディター
+	State editState_;
+
+	//--------- functions ----------------------------------------------------
+
+	// update
+	void UpdateState(Player& player);
+	void UpdateRush(Player& player);
+	void UpdateReturn(Player& player);
+	void UpdateJumpAttack(Player& player);
 };
