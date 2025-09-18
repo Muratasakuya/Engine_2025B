@@ -48,6 +48,11 @@ private:
 		Return,    // 戻る
 		JumpAttack // 戻った反動でジャンプして敵に攻撃
 	};
+	enum class RotateState {
+
+		RotateX,
+		LookEnemy
+	};
 
 	// 各状態
 	struct StateMoveParam {
@@ -56,9 +61,22 @@ private:
 		float moveValue;  // 移動量
 		Vector3 start;    // 開始
 		Vector3 target;   // 目標
+		float nextAnim;   // 次のアニメーションまでの時間
 		std::string name; // 名前
 
 		void ImGui(const Player& player, const BossEnemy& bossEnemy);
+		void ApplyJson(const Json& data);
+		void SaveJson(Json& data);
+	};
+
+	// ジャンプ
+	struct JumpParam {
+
+		float power;   // 力
+		float gravity; // 重力
+		std::string name; // 名前
+
+		void ImGui();
 		void ApplyJson(const Json& data);
 		void SaveJson(Json& data);
 	};
@@ -67,14 +85,25 @@ private:
 
 	// 現在の状態
 	State currentState_;
+	RotateState rotateState_;
 	// 範囲内にいるか
 	bool assisted_;
+	// 現在のジャンプ力Y
+	float velocityY_;
 
 	// parameters
 	// Rush
 	StateMoveParam rushMoveParam_;
 	// Return
 	StateMoveParam returnMoveParam_;
+	// 回転
+	StateTimer rotateXTimer_;   // 1回転する時間
+	StateTimer lookEnemyTimer_; // 敵の方向を向くまでの時間
+	Quaternion stratRotation;   // 初期回転
+	Quaternion yawLerpStart_; // 補間開始
+	Quaternion yawLerpEnd_;   // 補間目標
+	// ジャンプ
+	JumpParam returnJumpParam_; // 戻るときのジャンプ
 	// JumpAttack
 	StateMoveParam jumpAttackMoveParam_;
 
