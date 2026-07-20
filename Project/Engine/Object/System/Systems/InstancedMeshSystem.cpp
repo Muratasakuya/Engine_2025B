@@ -211,7 +211,7 @@ void InstancedMeshSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 			continue;
 		}
 		instancedBuffer_->SetUploadData(
-			instancingName, transform->matrix, *materials, *animation);
+			instancingName, transform->GetMatrix(), *materials, *animation);
 		objectIDsPerModel_[instancingName].emplace_back(object);
 
 		renderData_[instancingName] = *meshRender;

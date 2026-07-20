@@ -42,7 +42,7 @@ void AnimationObject2D::AddAnimationKey(const std::string& key) {
 
 	// 回転
 	rotationChannels_[key].valueSource = std::make_unique<LerpValueSource<float>>();
-	rotationChannels_[key].getter = [](const AnimationObject2D& object) { return object.GetTransform().rotation; };
+	rotationChannels_[key].getter = [](const AnimationObject2D& object) { return object.GetTransform().GetRotation(); };
 	rotationChannels_[key].setter = [](AnimationObject2D& object, const float& value) { object.SetRotation(value); };
 
 	// 色

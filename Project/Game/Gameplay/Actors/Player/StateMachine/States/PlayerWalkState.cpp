@@ -51,7 +51,7 @@ void PlayerWalkState::UpdateWalk() {
 		SakuEngine::Vector3 inputDirection(inputValue.x, 0.0f, inputValue.y);
 		inputDirection = SakuEngine::Vector3::Normalize(inputDirection);
 
-		SakuEngine::Matrix4x4 rotateMatrix = SakuEngine::Quaternion::MakeRotateMatrix(followCamera_->GetTransform().rotation);
+		SakuEngine::Matrix4x4 rotateMatrix = SakuEngine::Quaternion::MakeRotateMatrix(followCamera_->GetTransform().GetRotation());
 		SakuEngine::Vector3 rotatedDirection = SakuEngine::Vector3::TransferNormal(inputDirection, rotateMatrix);
 		rotatedDirection = SakuEngine::Vector3::Normalize(rotatedDirection);
 

@@ -47,15 +47,15 @@ void BossEnemyBladeCollision::EmitEffect(const SakuEngine::Vector3& emitPos, con
 	velocity_ = velocity;
 
 	// 座標を設定
-	transform_.translation = emitPos;
+	transform_.SetTranslation(emitPos);
 
 	// 進行方向に回転を設定する
 	SakuEngine::Vector3 direction = SakuEngine::Vector3(velocity_.x, 0.0f, velocity_.z).Normalize();
-	transform_.rotation = SakuEngine::Quaternion::LookRotation(direction, Direction::Get(Direction3D::Up));
+	transform_.SetRotation(SakuEngine::Quaternion::LookRotation(direction, Direction::Get(Direction3D::Up)));
 
 	// transformを元に戻す
-	transform_.scale = scale_;
-	transform_.translation.y = 0.0f;
+	transform_.SetScale(scale_);
+	transform_.SetTranslationY(0.0f);
 }
 
 void BossEnemyBladeCollision::Update() {
@@ -78,7 +78,7 @@ void BossEnemyBladeCollision::Update() {
 void BossEnemyBladeCollision::UpdateMove() {
 
 	// 速度を加算していく
-	transform_.translation += velocity_ * SakuEngine::GameTimer::GetScaledDeltaTime();
+	transform_.AddTranslation(velocity_ * SakuEngine::GameTimer::GetScaledDeltaTime());
 
 	// 行列更新
 	transform_.UpdateMatrix();
@@ -94,8 +94,8 @@ void BossEnemyBladeCollision::UpdateLifeTime() {
 
 		isEmit_ = false;
 		lifeTimer_ = 0.0f;
-		transform_.scale = SakuEngine::Vector3::AnyInit(0.0f);
-		transform_.translation.y = outsideTranslationY_;
+		transform_.SetScale(SakuEngine::Vector3::AnyInit(0.0f));
+		transform_.SetTranslationY(outsideTranslationY_);
 	}
 }
 
@@ -116,7 +116,7 @@ void BossEnemyBladeCollision::ImGui() {
 	// scaleを設定する
 	if (ImGui::DragFloat3(("scale##" + typeName_).c_str(), &scale_.x, 0.1f)) {
 
-		transform_.scale = scale_;
+		transform_.SetScale(scale_);
 		transform_.UpdateMatrix();
 
 		// 衝突更新
@@ -138,7 +138,7 @@ void BossEnemyBladeCollision::ApplyJson() {
 	outsideTranslationY_ = SakuEngine::JsonAdapter::GetValue<float>(data, "outsideTranslationY_");
 	scale_ = SakuEngine::JsonAdapter::ToObject<SakuEngine::Vector3>(data["scale_"]);
 
-	transform_.translation.y = outsideTranslationY_;
+	transform_.SetTranslationY(outsideTranslationY_);
 	Collider::UpdateAllBodies(transform_);
 }
 

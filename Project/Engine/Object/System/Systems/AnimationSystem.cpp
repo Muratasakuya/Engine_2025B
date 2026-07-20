@@ -26,6 +26,6 @@ void AnimationSystem::Update(ObjectPoolManager& ObjectPoolManager) {
 
 		auto* animation = ObjectPoolManager.GetData<SkinnedAnimation>(object);
 		auto* transform = ObjectPoolManager.GetData<Transform3D>(object);
-		animation->Update(transform->matrix.world);
+		animation->Update(transform->GetMatrix().world);
 	}
 }

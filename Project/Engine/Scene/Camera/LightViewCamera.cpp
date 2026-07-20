@@ -1,4 +1,4 @@
-﻿#include "LightViewCamera.h"
+#include "LightViewCamera.h"
 
 using namespace SakuEngine;
 
@@ -57,7 +57,7 @@ void LightViewCamera::ImGui() {
 
 	ImGui::PushItemWidth(itemWidth_);
 
-	ImGui::DragFloat3("translation##LightViewCamera", &transform_.translation.x, 0.01f);
+	ImGui::DragFloat3("translation##LightViewCamera", &translation_.x, 0.01f);
 	ImGui::DragFloat3("target##LightViewCamera", &target_.x, 0.01f);
 	ImGui::DragFloat3("upDirection##LightViewCamera", &upDirection_.x, 0.01f);
 

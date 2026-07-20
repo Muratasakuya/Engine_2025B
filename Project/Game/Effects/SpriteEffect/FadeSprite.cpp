@@ -45,10 +45,10 @@ void FadeSprite::Update() {
 	case FadeSprite::State::Begin:
 
 		beginTimer_.Update();
-		material_->material.color.a = std::lerp(0.0f, 1.0f, beginTimer_.easedT_);
+		MaterialData().material.color.a = std::lerp(0.0f, 1.0f, beginTimer_.easedT_);
 		if (beginTimer_.IsReached()) {
 
-			material_->material.color.a = 1.0f;
+			MaterialData().material.color.a = 1.0f;
 			currentState_ = State::Wait;
 		}
 		break;
@@ -63,10 +63,10 @@ void FadeSprite::Update() {
 	case FadeSprite::State::End:
 
 		endTimer_.Update();
-		material_->material.color.a = std::lerp(1.0f, 0.0f, endTimer_.easedT_);
+		MaterialData().material.color.a = std::lerp(1.0f, 0.0f, endTimer_.easedT_);
 		if (endTimer_.IsReached()) {
 
-			material_->material.color.a = 0.0f;
+			MaterialData().material.color.a = 0.0f;
 			currentState_ = State::None;
 		}
 		break;

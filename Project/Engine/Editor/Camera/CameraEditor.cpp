@@ -481,8 +481,8 @@ void CameraEditor::UpdateEditor() {
 		}
 
 		// 現在のキー位置のカメラ情報を渡す
-		camera->SetTranslation(transform.translation);
-		camera->SetRotation(transform.rotation);
+		camera->SetTranslation(transform.GetTranslation());
+		camera->SetRotation(transform.GetRotation());
 		camera->SetFovY(fovY);
 
 		// カメラの更新
@@ -713,8 +713,8 @@ void CameraEditor::ApplyToCamera(BaseCamera& camera, const KeyframeObject3D& key
 	}
 
 	// 現在のキー位置のカメラ情報を渡す
-	camera.SetTranslation(transform.translation);
-	camera.SetRotation(transform.rotation);
+	camera.SetTranslation(transform.GetTranslation());
+	camera.SetRotation(transform.GetRotation());
 	camera.SetFovY(fovY);
 
 	// カメラの更新

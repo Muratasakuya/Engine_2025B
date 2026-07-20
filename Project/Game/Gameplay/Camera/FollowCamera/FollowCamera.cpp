@@ -64,7 +64,7 @@ void FollowCamera::StartPlayerActionAnim(PlayerState state, bool isCheckInverse)
 	if (isCheckInverse) {
 
 		// yaw方向決定
-		const float yawDelta = SakuEngine::Math::YawSignedDelta(transform_.rotation, lookAtTargetObject_->GetRotation());
+		const float yawDelta = SakuEngine::Math::YawSignedDelta(transform_.GetRotation(), lookAtTargetObject_->GetRotation());
 		if (std::abs(yawDelta) <= Config::kEpsilon) {
 
 			// どちらでも良いので右にする
@@ -97,7 +97,7 @@ void FollowCamera::StratPlayerActionAnimString(const std::string& animName, bool
 	if (isCheckInverse) {
 
 		// yaw方向決定
-		const float yawDelta = SakuEngine::Math::YawSignedDelta(transform_.rotation, lookAtTargetObject_->GetRotation());
+		const float yawDelta = SakuEngine::Math::YawSignedDelta(transform_.GetRotation(), lookAtTargetObject_->GetRotation());
 		if (std::abs(yawDelta) <= Config::kEpsilon) {
 
 			// どちらでも良いので右にする
@@ -170,10 +170,11 @@ void FollowCamera::ImGui() {
 				SaveJson();
 			}
 
-			ImGui::DragFloat3("translation", &transform_.translation.x, 0.01f);
-			ImGui::Text("rotation: %.2f, %.2f, %.2f, %.2f", transform_.rotation.x,
-				transform_.rotation.y, transform_.rotation.z, transform_.rotation.w);
-			SakuEngine::Vector3 euler = SakuEngine::Quaternion::ToEulerAngles(transform_.rotation);
+			ImGui::DragFloat3("translation", &transform_.EditTranslation().x, 0.01f);
+			const auto& rotation = transform_.GetRotation();
+			ImGui::Text("rotation: %.2f, %.2f, %.2f, %.2f", rotation.x,
+				rotation.y, rotation.z, rotation.w);
+			SakuEngine::Vector3 euler = SakuEngine::Quaternion::ToEulerAngles(rotation);
 			ImGui::Text("euler: %.2f, %.2f, %.2f", euler.x, euler.y, euler.z);
 
 			ImGui::DragFloat("fovY", &fovY_, 0.01f);

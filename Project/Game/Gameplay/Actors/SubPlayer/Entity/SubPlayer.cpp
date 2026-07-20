@@ -44,9 +44,9 @@ void SubPlayer::InitState() {
 void SubPlayer::SetPartsTransform(SakuEngine::GameObject3D* parts, const SakuEngine::Transform3D& transform) {
 
 	// SRTを設定
-	parts->SetTranslation(transform.translation);
-	parts->SetRotation(transform.rotation);
-	parts->SetScale(transform.scale);
+	parts->SetTranslation(transform.GetTranslation());
+	parts->SetRotation(transform.GetRotation());
+	parts->SetScale(transform.GetScale());
 }
 
 void SubPlayer::Init() {

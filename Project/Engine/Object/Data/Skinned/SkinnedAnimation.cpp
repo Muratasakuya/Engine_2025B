@@ -270,9 +270,9 @@ void SkinnedAnimation::ApplyAnimation(float timer) {
 		}
 
 		Joint& joint = skeleton_.joints[i];
-		joint.transform.translation = Vector3::CalculateValue(track->translate.keyframes, timer);
-		joint.transform.rotation = Quaternion::CalculateValue(track->rotate.keyframes, timer);
-		joint.transform.scale = Vector3::CalculateValue(track->scale.keyframes, timer);
+		joint.transform.SetTranslation(Vector3::CalculateValue(track->translate.keyframes, timer));
+		joint.transform.SetRotation(Quaternion::CalculateValue(track->rotate.keyframes, timer));
+		joint.transform.SetScale(Vector3::CalculateValue(track->scale.keyframes, timer));
 		});
 }
 
@@ -282,7 +282,7 @@ void SkinnedAnimation::UpdateSkeleton(const Matrix4x4& worldMatrix) {
 	for (auto& joint : skeleton_.joints) {
 
 		joint.localMatrix =
-			Matrix4x4::MakeAxisAffineMatrix(joint.transform.scale, joint.transform.rotation, joint.transform.translation);
+			Matrix4x4::MakeAxisAffineMatrix(joint.transform.GetScale(), joint.transform.GetRotation(), joint.transform.GetTranslation());
 		// 親がいれば親の行列を掛ける
 		if (joint.parent) {
 
@@ -298,7 +298,7 @@ void SkinnedAnimation::UpdateSkeleton(const Matrix4x4& worldMatrix) {
 		if (joint.isParentTransform) {
 
 			joint.transform.SetIsDirty(true);
-			joint.transform.matrix.world = joint.skeletonSpaceMatrix * worldMatrix;
+			joint.transform.EditMatrix().world = joint.skeletonSpaceMatrix * worldMatrix;
 		}
 	}
 }
@@ -374,9 +374,9 @@ void SkinnedAnimation::BlendAnimation(Skeleton& skeleton, const AnimationData& o
 		Quaternion rotBlend = SakuEngine::Quaternion::Slerp(rotOld, rotNext, alpha);
 		Vector3 sclBlend = SakuEngine::Vector3::Lerp(sclOld, sclNext, alpha);
 
-		jointOld.transform.translation = posBlend;
-		jointOld.transform.rotation = rotBlend;
-		jointOld.transform.scale = sclBlend;
+		jointOld.transform.SetTranslation(posBlend);
+		jointOld.transform.SetRotation(rotBlend);
+		jointOld.transform.SetScale(sclBlend);
 	}
 }
 

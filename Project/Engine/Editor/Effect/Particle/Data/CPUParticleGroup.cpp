@@ -302,7 +302,7 @@ void CPUParticleGroup::UpdateTransferData(uint32_t particleIndex,
 	if (parentTransform_) {
 
 		transferTransforms_[particleIndex].aliveParent = true;
-		transferTransforms_[particleIndex].parentMatrix = parentTransform_->matrix.world;
+		transferTransforms_[particleIndex].parentMatrix = parentTransform_->GetMatrix().world;
 	} else {
 
 		transferTransforms_[particleIndex].aliveParent = false;

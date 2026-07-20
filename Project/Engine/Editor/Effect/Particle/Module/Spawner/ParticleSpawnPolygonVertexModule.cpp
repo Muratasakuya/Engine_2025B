@@ -533,7 +533,7 @@ void ParticleSpawnPolygonVertexModule::DrawEmitter() {
 	// 親の座標
 	if (parentTransform_) {
 
-		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+		parentTranslation = parentTransform_->GetMatrix().world.GetTranslationValue();
 	}
 
 	if (3 <= vertexCount_) {

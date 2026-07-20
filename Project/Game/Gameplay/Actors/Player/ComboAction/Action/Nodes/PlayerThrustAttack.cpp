@@ -44,7 +44,7 @@ void PlayerThrustAttack::Enter() {
 	player_->SetNextAnimation("player_skilAttack_1st", false, nextAnimDuration_);
 
 	// 敵が攻撃可能範囲にいるかチェックして目標を設定
-	moveTransform_->parent = &player_->GetTransform();
+	moveTransform_->SetParent(&player_->GetTransform());
 	BasePlayerMoveKeyAttack::SetTargetByRange(*moveKeyframeObject_);
 
 	// キーフレーム補間開始
@@ -57,7 +57,7 @@ void PlayerThrustAttack::Update() {
 	moveKeyframeObject_->SelfUpdate();
 
 	// 補間された回転、座標をプレイヤーに適用
-	Vector3 currentTranslation = moveKeyframeObject_->GetCurrentTransform().translation;
+	Vector3 currentTranslation = moveKeyframeObject_->GetCurrentTransform().GetTranslation();
 	player_->SetTranslation(currentTranslation);
 	// 回転は次の移動位置の方向を向くようにする
 	// 方向
@@ -104,13 +104,13 @@ void PlayerThrustAttack::ImGui() {
 
 	if (ImGui::Button("Set Parent##key")) {
 
-		moveTransform_->parent = &player_->GetTransform();
+		moveTransform_->SetParent(&player_->GetTransform());
 	}
 
 	moveTransform_->ImGui(200.0f);
 
 	LineRenderer::GetInstance()->Get3D()->DrawOBB(moveTransform_->GetWorldPos(),
-		moveTransform_->scale, moveTransform_->rotation, Color::Cyan());
+		moveTransform_->GetScale(), moveTransform_->GetRotation(), Color::Cyan());
 
 	ImGui::SeparatorText("KeyframeObject3D");
 

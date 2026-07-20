@@ -26,11 +26,11 @@ using namespace SakuEngine;
 
 void BaseTransform3D::Init() {
 
-	scale = Vector3::AnyInit(1.0f);
-	rotation.Init();
-	translation.Init();
+	scale_ = Vector3::AnyInit(1.0f);
+	rotation_.Init();
+	translation_.Init();
 
-	eulerRotate.Init();
+	eulerRotate_.Init();
 	prevScale = Vector3::AnyInit(1.0f);
 }
 
@@ -38,18 +38,18 @@ void BaseTransform3D::UpdateMatrix() {
 
 	// 値に変更がなければ更新しない
 	bool selfUnchanged =
-		(scale == prevScale &&
-			rotation == prevRotation &&
-			translation == prevTranslation &&
-			offsetTranslation == prevOffsetTranslation);
+		(scale_ == prevScale &&
+			rotation_ == prevRotation &&
+			translation_ == prevTranslation &&
+			offsetTranslation_ == prevOffsetTranslation);
 
 	// 親と自分の値が変わっていなければ更新しない
 	if (selfUnchanged && !isCompulsion_) {
 
 		// 親の変更をチェック
-		if (parent) {
+		if (parent_) {
 			// 親も変更がなければ更新しない
-			if (!parent->isDirty_) {
+			if (!parent_->isDirty_) {
 
 				isDirty_ = false;
 				return;
@@ -66,13 +66,13 @@ void BaseTransform3D::UpdateMatrix() {
 	isDirty_ = true;
 
 	// 行列を更新
-	matrix.Update(parent, scale, rotation, offsetTranslation + translation, isIgnoreParentScale);
+	matrix_.Update(parent_, scale_, rotation_, offsetTranslation_ + translation_, isIgnoreParentScale_);
 
 	// 値を保存
-	prevScale = scale;
-	prevRotation = rotation;
-	prevTranslation = translation;
-	prevOffsetTranslation = offsetTranslation;
+	prevScale = scale_;
+	prevRotation = rotation_;
+	prevTranslation = translation_;
+	prevOffsetTranslation = offsetTranslation_;
 }
 
 bool BaseTransform3D::ImGui(float itemSize) {
@@ -84,36 +84,36 @@ bool BaseTransform3D::ImGui(float itemSize) {
 	edited = ImGui::Button("Reset");
 	if (edited) {
 
-		scale = Vector3::AnyInit(1.0f);
-		rotation.Init();
-		translation.Init();
+		scale_ = Vector3::AnyInit(1.0f);
+		rotation_.Init();
+		translation_.Init();
 
-		eulerRotate.Init();
+		eulerRotate_.Init();
 	}
 	ImGui::Separator();
 
 	ImGui::Text(std::format("isDirty: {}", isDirty_).c_str());
 	edited |= ImGui::Checkbox("isCompulsion", &isCompulsion_);
-	edited |= ImGui::Checkbox("isIgnoreParentScale", &isIgnoreParentScale);
+	edited |= ImGui::Checkbox("isIgnoreParentScale", &isIgnoreParentScale_);
 
-	edited |= ImGui::DragFloat3("translation", &translation.x, 0.01f);
-	if (ImGui::DragFloat3("rotation", &eulerRotate.x, 0.01f)) {
+	edited |= ImGui::DragFloat3("translation", &translation_.x, 0.01f);
+	if (ImGui::DragFloat3("rotation", &eulerRotate_.x, 0.01f)) {
 
-		rotation = Quaternion::EulerToQuaternion(eulerRotate);
+		rotation_ = Quaternion::EulerToQuaternion(eulerRotate_);
 	}
 	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
-		rotation.x, rotation.y, rotation.z, rotation.w);
-	edited |= ImGui::DragFloat3("scale", &scale.x, 0.01f);
+		rotation_.x, rotation_.y, rotation_.z, rotation_.w);
+	edited |= ImGui::DragFloat3("scale", &scale_.x, 0.01f);
 
 	ImGui::SeparatorText("Offset");
 
-	ImGuiHelper::ValueText<Vector3>("translation", offsetTranslation);
+	ImGuiHelper::ValueText<Vector3>("translation", offsetTranslation_);
 
 	ImGui::SeparatorText("World Matrix");
 	if (ImGui::BeginTable("WorldMatrix", 4,
 		ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit)) {
 
-		const Matrix4x4& world = matrix.world;
+		const Matrix4x4& world = matrix_.world;
 		for (int row = 0; row < 4; ++row) {
 
 			ImGui::TableNextRow();
@@ -126,17 +126,17 @@ bool BaseTransform3D::ImGui(float itemSize) {
 		ImGui::EndTable();
 	}
 	// 親がいる場合
-	if (parent) {
+	if (parent_) {
 
 		ImGui::SeparatorText("Parent World Matrix");
 
-		ImGui::Text(std::format("isDirty {}", parent->isDirty_).c_str());
-		ImGui::Text(std::format("isCompulsion {}", parent->isCompulsion_).c_str());
-		ImGui::Text("name: %s", static_cast<const Transform3D*>(parent)->GetInstancingName().c_str());
+		ImGui::Text(std::format("isDirty {}", parent_->isDirty_).c_str());
+		ImGui::Text(std::format("isCompulsion {}", parent_->isCompulsion_).c_str());
+		ImGui::Text("name: %s", static_cast<const Transform3D*>(parent_)->GetInstancingName().c_str());
 		if (ImGui::BeginTable("Parent WorldMatrix", 4,
 			ImGuiTableFlags_Borders | ImGuiTableFlags_SizingFixedFit)) {
 
-			const Matrix4x4& world = parent->matrix.world;
+			const Matrix4x4& world = parent_->matrix_.world;
 			for (int row = 0; row < 4; ++row) {
 
 				ImGui::TableNextRow();
@@ -158,13 +158,13 @@ bool BaseTransform3D::ImGui(float itemSize) {
 void BaseTransform3D::ToJson(Json& data) {
 
 	data["isCompulsion_"] = isCompulsion_;
-	data["isIgnoreParentScale"] = isIgnoreParentScale;
-	data["scale"] = scale.ToJson();
+	data["isIgnoreParentScale"] = isIgnoreParentScale_;
+	data["scale"] = scale_.ToJson();
 
 	// 正規化してから保存
-	rotation = Quaternion::Normalize(rotation);
-	data["rotation"] = rotation.ToJson();
-	data["translation"] = translation.ToJson();
+	rotation_ = Quaternion::Normalize(rotation_);
+	data["rotation"] = rotation_.ToJson();
+	data["translation"] = translation_.ToJson();
 }
 
 void BaseTransform3D::FromJson(const Json& data) {
@@ -174,17 +174,17 @@ void BaseTransform3D::FromJson(const Json& data) {
 	}
 
 	isCompulsion_ = data.value("isCompulsion_", false);
-	isIgnoreParentScale = data.value("isIgnoreParentScale", false);
-	scale = JsonAdapter::ToObject<Vector3>(data["scale"]);
-	rotation = JsonAdapter::ToObject<Quaternion>(data["rotation"]);
-	translation = JsonAdapter::ToObject<Vector3>(data["translation"]);
+	isIgnoreParentScale_ = data.value("isIgnoreParentScale", false);
+	scale_ = JsonAdapter::ToObject<Vector3>(data["scale"]);
+	rotation_ = JsonAdapter::ToObject<Quaternion>(data["rotation"]);
+	translation_ = JsonAdapter::ToObject<Vector3>(data["translation"]);
 }
 
 Vector3 BaseTransform3D::GetWorldScale() const {
 
-	Vector3 right(matrix.world.m[0][0], matrix.world.m[0][1], matrix.world.m[0][2]);
-	Vector3 up(matrix.world.m[1][0], matrix.world.m[1][1], matrix.world.m[1][2]);
-	Vector3 forward(matrix.world.m[2][0], matrix.world.m[2][1], matrix.world.m[2][2]);
+	Vector3 right(matrix_.world.m[0][0], matrix_.world.m[0][1], matrix_.world.m[0][2]);
+	Vector3 up(matrix_.world.m[1][0], matrix_.world.m[1][1], matrix_.world.m[1][2]);
+	Vector3 forward(matrix_.world.m[2][0], matrix_.world.m[2][1], matrix_.world.m[2][2]);
 
 	Vector3 worldScale{};
 	worldScale.x = right.Length();
@@ -207,15 +207,15 @@ Quaternion BaseTransform3D::GetWorldRotation() const {
 Vector3 BaseTransform3D::GetWorldPos() const {
 
 	Vector3 worldPos{};
-	worldPos.x = matrix.world.m[3][0];
-	worldPos.y = matrix.world.m[3][1];
-	worldPos.z = matrix.world.m[3][2];
+	worldPos.x = matrix_.world.m[3][0];
+	worldPos.y = matrix_.world.m[3][1];
+	worldPos.z = matrix_.world.m[3][2];
 
 	return worldPos;
 }
 
 Vector3 BaseTransform3D::GetForward() const {
-	return Vector3(matrix.world.m[2][0], matrix.world.m[2][1], matrix.world.m[2][2]).Normalize();
+	return Vector3(matrix_.world.m[2][0], matrix_.world.m[2][1], matrix_.world.m[2][2]).Normalize();
 }
 
 Vector3 BaseTransform3D::GetBack() const {
@@ -223,7 +223,7 @@ Vector3 BaseTransform3D::GetBack() const {
 }
 
 Vector3 BaseTransform3D::GetRight() const {
-	return Vector3(matrix.world.m[0][0], matrix.world.m[0][1], matrix.world.m[0][2]).Normalize();
+	return Vector3(matrix_.world.m[0][0], matrix_.world.m[0][1], matrix_.world.m[0][2]).Normalize();
 }
 
 Vector3 BaseTransform3D::GetLeft() const {
@@ -231,7 +231,7 @@ Vector3 BaseTransform3D::GetLeft() const {
 }
 
 Vector3 BaseTransform3D::GetUp() const {
-	return Vector3(matrix.world.m[1][0], matrix.world.m[1][1], matrix.world.m[1][2]).Normalize();
+	return Vector3(matrix_.world.m[1][0], matrix_.world.m[1][1], matrix_.world.m[1][2]).Normalize();
 }
 
 Vector3 BaseTransform3D::GetDown() const {

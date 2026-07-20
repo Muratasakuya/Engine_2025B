@@ -68,7 +68,7 @@ void PlayerJumpAttack::Enter() {
 	moveTransform_->UpdateMatrix();
 
 	// 敵が攻撃可能範囲にいるかチェックして目標を設定
-	moveTransform_->parent = &player_->GetTransform();
+	moveTransform_->SetParent(&player_->GetTransform());
 	BasePlayerMoveKeyAttack::SetTargetByRange(*jumpKeyframeObject_);
 
 	// ジャンプキーフレーム補間開始
@@ -88,7 +88,7 @@ void PlayerJumpAttack::Update() {
 	} else {
 
 		// 補間された座標をプレイヤーに適用
-		SakuEngine::Vector3 currentTranslation = jumpKeyframeObject_->GetCurrentTransform().translation;
+		SakuEngine::Vector3 currentTranslation = jumpKeyframeObject_->GetCurrentTransform().GetTranslation();
 		player_->SetTranslation(currentTranslation);
 	}
 }
@@ -122,13 +122,13 @@ void PlayerJumpAttack::ImGui() {
 
 	if (ImGui::Button("Set Parent##key")) {
 
-		moveTransform_->parent = &player_->GetTransform();
+		moveTransform_->SetParent(&player_->GetTransform());
 	}
 
 	moveTransform_->ImGui(200.0f);
 
 	LineRenderer::GetInstance()->Get3D()->DrawOBB(moveTransform_->GetWorldPos(),
-		moveTransform_->scale, moveTransform_->rotation, Color::Cyan());
+		moveTransform_->GetScale(), moveTransform_->GetRotation(), Color::Cyan());
 
 	ImGui::SeparatorText("KeyframeObject3D");
 

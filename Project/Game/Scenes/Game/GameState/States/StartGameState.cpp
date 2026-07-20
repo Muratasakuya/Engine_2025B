@@ -131,7 +131,7 @@ void StartGameState::Update() {
 	//========================================================================
 
 	SakuEngine::Transform3D transform{};
-	transform.scale = SakuEngine::Vector3::AnyInit(1.0f);
+	transform.SetScale(SakuEngine::Vector3::AnyInit(1.0f));
 	nextStateEvent_->UpdateAllBodies(transform);
 
 	// イベント範囲内に入ったら次の状態に遷移させる

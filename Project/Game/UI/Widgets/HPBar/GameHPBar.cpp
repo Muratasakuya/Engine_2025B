@@ -11,8 +11,8 @@ void GameHPBar::Init(const std::string& textureName, const std::string& alphaTex
 	GameObject2D::Init(textureName, name, groupName);
 
 	// alphaTexture設定
-	sprite_->SetAlphaTextureName(alphaTextureName);
-	material_->material.useAlphaColor = true;
+	SpriteData().SetAlphaTextureName(alphaTextureName);
+	MaterialData().material.useAlphaColor = true;
 }
 
 void GameHPBar::Update(int current, int max, bool isReverse) {
@@ -32,7 +32,7 @@ void GameHPBar::Update(int current, int max, bool isReverse) {
 		ratio = static_cast<float>(current) / static_cast<float>(max);
 	}
 
-	material_->material.alphaReference = std::clamp(ratio, 0.0f, 1.0f);
+	MaterialData().material.alphaReference = std::clamp(ratio, 0.0f, 1.0f);
 }
 
 SakuEngine::Vector2 GameHPBar::GetThresholdPos(int32_t threshold) const {

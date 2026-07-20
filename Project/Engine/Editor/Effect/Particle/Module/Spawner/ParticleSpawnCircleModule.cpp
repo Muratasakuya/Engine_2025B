@@ -148,7 +148,7 @@ void ParticleSpawnCircleModule::Execute(std::list<CPUParticle::ParticleData>& pa
 	Vector3 parentTranslation{};
 	if (parentTransform_) {
 
-		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+		parentTranslation = parentTransform_->GetMatrix().world.GetTranslationValue();
 	}
 	for (uint32_t index = 0; index < emitCount; ++index) {
 
@@ -293,7 +293,7 @@ Vector3 ParticleSpawnCircleModule::GetVelocity(
 	Vector3 parentTranslation{};
 	if (parentTransform_) {
 
-		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+		parentTranslation = parentTransform_->GetMatrix().world.GetTranslationValue();
 	}
 
 	// 角度取得
@@ -427,7 +427,7 @@ void ParticleSpawnCircleModule::DrawEmitter() {
 	// 親の座標
 	if (parentTransform_) {
 
-		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+		parentTranslation = parentTransform_->GetMatrix().world.GetTranslationValue();
 	}
 
 	// 円を描画

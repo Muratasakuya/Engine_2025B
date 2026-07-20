@@ -61,7 +61,7 @@ void CameraKeyEventShakeUpdater::Update() {
 	SakuEngine::Vector3 right = transform.GetRight();
 
 	// 座標にオフセットを適用
-	SakuEngine::Vector3 translation = transform.translation + (forward * offset.z) + (right * offset.x);
+	SakuEngine::Vector3 translation = transform.GetTranslation() + (forward * offset.z) + (right * offset.x);
 	translation.y += offset.y;
 
 	// 座標を設定

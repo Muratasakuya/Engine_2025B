@@ -48,8 +48,8 @@ void EndGameCamera::UpdateAnimation() {
 	animationTimer_.Update();
 
 	// 座標を補間
-	transform_.translation = SakuEngine::Vector3::Lerp(
-		startPos_, targetPos_, animationTimer_.easedT_);
+	transform_.SetTranslation(SakuEngine::Vector3::Lerp(
+		startPos_, targetPos_, animationTimer_.easedT_));
 
 	// 補間が終了したら次に進める
 	if (animationTimer_.IsReached()) {

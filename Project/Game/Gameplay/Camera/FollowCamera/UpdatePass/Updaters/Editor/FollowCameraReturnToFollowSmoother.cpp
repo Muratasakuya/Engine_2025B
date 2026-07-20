@@ -68,8 +68,8 @@ void FollowCameraReturnToFollowSmoother::StartReturn(FollowCameraContext& contex
 	}
 
 	// 開始姿勢の取得
-	startTranslation_ = dependencies_.camera->GetTransform().translation;
-	startRotation_ = Quaternion::Normalize(dependencies_.camera->GetTransform().rotation);
+	startTranslation_ = dependencies_.camera->GetTransform().GetTranslation();
+	startRotation_ = Quaternion::Normalize(dependencies_.camera->GetTransform().GetRotation());
 	startFovY_ = dependencies_.camera->GetFovY();
 	startInterTarget_ = context.interTarget;
 

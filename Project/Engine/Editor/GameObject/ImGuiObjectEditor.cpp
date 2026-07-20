@@ -208,7 +208,7 @@ void ImGuiObjectEditor::DrawManipulateGizmo(const GizmoContext& context) {
 	if (is3D) {
 
 		SakuEngine::Transform3D* transform = objectManager_->GetData<SakuEngine::Transform3D>(id);
-		Math::ToColumnMajor(Matrix4x4::Transpose(transform->matrix.world), model);
+		Math::ToColumnMajor(Matrix4x4::Transpose(transform->GetMatrix().world), model);
 	} else {
 
 		Transform2D* transform = objectManager_->GetData<Transform2D>(id);
@@ -236,12 +236,12 @@ void ImGuiObjectEditor::DrawManipulateGizmo(const GizmoContext& context) {
 
 			// 親行列
 			Matrix4x4 parentWorld = Matrix4x4::MakeIdentity4x4();
-			if (transform->parent) {
+			if (transform->GetParent()) {
 
-				parentWorld = transform->parent->matrix.world;
+				parentWorld = transform->GetParent()->GetMatrix().world;
 
 				// 子が親スケール無視のときは、親行列のスケールを除去
-				if (transform->isIgnoreParentScale) {
+				if (transform->IsIgnoreParentScale()) {
 
 					// 親の回転成分を正規化してスケール成分を打ち消す
 					Vector3 x = Vector3(parentWorld.m[0][0], parentWorld.m[1][0], parentWorld.m[2][0]).Normalize();
@@ -263,9 +263,9 @@ void ImGuiObjectEditor::DrawManipulateGizmo(const GizmoContext& context) {
 			ImGuizmo::DecomposeMatrixToComponents(localModel, localTranslate, localRotate, localScale);
 
 			// オフセット分引いた座標を設定
-			Vector3 offset = transform->offsetTranslation;
-			transform->translation = Vector3(localTranslate[0] - offset.x,
-				localTranslate[1] - offset.y, localTranslate[2] - offset.z);
+			Vector3 offset = transform->GetOffsetTranslation();
+			transform->SetTranslation(Vector3(localTranslate[0] - offset.x,
+				localTranslate[1] - offset.y, localTranslate[2] - offset.z));
 
 			// 回転を設定
 			Matrix4x4 R = Matrix4x4::Transpose(localMatrix);
@@ -291,11 +291,12 @@ void ImGuiObjectEditor::DrawManipulateGizmo(const GizmoContext& context) {
 				R.m[0][1] = cy.x; R.m[1][1] = cy.y; R.m[2][1] = cy.z;
 				R.m[0][2] = cz.x; R.m[1][2] = cz.y; R.m[2][2] = cz.z;
 			}
-			transform->rotation = SakuEngine::Quaternion::Normalize(Quaternion::FromRotationMatrix(R));
-			transform->eulerRotate = Quaternion::ToEulerAngles(transform->rotation);
+			Quaternion rotation = SakuEngine::Quaternion::Normalize(Quaternion::FromRotationMatrix(R));
+			transform->SetRotation(rotation);
+			transform->SetEulerRotation(Quaternion::ToEulerAngles(rotation));
 
 			// スケールを設定
-			transform->scale = Vector3(localScale[0], localScale[1], localScale[2]);
+			transform->SetScale(Vector3(localScale[0], localScale[1], localScale[2]));
 			transform->SetIsDirty(true);
 		} else {
 

@@ -120,15 +120,12 @@ namespace SakuEngine {
 		//	protected Methods
 		//========================================================================
 
-		//--------- variables ----------------------------------------------------
-
-		// data
-		// transform
-		Transform2D* transform_;
-		// material
-		SpriteMaterial* material_;
-		// sprite
-		Sprite* sprite_;
+		Transform2D& TransformData() { return *transform_; }
+		const Transform2D& TransformData() const { return *transform_; }
+		SpriteMaterial& MaterialData() { return *material_; }
+		const SpriteMaterial& MaterialData() const { return *material_; }
+		Sprite& SpriteData() { return *sprite_; }
+		const Sprite& SpriteData() const { return *sprite_; }
 	private:
 		//========================================================================
 		//	private Methods
@@ -136,6 +133,9 @@ namespace SakuEngine {
 
 		//--------- variables ----------------------------------------------------
 
+		Transform2D* transform_ = nullptr;
+		SpriteMaterial* material_ = nullptr;
+		Sprite* sprite_ = nullptr;
 		std::string uniqueName_;
 	};
 }; // SakuEngine

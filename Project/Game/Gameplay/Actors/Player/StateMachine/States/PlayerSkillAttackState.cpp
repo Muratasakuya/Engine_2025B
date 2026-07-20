@@ -33,7 +33,7 @@ void PlayerSkillAttackState::CreateEffect() {
 	moveFrontTransform_->Init();
 	moveFrontTransform_->SetInstancingName(moveFrontTag_->name);
 	// プレイヤーを親に設定
-	moveFrontTransform_->parent = &player_->GetTransform();
+	moveFrontTransform_->SetParent(&player_->GetTransform());
 
 	// 敵のトランスフォーム補正用の生成
 	uint32_t fixedEnemyID = objectManager->BuildEmptyObject("fixedEnemyTransform", "BossEnemy");
@@ -41,7 +41,7 @@ void PlayerSkillAttackState::CreateEffect() {
 	// トランスフォームを追加
 	fixedEnemyTransform_ = objectManager->GetObjectPoolManager()->AddData<SakuEngine::Transform3D>(fixedEnemyID);
 	fixedEnemyTransform_->Init();
-	fixedEnemyTransform_->isCompulsion_ = true;
+	fixedEnemyTransform_->SetCompulsion(true);
 	fixedEnemyTransform_->SetInstancingName(fixedEnemyTag_->name);
 
 	// 残像表現エフェクト作成
@@ -118,7 +118,7 @@ void PlayerSkillAttackState::UpdateMoveAttack() {
 	moveKeyframeObject_->SelfUpdate();
 
 	// 補間された回転、座標をプレイヤーに適用
-	SakuEngine::Vector3 currentTranslation = moveKeyframeObject_->GetCurrentTransform().translation;
+	SakuEngine::Vector3 currentTranslation = moveKeyframeObject_->GetCurrentTransform().GetTranslation();
 	player_->SetTranslation(currentTranslation);
 	// 回転は次の移動位置の方向を向くようにする
 	// 方向
@@ -148,7 +148,7 @@ void PlayerSkillAttackState::UpdateMoveAttack() {
 
 		// キーの位置からエフェクト発生
 		SakuEngine::Vector3 translation = moveKeyframeObject_->GetIndexKeyTransform(
-			moveKeyframeObject_->GetNextKeyIndex() - 1).translation;
+			moveKeyframeObject_->GetNextKeyIndex() - 1).GetTranslation();
 		moveAtackEffect_->Emit(translation);
 	}
 
@@ -242,7 +242,7 @@ void PlayerSkillAttackState::UpdateJumpAttack() {
 		} else {
 
 			// 前方の方向
-			SakuEngine::Vector3 targetTranslation = jumpKeyframeObject_->GetLastKeyTransform().translation;
+			SakuEngine::Vector3 targetTranslation = jumpKeyframeObject_->GetLastKeyTransform().GetTranslation();
 			direction = SakuEngine::Vector3(targetTranslation - playerPos).Normalize();
 		}
 		// 向きを基に回転を作成
@@ -282,7 +282,7 @@ void PlayerSkillAttackState::UpdateJumpAttack() {
 	} else {
 
 		// 補間された回転、座標をプレイヤーに適用
-		SakuEngine::Vector3 currentTranslation = jumpKeyframeObject_->GetCurrentTransform().translation;
+		SakuEngine::Vector3 currentTranslation = jumpKeyframeObject_->GetCurrentTransform().GetTranslation();
 		player_->SetTranslation(currentTranslation);
 	}
 }
@@ -294,9 +294,10 @@ void PlayerSkillAttackState::SetTargetByRange(SakuEngine::KeyframeObject3D& keyO
 	if (isInRange_) {
 
 		// 位置補正用トランスフォームを敵の位置に設定
-		fixedEnemyTransform_->translation = bossEnemy_->GetTranslation();
-		fixedEnemyTransform_->translation.y = 0.0f;
-		fixedEnemyTransform_->rotation = bossEnemy_->GetRotation();
+		SakuEngine::Vector3 enemyTranslation = bossEnemy_->GetTranslation();
+		enemyTranslation.y = 0.0f;
+		fixedEnemyTransform_->SetTranslation(enemyTranslation);
+		fixedEnemyTransform_->SetRotation(bossEnemy_->GetRotation());
 		// 行列を更新
 		fixedEnemyTransform_->UpdateMatrix();
 
@@ -352,7 +353,7 @@ void PlayerSkillAttackState::Exit() {
 
 	// 初期Y座標に戻す
 	SakuEngine::Vector3 currentPos = player_->GetTranslation();
-	currentPos.y = player_->GetInitTransform().translation.y;
+	currentPos.y = player_->GetInitTransform().GetTranslation().y;
 	player_->SetTranslation(currentPos);
 
 	// X軸回転を0.0fに戻す
@@ -397,7 +398,7 @@ void PlayerSkillAttackState::ImGui() {
 	moveFrontTransform_->ImGui(200.0f);
 
 	SakuEngine::LineRenderer::GetInstance()->Get3D()->DrawOBB(moveFrontTransform_->GetWorldPos(),
-		moveFrontTransform_->scale, moveFrontTransform_->rotation, SakuEngine::Color::Cyan());
+		moveFrontTransform_->GetScale(), moveFrontTransform_->GetRotation(), SakuEngine::Color::Cyan());
 
 	ImGui::SeparatorText("KeyframeObject3D");
 

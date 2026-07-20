@@ -37,7 +37,7 @@ void BasePlayerMoveKeyAttack::CreateTransform(const std::string& label, const st
 	transform = objectManager->GetObjectPoolManager()->AddData<SakuEngine::Transform3D>(id);
 	transform->Init();
 	transform->SetInstancingName(tag->name);
-	transform->isCompulsion_ = isCompulsion;
+	transform->SetCompulsion(isCompulsion);
 }
 
 void BasePlayerMoveKeyAttack::SetTargetByRange(SakuEngine::KeyframeObject3D& keyObject) {
@@ -47,9 +47,10 @@ void BasePlayerMoveKeyAttack::SetTargetByRange(SakuEngine::KeyframeObject3D& key
 	if (isInRange_) {
 
 		// 位置補正用トランスフォームを攻撃対象の位置に設定
-		fixedTargetTransform_->translation = attackTarget_->GetTranslation();
-		fixedTargetTransform_->translation.y = 0.0f;
-		fixedTargetTransform_->rotation = attackTarget_->GetRotation();
+		SakuEngine::Vector3 targetTranslation = attackTarget_->GetTranslation();
+		targetTranslation.y = 0.0f;
+		fixedTargetTransform_->SetTranslation(targetTranslation);
+		fixedTargetTransform_->SetRotation(attackTarget_->GetRotation());
 		// 行列を更新
 		fixedTargetTransform_->UpdateMatrix();
 

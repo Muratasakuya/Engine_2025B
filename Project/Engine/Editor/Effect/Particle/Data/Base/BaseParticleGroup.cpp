@@ -162,7 +162,7 @@ void BaseParticleGroup::DrawEmitter() {
 	// 親の座標
 	if (parentTransform_) {
 
-		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+		parentTranslation = parentTransform_->GetMatrix().world.GetTranslationValue();
 	}
 
 	// まだbufferが作成されていなければ作成する

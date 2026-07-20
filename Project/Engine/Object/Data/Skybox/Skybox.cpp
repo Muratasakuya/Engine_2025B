@@ -96,7 +96,7 @@ void Skybox::CreateCBuffer(ID3D12Device* device, uint32_t textureIndex) {
 	transform_.Init();
 	// 初期化値で320.0fにスケーリング
 	const float scale = 640.0f;
-	transform_.scale = SakuEngine::Vector3::AnyInit(scale);
+	transform_.SetScale(SakuEngine::Vector3::AnyInit(scale));
 	transform_.UpdateMatrix();
 
 	initColor_ = Color::Convert(0x372F20FF);
@@ -117,7 +117,7 @@ void Skybox::CreateCBuffer(ID3D12Device* device, uint32_t textureIndex) {
 	materialBuffer_.CreateBuffer(device);
 
 	// 1度bufferを転送する
-	matrixBuffer_.TransferData(transform_.matrix.world);
+	matrixBuffer_.TransferData(transform_.GetMatrix().world);
 	materialBuffer_.TransferData(material_);
 }
 
@@ -140,7 +140,7 @@ void Skybox::Update() {
 	// transform更新
 	transform_.UpdateMatrix();
 	// buffer転送
-	matrixBuffer_.TransferData(transform_.matrix.world);
+	matrixBuffer_.TransferData(transform_.GetMatrix().world);
 
 	// material更新
 	UpdateUVTransform();

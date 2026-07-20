@@ -1,4 +1,4 @@
-﻿#include "Camera2D.h"
+#include "Camera2D.h"
 
 using namespace SakuEngine;
 
@@ -18,7 +18,7 @@ void Camera2D::Init() {
 
 	// 行列更新
 	transform_.UpdateMatrix();
-	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
+	viewMatrix_ = Matrix4x4::Inverse(transform_.GetMatrix().world);
 
 	projectionMatrix_ =
 		Matrix4x4::MakeOrthographicMatrix(0.0f, 0.0f, Config::kWindowWidthf,

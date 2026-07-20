@@ -357,11 +357,11 @@ void KeyframeObject3D::AdvanceTime(float deltaSeconds) {
 
 		// トランスフォームを補間
 		// S
-		currentTransform_.scale = LerpKeyframe::Lerp(runtime_.startTransform.scale, key0Transform.scale, easedT);
+		currentTransform_.SetScale(LerpKeyframe::Lerp(runtime_.startTransform.GetScale(), key0Transform.GetScale(), easedT));
 		// R
-		currentTransform_.rotation = LerpKeyframe::Lerp(runtime_.startTransform.rotation, key0Transform.rotation, easedT);
+		currentTransform_.SetRotation(LerpKeyframe::Lerp(runtime_.startTransform.GetRotation(), key0Transform.GetRotation(), easedT));
 		// T
-		currentTransform_.translation = LerpKeyframe::Lerp(runtime_.startTransform.translation, key0Transform.translation, easedT);
+		currentTransform_.SetTranslation(LerpKeyframe::Lerp(runtime_.startTransform.GetTranslation(), key0Transform.GetTranslation(), easedT));
 
 		// 任意値の補間
 		UpdateStartAnyValues(easedT);
@@ -378,11 +378,11 @@ void KeyframeObject3D::AdvanceTime(float deltaSeconds) {
 
 		// トランスフォームを補間
 		// S
-		currentTransform_.scale = LerpKeyframe::GetValue<Vector3>(GetScales(), currentT, lerpType_);
+		currentTransform_.SetScale(LerpKeyframe::GetValue<Vector3>(GetScales(), currentT, lerpType_));
 		// R
-		currentTransform_.rotation = LerpKeyframe::GetValue<Quaternion>(GetRotations(), currentT, lerpType_);
+		currentTransform_.SetRotation(LerpKeyframe::GetValue<Quaternion>(GetRotations(), currentT, lerpType_));
 		// T
-		currentTransform_.translation = LerpKeyframe::GetValue<Vector3>(GetPositions(), currentT, lerpType_);
+		currentTransform_.SetTranslation(LerpKeyframe::GetValue<Vector3>(GetPositions(), currentT, lerpType_));
 
 		// 任意値の補間
 		UpdateAnyValues(currentT);
@@ -392,9 +392,9 @@ void KeyframeObject3D::AdvanceTime(float deltaSeconds) {
 	if (total <= timer_) {
 
 		// 最後のキーの値をセット
-		currentTransform_.scale = keys_.empty() ? Vector3::AnyInit(1.0f) : keys_.back().transform.scale;
-		currentTransform_.rotation = keys_.empty() ? Quaternion::Identity() : keys_.back().transform.rotation;
-		currentTransform_.translation = keys_.empty() ? Vector3::AnyInit(0.0f) : keys_.back().transform.translation;
+		currentTransform_.SetScale(keys_.empty() ? Vector3::AnyInit(1.0f) : keys_.back().transform.GetScale());
+		currentTransform_.SetRotation(keys_.empty() ? Quaternion::Identity() : keys_.back().transform.GetRotation());
+		currentTransform_.SetTranslation(keys_.empty() ? Vector3::AnyInit(0.0f) : keys_.back().transform.GetTranslation());
 
 		// 自動リセットは行わず、停止状態にする
 		currentState_ = State::None;
@@ -409,11 +409,11 @@ void KeyframeObject3D::ExternalInputTUpdate(float inputT) {
 	float t = std::clamp(inputT, 0.0f, 1.0f);
 
 	// スケール
-	currentTransform_.scale = LerpKeyframe::GetValue<Vector3>(GetScales(), t, lerpType_);
+	currentTransform_.SetScale(LerpKeyframe::GetValue<Vector3>(GetScales(), t, lerpType_));
 	// 回転
-	currentTransform_.rotation = LerpKeyframe::GetValue<Quaternion>(GetRotations(), t, lerpType_);
+	currentTransform_.SetRotation(LerpKeyframe::GetValue<Quaternion>(GetRotations(), t, lerpType_));
 	// 座標
-	currentTransform_.translation = LerpKeyframe::GetValue<Vector3>(GetPositions(), t, lerpType_);
+	currentTransform_.SetTranslation(LerpKeyframe::GetValue<Vector3>(GetPositions(), t, lerpType_));
 
 	// 任意値の更新
 	UpdateAnyValues(t);
@@ -439,14 +439,14 @@ void KeyframeObject3D::UpdateKey(bool isForcedUpdateMatrix) {
 
 		// 座標を比較して変更があれば更新
 		const Transform3D& transform = keyObjects_[i]->GetTransform();
-		if (transform.GetWorldScale() != keys_[i].transform.scale ||
-			transform.GetWorldRotation() != keys_[i].transform.rotation ||
-			transform.GetWorldPos() != keys_[i].transform.translation) {
+		if (transform.GetWorldScale() != keys_[i].transform.GetScale() ||
+			transform.GetWorldRotation() != keys_[i].transform.GetRotation() ||
+			transform.GetWorldPos() != keys_[i].transform.GetTranslation()) {
 
 			// トランスフォームを更新
-			keys_[i].transform.scale = transform.GetWorldScale();
-			keys_[i].transform.rotation = transform.GetWorldRotation();
-			keys_[i].transform.translation = transform.GetWorldPos();
+			keys_[i].transform.SetScale(transform.GetWorldScale());
+			keys_[i].transform.SetRotation(transform.GetWorldRotation());
+			keys_[i].transform.SetTranslation(transform.GetWorldPos());
 		}
 	}
 
@@ -461,9 +461,9 @@ std::unique_ptr<GameObject3D> KeyframeObject3D::CreateKeyObject(const Transform3
 	object->Init(keyModelName_, keyObjectName_, keyGroupName_);
 
 	// 座標を設定
-	object->SetScale(transform.scale);
-	object->SetRotation(transform.rotation);
-	object->SetTranslation(transform.translation);
+	object->SetScale(transform.GetScale());
+	object->SetRotation(transform.GetRotation());
+	object->SetTranslation(transform.GetTranslation());
 
 	// 親がいれば親を設定
 	if (!parentName_.empty()) {
@@ -488,7 +488,7 @@ std::vector<Vector3> KeyframeObject3D::GetScales() const {
 	scales.reserve(keys_.size());
 	for (const auto& key : keys_) {
 
-		scales.emplace_back(key.transform.scale);
+		scales.emplace_back(key.transform.GetScale());
 	}
 	return scales;
 }
@@ -500,7 +500,7 @@ std::vector<Quaternion> KeyframeObject3D::GetRotations() const {
 	rotations.reserve(keys_.size());
 	for (const auto& key : keys_) {
 
-		Quaternion rotation = key.transform.rotation;
+		Quaternion rotation = key.transform.GetRotation();
 		rotations.emplace_back(rotation);
 	}
 	return rotations;
@@ -513,7 +513,7 @@ std::vector<Vector3> KeyframeObject3D::GetPositions() const {
 	positions.reserve(keys_.size());
 	for (const auto& key : keys_) {
 
-		Vector3 pos = key.transform.translation;
+		Vector3 pos = key.transform.GetTranslation();
 		positions.emplace_back(pos);
 	}
 	return positions;
@@ -741,15 +741,16 @@ void KeyframeObject3D::ImGui() {
 		}
 
 		// 座標
-		key.transform.translation = keyObjects_.empty() ?
-			Vector3::AnyInit(0.0f) : keyObjects_.back()->GetTransform().translation;
-		key.transform.translation.y += 4.0f;
+		Vector3 keyTranslation = keyObjects_.empty() ?
+			Vector3::AnyInit(0.0f) : keyObjects_.back()->GetTransform().GetTranslation();
+		keyTranslation.y += 4.0f;
+		key.transform.SetTranslation(keyTranslation);
 		// スケール
-		key.transform.scale = keyObjects_.empty() ?
-			Vector3::AnyInit(1.0f) : keyObjects_.back()->GetTransform().scale;
+		key.transform.SetScale(keyObjects_.empty() ?
+			Vector3::AnyInit(1.0f) : keyObjects_.back()->GetTransform().GetScale());
 		// 回転
-		key.transform.rotation = keyObjects_.empty() ?
-			Quaternion::Identity() : keyObjects_.back()->GetTransform().rotation;
+		key.transform.SetRotation(keyObjects_.empty() ?
+			Quaternion::Identity() : keyObjects_.back()->GetTransform().GetRotation());
 
 		// 任意の型の値があれば
 		if (!anyTracks_.empty()) {
@@ -1059,10 +1060,11 @@ void KeyframeObject3D::ImGui() {
 			// 一致するIDでトランスフォームを取得
 			if (keyObject->GetObjectID() == *copyData_.copyID) {
 
-				initTransform.translation = keyObject->GetTranslation();
-				initTransform.translation.y += 4.0f;
-				initTransform.scale = keyObject->GetScale();
-				initTransform.rotation = keyObject->GetRotation();
+				Vector3 initTranslation = keyObject->GetTranslation();
+				initTranslation.y += 4.0f;
+				initTransform.SetTranslation(initTranslation);
+				initTransform.SetScale(keyObject->GetScale());
+				initTransform.SetRotation(keyObject->GetRotation());
 				break;
 			}
 		}
@@ -1146,21 +1148,21 @@ Transform3D KeyframeObject3D::MakeInversedTransform(
 				return Quaternion::Identity();
 			}
 
-			Quaternion world = Quaternion::Normalize(transform->rotation);
+			Quaternion world = Quaternion::Normalize(transform->GetRotation());
 
-			const BaseTransform3D* parent = transform->parent;
+			const BaseTransform3D* parent = transform->GetParent();
 			// 親がいるだけ回転を掛け合わせる
 			while (parent) {
 
-				Quaternion parentRotation = Quaternion::Normalize(parent->rotation);
+				Quaternion parentRotation = Quaternion::Normalize(parent->GetRotation());
 				world = Quaternion::Normalize(Quaternion::Multiply(parentRotation, world));
-				parent = parent->parent;
+				parent = parent->GetParent();
 			}
 			return world;
 		};
 
 	// 親のワールド位置
-	Vector3 parentWorldPos = hasParent ? parent_->translation : Vector3::AnyInit(0.0f);
+	Vector3 parentWorldPos = hasParent ? parent_->GetTranslation() : Vector3::AnyInit(0.0f);
 	// 親のワールド回転
 	Quaternion parentWorldRotation = hasParent ? GetWorldRotationQuatOnly(static_cast<const BaseTransform3D*>(parent_)) : Quaternion::Identity();
 	// 親のワールド回転の逆元
@@ -1172,7 +1174,7 @@ Transform3D KeyframeObject3D::MakeInversedTransform(
 	if (setting.isInversePos) {
 
 		// 回転を除去して親ローカル座標へ
-		Vector3 diffWorld = source.translation - parentWorldPos;
+		Vector3 diffWorld = source.GetTranslation() - parentWorldPos;
 		Vector3 diffLocal = Quaternion::RotateVector(diffWorld, invParentWorldRotation);
 
 		// 親ローカル、スケール補正をかける
@@ -1198,7 +1200,7 @@ Transform3D KeyframeObject3D::MakeInversedTransform(
 
 		// 親ローカルからワールドへ
 		diffWorld = Quaternion::RotateVector(diffLocal, parentWorldRotation);
-		dst.translation = parentWorldPos + diffWorld;
+		dst.SetTranslation(parentWorldPos + diffWorld);
 	}
 
 	// 回転反転、親ローカル回転で鏡映してからワールドへ戻す
@@ -1207,10 +1209,10 @@ Transform3D KeyframeObject3D::MakeInversedTransform(
 		auto& axisMap = setting.isRotationFollowPosAxis ? setting.inversePosAxisMap : setting.inverseRotateAxisMap;
 
 		// source回転 -> 親ローカル回転
-		Quaternion localRotation = Quaternion::Normalize(Quaternion::Multiply(invParentWorldRotation, source.rotation));
+		Quaternion localRotation = Quaternion::Normalize(Quaternion::Multiply(invParentWorldRotation, source.GetRotation()));
 		localRotation = MirrorRotationByNormalAxes(localRotation, axisMap);
 		// 親ローカルからワールドへ
-		dst.rotation = Quaternion::Normalize(Quaternion::Multiply(parentWorldRotation, localRotation));
+		dst.SetRotation(Quaternion::Normalize(Quaternion::Multiply(parentWorldRotation, localRotation)));
 	}
 	return dst;
 }
@@ -1447,8 +1449,8 @@ void KeyframeObject3D::DrawKeyLine() {
 	LineRenderer* lineRenderer = LineRenderer::GetInstance();
 
 	// 現在の時間の点の位置
-	lineRenderer->Get3D()->DrawOBB(currentTransform_.translation,
-		currentTransform_.scale, currentTransform_.rotation, obbColor, LineType::DepthIgnore);
+	lineRenderer->Get3D()->DrawOBB(currentTransform_.GetTranslation(),
+		currentTransform_.GetScale(), currentTransform_.GetRotation(), obbColor, LineType::DepthIgnore);
 
 	if (isInverseHeaderOpen_) {
 
@@ -1461,24 +1463,24 @@ void KeyframeObject3D::DrawKeyLine() {
 			// 反転したTransformを作成
 			Transform3D inverse = MakeInversedTransform(key.transform, editInverseSetting_);
 			// OBB
-			lineRenderer->Get3D()->DrawOBB(inverse.translation,
-				inverse.scale, inverse.rotation, Color::Cyan(), LineType::DepthIgnore);
+			lineRenderer->Get3D()->DrawOBB(inverse.GetTranslation(),
+				inverse.GetScale(), inverse.GetRotation(), Color::Cyan(), LineType::DepthIgnore);
 			// 軸
-			lineRenderer->Get3D()->DrawAxis(inverse.scale.Length(),
-				inverse.translation, inverse.rotation, LineType::DepthIgnore);
+			lineRenderer->Get3D()->DrawAxis(inverse.GetScale().Length(),
+				inverse.GetTranslation(), inverse.GetRotation(), LineType::DepthIgnore);
 
 			// キー座標を追加
-			positions.emplace_back(inverse.translation);
+			positions.emplace_back(inverse.GetTranslation());
 		}
 
 		// 現在のTransformも反転した位置、回転を表示
 		Transform3D inverseCurrent = MakeInversedTransform(currentTransform_, editInverseSetting_);
 		// OBB
-		lineRenderer->Get3D()->DrawOBB(inverseCurrent.translation,
-			inverseCurrent.scale, inverseCurrent.rotation, Color::Cyan(), LineType::DepthIgnore);
+		lineRenderer->Get3D()->DrawOBB(inverseCurrent.GetTranslation(),
+			inverseCurrent.GetScale(), inverseCurrent.GetRotation(), Color::Cyan(), LineType::DepthIgnore);
 		// 軸
-		lineRenderer->Get3D()->DrawAxis(inverseCurrent.scale.Length(),
-			inverseCurrent.translation, inverseCurrent.rotation, LineType::DepthIgnore);
+		lineRenderer->Get3D()->DrawAxis(inverseCurrent.GetScale().Length(),
+			inverseCurrent.GetTranslation(), inverseCurrent.GetRotation(), LineType::DepthIgnore);
 
 		// 線描画
 		LerpKeyframe::DrawKeyframeLine(positions, lerpType_, isConnectEnds_);

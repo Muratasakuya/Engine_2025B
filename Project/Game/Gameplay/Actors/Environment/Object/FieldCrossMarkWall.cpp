@@ -57,11 +57,11 @@ void FieldCrossMarkWall::Update() {
 	}
 	}
 
-	materials_->front().emissiveIntensity = currentEmissive_;
-	materials_->front().color = currentColor_;
+	MaterialsData().front().emissiveIntensity = currentEmissive_;
+	MaterialsData().front().color = currentColor_;
 
 	// collision更新
-	Collider::UpdateAllBodies(*transform_);
+	Collider::UpdateAllBodies(TransformData());
 }
 
 void FieldCrossMarkWall::OnCollisionEnter([[maybe_unused]] const SakuEngine::CollisionBody* collisionBody) {

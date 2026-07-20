@@ -81,7 +81,7 @@ void ParticleSpawnSphereModule::DrawEmitter() {
 	// 親の座標
 	if (parentTransform_) {
 
-		parentTranslation = parentTransform_->matrix.world.GetTranslationValue();
+		parentTranslation = parentTransform_->GetMatrix().world.GetTranslationValue();
 	}
 	SakuEngine::LineRenderer::GetInstance()->Get3D()->DrawSphere(4, emitter_.radius,
 		parentTranslation + emitter_.translation, emitterLineColor_);

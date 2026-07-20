@@ -27,7 +27,7 @@ void BossEnemyGreatAttackInOutArea::RangeAttackCollision::Init() {
 	isActive = false;
 	transform.Init();
 	// 絶対に当たらない場所で初期化
-	transform.translation = collisionSafePos_;
+	transform.SetTranslation(collisionSafePos_);
 }
 
 BossEnemyGreatAttackInOutArea::BossEnemyGreatAttackInOutArea() {
@@ -196,7 +196,7 @@ void BossEnemyGreatAttackInOutArea::UpdateIn() {
 
 			// 発生座標
 			SakuEngine::Vector3 emitPos = bossEnemy_->GetTranslation();
-			emitPos += attackKeyframeObject_->GetCurrentTransform().rotation * lastAttackEffectOffset_;
+			emitPos += attackKeyframeObject_->GetCurrentTransform().GetRotation() * lastAttackEffectOffset_;
 
 			// 発生済みにする
 			lastAttackEffect_->Emit(emitPos);
@@ -211,8 +211,8 @@ void BossEnemyGreatAttackInOutArea::UpdateIn() {
 		attackKeyframeObject_->SelfUpdate();
 
 		// 回転と座標を設定
-		bossEnemy_->SetRotation(attackKeyframeObject_->GetCurrentTransform().rotation);
-		bossEnemy_->SetTranslation(attackKeyframeObject_->GetCurrentTransform().translation);
+		bossEnemy_->SetRotation(attackKeyframeObject_->GetCurrentTransform().GetRotation());
+		bossEnemy_->SetTranslation(attackKeyframeObject_->GetCurrentTransform().GetTranslation());
 
 		// 指定のキーインデックスを超えたら攻撃アニメーションへ移行
 		if (!isPlayedAttackKeyframe_ &&
@@ -235,7 +235,7 @@ void BossEnemyGreatAttackInOutArea::UpdateIn() {
 
 			// 発生座標
 			SakuEngine::Vector3 emitPos = bossEnemy_->GetTranslation();
-			emitPos += attackKeyframeObject_->GetCurrentTransform().rotation * rangeSlashEffectOffset_;
+			emitPos += attackKeyframeObject_->GetCurrentTransform().GetRotation() * rangeSlashEffectOffset_;
 
 			// 発生済みにする
 			rangeSlashEffect_->Emit(emitPos);
@@ -288,14 +288,15 @@ void BossEnemyGreatAttackInOutArea::UpdateAlways() {
 	lastAttackEffect_->Update();
 
 	// 回転と座標を設定
-	grearAttackTargetTransform_->translation = followCamera_->GetTransform().translation;
-	grearAttackTargetTransform_->translation.y = 0.0f;
+	SakuEngine::Vector3 targetTranslation = followCamera_->GetTransform().GetTranslation();
+	targetTranslation.y = 0.0f;
+	grearAttackTargetTransform_->SetTranslation(targetTranslation);
 	// 位置、回転を更新する
 	SakuEngine::Vector3 forward = followCamera_->GetTransform().GetForward();
 	forward.y = 0.0f;
 	SakuEngine::Quaternion cameraRotation = SakuEngine::Quaternion::LookRotation(
 		forward.Normalize(), Direction::Get(Direction3D::Up));
-	grearAttackTargetTransform_->rotation = SakuEngine::Quaternion::Normalize(cameraRotation);
+	grearAttackTargetTransform_->SetRotation(SakuEngine::Quaternion::Normalize(cameraRotation));
 	// 行列更新
 	grearAttackTargetTransform_->UpdateMatrix();
 
@@ -308,11 +309,11 @@ void BossEnemyGreatAttackInOutArea::UpdateAlways() {
 		// 無効なら絶対に当たらない場所にする
 		if (!rangeCollision.isActive) {
 
-			rangeCollision.transform.translation = rangeCollision.collisionSafePos_;
+			rangeCollision.transform.SetTranslation(rangeCollision.collisionSafePos_);
 		} else {
 
 			// 有効なら発生位置にする
-			rangeCollision.transform.translation = rangeCollision.activePos;
+			rangeCollision.transform.SetTranslation(rangeCollision.activePos);
 		}
 
 		// 行列更新

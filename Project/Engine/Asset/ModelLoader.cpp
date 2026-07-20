@@ -291,13 +291,13 @@ Node ModelLoader::ReadNode(aiNode* node) {
 
 	// assimpの行列からSRTを抽出する関数
 	node->mTransformation.Decompose(scale, rotate, translate);
-	result.transform.scale = { scale.x,scale.y ,scale.z };
+	result.transform.SetScale({ scale.x, scale.y, scale.z });
 	// X軸を反転、さらに回転方向が逆なので軸を反転させる
-	result.transform.rotation = { rotate.x,-rotate.y ,-rotate.z,rotate.w };
+	result.transform.SetRotation({ rotate.x, -rotate.y, -rotate.z, rotate.w });
 	// X軸を反転
-	result.transform.translation = { -translate.x,translate.y ,translate.z };
+	result.transform.SetTranslation({ -translate.x, translate.y, translate.z });
 	result.localMatrix =
-		Matrix4x4::MakeAxisAffineMatrix(result.transform.scale, result.transform.rotation, result.transform.translation);
+		Matrix4x4::MakeAxisAffineMatrix(result.transform.GetScale(), result.transform.GetRotation(), result.transform.GetTranslation());
 
 	// Node名を格納
 	result.name = node->mName.C_Str();

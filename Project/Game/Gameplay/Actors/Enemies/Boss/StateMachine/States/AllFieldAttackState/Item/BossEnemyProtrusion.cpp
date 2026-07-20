@@ -24,7 +24,7 @@ void BossEnemyProtrusion::CreateEffect() {
 void BossEnemyProtrusion::Init() {
 
 	collisionTransform_.Init();
-	collisionTransform_.translation = collisionSafePos_;
+	collisionTransform_.SetTranslation(collisionSafePos_);
 	// 衝突初期化
 	collider_ = std::make_unique<Collider>();
 	// OBBで追加
@@ -34,7 +34,7 @@ void BossEnemyProtrusion::Init() {
 	collisionBody_->SetType(ColliderType::Type_None);
 	collisionBody_->SetTargetType(ColliderType::Type_Player);
 	collisionTransform_.Init();
-	collisionTransform_.translation = collisionSafePos_;
+	collisionTransform_.SetTranslation(collisionSafePos_);
 
 	// jsonの適用
 	ApplyJson();
@@ -75,10 +75,10 @@ void BossEnemyProtrusion::Emit(const Vector3& pos,
 	// 衝突判定を有効にする
 	collisionBody_->SetType(ColliderType::Type_BossWeapon);
 	// 回転を設定
-	collisionTransform_.rotation = Quaternion::LookRotation(direction, Vector3(1.0f, 0.0f, 0.0f));
-	collisionTransform_.rotation = Quaternion::Normalize(collisionTransform_.rotation);
+	collisionTransform_.SetRotation(Quaternion::LookRotation(direction, Vector3(1.0f, 0.0f, 0.0f)));
+	collisionTransform_.SetRotation(Quaternion::Normalize(collisionTransform_.GetRotation()));
 	// 座標を設定、スケール分計算して中心にする
-	collisionTransform_.translation = pos + direction * collisionTransform_.scale.z;
+	collisionTransform_.SetTranslation(pos + direction * collisionTransform_.GetScale().z);
 }
 
 void BossEnemyProtrusion::Update() {
@@ -155,7 +155,7 @@ void BossEnemyProtrusion::Update() {
 
 		// 衝突判定を無効にする
 		collisionBody_->SetType(ColliderType::Type_None);
-		collisionTransform_.translation = collisionSafePos_;
+		collisionTransform_.SetTranslation(collisionSafePos_);
 
 		// 状態を戻す
 		currentState_ = State::None;
@@ -202,7 +202,7 @@ void BossEnemyProtrusion::ImGui() {
 		ImGui::DragFloat("emitPosOffset", &emitPosOffset_, 0.1f);
 		ImGui::DragFloat("emitPosYRandomRange", &emitPosYRandomRange_, 0.01f);
 		ImGuiHelper::DragUint32("maxProtrusionCount", maxProtrusionCount_, 100);
-		ImGui::DragFloat3("collisionScale", &collisionTransform_.scale.x, 0.01f);
+		ImGui::DragFloat3("collisionScale", &collisionTransform_.EditScale().x, 0.01f);
 	}
 	ImGui::Spacing();
 	if (ImGui::CollapsingHeader("Timer")) {
@@ -226,7 +226,7 @@ void BossEnemyProtrusion::ApplyJson() {
 	emitTimer_.FromJson(data.value("emitTimer_", Json()));
 	lifeTimer_.FromJson(data["lifeTimer_"]);
 
-	collisionTransform_.scale = Vector3::FromJson(data.value("collisionTransform_.scale", Json()));
+	collisionTransform_.SetScale(Vector3::FromJson(data.value("collisionTransform_.scale", Json())));
 }
 
 void BossEnemyProtrusion::SaveJson() {
@@ -240,7 +240,7 @@ void BossEnemyProtrusion::SaveJson() {
 	emitTimer_.ToJson(data["emitTimer_"]);
 	lifeTimer_.ToJson(data["lifeTimer_"]);
 
-	data["collisionTransform_.scale"] = collisionTransform_.scale.ToJson();
+	data["collisionTransform_.scale"] = collisionTransform_.GetScale().ToJson();
 
 	JsonAdapter::Save("BossEnemy/Item/protrusion.json", data);
 }

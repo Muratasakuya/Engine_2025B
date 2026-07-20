@@ -22,14 +22,14 @@ void DebugCamera::Init() {
 	nearClip_ = 0.1f;
 	farClip_ = 3200.0f;
 
-	transform_.eulerRotate = Vector3(0.26f, 0.0f, 0.0f);
-	transform_.scale = SakuEngine::Vector3::AnyInit(1.0f);
-	transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
-	transform_.translation = Vector3(0.0f, 30.733f, -112.363f);
+	transform_.SetEulerRotation(Vector3(0.26f, 0.0f, 0.0f));
+	transform_.SetScale(SakuEngine::Vector3::AnyInit(1.0f));
+	transform_.SetRotation(Quaternion::EulerToQuaternion(transform_.GetEulerRotation()));
+	transform_.SetTranslation(Vector3(0.0f, 30.733f, -112.363f));
 
 	// 行列更新
 	transform_.UpdateMatrix();
-	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
+	viewMatrix_ = Matrix4x4::Inverse(transform_.GetMatrix().world);
 
 	// アスペクト比
 	float aspectRatio = Config::kWindowWidthf / Config::kWindowHeightf;
@@ -48,15 +48,15 @@ void DebugCamera::Update() {
 	BaseCamera::UpdateAutoFocus();
 
 	// 行列更新
-	transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
-	rotateMatrix_ = SakuEngine::Matrix4x4::MakeRotateMatrix(transform_.eulerRotate);
-	transform_.matrix.world = Matrix4x4::MakeIdentity4x4();
+	transform_.SetRotation(Quaternion::EulerToQuaternion(transform_.GetEulerRotation()));
+	rotateMatrix_ = SakuEngine::Matrix4x4::MakeRotateMatrix(transform_.GetEulerRotation());
+	transform_.EditMatrix().world = Matrix4x4::MakeIdentity4x4();
 
-	Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(transform_.translation);
+	Matrix4x4 translateMatrix = Matrix4x4::MakeTranslateMatrix(transform_.GetTranslation());
 	Matrix4x4 scaleMatrix = Matrix4x4::MakeScaleMatrix(SakuEngine::Vector3::AnyInit(1.0f));
-	transform_.matrix.world = Matrix4x4::Multiply(scaleMatrix, rotateMatrix_);
-	transform_.matrix.world = Matrix4x4::Multiply(transform_.matrix.world, translateMatrix);
-	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
+	transform_.EditMatrix().world = Matrix4x4::Multiply(scaleMatrix, rotateMatrix_);
+	transform_.EditMatrix().world = Matrix4x4::Multiply(transform_.GetMatrix().world, translateMatrix);
+	viewMatrix_ = Matrix4x4::Inverse(transform_.GetMatrix().world);
 
 	// アスペクト比
 	float aspectRatio = Config::kWindowWidthf / Config::kWindowHeightf;
@@ -73,13 +73,13 @@ void DebugCamera::ImGui() {
 
 	ImGui::PushItemWidth(itemWidth_);
 
-	ImGui::DragFloat3("translation##DebugCamera", &transform_.translation.x, 0.01f);
-	if (ImGui::DragFloat3("rotation##DebugCamera", &transform_.eulerRotate.x, 0.01f)) {
+	ImGui::DragFloat3("translation##DebugCamera", &transform_.EditTranslation().x, 0.01f);
+	if (ImGui::DragFloat3("rotation##DebugCamera", &transform_.EditEulerRotation().x, 0.01f)) {
 
-		transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
+		transform_.SetRotation(Quaternion::EulerToQuaternion(transform_.GetEulerRotation()));
 	}
 	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
-		transform_.rotation.x, transform_.rotation.y, transform_.rotation.z, transform_.rotation.w);
+		transform_.GetRotation().x, transform_.GetRotation().y, transform_.GetRotation().z, transform_.GetRotation().w);
 
 	ImGui::DragFloat("zoomRate##DebugCamera", &zoomRate_, 0.01f);
 	ImGui::DragFloat("panSpeed##DebugCamera", &panSpeed_, 0.01f);
@@ -113,8 +113,10 @@ void DebugCamera::Move() {
 	// 右クリック
 	if (Input::GetInstance()->PushMouseRight()) {
 
-		transform_.eulerRotate.x += deltaY * rotateSpeed;
-		transform_.eulerRotate.y += deltaX * rotateSpeed;
+		SakuEngine::Vector3 eulerRotate = transform_.GetEulerRotation();
+		eulerRotate.x += deltaY * rotateSpeed;
+		eulerRotate.y += deltaX * rotateSpeed;
+		transform_.SetEulerRotation(eulerRotate);
 	}
 
 	// 中クリック
@@ -124,10 +126,10 @@ void DebugCamera::Move() {
 		Vector3 up = { 0.0f, -panSpeed_ * deltaY, 0.0f };
 
 		// 平行移動ベクトルを変換
-		right = Vector3::TransferNormal(right, transform_.matrix.world);
-		up = Vector3::TransferNormal(up, transform_.matrix.world);
+		right = Vector3::TransferNormal(right, transform_.GetMatrix().world);
+		up = Vector3::TransferNormal(up, transform_.GetMatrix().world);
 
-		transform_.translation += right + up;
+		transform_.AddTranslation(right + up);
 	}
 
 	Vector3 forward = { 0.0f, 0.0f, Input::GetInstance()->GetMouseWheel() * zoomRate_ };
@@ -135,6 +137,6 @@ void DebugCamera::Move() {
 
 	if (Input::GetInstance()->GetMouseWheel() != 0) {
 
-		transform_.translation += forward;
+		transform_.AddTranslation(forward);
 	}
 }

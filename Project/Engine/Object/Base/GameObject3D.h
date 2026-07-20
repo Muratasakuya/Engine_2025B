@@ -55,13 +55,13 @@ namespace SakuEngine {
 
 		// transform
 		// SRT
-		void SetScale(const SakuEngine::Vector3& scale) { transform_->scale = scale; }
-		void SetRotation(const Quaternion& rotation) { transform_->rotation = rotation; }
-		void SetEulerRotation(const SakuEngine::Vector3& rotation) { transform_->eulerRotate = rotation; }
-		void SetTranslation(const SakuEngine::Vector3& translation) { transform_->translation = translation; }
-		void SetOffsetTranslation(const SakuEngine::Vector3& translation) { transform_->offsetTranslation = translation; }
+		void SetScale(const SakuEngine::Vector3& scale) { transform_->SetScale(scale); }
+		void SetRotation(const Quaternion& rotation) { transform_->SetRotation(rotation); }
+		void SetEulerRotation(const SakuEngine::Vector3& rotation) { transform_->SetEulerRotation(rotation); }
+		void SetTranslation(const SakuEngine::Vector3& translation) { transform_->SetTranslation(translation); }
+		void SetOffsetTranslation(const SakuEngine::Vector3& translation) { transform_->SetOffsetTranslation(translation); }
 		void SetIsDirty(bool isDirty) { transform_->SetIsDirty(isDirty); }
-		void SetIgnoreParentScale(bool isIgnore) { transform_->isIgnoreParentScale = isIgnore; }
+		void SetIgnoreParentScale(bool isIgnore) { transform_->SetIgnoreParentScale(isIgnore); }
 		void SetSRT(const SakuEngine::Transform3D& transform);
 		// 親
 		void SetParent(const SakuEngine::Transform3D& parent, bool isNull = false);
@@ -107,25 +107,22 @@ namespace SakuEngine {
 		void UpdateMatrix();
 		const SakuEngine::Transform3D& GetTransform() const { return *transform_; }
 		// SRT
-		const SakuEngine::Vector3& GetScale() const { return transform_->scale; }
-		const Quaternion& GetRotation() const { return transform_->rotation; }
-		const SakuEngine::Vector3& GetTranslation() const { return transform_->translation; }
+		const SakuEngine::Vector3& GetScale() const { return transform_->GetScale(); }
+		const Quaternion& GetRotation() const { return transform_->GetRotation(); }
+		const SakuEngine::Vector3& GetTranslation() const { return transform_->GetTranslation(); }
 	protected:
 		//========================================================================
 		//	protected Methods
 		//========================================================================
 
-		//--------- variables ----------------------------------------------------
-
-		// data
-		// transform
-		SakuEngine::Transform3D* transform_;
-		// material
-		std::vector<Material>* materials_;
-		// meshRender
-		MeshRender* meshRender_;
-		// animation
-		SkinnedAnimation* animation_;
+		SakuEngine::Transform3D& TransformData() { return *transform_; }
+		const SakuEngine::Transform3D& TransformData() const { return *transform_; }
+		std::vector<Material>& MaterialsData() { return *materials_; }
+		const std::vector<Material>& MaterialsData() const { return *materials_; }
+		MeshRender& MeshRenderData() { return *meshRender_; }
+		const MeshRender& MeshRenderData() const { return *meshRender_; }
+		SkinnedAnimation* AnimationData() { return animation_; }
+		const SkinnedAnimation* AnimationData() const { return animation_; }
 	private:
 		//========================================================================
 		//	private Methods
@@ -135,6 +132,10 @@ namespace SakuEngine {
 
 		// material選択インデックス
 		int selectedMaterialIndex_;
+		SakuEngine::Transform3D* transform_ = nullptr;
+		std::vector<Material>* materials_ = nullptr;
+		MeshRender* meshRender_ = nullptr;
+		SkinnedAnimation* animation_ = nullptr;
 
 		//--------- functions ----------------------------------------------------
 

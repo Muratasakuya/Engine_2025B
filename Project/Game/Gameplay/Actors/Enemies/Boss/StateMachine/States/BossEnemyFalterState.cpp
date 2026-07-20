@@ -25,7 +25,7 @@ void BossEnemyFalterState::Update() {
 
 	// 前方ベクトルを取得
 	SakuEngine::Vector3 bossPos = bossEnemy_->GetTranslation();
-	SakuEngine::Vector3 playerPos = player_->GetTransform().translation;
+	SakuEngine::Vector3 playerPos = player_->GetTransform().GetTranslation();
 
 	// 回転を計算して設定
 	SakuEngine::Quaternion bossRotation = SakuEngine::Quaternion::LookTarget(bossPos, playerPos,

@@ -214,7 +214,7 @@ Vector3 GameObject3D::GetJointWorldPos(const std::string& jointName) const {
 	const Matrix4x4& jointToModel = skeleton.joints[jointIndex].skeletonSpaceMatrix;
 
 	// 行列を合成する
-	Matrix4x4 world = jointToModel * transform_->matrix.world;
+	Matrix4x4 world = jointToModel * transform_->GetMatrix().world;
 
 	// 平行移動成分でワールド座標を返す
 	return world.GetTranslationValue();
@@ -247,20 +247,20 @@ void GameObject3D::UpdateMatrix() {
 
 void GameObject3D::SetSRT(const SakuEngine::Transform3D& transform) {
 
-	transform_->translation = transform.translation;
-	transform_->rotation = transform.rotation;
-	transform_->scale = transform.scale;
+	transform_->SetTranslation(transform.GetTranslation());
+	transform_->SetRotation(transform.GetRotation());
+	transform_->SetScale(transform.GetScale());
 }
 
 void GameObject3D::SetParent(const SakuEngine::Transform3D& parent, bool isNull) {
 
 	if (isNull) {
 
-		transform_->parent = nullptr;
+		transform_->SetParent(nullptr);
 		return;
 	}
-	transform_->parent = nullptr;
-	transform_->parent = &parent;
+	transform_->SetParent(nullptr);
+	transform_->SetParent(&parent);
 }
 
 const SakuEngine::Transform3D* GameObject3D::GetJointTransform(const std::string& jointName) const {

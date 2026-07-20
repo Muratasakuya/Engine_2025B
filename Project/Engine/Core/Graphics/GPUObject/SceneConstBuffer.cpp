@@ -1,4 +1,4 @@
-﻿#include "SceneConstBuffer.h"
+#include "SceneConstBuffer.h"
 
 using namespace SakuEngine;
 
@@ -51,7 +51,7 @@ void SceneConstBuffer::Update(class SceneView* sceneView) {
 	// buffer更新
 	// camera
 	viewProjectionBuffer_.TransferData(sceneView->GetCamera()->GetViewProjectionMatrix());
-	cameraPosBuffer_.TransferData(sceneView->GetCamera()->GetTransform().translation);
+	cameraPosBuffer_.TransferData(sceneView->GetCamera()->GetTransform().GetTranslation());
 	orthoProjectionBuffer_.TransferData(sceneView->GetCamera2D()->GetViewProjectionMatrix());
 	// light
 	lightBuffer_.TransferData(sceneView->GetLight()->GetPunctualLight());
@@ -61,7 +61,7 @@ void SceneConstBuffer::Update(class SceneView* sceneView) {
 
 	// perView
 	ParticleCommon::PerViewForGPU perView{};
-	perView.cameraPos = sceneView->GetCamera()->GetTransform().translation;
+	perView.cameraPos = sceneView->GetCamera()->GetTransform().GetTranslation();
 	perView.viewProjection = sceneView->GetCamera()->GetViewProjectionMatrix();
 	perView.billboardMatrix = sceneView->GetCamera()->GetBillboardMatrix();
 	perViewBuffer_.TransferData(perView);
@@ -71,9 +71,9 @@ void SceneConstBuffer::Update(class SceneView* sceneView) {
 
 	// camera
 	debugSceneViewProjectionBuffer_.TransferData(sceneView->GetSceneCamera()->GetViewProjectionMatrix());
-	debugSceneCameraPosBuffer_.TransferData(sceneView->GetSceneCamera()->GetTransform().translation);
+	debugSceneCameraPosBuffer_.TransferData(sceneView->GetSceneCamera()->GetTransform().GetTranslation());
 
-	perView.cameraPos = sceneView->GetSceneCamera()->GetTransform().translation;
+	perView.cameraPos = sceneView->GetSceneCamera()->GetTransform().GetTranslation();
 	perView.viewProjection = sceneView->GetSceneCamera()->GetViewProjectionMatrix();
 	perView.billboardMatrix = sceneView->GetSceneCamera()->GetBillboardMatrix();
 	debugScenePerViewBuffer_.TransferData(perView);

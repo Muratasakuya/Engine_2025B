@@ -29,7 +29,7 @@ void BossEnemyProjectileAttackState::BulletCollision::Init() {
 	moveTimer.Reset();
 	transform.Init();
 	// 絶対に当たらない場所で初期化
-	transform.translation = collisionSafePos_;
+	transform.SetTranslation(collisionSafePos_);
 	startPos = collisionSafePos_;
 	targetPos = collisionSafePos_;
 
@@ -307,7 +307,7 @@ void BossEnemyProjectileAttackState::BulletCollision::LerpTranslation(float dura
 	moveTimer.Update(duration);
 
 	// 弾の衝突座標を補間する
-	transform.translation = SakuEngine::Vector3::Lerp(startPos, targetPos, moveTimer.t_);
+	transform.SetTranslation(SakuEngine::Vector3::Lerp(startPos, targetPos, moveTimer.t_));
 	transform.UpdateMatrix();
 
 	// 終了次第補間を終了し安全な座標に移す
@@ -315,7 +315,7 @@ void BossEnemyProjectileAttackState::BulletCollision::LerpTranslation(float dura
 
 		// リセット
 		moveTimer.Reset();
-		transform.translation = collisionSafePos_;
+		transform.SetTranslation(collisionSafePos_);
 		// 非アクティブ状態にする
 		isActive = false;
 
@@ -374,8 +374,9 @@ void BossEnemyProjectileAttackState::ImGui() {
 	for (const auto& bullet : bulletColliders_) {
 
 		ImGui::Text("bulletCollider isActive: %s", bullet.isActive ? "true" : "false");
-		ImGui::Text("position: (%.2f, %.2f, %.2f)", bullet.transform.translation.x,
-			bullet.transform.translation.y, bullet.transform.translation.z);
+		const auto& translation = bullet.transform.GetTranslation();
+		ImGui::Text("position: (%.2f, %.2f, %.2f)", translation.x,
+			translation.y, translation.z);
 	}
 
 	// 現在発生させる位置のデバッグ表示

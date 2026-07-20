@@ -14,7 +14,7 @@
 
 void ClearResultCamera::Init() {
 
-	initRotateX_ = transform_.eulerRotate.x;
+	initRotateX_ = transform_.GetEulerRotation().x;
 
 	// json適用
 	ApplyJson();
@@ -46,27 +46,31 @@ void ClearResultCamera::UpdateAnimation() {
 	animationTimer_.Update();
 
 	// 座標を補間
-	transform_.translation = SakuEngine::Vector3::Lerp(startPos_, targetPos_, animationTimer_.easedT_);
+	transform_.SetTranslation(SakuEngine::Vector3::Lerp(startPos_, targetPos_, animationTimer_.easedT_));
 
 	// 補間が終了したら次に進める
 	if (animationTimer_.IsReached()) {
 
 		animationTimer_.Reset();
 		currentState_ = State::Rotate;
-		transform_.eulerRotate.x = eulerRotateX_;
+		SakuEngine::Vector3 eulerRotate = transform_.GetEulerRotation();
+		eulerRotate.x = eulerRotateX_;
+		transform_.SetEulerRotation(eulerRotate);
 	}
 }
 
 void ClearResultCamera::UpdateRotate() {
 
 	// Y軸回転を加算
-	transform_.eulerRotate.y += rotateSpeed_ * SakuEngine::GameTimer::GetDeltaTime();
+	SakuEngine::Vector3 eulerRotate = transform_.GetEulerRotation();
+	eulerRotate.y += rotateSpeed_ * SakuEngine::GameTimer::GetDeltaTime();
+	transform_.SetEulerRotation(eulerRotate);
 
 	// オフセット距離
 	SakuEngine::Vector3 offset = SakuEngine::Vector3::Transform(SakuEngine::Vector3(0.0f, 0.0f, -viewOffset_),
-		SakuEngine::Matrix4x4::MakeRotateMatrix(transform_.eulerRotate));
+		SakuEngine::Matrix4x4::MakeRotateMatrix(transform_.GetEulerRotation()));
 	// 座標を設定
-	transform_.translation = viewPoint_ + offset;
+	transform_.SetTranslation(viewPoint_ + offset);
 }
 
 void ClearResultCamera::ImGui() {
@@ -97,7 +101,9 @@ void ClearResultCamera::ImGui() {
 	ImGui::DragFloat("rotateSpeed", &rotateSpeed_, 0.01f);
 	if (ImGui::DragFloat("eulerRotateX", &eulerRotateX_, 0.01f)) {
 
-		transform_.eulerRotate.x = eulerRotateX_;
+		SakuEngine::Vector3 editEuler = transform_.GetEulerRotation();
+		editEuler.x = eulerRotateX_;
+		transform_.SetEulerRotation(editEuler);
 	}
 	ImGui::DragFloat3("viewPoint", &viewPoint_.x, 0.1f);
 	ImGui::DragFloat3("viewOffset", &viewOffset_, 0.1f);
@@ -105,8 +111,10 @@ void ClearResultCamera::ImGui() {
 	switch (currentState_) {
 	case ClearResultCamera::State::Begin: {
 
-		transform_.eulerRotate.x = initRotateX_;
-		transform_.eulerRotate.y = 0.0f;
+		SakuEngine::Vector3 editEuler = transform_.GetEulerRotation();
+		editEuler.x = initRotateX_;
+		editEuler.y = 0.0f;
+		transform_.SetEulerRotation(editEuler);
 		break;
 	}
 	case ClearResultCamera::State::Rotate: {
@@ -114,7 +122,7 @@ void ClearResultCamera::ImGui() {
 		SakuEngine::LineRenderer::GetInstance()->Get3D()->DrawSphere(8, 4.0f,
 			viewPoint_, SakuEngine::Color::Cyan());
 		SakuEngine::LineRenderer::GetInstance()->Get3D()->DrawLine(viewPoint_,
-			transform_.translation, SakuEngine::Color::Cyan());
+			transform_.GetTranslation(), SakuEngine::Color::Cyan());
 		break;
 	}
 	}
@@ -148,7 +156,7 @@ void ClearResultCamera::SaveJson() {
 	data["targetPos_"] = targetPos_.ToJson();
 
 	data["rotateSpeed_"] = rotateSpeed_;
-	data["eulerRotateX"] = transform_.eulerRotate.x;
+	data["eulerRotateX"] = transform_.GetEulerRotation().x;
 	data["fovY_"] = fovY_;
 	data["farClip_"] = farClip_;
 	data["viewPoint_"] = viewPoint_.ToJson();

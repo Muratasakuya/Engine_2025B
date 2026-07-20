@@ -52,9 +52,9 @@ void FieldWallCollision::Update() {
 
 	// 衝突ボディを更新
 	SakuEngine::Transform3D transform{};
-	transform.scale = SakuEngine::Vector3::AnyInit(1.0f);
-	transform.rotation = SakuEngine::Quaternion::Identity();
-	transform.translation = SakuEngine::Vector3::AnyInit(0.0f);
+	transform.SetScale(SakuEngine::Vector3::AnyInit(1.0f));
+	transform.SetRotation(SakuEngine::Quaternion::Identity());
+	transform.SetTranslation(SakuEngine::Vector3::AnyInit(0.0f));
 	UpdateAllBodies(transform);
 }
 

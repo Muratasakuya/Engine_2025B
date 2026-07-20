@@ -122,8 +122,8 @@ IFollowCameraUpdatePass* FollowCameraUpdatePass::GetPassByID(FollowCameraUpdateP
 void FollowCameraUpdatePass::Update(FollowCamera& followCamera, GameSceneState sceneState) {
 
 	// コンテキストを初期化
-	context_.cameraTranslation = followCamera.GetTransform().translation;
-	context_.cameraRotation = followCamera.GetTransform().rotation;
+	context_.cameraTranslation = followCamera.GetTransform().GetTranslation();
+	context_.cameraRotation = followCamera.GetTransform().GetRotation();
 	context_.cameraFovY = followCamera.GetFovY();
 	// サービスにシーン状態を提供
 	frameService_.sceneState = sceneState;

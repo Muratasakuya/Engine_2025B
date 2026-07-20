@@ -63,33 +63,59 @@ namespace SakuEngine {
 		// 変更があったかどうか
 		bool IsDirty() const { return isDirty_; }
 		void SetIsDirty(bool isDirty);
+		bool IsCompulsion() const { return isCompulsion_; }
+		bool IsIgnoreParentScale() const { return isIgnoreParentScale_; }
 
-		//--------- variables ----------------------------------------------------
+		const Vector3& GetScale() const { return scale_; }
+		const Quaternion& GetRotation() const { return rotation_; }
+		const Vector3& GetEulerRotation() const { return eulerRotate_; }
+		const Vector3& GetTranslation() const { return translation_; }
+		const Vector3& GetOffsetTranslation() const { return offsetTranslation_; }
+		const TransformationMatrix& GetMatrix() const { return matrix_; }
+		const BaseTransform3D* GetParent() const { return parent_; }
 
-		// 拡縮
-		Vector3 scale;
+		Vector3& EditScale() { return scale_; }
+		Quaternion& EditRotation() { return rotation_; }
+		Vector3& EditEulerRotation() { return eulerRotate_; }
+		Vector3& EditTranslation() { return translation_; }
+		Vector3& EditOffsetTranslation() { return offsetTranslation_; }
+		TransformationMatrix& EditMatrix() { return matrix_; }
 
-		// 回転
-		Quaternion rotation;
-		Vector3 eulerRotate;
+		void SetScale(const Vector3& scale) { scale_ = scale; }
+		void SetRotation(const Quaternion& rotation) { rotation_ = rotation; }
+		void SetEulerRotation(const Vector3& eulerRotate) { eulerRotate_ = eulerRotate; }
+		void SetTranslation(const Vector3& translation) { translation_ = translation; }
+		void SetOffsetTranslation(const Vector3& offsetTranslation) { offsetTranslation_ = offsetTranslation; }
+		void SetParent(const BaseTransform3D* parent) { parent_ = parent; }
+		void SetCompulsion(bool isCompulsion) { isCompulsion_ = isCompulsion; }
+		void SetIgnoreParentScale(bool isIgnore) { isIgnoreParentScale_ = isIgnore; }
 
-		// 座標
-		Vector3 translation;
-		Vector3 offsetTranslation;
-
-		TransformationMatrix matrix;
-		const BaseTransform3D* parent = nullptr;
-
-		// 行列強制更新フラグ
-		bool isCompulsion_ = false;
-		// 親のスケールの影響を受けないかどうか
-		bool isIgnoreParentScale = false;
+		void AddTranslation(const Vector3& translation) { translation_ += translation; }
+		void AddEulerRotation(const Vector3& eulerRotate) { eulerRotate_ += eulerRotate; }
+		void SetTranslationY(float y) { translation_.y = y; }
 	private:
 		//========================================================================
 		//	private Methods
 		//========================================================================
 
 		//--------- variables ----------------------------------------------------
+
+		// 拡縮
+		Vector3 scale_;
+		// 回転
+		Quaternion rotation_;
+		Vector3 eulerRotate_;
+		// 座標
+		Vector3 translation_;
+		Vector3 offsetTranslation_;
+
+		TransformationMatrix matrix_;
+		const BaseTransform3D* parent_ = nullptr;
+
+		// 行列強制更新フラグ
+		bool isCompulsion_ = false;
+		// 親のスケールの影響を受けないかどうか
+		bool isIgnoreParentScale_ = false;
 
 		Vector3 prevScale;
 		Quaternion prevRotation;
@@ -184,6 +210,10 @@ namespace SakuEngine {
 		Vector2 GetWorldPos() const;
 		// ワールドスケール
 		Vector2 GetWorldScale() const;
+		const Vector2& GetTranslation() const { return translation; }
+		float GetRotation() const { return rotation; }
+		const Vector2& GetSizeScale() const { return sizeScale; }
+		const Vector2& GetAnchorPoint() const { return anchorPoint; }
 
 		// 画面の中心に設定
 		void SetCenterPos();
@@ -260,6 +290,8 @@ namespace SakuEngine {
 			}
 			return false;
 		}
+		const Vector2& GetSize() const { return size; }
+		const Vector2& GetTextureSize() const { return textureSize; }
 	private:
 		//========================================================================
 		//	private Methods

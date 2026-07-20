@@ -31,39 +31,39 @@ void BossEnemy::InitWeapon() {
 void BossEnemy::InitAnimations() {
 
 	// 最初は待機状態で初期化
-	animation_->SetPlayAnimation("bossEnemy_idle", true);
+	AnimationData()->SetPlayAnimation("bossEnemy_idle", true);
 
 	// animationのデータを設定
-	animation_->SetAnimationData("bossEnemy_chargeAttack");
-	animation_->SetAnimationData("bossEnemy_continuousAttack");
-	animation_->SetAnimationData("bossEnemy_falter");
-	animation_->SetAnimationData("bossEnemy_lightAttack");
-	animation_->SetAnimationData("bossEnemy_lightAttackParrySign");
-	animation_->SetAnimationData("bossEnemy_jumpPrepare");
-	animation_->SetAnimationData("bossEnemy_jumpAttack");
-	animation_->SetAnimationData("bossEnemy_rushAttack");
-	animation_->SetAnimationData("bossEnemy_strongAttack");
-	animation_->SetAnimationData("bossEnemy_strongAttackParrySign");
-	animation_->SetAnimationData("bossEnemy_projectileAttack");
-	animation_->SetAnimationData("bossEnemy_stun");
-	animation_->SetAnimationData("bossEnemy_stunUpdate");
-	animation_->SetAnimationData("bossEnemy_teleport");
-	animation_->SetAnimationData("bossEnemy_start");
-	animation_->SetAnimationData("bossEnemy_beginChargeGreatAttack");
-	animation_->SetAnimationData("bossEnemy_endChargeGreatAttack");
-	animation_->SetAnimationData("bossEnemy_speedSlash0");
-	animation_->SetAnimationData("bossEnemy_speedSlash1");
-	animation_->SetAnimationData("bossEnemy_slashStay");
-	animation_->SetAnimationData("bossEnemy_stayedSlash");
-	animation_->SetAnimationData("bossEnemy_greatAttack");
-	animation_->SetAnimationData("bossEnemy_groundSmash");
+	AnimationData()->SetAnimationData("bossEnemy_chargeAttack");
+	AnimationData()->SetAnimationData("bossEnemy_continuousAttack");
+	AnimationData()->SetAnimationData("bossEnemy_falter");
+	AnimationData()->SetAnimationData("bossEnemy_lightAttack");
+	AnimationData()->SetAnimationData("bossEnemy_lightAttackParrySign");
+	AnimationData()->SetAnimationData("bossEnemy_jumpPrepare");
+	AnimationData()->SetAnimationData("bossEnemy_jumpAttack");
+	AnimationData()->SetAnimationData("bossEnemy_rushAttack");
+	AnimationData()->SetAnimationData("bossEnemy_strongAttack");
+	AnimationData()->SetAnimationData("bossEnemy_strongAttackParrySign");
+	AnimationData()->SetAnimationData("bossEnemy_projectileAttack");
+	AnimationData()->SetAnimationData("bossEnemy_stun");
+	AnimationData()->SetAnimationData("bossEnemy_stunUpdate");
+	AnimationData()->SetAnimationData("bossEnemy_teleport");
+	AnimationData()->SetAnimationData("bossEnemy_start");
+	AnimationData()->SetAnimationData("bossEnemy_beginChargeGreatAttack");
+	AnimationData()->SetAnimationData("bossEnemy_endChargeGreatAttack");
+	AnimationData()->SetAnimationData("bossEnemy_speedSlash0");
+	AnimationData()->SetAnimationData("bossEnemy_speedSlash1");
+	AnimationData()->SetAnimationData("bossEnemy_slashStay");
+	AnimationData()->SetAnimationData("bossEnemy_stayedSlash");
+	AnimationData()->SetAnimationData("bossEnemy_greatAttack");
+	AnimationData()->SetAnimationData("bossEnemy_groundSmash");
 
 	// 右手を親として更新させる
-	animation_->SetParentJoint("rightHand");
+	AnimationData()->SetParentJoint("rightHand");
 
 	// keyEventを設定
-	animation_->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
-	animation_->Update(transform_->matrix.world);
+	AnimationData()->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
+	AnimationData()->Update(TransformData().GetMatrix().world);
 }
 
 void BossEnemy::InitCollision() {
@@ -98,16 +98,16 @@ void BossEnemy::InitAnimation() {
 
 void BossEnemy::SetInitTransform() {
 
-	transform_->scale = initTransform_.scale;
-	transform_->eulerRotate = initTransform_.eulerRotate;
-	transform_->rotation = initTransform_.rotation;
-	transform_->translation = initTransform_.translation;
+	TransformData().SetScale(initTransform_.GetScale());
+	TransformData().SetEulerRotation(initTransform_.GetEulerRotation());
+	TransformData().SetRotation(initTransform_.GetRotation());
+	TransformData().SetTranslation(initTransform_.GetTranslation());
 }
 
 void BossEnemy::CalDistanceToTarget() {
 
 	// 距離レベルを計算
-	SakuEngine::Vector3 diff = player_->GetTranslation() - transform_->translation;
+	SakuEngine::Vector3 diff = player_->GetTranslation() - GetTranslation();
 	// 距離
 	const float distance = diff.Length();
 	stats_.currentDistanceToTarget = distance;
@@ -333,8 +333,8 @@ void BossEnemy::UpdatePlayGame() {
 	weapon_->Update();
 
 	// 衝突情報更新
-	Collider::UpdateAllBodies(*transform_);
-	attackCollision_->Update(*transform_);
+	Collider::UpdateAllBodies(TransformData());
+	attackCollision_->Update(TransformData());
 
 	// デバッグ用コマンド
 	DebugCommand();
@@ -469,7 +469,7 @@ void BossEnemy::DerivedImGui() {
 	if (ImGui::Button("Reload keyEvent")) {
 
 		// keyEventを設定
-		animation_->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
+		AnimationData()->SetKeyframeEvent("Enemy/Boss/animationEffectKey.json");
 	}
 
 	ImGui::SeparatorText("Parry");
@@ -495,7 +495,7 @@ void BossEnemy::DerivedImGui() {
 
 		// 向き
 		SakuEngine::Vector3 playerPos = player_->GetTranslation();
-		SakuEngine::Vector3 enemyPos = transform_->translation;
+		SakuEngine::Vector3 enemyPos = GetTranslation();
 		// y座標を固定
 		playerPos.y = enemyPos.y = 4.0f;
 		SakuEngine::Vector3 direction = SakuEngine::Vector3(playerPos - enemyPos).Normalize();

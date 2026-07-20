@@ -60,7 +60,7 @@ void TransformationMatrix::Update(const BaseTransform3D* parent, const Vector3& 
 	}
 	if (parent) {
 
-		Matrix4x4 parentMatrix = parent->matrix.world;
+		Matrix4x4 parentMatrix = parent->GetMatrix().world;
 
 		// 親のスケールの影響を受けない場合
 		if (isIgnoreParentScale) {

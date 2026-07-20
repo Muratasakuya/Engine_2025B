@@ -267,7 +267,7 @@ void GPUParticleGroup::UpdateParent() {
 	if (parentTransform_) {
 
 		paent.aliveParent = true;
-		paent.parentMatrix = parentTransform_->matrix.world;
+		paent.parentMatrix = parentTransform_->GetMatrix().world;
 	} else {
 
 		paent.aliveParent = false;

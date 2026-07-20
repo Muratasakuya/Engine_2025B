@@ -27,10 +27,10 @@ BaseCamera::BaseCamera() {
 	farClip_ = 3200.0f;
 
 	// transformを一回初期化
-	transform_.eulerRotate = Vector3(0.02f, 0.0f, 0.0f);
-	transform_.scale = Vector3::AnyInit(1.0f);
-	transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
-	transform_.translation = Vector3(0.0f, 1.8f, -24.0f);
+	transform_.SetEulerRotation(Vector3(0.02f, 0.0f, 0.0f));
+	transform_.SetScale(Vector3::AnyInit(1.0f));
+	transform_.SetRotation(Quaternion::EulerToQuaternion(transform_.GetEulerRotation()));
+	transform_.SetTranslation(Vector3(0.0f, 1.8f, -24.0f));
 	autoFucusTimer_.target_ = 0.32f;
 	autoFucusTimer_.easingType_ = EasingType::EaseOutExpo;
 }
@@ -39,8 +39,8 @@ void BaseCamera::StartAutoFocus(bool isFocus, const Vector3& target) {
 
 	isStartFocus_ = isFocus;
 	autoFucusTimer_.Reset();
-	startFocusTranslation_ = transform_.translation;
-	startFocusRotation_ = transform_.rotation;
+	startFocusTranslation_ = transform_.GetTranslation();
+	startFocusRotation_ = transform_.GetRotation();
 
 	Vector3 direction = startFocusTranslation_ - target;
 	direction = direction.Normalize();
@@ -77,8 +77,8 @@ void BaseCamera::SetEditorParentTransform(const std::string& keyName, const Tran
 
 void BaseCamera::BindEndEditCameraPose() {
 
-	endEditTranslation_ = transform_.translation;
-	endEditRotation_ = transform_.rotation;
+	endEditTranslation_ = transform_.GetTranslation();
+	endEditRotation_ = transform_.GetRotation();
 	endEditFovY_ = fovY_;
 }
 
@@ -90,12 +90,12 @@ void BaseCamera::UpdateView(UpdateMode updateMode) {
 	// オイラーを設定して更新する
 	if (updateMode == UpdateMode::Euler) {
 
-		transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
+		transform_.SetRotation(Quaternion::EulerToQuaternion(transform_.GetEulerRotation()));
 	}
 	// 行列更新
 	transform_.UpdateMatrix();
 
-	viewMatrix_ = Matrix4x4::Inverse(transform_.matrix.world);
+	viewMatrix_ = Matrix4x4::Inverse(transform_.GetMatrix().world);
 	projectionMatrix_ =
 		Matrix4x4::MakePerspectiveFovMatrix(fovY_, aspectRatio_, nearClip_, farClip_);
 	viewProjectionMatrix_ = viewMatrix_ * projectionMatrix_;
@@ -112,32 +112,32 @@ void BaseCamera::UpdateAutoFocus() {
 
 	// 座標補間処理
 	autoFucusTimer_.Update();
-	transform_.translation = Vector3::Lerp(startFocusTranslation_,
-		targetFocusTranslation_, autoFucusTimer_.easedT_);
+	transform_.SetTranslation(Vector3::Lerp(startFocusTranslation_,
+		targetFocusTranslation_, autoFucusTimer_.easedT_));
 	// 回転補間処理
-	transform_.rotation = Quaternion::Slerp(startFocusRotation_,
-		targetFocusRotation_, autoFucusTimer_.easedT_);
-	transform_.eulerRotate = Quaternion::ToEulerAngles(Quaternion::Normalize(transform_.rotation));
+	transform_.SetRotation(Quaternion::Slerp(startFocusRotation_,
+		targetFocusRotation_, autoFucusTimer_.easedT_));
+	transform_.SetEulerRotation(Quaternion::ToEulerAngles(Quaternion::Normalize(transform_.GetRotation())));
 
 	if (autoFucusTimer_.IsReached()) {
 
 		// 補間終了
-		transform_.translation = targetFocusTranslation_;
-		transform_.rotation = targetFocusRotation_;
-		transform_.eulerRotate = Quaternion::ToEulerAngles(Quaternion::Normalize(targetFocusRotation_));
+		transform_.SetTranslation(targetFocusTranslation_);
+		transform_.SetRotation(targetFocusRotation_);
+		transform_.SetEulerRotation(Quaternion::ToEulerAngles(Quaternion::Normalize(targetFocusRotation_)));
 		isStartFocus_ = false;
 	}
 }
 
 void BaseCamera::ImGui() {
 
-	ImGui::DragFloat3("translation##DebugCamera", &transform_.translation.x, 0.01f);
-	if (ImGui::DragFloat3("rotation##DebugCamera", &transform_.eulerRotate.x, 0.01f)) {
+	ImGui::DragFloat3("translation##DebugCamera", &transform_.EditTranslation().x, 0.01f);
+	if (ImGui::DragFloat3("rotation##DebugCamera", &transform_.EditEulerRotation().x, 0.01f)) {
 
-		transform_.rotation = Quaternion::EulerToQuaternion(transform_.eulerRotate);
+		transform_.SetRotation(Quaternion::EulerToQuaternion(transform_.GetEulerRotation()));
 	}
 	ImGui::Text("quaternion(%4.3f, %4.3f, %4.3f, %4.3f)",
-		transform_.rotation.x, transform_.rotation.y, transform_.rotation.z, transform_.rotation.w);
+		transform_.GetRotation().x, transform_.GetRotation().y, transform_.GetRotation().z, transform_.GetRotation().w);
 
 	ImGui::DragFloat("fovY##DebugCamera", &fovY_, 0.01f);
 	ImGui::DragFloat("farClip##DebugCamera", &farClip_, 1.0f);
@@ -220,7 +220,7 @@ void BaseCamera::CalBillboardMatrix() {
 	// billboardMatrixを計算する
 	Matrix4x4 backToFrontMatrix = Matrix4x4::MakeYawMatrix(pi);
 
-	billboardMatrix_ = Matrix4x4::Multiply(backToFrontMatrix, transform_.matrix.world);
+	billboardMatrix_ = Matrix4x4::Multiply(backToFrontMatrix, transform_.GetMatrix().world);
 	billboardMatrix_.m[3][0] = 0.0f;
 	billboardMatrix_.m[3][1] = 0.0f;
 	billboardMatrix_.m[3][2] = 0.0f;

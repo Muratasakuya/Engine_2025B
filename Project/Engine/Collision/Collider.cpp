@@ -68,7 +68,7 @@ int Collider::ToIndexType(ColliderType type) {
 void Collider::UpdateSphereBody(CollisionBody* body, const SakuEngine::Transform3D& transform, const CollisionShape::Sphere& offset) {
 
 	// 子か親かで座標を変える
-	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
+	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.GetTranslation();
 	Vector3 center = bodyTranslation + offset.center;
 
 	body->UpdateSphere(CollisionShape::Sphere(center, offset.radius));
@@ -77,9 +77,9 @@ void Collider::UpdateSphereBody(CollisionBody* body, const SakuEngine::Transform
 void Collider::UpdateAABBBody(CollisionBody* body, const SakuEngine::Transform3D& transform, const CollisionShape::AABB& offset) {
 
 	// 子か親かで座標を変える
-	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
+	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.GetTranslation();
 	Vector3 center = bodyTranslation + offset.center;
-	Vector3 extent = transform.scale * offset.extent;
+	Vector3 extent = transform.GetScale() * offset.extent;
 
 	body->UpdateAABB(CollisionShape::AABB(center, extent));
 }
@@ -87,12 +87,12 @@ void Collider::UpdateAABBBody(CollisionBody* body, const SakuEngine::Transform3D
 void Collider::UpdateOBBBody(CollisionBody* body, const SakuEngine::Transform3D& transform, const CollisionShape::OBB& offset) {
 
 	// 子か親かで座標を変える
-	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.translation;
+	Vector3 bodyTranslation = isChild_ ? transform.GetWorldPos() : transform.GetTranslation();
 	Vector3 center = bodyTranslation + offset.center;
-	Vector3 size = transform.scale + offset.size;
+	Vector3 size = transform.GetScale() + offset.size;
 
 	// 子か親かで回転を変える
-	Quaternion bodyRotation = isChild_ ? Quaternion::FromRotationMatrix(transform.matrix.world) : transform.rotation;
+	Quaternion bodyRotation = isChild_ ? Quaternion::FromRotationMatrix(transform.GetMatrix().world) : transform.GetRotation();
 	Quaternion rotation = Quaternion::Normalize(bodyRotation);
 
 	body->UpdateOBB(CollisionShape::OBB(center, size, SakuEngine::Vector3::AnyInit(0.0f), rotation));

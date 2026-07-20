@@ -67,10 +67,10 @@ namespace SakuEngine {
 
 		//--------- accessor -----------------------------------------------------
 
-		void SetParent(const SakuEngine::Transform3D* parent) { transform_.parent = parent; };
-		void SetTranslation(const SakuEngine::Vector3& translation) { transform_.translation = translation; }
-		void SetRotation(const Quaternion& rotation) { transform_.rotation = rotation; }
-		void SetEulerRotation(const SakuEngine::Vector3& eulerRotation) { transform_.eulerRotate = eulerRotation; }
+		void SetParent(const SakuEngine::Transform3D* parent) { transform_.SetParent(parent); };
+		void SetTranslation(const SakuEngine::Vector3& translation) { transform_.SetTranslation(translation); }
+		void SetRotation(const Quaternion& rotation) { transform_.SetRotation(rotation); }
+		void SetEulerRotation(const SakuEngine::Vector3& eulerRotation) { transform_.SetEulerRotation(eulerRotation); }
 		void SetFovY(float fovY) { fovY_ = fovY; }
 		void SetIsUpdateEditor(bool isUpdateEditor) { isUpdateEditor_ = isUpdateEditor; }
 

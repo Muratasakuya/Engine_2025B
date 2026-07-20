@@ -58,21 +58,21 @@ void Player::InitAnimations() {
 	animNames_.emplace_back("player_falter");
 
 	// 最初は待機状態で初期化
-	animation_->SetPlayAnimation("player_idle", true);
+	AnimationData()->SetPlayAnimation("player_idle", true);
 
 	// animationのデータを一括設定
 	for (const auto& name : animNames_) {
 
-		animation_->SetAnimationData(name);
+		AnimationData()->SetAnimationData(name);
 	}
 
 	// 両手を親として更新させる
-	animation_->SetParentJoint("rightHand");
-	animation_->SetParentJoint("leftHand");
+	AnimationData()->SetParentJoint("rightHand");
+	AnimationData()->SetParentJoint("leftHand");
 
 	// keyEventを設定
-	animation_->SetKeyframeEvent("Player/animationEffectKey.json");
-	animation_->Update(transform_->matrix.world);
+	AnimationData()->SetKeyframeEvent("Player/animationEffectKey.json");
+	AnimationData()->Update(TransformData().GetMatrix().world);
 }
 
 void Player::InitCollision() {
@@ -99,13 +99,13 @@ void Player::InitState() {
 
 void Player::SetInitTransform() {
 
-	transform_->scale = initTransform_.scale;
-	transform_->eulerRotate = initTransform_.eulerRotate;
-	transform_->rotation = initTransform_.rotation;
-	transform_->translation = initTransform_.translation;
+	TransformData().SetScale(initTransform_.GetScale());
+	TransformData().SetEulerRotation(initTransform_.GetEulerRotation());
+	TransformData().SetRotation(initTransform_.GetRotation());
+	TransformData().SetTranslation(initTransform_.GetTranslation());
 
 	// 常に更新を行わせる
-	transform_->isCompulsion_ = true;
+	TransformData().SetCompulsion(true);
 }
 
 void Player::DerivedInit() {
@@ -267,8 +267,8 @@ void Player::Update() {
 	CheckExecutedParry();
 
 	// 衝突情報更新
-	Collider::UpdateAllBodies(*transform_);
-	attackCollision_->Update(*transform_);
+	Collider::UpdateAllBodies(TransformData());
+	attackCollision_->Update(TransformData());
 
 	// 入力で攻撃を無効化できるようにする
 #if defined(_DEBUG) || defined(_DEVELOPBUILD)
@@ -421,8 +421,9 @@ void Player::DerivedImGui() {
 void Player::ClampInitPosY() {
 
 	// y座標が初期化時のY座標より下に行かないようにする
-	transform_->translation.y = (std::max)(transform_->translation.y,
-		initTransform_.translation.y);
+	SakuEngine::Vector3 translation = TransformData().GetTranslation();
+	translation.y = (std::max)(translation.y, initTransform_.GetTranslation().y);
+	TransformData().SetTranslation(translation);
 }
 
 void Player::ApplyJson() {

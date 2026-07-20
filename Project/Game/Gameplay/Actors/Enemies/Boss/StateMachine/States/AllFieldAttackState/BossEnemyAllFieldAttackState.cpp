@@ -35,7 +35,7 @@ void BossEnemyAllFieldAttackState::Enter() {
 	canExit_ = false;
 
 	// アニメーション座標の設定
-	moveToCenterAnim_.SetStart(bossEnemy_->GetTransform().translation);
+	moveToCenterAnim_.SetStart(bossEnemy_->GetTransform().GetTranslation());
 	moveToCenterAnim_.SetEnd(Vector3::AnyInit(0.0f));
 	// アニメーション開始
 	moveToCenterAnim_.Start();
@@ -71,7 +71,7 @@ void BossEnemyAllFieldAttackState::PrepareProtrusionAttack() {
 
 	// アニメーション更新
 	// 座標
-	Vector3 currentPos = bossEnemy_->GetTransform().translation;
+	Vector3 currentPos = bossEnemy_->GetTransform().GetTranslation();
 	moveToCenterAnim_.LerpValue(currentPos);
 	bossEnemy_->SetTranslation(currentPos);
 	// α値
@@ -255,7 +255,7 @@ void BossEnemyAllFieldAttackState::UpdateAlways() {
 	for (auto& areaCollider : areaAttackColliders_) {
 
 		// 移動
-		areaCollider.transform.translation += areaCollider.velocity;
+		areaCollider.transform.AddTranslation(areaCollider.velocity);
 		// ライフタイム更新
 		areaCollider.lifeTimer.Update();
 

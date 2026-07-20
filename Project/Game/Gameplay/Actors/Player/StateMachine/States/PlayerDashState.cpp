@@ -92,7 +92,7 @@ void PlayerDashState::UpdateDash() {
 
 		SakuEngine::Vector3 direction = SakuEngine::Vector3::Normalize(SakuEngine::Vector3(inputValue.x, 0.0f, inputValue.y));
 		direction = SakuEngine::Vector3::TransferNormal(direction,
-			SakuEngine::Quaternion::MakeRotateMatrix(followCamera_->GetTransform().rotation));
+			SakuEngine::Quaternion::MakeRotateMatrix(followCamera_->GetTransform().GetRotation()));
 		move_ = direction * moveSpeed_;
 	}
 	// 特に何も入力していなくても加速状態の時は向いている方向に加速分動かして進ませる

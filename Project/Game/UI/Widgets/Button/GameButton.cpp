@@ -23,7 +23,7 @@ void GameButton::Init(const std::string& textureName, const std::string& groupNa
 	GameObject2D::Init(textureName, textureName, groupName);
 
 	// 初期値設定
-	collisionSize_ = transform_->size;
+	collisionSize_ = TransformData().size;
 }
 
 void GameButton::Update() {
@@ -106,8 +106,9 @@ void GameButton::DetectCollision() {
 void GameButton::DetectMouseCollision() {
 
 	// 判定
-	hoverNow_ = SakuEngine::Collision::RectToMouse(transform_->translation,
-		collisionSize_, transform_->anchorPoint);
+	const auto& transform = TransformData();
+	hoverNow_ = SakuEngine::Collision::RectToMouse(transform.translation,
+		collisionSize_, transform.anchorPoint);
 
 	// 入力結果
 	SakuEngine::Input* input = SakuEngine::Input::GetInstance();

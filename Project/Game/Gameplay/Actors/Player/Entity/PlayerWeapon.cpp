@@ -12,19 +12,19 @@
 
 void PlayerWeapon::SetInitTransform() {
 
-	transform_->scale = initTransform_.scale;
-	transform_->eulerRotate = initTransform_.eulerRotate;
-	transform_->rotation = initTransform_.rotation;
-	transform_->translation = initTransform_.translation;
+	TransformData().SetScale(initTransform_.GetScale());
+	TransformData().SetEulerRotation(initTransform_.GetEulerRotation());
+	TransformData().SetRotation(initTransform_.GetRotation());
+	TransformData().SetTranslation(initTransform_.GetTranslation());
 }
 
 void PlayerWeapon::Update() {
 
 	// 剣先の座標を更新する
-	tipTranslation_ = SakuEngine::Vector3::Transform(tipOffset_, transform_->matrix.world);
+	tipTranslation_ = SakuEngine::Vector3::Transform(tipOffset_, TransformData().GetMatrix().world);
 
 	// 衝突情報更新
-	Collider::UpdateAllBodies(*transform_);
+	Collider::UpdateAllBodies(TransformData());
 }
 
 void PlayerWeapon::DerivedImGui() {
