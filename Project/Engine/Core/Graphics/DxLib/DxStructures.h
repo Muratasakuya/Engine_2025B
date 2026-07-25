@@ -20,6 +20,9 @@
 // 描画先の情報
 namespace SakuEngine {
 
+static constexpr UINT kDefaultSampleCount = 1;
+static constexpr UINT kDefaultSampleQuality = 0;
+
 struct RenderTarget {
 
 	uint32_t width;

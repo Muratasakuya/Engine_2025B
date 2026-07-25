@@ -13,11 +13,15 @@ using namespace SakuEngine;
 
 void DxCommand::UpdateFixFPS() {
 
+	constexpr float kTargetFPS = 60.0f;
+	constexpr float kFrameCheckFPS = 64.0f;
+	constexpr float kMicrosecondsPerSecond = 1000000.0f;
+
 	// フレームレートピッタリの時間
-	constexpr std::chrono::microseconds kMinTime(static_cast<uint64_t>(1000000.0f / 60.0f));
+	constexpr std::chrono::microseconds kMinTime(static_cast<uint64_t>(kMicrosecondsPerSecond / kTargetFPS));
 
 	// 1/60秒よりわずかに短い時間
-	constexpr std::chrono::microseconds kMinCheckTime(uint64_t(1000000.0f / 64.0f));
+	constexpr std::chrono::microseconds kMinCheckTime(uint64_t(kMicrosecondsPerSecond / kFrameCheckFPS));
 
 	// 現在時間を取得する
 	auto now = std::chrono::steady_clock::now();
@@ -74,7 +78,6 @@ void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
 	commandQueue_->ExecuteCommandLists(1, commandLists);
 
 	// GPUとOSに画面の交換を行うように通知する
-	//swapChain->Present(0, DXGI_PRESENT_ALLOW_TEARING);
 	swapChain->Present(1, 0);
 }
 

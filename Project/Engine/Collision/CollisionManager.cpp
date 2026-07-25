@@ -62,9 +62,8 @@ CollisionManager* CollisionManager::instance_ = nullptr;
 
 CollisionManager* CollisionManager::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new CollisionManager();
-	}
+	static CollisionManager instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -72,23 +71,25 @@ void CollisionManager::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
+		instance_->ClearAllCollision();
 		instance_ = nullptr;
 	}
 }
 
 CollisionBody* CollisionManager::AddCollisionBody(const CollisionShape::Shapes& shape) {
 
-	CollisionBody* collider = new CollisionBody();
+	auto body = std::make_unique<CollisionBody>();
+	CollisionBody* collider = body.get();
 	collider->SetShape(shape);
-	colliders_.emplace_back(collider);
+	colliders_.emplace_back(std::move(body));
 
 	return collider;
 }
 
 void CollisionManager::RemoveCollisionBody(CollisionBody* collider) {
 
-	auto itA = std::find(colliders_.begin(), colliders_.end(), collider);
+	auto itA = std::find_if(colliders_.begin(), colliders_.end(),
+		[collider](const std::unique_ptr<CollisionBody>& body) { return body.get() == collider; });
 	if (itA != colliders_.end()) {
 		colliders_.erase(itA);
 	}
@@ -124,8 +125,8 @@ void CollisionManager::Update() {
 
 		for (; itB != colliders_.end(); ++itB) {
 
-			CollisionBody* colliderA = *itA;
-			CollisionBody* colliderB = *itB;
+			CollisionBody* colliderA = itA->get();
+			CollisionBody* colliderB = itB->get();
 
 			auto hasPair = [](ColliderType a, ColliderType b) {
 				using T = std::underlying_type_t<ColliderType>;
@@ -200,7 +201,7 @@ void CollisionManager::DrawCollider() {
 		// コライダーが衝突しているかどうかを判定
 		bool isColliding = false;
 		for (const auto& collisionPair : preCollisions_) {
-			if (collisionPair.first == collider || collisionPair.second == collider) {
+			if (collisionPair.first == collider.get() || collisionPair.second == collider.get()) {
 				isColliding = true;
 				break;
 			}

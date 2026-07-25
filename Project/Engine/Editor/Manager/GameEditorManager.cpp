@@ -14,9 +14,8 @@ GameEditorManager* GameEditorManager::instance_ = nullptr;
 
 GameEditorManager* GameEditorManager::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new GameEditorManager();
-	}
+	static GameEditorManager instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -24,7 +23,6 @@ void GameEditorManager::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

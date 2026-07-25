@@ -18,9 +18,8 @@ AssetEditor* AssetEditor::instance_ = nullptr;
 
 AssetEditor* AssetEditor::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new AssetEditor();
-	}
+	static AssetEditor instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -28,7 +27,6 @@ void AssetEditor::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

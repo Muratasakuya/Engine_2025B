@@ -60,9 +60,8 @@ Audio* Audio::instance_ = nullptr;
 
 Audio* Audio::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new Audio();
-	}
+	static Audio instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -98,7 +97,6 @@ void Audio::Finalize() {
 		}
 	}
 
-	delete instance_;
 	instance_ = nullptr;
 }
 
@@ -475,11 +473,12 @@ std::string Audio::NormalizeKey(const std::string& nameOrPath) const {
 	return nameOrPath;
 }
 
-std::string Audio::ToLower(std::string string) {
+std::string Audio::ToLower(const std::string& string) {
 
-	std::transform(string.begin(), string.end(), string.begin(),
+	std::string lower = string;
+	std::transform(lower.begin(), lower.end(), lower.begin(),
 		[](unsigned char c) { return static_cast<char>(std::tolower(c)); });
-	return string;
+	return lower;
 }
 
 Audio::SoundData Audio::LoadWaveFile(const std::string& filename) {

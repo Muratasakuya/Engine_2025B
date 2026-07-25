@@ -192,9 +192,8 @@ void SakuEngine::Input::SetVibrationEnabled(bool enabled) {
 
 Input* Input::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new Input();
-	}
+	static Input instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -204,7 +203,6 @@ void Input::Finalize() {
 		
 		instance_->StopAllVibration();
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

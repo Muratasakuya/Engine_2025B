@@ -29,9 +29,8 @@ ImGuiObjectEditor* ImGuiObjectEditor::instance_ = nullptr;
 
 ImGuiObjectEditor* ImGuiObjectEditor::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new ImGuiObjectEditor();
-	}
+	static ImGuiObjectEditor instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -39,7 +38,6 @@ void ImGuiObjectEditor::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

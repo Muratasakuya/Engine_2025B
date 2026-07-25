@@ -200,8 +200,7 @@ void MeshletBuilder::SetEffectVertex(ResourceMesh<EffectMeshVertex>& destination
 
 void MeshletBuilder::Optimize(ResourceMesh<MeshVertex>& destinationMesh) {
 
-	// skinnedMeshの場合、頂点情報が変わってバグってしまうため
-	// 今は最適化処理をスキップ、対応できたらする
+	// スキニング頂点はジョイント/ウェイトの対応が崩れると破綻するため、静的メッシュだけを最適化する。
 	if (destinationMesh.isSkinned) {
 		return;
 	}
@@ -211,7 +210,7 @@ void MeshletBuilder::Optimize(ResourceMesh<MeshVertex>& destinationMesh) {
 
 		std::vector<uint32_t> remap(destinationMesh.indices[meshIndex].size());
 
-		// 重複データを削除するための再マッピング用インデックスを生成
+		// 同一頂点を共有できるようにリマップ表を作り、後続の最適化対象を最小頂点集合へ縮める。
 		auto vertexCount = meshopt_generateVertexRemap(
 
 			remap.data(),
@@ -224,7 +223,7 @@ void MeshletBuilder::Optimize(ResourceMesh<MeshVertex>& destinationMesh) {
 		std::vector<MeshVertex> vertices(vertexCount);
 		std::vector<uint32_t> indices(destinationMesh.indices[meshIndex].size());
 
-		// 頂点インデックスを再マッピング
+		// 生成したリマップ表でインデックスを置き換え、重複頂点を参照しない形に整理する。
 		meshopt_remapIndexBuffer(
 
 			indices.data(),
@@ -232,7 +231,7 @@ void MeshletBuilder::Optimize(ResourceMesh<MeshVertex>& destinationMesh) {
 			destinationMesh.indices[meshIndex].size(),
 			remap.data());
 
-		// 頂点データを再マッピング
+		// インデックス側と同じ順序へ頂点配列を詰め直し、未参照頂点を除外する。
 		meshopt_remapVertexBuffer(
 
 			vertices.data(),
@@ -249,7 +248,7 @@ void MeshletBuilder::Optimize(ResourceMesh<MeshVertex>& destinationMesh) {
 		destinationMesh.indices[meshIndex].resize(indices.size());
 		destinationMesh.vertices[meshIndex].resize(vertices.size());
 
-		// 頂点キャッシュ最適化
+		// GPUのポストトランスフォームキャッシュに乗りやすい順序へインデックスを並べ替える。
 		meshopt_optimizeVertexCache(
 
 			destinationMesh.indices[meshIndex].data(),
@@ -261,7 +260,7 @@ void MeshletBuilder::Optimize(ResourceMesh<MeshVertex>& destinationMesh) {
 		indices.clear();
 		indices.shrink_to_fit();
 
-		// 頂点フェッチ最適化
+		// インデックス参照順に合わせて頂点を並べ替え、頂点フェッチ時のメモリアクセスを局所化する。
 		meshopt_optimizeVertexFetch(
 
 			destinationMesh.vertices[meshIndex].data(),

@@ -17,7 +17,9 @@ namespace SakuEngine {
 	//	UIが持つ基底情報
 	//============================================================================
 
-	// UIコンポーネントのスロット
+	/// <summary>
+	/// UI要素に紐づくコンポーネント実体を保持し、HandlePool上で管理するためのスロット。
+	/// </summary>
 	struct UIComponentSlot {
 
 		// ファイルを保存する基底パス
@@ -30,7 +32,9 @@ namespace SakuEngine {
 	// UIコンポーネント専用ハンドル
 	using UIComponentHandle = HandlePool<UIComponentSlot>::Handle;
 
-	// UI要素情報
+	/// <summary>
+	/// UI階層上の1ノードを表し、親子関係と所有コンポーネントのハンドルを保持する構造体。
+	/// </summary>
 	struct UIElement {
 
 		// ファイルを保存する基底パス
@@ -52,7 +56,9 @@ namespace SakuEngine {
 		std::vector<UIComponentHandle> components;
 	};
 
-	// UIアセット
+	/// <summary>
+	/// UI要素ツリーとコンポーネントプールをまとめ、編集、保存、実行時状態を管理する構造体。
+	/// </summary>
 	struct UIAsset {
 
 		// ファイルを保存する基底パス
@@ -145,7 +151,9 @@ namespace SakuEngine {
 		IUIComponent* FindComponent(UIElement::Handle owner, UIComponentType type);
 	};
 
-	// UIアセットの登録情報
+	/// <summary>
+	/// UIアセットライブラリに登録する名前付きUIアセットを保持する構造体。
+	/// </summary>
 	struct UIAssetEntry {
 
 		std::string name;

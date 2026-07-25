@@ -27,9 +27,8 @@ CameraEditor* CameraEditor::instance_ = nullptr;
 
 CameraEditor* CameraEditor::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new CameraEditor();
-	}
+	static CameraEditor instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -37,7 +36,6 @@ void CameraEditor::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

@@ -17,6 +17,12 @@ using namespace SakuEngine;
 //	AnimationManager classMethods
 //============================================================================
 
+/// <summary>
+/// アニメーション管理に必要な外部リソースを保持し、読み込み要求を処理するワーカースレッドを開始する。
+/// </summary>
+/// <param name="device">GPUリソース作成に使用するD3D12デバイス。</param>
+/// <param name="srvDescriptor">スキンクラスター用SRVを確保するディスクリプタ管理クラス。</param>
+/// <param name="modelLoader">アニメーションと紐づくモデルデータの取得元。</param>
 void AnimationManager::Init(ID3D12Device* device,
 	SRVDescriptor* srvDescriptor, ModelLoader* modelLoader) {
 
@@ -33,9 +39,14 @@ void AnimationManager::Init(ID3D12Device* device,
 
 	// ワーカースレッド起動
 	loadWorker_.Start([this](AnimationAsyncKey&& key) {
-		this->LoadAsync(std::move(key)); });
+		this->LoadAsync(key); });
 }
 
+/// <summary>
+/// アニメーション読み込みを要求し、同期的に利用したい呼び出し元のために登録完了まで待機する。
+/// </summary>
+/// <param name="animationName">読み込むアニメーションファイル名またはstem名。</param>
+/// <param name="modelName">骨構造とスキンクラスターの基準にするモデル名。</param>
 void AnimationManager::Load(const std::string& animationName, const std::string& modelName) {
 
 	RequestLoadAsync(animationName, modelName);
@@ -49,6 +60,11 @@ void AnimationManager::Load(const std::string& animationName, const std::string&
 	}
 }
 
+/// <summary>
+/// 重複要求を避けながら、アニメーションとモデル名の組を非同期キューへ登録する。
+/// </summary>
+/// <param name="animationName">読み込むアニメーションファイル名またはstem名。</param>
+/// <param name="modelName">読み込み完了後に関連付けるモデル名。</param>
 void AnimationManager::RequestLoadAsync(const std::string& animationName, const std::string& modelName) {
 
 	auto& queue = loadWorker_.RefAsyncQueue();
@@ -64,6 +80,9 @@ void AnimationManager::RequestLoadAsync(const std::string& animationName, const 
 	SpdLogger::Log("[Animation][Enqueue] anim:" + animationName + " model:" + modelName);
 }
 
+/// <summary>
+/// 起動中の読み込みキューが空になるまで待機する。
+/// </summary>
 void AnimationManager::WaitAll() {
 
 	for (;;) {
@@ -75,26 +94,32 @@ void AnimationManager::WaitAll() {
 	}
 }
 
-void AnimationManager::LoadAsync(AnimationAsyncKey key) {
+/// <summary>
+/// ワーカースレッド上でアニメーションを解析し、共有データへ登録する。
+/// </summary>
+/// <param name="key">アニメーション名と関連モデル名をまとめた読み込みキー。</param>
+void AnimationManager::LoadAsync(const AnimationAsyncKey& key) {
 
-	// 必要なモデルがまだ読み込みされていなければ処理しない
+	// 非同期読み込みではモデルとアニメーションの完了順が前後するため、モデル未登録なら少し待って再キューする。
+	// ここで失敗扱いにすると、先にアニメーション要求が来た通常ケースでも再生データが欠落してしまう。
 	if (!modelLoader_->Search(key.modelName)) {
 
 		SpdLogger::Log("[Animation][WaitModel] anim:" + key.animName + " model:" + key.modelName);
 		std::this_thread::sleep_for(std::chrono::milliseconds(2));
-		loadWorker_.RefAsyncQueue().AddQueue(std::move(key));
+		loadWorker_.RefAsyncQueue().AddQueue(AnimationAsyncKey{ key.animName, key.modelName });
 		return;
 	}
 
 	std::filesystem::path filePath;
-	// 見つからなければ処理しない
+	// stem検索でアセット名と拡張子の揺れを吸収する。
+	// 見つからない場合は再キューしても状態が変わらないため、ログだけ残して読み込みを打ち切る。
 	if (!Filesystem::FindByStem(baseDirectoryPath_, key.animName, { ".gltf" }, filePath)) {
 
 		SpdLogger::Log("[Animation][Missing] anim:" + key.animName);
 		return;
 	}
 
-	// アニメーションが存在していない場合はエラーにする
+	// Assimpでファイルを開き、アニメーションクリップが存在しないファイルはデータ不備として扱う。
 	Assimp::Importer importer;
 	const aiScene* scene = importer.ReadFile(filePath.string(), 0);
 	if (!scene || scene->mNumAnimations == 0) {
@@ -104,7 +129,8 @@ void AnimationManager::LoadAsync(AnimationAsyncKey key) {
 		return;
 	}
 
-	// アニメーション解析処理
+	// Assimpの各チャンネルをエンジン内のキー形式へ変換し、登録前はローカルに保持する。
+	// 共有マップを長時間ロックしないよう、ファイル解析と変換は排他区間の外で完了させる。
 	std::unordered_map<std::string, AnimationData> localAnimations{};
 	for (uint32_t i = 0; i < scene->mNumAnimations; ++i) {
 
@@ -148,7 +174,7 @@ void AnimationManager::LoadAsync(AnimationAsyncKey key) {
 		localAnimations.emplace(newName, std::move(anim));
 	}
 
-	// 読み込み完了
+	// 共有マップへの登録は排他区間にまとめ、描画/再生側から中途半端な状態が見えないようにする。
 	SpdLogger::Log("[Animation][Loaded] anim=" + key.animName);
 	{
 		std::scoped_lock lk(animMutex_);
@@ -170,6 +196,11 @@ void AnimationManager::LoadAsync(AnimationAsyncKey key) {
 	SpdLogger::Log("[Animation][Registered] model:" + key.modelName + "animations:" + std::to_string(localAnimations.size()));
 }
 
+/// <summary>
+/// モデルのルートノードからジョイント階層と名前検索用マップを構築する。
+/// </summary>
+/// <param name="rootNode">スケルトン生成の起点になるモデルノード。</param>
+/// <returns>再生時に使用するスケルトンデータ。</returns>
 Skeleton AnimationManager::CreateSkeleton(const Node& rootNode) {
 
 	Skeleton skeleton;
@@ -184,6 +215,13 @@ Skeleton AnimationManager::CreateSkeleton(const Node& rootNode) {
 	return skeleton;
 }
 
+/// <summary>
+/// ノード階層を再帰的にたどり、親子関係を保持したジョイント配列を作成する。
+/// </summary>
+/// <param name="node">作成対象のモデルノード。</param>
+/// <param name="parent">親ジョイントのインデックス。ルートの場合は空。</param>
+/// <param name="joints">生成したジョイントを追加する配列。</param>
+/// <returns>作成したジョイントのインデックス。</returns>
 int32_t AnimationManager::CreateJoint(const Node& node, const std::optional<int32_t> parent, std::vector<Joint>& joints) {
 
 	Joint joint;
@@ -208,6 +246,12 @@ int32_t AnimationManager::CreateJoint(const Node& node, const std::optional<int3
 	return joint.index;
 }
 
+/// <summary>
+/// モデルの頂点ウェイト情報とスケルトンを対応付け、GPUスキニング用のスキンクラスターを作成する。
+/// </summary>
+/// <param name="modelName">参照するモデルデータ名。</param>
+/// <param name="animationName">参照するスケルトンデータ名。</param>
+/// <returns>スキニングで使用するスキンクラスターデータ。</returns>
 SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, const std::string& animationName) {
 
 	SkinCluster skinCluster;
@@ -237,6 +281,11 @@ SkinCluster AnimationManager::CreateSkinCluster(const std::string& modelName, co
 	return skinCluster;
 }
 
+/// <summary>
+/// 登録済みアニメーションデータを名前で取得する。
+/// </summary>
+/// <param name="animationName">取得するアニメーション名。</param>
+/// <returns>登録済みアニメーションデータへの参照。</returns>
 const AnimationData& AnimationManager::GetAnimationData(const std::string& animationName) const {
 
 	std::scoped_lock lk(animMutex_);
@@ -249,6 +298,11 @@ const AnimationData& AnimationManager::GetAnimationData(const std::string& anima
 	return animations_.at(animationName);
 }
 
+/// <summary>
+/// 登録済みスケルトンデータを名前で取得する。
+/// </summary>
+/// <param name="animationName">取得するスケルトン名。</param>
+/// <returns>登録済みスケルトンデータへの参照。</returns>
 const Skeleton& AnimationManager::GetSkeletonData(const std::string& animationName) const {
 
 	std::scoped_lock lk(animMutex_);
@@ -261,6 +315,11 @@ const Skeleton& AnimationManager::GetSkeletonData(const std::string& animationNa
 	return skeletons_.at(animationName);
 }
 
+/// <summary>
+/// 登録済みスキンクラスターデータを名前で取得する。
+/// </summary>
+/// <param name="animationName">取得するスキンクラスター名。</param>
+/// <returns>登録済みスキンクラスターデータへの参照。</returns>
 const SkinCluster& AnimationManager::GetSkinClusterData(const std::string& animationName) const {
 
 	std::scoped_lock lk(animMutex_);

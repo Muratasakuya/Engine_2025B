@@ -18,6 +18,10 @@ cbuffer Scene : register(b0) {
 	float3 lightDirection;
 };
 
+static const float kRayTMin = 0.0f;
+static const float kRayTMax = FLT_MAX;
+static const float kShadowRayNormalOffset = 1e-3f;
+
 //============================================================================
 //	RayGeneration
 //============================================================================
@@ -38,19 +42,19 @@ void RayGeneration() {
 	RayDesc ray;
 	ray.Origin = cameraPos;
 	ray.Direction = direction;
-	ray.TMin = 0.0f;
-	ray.TMax = 1e38f;
+	ray.TMin = kRayTMin;
+	ray.TMax = kRayTMax;
 	
 	RadiancePayload rPayload;
 	rPayload.color = float3(0.0f, 0.0f, 0.0f);
-	rPayload.hitT = 1e38f;
+	rPayload.hitT = kRayTMax;
 	
 	// ÉåÉCí«ê’
 	TraceRay(gScene, RAY_FLAG_NONE, 0xFF,
 		RAY_TYPE_RADIANCE, 2, RAY_TYPE_RADIANCE, ray, rPayload);
 
 	 // è’ìÀÇ»ÇµÇ»ÇÁâeñ≥Çµ
-	if (rPayload.hitT >= 1e38f) {
+	if (rPayload.hitT >= kRayTMax) {
 		
 		gShadowMask[index] = 1.0f;
 		return;
@@ -64,11 +68,10 @@ void RayGeneration() {
 	sPayload.occluded = false;
 	
 	RayDesc shadowRay;
-	const float EPS = 1e-3f;
-	shadowRay.Origin = rPayload.worldPos + rPayload.worldNormal * EPS;
+	shadowRay.Origin = rPayload.worldPos + rPayload.worldNormal * kShadowRayNormalOffset;
 	shadowRay.Direction = -lightDirection;
-	shadowRay.TMin = 0.0f;
-	shadowRay.TMax = 1e38;
+	shadowRay.TMin = kRayTMin;
+	shadowRay.TMax = kRayTMax;
 	
 	// ÉåÉCí«ê’
 	TraceRay(gScene,

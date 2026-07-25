@@ -56,9 +56,8 @@ ParticleManager* ParticleManager::instance_ = nullptr;
 
 ParticleManager* ParticleManager::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new ParticleManager();
-	}
+	static ParticleManager instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -66,7 +65,6 @@ void ParticleManager::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

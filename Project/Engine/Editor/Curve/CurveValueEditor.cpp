@@ -17,9 +17,8 @@ CurveValueEditor* CurveValueEditor::instance_ = nullptr;
 
 CurveValueEditor* CurveValueEditor::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new CurveValueEditor();
-	}
+	static CurveValueEditor instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -27,7 +26,6 @@ void CurveValueEditor::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

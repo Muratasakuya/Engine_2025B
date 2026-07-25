@@ -16,9 +16,8 @@ LineRenderer* LineRenderer::instance_ = nullptr;
 
 LineRenderer* LineRenderer::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new LineRenderer();
-	}
+	static LineRenderer instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -26,7 +25,8 @@ void LineRenderer::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
+		instance_->renderer2D_.reset();
+		instance_->renderer3D_.reset();
 		instance_ = nullptr;
 	}
 }

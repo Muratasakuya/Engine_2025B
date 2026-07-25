@@ -25,7 +25,7 @@ void RenderTexture::CreateTextureResource(ComPtr<ID3D12Resource>& resource,
 	resourceDesc.Format = format;                                 // フォーマット設定
 	resourceDesc.Flags = flags;                                   // フラグ設定
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;  // 2Dテクスチャで設定
-	resourceDesc.SampleDesc.Count = 1;                            // サンプリングカウント。1固定
+	resourceDesc.SampleDesc.Count = kDefaultSampleCount;          // サンプリングカウント。MSAAなし
 	resourceDesc.DepthOrArraySize = 1;                            // 配列サイズまたは深度を1に設定
 	resourceDesc.MipLevels = 1;                                   // 1で設定、しなくてもdefaultで1になるらしい
 
@@ -128,7 +128,7 @@ void GuiRenderTexture::CreateTextureResource(ComPtr<ID3D12Resource>& resource,
 	resourceDesc.Format = format;                                 // フォーマット設定
 	resourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;                // SRVとして利用
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;  // 2Dテクスチャで設定
-	resourceDesc.SampleDesc.Count = 1;                            // サンプリングカウント。1固定
+	resourceDesc.SampleDesc.Count = kDefaultSampleCount;          // サンプリングカウント。MSAAなし
 	resourceDesc.DepthOrArraySize = 1;                            // 配列サイズまたは深度を1に設定
 	resourceDesc.MipLevels = 1;                                   // 1で設定、しなくてもdefaultで1になるらしい
 

@@ -59,6 +59,11 @@ StructuredBuffer<Meshlet> gMeshlets : register(t2);
 StructuredBuffer<uint> gPrimitives : register(t3);
 StructuredBuffer<TransformationMatrix> gTransforms : register(t4);
 
+static const uint kPackedPrimitiveIndexBits = 10;
+static const uint kPackedPrimitiveIndexMask = (1u << kPackedPrimitiveIndexBits) - 1u;
+static const uint kSecondPrimitiveIndexShift = kPackedPrimitiveIndexBits;
+static const uint kThirdPrimitiveIndexShift = kPackedPrimitiveIndexBits * 2u;
+
 //============================================================================
 //	Function
 //============================================================================
@@ -71,9 +76,9 @@ uint3 UnpackPrimitiveIndex(uint packedIndex) {
 	 // 上位10bit、3つ目の頂点インデックス
 	
 	return uint3(
-	packedIndex & 0x3FF,
-	(packedIndex >> 10) & 0x3FF,
-	(packedIndex >> 20) & 0x3FF);
+	packedIndex & kPackedPrimitiveIndexMask,
+	(packedIndex >> kSecondPrimitiveIndexShift) & kPackedPrimitiveIndexMask,
+	(packedIndex >> kThirdPrimitiveIndexShift) & kPackedPrimitiveIndexMask);
 }
 
 //============================================================================

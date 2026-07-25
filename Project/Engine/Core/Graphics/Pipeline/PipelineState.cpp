@@ -100,7 +100,7 @@ void PipelineState::CreateVertexPipeline(const std::string& fileName, const Json
 	};
 	pipelineDesc.RasterizerState = rasterizerDesc;
 	pipelineDesc.DepthStencilState = depthDesc;
-	pipelineDesc.SampleDesc.Count = 1;
+	pipelineDesc.SampleDesc.Count = kDefaultSampleCount;
 	pipelineDesc.SampleMask = D3D12_DEFAULT_SAMPLE_MASK;
 
 	// inputLayoutがあれば設定する
@@ -157,8 +157,8 @@ void PipelineState::CreateMeshPipeline(const std::string& fileName, const Json& 
 
 	// sampleDesc設定
 	DXGI_SAMPLE_DESC sampleDesc{};
-	sampleDesc.Count = 1;
-	sampleDesc.Quality = 0;
+	sampleDesc.Count = kDefaultSampleCount;
+	sampleDesc.Quality = kDefaultSampleQuality;
 
 	D3DX12_MESH_SHADER_PIPELINE_STATE_DESC pipelineDesc{};
 

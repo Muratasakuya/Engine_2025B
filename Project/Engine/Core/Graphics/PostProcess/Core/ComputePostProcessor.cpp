@@ -6,6 +6,7 @@ using namespace SakuEngine;
 //	include
 //============================================================================
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
+#include <Engine/Core/Graphics/DxLib/DxStructures.h>
 
 //============================================================================
 //	ComputePostProcessor classMethods
@@ -21,7 +22,7 @@ void ComputePostProcessor::CreateTextureResource(
 	resourceDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;            // フォーマット設定
 	resourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS; // UAVとして利用
 	resourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;     // 2Dテクスチャで設定
-	resourceDesc.SampleDesc.Count = 1;                               // サンプリングカウント。1固定
+	resourceDesc.SampleDesc.Count = kDefaultSampleCount;             // サンプリングカウント。MSAAなし
 	resourceDesc.DepthOrArraySize = 1;                               // 配列サイズまたは深度を1に設定
 	resourceDesc.MipLevels = 1;                                      // 1で設定、しなくてもdefaultで1になるらしい
 

@@ -12,7 +12,8 @@
 #include <vector>
 
 //============================================================================
-//	BossEnemyStructures class
+//	BossEnemyStructures
+//	ボス敵の状態遷移、フェーズ、コンボ、パリィ条件で共有するデータ構造群。
 //============================================================================
 
 // 状態の種類
@@ -41,7 +42,9 @@ enum class BossEnemyTeleportType {
 	Near // 近くに
 };
 
-// ステータス
+/// <summary>
+/// HP、靭性、攻撃ダメージ、距離レベルなどボス戦全体で参照するステータスを保持する構造体。
+/// </summary>
 struct BossEnemyStats {
 
 	int maxHP;     // 最大HP
@@ -65,7 +68,9 @@ struct BossEnemyStats {
 	DistanceLevel currentDistanceLevel;
 };
 
-// コンボリスト
+/// <summary>
+/// ボスが実行する状態列と、発動可能距離、繰り返し可否、テレポート種別をまとめる構造体。
+/// </summary>
 struct BossEnemyCombo {
 
 	std::vector<BossEnemyState> sequence; // コンボの順序
@@ -79,7 +84,9 @@ struct BossEnemyCombo {
 	void ToJson(Json& data);
 };
 
-// 各フェーズのパラメータ
+/// <summary>
+/// HP閾値で切り替わる各フェーズの遷移時間、使用コンボ、攻撃後の待機復帰を定義する構造体。
+/// </summary>
 struct BossEnemyPhase {
 
 	float nextStateDuration = 1.0f; // この秒数経過で次状態へ遷移
@@ -90,7 +97,9 @@ struct BossEnemyPhase {
 	void ToJson(Json& data);
 };
 
-// ボスの状態テーブル
+/// <summary>
+/// jsonから読み書きするボスAI用のコンボ一覧とフェーズ一覧を保持する構造体。
+/// </summary>
 struct BossEnemyStateTable {
 	
 	std::vector<BossEnemyCombo> combos;
@@ -100,8 +109,9 @@ struct BossEnemyStateTable {
 	void ToJson(Json& data);
 };
 
-// パリィデータ
-// 連続パリィが可能な場合、すべて受けきった後に攻撃可能
+/// <summary>
+/// パリィ受付可否と必要回数を保持する。連続パリィは全回数を受けた後に反撃可能になる。
+/// </summary>
 struct ParryParameter {
 
 	bool canParry = false;        // パリィ可能かどうか

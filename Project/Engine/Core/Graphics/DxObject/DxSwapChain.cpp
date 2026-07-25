@@ -30,7 +30,7 @@ void DxSwapChain::Create(WinApp* winApp, IDXGIFactory7* factory,
 	desc_.Width = Config::kWindowWidth;
 	desc_.Height = Config::kWindowHeight;
 	desc_.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
-	desc_.SampleDesc.Count = 1;
+	desc_.SampleDesc.Count = kDefaultSampleCount;
 	desc_.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	desc_.BufferCount = kBufferCount;
 	desc_.SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD;

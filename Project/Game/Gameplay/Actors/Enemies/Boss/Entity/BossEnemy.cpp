@@ -138,6 +138,8 @@ void BossEnemy::CalDistanceToTarget() {
 }
 
 void BossEnemy::DebugCommand() {
+#ifdef _DEBUG
+	// デバッグビルド限定の即時撃破入力。リリースビルドでは操作経路自体を含めない。
 	// キルコマンド
 	if (SakuEngine::Input::GetInstance()->PushKey(DIK_0)) {
 		if (SakuEngine::Input::GetInstance()->PushKey(DIK_1)) {
@@ -147,6 +149,7 @@ void BossEnemy::DebugCommand() {
 			}
 		}
 	}
+#endif // _DEBUG
 }
 
 void BossEnemy::DerivedInit() {

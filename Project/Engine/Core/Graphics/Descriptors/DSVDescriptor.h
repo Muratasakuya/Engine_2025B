@@ -18,7 +18,9 @@ public:
 	//	public Methods
 	//========================================================================
 
-	DSVDescriptor() :BaseDescriptor(4) {};
+	static constexpr uint32_t kMaxDSVDescriptorCount = 4;
+
+	DSVDescriptor() :BaseDescriptor(kMaxDSVDescriptorCount) {};
 	~DSVDescriptor() = default;
 
 	// 深度リソースの作成

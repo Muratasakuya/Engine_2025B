@@ -6,6 +6,8 @@ using namespace SakuEngine;
 //	AccelerationStructureBuffer classMethods
 //============================================================================
 
+#include <Engine/Core/Graphics/DxLib/DxStructures.h>
+
 void AccelerationStructureBuffer::Create(ID3D12Device* device, UINT64 sizeInBytes,
 	D3D12_RESOURCE_FLAGS flags, D3D12_RESOURCE_STATES initState, D3D12_HEAP_TYPE heapType) {
 
@@ -18,7 +20,7 @@ void AccelerationStructureBuffer::Create(ID3D12Device* device, UINT64 sizeInByte
 	desc.Height = 1;
 	desc.DepthOrArraySize = 1;
 	desc.MipLevels = 1;
-	desc.SampleDesc.Count = 1;
+	desc.SampleDesc.Count = kDefaultSampleCount;
 	desc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	desc.Flags = flags;
 

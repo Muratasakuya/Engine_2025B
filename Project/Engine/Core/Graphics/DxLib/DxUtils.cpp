@@ -4,6 +4,7 @@
 //	include
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
+#include <Engine/Core/Graphics/DxLib/DxStructures.h>
 
 //============================================================================
 //	DxUtils namespaceMethods
@@ -33,7 +34,7 @@ void DxUtils::CreateBufferResource(ID3D12Device* device, ComPtr<ID3D12Resource>&
 	resourceDesc.Height = 1;
 	resourceDesc.DepthOrArraySize = 1;
 	resourceDesc.MipLevels = 1;
-	resourceDesc.SampleDesc.Count = 1;
+	resourceDesc.SampleDesc.Count = SakuEngine::kDefaultSampleCount;
 	// バッファの場合はこれにする決まり
 	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	// リソース作成
@@ -60,7 +61,7 @@ void DxUtils::CreateUavBufferResource(ID3D12Device* device, ComPtr<ID3D12Resourc
 	vertexResourceDesc.Height = 1;
 	vertexResourceDesc.DepthOrArraySize = 1;
 	vertexResourceDesc.MipLevels = 1;
-	vertexResourceDesc.SampleDesc.Count = 1;
+	vertexResourceDesc.SampleDesc.Count = SakuEngine::kDefaultSampleCount;
 	// バッファの場合はこれにする決まり
 	vertexResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 	vertexResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
@@ -85,7 +86,7 @@ void DxUtils::CreateReadbackBufferResource(ID3D12Device* device, ComPtr<ID3D12Re
 	resourceDesc.Height = 1;
 	resourceDesc.DepthOrArraySize = 1;
 	resourceDesc.MipLevels = 1;
-	resourceDesc.SampleDesc.Count = 1;
+	resourceDesc.SampleDesc.Count = SakuEngine::kDefaultSampleCount;
 	// バッファの場合はこれにする決まり
 	resourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 

@@ -22,9 +22,8 @@ UIEditor* UIEditor::instance_ = nullptr;
 
 UIEditor* UIEditor::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new UIEditor();
-	}
+	static UIEditor instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -32,7 +31,6 @@ void UIEditor::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

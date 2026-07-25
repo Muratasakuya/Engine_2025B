@@ -34,9 +34,8 @@ ObjectManager* ObjectManager::instance_ = nullptr;
 
 ObjectManager* ObjectManager::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new ObjectManager();
-	}
+	static ObjectManager instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -44,7 +43,6 @@ void ObjectManager::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
 		instance_ = nullptr;
 	}
 }

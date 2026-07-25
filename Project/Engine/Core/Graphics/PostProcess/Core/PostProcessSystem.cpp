@@ -22,9 +22,8 @@ PostProcessSystem* PostProcessSystem::instance_ = nullptr;
 
 PostProcessSystem* PostProcessSystem::GetInstance() {
 
-	if (instance_ == nullptr) {
-		instance_ = new PostProcessSystem();
-	}
+	static PostProcessSystem instance;
+	instance_ = &instance;
 	return instance_;
 }
 
@@ -32,7 +31,9 @@ void PostProcessSystem::Finalize() {
 
 	if (instance_ != nullptr) {
 
-		delete instance_;
+		instance_->ClearProcess();
+		instance_->buffers_.clear();
+		instance_->updaters_.clear();
 		instance_ = nullptr;
 	}
 }

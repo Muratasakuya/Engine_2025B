@@ -174,7 +174,7 @@ namespace SakuEngine {
 		AudioType GuessAudioTypeFromPath(const std::filesystem::path& p) const;
 
 		// 小文字化
-		static std::string ToLower(std::string string);
+		static std::string ToLower(const std::string& string);
 
 		Audio() = default;
 		~Audio() = default;

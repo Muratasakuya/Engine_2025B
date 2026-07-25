@@ -8,6 +8,7 @@
 
 // c++
 #include <list>
+#include <memory>
 #include <utility>
 #include <unordered_set>
 
@@ -57,7 +58,7 @@ namespace SakuEngine {
 
 		static CollisionManager* instance_;
 
-		std::list<CollisionBody*> colliders_;
+		std::list<std::unique_ptr<CollisionBody>> colliders_;
 		std::unordered_set<std::pair<CollisionBody*, CollisionBody*>, pair_hash> preCollisions_;
 
 		//--------- functions ----------------------------------------------------
