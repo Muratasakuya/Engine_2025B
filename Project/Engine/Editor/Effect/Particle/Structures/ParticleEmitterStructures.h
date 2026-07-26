@@ -30,6 +30,9 @@ enum class ParticleDeleteMode {
 
 namespace SakuEngine {
 
+	/// <summary>
+	/// エミッター共通の発生数、寿命、速度、スケール、色、ポストエフェクト対象を保持する。
+	/// </summary>
 	struct ParticleEmitterCommon {
 
 		int32_t count;
@@ -60,7 +63,9 @@ namespace SakuEngine {
 		}
 	};
 
-	// 球
+	/// <summary>
+	/// 球形エミッターの半径と中心位置を保持し、球面/球内部からの発生範囲を定義する。
+	/// </summary>
 	struct ParticleEmitterSphere {
 
 		float radius;
@@ -75,7 +80,9 @@ namespace SakuEngine {
 		}
 	};
 
-	// 半球
+	/// <summary>
+	/// 半球エミッターの半径、位置、向きを保持し、片側方向へ広がる発生範囲を定義する。
+	/// </summary>
 	struct ParticleEmitterHemisphere {
 
 		float radius;
@@ -91,7 +98,9 @@ namespace SakuEngine {
 		}
 	};
 
-	// 箱(OBB)
+	/// <summary>
+	/// 箱形エミッターのサイズ、位置、回転を保持し、OBB領域からの発生範囲を定義する。
+	/// </summary>
 	struct ParticleEmitterBox {
 
 		Vector3 size;
@@ -110,7 +119,9 @@ namespace SakuEngine {
 		}
 	};
 
-	// コーン状
+	/// <summary>
+	/// 円錐台エミッターの上下半径、高さ、位置、回転を保持し、円錐状の発生範囲を定義する。
+	/// </summary>
 	struct ParticleEmitterCone {
 
 		float baseRadius;
@@ -134,6 +145,9 @@ namespace SakuEngine {
 		}
 	};
 
+	/// <summary>
+	/// 選択中のエミッター形状と、各形状別パラメータをまとめて保持する編集/実行用データ。
+	/// </summary>
 	struct ParticleEmitterData {
 
 		ParticleEmitterShape shape;
@@ -160,6 +174,9 @@ namespace SakuEngine {
 		}
 	};
 
+	/// <summary>
+	/// エミッター共通情報と形状別情報をGPUへ転送するための定数バッファ群。
+	/// </summary>
 	struct ParticleEmitterBufferData {
 
 		// 発生

@@ -82,7 +82,7 @@ namespace SakuEngine {
 		Node ReadNode(aiNode* node);
 
 		// 非同期ジョブ本体：重複を避けつつ指定モデルをロードして登録
-		void LoadAsync(std::string modelName);
+		void LoadAsync(const std::string& modelName);
 	};
 
 }; // SakuEngine

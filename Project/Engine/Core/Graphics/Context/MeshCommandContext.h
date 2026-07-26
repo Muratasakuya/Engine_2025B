@@ -14,10 +14,9 @@ namespace SakuEngine {
 
 class DxCommand;
 
-//============================================================================
-//	MeshCommand class
-// メッシュ描画処理を行う
-//============================================================================
+/// <summary>
+/// Mesh Shader用の頂点/メッシュレット/プリミティブバッファを設定し、DispatchMeshを発行する描画コンテキスト。
+/// </summary>
 class MeshCommandContext {
 public:
 	//========================================================================
@@ -27,7 +26,13 @@ public:
 	MeshCommandContext() = default;
 	~MeshCommandContext() = default;
 
-	// メッシュ、インスタンス数を取得して描画コマンドを発行
+	/// <summary>
+	/// 指定メッシュのバッファをRoot SRV/CBVへ設定し、インスタンス数に応じてMesh Shaderをディスパッチする。
+	/// </summary>
+	/// <param name="commandList">描画コマンドを記録するDirect3D12コマンドリスト。</param>
+	/// <param name="instanceCount">描画するインスタンス数。0の場合は何も発行しない。</param>
+	/// <param name="meshIndex">メッシュ内のサブメッシュインデックス。</param>
+	/// <param name="mesh">描画対象のメッシュデータ。</param>
 	void DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 		UINT instanceCount, uint32_t meshIndex, class IMesh* mesh);
 };

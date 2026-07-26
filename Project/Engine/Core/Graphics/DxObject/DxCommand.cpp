@@ -11,6 +11,9 @@ using namespace SakuEngine;
 //	DxCommand classMethods
 //============================================================================
 
+/// <summary>
+/// 固定FPS向けにCPU側の待機と基準時刻の更新を行う。
+/// </summary>
 void DxCommand::UpdateFixFPS() {
 
 	constexpr float kTargetFPS = 60.0f;
@@ -41,6 +44,10 @@ void DxCommand::UpdateFixFPS() {
 	reference_ = std::chrono::steady_clock::now();
 }
 
+/// <summary>
+/// デバイスからコマンドキュー、アロケータ、コマンドリスト、フェンスを生成して初期化する。
+/// </summary>
+/// <param name="device">Direct3D12デバイス。</param>
 void DxCommand::Create(ID3D12Device* device) {
 
 	fence_ = nullptr;
@@ -68,6 +75,10 @@ void DxCommand::Create(ID3D12Device* device) {
 	reference_ = std::chrono::steady_clock::now();
 }
 
+/// <summary>
+/// グラフィックスコマンドリストを閉じてキューへ提出し、スワップチェーンをPresentする。
+/// </summary>
+/// <param name="swapChain">Present対象のスワップチェーン。</param>
 void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
 
 	HRESULT hr = S_OK;
@@ -81,6 +92,9 @@ void DxCommand::ExecuteGraphicsCommands(IDXGISwapChain4* swapChain) {
 	swapChain->Present(1, 0);
 }
 
+/// <summary>
+/// フェンス値をシグナルし、GPUが指定値に到達するまでイベントで待機する。
+/// </summary>
 void DxCommand::FenceEvent() {
 
 	// Fenceの値を更新
@@ -96,6 +110,11 @@ void DxCommand::FenceEvent() {
 	}
 }
 
+/// <summary>
+/// 記録済みコマンドを提出し、Present、GPU同期、FPS固定、コマンドリストリセットまでを1フレーム分実行する。
+/// 同じコマンドリストを記録しているスレッドから呼び出し、呼び出し後に次フレームの記録を開始する。
+/// </summary>
+/// <param name="swapChain">Present対象のスワップチェーン。</param>
 void DxCommand::ExecuteCommands(IDXGISwapChain4* swapChain) {
 
 	// GraphicsCommand を実行
@@ -113,6 +132,10 @@ void DxCommand::ExecuteCommands(IDXGISwapChain4* swapChain) {
 	assert(SUCCEEDED(hr));
 }
 
+/// <summary>
+/// 現在のコマンドリストを提出し、フェンスを使ってGPUの完了まで待機する。
+/// GPUリソースの破棄や読み戻しなど、直前のコマンド完了が必要な場面で呼び出す。
+/// </summary>
 void DxCommand::WaitForGPU() {
 
 	// コマンドリストの内容を確定させる。すべてのコマンドを積んでからCloseする
@@ -141,6 +164,10 @@ void DxCommand::WaitForGPU() {
 	assert(SUCCEEDED(hr));
 }
 
+/// <summary>
+/// フェンスイベントとウィンドウを閉じる終了処理を行う。
+/// </summary>
+/// <param name="hwnd">閉じる対象のウィンドウハンドル。</param>
 void DxCommand::Finalize(HWND hwnd) {
 	CloseHandle(fenceEvent_);
 	CloseWindow(hwnd);
@@ -150,12 +177,21 @@ void DxCommand::Finalize(HWND hwnd) {
 //	GraphicsCommand
 //============================================================================
 
+/// <summary>
+/// 描画/計算で参照するディスクリプタヒープをコマンドリストへ設定する。
+/// </summary>
+/// <param name="descriptorHeaps">設定するディスクリプタヒープ配列。</param>
 void DxCommand::SetDescriptorHeaps(const std::vector<ID3D12DescriptorHeap*>& descriptorHeaps) {
 
 	commandList_->SetDescriptorHeaps(
 		static_cast<UINT>(descriptorHeaps.size()), descriptorHeaps.data());
 }
 
+/// <summary>
+/// 単一レンダーターゲットと任意のDSVをOMステージへ設定し、レンダーターゲットをクリアする。
+/// </summary>
+/// <param name="renderTarget">設定するレンダーターゲット。未指定時はDSVのみを設定する。</param>
+/// <param name="dsvHandle">任意のDSV CPUハンドル。</param>
 void DxCommand::SetRenderTargets(const std::optional<RenderTarget>& renderTarget,
 	const std::optional<D3D12_CPU_DESCRIPTOR_HANDLE>& dsvHandle) {
 
@@ -179,6 +215,11 @@ void DxCommand::SetRenderTargets(const std::optional<RenderTarget>& renderTarget
 	}
 }
 
+/// <summary>
+/// 複数レンダーターゲットと任意のDSVをOMステージへ設定し、各レンダーターゲットをクリアする。
+/// </summary>
+/// <param name="renderTargets">設定するレンダーターゲット配列。</param>
+/// <param name="dsvHandle">任意のDSV CPUハンドル。</param>
 void DxCommand::SetRenderTargets(const std::vector<RenderTarget>& renderTargets,
 	const std::optional<D3D12_CPU_DESCRIPTOR_HANDLE>& dsvHandle) {
 
@@ -200,11 +241,20 @@ void DxCommand::SetRenderTargets(const std::vector<RenderTarget>& renderTargets,
 	}
 }
 
+/// <summary>
+/// 指定したDSVの深度値をクリアする。
+/// </summary>
+/// <param name="dsvHandle">クリア対象のDSV CPUハンドル。</param>
 void DxCommand::ClearDepthStencilView(const D3D12_CPU_DESCRIPTOR_HANDLE& dsvHandle) {
 
 	commandList_->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
 }
 
+/// <summary>
+/// 指定サイズでビューポートとシザー矩形をコマンドリストへ設定する。
+/// </summary>
+/// <param name="width">描画領域の幅。</param>
+/// <param name="height">描画領域の高さ。</param>
 void DxCommand::SetViewportAndScissor(uint32_t width, uint32_t height) {
 
 	D3D12_VIEWPORT viewport{};
@@ -218,6 +268,12 @@ void DxCommand::SetViewportAndScissor(uint32_t width, uint32_t height) {
 	commandList_->RSSetScissorRects(1, &scissorRect);
 }
 
+/// <summary>
+/// 複数リソースの状態遷移バリアをまとめて発行する。
+/// </summary>
+/// <param name="resources">状態遷移するリソース配列。</param>
+/// <param name="stateBefore">遷移前のリソース状態。</param>
+/// <param name="stateAfter">遷移後のリソース状態。</param>
 void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources,
 	D3D12_RESOURCE_STATES stateBefore, D3D12_RESOURCE_STATES stateAfter) {
 
@@ -243,6 +299,10 @@ void DxCommand::TransitionBarriers(const std::vector<ID3D12Resource*>& resources
 	commandList_->ResourceBarrier(static_cast<UINT>(barriers.size()), barriers.data());
 }
 
+/// <summary>
+/// 指定リソースにUAVバリアを発行し、UAV書き込み順序を保証する。
+/// </summary>
+/// <param name="resource">バリア対象のリソース。</param>
 void DxCommand::UAVBarrier(ID3D12Resource* resource) {
 
 	D3D12_RESOURCE_BARRIER barrier{};
@@ -251,6 +311,9 @@ void DxCommand::UAVBarrier(ID3D12Resource* resource) {
 	commandList_->ResourceBarrier(1, &barrier);
 }
 
+/// <summary>
+/// 全UAV書き込みを対象にしたUAVバリアを発行する。
+/// </summary>
 void DxCommand::UAVBarrierAll() {
 
 	D3D12_RESOURCE_BARRIER barrier{};
@@ -259,6 +322,13 @@ void DxCommand::UAVBarrierAll() {
 	commandList_->ResourceBarrier(1, &barrier);
 }
 
+/// <summary>
+/// コピー元/コピー先を一時的にコピー用状態へ遷移し、リソース内容をコピーして元状態へ戻す。
+/// </summary>
+/// <param name="dstResource">コピー先リソース。</param>
+/// <param name="dstState">コピー前後に維持するコピー先の元状態。</param>
+/// <param name="srcResource">コピー元リソース。</param>
+/// <param name="srcState">コピー前後に維持するコピー元の元状態。</param>
 void DxCommand::CopyTexture(ID3D12Resource* dstResource, D3D12_RESOURCE_STATES dstState,
 	ID3D12Resource* srcResource, D3D12_RESOURCE_STATES srcState) {
 

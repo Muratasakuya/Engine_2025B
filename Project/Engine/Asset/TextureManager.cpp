@@ -7,6 +7,7 @@ using namespace SakuEngine;
 //============================================================================
 #include <Engine/Core/Debug/Assert.h>
 #include <Engine/Core/Debug/SpdLogger.h>
+#include <Engine/Core/Graphics/DxLib/DxStructures.h>
 #include <Engine/Core/Graphics/DxObject/DxCommand.h>
 #include <Engine/Core/Graphics/Descriptors/SRVDescriptor.h>
 #include <Engine/Asset/Filesystem.h>
@@ -37,7 +38,7 @@ void TextureManager::Init(ID3D12Device* device, DxCommand* dxCommand,
 
 	// ワーカースレッド起動
 	loadWorker_.Start([this](std::string&& name) {
-		this->LoadAsync(std::move(name)); });
+		this->LoadAsync(name); });
 }
 
 void TextureManager::LoadSynch(const std::string& textureName) {
@@ -123,7 +124,7 @@ void TextureManager::WaitAll() {
 	}
 }
 
-void TextureManager::LoadAsync(std::string name) {
+void TextureManager::LoadAsync(const std::string& name) {
 
 	// 重複読み込みを行わないようにチェック
 	{
@@ -238,7 +239,7 @@ void TextureManager::CreateAndUpload(const std::string& identifier,
 		desc.MipLevels = UINT16(meta.mipLevels);
 		desc.DepthOrArraySize = UINT16(meta.arraySize);
 		desc.Format = meta.format;
-		desc.SampleDesc.Count = 1;
+		desc.SampleDesc.Count = kDefaultSampleCount;
 		desc.Dimension = D3D12_RESOURCE_DIMENSION(meta.dimension);
 
 		D3D12_HEAP_PROPERTIES heap{};
@@ -265,7 +266,7 @@ void TextureManager::CreateAndUpload(const std::string& identifier,
 		D3D12_RESOURCE_DESC buf{};
 		buf.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
 		buf.Width = size; buf.Height = 1; buf.DepthOrArraySize = 1;
-		buf.MipLevels = 1; buf.SampleDesc.Count = 1; buf.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+		buf.MipLevels = 1; buf.SampleDesc.Count = kDefaultSampleCount; buf.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
 
 		HRESULT hr = device_->CreateCommittedResource(
 			&heap, D3D12_HEAP_FLAG_NONE, &buf, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&uploadBuffer));
@@ -322,7 +323,7 @@ bool TextureManager::Search(const std::string& textureName) {
 	return SakuEngine::Algorithm::Find(textures_, textureName);
 }
 
-const D3D12_GPU_DESCRIPTOR_HANDLE& TextureManager::GetGPUHandle(const std::string textureName) const {
+const D3D12_GPU_DESCRIPTOR_HANDLE& TextureManager::GetGPUHandle(const std::string& textureName) const {
 
 	auto it = textures_.find(textureName);
 	if (it == textures_.end()) {
@@ -350,7 +351,7 @@ uint32_t TextureManager::GetTextureGPUIndex(const std::string& textureName) cons
 	return it->second.srvIndex;
 }
 
-const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string textureName) const {
+const DirectX::TexMetadata& TextureManager::GetMetaData(const std::string& textureName) const {
 
 	auto it = textures_.find(textureName);
 	if (it == textures_.end()) {

@@ -13,6 +13,13 @@ using namespace SakuEngine;
 //	MeshCommandContext classMethods
 //============================================================================
 
+/// <summary>
+/// 指定メッシュのバッファをRoot SRV/CBVへ設定し、インスタンス数に応じてMesh Shaderをディスパッチする。
+/// </summary>
+/// <param name="commandList">描画コマンドを記録するDirect3D12コマンドリスト。</param>
+/// <param name="instanceCount">描画するインスタンス数。0の場合は何も発行しない。</param>
+/// <param name="meshIndex">メッシュ内のサブメッシュインデックス。</param>
+/// <param name="mesh">描画対象のメッシュデータ。</param>
 void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 	UINT instanceCount, uint32_t meshIndex, IMesh* mesh) {
 
@@ -41,7 +48,7 @@ void MeshCommandContext::DispatchMesh(ID3D12GraphicsCommandList6* commandList,
 	commandList->SetGraphicsRootConstantBufferView(5,
 		mesh->GetMeshInstanceData(meshIndex).GetResource()->GetGPUVirtualAddress());
 
-	// threadGroupCountXの最大値
+	// D3D12のDispatchMeshで一度に指定できるX方向グループ数を超えないよう、必要なら分割する。
 	const UINT maxThreadGroupCount = 65535;
 	const UINT meshletCount = mesh->GetMeshletCount(meshIndex);
 

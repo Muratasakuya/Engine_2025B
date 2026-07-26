@@ -59,11 +59,11 @@ namespace SakuEngine {
 		//--------- accessor -----------------------------------------------------
 
 		// 描画用GPUハンドルを取得(存在しなければASSERT/ログ)、取得時に使用フラグを更新
-		const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;
+		const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string& textureName) const;
 		// SRVテーブル上のインデックスを取得(存在しなければASSERT/ログ)
 		uint32_t GetTextureGPUIndex(const std::string& textureName) const;
 		// 読み込んだメタデータ(サイズ/ミップ/フォーマット等)を取得
-		const DirectX::TexMetadata& GetMetaData(const std::string textureName) const;
+		const DirectX::TexMetadata& GetMetaData(const std::string& textureName) const;
 
 		// 階層(フォルダ階層)文字列一覧を取得
 		std::vector<std::string> GetTextureHierarchies() const;
@@ -114,7 +114,7 @@ namespace SakuEngine {
 		DirectX::ScratchImage GenerateMipMaps(const std::filesystem::path& filePath, DirectX::TexMetadata& outMeta);
 
 		// 非同期ジョブ本体：指定テクスチャを読み込み→GPUへアップロード→登録
-		void LoadAsync(std::string name);
+		void LoadAsync(const std::string& name);
 		// リソース作成・UploadCmdでの転送・SRV生成までをまとめて行う
 		void CreateAndUpload(const std::string& identifier,
 			const DirectX::ScratchImage& mipImages, const DirectX::TexMetadata& meta);

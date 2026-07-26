@@ -60,9 +60,9 @@ namespace SakuEngine {
 		//--------- textures -----------------------------------------------------
 
 		// 描画に必要なGPUハンドル/インデックス/メタデータを取得する
-		const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string textureName) const;
+		const D3D12_GPU_DESCRIPTOR_HANDLE& GetGPUHandle(const std::string& textureName) const;
 		uint32_t GetTextureGPUIndex(const std::string& textureName) const;
-		const DirectX::TexMetadata& GetMetaData(const std::string textureName) const;
+		const DirectX::TexMetadata& GetMetaData(const std::string& textureName) const;
 
 		// エディタ向けの補助情報を取得/検索する
 		std::vector<std::string> GetTextureHierarchies() const;

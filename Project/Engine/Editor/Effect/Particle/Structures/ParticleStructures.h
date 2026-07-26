@@ -50,8 +50,10 @@ namespace ParticleCommon {
 		CLMAP
 	};
 
-	// 描画情報
 	template<bool kMultiple = false>
+	/// <summary>
+	/// パーティクルのプリミティブ種別と、CPU/GPU転送前の形状パラメータを保持する。
+	/// </summary>
 	struct PrimitiveData {
 
 		ParticlePrimitiveType type;
@@ -69,6 +71,9 @@ namespace ParticleCommon {
 		// テストメッシュ
 		std::conditional_t<kMultiple, std::vector<TestMeshForGPU>, TestMeshForGPU> testMesh;
 	};
+	/// <summary>
+	/// プリミティブ描画用データをGPUへ送るためのStructuredBuffer群。
+	/// </summary>
 	struct PrimitiveBufferData {
 
 		ParticlePrimitiveType type;
@@ -87,6 +92,9 @@ namespace ParticleCommon {
 		DxStructuredBuffer<TestMeshForGPU> testMesh;
 	};
 
+	/// <summary>
+	/// パーティクルのワールド変換、親行列、ビルボード設定をGPUへ渡す構造体。
+	/// </summary>
 	struct TransformForGPU {
 
 		Vector3 translation;
@@ -104,6 +112,9 @@ namespace ParticleCommon {
 		uint32_t aliveParent = false;
 	};
 
+	/// <summary>
+	/// パーティクル更新で毎フレーム共有する時刻とデルタタイムを保持する。
+	/// </summary>
 	struct PerFrameForGPU {
 
 		float time;
@@ -111,6 +122,9 @@ namespace ParticleCommon {
 		float pad0[2];
 	};
 
+	/// <summary>
+	/// パーティクル描画で参照するカメラ位置、ビュー射影、ビルボード行列を保持する。
+	/// </summary>
 	struct PerViewForGPU {
 
 		Vector3 cameraPos;
@@ -121,6 +135,9 @@ namespace ParticleCommon {
 	};
 
 	template <typename T>
+	/// <summary>
+	/// 線形補間で使用する開始値と目標値の組。
+	/// </summary>
 	struct LerpValue {
 
 		T start;
@@ -128,18 +145,26 @@ namespace ParticleCommon {
 	};
 
 	template <typename T>
+	/// <summary>
+	/// エディター入力用の可変値として補間開始値と目標値を保持する。
+	/// </summary>
 	struct EditLerpValue {
 
 		ParticleValue<T> start;
 		ParticleValue<T> target;
 	};
 
-	// トレイル位置の情報
+	/// <summary>
+	/// トレイルを構成する1サンプルのワールド位置と経過時間を保持する。
+	/// </summary>
 	struct TrailPoint {
 
 		Vector3 pos; // 座標
 		float age;   // 寿命
 	};
+	/// <summary>
+	/// トレイルのサンプル列、前回位置、追従解除状態など実行時の履歴を保持する。
+	/// </summary>
 	struct TrailRuntime {
 
 		std::deque<TrailPoint> nodes; // リングバッファ
@@ -150,20 +175,26 @@ namespace ParticleCommon {
 		bool isDetaching = false;     // 追従先が消えた後の処理を行うか
 	};
 
-	// トレイルのGPU転送データ
-	// 頂点(MS)
+	/// <summary>
+	/// トレイル頂点バッファ内で使用する開始位置と頂点数をGPUへ渡すヘッダー。
+	/// </summary>
 	struct TrailHeaderForGPU {
 
 		uint32_t start;
 		uint32_t vertexCount;
 	};
+	/// <summary>
+	/// トレイルメッシュ1頂点分のワールド位置、UV、色を保持するGPU転送用データ。
+	/// </summary>
 	struct TrailVertexForGPU {
 
 		Vector3 worldPos;
 		Vector2 uv;
 		Color color;
 	};
-	// マテリアル(PS)
+	/// <summary>
+	/// トレイル描画で使用するテクスチャ参照、サンプラー種別、ノイズ使用フラグを保持する。
+	/// </summary>
 	struct TrailTextureInfoForGPU {
 
 		// texture
@@ -194,7 +225,9 @@ namespace GPUParticle {
 		Count
 	};
 
-	// material
+	/// <summary>
+	/// GPUパーティクルのマテリアル色とポストエフェクト対象を保持する。
+	/// </summary>
 	struct MaterialForGPU {
 
 		Color color;
@@ -203,7 +236,9 @@ namespace GPUParticle {
 		uint32_t postProcessMask;
 	};
 
-	// particleUpdate
+	/// <summary>
+	/// GPU更新パーティクルの寿命、経過時間、速度を保持する。
+	/// </summary>
 	struct ParticleForGPU {
 
 		float lifeTime;
@@ -212,7 +247,9 @@ namespace GPUParticle {
 		Vector3 velocity;
 	};
 
-	// ノイズで動かす更新処理の時に使用する
+	/// <summary>
+	/// GPUパーティクルをノイズで動かす際のスケール、強さ、速度を保持する。
+	/// </summary>
 	struct NoiseForGPU {
 
 		float scale;
@@ -234,6 +271,9 @@ namespace GPUParticle {
 
 namespace CPUParticle {
 
+	/// <summary>
+	/// CPUパーティクル描画の色、発光、アルファしきい値、UV変換、ポストエフェクト対象を保持する。
+	/// </summary>
 	struct MaterialForGPU {
 
 		Color color;
@@ -253,6 +293,9 @@ namespace CPUParticle {
 		uint32_t postProcessMask;
 	};
 
+	/// <summary>
+	/// CPUパーティクル描画で使用する色/ノイズテクスチャ、サンプラー、使用フラグを保持する。
+	/// </summary>
 	struct TextureInfoForGPU {
 
 		// texture
@@ -268,6 +311,9 @@ namespace CPUParticle {
 		int32_t useNoiseTexture;
 	};
 
+	/// <summary>
+	/// CPUパーティクル1個分の寿命、移動、トレイル、描画、削除方式など実行時状態を保持する。
+	/// </summary>
 	struct ParticleData {
 
 		// 生存時間

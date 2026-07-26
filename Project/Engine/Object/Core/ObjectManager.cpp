@@ -32,6 +32,10 @@ using namespace SakuEngine;
 
 ObjectManager* ObjectManager::instance_ = nullptr;
 
+/// <summary>
+/// ObjectManagerのシングルトンインスタンスを取得する。
+/// </summary>
+/// <returns>ObjectManagerの共有インスタンス。</returns>
 ObjectManager* ObjectManager::GetInstance() {
 
 	static ObjectManager instance;
@@ -39,6 +43,9 @@ ObjectManager* ObjectManager::GetInstance() {
 	return instance_;
 }
 
+/// <summary>
+/// ObjectManagerのシングルトン参照を無効化する。
+/// </summary>
 void ObjectManager::Finalize() {
 
 	if (instance_ != nullptr) {
@@ -47,6 +54,12 @@ void ObjectManager::Finalize() {
 	}
 }
 
+/// <summary>
+/// デバイス、アセット、コマンドを受け取り、各Systemとオブジェクトプールを初期化する。
+/// </summary>
+/// <param name="device">GPUリソース作成に使用するDirect3D12デバイス。</param>
+/// <param name="asset">モデル、テクスチャ、フォントなどを取得するアセット管理。</param>
+/// <param name="dxCommand">描画バッファ構築に使用するコマンド制御。</param>
 void ObjectManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxCommand) {
 
 	asset_ = nullptr;
@@ -77,23 +90,37 @@ void ObjectManager::Init(ID3D12Device* device, Asset* asset, DxCommand* dxComman
 	ImGuiObjectEditor::GetInstance()->Init();
 }
 
+/// <summary>
+/// 登録済みSystemのデータ更新処理を実行する。
+/// </summary>
 void ObjectManager::UpdateData() {
 
 	systemManager_->UpdateData(*objectPoolManager_.get());
 }
 
+/// <summary>
+/// 登録済みSystemのGPUバッファ更新処理を実行する。
+/// </summary>
 void ObjectManager::UpdateBuffer() {
 
 	systemManager_->UpdateBuffer(*objectPoolManager_.get());
 }
 
+/// <summary>
+/// モデル名をもとにTransform、Material、MeshRender、必要ならAnimationを持つ3Dオブジェクトを作成する。
+/// </summary>
+/// <param name="modelName">描画に使用するロード済みモデル名。</param>
+/// <param name="name">作成するオブジェクトの識別名。</param>
+/// <param name="groupName">オブジェクトを所属させるグループ名。</param>
+/// <param name="animationName">スキニング用に関連付けるアニメーション名。未指定なら静的メッシュとして扱う。</param>
+/// <returns>作成されたオブジェクトID。</returns>
 uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 	const std::string& name, const std::string& groupName,
 	const std::optional<std::string>& animationName) {
 
 	LOG_SCOPE_MS_LABEL(modelName);
 
-	// object作成
+	// まず共通のObjectTagを持つ空オブジェクトを作成し、以降で3D描画に必要なデータを追加する。
 	uint32_t object = BuildEmptyObject(name, groupName);
 	// 必要なdataを作成
 	auto* transform = objectPoolManager_->AddData<SakuEngine::Transform3D>(object);
@@ -130,6 +157,11 @@ uint32_t ObjectManager::CreateObjects(const std::string& modelName,
 	return object;
 }
 
+/// <summary>
+/// 指定テクスチャを使用するスカイボックスオブジェクトを作成する。
+/// </summary>
+/// <param name="textureName">スカイボックス描画に使用するキューブマップテクスチャ名。</param>
+/// <returns>作成されたオブジェクトID。</returns>
 uint32_t ObjectManager::CreateSkybox(const std::string& textureName) {
 
 	LOG_SCOPE_MS_LABEL("skybox");
@@ -146,6 +178,12 @@ uint32_t ObjectManager::CreateSkybox(const std::string& textureName) {
 	return object;
 }
 
+/// <summary>
+/// エフェクト用Transformを持つ空のエフェクトオブジェクトを作成する。
+/// </summary>
+/// <param name="name">作成するエフェクトオブジェクトの識別名。</param>
+/// <param name="groupName">オブジェクトを所属させるグループ名。</param>
+/// <returns>作成されたオブジェクトID。</returns>
 uint32_t ObjectManager::CreateEffect(const std::string& name, const std::string& groupName) {
 
 	LOG_SCOPE_MS_LABEL("effect");
@@ -162,6 +200,13 @@ uint32_t ObjectManager::CreateEffect(const std::string& name, const std::string&
 	return object;
 }
 
+/// <summary>
+/// 指定テクスチャを使用する2Dスプライトオブジェクトを作成する。
+/// </summary>
+/// <param name="textureName">スプライト描画に使用するテクスチャ名。</param>
+/// <param name="name">作成するオブジェクトの識別名。</param>
+/// <param name="groupName">オブジェクトを所属させるグループ名。</param>
+/// <returns>作成されたオブジェクトID。</returns>
 uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 	const std::string& name, const std::string& groupName) {
 
@@ -187,6 +232,14 @@ uint32_t ObjectManager::CreateObject2D(const std::string& textureName,
 	return object;
 }
 
+/// <summary>
+/// MSDFフォントとアトラステクスチャを使用するテキストオブジェクトを作成する。
+/// </summary>
+/// <param name="atlasTextureName">文字描画に使用するMSDFアトラステクスチャ名。</param>
+/// <param name="fontJsonPath">フォントメトリクスを読み込むJSONファイルパス。</param>
+/// <param name="name">作成するオブジェクトの識別名。</param>
+/// <param name="groupName">オブジェクトを所属させるグループ名。</param>
+/// <returns>作成されたオブジェクトID。</returns>
 uint32_t ObjectManager::CreateTextObject(const std::string& atlasTextureName,
 	const std::string& fontJsonPath, const std::string& name, const std::string& groupName) {
 
@@ -218,6 +271,12 @@ uint32_t ObjectManager::CreateTextObject(const std::string& atlasTextureName,
 	return object;
 }
 
+/// <summary>
+/// ObjectTagだけを持つ空オブジェクトを作成し、後続処理で必要なデータを追加できる状態にする。
+/// </summary>
+/// <param name="name">作成するオブジェクトの識別名。</param>
+/// <param name="groupName">オブジェクトを所属させるグループ名。</param>
+/// <returns>作成されたオブジェクトID。</returns>
 uint32_t ObjectManager::BuildEmptyObject(const std::string& name, const std::string& groupName) {
 
 	// object作成
@@ -232,11 +291,18 @@ uint32_t ObjectManager::BuildEmptyObject(const std::string& name, const std::str
 	return object;
 }
 
+/// <summary>
+/// 指定オブジェクトIDに紐づく全データを破棄対象にする。
+/// </summary>
+/// <param name="object">破棄対象のオブジェクトID。</param>
 void ObjectManager::Destroy(uint32_t object) {
 
 	objectPoolManager_->Destroy(object);
 }
 
+/// <summary>
+/// destroyOnLoadが有効な全オブジェクトを一括破棄する。
+/// </summary>
 void ObjectManager::DestroyAll() {
 
 	// すべて走査して破棄

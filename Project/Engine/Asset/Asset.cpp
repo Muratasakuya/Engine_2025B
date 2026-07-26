@@ -240,7 +240,7 @@ void Asset::LoadAnimation(const std::string& animationName, const std::string& m
 	animationManager_->Load(animationName, modelName);
 }
 
-const D3D12_GPU_DESCRIPTOR_HANDLE& Asset::GetGPUHandle(const std::string textureName) const {
+const D3D12_GPU_DESCRIPTOR_HANDLE& Asset::GetGPUHandle(const std::string& textureName) const {
 	return textureManager_->GetGPUHandle(textureName);
 }
 
@@ -248,7 +248,7 @@ uint32_t Asset::GetTextureGPUIndex(const std::string& textureName) const {
 	return textureManager_->GetTextureGPUIndex(textureName);
 }
 
-const DirectX::TexMetadata& Asset::GetMetaData(const std::string textureName) const {
+const DirectX::TexMetadata& Asset::GetMetaData(const std::string& textureName) const {
 	return textureManager_->GetMetaData(textureName);
 }
 

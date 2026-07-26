@@ -25,7 +25,7 @@ void ModelLoader::Init(TextureManager* textureManager) {
 
 	// ワーカースレッド起動
 	loadWorker_.Start([this](std::string&& name) {
-		this->LoadAsync(std::move(name)); });
+		this->LoadAsync(name); });
 }
 
 void ModelLoader::LoadSynch(const std::string& modelName) {
@@ -101,7 +101,7 @@ void ModelLoader::WaitAll() {
 	}
 }
 
-void ModelLoader::LoadAsync(std::string modelName) {
+void ModelLoader::LoadAsync(const std::string& modelName) {
 
 	// 重複読み込みを行わないようにチェック
 	{
